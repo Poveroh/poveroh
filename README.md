@@ -44,7 +44,7 @@
 ## :star2: About the Project
 
 <div align="center"> 
-  <img src="./assets/dashboard_screenshot.png" alt="screenshot" />
+  <img src="./assets/dashboard_screenshot.jpg" alt="screenshot" />
 </div>
 
 Poveroh is an open-source, web-based platform for tracking personal finances.
@@ -199,9 +199,9 @@ Run project
 
 In running order:
 
-* [x] Login
+* [ ] Login
 * [ ] Categories & subcategories
-* [x] Bank accounts
+* [ ] Bank accounts
 * [ ] Transaction
     * [ ] Manual insert
     * [ ] Upload from CSV or PDF
