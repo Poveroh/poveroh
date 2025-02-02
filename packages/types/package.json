@@ -1,16 +1,17 @@
 {
-  "name": "@poveroh/types",
-  "version": "1.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "dev": "tsc --watch",
-    "lint": "eslint src/**/*.ts"
-  },
-  "keywords": [],
-  "author": "Poveroh",
-  "license": "MIT",
-  "description": ""
+    "name": "@poveroh/types",
+    "version": "1.0.0",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf dist",
+        "dev": "tsc --watch",
+        "lint": "eslint src/**/*.ts"
+    },
+    "keywords": [],
+    "type": "module",
+    "author": "Poveroh",
+    "license": "MIT",
+    "description": ""
 }

@@ -1,23 +1,49 @@
 {
-  "name": "poveroh",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "prettier": "^3.4.2",
-    "turbo": "^2.4.0",
-    "typescript": "5.7.3"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "npm@10.9.2",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "name": "@poveroh/source",
+    "license": "MIT",
+    "author": {
+        "email": "",
+        "name": "Poveroh"
+    },
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "dev-api": "turbo api",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.8",
+        "@types/node": "^22.13.0",
+        "@typescript-eslint/eslint-plugin": "^8.22.0",
+        "@typescript-eslint/parser": "^8.22.0",
+        "nodemon": "^3.1.9",
+        "prettier": "^3.4.2",
+        "ts-node": "^10.9.2",
+        "turbo": "^2.4.0",
+        "typescript": "5.7.3"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "type": "module",
+    "packageManager": "npm@10.9.2",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "dependencies": {
+        "@prisma/client": "^6.3.0",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "jsonwebtoken": "^9.0.2",
+        "typescript": "^5.7.3",
+        "ua-parser-js": "^2.0.0"
+    }
 }
