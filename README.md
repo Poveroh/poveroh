@@ -30,14 +30,22 @@
 
 ## :notebook_with_decorative_cover: Table of Contents
 
-- [About the Project](#star2-about-the-project)
-- [Tech Stack](#space_invader-tech-stack)
-- [Color Reference](#art-color-reference)
-- [Getting Started](#toolbox-getting-started)
-    - [Prerequisites](#bangbang-prerequisites)
-    - [Run Locally](#running-run-locally)
-- [Roadmap](#compass-roadmap)
-- [License](#warning-license)
+- [Poveroh](#poveroh)
+      - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
+  - [:notebook\_with\_decorative\_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
+  - [:star2: About the Project](#star2-about-the-project)
+    - [Why?](#why)
+    - [How it works?](#how-it-works)
+    - [:space\_invader: Tech Stack](#space_invader-tech-stack)
+    - [:art: Color Reference](#art-color-reference)
+  - [:toolbox: Getting Started](#toolbox-getting-started)
+    - [:bangbang: Prerequisites](#bangbang-prerequisites)
+  - [:running: Run Locally](#running-run-locally)
+    - [Get start](#get-start)
+    - [Backend](#backend)
+  - [:compass: Roadmap](#compass-roadmap)
+  - [:warning: License](#warning-license)
+  - [:link: Useful links](#link-useful-links)
 
 <!-- About the Project -->
 
@@ -186,6 +194,8 @@ Build project
 ```bash
     npm run build
 ```
+
+> Since both the API and the app use the "types" library, a clean build might fail due to the library not being found. To resolve this, simply rerunning the command as it is could be enough.
 
 Run project
 
