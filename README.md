@@ -92,7 +92,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 - <a href="https://www.postgresql.org/">PostgreSQL</a>
 
-<!-- Color Reference -->[.env](../_poveroh/.env)
+<!-- Color Reference -->
 
 ### :art: Color Reference
 
