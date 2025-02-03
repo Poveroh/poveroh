@@ -8,9 +8,11 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
-        "dev": "turbo dev",
+        "dev": "npm run prisma:generate && turbo dev",
         "dev-api": "turbo api",
         "lint": "turbo lint",
+        "prisma:generate": "cd apps/api/src/prisma && prisma generate",
+        "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
     "devDependencies": {
