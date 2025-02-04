@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* ----------- VARIABLE ----------- */
 :root {
@@ -20,13 +20,18 @@
     --border-color: #393939;
     --checkbox-color: #3478ff;
     --bg-body-color: #1c1c1c;
-    --bg-body-gradient-color: radial-gradient(circle 600px at bottom right, var(--brand-color-2), rgba(28, 28, 28, 0)),
-    radial-gradient(circle 600px at top left, var(--brand-color-2), rgba(28, 28, 28, 0)), var(--bg-body-color);
+    --bg-body-gradient-color: radial-gradient(
+            circle 600px at bottom right,
+            var(--brand-color-2),
+            rgba(28, 28, 28, 0)
+        ),
+        radial-gradient(circle 600px at top left, var(--brand-color-2), rgba(28, 28, 28, 0)),
+        var(--bg-body-color);
     --bg-input-color: #313131;
     --bg-box-color: #212121;
     --maskbg: rgba(0, 0, 0, 0.6);
     --text-color: var(--white-color);
-    --text-label-color: #6A6A6A;
+    --text-label-color: #6a6a6a;
     --placeholder-color: var(--text-label-color);
     --hamburger-color: var(--white-color);
     /* ---- font size ---- */
@@ -43,7 +48,7 @@
     --max-min-width-modal-size: 40vw;
     /* ---- border radius ---- */
     --radius-size: 1rem;
-    --radius-size-light: .5rem;
+    --radius-size-light: 0.5rem;
     --input-radius-size: 0.6rem;
     /* ---- font family ---- */
     --font-family: 'Inter', Arial, sans-serif;
@@ -56,8 +61,8 @@
     --internal-padding-input-small: 0.1rem 1.75rem;
     --internal-padding-input-for-icon: 0.675rem 3rem;
     /* ---- icon ---- */
-    --icon-cash: url("/icon/cash-for-bg.svg");
-    --icon-arrow-down: url("/icon/apple-keyboard-control.svg");
+    --icon-cash: url('/icon/cash-for-bg.svg');
+    --icon-arrow-down: url('/icon/apple-keyboard-control.svg');
 }
 
 :host {
@@ -112,7 +117,8 @@ html {
     background: none !important;
 }
 
-.bg-form-background, .bg-box-background {
+.bg-form-background,
+.bg-box-background {
     background-color: var(--bg-box-color);
 }
 
@@ -167,7 +173,8 @@ i.big {
     overflow-x: auto !important;
 }
 
-.divide-y > :not([hidden]) ~ :not([hidden]), .divide-x > :not([hidden]) ~ :not([hidden]) {
+.divide-y > :not([hidden]) ~ :not([hidden]),
+.divide-x > :not([hidden]) ~ :not([hidden]) {
     border-color: var(--hr-color);
 }
 
@@ -293,7 +300,8 @@ mat-icon.danger,
 .danger-all,
 .danger-all p,
 .danger-all > * .danger-all:hover,
-.danger-all:hover > *, .danger-btn-outline p {
+.danger-all:hover > *,
+.danger-btn-outline p {
     color: var(--danger-color) !important;
 }
 
@@ -302,7 +310,8 @@ mat-icon.danger,
     background: none !important;
 }
 
-.danger-all path, .danger-btn-outline path {
+.danger-all path,
+.danger-btn-outline path {
     fill: var(--danger-color) !important;
 }
 
@@ -326,7 +335,8 @@ mat-icon.success,
 .success-all,
 .success-all p,
 .success-all > * .success-all:hover,
-.success-all:hover > *, .success-btn-outline p {
+.success-all:hover > *,
+.success-btn-outline p {
     color: var(--success-color);
 }
 
@@ -359,7 +369,7 @@ a {
 }
 
 .popover-content::before {
-    content: "";
+    content: '';
     position: absolute;
     top: -10px;
     left: 20px;
@@ -373,7 +383,8 @@ input:disabled {
     background-color: rgba(0, 0, 0, 0.12);
 }
 
-.form-input, #dt-search-0 {
+.form-input,
+#dt-search-0 {
     display: block;
     width: 100%;
     padding: var(--internal-padding-input);
@@ -427,7 +438,7 @@ input:disabled {
 .form-input.simple {
     border: 0 !important;
     background: none !important;
-    padding: 0.2rem !important
+    padding: 0.2rem !important;
 }
 
 .form-input.simple:hover {
@@ -446,7 +457,8 @@ input:disabled {
 }
 
 /* ---- button ---- */
-.form-input.button, .form-input.button.with-icon {
+.form-input.button,
+.form-input.button.with-icon {
     background-color: var(--white-color);
     text-align: center;
     border: 1px solid var(--white-color);
@@ -553,7 +565,7 @@ input:disabled {
 
 /* ---- input white border ---- */
 .form-input.white-border {
-    border: 1px solid var(--white-color)
+    border: 1px solid var(--white-color);
 }
 
 /* ---- input only text ---- */
@@ -742,7 +754,7 @@ input:disabled {
     transition: all 0.2s;
 }
 
-.file-upload input[type=file] {
+.file-upload input[type='file'] {
     opacity: 0;
     height: 100%;
     width: 100%;
@@ -821,20 +833,16 @@ input:disabled {
 /* ----------- MEDIA ----------- */
 
 @media screen and (max-width: 640px) {
-
 }
 
 /* ---- medium devices | tablets, less than 992px ---- */
-@media screen and  (max-width: 992px) {
-
+@media screen and (max-width: 992px) {
 }
 
 /* ---- large devices | desktops, less than 1200px ---- */
 @media screen and (max-width: 1200px) {
-
 }
 
 /* ---- large devices | large desktops, less than 1400px ---- */
 @media screen and (max-width: 1450px) {
-
 }
