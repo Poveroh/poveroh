@@ -38,3 +38,5 @@ yarn-error.log*
 
 # Ide
 .idea
+.vscode
+package-lock.json
