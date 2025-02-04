@@ -23,6 +23,9 @@
         "paths": {
             "@poveroh/types": [
                 "packages/types/src/index.ts"
+            ],
+            "@poveroh/prisma": [
+                "packages/prisma/src/index.ts"
             ]
         }
     },

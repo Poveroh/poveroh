@@ -31,21 +31,21 @@
 ## :notebook_with_decorative_cover: Table of Contents
 
 - [Poveroh](#poveroh)
-      - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
-  - [:notebook\_with\_decorative\_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
-  - [:star2: About the Project](#star2-about-the-project)
-    - [Why?](#why)
-    - [How it works?](#how-it-works)
-    - [:space\_invader: Tech Stack](#space_invader-tech-stack)
-    - [:art: Color Reference](#art-color-reference)
-  - [:toolbox: Getting Started](#toolbox-getting-started)
-    - [:bangbang: Prerequisites](#bangbang-prerequisites)
-  - [:running: Run Locally](#running-run-locally)
-    - [Get start](#get-start)
-    - [Backend](#backend)
-  - [:compass: Roadmap](#compass-roadmap)
-  - [:warning: License](#warning-license)
-  - [:link: Useful links](#link-useful-links)
+  - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
+    - [:notebook\_with\_decorative\_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
+    - [:star2: About the Project](#star2-about-the-project)
+        - [Why?](#why)
+        - [How it works?](#how-it-works)
+        - [:space\_invader: Tech Stack](#space_invader-tech-stack)
+        - [:art: Color Reference](#art-color-reference)
+    - [:toolbox: Getting Started](#toolbox-getting-started)
+        - [:bangbang: Prerequisites](#bangbang-prerequisites)
+    - [:running: Run Locally](#running-run-locally)
+        - [Get start](#get-start)
+        - [Backend](#backend)
+    - [:compass: Roadmap](#compass-roadmap)
+    - [:warning: License](#warning-license)
+    - [:link: Useful links](#link-useful-links)
 
 <!-- About the Project -->
 
@@ -118,6 +118,8 @@ This project uses:
 
 - [Node.js](https://nodejs.org/en/download/package-manager)
 - [Docker](https://docs.docker.com/get-started/get-docker/)
+    - Requires Docker and Docker Compose to be installed
+
 - [PostgreSQL](https://www.postgresql.org/)
 
 <!-- Run Locally -->
@@ -144,19 +146,24 @@ This project uses:
       npm install
     ```
 
-4. Setup `.env` file
+4. Set up a `.env` file, then edit it with the necessary values
 
-    - Duplicate `.env.example` file to `.env`
-    - Choose an API `port`; default is `4201`
-    - Generate a `username` and `password`, replace in `"postgresql://[username]:[password]@localhost:5432/poveroh?schema=public"` for `DATABASE_URL`
-    - Generate an alfanumeric code for `JWT`
+    ```bash
+    cp .env.example .env
+    ```
+
+   Then copy `.env` also in prisma folder, just for the first setup
+
+    ```bash
+    cp .env ./packages/prisma/.env
+    ```
 
 ### Backend
 
 1. Go to docker folder
 
     ```bash
-      cd apps/api/docker
+      cd packages/prisma
     ```
 
 2. Build docker file
@@ -168,8 +175,8 @@ This project uses:
 3. Replace `mysecretpassword` for `POSTGRES_PASSWORD` and run images
 
     ```bash
-      docker run --name poveroh-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -v postgres-data:/var/lib/postgresql/data-d poveroh-db
-    ```
+    docker compose up -d
+     ```
 
 4. Go to prisma folder
 
@@ -195,7 +202,7 @@ Build project
     npm run build
 ```
 
-> Since both the API and the app use the "types" library, a clean build might fail due to the library not being found. To resolve this, simply rerunning the command as it is could be enough.
+> Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
 
 Run project
 

@@ -1,17 +1,13 @@
 {
     "name": "@poveroh/source",
     "license": "MIT",
-    "author": {
-        "email": "",
-        "name": "Poveroh"
-    },
+    "author": "Poveroh",
     "private": true,
     "scripts": {
         "build": "turbo build",
-        "dev": "npm run prisma:generate && turbo dev",
+        "dev": "turbo dev",
         "dev-api": "turbo api",
         "lint": "turbo lint",
-        "prisma:generate": "cd apps/api/src/prisma && prisma generate",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
@@ -39,7 +35,6 @@
         "packages/*"
     ],
     "dependencies": {
-        "@prisma/client": "^6.3.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "dotenv": "^16.4.7",
