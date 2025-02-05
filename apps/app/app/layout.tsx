@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
 
-import '../styles/style.css'
+import '@poveroh/ui/main.css'
 
 export const metadata: Metadata = {
     title: 'Poveroh',
-    description: 'A unified platform to track your wealth'
+    description: 'A unified platform to track your wealth',
+    icons: {
+        icon: '/favicon.ico'
+    }
 }
 
 type RootLayoutProps = Readonly<{
