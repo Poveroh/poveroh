@@ -117,7 +117,7 @@ This project uses:
 - [Node.js](https://nodejs.org/en/download/package-manager)
 - [Docker](https://docs.docker.com/get-started/get-docker/)
 
-    - Requires Docker and Docker Compose to be installed
+    - Requires Docker and Docker Compose to be installed, up, and running on the machine.
 
 - [PostgreSQL](https://www.postgresql.org/)
 
@@ -130,31 +130,47 @@ This project uses:
 1. Clone the project
 
     ```bash
-      git clone https://github.com/DavideTarditi/poveroh.git
+    git clone https://github.com/DavideTarditi/poveroh.git
     ```
 
 2. Go to the project folder
 
     ```bash
-      cd poveroh
+    cd poveroh
     ```
 
 3. Install dependencies
 
     ```bash
-      npm install
+    npm install
     ```
 
 4. Set up a `.env` file, then edit it with the necessary values
+
+   - MacOS/Linux
 
     ```bash
     cp .env.example .env
     ```
 
+   - Windows
+
+    ```bash
+    copy .env.example .env
+    ```
+
     Then copy `.env` also in prisma folder, just for the first setup
+
+   - MacOS/Linux
 
     ```bash
     cp .env ./packages/prisma/.env
+    ```
+
+   - Windows
+
+    ```bash
+    copy .env packages\prisma\.env
     ```
 
 ### Database
@@ -162,13 +178,13 @@ This project uses:
 1. Go to docker folder
 
     ```bash
-      cd packages/prisma
+    cd packages/prisma
     ```
 
 2. Build docker file
 
     ```bash
-      docker build -f db.dockerfile -t poveroh-db .
+    docker build -f db.dockerfile -t poveroh-db .
     ```
 
 3. Run images
@@ -180,13 +196,13 @@ This project uses:
 4. Generate client
 
     ```bash
-      prisma generate
+    prisma generate
     ```
 
 5. Migrate and create models
 
     ```bash
-      prisma migrate dev
+    prisma migrate dev
     ```
 
 ### Build and run
@@ -194,7 +210,7 @@ This project uses:
 1. In root folder, build project
 
     ```bash
-        npm run build
+    npm run build
     ```
     
     > Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
@@ -202,7 +218,7 @@ This project uses:
 2. Run project
     
     ```bash
-        npm run dev
+    npm run dev
     ```
 
 <!-- Roadmap -->
