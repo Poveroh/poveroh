@@ -30,13 +30,12 @@
 
 ## :notebook_with_decorative_cover: Table of Contents
 
-- [Poveroh](#poveroh)
-  - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
-    - [:notebook\_with\_decorative\_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
+- [Poveroh](#poveroh) - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
+    - [:notebook_with_decorative_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
     - [:star2: About the Project](#star2-about-the-project)
         - [Why?](#why)
         - [How it works?](#how-it-works)
-        - [:space\_invader: Tech Stack](#space_invader-tech-stack)
+        - [:space_invader: Tech Stack](#space_invader-tech-stack)
         - [:art: Color Reference](#art-color-reference)
     - [:toolbox: Getting Started](#toolbox-getting-started)
         - [:bangbang: Prerequisites](#bangbang-prerequisites)
@@ -97,7 +96,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 ### :art: Color Reference
 
 | Color            | Hex                                                              |
-|------------------|------------------------------------------------------------------|
+| ---------------- | ---------------------------------------------------------------- |
 | Primary Color    | ![#4E594A](https://via.placeholder.com/10/4E594A?text=+) #4E594A |
 | Secondary Color  | ![#278664](https://via.placeholder.com/10/278664?text=+) #278664 |
 | Background Color | ![#1C1C1C](https://via.placeholder.com/10/1C1C1C?text=+) #1C1C1C |
@@ -109,7 +108,6 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 To get a local copy up and running, please follow these simple steps.
 
-
 <!-- Prerequisites -->
 
 ### :bangbang: Prerequisites
@@ -118,7 +116,8 @@ This project uses:
 
 - [Node.js](https://nodejs.org/en/download/package-manager)
 - [Docker](https://docs.docker.com/get-started/get-docker/)
-    - Requires Docker and Docker Compose to be installed
+
+    - Requires Docker and Docker Compose to be installed, up, and running on the machine.
 
 - [PostgreSQL](https://www.postgresql.org/)
 
@@ -131,84 +130,96 @@ This project uses:
 1. Clone the project
 
     ```bash
-      git clone https://github.com/DavideTarditi/poveroh.git
+    git clone https://github.com/DavideTarditi/poveroh.git
     ```
 
 2. Go to the project folder
 
     ```bash
-      cd poveroh
+    cd poveroh
     ```
 
 3. Install dependencies
 
     ```bash
-      npm install
+    npm install
     ```
 
 4. Set up a `.env` file, then edit it with the necessary values
+
+   - MacOS/Linux
 
     ```bash
     cp .env.example .env
     ```
 
-   Then copy `.env` also in prisma folder, just for the first setup
+   - Windows
+
+    ```bash
+    copy .env.example .env
+    ```
+
+    Then copy `.env` also in prisma folder, just for the first setup
+
+   - MacOS/Linux
 
     ```bash
     cp .env ./packages/prisma/.env
     ```
 
-### Backend
+   - Windows
+
+    ```bash
+    copy .env packages\prisma\.env
+    ```
+
+### Database
 
 1. Go to docker folder
 
     ```bash
-      cd packages/prisma
+    cd packages/prisma
     ```
 
 2. Build docker file
 
     ```bash
-      docker build -f db.dockerfile -t poveroh-db .
+    docker build -f db.dockerfile -t poveroh-db .
     ```
 
-3. Replace `mysecretpassword` for `POSTGRES_PASSWORD` and run images
+3. Run images
 
     ```bash
     docker compose up -d
-     ```
-
-4. Go to prisma folder
-
-    ```bash
-      cd apps/api/prisma
     ```
 
-5. Generate client
+4. Generate client
 
     ```bash
-      prisma generate
+    prisma generate
     ```
 
-6. Migrate and create models
+5. Migrate and create models
 
     ```bash
-      prisma migrate dev
+    prisma migrate dev
     ```
 
-Build project
+### Build and run
 
-```bash
+1. In root folder, build project
+
+    ```bash
     npm run build
-```
+    ```
+    
+    > Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
 
-> Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
-
-Run project
-
-```bash
+2. Run project
+    
+    ```bash
     npm run dev
-```
+    ```
 
 <!-- Roadmap -->
 
@@ -216,24 +227,24 @@ Run project
 
 In running order:
 
-* [ ] Login
-* [ ] Categories & subcategories
-* [ ] Bank accounts
-* [ ] Transaction
-    * [ ] Manual insert
-    * [ ] Upload from CSV or PDF
-* [ ] Month's snapshot
-* [ ] Subscriptions
-* [ ] Reports
-* [ ] Investments
-* [ ] Mobile app (iOS/Android) [probably in Flutter]
+- [ ] Login
+- [ ] Categories & subcategories
+- [ ] Bank accounts
+- [ ] Transaction
+    - [ ] Manual insert
+    - [ ] Upload from CSV or PDF
+- [ ] Month's snapshot
+- [ ] Subscriptions
+- [ ] Reports
+- [ ] Investments
+- [ ] Mobile app (iOS/Android) [probably in Flutter]
 
 To give it an extra boost:
 
-* [ ] Live investments
-* [ ] What if: Based on monthly or annual spending, determine what you could have afforded if you hadn’t spent that money. This can help evaluate whether it’s necessary to reduce spending in non-essential categories to achieve certain goals.
-* [ ] Memes
-* [ ] Open banking
+- [ ] Live investments
+- [ ] What if: Based on monthly or annual spending, determine what you could have afforded if you hadn’t spent that money. This can help evaluate whether it’s necessary to reduce spending in non-essential categories to achieve certain goals.
+- [ ] Memes
+- [ ] Open banking
 
 <!-- License -->
 
