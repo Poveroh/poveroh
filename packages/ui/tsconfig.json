@@ -1,22 +1,12 @@
 {
+    "extends": "@poveroh/typescript-config/react-library.json",
     "compilerOptions": {
-        "target": "ES2024",
-        "module": "commonjs",
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true,
-        "esModuleInterop": true,
-        "jsx": "preserve",
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
+        //"outDir": "dist"
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"]
+            "@poveroh/ui/*": ["./src/*"]
         }
     },
-    "include": ["src"],
+    "include": ["."],
     "exclude": ["node_modules", "dist"]
 }
