@@ -1,0 +1,12 @@
+{
+    "name": "@poveroh/types",
+    "version": "0.0.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "private": true,
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint . --max-warnings 0"
+    }
+}

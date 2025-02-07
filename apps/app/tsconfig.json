@@ -4,7 +4,8 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./*"],
-            "@poveroh/ui/*": ["../../packages/ui/src/*"]
+            "@poveroh/ui/*": ["../../packages/ui/src/*"],
+            "@poveroh/types/*": ["../../packages/types/src/*"]
         },
         "plugins": [
             {
