@@ -1,6 +1,7 @@
 {
     "extends": "@poveroh/typescript-config/react-library.json",
     "compilerOptions": {
+        "rootDir": "src",
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
