@@ -147,13 +147,13 @@ This project uses:
 
 4. Set up a `.env` file, then edit it with the necessary values
 
-   - MacOS/Linux
+    - MacOS/Linux
 
     ```bash
     cp .env.example .env
     ```
 
-   - Windows
+    - Windows
 
     ```bash
     copy .env.example .env
@@ -161,13 +161,13 @@ This project uses:
 
     Then copy `.env` also in prisma folder, just for the first setup
 
-   - MacOS/Linux
+    - MacOS/Linux
 
     ```bash
     cp .env ./packages/prisma/.env
     ```
 
-   - Windows
+    - Windows
 
     ```bash
     copy .env packages\prisma\.env
@@ -212,11 +212,11 @@ This project uses:
     ```bash
     npm run build
     ```
-    
+
     > Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
 
 2. Run project
-    
+
     ```bash
     npm run dev
     ```
