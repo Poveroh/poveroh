@@ -13,6 +13,9 @@
     "devDependencies": {
         "@poveroh/eslint-config": "*",
         "@poveroh/typescript-config": "*",
+        "@types/cookie-parser": "^1.4.8",
+        "@types/jsonwebtoken": "^9.0.8",
+        "@types/ua-parser-js": "^0.7.39",
         "prettier": "^3.2.5",
         "turbo": "^2.3.0",
         "typescript": "5.5.4"
@@ -24,5 +27,13 @@
     "workspaces": [
         "apps/*",
         "packages/*"
-    ]
+    ],
+    "dependencies": {
+        "@poveroh/prisma": "^1.0.0",
+        "@types/cors": "^2.8.17",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "jsonwebtoken": "^9.0.2",
+        "ua-parser-js": "^2.0.1"
+    }
 }

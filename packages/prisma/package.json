@@ -1,0 +1,20 @@
+{
+    "name": "@poveroh/prisma",
+    "version": "1.0.0",
+    "type": "commonjs",
+    "author": "Poveroh",
+    "license": "MIT",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf .turbo && rm -rf node_modules",
+        "db-migrate": "npm prisma migrate dev",
+        "generate-schemas": "prisma generate"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.3.1"
+    },
+    "keywords": [],
+    "description": ""
+}

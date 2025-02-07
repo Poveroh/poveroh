@@ -1,0 +1,192 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model users {
+    id         String   @id @default(uuid())
+    name       String
+    surname    String
+    email      String   @unique
+    password   String
+    created_at DateTime @default(now())
+
+    transactions      transactions[]
+    internal_transfer internal_transfer[]
+    subscriptions     subscriptions[]
+    categories        categories[]
+    login             users_login[]
+}
+
+model users_login {
+    id         String   @id @default(uuid())
+    device     String
+    browser    String
+    ip         String
+    location   String
+    created_at DateTime @default(now())
+
+    user    users  @relation(fields: [user_id], references: [id])
+    user_id String
+}
+
+model transactions {
+    id             String          @id @default(uuid())
+    user_id        String
+    title          String
+    type           TransactionType @default(EXPENSES)
+    category_id    String
+    subcategory_id String
+    note           String?
+    ignore         Boolean         @default(false)
+    created_at     DateTime        @default(now())
+
+    user        users         @relation(fields: [user_id], references: [id])
+    category    categories    @relation(fields: [category_id], references: [id])
+    subcategory subcategories @relation(fields: [subcategory_id], references: [id])
+
+    media   transactions_media[]
+    amounts amounts[]
+}
+
+model internal_transfer {
+    id                   String   @id @default(uuid())
+    user_id              String
+    title                String
+    date                 DateTime
+    amount               Float
+    currency_id          String
+    bank_account_from_id String
+    bank_account_to_id   String
+    category_id          String
+    subcategory_id       String
+    note                 String?
+    ignore               Boolean  @default(false)
+    created_at           DateTime @default(now())
+
+    users             users         @relation(fields: [user_id], references: [id])
+    currencies        currencies    @relation(fields: [currency_id], references: [id])
+    bank_account_from bank_accounts @relation("bank_account_from", fields: [bank_account_from_id], references: [id])
+    bank_account_to   bank_accounts @relation("bank_account_to", fields: [bank_account_to_id], references: [id])
+    category          categories    @relation(fields: [category_id], references: [id])
+    subcategory       subcategories @relation(fields: [subcategory_id], references: [id])
+}
+
+model subscriptions {
+    id              String   @id @default(uuid())
+    user_id         String
+    title           String
+    description     String
+    amount          Float
+    current_id      String
+    first_payment   DateTime
+    cycle_number    Int
+    cycle_period    String
+    remember_number Int
+    remember_period String
+    expires_date    DateTime
+    bank_account_id String
+    is_enabled      Boolean
+    created_at      DateTime @default(now())
+
+    user         users         @relation(fields: [user_id], references: [id])
+    currency     currencies    @relation(fields: [current_id], references: [id])
+    bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
+}
+
+model transactions_media {
+    id             String   @id @default(uuid())
+    transaction_id String
+    filename       String
+    filetype       String
+    path           String
+    created_at     DateTime @default(now())
+
+    transaction transactions @relation(fields: [transaction_id], references: [id])
+}
+
+model bank_accounts {
+    id          String          @id @default(uuid())
+    title       String
+    description String
+    type        BankAccountType @default(BANK_ACCOUNT)
+    logo_icon   String?
+    created_at  DateTime        @default(now())
+
+    internal_transfers_from internal_transfer[] @relation("bank_account_from")
+    internal_transfers_to   internal_transfer[] @relation("bank_account_to")
+    subscriptions           subscriptions[]
+    amounts                 amounts[]
+}
+
+model categories {
+    id          String          @id @default(uuid())
+    user_id     String
+    title       String
+    description String?
+    for         TransactionType
+    logo_icon   String
+    created_at  DateTime        @default(now())
+
+    transactions      transactions[]
+    internal_transfer internal_transfer[]
+    subcategories     subcategories[]
+
+    user users @relation(fields: [user_id], references: [id])
+}
+
+model subcategories {
+    id          String   @id @default(uuid())
+    category_id String
+    title       String
+    description String?
+    logo_icon   String
+    created_at  DateTime @default(now())
+
+    transactions      transactions[]
+    internal_transfer internal_transfer[]
+
+    category categories @relation(fields: [category_id], references: [id])
+}
+
+model currencies {
+    id         String   @id @default(uuid())
+    title      String
+    code       String
+    is_enabled Boolean
+    created_at DateTime @default(now())
+
+    internal_transfer internal_transfer[]
+    subscriptions     subscriptions[]
+    amounts           amounts[]
+}
+
+model amounts {
+    id              String   @id @default(uuid())
+    transaction_id  String
+    amount          Float
+    currency_id     String
+    bank_account_id String
+    created_at      DateTime @default(now())
+
+    currency     currencies    @relation(fields: [currency_id], references: [id])
+    bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
+    transaction  transactions  @relation(fields: [transaction_id], references: [id])
+}
+
+enum TransactionType {
+    EXPENSES
+    INCOME
+}
+
+enum BankAccountType {
+    ONLINE_BANK
+    BANK_ACCOUNT
+    CIRCUIT
+    DEPOSIT_BANK
+    BROKER
+}
