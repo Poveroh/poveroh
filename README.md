@@ -164,7 +164,7 @@ This project uses:
 Run `setup-db` file
 
 ```bash
-npm run setup-db
+npm run setup:db
 ```
 
 The command will execute the following steps:
