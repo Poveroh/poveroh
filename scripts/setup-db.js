@@ -2,12 +2,8 @@ const { execSync } = require('child_process')
 const { existsSync, copyFileSync } = require('fs')
 const path = require('path')
 
-console.log(__dirname)
-
 // Ensure script runs from project root
 const projectRoot = path.resolve(__dirname, '..')
-
-console.log(projectRoot)
 const prismaPath = path.join(projectRoot, 'packages/prisma')
 const envFile = path.join(projectRoot, '.env')
 const prismaEnvFile = path.join(prismaPath, '.env')
