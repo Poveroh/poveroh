@@ -166,6 +166,7 @@ Run `setup-db` file
 ```bash
 npm run setup-db
 ```
+
 The command will execute the following steps:
 
 1. Navigate to the `packages/prisma` directory.
@@ -185,7 +186,15 @@ The command will execute the following steps:
     npm run build
     ```
 
-    > Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
+    > Since the API and APP use different libraries in the packages folder, a clean build might fail due to the library not being found.
+    > To resolve this, try rerunning `npm run build` a couple of times.
+    >
+    > If problem persists:
+    >
+    > - Go in `packages/types` folder and run `npm run build`;
+    > - Go in `packages/prisma` folder and run `npm run build`;
+    >
+    > Then, in the root folder, rerun the build to compile the project.
 
 2. Run project
 
