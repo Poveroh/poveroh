@@ -1,0 +1,13 @@
+{
+    "extends": "@poveroh/typescript-config/react-library.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "@poveroh/ui/*": ["./src/*"]
+        }
+    },
+    "include": ["."],
+    "exclude": ["node_modules", "dist"]
+}

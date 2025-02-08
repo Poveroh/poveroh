@@ -145,65 +145,37 @@ This project uses:
     npm install
     ```
 
-4. Set up a `.env` file, then edit it with the necessary values
+4. Copy `.env` file with script below, then edit it with the necessary values
 
-   - MacOS/Linux
+    - MacOS/Linux
 
     ```bash
     cp .env.example .env
     ```
 
-   - Windows
+    - Windows
 
     ```bash
     copy .env.example .env
     ```
 
-    Then copy `.env` also in prisma folder, just for the first setup
-
-   - MacOS/Linux
-
-    ```bash
-    cp .env ./packages/prisma/.env
-    ```
-
-   - Windows
-
-    ```bash
-    copy .env packages\prisma\.env
-    ```
-
 ### Database
 
-1. Go to docker folder
+Run `setup-db` file
 
-    ```bash
-    cd packages/prisma
-    ```
+```bash
+npm run setup-db
+```
+The command will execute the following steps:
 
-2. Build docker file
+1. Navigate to the `packages/prisma` directory.
+2. Build a Docker image using the `db.dockerfile` with the tag `poveroh-db`.
+3. Start the Docker containers in the background using Docker Compose.
+4. Generate the Prisma client.
+5. Apply any pending migrations to the database using Prisma.
 
-    ```bash
-    docker build -f db.dockerfile -t poveroh-db .
-    ```
-
-3. Run images
-
-    ```bash
-    docker compose up -d
-    ```
-
-4. Generate client
-
-    ```bash
-    prisma generate
-    ```
-
-5. Migrate and create models
-
-    ```bash
-    prisma migrate dev
-    ```
+> **⚠️ Warning:**  
+> If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
 ### Build and run
 
@@ -212,11 +184,11 @@ This project uses:
     ```bash
     npm run build
     ```
-    
+
     > Since both the API and the app use the `types` and `prisma` library, a clean build might fail due to the library not being found. To resolve this, go in `packages/types` and run `'npm run build`; do same for `packages/prisma`, then in root folder re-run build to compile the project
 
 2. Run project
-    
+
     ```bash
     npm run dev
     ```
