@@ -5,10 +5,11 @@
         "build": "turbo build",
         "dev": "turbo dev",
         "lint": "turbo lint",
-        "ui:add": "npx shadcn@canary add",
-        "setup-db": "node ./scripts/setup-db.js",
+        "ui:add": "cd ./apps/app && npm run ui:add",
+        "setup:db": "node ./scripts/setup-db.js",
+        "prisma:generate": "cd ./packages/prisma && npx prisma generate",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}'",
-        "clean-build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
+        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
     "devDependencies": {
@@ -16,6 +17,7 @@
         "@poveroh/typescript-config": "*",
         "@types/cookie-parser": "^1.4.8",
         "@types/jsonwebtoken": "^9.0.8",
+        "@types/next": "^8.0.7",
         "@types/ua-parser-js": "^0.7.39",
         "prettier": "^3.2.5",
         "turbo": "^2.3.0",

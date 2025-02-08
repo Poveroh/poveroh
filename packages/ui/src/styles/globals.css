@@ -1,36 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    /* ---- color ---- */
+    --brand-color: #4e594a;
+    --brand-color-2: #278664;
+    --warning-color: #f89406;
+    --danger-color: #eb3232;
+    --danger-color-text: #ff5f5f;
+    --success-color: #2dd181;
+    --success-color-dark: #198754;
+    --black-color: #0d0d0d;
+    --white-color: #ffffff;
+    --hr-color: #393939;
+    --border-color: #393939;
+    --checkbox-color: #3478ff;
+    --bg-body-color: #1c1c1c;
+    --bg-body-gradient-color: radial-gradient(
+            circle 600px at bottom right,
+            var(--brand-color-2),
+            rgba(28, 28, 28, 0)
+        ),
+        radial-gradient(circle 600px at top left, var(--brand-color-2), rgba(28, 28, 28, 0)),
+        var(--bg-body-color);
+    --bg-input-color: #313131;
+    --bg-box-color: #212121;
+    --maskbg: rgba(0, 0, 0, 0.6);
+    --text-color: var(--white-color);
+    --text-label-color: #6a6a6a;
+    --placeholder-color: var(--text-label-color);
+    --hamburger-color: var(--white-color);
+    /* ---- font size ---- */
+    --parent-size: 14px;
+    --child-p-size: 1.07rem;
+    --child-small-size: 0.85rem;
+    --child-small-xs-size: 0.75rem;
+    --child-h1-size: 3.21rem;
+    --child-h2-size: 2.5rem;
+    --child-h3-size: 1.78rem;
+    --child-h4-size: 1.42rem;
+    /* ---- size ---- */
+    --max-width-input: 20rem;
+    --max-min-width-modal-size: 40vw;
+    /* ---- border radius ---- */
+    --radius-size: 1rem;
+    --radius-size-light: 0.5rem;
+    --input-radius-size: 0.6rem;
+    /* ---- font family ---- */
+    --font-family: 'Inter', Arial, sans-serif;
+    --font-weight: 400;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    /* ---- spacing ---- */
+    --internal-padding-input: 0.675rem 1.75rem;
+    --internal-padding-input-mid: 0.4rem 1.75rem;
+    --internal-padding-input-small: 0.1rem 1.75rem;
+    --internal-padding-input-for-icon: 0.675rem 3rem;
+    /* ---- icon ---- */
+    --icon-cash: url('/icon/cash-for-bg.svg');
+    --icon-arrow-down: url('/icon/apple-keyboard-control.svg');
+}
+
+:host {
+    display: contents;
+}
+
 @layer base {
     :root {
-        --background: 0 0% 100%;
-        --foreground: 240 10% 3.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 240 10% 3.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 240 10% 3.9%;
-        --primary: 240 5.9% 10%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 240 4.8% 95.9%;
-        --secondary-foreground: 240 5.9% 10%;
-        --muted: 240 4.8% 95.9%;
-        --muted-foreground: 240 3.8% 46.1%;
-        --accent: 240 4.8% 95.9%;
-        --accent-foreground: 240 5.9% 10%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 240 5.9% 90%;
-        --input: 240 5.9% 90%;
-        --ring: 240 10% 3.9%;
-        --chart-1: 12 76% 61%;
-        --chart-2: 173 58% 39%;
-        --chart-3: 197 37% 24%;
-        --chart-4: 43 74% 66%;
-        --chart-5: 27 87% 67%;
-        --radius: 0.5rem;
-    }
-    .dark {
         --background: 240 10% 3.9%;
         --foreground: 0 0% 98%;
         --card: 240 10% 3.9%;
@@ -55,6 +94,7 @@
         --chart-3: 30 80% 55%;
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
+        --radius: 0.5rem;
     }
 }
 
@@ -65,4 +105,61 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+/* BODY & HTML */
+body,
+html {
+    padding: 0;
+    margin: 0;
+    display: block;
+    min-width: 320px;
+    position: relative;
+    color-scheme: dark;
+    background-color: var(--bg-body-color);
+    font-size: var(--parent-size);
+    font-family: var(--font-family), serif;
+    font-weight: var(--font-weight);
+}
+
+/* BACKGROUND */
+.bg-body {
+    background-color: var(--bg-body-color);
+}
+
+.bg-brand-color {
+    background-color: var(--brand-color-2);
+}
+
+.bg-special-pattern {
+    background-color: var(--brand-color-2);
+    background-image: var(--icon-cash);
+    background-repeat: repeat;
+    --size: 50px;
+    background-size: var(--size) var(--size);
+}
+
+.bg-gradient-color {
+    background: var(--bg-body-gradient-color) !important;
+}
+
+.bg-success {
+    background-color: var(--success-color);
+}
+
+.bg-waiting {
+    background-color: var(--warning-color);
+}
+
+.no-bg {
+    background: none !important;
+}
+
+.bg-form-background,
+.bg-box-background {
+    background-color: var(--bg-box-color);
+}
+
+.bg-input-color {
+    background-color: var(--bg-input-color);
 }
