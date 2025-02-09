@@ -12,8 +12,8 @@
         "ui:add": "cd ./apps/app && npm run ui:add",
         "setup:db": "node ./scripts/setup-db.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
-        "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}'",
-        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
+        "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
+        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && find . -name 'storybook-static' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
     "devDependencies": {
