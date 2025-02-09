@@ -41,7 +41,8 @@
         - [:bangbang: Prerequisites](#bangbang-prerequisites)
     - [:running: Run Locally](#running-run-locally)
         - [Get start](#get-start)
-        - [Backend](#backend)
+        - [Database](#database)
+        - [Build and run](#build-and-run)
     - [:compass: Roadmap](#compass-roadmap)
     - [:warning: License](#warning-license)
     - [:link: Useful links](#link-useful-links)
@@ -114,12 +115,8 @@ To get a local copy up and running, please follow these simple steps.
 
 This project uses:
 
-- [Node.js](https://nodejs.org/en/download/package-manager)
-- [Docker](https://docs.docker.com/get-started/get-docker/)
-
-    - Requires Docker and Docker Compose to be installed, up, and running on the machine.
-
-- [PostgreSQL](https://www.postgresql.org/)
+- [Node.js](https://nodejs.org/en/download/package-manager) (>= 18.x)
+- [Docker](https://docs.docker.com/get-started/get-docker/) - to run PostgreSQL
 
 <!-- Run Locally -->
 
@@ -160,6 +157,8 @@ This project uses:
     ```
 
 ### Database
+
+> Docker and Docker Compose must be installed, up, and running on the machine.
 
 Run `setup-db` file
 
