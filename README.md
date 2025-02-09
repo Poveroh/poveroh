@@ -127,7 +127,7 @@ This project uses:
 1. Clone the project
 
     ```bash
-    git clone https://github.com/DavideTarditi/poveroh.git
+    git clone https://github.com/Poveroh/poveroh.git
     ```
 
 2. Go to the project folder
