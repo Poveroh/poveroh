@@ -9,7 +9,7 @@ import userRoutes from './routes/user'
 import bankAccountRoutes from './routes/bankaccount'
 
 const app = express()
-const port = process.env.API_PORT || 4201
+const port = process.env.API_PORT || 3001
 
 dotenv.config()
 
