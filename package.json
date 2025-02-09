@@ -6,7 +6,7 @@
         "build:storybook": "turbo build --filter=storybook",
         "lint": "turbo lint",
         "dev": "turbo dev",
-        "dev:storybook": "cd apps/storybook && npm run storybook",
+        "dev:storybook": "turbo dev --filter=storybook",
         "dev:api": "turbo dev --filter=api",
         "dev:app": "turbo dev --filter=app",
         "ui:add": "cd ./apps/app && npm run ui:add",
