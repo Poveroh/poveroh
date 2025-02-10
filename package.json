@@ -3,7 +3,11 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
+        "build:types": "cd packages/types && npm run build",
+        "build:prisma": "cd packages/prisma && npm run build",
         "build:storybook": "turbo build --filter=storybook",
+        "build:api": "turbo build --filter=api",
+        "build:app": "turbo build --filter=app",
         "lint": "turbo lint",
         "dev": "turbo dev",
         "dev:storybook": "turbo dev --filter=storybook",
