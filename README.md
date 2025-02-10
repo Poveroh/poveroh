@@ -85,7 +85,6 @@ In addition to individual transactions and bank account aggregation, the goal is
 - <a href="https://nextjs.org/">Next.js</a>
 - <a href="https://tailwindcss.com/">TailwindCSS</a>
 
-- <a href="https://www.typescriptlang.org/">Typescript</a>
 - <a href="https://nodejs.org/en">Node.js</a>
 - <a href="https://expressjs.com/">Express.js</a>
 - <a href="https://www.prisma.io/">Prisma</a>
