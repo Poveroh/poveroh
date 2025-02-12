@@ -3,7 +3,11 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
+        "build:types": "cd packages/types && npm run build",
+        "build:prisma": "cd packages/prisma && npm run build && prisma generate",
         "build:storybook": "turbo build --filter=storybook",
+        "build:api": "turbo build --filter=api",
+        "build:app": "turbo build --filter=app",
         "lint": "turbo lint",
         "dev": "turbo dev",
         "dev:storybook": "turbo dev --filter=storybook",
@@ -12,8 +16,8 @@
         "ui:add": "cd ./apps/app && npm run ui:add",
         "setup:db": "node ./scripts/setup-db.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
-        "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}'",
-        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' +",
+        "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
+        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && find . -name 'storybook-static' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
     "devDependencies": {

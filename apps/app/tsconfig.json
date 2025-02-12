@@ -1,7 +1,7 @@
 {
     "extends": "@poveroh/typescript-config/nextjs.json",
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "./",
         "paths": {
             "@/*": ["./*"],
             "@poveroh/ui/*": ["../../packages/ui/src/*"],
