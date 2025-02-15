@@ -1,0 +1,175 @@
+{
+    "version": "Version",
+    "modal": {
+        "prefix": {
+            "edit": "Edit"
+        },
+        "delete": {
+            "message": "Are you sure you want to delete this item?",
+            "warning": "The action is irreversible."
+        },
+        "continueInsert": {
+            "label": "Keep adding",
+            "subtitle": "It does not close the modal and allows adding more transactions."
+        }
+    },
+    "messages": {
+        "mandatory": "Mandatory",
+        "selectValue": "Select a value",
+        "errors": {
+            "required": "This field is required",
+            "email": "Enter a valid email address",
+            "minlength": "The input is too short",
+            "maxlength": "The input is too long",
+            "pattern": "Invalid format",
+            "passwordMismatch": "Passwords do not match. Please try again."
+        }
+    },
+    "buttons": {
+        "cancel": "Cancel",
+        "add": {
+            "base": "Add",
+            "import": "Import",
+            "manually": "Add manually"
+        },
+        "save": "Save",
+        "export": {
+            "base": "Export",
+            "all": "Export all",
+            "selected": "Export selected"
+        }
+    },
+    "logout": {
+        "title": "Logout"
+    },
+    "login": {
+        "title": "Login",
+        "subtitle": "Enter your credentials to access the system.",
+        "buttons": {
+            "signIn": "Sign in",
+            "forgotPassword": "Forgot your password?"
+        }
+    },
+    "dashboard": {
+        "totalBalance": "Total balance",
+        "expenses": "Expenses",
+        "income": "Income"
+    },
+    "widget": {
+        "lastTransactions": "Last transactions",
+        "nextPayments": "Next subscription payments",
+        "trend": "Trend"
+    },
+    "settings": {
+        "title": "Settings",
+        "account": {
+            "title": "Account",
+            "personalInfo": {
+                "title": "Personal information",
+                "subtitle": "Edit your personal information.",
+                "form": {
+                    "generalities": {
+                        "title": "Generalities",
+                        "name": "Name",
+                        "surname": "Surname",
+                        "email": {
+                            "label": "E-mail",
+                            "subTitle": "The email change requires logging out."
+                        },
+                        "phone": "Phone",
+                        "messages": {
+                            "success": "User is saved successfully."
+                        }
+                    }
+                }
+            },
+            "security": {
+                "title": "Security",
+                "subtitle": "Update password and protect account.",
+                "form": {
+                    "password": {
+                        "title": "Password",
+                        "oldpassword": "Old password",
+                        "newpassword": "New password",
+                        "confirmPassword": "Confirm password",
+                        "description": "It must contain:<br/> - At least one uppercase letter<br/> - At least one number<br/>- At least 8 characters in length",
+                        "messages": {
+                            "success": "Password is updated successfully"
+                        }
+                    }
+                }
+            }
+        },
+        "manage": {
+            "title": "Manage",
+            "bankAccount": {
+                "title": "Bank accounts",
+                "subtitle": "Manage, add, or edit accounts and networks."
+            },
+            "category": {
+                "title": "Categories & subcategories",
+                "subtitle": "Manage, add, or edit categories and subcategories."
+            },
+            "subscriptions": {
+                "title": "Subscriptions",
+                "subtitle": "Manage, add, or edit templates for subscriptions."
+            }
+        },
+        "system": {
+            "title": "System",
+            "globalPreferences": {
+                "title": "Global preferences",
+                "subtitle": "Set appearance, time zones, and currency."
+            }
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "types": {
+            "internalTransfer": "Internal transfer",
+            "income": "Income",
+            "expenses": "Expenses"
+        }
+    },
+    "subscriptions": {
+        "title": "Subscriptions"
+    },
+    "bankAccounts": {
+        "title": "Bank accounts",
+        "empty": {
+            "title": "It all begins with bank account",
+            "subtitle": "Click the + Add button to create a bank account."
+        },
+        "modal": {
+            "title": "New bank account"
+        },
+        "types": {
+            "online": "Online bank",
+            "bank": "Bank account",
+            "circuit": "Circuit",
+            "deposit": "Deposit account",
+            "broker": "Broker"
+        },
+        "form": {
+            "title": {
+                "label": "Title"
+            },
+            "description": {
+                "label": "Description",
+                "placeholder": "Type a note"
+            },
+            "type": {
+                "label": "Type"
+            },
+            "icon": {
+                "label": "Icon"
+            }
+        }
+    },
+    "investments": {
+        "title": "Investments"
+    },
+    "reports": {
+        "title": "Reports"
+    }
+}

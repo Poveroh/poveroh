@@ -1,15 +1,22 @@
 import '@poveroh/ui/globals.css'
-import { ThemeProviders } from '@/components/themeProvider'
+import { ThemeProviders } from '@/components/providers/themeProvider'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages } from 'next-intl/server'
 
-export default function RootLayout({
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const messages = await getMessages()
+    const locale = await getLocale()
+
     return (
-        <html lang='en' suppressHydrationWarning>
+        <html lang={locale} suppressHydrationWarning>
             <body className='antialiased'>
-                <ThemeProviders>{children}</ThemeProviders>
+                <NextIntlClientProvider messages={messages}>
+                    <ThemeProviders>{children}</ThemeProviders>
+                </NextIntlClientProvider>
             </body>
         </html>
     )
