@@ -1,5 +1,5 @@
 import '@poveroh/ui/globals.css'
-import { ThemeProviders } from '@/components/providers/themeProvider'
+import { ThemeProviders } from '@/providers/themeProvider'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 
