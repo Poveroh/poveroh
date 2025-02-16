@@ -1,6 +1,6 @@
 type LoginLayoutProps = Readonly<{
-    children: React.ReactNode;
-}>;
+    children: React.ReactNode
+}>
 
 export default function DashboardLayout({ children }: LoginLayoutProps) {
     return (
@@ -8,5 +8,5 @@ export default function DashboardLayout({ children }: LoginLayoutProps) {
             <p>dashboard layout</p>
             {children}
         </>
-    );
+    )
 }

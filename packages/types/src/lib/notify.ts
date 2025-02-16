@@ -3,10 +3,10 @@ export enum NotifyStatus {
     SUCCESS,
     WARNING,
     INFO,
-    CUSTOM,
+    CUSTOM
 }
 
 export interface INotifyMessage {
-    status: NotifyStatus;
-    description: string;
+    status: NotifyStatus
+    description: string
 }
