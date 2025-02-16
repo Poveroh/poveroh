@@ -202,18 +202,15 @@ i.danger,
 .danger-all,
 .danger-all p,
 .danger-all > * .danger-all:hover,
-.danger-all:hover > *,
-.danger-btn-outline p {
+.danger-all:hover > * {
     color: var(--danger-color) !important;
 }
 
-.danger-btn-outline {
+.border-danger {
     border: 1px solid var(--danger-color) !important;
-    background: none !important;
 }
 
-.danger-all path,
-.danger-btn-outline path {
+.danger path {
     fill: var(--danger-color) !important;
 }
 
@@ -235,8 +232,7 @@ i.success,
 .success-all,
 .success-all p,
 .success-all > * .success-all:hover,
-.success-all:hover > *,
-.success-btn-outline p {
+.success-all:hover > * {
     color: var(--success-color);
 }
 

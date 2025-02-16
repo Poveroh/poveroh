@@ -15,6 +15,7 @@ import {
 import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import Link from 'next/link'
+import PasswordInput from '@poveroh/ui/components/password'
 
 const loginSchema = z.object({
     email: z.string().nonempty('Email is required').email('Invalid email address'),
@@ -46,45 +47,50 @@ export default function LoginPage() {
             </div>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col space-y-6'>
-                    <FormField
-                        control={form.control}
-                        name='email'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>E-mail</FormLabel>
-                                <FormControl>
-                                    <Input placeholder='example@mail.com' {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col space-y-14'>
+                    <div className='flex flex-col space-y-6'>
+                        <FormField
+                            control={form.control}
+                            name='email'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>E-mail</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder='example@mail.com' {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    <FormField
-                        control={form.control}
-                        name='password'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type='password'
-                                        placeholder='&bull;&bull;&bull;&bull;'
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        <FormField
+                            control={form.control}
+                            name='password'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <PasswordInput
+                                            type='password'
+                                            placeholder='&bull;&bull;&bull;&bull;'
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className='flex flex-col space-y-6'>
+                        <Button type='submit' className='w-full'>
+                            {t('login.buttons.sign_in')}
+                        </Button>
 
-                    <Button type='submit' className='w-full'>
-                        {t('login.buttons.sign_in')}
-                    </Button>
-
-                    <div className='flex justify-end'>
-                        <Link href='/change-password'>{t('login.buttons.forgot_password')}</Link>
+                        <div className='flex justify-end'>
+                            <Link href='/change-password'>
+                                {t('login.buttons.forgot_password')}
+                            </Link>
+                        </div>
                     </div>
                 </form>
             </Form>

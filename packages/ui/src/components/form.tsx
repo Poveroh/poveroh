@@ -126,6 +126,7 @@ const FormControl = React.forwardRef<
             aria-describedby={
                 !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`
             }
+            className={error ? 'border-danger' : undefined}
             aria-invalid={!!error}
             {...props}
         />
