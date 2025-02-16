@@ -152,26 +152,31 @@ html {
 h1 {
     color: var(--text-color);
     font-size: var(--size-headings-h1);
+    font-weight: var(--weight-bold);
 }
 
 h2 {
     color: var(--text-color);
     font-size: var(--size-headings-h2);
+    font-weight: var(--weight-bold);
 }
 
 h3 {
     color: var(--text-color);
     font-size: var(--size-headings-h3);
+    font-weight: var(--weight-bold);
 }
 
 h4 {
     color: var(--text-color);
     font-size: var(--size-headings-h4);
+    font-weight: var(--weight-bold);
 }
 
 h5 {
     color: var(--text-color);
     font-size: var(--size-headings-h5);
+    font-weight: var(--weight-bold);
 }
 
 p,
@@ -187,7 +192,7 @@ p.small {
 }
 
 .sub {
-    color: var(--text-label-color);
+    color: var(--muted-color);
 }
 
 .fc-danger,

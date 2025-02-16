@@ -46,8 +46,8 @@
         "title": "Login",
         "subtitle": "Enter your credentials to access the system.",
         "buttons": {
-            "signIn": "Sign in",
-            "forgotPassword": "Forgot your password?"
+            "sign_in": "Sign in",
+            "forgot_password": "Forgot your password?"
         }
     },
     "dashboard": {
