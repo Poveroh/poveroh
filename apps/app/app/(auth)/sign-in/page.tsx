@@ -16,6 +16,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import Link from 'next/link'
 import PasswordInput from '@poveroh/ui/components/password'
+import { toast } from '@poveroh/ui/components/sonner'
 
 const loginSchema = z.object({
     email: z.string().nonempty('Email is required').email('Invalid email address'),
@@ -27,6 +28,7 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
     const t = useTranslations()
+
     const form = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -35,7 +37,12 @@ export default function LoginPage() {
         }
     })
 
-    const onSubmit = (data: any) => {
+    interface LoginFormData {
+        email: string
+        password: string
+    }
+
+    const onSubmit = (data: LoginFormData) => {
         console.log(data)
     }
 

@@ -1,22 +1,22 @@
 import '@poveroh/ui/globals.css'
-import { ThemeProviders } from '@/providers/themeProvider'
-import { NextIntlClientProvider } from 'next-intl'
-import { getLocale, getMessages } from 'next-intl/server'
+import { Providers } from './providers'
+
+const getFallbackProps = () => ({
+    locale: 'en',
+    direction: 'ltr'
+})
 
 export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode
 }>) {
-    const messages = await getMessages()
-    const locale = await getLocale()
+    const { locale, direction } = await getFallbackProps()
 
     return (
-        <html lang={locale} suppressHydrationWarning>
+        <html lang={locale} dir={direction} suppressHydrationWarning>
             <body className='antialiased'>
-                <NextIntlClientProvider messages={messages}>
-                    <ThemeProviders>{children}</ThemeProviders>
-                </NextIntlClientProvider>
+                <Providers>{children}</Providers>
             </body>
         </html>
     )
