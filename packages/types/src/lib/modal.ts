@@ -1,6 +1,6 @@
-export type ModalTypeAction = 'export' | 'add' | 'edit' | 'delete';
+export type ModalTypeAction = 'export' | 'add' | 'edit' | 'delete'
 
 export interface IModalEmit<T> {
-    action: ModalTypeAction;
-    value: T;
+    action: ModalTypeAction
+    value: T
 }
