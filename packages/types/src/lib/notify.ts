@@ -1,12 +1,1 @@
-export enum NotifyStatus {
-    ERROR,
-    SUCCESS,
-    WARNING,
-    INFO,
-    CUSTOM,
-}
-
-export interface INotifyMessage {
-    status: NotifyStatus;
-    description: string;
-}
+export type NotifcationStatus = 'error' | 'success' | 'warning' | 'info' | 'custom'

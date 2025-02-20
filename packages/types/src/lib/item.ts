@@ -3,6 +3,6 @@
  * These objects must have a `label` (for display) and a `value` (the actual data).
  */
 export interface IItem {
-    label: string;
-    value: any;
+    label: string
+    value: any
 }

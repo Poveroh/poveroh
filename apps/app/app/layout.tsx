@@ -1,15 +1,22 @@
 import '@poveroh/ui/globals.css'
-import { ThemeProviders } from '@/components/themeProvider'
+import { Providers } from './providers'
 
-export default function RootLayout({
+const getFallbackProps = () => ({
+    locale: 'en',
+    direction: 'ltr'
+})
+
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const { locale, direction } = await getFallbackProps()
+
     return (
-        <html lang='en' suppressHydrationWarning>
+        <html lang={locale} dir={direction} suppressHydrationWarning>
             <body className='antialiased'>
-                <ThemeProviders>{children}</ThemeProviders>
+                <Providers>{children}</Providers>
             </body>
         </html>
     )

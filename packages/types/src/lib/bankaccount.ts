@@ -1,10 +1,10 @@
 export interface IBankAccount {
-    id: string;
-    title: string;
-    description: string;
-    type: BankAccountType;
-    logo_icon: string;
-    created_at: string;
+    id: string
+    title: string
+    description: string
+    type: BankAccountType
+    logo_icon: string
+    created_at: string
 }
 
 export enum BankAccountType {
@@ -12,5 +12,5 @@ export enum BankAccountType {
     BANK_ACCOUNT = 'BANK_ACCOUNT',
     DEPOSIT_BANK = 'DEPOSIT_BANK',
     CIRCUIT = 'CIRCUIT',
-    BROKER = 'BROKER',
+    BROKER = 'BROKER'
 }

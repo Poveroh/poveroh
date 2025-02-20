@@ -73,5 +73,5 @@ export enum FieldType {
     /**
      * A field that allows the user to upload files.
      */
-    UPLOAD = 'file',
+    UPLOAD = 'file'
 }

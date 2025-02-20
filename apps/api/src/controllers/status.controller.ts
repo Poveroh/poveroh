@@ -1,19 +1,19 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express'
 
 export class StatusController {
     static async isAlive(req: Request, res: Response) {
         try {
             res.json({
-                status: "ok",
+                status: 'ok',
                 uptime: process.uptime(),
-                timestamp: new Date(),
-            });
+                timestamp: new Date()
+            })
         } catch (error: any) {
-            console.log(error);
+            console.log(error)
             res.status(500).json({
-                message: "An error occurred during login",
-                error: error.message,
-            });
+                message: 'An error occurred during login',
+                error: error.message
+            })
         }
     }
 }

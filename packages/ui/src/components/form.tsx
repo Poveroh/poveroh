@@ -14,6 +14,12 @@ import {
 
 import { cn } from '@poveroh/ui/lib/utils'
 import { Label } from '@poveroh/ui/components/label'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from '@poveroh/ui/components/tooltip'
 
 const Form = FormProvider
 
@@ -85,15 +91,24 @@ const FormLabel = React.forwardRef<
     React.ElementRef<typeof LabelPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => {
-    const { error, formItemId } = useFormField()
+    const { formItemId } = useFormField()
 
     return (
-        <Label
-            ref={ref}
-            className={cn(error && 'text-destructive', className)}
-            htmlFor={formItemId}
-            {...props}
-        />
+        <>
+            <div className='flex flex-row space-x-2'>
+                <Label ref={ref} className={cn(className)} htmlFor={formItemId} {...props} />
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <p className='danger cursor-pointer'>*</p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Mandatory</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+        </>
     )
 })
 FormLabel.displayName = 'FormLabel'
@@ -111,6 +126,7 @@ const FormControl = React.forwardRef<
             aria-describedby={
                 !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`
             }
+            className={error ? 'border-danger' : undefined}
             aria-invalid={!!error}
             {...props}
         />
@@ -128,7 +144,7 @@ const FormDescription = React.forwardRef<
         <p
             ref={ref}
             id={formDescriptionId}
-            className={cn('text-sm text-muted-foreground', className)}
+            className={cn('text-base text-muted-foreground', className)}
             {...props}
         />
     )
@@ -150,7 +166,7 @@ const FormMessage = React.forwardRef<
         <p
             ref={ref}
             id={formMessageId}
-            className={cn('text-sm font-medium text-destructive', className)}
+            className={cn('text-base font-medium text-danger', className)}
             {...props}
         >
             {body}

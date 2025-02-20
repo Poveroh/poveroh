@@ -1,6 +1,6 @@
-import { IItem } from "./item"
+import { IItem } from './item'
 
 export const currencyCatalog: IItem[] = [
     { value: 'eur', label: 'EUR' },
-    { value: 'usd', label: 'USD' },
-];
+    { value: 'usd', label: 'USD' }
+]

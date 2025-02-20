@@ -1,7 +1,7 @@
 {
     "extends": "@poveroh/typescript-config/nextjs.json",
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "./",
         "paths": {
             "@/*": ["./*"],
             "@poveroh/ui/*": ["../../packages/ui/src/*"],
@@ -13,6 +13,6 @@
             }
         ]
     },
-    "include": ["next-env.d.ts", "next.config.mjs", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "include": ["next-env.d.ts", "next.config.js", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
     "exclude": ["node_modules"]
 }
