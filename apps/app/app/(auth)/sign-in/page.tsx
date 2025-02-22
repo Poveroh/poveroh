@@ -16,7 +16,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import Link from 'next/link'
 import PasswordInput from '@poveroh/ui/components/password'
-import { toast } from '@poveroh/ui/components/sonner'
+import { signIn } from '@/lib/auth/auth'
 
 const loginSchema = z.object({
     email: z.string().nonempty('Email is required').email('Invalid email address'),
@@ -43,6 +43,7 @@ export default function LoginPage() {
     }
 
     const onSubmit = (data: LoginFormData) => {
+        signIn(data)
         console.log(data)
     }
 
