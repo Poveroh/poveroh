@@ -189,8 +189,8 @@ The command will execute the following steps:
     >
     > If problem persists:
     >
-    > - Go in `packages/types` folder and run `npm run build`;
-    > - Go in `packages/prisma` folder and run `npm run build`;
+    > - Run `npm run build:types`;
+    > - Run `npm run build:prisma`;
     >
     > Then, in the root folder, rerun the build to compile the project.
 
