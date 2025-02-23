@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true
+    },
+    "tasks": [
+        {
+            "label": "Launch Development terminals",
+            "dependsOn": ["Web App(3000)"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Web App(3000)",
+            "type": "shell",
+            "command": "cd apps/app && npm run dev",
+            "isBackground": false,
+            "problemMatcher": []
+        }
+    ]
+}

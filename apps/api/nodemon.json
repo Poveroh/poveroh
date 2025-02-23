@@ -1,8 +1,6 @@
 {
-    "watch": [
-        "src"
-    ],
+    "watch": ["src"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "ts-node ./src/index.ts"
+    "exec": "node --inspect=9229 -r ts-node/register ./src/index.ts"
 }

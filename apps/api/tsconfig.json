@@ -12,7 +12,7 @@
         "paths": {
             "@/*": ["./*"],
             "@poveroh/prisma/*": ["../../packages/prisma/src/*"],
-            "@poveroh/types/*": ["../../packages/types/src/*"]
+            "@poveroh/types/*": ["../../packages/types/*"]
         }
     },
     "include": ["src", "types"]
