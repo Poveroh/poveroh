@@ -1,3 +1,3 @@
-# `@poveroh/typescript-config`
+# `@poveroh/tsconfig`
 
 Shared typescript configuration for the workspace.
