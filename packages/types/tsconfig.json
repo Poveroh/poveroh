@@ -1,20 +1,12 @@
 {
+    "extends": "@poveroh/tsconfig/base.json",
     "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
+        "baseUrl": ".",
+        "outDir": "dist",
         "paths": {
-            "@poveroh/types/*": ["./dist/index.js"]
+            "*": ["*", "*.d.ts"]
         }
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist"]
+    "include": ["."],
+    "exclude": ["dist", "build", "node_modules"]
 }
