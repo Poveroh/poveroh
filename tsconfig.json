@@ -1,4 +1,4 @@
 {
-  "extends": "@poveroh/typescript-config/base.json"
+  "extends": "@poveroh/tsconfig/base.json"
 }
 

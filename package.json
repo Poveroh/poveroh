@@ -2,7 +2,7 @@
     "name": "poveroh",
     "private": true,
     "scripts": {
-        "build": "turbo build",
+        "build": "npm run build:prisma && turbo build",
         "build:types": "cd packages/types && npm run build",
         "build:prisma": "cd packages/prisma && npm run build",
         "build:storybook": "turbo build --filter=storybook",
@@ -17,14 +17,15 @@
         "ui:add": "cd ./apps/app && npm run ui:add",
         "setup:db": "node ./scripts/setup-db.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
+        "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
-        "clean:build": "find . -name 'dist' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && find . -name 'storybook-static' -type d -prune -exec rm -rf '{}' +",
+        "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name 'storybook-static' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
         "clean:turbo": "find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
     "devDependencies": {
         "@poveroh/eslint-config": "*",
-        "@poveroh/typescript-config": "*",
+        "@poveroh/tsconfig": "*",
         "@types/cookie-parser": "^1.4.8",
         "@types/jsonwebtoken": "^9.0.8",
         "@types/next": "^8.0.7",
@@ -43,10 +44,12 @@
     ],
     "dependencies": {
         "@poveroh/prisma": "^1.0.0",
+        "@poveroh/types": "^0.0.0",
         "@types/cors": "^2.8.17",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "jsonwebtoken": "^9.0.2",
+        "swr": "^2.3.2",
         "ua-parser-js": "^2.0.1"
     }
 }
