@@ -2,9 +2,11 @@
     "name": "poveroh",
     "private": true,
     "scripts": {
-        "build": "npm run build:prisma && turbo build",
+        "build": "npm run build:packages && turbo build",
+        "build:packages": "npm run build:types && npm run build:prisma && npm run build:utils",
         "build:types": "cd packages/types && npm run build",
         "build:prisma": "cd packages/prisma && npm run build",
+        "build:utils": "cd packages/utils && npm run build",
         "build:storybook": "turbo build --filter=storybook",
         "build:api": "turbo build --filter=api",
         "build:app": "turbo build --filter=app",
@@ -49,6 +51,7 @@
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "jsonwebtoken": "^9.0.2",
+        "lodash": "^4.17.21",
         "swr": "^2.3.2",
         "ua-parser-js": "^2.0.1"
     }

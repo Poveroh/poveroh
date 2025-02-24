@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import * as process from 'node:process'
-
-export const JWT_SECRET = process.env.JWT as string
+import { JWT_SECRET } from '..'
 
 export class AuthMiddleware {
     static isAuthenticated(req: Request, res: Response, next: NextFunction) {
