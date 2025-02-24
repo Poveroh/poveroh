@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import jwt from 'jsonwebtoken'
-import { JWT_SECRET } from '../middleware/auth.middleware'
 import { UAParser } from 'ua-parser-js'
+import { JWT_SECRET } from '..'
 
 export class AuthController {
-    static async login(req: Request, res: Response) {
+    static async signIn(req: Request, res: Response) {
         try {
             const { email, password } = req.body
 

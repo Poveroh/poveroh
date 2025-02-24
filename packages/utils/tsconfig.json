@@ -1,0 +1,13 @@
+{
+    "extends": "@poveroh/tsconfig/base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "dist",
+        "paths": {
+            "*": ["*", "*.d.ts"],
+            "@poveroh/types/*": ["../packages/types/*"]
+        }
+    },
+    "include": ["."],
+    "exclude": ["dist", "build", "node_modules"]
+}

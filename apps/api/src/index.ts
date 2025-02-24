@@ -9,9 +9,11 @@ import userRoutes from './routes/user'
 import bankAccountRoutes from './routes/bankaccount'
 
 const app = express()
-const port = process.env.API_PORT || 3001
+dotenv.config({ path: '../../.env' })
 
-dotenv.config()
+const port = (process.env.API_PORT as string) || 3001
+
+export const JWT_SECRET = process.env.JWT_KEY as string
 
 app.set('trust proxy', true)
 app.use(express.json())
