@@ -207,7 +207,7 @@ The command will execute the following steps:
 
 In running order:
 
-- [ ] Login
+- [x] Login
 - [ ] Categories & subcategories
 - [ ] Bank accounts
 - [ ] Transaction

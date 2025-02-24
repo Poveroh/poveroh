@@ -16,7 +16,9 @@ import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import Link from 'next/link'
 import PasswordInput from '@poveroh/ui/components/password'
-import { signIn } from '@/lib/auth/auth'
+import { AuthService } from '@/services/auth.service'
+
+const authService = new AuthService()
 
 const loginSchema = z.object({
     email: z.string().nonempty('Email is required').email('Invalid email address'),
@@ -37,16 +39,6 @@ export default function LoginPage() {
         }
     })
 
-    interface LoginFormData {
-        email: string
-        password: string
-    }
-
-    const onSubmit = (data: LoginFormData) => {
-        signIn(data)
-        console.log(data)
-    }
-
     return (
         <div className='flex flex-col space-y-14 w-[500px]'>
             <div className='flex flex-col space-y-3'>
@@ -55,7 +47,10 @@ export default function LoginPage() {
             </div>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col space-y-14'>
+                <form
+                    onSubmit={form.handleSubmit(authService.signIn)}
+                    className='flex flex-col space-y-14'
+                >
                     <div className='flex flex-col space-y-6'>
                         <FormField
                             control={form.control}

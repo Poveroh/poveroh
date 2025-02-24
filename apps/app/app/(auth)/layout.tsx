@@ -11,7 +11,7 @@ export default function LoginLayout({ children }: LoginLayoutProps) {
             <div className='flex h-screen'>
                 <div className='flex flex-col w-1/2 h-full p-12'>
                     <div className='flex flex-col h-full'>
-                        <Link href='/'>
+                        <Link href='/sign-in'>
                             <Logo color='white' mode='horizontal' width={120} height={50}></Logo>
                         </Link>
                         <div className='flex items-center flex-1'>{children}</div>
