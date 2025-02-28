@@ -28,7 +28,7 @@
 
 <!-- About the Project -->
 
-# :star2: About the Project
+## :star2: About the Project
 
 <div align="center"> 
   <img src="./assets/dashboard_screenshot.jpg" alt="screenshot" />
@@ -36,7 +36,7 @@
 
 Poveroh is an open-source, web-based platform for tracking personal finances.
 
-## Why?
+### Why?
 
 This platform was born from the desire to track personal finances in a detailed and structured way.
 
@@ -44,7 +44,7 @@ Ok, there are thousands of similar applications out there, but none of them trul
 
 Currently, I track my finances using a Google Spreadsheet. This platform is essentially the web version of that spreadsheet (with some cool features to make everything more user-friendly).
 
-## How it works?
+### How it works?
 
 The platform aggregates multiple bank accounts.
 
@@ -58,7 +58,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 <!-- TechStack -->
 
-# :space_invader: Tech Stack
+## :space_invader: Tech Stack
 
 - <a href="https://www.typescriptlang.org/">Typescript</a>
 - <a href="https://nextjs.org/">Next.js</a>
@@ -89,7 +89,7 @@ To get a local copy up and running, please follow these simple steps.
 
 <!-- Prerequisites -->
 
-## :bangbang: Prerequisites
+### :bangbang: Prerequisites
 
 This project uses:
 
@@ -99,9 +99,9 @@ This project uses:
 
 <!-- Run Locally -->
 
-# :running: Run Locally
+## :running: Run Locally
 
-## Get start
+### Get start
 
 1. Clone the project
 
@@ -123,7 +123,7 @@ This project uses:
 
 4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
-## Setup Database
+### Setup Database
 
 > Docker and Docker Compose must be installed, up, and running on the machine.
 
@@ -145,7 +145,7 @@ This project uses:
 
 2. Create a user: open a browser to http://localhost:5555 and fill out filds `name`, `surname`, `email` and `password` (password must encrypt with [BCrypt](https://bcrypt-generator.com/)).
 
-## Build and run
+### Build and run
 
 1. Build project
 
@@ -159,9 +159,9 @@ This project uses:
     npm run dev
     ```
 
-# Deployment
+## Deployment
 
-## Docker
+### Docker
 
 1. First of all, run only [Get start](#get-start) step to download and setup.
 
@@ -171,25 +171,15 @@ This project uses:
     npm run docker
     ```
 
-# Contribuite
+## Contribuite
 
-Questa segue l'approccio [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+This repository follows the [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) approach.
 
-The development branch is `dev` and production branch is `main`.
+The development branch is `dev`, while the production branch is `main`.
 
-To develop locally:
+For more info, read the [docs](CONTRIBUTING.md).
 
-1. [Fork](https://github.com/Poveroh/poveroh/fork/) this repository and then [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) it to your local device.
-2. Create a new branch:
-    ```bash
-    git checkout -b <feature>/BRANCH_NAME
-    ```
-3. Install dependencies
-    ```bash
-    npm install
-    ```
-4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
-5. <!-- Roadmap -->
+<!-- Roadmap -->
 
 ## :compass: Roadmap
 
