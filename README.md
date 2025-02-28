@@ -159,7 +159,7 @@ This project uses:
     npm run dev
     ```
 
-## Deployment
+## :rocket: Deployment
 
 ### Docker
 
@@ -171,7 +171,7 @@ This project uses:
     npm run docker
     ```
 
-## Contribuite
+## :handshake: Contribuite
 
 This repository follows the [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) approach.
 

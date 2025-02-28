@@ -48,8 +48,9 @@ The development branch is `dev`, while the production branch is `main`.
     - Generate the Prisma client.
     - Apply any pending migrations to the database using Prisma.
 
-    > **⚠️ Warning:**  
-    >  If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
+    > **⚠️ Warning:**
+
+    > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
 2. Create a user: open a browser to http://localhost:5555 and fill out filds `name`, `surname`, `email` and `password` (password must encrypt with [BCrypt](https://bcrypt-generator.com/)).
 
@@ -149,6 +150,6 @@ npm run format
 
 To lint and format your code:
 
-    ```bash
-    npm run format
-    ```
+```bash
+npm run format
+```
