@@ -1,21 +1,21 @@
 ### Database
 
-1. Go to docker folder
+1. Build and run docker database
+
+    ```bash
+    npm run docker:db
+    ```
+
+2. Build and run docker prisma studio
+
+    ```bash
+    npm run docker:studio
+    ```
+
+3. Go to prisma folder
 
     ```bash
     cd packages/prisma
-    ```
-
-2. Build docker file
-
-    ```bash
-    docker build -f db.dockerfile -t poveroh-db .
-    ```
-
-3. Run images
-
-    ```bash
-    docker compose up -d
     ```
 
 4. Generate client
