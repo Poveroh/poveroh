@@ -11,7 +11,6 @@ The development branch is `dev`, while the production branch is `main`.
     ```bash
     git checkout -b <feature_or_fix_or_else>/BRANCH_NAME
     ```
-   
 3. Clone the project
 
     ```bash
