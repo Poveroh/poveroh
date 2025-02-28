@@ -20,18 +20,20 @@
         "setup:db": "node ./scripts/setup-db.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
         "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
+        "prisma:studio": "cd ./packages/prisma && npx prisma studio",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
         "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name 'storybook-static' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
         "clean:turbo": "find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+        "clean:env": "find . -name '.env' -type f -exec rm -f {} +",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "docker:db": "npm run docker:create-network && docker compose up -d --build db && docker compose up -d db",
+        "docker:api": "npm run docker:create-network && docker compose up -d --build api && docker compose up -d api",
+        "docker:app": "npm run docker:create-network && docker compose up -d --build app && docker compose up -d app",
+        "docker:studio": "npm run docker:create-network && docker compose up -d --build studio && docker compose up -d studio",
+        "docker": "npm run docker:create-network && docker compose up -d --build && docker compose up -d",
+        "docker:create-network": "docker network create poveroh_network || true"
     },
     "devDependencies": {
-        "@poveroh/eslint-config": "*",
-        "@poveroh/tsconfig": "*",
-        "@types/cookie-parser": "^1.4.8",
-        "@types/jsonwebtoken": "^9.0.8",
-        "@types/next": "^8.0.7",
-        "@types/ua-parser-js": "^0.7.39",
         "prettier": "^3.2.5",
         "turbo": "^2.3.0",
         "typescript": "5.5.4"
@@ -45,14 +47,8 @@
         "packages/*"
     ],
     "dependencies": {
-        "@poveroh/prisma": "^1.0.0",
-        "@poveroh/types": "^0.0.0",
-        "@types/cors": "^2.8.17",
-        "cookie-parser": "^1.4.7",
-        "cors": "^2.8.5",
-        "jsonwebtoken": "^9.0.2",
-        "lodash": "^4.17.21",
-        "swr": "^2.3.2",
-        "ua-parser-js": "^2.0.1"
+        "prettier": "^3.2.5",
+        "turbo": "^2.3.0",
+        "typescript": "5.5.4"
     }
 }

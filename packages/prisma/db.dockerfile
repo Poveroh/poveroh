@@ -1,4 +1,5 @@
 FROM postgres:latest
 
-# Expose the default PostgreSQL port
+VOLUME /var/lib/postgresql/data
+
 EXPOSE 5432

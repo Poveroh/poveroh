@@ -1,0 +1,79 @@
+volumes:
+    database-data:
+
+networks:
+    poveroh_network:
+        external: true
+
+services:
+    db:
+        container_name: db
+        build:
+            context: .
+            dockerfile: ./packages/prisma/db.dockerfile
+        restart: always
+        env_file: .env
+        ports:
+            - '5432:5432'
+        volumes:
+            - database-data:/var/lib/postgresql/data
+        networks:
+            - poveroh_network
+
+    studio:
+        container_name: studio
+        build:
+            context: .
+            dockerfile: ./packages/prisma/studio.dockerfile
+            args:
+                DATABASE_URL: ${DATABASE_URL}
+        restart: always
+        env_file: .env
+        environment:
+            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
+        ports:
+            - '5555:5555'
+        networks:
+            - poveroh_network
+
+    api:
+        container_name: api
+        build:
+            context: .
+            dockerfile: ./apps/api/Dockerfile
+            args:
+                API_PORT: ${API_PORT}
+                JWT_KEY: ${JWT_KEY}
+                DATABASE_URL: ${DATABASE_URL}
+        restart: always
+        env_file: .env
+        environment:
+            - API_PORT=${API_PORT}
+            - JWT_KEY=${JWT_KEY}
+            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
+        ports:
+            - 3001:3001
+        networks:
+            - poveroh_network
+        depends_on:
+            - db
+
+    app:
+        container_name: app
+        build:
+            context: .
+            dockerfile: ./apps/app/Dockerfile
+            args:
+                NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        restart: always
+        env_file: .env
+        environment:
+            - NODE_ENV=production
+            - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        ports:
+            - 3000:3000
+        networks:
+            - poveroh_network
+        depends_on:
+            - api
+

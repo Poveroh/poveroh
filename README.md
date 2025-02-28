@@ -26,30 +26,9 @@
 
 <hr />
 
-<!-- Table of Contents -->
-
-## :notebook_with_decorative_cover: Table of Contents
-
-- [Poveroh](#poveroh) - [A unified platform to track your wealth.](#a-unified-platform-to-track-your-wealth)
-    - [:notebook_with_decorative_cover: Table of Contents](#notebook_with_decorative_cover-table-of-contents)
-    - [:star2: About the Project](#star2-about-the-project)
-        - [Why?](#why)
-        - [How it works?](#how-it-works)
-        - [:space_invader: Tech Stack](#space_invader-tech-stack)
-        - [:art: Color Reference](#art-color-reference)
-    - [:toolbox: Getting Started](#toolbox-getting-started)
-        - [:bangbang: Prerequisites](#bangbang-prerequisites)
-    - [:running: Run Locally](#running-run-locally)
-        - [Get start](#get-start)
-        - [Database](#database)
-        - [Build and run](#build-and-run)
-    - [:compass: Roadmap](#compass-roadmap)
-    - [:warning: License](#warning-license)
-    - [:link: Useful links](#link-useful-links)
-
 <!-- About the Project -->
 
-## :star2: About the Project
+# :star2: About the Project
 
 <div align="center"> 
   <img src="./assets/dashboard_screenshot.jpg" alt="screenshot" />
@@ -57,7 +36,7 @@
 
 Poveroh is an open-source, web-based platform for tracking personal finances.
 
-### Why?
+## Why?
 
 This platform was born from the desire to track personal finances in a detailed and structured way.
 
@@ -65,7 +44,7 @@ Ok, there are thousands of similar applications out there, but none of them trul
 
 Currently, I track my finances using a Google Spreadsheet. This platform is essentially the web version of that spreadsheet (with some cool features to make everything more user-friendly).
 
-### How it works?
+## How it works?
 
 The platform aggregates multiple bank accounts.
 
@@ -79,7 +58,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 <!-- TechStack -->
 
-### :space_invader: Tech Stack
+# :space_invader: Tech Stack
 
 - <a href="https://www.typescriptlang.org/">Typescript</a>
 - <a href="https://nextjs.org/">Next.js</a>
@@ -94,7 +73,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 <!-- Color Reference -->
 
-### :art: Color Reference
+## :art: Color Reference
 
 | Color            | Hex                                                              |
 | ---------------- | ---------------------------------------------------------------- |
@@ -111,18 +90,19 @@ To get a local copy up and running, please follow these simple steps.
 
 <!-- Prerequisites -->
 
-### :bangbang: Prerequisites
+## :bangbang: Prerequisites
 
 This project uses:
 
 - [Node.js](https://nodejs.org/en/download/package-manager) (>= 18.x)
 - [Docker](https://docs.docker.com/get-started/get-docker/) - to run PostgreSQL
+- NPM - _recommended_
 
 <!-- Run Locally -->
 
-## :running: Run Locally
+# :running: Run Locally
 
-### Get start
+## Get start
 
 1. Clone the project
 
@@ -142,58 +122,37 @@ This project uses:
     npm install
     ```
 
-4. Copy `.env` file with script below, then edit it with the necessary values
+4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
-    - MacOS/Linux
-
-    ```bash
-    cp .env.example .env
-    ```
-
-    - Windows
-
-    ```bash
-    copy .env.example .env
-    ```
-
-### Database
+## Setup Database
 
 > Docker and Docker Compose must be installed, up, and running on the machine.
 
-Run `setup-db` file
+1. Run `setup-db` file
 
-```bash
-npm run setup:db
-```
+    ```bash
+    npm run setup:db
+    ```
 
-The command will execute the following steps:
+    The command will execute the following steps:
 
-1. Navigate to the `packages/prisma` directory.
-2. Build a Docker image using the `db.dockerfile` with the tag `poveroh-db`.
-3. Start the Docker containers in the background using Docker Compose.
-4. Generate the Prisma client.
-5. Apply any pending migrations to the database using Prisma.
+    - Create and run database docker image.
+    - Navigate to the `packages/prisma` directory.
+    - Generate the Prisma client.
+    - Apply any pending migrations to the database using Prisma.
 
-> **⚠️ Warning:**  
-> If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
+    > **⚠️ Warning:**  
+    >  If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
-### Build and run
+2. Create a user: open a browser to http://localhost:5555 and fill out filds `name`, `surname`, `email` and `password` (password must encrypt with [BCrypt](https://bcrypt-generator.com/)).
 
-1. In root folder, build project
+## Build and run
+
+1. Build project
 
     ```bash
     npm run build
     ```
-
-    > Since the API and APP use different libraries in the packages folder, a clean build might fail due to the library not being found.
-    > To resolve this, try rerunning `npm run build` a couple of times.
-    >
-    > If problem persists:
-    >
-    > - Run `npm run build:types`;
-    > - Run `npm run build:prisma`;
-    >
-    > Then, in the root folder, rerun the build to compile the project.
 
 2. Run project
 
@@ -201,7 +160,37 @@ The command will execute the following steps:
     npm run dev
     ```
 
-<!-- Roadmap -->
+# Deployment
+
+## Docker
+
+1. First of all, run only [Get start](#get-start) step to download and setup.
+
+2. Then, run:
+
+    ```bash
+    npm run docker
+    ```
+
+# Contribuite
+
+Questa segue l'approccio [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+
+The development branch is `dev` and production branch is `main`.
+
+To develop locally:
+
+1. [Fork](https://github.com/Poveroh/poveroh/fork/) this repository and then [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) it to your local device.
+2. Create a new branch:
+    ```bash
+    git checkout -b <feature>/BRANCH_NAME
+    ```
+3. Install dependencies
+    ```bash
+    npm install
+    ```
+4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
+5. <!-- Roadmap -->
 
 ## :compass: Roadmap
 
