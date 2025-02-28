@@ -5,25 +5,30 @@ const path = require('path')
 // Ensure script runs from project root
 const projectRoot = path.resolve(__dirname, '..')
 const prismaPath = path.join(projectRoot, 'packages/prisma')
-const envFile = path.join(projectRoot, '.env')
-const prismaEnvFile = path.join(prismaPath, '.env')
 
-console.log('🔍 Checking if .env file exists...')
-if (!existsSync(envFile)) {
-    console.error('❌ Error: .env file not found! Please create it before running this script.')
-    process.exit(1)
+const envPaths = {
+    root: path.join(projectRoot, '.env'),
+    example: path.join(projectRoot, '.env.example')
 }
 
-// Copy .env to Prisma folder
-console.log('📄 Copying .env to Prisma folder...')
-copyFileSync(envFile, prismaEnvFile)
-
 try {
-    console.log('🐳 Building Docker image...')
-    execSync('docker build -f db.dockerfile -t poveroh-db .', { stdio: 'inherit', cwd: prismaPath })
+    // Check if .env files exist
+    if (!existsSync(envPaths.root)) {
+        if (!existsSync(envPaths.example)) {
+            throw new Error(
+                '.env.example file not found. Please ensure it exists in the project root.'
+            )
+        }
+
+        console.log('🔧 .env file not found, copying from .env.example with default values..')
+        console.log('📄 Copying .env to Prisma folder...')
+        copyFileSync(envPaths.example, envPaths.root)
+        console.log('✅ Copied .env to project root!')
+    }
 
     console.log('🚀 Starting Docker containers...')
-    execSync('docker compose up -d', { stdio: 'inherit', cwd: prismaPath })
+    execSync('npm run docker:db', { stdio: 'inherit', cwd: projectRoot })
+    execSync('npm run docker:studio', { stdio: 'inherit', cwd: projectRoot })
 
     console.log('⚙️ Generating Prisma client...')
     execSync('npx prisma generate', { stdio: 'inherit', cwd: prismaPath })
