@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 import { UAParser } from 'ua-parser-js'
 import { JWT_SECRET } from '..'
 
@@ -17,10 +18,12 @@ export class AuthController {
             }
 
             const user = await prisma.users.findUnique({
-                where: req.body
+                where: {
+                    email: email
+                }
             })
 
-            if (!user) {
+            if (!user || !(await bcrypt.compare(password, user.password))) {
                 res.status(401).json({ message: 'Invalid credentials' })
                 return
             }
@@ -41,7 +44,7 @@ export class AuthController {
                 }
             })
 
-            const token: string = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+            const token: string = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET || '-', {
                 expiresIn: '24h'
             })
 

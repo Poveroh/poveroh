@@ -13,35 +13,36 @@
     "description": "",
     "dependencies": {
         "@poveroh/eslint-config": "*",
+        "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",
         "@poveroh/types": "*",
-        "@poveroh/prisma": "*",
+        "@prisma/client": "^6.4.1",
         "@types/express": "^5.0.0",
         "@types/node": "^22.13.0",
         "@types/ua-parser-js": "^0.7.39",
+        "bcryptjs": "^3.0.2",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
+        "jsonwebtoken": "^9.0.2",
+        "prisma": "^6.4.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",
-        "ua-parser-js": "^2.0.1",
-        "jsonwebtoken": "^9.0.2",
-        "cors": "^2.8.5",
-        "cookie-parser": "^1.4.7",
-        "@prisma/client": "^6.4.1",
-        "prisma": "^6.4.1"
+        "ua-parser-js": "^2.0.1"
     },
     "devDependencies": {
         "@poveroh/eslint-config": "*",
+        "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",
         "@poveroh/types": "*",
-        "@poveroh/prisma": "*",
-        "@types/cors": "^2.8.17",
+        "@prisma/client": "^6.4.1",
         "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.17",
         "@types/jsonwebtoken": "^9.0.8",
         "@typescript-eslint/eslint-plugin": "^8.22.0",
         "@typescript-eslint/parser": "^8.22.0",
-        "@prisma/client": "^6.4.1",
-        "prisma": "^6.4.1",
-        "nodemon": "^3.1.9"
+        "nodemon": "^3.1.9",
+        "prisma": "^6.4.1"
     }
 }
