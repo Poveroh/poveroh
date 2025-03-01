@@ -13,8 +13,6 @@ dotenv.config({ path: '.env' })
 
 const port = (process.env.API_PORT as string) || 3001
 
-console.log(process.env.DATABASE_URL)
-
 export const JWT_SECRET = process.env.JWT_KEY as string
 
 app.set('trust proxy', true)
