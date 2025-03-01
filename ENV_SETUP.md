@@ -5,8 +5,7 @@ Environment variables are stored in a single file but are divided by application
 For both development and local deployment, copy the `.env.example` file into `.env`.
 All applications retrieve the necessary variables from this file.
 
-There is also a `.env` file inside the `packages/prisma` folder, but it automatically reads from the root `.env`file.
-Do not touch it.
+There are also `.env` files inside `packages/prisma`, `apps/app` and `apps/api` folder that directly link to `.env` file in project root. Do not touch them.
 
 ## Database
 
