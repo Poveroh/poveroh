@@ -7,10 +7,10 @@
 #### A unified platform to track your wealth.
 
 <h4>
-    <a href="https://github.com/DavideTarditi/poveroh/issues/">Report Bug</a>
-  <span> · </span>
-    <a href="https://github.com/DavideTarditi/poveroh/issues/">Request Feature</a>
-  </h4>
+<a href="https://github.com/DavideTarditi/poveroh/issues/">Report Bug</a>
+<span> · </span>
+<a href="https://github.com/DavideTarditi/poveroh/issues/">Request Feature</a>
+</h4>
 
 <div>
 
@@ -140,10 +140,16 @@ This project uses:
     - Generate the Prisma client.
     - Apply any pending migrations to the database using Prisma.
 
-    > **⚠️ Warning:**  
-    >  If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
+    <br>
 
-2. Create a user: open a browser to http://localhost:5555 and fill out filds `name`, `surname`, `email` and `password` (password must encrypt with [BCrypt](https://bcrypt-generator.com/)).
+    > **⚠️ Warning:**  
+    > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
+
+2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
+    - `name`
+    - `surname`
+    - `email`
+    - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) (store this in password field).
 
 ### Build and run
 
