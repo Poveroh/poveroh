@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { AuthService } from './services/auth.service'
 
 export function middleware(request: NextRequest) {
+    const auth = new AuthService()
     const path = request.nextUrl.pathname
 
     const isPublicPath = path == '/sign-in'

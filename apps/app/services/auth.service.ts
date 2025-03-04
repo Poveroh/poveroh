@@ -1,4 +1,4 @@
-import { type IUserLogin, ServerRequest } from '@poveroh/types'
+import { type IUserLogin } from '@poveroh/types'
 import { redirect } from 'next/navigation'
 import { server } from '@/lib/server'
 import { encryptString, isValidEmail } from '@poveroh/utils'
@@ -13,7 +13,7 @@ export class AuthService {
 
         user.password = await encryptString(user.password)
 
-        server.send<boolean>(ServerRequest.POST, '/auth/login', user, 'login').then(() => {
+        server.post<boolean>('/auth/login', user, 'login').then(() => {
             redirect('/dashboard')
         })
     }
@@ -22,11 +22,11 @@ export class AuthService {
         return cookie.has('token')
     }
 
-    logout() {
+    logout(redirectToLogin?: boolean) {
         storage.clear()
 
         cookie.remove('token')
 
-        redirect('/login')
+        if (redirectToLogin) redirect('/login')
     }
 }

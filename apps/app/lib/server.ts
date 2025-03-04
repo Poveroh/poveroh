@@ -1,9 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ServerRequest } from '@poveroh/types'
-import { toast } from '@poveroh/ui/components/sonner'
 
 export const server = {
-    send<T>(type: ServerRequest, url: string, data: any, source: string): Promise<T> {
+    send<T>(type: ServerRequest, url: string, data: any, source?: string): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
             try {
@@ -35,8 +34,18 @@ export const server = {
                     errorMessage = error.message
                 }
 
+                console.log(errorMessage)
+
                 reject(error)
             }
         })
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    post<T>(url: string, data: any, source?: string): Promise<T> {
+        return this.send<T>(ServerRequest.POST, url, data, source)
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get<T>(url: string, data: any, source?: string): Promise<T> {
+        return this.send<T>(ServerRequest.POST, url, data, source)
     }
 }

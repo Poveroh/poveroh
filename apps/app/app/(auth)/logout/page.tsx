@@ -7,7 +7,7 @@ const authService = new AuthService()
 
 export default function LogoutPage() {
     useEffect(() => {
-        authService.logout()
+        authService.logout(true)
     }, [])
 
     return <></>

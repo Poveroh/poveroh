@@ -16,12 +16,17 @@ const defaultUser: IUser = {
     created_at: new Date()
 }
 
-const initialContext = {
+type AppContextType = {
+    user: IUser
+    setUser: (newUser: IUser) => void
+}
+
+const initialContext: AppContextType = {
     user: defaultUser,
     setUser: (newUser: IUser) => {}
 }
 
-const AppContext = createContext(initialContext)
+const AppContext = createContext<AppContextType>(initialContext)
 
 type AppContextProviderProps = {
     children: React.ReactNode
