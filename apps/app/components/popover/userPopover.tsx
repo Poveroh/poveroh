@@ -5,6 +5,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { useUser } from '@/hooks/useUser'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
+import { appConfig } from '@/config'
 
 export function UserPopover() {
     const t = useTranslations()
@@ -40,9 +41,11 @@ export function UserPopover() {
                     </div>
                     <hr />
                     <div className='flex space-x-2'>
-                        <p className='sub small'>Poveroh &#64; {year}</p>
+                        <p className='sub small'>
+                            {appConfig.name} &#64; {year}
+                        </p>
                         <p className='sub small'>&bull;</p>
-                        <p className='sub small'>v{process.env.NEXT_PUBLIC_APP_VERSION}</p>
+                        <p className='sub small'>v{appConfig.version}</p>
                     </div>
                 </div>
             </PopoverContent>

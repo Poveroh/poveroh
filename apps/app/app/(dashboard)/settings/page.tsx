@@ -1,3 +1,4 @@
+import { appConfig } from '@/config'
 import { Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
@@ -83,7 +84,7 @@ function SettingsPage() {
                     ></SettingsCard>
                 </div>
             </div>
-            <p className='sub'>v{process.env.NEXT_PUBLIC_APP_VERSION}</p>
+            <p className='sub'>v{appConfig.version}</p>
         </div>
     )
 }

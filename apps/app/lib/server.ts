@@ -1,18 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ServerRequest } from '@poveroh/types'
+import { appConfig } from '@/config'
 
 export const server = {
     send<T>(type: ServerRequest, url: string, data: any, source?: string): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
             try {
-                url = process.env.NEXT_PUBLIC_API_URL + url
+                const urlToSend = new URL(url, appConfig.apiUrl)
                 switch (type) {
                     case ServerRequest.GET:
-                        res = await axios.get(url)
+                        res = await axios.get(urlToSend.href)
                         break
                     case ServerRequest.POST:
-                        res = await axios.post(url, data, {
+                        res = await axios.post(urlToSend.href, data, {
                             withCredentials: true
                         })
                         break

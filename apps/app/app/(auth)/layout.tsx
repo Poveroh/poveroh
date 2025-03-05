@@ -1,5 +1,14 @@
+import { appConfig } from '@/config'
 import { Logo } from '@poveroh/ui/components/logo'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+    title: {
+        template: '%s | ' + appConfig.name,
+        default: appConfig.name
+    }
+}
 
 type LoginLayoutProps = Readonly<{
     children: React.ReactNode
