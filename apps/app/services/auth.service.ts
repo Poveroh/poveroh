@@ -14,7 +14,7 @@ export class AuthService {
         user.password = await encryptString(user.password)
 
         server.post<boolean>('/auth/login', user, 'login').then(() => {
-            redirect('/dashboard')
+            window.location.href = '/dashboard'
         })
     }
 
@@ -27,6 +27,6 @@ export class AuthService {
 
         cookie.remove('token')
 
-        if (redirectToLogin) redirect('/login')
+        if (redirectToLogin) redirect('/sign-in')
     }
 }

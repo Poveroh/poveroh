@@ -26,7 +26,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         </div>
                     </div>
                     <div className='hidden items-center space-x-6 lg:flex'>
-                        <UserPopover></UserPopover>
+                        <UserPopover />
                     </div>
                 </div>
             </div>

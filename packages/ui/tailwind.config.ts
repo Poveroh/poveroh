@@ -13,6 +13,7 @@ const config = {
             colors: {
                 border: 'var(--border-color)',
                 input: 'var(--input-color)',
+                hr: 'var(--hr-color)',
                 ring: 'var(--ring-color)',
                 box: 'var(--box-color)',
                 background: 'var(--body-color)',

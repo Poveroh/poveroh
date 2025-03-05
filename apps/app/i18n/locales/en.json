@@ -27,6 +27,7 @@
     },
     "buttons": {
         "cancel": "Cancel",
+        "returnHome": "Return home",
         "add": {
             "base": "Add",
             "import": "Import",
@@ -38,6 +39,10 @@
             "all": "Export all",
             "selected": "Export selected"
         }
+    },
+    "notFound": {
+        "title": "Page not found",
+        "description": "The page you're looking for doesn't exist"
     },
     "logout": {
         "title": "Logout"

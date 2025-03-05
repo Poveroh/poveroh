@@ -1,26 +1,20 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { AuthService } from './services/auth.service'
 
 export function middleware(request: NextRequest) {
-    const auth = new AuthService()
     const path = request.nextUrl.pathname
-
-    const isPublicPath = path == '/sign-in'
-
+    const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout']
     const token = request.cookies.get('token')?.value || ''
 
-    if (!token && !isPublicPath) {
+    if (!token && !authPaths.includes(path)) {
         return NextResponse.redirect(new URL('/sign-in', request.url))
     }
 
-    if (token && isPublicPath) {
+    if (token && authPaths.includes(path) && path !== '/logout') {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
-    const response = NextResponse.next()
-    response.headers.set('x-auth', token)
 
-    return response
+    return NextResponse.next()
 }
 
 export const config = {

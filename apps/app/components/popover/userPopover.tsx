@@ -5,11 +5,12 @@ import { Button } from '@poveroh/ui/components/button'
 import { useUser } from '@/hooks/useUser'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
-import { useState } from 'react'
 
 export function UserPopover() {
     const t = useTranslations()
     const { user } = useUser()
+
+    const year = new Date().getFullYear()
 
     return (
         <Popover>
@@ -19,7 +20,7 @@ export function UserPopover() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent align='end'>
-                <div className='flex flex-col space-y-5 w-[200px]'>
+                <div className='flex flex-col space-y-5'>
                     <div className='space-y-2'>
                         <p className='font-bold'>
                             {user.name} {user.surname}
@@ -39,9 +40,9 @@ export function UserPopover() {
                     </div>
                     <hr />
                     <div className='flex space-x-2'>
-                        <p className='sub small'>Poveroh &#64; 2024</p>
+                        <p className='sub small'>Poveroh &#64; {year}</p>
                         <p className='sub small'>&bull;</p>
-                        <p className='sub small'>v1.0.0</p>
+                        <p className='sub small'>v{process.env.NEXT_PUBLIC_APP_VERSION}</p>
                     </div>
                 </div>
             </PopoverContent>
