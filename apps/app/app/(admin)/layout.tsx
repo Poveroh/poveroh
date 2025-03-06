@@ -3,9 +3,9 @@ import { Logo } from '@poveroh/ui/components/logo'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
-type AppLayoutProps = Readonly<{
+type AppLayoutProps = {
     children: React.ReactNode
-}>
+}
 
 export default function AppLayout({ children }: AppLayoutProps) {
     const t = useTranslations()

@@ -6,11 +6,11 @@ const getFallbackProps = () => ({
     direction: 'ltr'
 })
 
-export default async function RootLayout({
-    children
-}: Readonly<{
+type RootLayoutProps = Readonly<{
     children: React.ReactNode
-}>) {
+}>
+
+export default async function RootLayout({ children }: RootLayoutProps) {
     const { locale, direction } = await getFallbackProps()
 
     return (
