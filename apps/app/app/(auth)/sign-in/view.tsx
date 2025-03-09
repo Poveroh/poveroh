@@ -54,7 +54,7 @@ export default function LoginView() {
     }
 
     return (
-        <div className='flex flex-col space-y-14 w-[500px]'>
+        <div className='flex flex-col space-y-14 w-full lg:w-[500px]'>
             <div className='flex flex-col space-y-3'>
                 <h3>{t('login.title')}</h3>
                 <p className='sub'>{t('login.subtitle')}</p>
