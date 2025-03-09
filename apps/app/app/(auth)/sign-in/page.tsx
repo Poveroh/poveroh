@@ -1,9 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
 import * as z from 'zod'
 import { useTranslations } from 'next-intl'
+
 import {
     Form,
     FormControl,
@@ -14,9 +17,12 @@ import {
 } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
-import Link from 'next/link'
+import { toast } from '@poveroh/ui/components/sonner'
+import { Loader2 } from 'lucide-react'
+
 import PasswordInput from '@poveroh/ui/components/password'
 import { AuthService } from '@/services/auth.service'
+import { IUserLogin } from '@poveroh/types/dist'
 
 const authService = new AuthService()
 
@@ -31,6 +37,8 @@ const loginSchema = z.object({
 export default function LoginPage() {
     const t = useTranslations()
 
+    const [loading, setLoading] = useState(false)
+
     const form = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -38,6 +46,14 @@ export default function LoginPage() {
             password: ''
         }
     })
+
+    const signIn = async (user: IUserLogin) => {
+        setLoading(true)
+        await authService.signIn(user).catch(error => {
+            toast.error(error)
+        })
+        setLoading(false)
+    }
 
     return (
         <div className='flex flex-col space-y-14 w-[500px]'>
@@ -47,10 +63,7 @@ export default function LoginPage() {
             </div>
 
             <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(authService.signIn)}
-                    className='flex flex-col space-y-14'
-                >
+                <form onSubmit={form.handleSubmit(signIn)} className='flex flex-col space-y-14'>
                     <div className='flex flex-col space-y-6'>
                         <FormField
                             control={form.control}
@@ -85,7 +98,8 @@ export default function LoginPage() {
                         />
                     </div>
                     <div className='flex flex-col space-y-6'>
-                        <Button type='submit' className='w-full'>
+                        <Button type='submit' className='w-full' disabled={loading}>
+                            {loading && <Loader2 className='animate-spin' />}
                             {t('login.buttons.sign_in')}
                         </Button>
 

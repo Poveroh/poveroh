@@ -6,16 +6,21 @@ import { cookie, storage } from '@/lib/storage'
 import { isEmpty } from 'lodash'
 
 export class AuthService {
-    async signIn(user: IUserLogin) {
+    async signIn(user: IUserLogin): Promise<boolean> {
         if (!isValidEmail(user.email)) throw new Error('E-mail not valid')
 
         if (isEmpty(user.password)) throw new Error('Password not valid')
 
         user.password = await encryptString(user.password)
 
-        server.post<boolean>('/auth/login', user, 'login').then(() => {
+        const res = await server.post<boolean>('/auth/login', user)
+
+        if (res) {
             window.location.href = '/dashboard'
-        })
+            return true
+        } else {
+            return false
+        }
     }
 
     isAuthenticate() {

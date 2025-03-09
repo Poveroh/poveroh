@@ -3,7 +3,8 @@ import { ServerRequest } from '@poveroh/types'
 import { appConfig } from '@/config'
 
 export const server = {
-    send<T>(type: ServerRequest, url: string, data: any, source?: string): Promise<T> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    send<T>(type: ServerRequest, url: string, data: any): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
             try {
@@ -30,23 +31,21 @@ export const server = {
                 let errorMessage: string = 'Error occurred'
 
                 if (error instanceof AxiosError) {
-                    errorMessage = error.response?.data.message
+                    errorMessage = error.response?.data.message || error.message
                 } else if (error instanceof Error) {
                     errorMessage = error.message
                 }
 
-                console.log(errorMessage)
-
-                reject(error)
+                reject(errorMessage)
             }
         })
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    post<T>(url: string, data: any, source?: string): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data, source)
+    post<T>(url: string, data: any): Promise<T> {
+        return this.send<T>(ServerRequest.POST, url, data)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    get<T>(url: string, data: any, source?: string): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data, source)
+    get<T>(url: string, data: any): Promise<T> {
+        return this.send<T>(ServerRequest.POST, url, data)
     }
 }

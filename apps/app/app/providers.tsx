@@ -11,7 +11,7 @@ export async function Providers({ children }: { children: React.ReactNode }) {
         <NextIntlClientProvider messages={messages}>
             <ThemeProviders>
                 <AppContextProvider>
-                    <Toaster richColors />
+                    <Toaster richColors position='top-center' />
                     {children}
                 </AppContextProvider>
             </ThemeProviders>
