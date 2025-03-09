@@ -18,10 +18,11 @@
         "selectValue": "Select a value",
         "errors": {
             "required": "This field is required",
-            "email": "Enter a valid email address",
+            "email": "Invalid email address",
             "minlength": "The input is too short",
             "maxlength": "The input is too long",
             "pattern": "Invalid format",
+            "passwordAtLeastChar": "Password must be at least {a} characters",
             "passwordMismatch": "Passwords do not match. Please try again."
         }
     },
