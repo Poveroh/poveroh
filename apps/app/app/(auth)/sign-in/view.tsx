@@ -7,14 +7,7 @@ import Link from 'next/link'
 import * as z from 'zod'
 import { useTranslations } from 'next-intl'
 
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from '@poveroh/ui/components/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -91,11 +84,7 @@ export default function LoginView() {
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput
-                                            type='password'
-                                            placeholder='&bull;&bull;&bull;&bull;'
-                                            {...field}
-                                        />
+                                        <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -109,9 +98,7 @@ export default function LoginView() {
                         </Button>
 
                         <div className='flex justify-end'>
-                            <Link href='/change-password'>
-                                {t('login.buttons.forgot_password')}
-                            </Link>
+                            <Link href='/change-password'>{t('login.buttons.forgot_password')}</Link>
                         </div>
                     </div>
                 </form>

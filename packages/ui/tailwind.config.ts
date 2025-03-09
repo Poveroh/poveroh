@@ -3,11 +3,7 @@ import tailwindcssAnimate from 'tailwindcss-animate'
 
 const config = {
     darkMode: ['class'],
-    content: [
-        'app/**/*.{ts,tsx}',
-        'components/**/*.{ts,tsx}',
-        '../../packages/ui/src/components/**/*.{ts,tsx}'
-    ],
+    content: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', '../../packages/ui/src/components/**/*.{ts,tsx}'],
     theme: {
         extend: {
             fontSize: {

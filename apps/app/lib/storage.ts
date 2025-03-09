@@ -5,12 +5,7 @@ export const storage = {
     set: (key: string, value: object | string | boolean): void => {
         if (typeof window === 'undefined' || !key || value === undefined) return
 
-        const tempValue =
-            typeof value === 'string' || typeof value === 'boolean'
-                ? value.toString()
-                : isEmpty(value)
-                  ? undefined
-                  : JSON.stringify(value)
+        const tempValue = typeof value === 'string' || typeof value === 'boolean' ? value.toString() : isEmpty(value) ? undefined : JSON.stringify(value)
 
         if (tempValue) window.localStorage.setItem(key, tempValue)
     },
@@ -35,17 +30,10 @@ export const storage = {
 }
 
 export const cookie = {
-    set: (
-        key: string,
-        value: object | string | boolean,
-        options?: Cookies.CookieAttributes
-    ): void => {
+    set: (key: string, value: object | string | boolean, options?: Cookies.CookieAttributes): void => {
         if (typeof document === 'undefined' || !key || value === undefined) return
 
-        const tempValue =
-            typeof value === 'string' || typeof value === 'boolean'
-                ? value.toString()
-                : JSON.stringify(value)
+        const tempValue = typeof value === 'string' || typeof value === 'boolean' ? value.toString() : JSON.stringify(value)
 
         Cookies.set(key, tempValue, options)
     },

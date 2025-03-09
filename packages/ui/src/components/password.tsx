@@ -9,13 +9,7 @@ export default function PasswordInput(props: any) {
     return (
         <div className='relative w-full'>
             <Input {...props} type={showPassword ? 'text' : 'password'} autoComplete='password' />
-            <Button
-                type='button'
-                variant='ghost'
-                size='icon'
-                onClick={() => setShowPassword(!showPassword)}
-                className='absolute right-2 top-1/2 -translate-y-1/2'
-            >
+            <Button type='button' variant='ghost' size='icon' onClick={() => setShowPassword(!showPassword)} className='absolute right-2 top-1/2 -translate-y-1/2'>
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </Button>
         </div>
