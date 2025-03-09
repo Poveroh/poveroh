@@ -10,6 +10,9 @@ const config = {
     ],
     theme: {
         extend: {
+            fontSize: {
+                base: ['var(--size-p-default)', 'normal']
+            },
             colors: {
                 border: 'var(--border-color)',
                 input: 'var(--input-color)',

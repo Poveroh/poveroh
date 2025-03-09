@@ -66,9 +66,9 @@
     /* ---- font family and size ---- */
     --font-family: 'Inter', Arial, sans-serif;
     --size-base: 14px;
-    --size-p-default: 1.07rem;
+    --size-p-default: 1rem;
     --size-p-small: 0.85rem;
-    --size-p-xs-small: 0756rem;
+    --size-p-xs-small: 0.756rem;
     --size-headings-h1: 3.21rem;
     --size-headings-h2: 2.5rem;
     --size-headings-h3: 1.78rem;
@@ -177,7 +177,8 @@ h5 {
 }
 
 p,
-label {
+label,
+span {
     color: var(--text-color);
     font-size: var(--size-p-default);
     margin: 0;

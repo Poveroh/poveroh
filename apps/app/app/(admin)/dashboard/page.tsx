@@ -1,7 +1,5 @@
 'use client'
 
-const DashBoardPage = () => {
+export default function DashBoardPage() {
     return <p>dashboard</p>
 }
-
-export default DashBoardPage

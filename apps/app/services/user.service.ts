@@ -1,6 +1,6 @@
 import { server } from '@/lib/server'
 import { storage } from '@/lib/storage'
-import { IUser } from '@poveroh/types'
+import { IUser, IUserToSave } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils/dist'
 
 export class UserService {
@@ -15,7 +15,7 @@ export class UserService {
         return user
     }
 
-    async save(userToSave: IUser): Promise<boolean> {
+    async save(userToSave: IUserToSave): Promise<boolean> {
         return await server.post<boolean>('/user/save', userToSave)
     }
 

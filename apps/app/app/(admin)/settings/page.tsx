@@ -25,7 +25,7 @@ function SettingsCard(props: SettingsCardType) {
     )
 }
 
-function SettingsPage() {
+export default function SettingsPage() {
     const t = useTranslations()
 
     return (
@@ -37,7 +37,7 @@ function SettingsPage() {
                 <h4>{t('settings.account.title')}</h4>
                 <div className='flex flex-row space-x-5'>
                     <SettingsCard
-                        link='/account/edit'
+                        link='/account/profile'
                         title={t('settings.account.personalInfo.title')}
                         subtitle={t('settings.account.personalInfo.subtitle')}
                         icon={<User />}
@@ -88,5 +88,3 @@ function SettingsPage() {
         </div>
     )
 }
-
-export default SettingsPage
