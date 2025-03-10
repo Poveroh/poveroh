@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
+import bcrypt from 'bcryptjs'
 
 export class UserController {
     static async me(req: Request, res: Response) {
@@ -52,22 +53,31 @@ export class UserController {
 
     static async updatePassword(req: Request, res: Response) {
         try {
-            const { oldpassword, newpassword } = req.body
+            const { oldPassword, newPassword } = req.body
 
             const user = await prisma.users.findUnique({
                 where: { email: req.user.email }
             })
 
-            if (!user || user.password !== oldpassword) {
+            if (!user) {
                 res.status(400).json({
-                    message: 'Invalid old password or user not found'
+                    message: 'User not found'
                 })
                 return
             }
 
+            if (await bcrypt.compare(newPassword, user.password)) {
+                res.status(400).json({
+                    message: 'Password cannot be the same as the old one'
+                })
+                return
+            }
+
+            const newPasswordEncrypted = await bcrypt.hash(newPassword, 12)
+
             await prisma.users.update({
                 where: { email: req.user.email },
-                data: { password: newpassword }
+                data: { password: newPasswordEncrypted }
             })
 
             res.status(200).json({ success: true })

@@ -19,9 +19,10 @@ export class UserService {
         return await server.post<boolean>('/user/save', userToSave)
     }
 
-    async updatePassword(newPassword: string): Promise<boolean> {
+    async updatePassword(oldPassword: string, newPassword: string): Promise<boolean> {
+        oldPassword = await encryptString(oldPassword)
         newPassword = await encryptString(newPassword)
 
-        return await server.post<boolean>('/user/set-password', newPassword)
+        return await server.post<boolean>('/user/set-password', { oldPassword, newPassword })
     }
 }

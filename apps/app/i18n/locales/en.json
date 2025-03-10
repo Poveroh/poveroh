@@ -23,7 +23,8 @@
             "maxlength": "The input is too long",
             "pattern": "Invalid format",
             "passwordAtLeastChar": "Password must be at least {a} characters",
-            "passwordMismatch": "Passwords do not match. Please try again."
+            "passwordMismatch": "Passwords do not match.",
+            "passwordMustBeDifferent": "Passwords must be different with old password."
         }
     },
     "buttons": {
