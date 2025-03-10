@@ -33,11 +33,8 @@
     --ring-color: #fafafa;
 
     --body-color: #1c1c1c;
-    --body-gradient-color: radial-gradient(
-            circle 600px at bottom right,
-            var(--brand-color-2),
-            #1c1c1c00
-        ),
+    --body-gradient-color:
+        radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00),
         radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00),
         var(--body-color);
     --input-color: #313131;
@@ -69,9 +66,9 @@
     /* ---- font family and size ---- */
     --font-family: 'Inter', Arial, sans-serif;
     --size-base: 14px;
-    --size-p-default: 1.07rem;
+    --size-p-default: 1rem;
     --size-p-small: 0.85rem;
-    --size-p-xs-small: 0756rem;
+    --size-p-xs-small: 0.756rem;
     --size-headings-h1: 3.21rem;
     --size-headings-h2: 2.5rem;
     --size-headings-h3: 1.78rem;
@@ -180,7 +177,8 @@ h5 {
 }
 
 p,
-label {
+label,
+span {
     color: var(--text-color);
     font-size: var(--size-p-default);
     margin: 0;
@@ -248,4 +246,14 @@ a {
     height: fit-content;
     position: relative;
     cursor: pointer;
+}
+
+/* STRUCTURE */
+hr {
+    border-color: var(--hr-color);
+}
+
+.nav-app {
+    backdrop-filter: saturate(180%) blur(20px);
+    z-index: 5;
 }

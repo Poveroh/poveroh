@@ -28,6 +28,9 @@ RUN npm ci
 COPY --from=builder /app/out/full/ .
 
 WORKDIR /app
+
+RUN corepack enable
+
 RUN npx turbo build --filter=@poveroh/types
 RUN npx turbo build --filter=@poveroh/utils
 

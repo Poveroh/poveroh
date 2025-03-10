@@ -6,12 +6,5 @@ export type LogoProps = {
 }
 
 export function Logo(props: LogoProps) {
-    return (
-        <img
-            src={`/logo/${props.color}/${props.mode}.svg`}
-            alt='logo'
-            width={props.width}
-            height={props.height}
-        />
-    )
+    return <img src={`/logo/${props.color}/${props.mode}.svg`} alt='logo' width={props.width} height={props.height} />
 }

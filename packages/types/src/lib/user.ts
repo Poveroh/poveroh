@@ -3,10 +3,21 @@ export interface IUserLogin {
     password: string
 }
 
-export interface IUser {
-    id: string
+export interface IUserToSave {
     name: string
     surname: string
     email: string
+}
+
+export interface IUser extends IUserToSave {
+    id: string
     created_at: Date
+}
+
+export const defaultUser: IUser = {
+    id: '',
+    name: '',
+    surname: '',
+    email: '',
+    created_at: new Date()
 }

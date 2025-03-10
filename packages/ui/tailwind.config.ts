@@ -3,16 +3,16 @@ import tailwindcssAnimate from 'tailwindcss-animate'
 
 const config = {
     darkMode: ['class'],
-    content: [
-        'app/**/*.{ts,tsx}',
-        'components/**/*.{ts,tsx}',
-        '../../packages/ui/src/components/**/*.{ts,tsx}'
-    ],
+    content: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', '../../packages/ui/src/components/**/*.{ts,tsx}'],
     theme: {
         extend: {
+            fontSize: {
+                base: ['var(--size-p-default)', 'normal']
+            },
             colors: {
                 border: 'var(--border-color)',
                 input: 'var(--input-color)',
+                hr: 'var(--hr-color)',
                 ring: 'var(--ring-color)',
                 box: 'var(--box-color)',
                 background: 'var(--body-color)',

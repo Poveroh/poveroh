@@ -1,16 +1,24 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
+import { appConfig } from '@/config'
 
 const getFallbackProps = () => ({
     locale: 'en',
     direction: 'ltr'
 })
 
-export default async function RootLayout({
-    children
-}: Readonly<{
+export const metadata = {
+    title: {
+        template: `%s | ${appConfig.name}`,
+        default: appConfig.name
+    }
+}
+
+type RootLayoutProps = Readonly<{
     children: React.ReactNode
-}>) {
+}>
+
+export default async function RootLayout({ children }: RootLayoutProps) {
     const { locale, direction } = await getFallbackProps()
 
     return (

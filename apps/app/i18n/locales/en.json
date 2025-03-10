@@ -18,15 +18,18 @@
         "selectValue": "Select a value",
         "errors": {
             "required": "This field is required",
-            "email": "Enter a valid email address",
+            "email": "Invalid email address",
             "minlength": "The input is too short",
             "maxlength": "The input is too long",
             "pattern": "Invalid format",
-            "passwordMismatch": "Passwords do not match. Please try again."
+            "passwordAtLeastChar": "Password must be at least {a} characters",
+            "passwordMismatch": "Passwords do not match.",
+            "passwordMustBeDifferent": "Passwords must be different with old password."
         }
     },
     "buttons": {
         "cancel": "Cancel",
+        "returnHome": "Return home",
         "add": {
             "base": "Add",
             "import": "Import",
@@ -38,6 +41,10 @@
             "all": "Export all",
             "selected": "Export selected"
         }
+    },
+    "notFound": {
+        "title": "Page not found",
+        "description": "The page you're looking for doesn't exist"
     },
     "logout": {
         "title": "Logout"
