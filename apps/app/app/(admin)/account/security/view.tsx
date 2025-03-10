@@ -8,12 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { UserService } from '@/services/user.service'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { useForm } from 'react-hook-form'
-import { IUserToSave } from '@poveroh/types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { toast } from '@poveroh/ui/components/sonner'
-import { isEqual } from 'lodash'
-import { useRouter } from 'next/navigation'
 import PasswordInput from '@poveroh/ui/components/password'
 
 const userService = new UserService()
@@ -26,7 +23,6 @@ interface IPassword {
 
 export default function SecurityView() {
     const t = useTranslations()
-    const router = useRouter()
 
     const [loading, setLoading] = useState(false)
 
