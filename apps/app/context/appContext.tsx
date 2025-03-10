@@ -1,5 +1,6 @@
 'use client'
 
+import { storage } from '@/lib/storage'
 import { AuthService } from '@/services/auth.service'
 import { UserService } from '@/services/user.service'
 import { IUser, defaultUser } from '@poveroh/types/dist'
@@ -41,6 +42,7 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
     }, [logged])
 
     const setUser = (newUser: IUser) => {
+        storage.set('user', newUser)
         setUserState(newUser)
     }
 

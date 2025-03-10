@@ -9,12 +9,13 @@ import { UserService } from '@/services/user.service'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { useForm } from 'react-hook-form'
-import { defaultUser, IUser, IUserToSave } from '@poveroh/types'
+import { IUserToSave } from '@poveroh/types'
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { toast } from '@poveroh/ui/components/sonner'
 import { isEqual } from 'lodash'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
 
 const userService = new UserService()
 
@@ -22,8 +23,8 @@ export default function ProfileView() {
     const t = useTranslations()
     const router = useRouter()
 
+    const { user, setUser } = useUser()
     const [loading, setLoading] = useState(false)
-    const [user, setUser] = useState<IUser>(defaultUser)
 
     const userGeneralitiesSchema = z.object({
         name: z.string().nonempty(t('messages.errors.required')),
@@ -41,14 +42,6 @@ export default function ProfileView() {
     })
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const readedUser: IUser = await userService.me()
-            setUser(readedUser)
-        }
-        fetchUser()
-    }, [])
-
-    useEffect(() => {
         form.reset({
             name: user.name,
             surname: user.surname,
@@ -62,6 +55,8 @@ export default function ProfileView() {
             .save(userToSave)
             .then(() => {
                 toast.success(t('settings.account.personalInfo.form.generalities.messages.success'))
+
+                setUser({ ...user, ...userToSave })
 
                 if (!isEqual(user.email, userToSave.email)) {
                     router.push('/logout')
