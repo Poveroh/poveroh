@@ -21,19 +21,22 @@ const getBreakpoint = (width: number) => {
 }
 
 export const useBreakpoint = () => {
-    const [size, setSize] = useState(() => getBreakpoint(window.innerWidth))
-    const [width, setWidth] = useState(window.innerWidth)
+    const isClient = typeof window !== 'undefined'
+    const [size, setSize] = useState(() => (isClient ? getBreakpoint(window.innerWidth) : 'xs'))
+    const [width, setWidth] = useState(() => (isClient ? window.innerWidth : 0))
 
     useEffect(() => {
+        if (!isClient) return
+
         const handleResize = () => {
-            const newWidth = window.innerWidth
+            const newWidth = isClient ? window.innerWidth : 0
             setWidth(newWidth)
             setSize(getBreakpoint(newWidth))
         }
 
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
-    }, [])
+    }, [isClient])
 
     return { size, width, breakpoints }
 }
