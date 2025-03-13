@@ -8,6 +8,7 @@ import { LogOut, Settings } from 'lucide-react'
 import { appConfig } from '@/config'
 import { IUser } from '@poveroh/types/dist'
 import { ReactNode } from 'react'
+import Link from 'next/link'
 
 type UserPopoverContentProps = {
     user: IUser
@@ -34,10 +35,10 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
                     </>
                 )}
                 <div className='flex flex-col space-y-5'>
-                    <a className='flex items-center space-x-2 w-full' href='/settings'>
+                    <Link className='flex items-center space-x-2 w-full' href='/settings'>
                         <Settings />
                         <p>{t('settings.title')}</p>
-                    </a>
+                    </Link>
                     <a className='flex items-center space-x-2 w-full danger-all' href='/logout'>
                         <LogOut />
                         <p>{t('logout.title')}</p>

@@ -45,7 +45,7 @@ export default function SettingsPage() {
             <div className='flex flex-col space-y-5'>
                 <h4>{t('settings.manage.title')}</h4>
                 <SettingsRow>
-                    <SettingsCard link='/bank-account' title={t('settings.manage.bankAccount.title')} subtitle={t('settings.manage.bankAccount.subtitle')} icon={<Landmark />}></SettingsCard>
+                    <SettingsCard link='/bank-accounts' title={t('settings.manage.bankAccount.title')} subtitle={t('settings.manage.bankAccount.subtitle')} icon={<Landmark />}></SettingsCard>
                     <SettingsCard link='#' title={t('settings.manage.category.title')} subtitle={t('settings.manage.category.subtitle')} icon={<Shapes />}></SettingsCard>
                     <SettingsCard link='#' title={t('settings.manage.subscriptions.title')} subtitle={t('settings.manage.subscriptions.subtitle')} icon={<WalletCards />}></SettingsCard>
                 </SettingsRow>

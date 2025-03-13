@@ -2,6 +2,8 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import multer from 'multer'
+import path from 'path'
 
 import statusRoutes from './routes/status'
 import authRoutes from './routes/auth'

@@ -33,10 +33,7 @@
     --ring-color: #fafafa;
 
     --body-color: #1c1c1c;
-    --body-gradient-color:
-        radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00),
-        radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00),
-        var(--body-color);
+    --body-gradient-color: radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00), radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00), var(--body-color);
     --input-color: #313131;
     --box-color: #212121;
 
@@ -256,4 +253,13 @@ hr {
 .nav-app {
     backdrop-filter: saturate(180%) blur(20px);
     z-index: 5;
+}
+
+/* BRAND */
+.brands {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }

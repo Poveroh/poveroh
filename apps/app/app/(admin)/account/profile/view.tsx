@@ -16,6 +16,7 @@ import { toast } from '@poveroh/ui/components/sonner'
 import { isEqual } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
+import Box from '@/components/box/boxWrapper'
 
 const userService = new UserService()
 
@@ -91,61 +92,63 @@ export default function ProfileView() {
             </div>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.personalInfo.form.generalities.title')}</h4>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(saveUser)} className='flex flex-col bg-box-background space-y-7 p-6 w-full rounded-md'>
-                        <div className='flex flex-row gap-7 w-full'>
-                            <FormField
-                                control={form.control}
-                                name='name'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel> {t('settings.account.personalInfo.form.generalities.name')}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                <Box>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(saveUser)} className='flex flex-col space-y-7 w-full'>
+                            <div className='flex flex-row gap-7 w-full'>
+                                <FormField
+                                    control={form.control}
+                                    name='name'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel> {t('settings.account.personalInfo.form.generalities.name')}</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                            <FormField
-                                control={form.control}
-                                name='surname'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel> {t('settings.account.personalInfo.form.generalities.surname')}</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='flex flex-col space-y-3'>
-                            <FormField
-                                control={form.control}
-                                name='email'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>E-mail</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder='example@mail.com' {...field} />
-                                        </FormControl>
-                                        <FormDescription>{t('settings.account.personalInfo.form.generalities.email.subTitle')}</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='flex flex-col items-end w-full'>
-                            <Button type='submit' disabled={loading}>
-                                {loading && <Loader2 className='animate-spin' />}
-                                {t('buttons.save')}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                                <FormField
+                                    control={form.control}
+                                    name='surname'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel> {t('settings.account.personalInfo.form.generalities.surname')}</FormLabel>
+                                            <FormControl>
+                                                <Input {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className='flex flex-col space-y-3'>
+                                <FormField
+                                    control={form.control}
+                                    name='email'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>E-mail</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder='example@mail.com' {...field} />
+                                            </FormControl>
+                                            <FormDescription>{t('settings.account.personalInfo.form.generalities.email.subTitle')}</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className='flex flex-col items-end w-full'>
+                                <Button type='submit' disabled={loading}>
+                                    {loading && <Loader2 className='animate-spin' />}
+                                    {t('buttons.save')}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </Box>
             </div>
         </div>
     )

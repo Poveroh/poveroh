@@ -16,6 +16,7 @@
     "messages": {
         "mandatory": "Mandatory",
         "selectValue": "Select a value",
+        "search": "Search",
         "errors": {
             "required": "This field is required",
             "email": "Invalid email address",

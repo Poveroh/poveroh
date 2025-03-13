@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { IBankAccount } from '@poveroh/types'
+import { BeyCloud } from 'beycloud'
 
 export class BankAccountController {
     static async add(req: Request, res: Response) {
@@ -72,6 +73,27 @@ export class BankAccountController {
             const accounts = await prisma.bank_accounts.findMany(sql)
 
             res.status(200).json(accounts)
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
+    static async upload(req: Request, res: Response) {
+        try {
+            if (!req.file) {
+                res.status(400).json({ error: 'No file uploaded' })
+                return
+            }
+            const uploadClient = new BeyCloud('local', {
+                basePath: process.env.CDN_DATA_PATH as string
+            })
+
+            uploadClient.uploadFile(req.file.originalname, req.file.buffer)
+
+            // The file is available in `req.file`
+            console.log('File uploaded:', req.file)
+            res.status(200).json({ message: 'File uploaded successfully', file: req.file })
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: 'An error occurred', error })
