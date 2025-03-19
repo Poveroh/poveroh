@@ -95,8 +95,8 @@ To get a local copy up and running, please follow these simple steps.
 This project uses:
 
 - [Node.js](https://nodejs.org/en/download/package-manager) (>= 18.x)
-- [Docker](https://docs.docker.com/get-started/get-docker/) - to run PostgreSQL
-- NPM - _recommended_
+- [Docker](https://docs.docker.com/get-started/get-docker/) - to run PostgreSQL and NGIX CDN
+- NPM
 
 <!-- Run Locally -->
 
@@ -124,14 +124,14 @@ This project uses:
 
 4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
-### Setup Database
+### Setup Database and CDN
 
 > Docker and Docker Compose must be installed, up, and running on the machine.
 
-1. Run `setup-db` file
+1. Run `setup` file
 
     ```bash
-    npm run setup:db
+    npm run setup
     ```
 
     The command will execute the following steps:
@@ -140,6 +140,7 @@ This project uses:
     - Navigate to the `packages/prisma` directory.
     - Generate the Prisma client.
     - Apply any pending migrations to the database using Prisma.
+    - Create and run CDN ngix docker image.
 
     <br>
 
@@ -150,7 +151,7 @@ This project uses:
     - `name`
     - `surname`
     - `email`
-    - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) (store this in password field).
+    - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) with 12 rounds (store this in password field).
 
 ### Build and run
 
@@ -170,7 +171,7 @@ This project uses:
 
 ### Docker
 
-1. First of all, run only [Get start](#get-start) step to download and setup.
+1. First of all, run only [Get start](#get-start) steps to download and setup.
 
 2. Then, run:
 
@@ -221,5 +222,5 @@ See LICENSE.txt for more information.
 
 ## :link: Useful links
 
-- [Github Repo](https://github.com/DavideTarditi/poveroh)
+- [Github Repo](https://github.com/Poveroh/poveroh)
 - [Figma file](https://www.figma.com/design/SZz6f8cZ1mIE5s6Z4WGshu/Poveroh?node-id=232-100&t=1ozuf8X78WOqBXYH-1)
