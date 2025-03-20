@@ -1,13 +1,34 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { IBankAccount } from '@poveroh/types'
-import { BeyCloud } from 'beycloud'
+import { IBankAccount, IBankAccountBase } from '@poveroh/types'
+import { isLocalStorageMode, uploadClient } from '../utils/storage'
+import path from 'path'
+import { config } from '../utils/environment'
+import _ from 'lodash'
 
 export class BankAccountController {
     static async add(req: Request, res: Response) {
         try {
-            const account = await prisma.bank_accounts.create({
-                data: req.body
+            if (!req.body.account) throw new Error('Data not provided')
+
+            let readedBankAccount: IBankAccountBase = JSON.parse(req.body.account)
+
+            if (req.file) {
+                const readedUser = req.user.id
+
+                let filePath = `${readedUser}/bankaccount/${readedBankAccount.title}/${req.file.originalname}`
+
+                await uploadClient.uploadFile(filePath, req.file.buffer)
+
+                if (isLocalStorageMode) {
+                    const baseCdnUrl = `http://localhost:${config.CDN_PORT}`
+                    filePath = new URL(filePath, baseCdnUrl).toString()
+                }
+                readedBankAccount.logo_icon = filePath
+            }
+
+            let account = await prisma.bank_accounts.create({
+                data: readedBankAccount
             })
 
             res.status(200).json(account)
@@ -18,17 +39,33 @@ export class BankAccountController {
 
     static async save(req: Request, res: Response) {
         try {
-            const bankAccountToSave: IBankAccount = req.body as IBankAccount
+            if (!req.body.account) throw new Error('Data not provided')
+
+            let readedBankAccount: IBankAccount = JSON.parse(req.body.account)
+
+            if (req.file) {
+                const readedUser = req.user.id
+
+                let filePath = `${readedUser}/bankaccount/${readedBankAccount.title}/${req.file.originalname}`
+
+                await uploadClient.uploadFile(filePath, req.file.buffer)
+
+                if (isLocalStorageMode) {
+                    const baseCdnUrl = `http://localhost:${config.CDN_PORT}`
+                    filePath = new URL(filePath, baseCdnUrl).toString()
+                }
+                readedBankAccount.logo_icon = filePath
+            }
 
             const account = await prisma.bank_accounts.update({
                 where: {
-                    id: bankAccountToSave.id
+                    id: readedBankAccount.id
                 },
                 data: {
-                    title: bankAccountToSave.title,
-                    description: bankAccountToSave.description,
-                    type: bankAccountToSave.type,
-                    logo_icon: bankAccountToSave.logo_icon
+                    title: readedBankAccount.title,
+                    description: readedBankAccount.description,
+                    type: readedBankAccount.type,
+                    logo_icon: readedBankAccount.logo_icon
                 }
             })
 
@@ -54,18 +91,20 @@ export class BankAccountController {
         try {
             let sql = {}
 
-            if (Array.isArray(req.body)) {
-                sql = {
-                    where: {
-                        id: {
-                            in: req.body
+            if (!_.isEmpty(req.body)) {
+                if (_.isArray(req.body)) {
+                    sql = {
+                        where: {
+                            id: {
+                                in: req.body
+                            }
                         }
                     }
-                }
-            } else if (typeof req.body === 'string') {
-                sql = {
-                    where: {
-                        id: req.body
+                } else {
+                    sql = {
+                        where: {
+                            id: req.body.id
+                        }
                     }
                 }
             }
@@ -73,27 +112,6 @@ export class BankAccountController {
             const accounts = await prisma.bank_accounts.findMany(sql)
 
             res.status(200).json(accounts)
-        } catch (error) {
-            console.log(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
-    static async upload(req: Request, res: Response) {
-        try {
-            if (!req.file) {
-                res.status(400).json({ error: 'No file uploaded' })
-                return
-            }
-            const uploadClient = new BeyCloud('local', {
-                basePath: process.env.CDN_DATA_PATH as string
-            })
-
-            uploadClient.uploadFile(req.file.originalname, req.file.buffer)
-
-            // The file is available in `req.file`
-            console.log('File uploaded:', req.file)
-            res.status(200).json({ message: 'File uploaded successfully', file: req.file })
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: 'An error occurred', error })

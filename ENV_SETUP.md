@@ -38,7 +38,7 @@ JWT_KEY=
 FILE_STORAGE_MODE=local
 
 # For local storage, type full path of folder on your computer (es. /Users/<user>/data-folder)
-CDN_DATA_PATH=/Users/<user>/cdn-data
+CDN_LOCAL_DATA_PATH=/Users/<user>/cdn-data
 
 AWS_BUCKET=
 AWS_REGION=

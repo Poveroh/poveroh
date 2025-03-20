@@ -54,11 +54,11 @@ services:
             - API_PORT=${API_PORT}
             - JWT_KEY=${JWT_KEY}
             - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
-            - CDN_DATA_PATH=${CDN_DATA_PATH}
+            - CDN_LOCAL_DATA_PATH=${CDN_LOCAL_DATA_PATH}
         ports:
             - 3001:3001
         volumes:
-            - ${CDN_DATA_PATH}:/usr/share/cdn-data
+            - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
         networks:
             - poveroh_network
         depends_on:
@@ -92,6 +92,6 @@ services:
         ports:
             - '3002:3002'
         volumes:
-            - ${CDN_DATA_PATH}:/usr/share/cdn-data
+            - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
         networks:
             - poveroh_network

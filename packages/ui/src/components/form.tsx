@@ -65,23 +65,25 @@ const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
 })
 FormItem.displayName = 'FormItem'
 
-const FormLabel = React.forwardRef<React.ElementRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>>(({ className, ...props }, ref) => {
+const FormLabel = React.forwardRef<React.ElementRef<typeof LabelPrimitive.Root>, React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & { mandatory?: boolean }>(({ className, mandatory, ...props }, ref) => {
     const { formItemId } = useFormField()
 
     return (
         <>
             <div className='flex flex-row space-x-2'>
                 <Label ref={ref} className={cn(className)} htmlFor={formItemId} {...props} />
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <p className='danger cursor-pointer'>*</p>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Mandatory</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                {mandatory && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <p className='danger cursor-pointer'>*</p>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Mandatory</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                )}
             </div>
         </>
     )

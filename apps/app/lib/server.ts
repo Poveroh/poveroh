@@ -8,7 +8,9 @@ export const server = {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
 
-            const headers = formData ? { 'Content-Type': 'multipart/form-data' } : {}
+            const headers = {
+                'Content-Type': formData ? 'multipart/form-data' : 'application/json'
+            }
 
             try {
                 const urlToSend = new URL(url, appConfig.apiUrl)
@@ -48,7 +50,7 @@ export const server = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     post<T>(url: string, data: any, formData?: boolean): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data)
+        return this.send<T>(ServerRequest.POST, url, data, formData)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get<T>(url: string, data: any): Promise<T> {

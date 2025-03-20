@@ -15,7 +15,7 @@ export default function Box({ title, header, children }: BoxProps) {
                     {header}
                 </div>
             )}
-            <div className='flex flex-col space-y-7'>{children}</div>
+            <div className='flex flex-col divide-y'>{children}</div>
         </div>
     )
 }

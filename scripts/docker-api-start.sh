@@ -14,7 +14,7 @@ npx prisma migrate deploy
 echo "Starting application..."
 cd /app
 
-export CDN_DATA_PATH=/usr/share/cdn-data
-echo $CDN_DATA_PATH 
+export CDN_LOCAL_DATA_PATH=/usr/share/cdn-data
+echo $CDN_LOCAL_DATA_PATH 
 
 exec node apps/api/dist/index.js

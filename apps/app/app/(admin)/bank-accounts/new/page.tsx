@@ -1,5 +1,5 @@
 import BankAccountView from '../view'
 
-export default function BankAccountsIdPage() {
+export default function BankAccountsNewPage() {
     return <BankAccountView />
 }

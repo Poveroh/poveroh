@@ -5,10 +5,9 @@ import { upload } from '../middleware/upload.middleware'
 
 const router: Router = Router()
 
-router.post('/add', AuthMiddleware.isAuthenticated, BankAccountController.add)
+router.post('/add', AuthMiddleware.isAuthenticated, upload.single('file'), BankAccountController.add)
 router.post('/read', AuthMiddleware.isAuthenticated, BankAccountController.read)
-router.post('/save', AuthMiddleware.isAuthenticated, BankAccountController.save)
+router.post('/save', AuthMiddleware.isAuthenticated, upload.single('file'), BankAccountController.save)
 router.post('/delete', AuthMiddleware.isAuthenticated, BankAccountController.delete)
-router.post('/upload', AuthMiddleware.isAuthenticated, upload.single('file'), BankAccountController.upload)
 
 export default router
