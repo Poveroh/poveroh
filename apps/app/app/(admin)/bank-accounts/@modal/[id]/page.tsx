@@ -9,9 +9,7 @@ import { BankAccountForm } from '@/components/form/BankAccountForm'
 const bankAccountService = new BankAccountService()
 
 type BankAccountsIdModalProps = {
-    params: {
-        id: string
-    }
+    params: any
 }
 
 export default function BankAccountsIdModal({ params }: BankAccountsIdModalProps) {
