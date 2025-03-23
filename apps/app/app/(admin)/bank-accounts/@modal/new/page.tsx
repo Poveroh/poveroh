@@ -1,6 +1,6 @@
 'use client'
 
-import { Modal } from '@/components/modal'
+import { Modal } from '@/components/modal/form'
 import { useTranslations } from 'next-intl'
 import { BankAccountService } from '@/services/bankaccount.service'
 import { BankAccountForm } from '@/components/form/BankAccountForm'

@@ -3,26 +3,41 @@
 import { Button } from '@poveroh/ui/components/button'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@poveroh/ui/components/breadcrumb'
 import { useTranslations } from 'next-intl'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
-import { Download, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Download, Pencil, Plus, RotateCcw, Search } from 'lucide-react'
 import Link from 'next/link'
 import Box from '@/components/box/boxWrapper'
 import { BankAccountService } from '@/services/bankaccount.service'
 import { IBankAccount } from '@poveroh/types/dist'
+import { DeleteModal } from '@/components/modal/delete'
+import _ from 'lodash'
 
 const bankAccountService = new BankAccountService()
 
 type BankAccountItemProps = {
     account: IBankAccount
+    reload: () => void
 }
 
-function BankAccountItem({ account }: BankAccountItemProps) {
+function BankAccountItem({ account, reload }: BankAccountItemProps) {
+    const t = useTranslations()
+    const [loading, setLoading] = useState(false)
+    const [open, setOpen] = useState(false)
+
     const logo_icon = `url(${account.logo_icon})`
+
+    const onDelete = async () => {
+        setLoading(true)
+
+        const res = await bankAccountService.delete(account.id)
+
+        setLoading(false)
+        if (res) setOpen(false)
+
+        reload()
+    }
+
     return (
         <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
             <div className='flex flex-row items-center space-x-5'>
@@ -33,11 +48,11 @@ function BankAccountItem({ account }: BankAccountItemProps) {
                 </div>
             </div>
             <div className='flex flex-col items-center'>
-                <div className='flex flex-row space-x-1 items-center'>
+                <div className='flex flex-row space-x-5 items-center'>
                     <Link href={`/bank-accounts/${account.id}`}>
                         <Pencil className='cursor-pointer' />
                     </Link>
-                    <Trash2 className='danger cursor-pointer' />
+                    <DeleteModal title={account.title} description={t('bankAccounts.modal.deleteDescription')} open={open} setOpen={x => setOpen(x)} loading={loading} onConfirm={onDelete}></DeleteModal>
                 </div>
             </div>
         </div>
@@ -47,30 +62,31 @@ function BankAccountItem({ account }: BankAccountItemProps) {
 export default function BankAccountView() {
     const t = useTranslations()
     const [bankAccountList, setBankAccountList] = useState<IBankAccount[]>([])
+    const [backupAccountList, setBackupAccountList] = useState<IBankAccount[]>([])
+
+    const fetchData = async () => {
+        const res = await bankAccountService.read<IBankAccount[]>()
+
+        setBankAccountList(res)
+        setBackupAccountList(res)
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            setBankAccountList(await bankAccountService.read())
-        }
         fetchData()
     }, [])
 
-    const searchSchema = z.object({
-        search: z.string()
-    })
+    const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const textToSearch = event.target.value
 
-    const form = useForm({
-        resolver: zodResolver(searchSchema),
-        defaultValues: {
-            search: ''
+        if (_.isEmpty(textToSearch)) {
+            setBankAccountList(backupAccountList)
+            return
         }
-    })
 
-    useEffect(() => {
-        form.reset({
-            search: ''
-        })
-    }, [form])
+        const filteredList = backupAccountList.filter(account => account.title.toLowerCase().includes(textToSearch) || account.description.toLowerCase().includes(textToSearch))
+
+        setBankAccountList(filteredList)
+    }
 
     return (
         <div className='space-y-12'>
@@ -93,41 +109,29 @@ export default function BankAccountView() {
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
-                <div className='flex flex-row space-x-3'>
-                    <Button variant='outline'>
-                        <Download></Download>
-                        {t('buttons.export.base')}
-                    </Button>
-                    <Link href='/bank-accounts/new'>
-                        <Button>
-                            <Plus />
-                            {t('buttons.add.base')}
+                <div className='flex flex-row items-center space-x-8'>
+                    <RotateCcw className='cursor-pointer' onClick={fetchData} />
+                    <div className='flex flex-row items-center space-x-3'>
+                        <Button variant='outline'>
+                            <Download></Download>
+                            {t('buttons.export.base')}
                         </Button>
-                    </Link>
+                        <Link href='/bank-accounts/new'>
+                            <Button>
+                                <Plus />
+                                {t('buttons.add.base')}
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
             <div className='flex flex-col'>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(() => {})} className='w-[400px]'>
-                        <FormField
-                            control={form.control}
-                            name='search'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input {...field} placeholder={t('messages.search')} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </form>
-                </Form>
+                <Input startIcon={Search} placeholder={t('messages.search')} className='w-1/3' onChange={onSearch} />
             </div>
             <Box>
                 <>
                     {bankAccountList.map(account => (
-                        <BankAccountItem key={account.id} account={account} />
+                        <BankAccountItem key={account.id} account={account} reload={fetchData} />
                     ))}
                 </>
             </Box>

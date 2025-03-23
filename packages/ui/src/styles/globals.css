@@ -98,6 +98,8 @@ html {
     background-color: var(--body-color);
     font-family: var(--font-family), serif;
     font-weight: var(--weight-regular);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* BACKGROUND */

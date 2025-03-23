@@ -5,8 +5,7 @@
             "edit": "Edit"
         },
         "delete": {
-            "message": "Are you sure you want to delete this item?",
-            "warning": "The action is irreversible."
+            "title": "Want to delete {a}?"
         },
         "continueInsert": {
             "label": "Keep adding",
@@ -34,6 +33,7 @@
     },
     "buttons": {
         "cancel": "Cancel",
+        "delete": "Delete",
         "returnHome": "Return home",
         "add": {
             "base": "Add",
@@ -154,7 +154,8 @@
         },
         "modal": {
             "newTitle": "New bank account",
-            "editTitle": "Edit {a}"
+            "editTitle": "Edit {a}",
+            "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },
         "types": {
             "online": "Online bank",
