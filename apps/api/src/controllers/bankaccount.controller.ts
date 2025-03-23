@@ -77,7 +77,7 @@ export class BankAccountController {
 
     static async delete(req: Request, res: Response) {
         try {
-            const t = await prisma.bank_accounts.delete({
+            await prisma.bank_accounts.delete({
                 where: req.body
             })
 
@@ -89,7 +89,7 @@ export class BankAccountController {
 
     static async read(req: Request, res: Response) {
         try {
-            let sql = {}
+            let sql: any = {}
 
             if (!_.isEmpty(req.body)) {
                 if (_.isArray(req.body)) {
@@ -103,7 +103,7 @@ export class BankAccountController {
                 } else {
                     sql = {
                         where: {
-                            id: req.body.id
+                            OR: [{ id: req.body.id }, { title: { contains: req.body.title, mode: 'insensitive' } }, { description: { contains: req.body.description, mode: 'insensitive' } }]
                         }
                     }
                 }

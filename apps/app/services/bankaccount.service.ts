@@ -40,7 +40,7 @@ export class BankAccountService {
         return await server.post<boolean>('/bank-account/delete', { id: bankAccountToDelete })
     }
 
-    async read<T>(id?: string | string[]): Promise<T> {
-        return await server.post<T>('/bank-account/read', { id })
+    async read<T>(query?: string[] | { id?: string; title?: string; description?: string }): Promise<T> {
+        return await server.post<T>('/bank-account/read', query)
     }
 }

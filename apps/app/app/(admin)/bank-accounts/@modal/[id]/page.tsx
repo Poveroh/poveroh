@@ -1,6 +1,6 @@
 'use client'
 
-import { Modal } from '@/components/modal'
+import { Modal } from '@/components/modal/form'
 import { BankAccountService } from '@/services/bankaccount.service'
 import { IBankAccount } from '@poveroh/types'
 import { useEffect, useState } from 'react'
@@ -19,7 +19,7 @@ export default function BankAccountsIdModal({ params }: BankAccountsIdModalProps
     useEffect(() => {
         const fetchData = async () => {
             const unwrappedParams = await params
-            const data = await bankAccountService.read<IBankAccount[]>(unwrappedParams.id)
+            const data = await bankAccountService.read<IBankAccount[]>({ id: unwrappedParams.id })
 
             if (data.length == 0) return
             setBankAccount(data[0])
