@@ -103,7 +103,11 @@ export class BankAccountController {
                 } else {
                     sql = {
                         where: {
-                            OR: [{ id: req.body.id }, { title: { contains: req.body.title, mode: 'insensitive' } }, { description: { contains: req.body.description, mode: 'insensitive' } }]
+                            OR: [
+                                { id: req.body.id },
+                                { title: { contains: req.body.title, mode: 'insensitive' } },
+                                { description: { contains: req.body.description, mode: 'insensitive' } }
+                            ]
                         }
                     }
                 }

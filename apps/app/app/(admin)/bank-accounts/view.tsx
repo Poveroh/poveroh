@@ -52,7 +52,14 @@ function BankAccountItem({ account, reload }: BankAccountItemProps) {
                     <Link href={`/bank-accounts/${account.id}`}>
                         <Pencil className='cursor-pointer' />
                     </Link>
-                    <DeleteModal title={account.title} description={t('bankAccounts.modal.deleteDescription')} open={open} setOpen={x => setOpen(x)} loading={loading} onConfirm={onDelete}></DeleteModal>
+                    <DeleteModal
+                        title={account.title}
+                        description={t('bankAccounts.modal.deleteDescription')}
+                        open={open}
+                        setOpen={x => setOpen(x)}
+                        loading={loading}
+                        onConfirm={onDelete}
+                    ></DeleteModal>
                 </div>
             </div>
         </div>
