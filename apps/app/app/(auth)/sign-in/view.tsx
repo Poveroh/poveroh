@@ -48,7 +48,9 @@ export default function LoginView() {
     const signIn = async (user: IUserLogin) => {
         setLoading(true)
         await authService.signIn(user).catch(error => {
-            toast.error(error)
+            toast.error(error, {
+                position: 'bottom-left'
+            })
         })
         setLoading(false)
     }
@@ -68,7 +70,7 @@ export default function LoginView() {
                             name='email'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>E-mail</FormLabel>
+                                    <FormLabel mandatory>E-mail</FormLabel>
                                     <FormControl>
                                         <Input placeholder='example@mail.com' {...field} />
                                     </FormControl>
@@ -82,7 +84,7 @@ export default function LoginView() {
                             name='password'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel mandatory>Password</FormLabel>
                                     <FormControl>
                                         <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
                                     </FormControl>

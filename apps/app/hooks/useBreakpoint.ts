@@ -21,19 +21,29 @@ const getBreakpoint = (width: number) => {
 }
 
 export const useBreakpoint = () => {
-    const [size, setSize] = useState(() => getBreakpoint(window.innerWidth))
-    const [width, setWidth] = useState(window.innerWidth)
+    const [width, setWidth] = useState<number | null>(null)
+    const [size, setSize] = useState<string | null>(null)
 
     useEffect(() => {
+        if (typeof window === 'undefined') return
+
         const handleResize = () => {
             const newWidth = window.innerWidth
             setWidth(newWidth)
             setSize(getBreakpoint(newWidth))
         }
 
+        // Set the initial size on the client
+        handleResize()
+
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     }, [])
 
-    return { size, width, breakpoints }
+    // Return defaults until hydration completes
+    return {
+        width: width ?? 0,
+        size: size ?? 'xs',
+        breakpoints
+    }
 }

@@ -29,3 +29,11 @@
     ```bash
     prisma migrate dev
     ```
+
+### CDN
+
+1. Build and run docker ngix CDN
+
+    ```bash
+    npm run docker:cdn
+    ```

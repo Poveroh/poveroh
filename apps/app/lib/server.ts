@@ -4,9 +4,14 @@ import { appConfig } from '@/config'
 
 export const server = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    send<T>(type: ServerRequest, url: string, data: any): Promise<T> {
+    send<T>(type: ServerRequest, url: string, data: any, formData?: boolean): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
+
+            const headers = {
+                'Content-Type': formData ? 'multipart/form-data' : 'application/json'
+            }
+
             try {
                 const urlToSend = new URL(url, appConfig.apiUrl)
                 switch (type) {
@@ -15,7 +20,10 @@ export const server = {
                         break
                     case ServerRequest.POST:
                         res = await axios.post(urlToSend.href, data, {
-                            withCredentials: true
+                            withCredentials: true,
+                            headers: {
+                                ...headers
+                            }
                         })
                         break
                     default:
@@ -41,8 +49,8 @@ export const server = {
         })
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    post<T>(url: string, data: any): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data)
+    post<T>(url: string, data: any, formData?: boolean): Promise<T> {
+        return this.send<T>(ServerRequest.POST, url, data, formData)
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get<T>(url: string, data: any): Promise<T> {

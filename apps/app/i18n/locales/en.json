@@ -10,12 +10,17 @@
         },
         "continueInsert": {
             "label": "Keep adding",
-            "subtitle": "It does not close the modal and allows adding more transactions."
+            "subtitle": "It does not close the modal and allows adding more items."
         }
     },
     "messages": {
         "mandatory": "Mandatory",
         "selectValue": "Select a value",
+        "search": "Search",
+        "toUpload": "To upload",
+        "uploaded": "uploaded",
+        "saved": "saved",
+        "successfully": "{a} {b} successfully",
         "errors": {
             "required": "This field is required",
             "email": "Invalid email address",
@@ -148,7 +153,8 @@
             "subtitle": "Click the + Add button to create a bank account."
         },
         "modal": {
-            "title": "New bank account"
+            "newTitle": "New bank account",
+            "editTitle": "Edit {a}"
         },
         "types": {
             "online": "Online bank",
@@ -166,10 +172,13 @@
                 "placeholder": "Type a note"
             },
             "type": {
-                "label": "Type"
+                "label": "Type",
+                "placeholder": "Select a type"
             },
             "icon": {
-                "label": "Icon"
+                "label": "Icon",
+                "addAsUrl": "Add as URL",
+                "addAsFile": "Add as file"
             }
         }
     },

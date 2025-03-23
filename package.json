@@ -17,7 +17,9 @@
         "dev:api": "turbo dev --filter=api",
         "dev:app": "turbo dev --filter=app",
         "ui:add": "cd ./apps/app && npm run ui:add",
+        "setup": "npm run setup:db && npm run setup:cdn",
         "setup:db": "node ./scripts/setup-db.js",
+        "setup:cdn": "node ./scripts/setup-cdn.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
         "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
         "prisma:studio": "cd ./packages/prisma && npx prisma studio",
@@ -30,8 +32,9 @@
         "docker:api": "npm run docker:create-network && docker compose up -d --build api && docker compose up -d api",
         "docker:app": "npm run docker:create-network && docker compose up -d --build app && docker compose up -d app",
         "docker:studio": "npm run docker:create-network && docker compose up -d --build studio && docker compose up -d studio",
+        "docker:cdn": "npm run docker:create-network && docker compose up -d --build cdn && docker compose up -d cdn",
         "docker": "npm run docker:create-network && docker compose up -d --build && docker compose up -d",
-        "docker:create-network": "docker network create poveroh_network || true"
+        "docker:create-network": "docker network ls | grep -w poveroh_network || docker network create poveroh_network"
     },
     "devDependencies": {
         "prettier": "^3.2.5",

@@ -7,13 +7,10 @@ import statusRoutes from './routes/status'
 import authRoutes from './routes/auth'
 import userRoutes from './routes/user'
 import bankAccountRoutes from './routes/bankaccount'
+import { config } from './utils/environment'
 
 const app = express()
 dotenv.config({ path: '.env' })
-
-const port = (process.env.API_PORT as string) || 3001
-
-export const JWT_SECRET = process.env.JWT_KEY as string
 
 app.set('trust proxy', true)
 app.use(express.json())
@@ -38,6 +35,6 @@ app.use('/auth', authRoutes)
 app.use('/user', userRoutes)
 app.use('/bank-account', bankAccountRoutes)
 
-app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
+app.listen(config.PORT, () => {
+    console.log(`⚡️[server]: Server is running at http://localhost:${config.PORT}`)
 })

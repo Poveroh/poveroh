@@ -1,9 +1,12 @@
-export interface IBankAccount {
-    id: string
+export interface IBankAccountBase {
     title: string
     description: string
     type: BankAccountType
     logo_icon: string
+}
+
+export interface IBankAccount extends IBankAccountBase {
+    id: string
     created_at: string
 }
 

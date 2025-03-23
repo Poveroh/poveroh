@@ -7,10 +7,17 @@ const config = {
     theme: {
         extend: {
             fontSize: {
-                base: ['var(--size-p-default)', 'normal']
+                base: ['var(--size-p-default)', 'normal'],
+                h1: ['var(--size-headings-h1)', 'normal'],
+                h2: ['var(--size-headings-h2)', 'normal'],
+                h3: ['var(--size-headings-h3)', 'normal'],
+                h4: ['var(--size-headings-h4)', 'normal'],
+                h5: ['var(--size-headings-h5)', 'normal']
             },
             colors: {
-                border: 'var(--border-color)',
+                border: {
+                    DEFAULT: 'var(--border-color)'
+                },
                 input: 'var(--input-color)',
                 hr: 'var(--hr-color)',
                 ring: 'var(--ring-color)',

@@ -15,15 +15,20 @@ try {
     // Check if .env files exist
     if (!existsSync(envPaths.root)) {
         if (!existsSync(envPaths.example)) {
-            throw new Error(
-                '.env.example file not found. Please ensure it exists in the project root.'
-            )
+            throw new Error('.env.example file not found. Please ensure it exists in the project root.')
         }
 
         console.log('🔧 .env file not found, copying from .env.example with default values..')
-        console.log('📄 Copying .env to Prisma folder...')
         copyFileSync(envPaths.example, envPaths.root)
         console.log('✅ Copied .env to project root!')
+    }
+
+    // Check if Docker is running
+    try {
+        execSync('docker info', { stdio: 'ignore' })
+        console.log('🐳 Docker is running. Proceeding with setup...')
+    } catch (error) {
+        throw new Error('Docker is not running. Please start Docker and try again.')
     }
 
     console.log('🚀 Starting Docker containers...')
@@ -38,6 +43,6 @@ try {
 
     console.log('✅ Database setup completed!')
 } catch (error) {
-    console.error('❌ Error during setup:', error)
+    console.error('❌ Error during setup:', error.message)
     process.exit(1)
 }

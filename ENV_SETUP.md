@@ -31,6 +31,31 @@ API_PORT=3001
 
 # JWT secret key
 JWT_KEY=
+
+#Storage
+
+# File storage mode; must be one of the following: local | aws | gcloud | azure | digitalocean
+FILE_STORAGE_MODE=local
+
+# For local storage, type full path of folder on your computer (es. /Users/<user>/data-folder)
+CDN_LOCAL_DATA_PATH=/Users/<user>/cdn-data
+
+AWS_BUCKET=
+AWS_REGION=
+AWS_CREDENTIALS_ACCESSKEYID=
+AWS_CREDENTIALS_SECRETACCESSKEY=
+
+GCS_BUCKET=
+GCS_PROJECTID=
+
+DIGITALOCEAN_BUCKET=
+DIGITALOCEAN_REGION=
+DIGITALOCEAN_ENDPOINT=
+DIGITALOCEAN_CREDENTIALS_ACCESSKEYID=
+DIGITALOCEAN_CREDENTIALS_SECRETACCESSKEY=
+
+AZURE_CONNECTION_STRING=
+AZURE_CONTAINER=
 ```
 
 ## App

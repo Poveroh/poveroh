@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { toast } from '@poveroh/ui/components/sonner'
 import PasswordInput from '@poveroh/ui/components/password'
+import Box from '@/components/box/boxWrapper'
 
 const userService = new UserService()
 
@@ -98,60 +99,62 @@ export default function SecurityView() {
             </div>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.security.form.password.title')}</h4>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(savePassword)} className='flex flex-col bg-box-background space-y-7 p-6 w-full rounded-md'>
-                        <div className='flex flex-row gap-7 w-full'>
-                            <FormField
-                                control={form.control}
-                                name='oldPassword'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('settings.account.security.form.password.oldpassword')}</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='flex flex-row gap-7 w-full'>
-                            <FormField
-                                control={form.control}
-                                name='newPassword'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('settings.account.security.form.password.newpassword')}</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                        <FormDescription dangerouslySetInnerHTML={{ __html: t('settings.account.security.form.password.description') }}></FormDescription>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name='confirmPassword'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('settings.account.security.form.password.confirmPassword')}</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='flex flex-col items-end w-full'>
-                            <Button type='submit' disabled={loading}>
-                                {loading && <Loader2 className='animate-spin' />}
-                                {t('buttons.save')}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                <Box>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(savePassword)} className='flex flex-col space-y-7 w-full '>
+                            <div className='flex flex-row gap-7 w-full'>
+                                <FormField
+                                    control={form.control}
+                                    name='oldPassword'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('settings.account.security.form.password.oldpassword')}</FormLabel>
+                                            <FormControl>
+                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className='flex flex-row gap-7 w-full'>
+                                <FormField
+                                    control={form.control}
+                                    name='newPassword'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('settings.account.security.form.password.newpassword')}</FormLabel>
+                                            <FormControl>
+                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                            <FormDescription dangerouslySetInnerHTML={{ __html: t('settings.account.security.form.password.description') }}></FormDescription>
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name='confirmPassword'
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('settings.account.security.form.password.confirmPassword')}</FormLabel>
+                                            <FormControl>
+                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className='flex flex-col items-end w-full'>
+                                <Button type='submit' disabled={loading}>
+                                    {loading && <Loader2 className='animate-spin' />}
+                                    {t('buttons.save')}
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </Box>
             </div>
         </div>
     )

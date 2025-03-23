@@ -30,13 +30,10 @@
 
     --hr-color: #393939;
     --border-color: #393939;
-    --ring-color: #fafafa;
+    --ring-color: #393939;
 
     --body-color: #1c1c1c;
-    --body-gradient-color:
-        radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00),
-        radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00),
-        var(--body-color);
+    --body-gradient-color: radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00), radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00), var(--body-color);
     --input-color: #313131;
     --box-color: #212121;
 
@@ -193,10 +190,7 @@ p.small {
     color: var(--muted-color);
 }
 
-.fc-danger,
-p.danger,
-a.danger,
-i.danger,
+.danger,
 .danger-all,
 .danger-all p,
 .danger-all > * .danger-all:hover,
@@ -208,14 +202,7 @@ i.danger,
     border: 1px solid var(--danger-color) !important;
 }
 
-.danger path {
-    fill: var(--danger-color) !important;
-}
-
-.fc-waiting,
-.fc-warning,
-p.warning,
-a.warning,
+.warning,
 .warning-all,
 .warning-all > * .warning-all:hover,
 .warning-all:hover > *,
@@ -223,19 +210,12 @@ a.warning,
     color: var(--warning-color) !important;
 }
 
-.fc-success,
-p.success,
-a.success,
-i.success,
+.success,
 .success-all,
 .success-all p,
 .success-all > * .success-all:hover,
 .success-all:hover > * {
     color: var(--success-color);
-}
-
-.success path {
-    fill: var(--success-color) !important;
 }
 
 a {
@@ -256,4 +236,18 @@ hr {
 .nav-app {
     backdrop-filter: saturate(180%) blur(20px);
     z-index: 5;
+}
+
+/* BRAND */
+.brands {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.brands.big {
+    width: 50px;
+    height: 50px;
 }

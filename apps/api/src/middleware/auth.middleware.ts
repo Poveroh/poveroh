@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { JWT_SECRET } from '..'
+import { config } from '../utils/environment'
 
 export class AuthMiddleware {
     static isAuthenticated(req: Request, res: Response, next: NextFunction) {
@@ -11,7 +11,7 @@ export class AuthMiddleware {
             return
         }
 
-        jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+        jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
             if (err) {
                 return res.status(403).json({ message: 'Invalid token' })
             }

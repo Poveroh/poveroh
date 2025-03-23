@@ -3,7 +3,7 @@ import prisma from '@poveroh/prisma'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { UAParser } from 'ua-parser-js'
-import { JWT_SECRET } from '..'
+import { config } from '../utils/environment'
 
 export class AuthController {
     static async signIn(req: Request, res: Response) {
@@ -44,7 +44,7 @@ export class AuthController {
                 }
             })
 
-            const token: string = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET || '-', {
+            const token: string = jwt.sign({ id: user.id, email: user.email }, config.JWT_SECRET || '-', {
                 expiresIn: '24h'
             })
 
