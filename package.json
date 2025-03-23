@@ -20,6 +20,7 @@
         "setup": "npm run setup:db && npm run setup:cdn",
         "setup:db": "node ./scripts/setup-db.js",
         "setup:cdn": "node ./scripts/setup-cdn.js",
+        "setup:data": "node ./scripts/data/fill-db.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
         "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
         "prisma:studio": "cd ./packages/prisma && npx prisma studio",
@@ -27,6 +28,7 @@
         "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name 'storybook-static' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
         "clean:turbo": "find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
         "clean:env": "find . -name '.env' -type f -exec rm -f {} +",
+        "clean:data": "node ./scripts/data/clean-db.js",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "docker:db": "npm run docker:create-network && docker compose up -d --build db && docker compose up -d db",
         "docker:api": "npm run docker:create-network && docker compose up -d --build api && docker compose up -d api",
@@ -50,6 +52,7 @@
         "packages/*"
     ],
     "dependencies": {
+        "csv-parser": "^3.2.0",
         "prettier": "^3.2.5",
         "turbo": "^2.3.0",
         "typescript": "5.5.4"
