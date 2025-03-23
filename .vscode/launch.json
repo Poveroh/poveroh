@@ -2,6 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Poveroh fill db",
+            "program": "${workspaceFolder}/scripts/data/fill-db.js",
+            "request": "launch",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "node",
+            "args": []
+        },
+        {
+            "name": "Poveroh clean db",
+            "program": "${workspaceFolder}/scripts/data/clean-db.js",
+            "request": "launch",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "node",
+            "args": []
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Poveroh:app",
