@@ -38,22 +38,47 @@ export default function SettingsPage() {
             <div className='flex flex-col space-y-5'>
                 <h4>{t('settings.account.title')}</h4>
                 <SettingsRow>
-                    <SettingsCard link='/account/profile' title={t('settings.account.personalInfo.title')} subtitle={t('settings.account.personalInfo.subtitle')} icon={<User />}></SettingsCard>
-                    <SettingsCard link='/account/security' title={t('settings.account.security.title')} subtitle={t('settings.account.security.subtitle')} icon={<Shield />}></SettingsCard>
+                    <SettingsCard
+                        link='/account/profile'
+                        title={t('settings.account.personalInfo.title')}
+                        subtitle={t('settings.account.personalInfo.subtitle')}
+                        icon={<User />}
+                    ></SettingsCard>
+                    <SettingsCard
+                        link='/account/security'
+                        title={t('settings.account.security.title')}
+                        subtitle={t('settings.account.security.subtitle')}
+                        icon={<Shield />}
+                    ></SettingsCard>
                 </SettingsRow>
             </div>
             <div className='flex flex-col space-y-5'>
                 <h4>{t('settings.manage.title')}</h4>
                 <SettingsRow>
-                    <SettingsCard link='/bank-accounts' title={t('settings.manage.bankAccount.title')} subtitle={t('settings.manage.bankAccount.subtitle')} icon={<Landmark />}></SettingsCard>
+                    <SettingsCard
+                        link='/bank-accounts'
+                        title={t('settings.manage.bankAccount.title')}
+                        subtitle={t('settings.manage.bankAccount.subtitle')}
+                        icon={<Landmark />}
+                    ></SettingsCard>
                     <SettingsCard link='#' title={t('settings.manage.category.title')} subtitle={t('settings.manage.category.subtitle')} icon={<Shapes />}></SettingsCard>
-                    <SettingsCard link='#' title={t('settings.manage.subscriptions.title')} subtitle={t('settings.manage.subscriptions.subtitle')} icon={<WalletCards />}></SettingsCard>
+                    <SettingsCard
+                        link='#'
+                        title={t('settings.manage.subscriptions.title')}
+                        subtitle={t('settings.manage.subscriptions.subtitle')}
+                        icon={<WalletCards />}
+                    ></SettingsCard>
                 </SettingsRow>
             </div>
             <div className='flex flex-col space-y-5'>
                 <h4>{t('settings.system.title')}</h4>
                 <SettingsRow>
-                    <SettingsCard link='#' title={t('settings.system.globalPreferences.title')} subtitle={t('settings.system.globalPreferences.subtitle')} icon={<Settings />}></SettingsCard>
+                    <SettingsCard
+                        link='#'
+                        title={t('settings.system.globalPreferences.title')}
+                        subtitle={t('settings.system.globalPreferences.subtitle')}
+                        icon={<Settings />}
+                    ></SettingsCard>
                 </SettingsRow>
             </div>
             <p className='sub'>v{appConfig.version}</p>

@@ -1,6 +1,16 @@
 'use client'
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@poveroh/ui/components/alert-dialog'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from '@poveroh/ui/components/alert-dialog'
 import { buttonVariants } from '@poveroh/ui/components/button'
 import { Loader2, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
