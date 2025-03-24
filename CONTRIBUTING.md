@@ -1,8 +1,8 @@
 # Contributing to Poveroh
 
-This repository follows the [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) approach.
+This repository follows the [GitHub](https://docs.github.com/en/get-started/using-github/github-flow) approach.
 
-The development branch is `dev`, while the production branch is `main`.
+The development branch is `main`.
 
 ## Get start develop
 
@@ -14,7 +14,7 @@ The development branch is `dev`, while the production branch is `main`.
 3. Clone the project
 
     ```bash
-    git clone https://github.com/Poveroh/poveroh.git
+    git clone https://github.com/<user>/poveroh.git
     ```
 
 4. Go to the project folder
