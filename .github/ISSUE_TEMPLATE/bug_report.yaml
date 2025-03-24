@@ -8,21 +8,12 @@ body:
   attributes:
     value: |
       Thank you for taking the time to fill out this bug report.
-- type: checkboxes
-  attributes:
-    label: Is there an existing issue for this?
-    description: Please search to see if an issue already exists for the bug you encountered
-    options:
-    - label: I have searched the existing issues
-      required: true
 - type: textarea
   attributes:
     label: Current behavior
     description: A concise description of what you're experiencing and what you expect
     placeholder: |
-      When I do <X>, <Y> happens and I see the error message attached below:
-      ```...```
-      What I expect is <Z>
+      A summary of the issue. 
   validations:
     required: true
 - type: textarea
@@ -42,7 +33,7 @@ body:
     label: Environment
     options:
       - Production
-      - Self hosting (docker)
+      - Preview
   validations:
     required: true
 - type: dropdown
@@ -60,7 +51,7 @@ body:
     label: Variant
     options:
       - Cloud
-      - Self-hosted
+      - Self-hosted (docker)
       - Local
   validations:
     required: true
