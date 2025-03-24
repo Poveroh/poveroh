@@ -23,6 +23,7 @@ WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY turbo.json turbo.json
 RUN npm ci
+RUN npm update
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
