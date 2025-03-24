@@ -1,7 +1,14 @@
 'use client'
 
 import { Button } from '@poveroh/ui/components/button'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@poveroh/ui/components/breadcrumb'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator
+} from '@poveroh/ui/components/breadcrumb'
 import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
 import { useEffect, useState } from 'react'
@@ -90,7 +97,11 @@ export default function BankAccountView() {
             return
         }
 
-        const filteredList = backupAccountList.filter(account => account.title.toLowerCase().includes(textToSearch) || account.description.toLowerCase().includes(textToSearch))
+        const filteredList = backupAccountList.filter(
+            account =>
+                account.title.toLowerCase().includes(textToSearch) ||
+                account.description.toLowerCase().includes(textToSearch)
+        )
 
         setBankAccountList(filteredList)
     }

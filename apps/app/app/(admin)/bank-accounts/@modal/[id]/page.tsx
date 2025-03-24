@@ -40,7 +40,12 @@ export default function BankAccountsIdModal({ params }: BankAccountsIdModalProps
 
     return (
         <Modal open={dialogOpen} title={bankAccount?.title || ''} icon={bankAccount?.logo_icon}>
-            <BankAccountForm initialData={bankAccount} inEditingMode={true} onSubmit={saveBankAccount} closeDialog={closeDialog} />
+            <BankAccountForm
+                initialData={bankAccount}
+                inEditingMode={true}
+                onSubmit={saveBankAccount}
+                closeDialog={closeDialog}
+            />
         </Modal>
     )
 }

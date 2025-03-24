@@ -86,7 +86,11 @@ export default function LoginView() {
                                 <FormItem>
                                     <FormLabel mandatory>Password</FormLabel>
                                     <FormControl>
-                                        <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                        <PasswordInput
+                                            type='password'
+                                            placeholder='&bull;&bull;&bull;&bull;'
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

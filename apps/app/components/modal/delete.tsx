@@ -45,7 +45,11 @@ export function DeleteModal({ title, description, open, setOpen, loading, onConf
                     <AlertDialogCancel disabled={loading} onClick={() => setOpen(false)}>
                         {t('buttons.cancel')}
                     </AlertDialogCancel>
-                    <AlertDialogAction className={buttonVariants({ variant: 'danger' })} onClick={onConfirm} disabled={loading}>
+                    <AlertDialogAction
+                        className={buttonVariants({ variant: 'danger' })}
+                        onClick={onConfirm}
+                        disabled={loading}
+                    >
                         {loading && <Loader2 className='animate-spin mr-2' />}
                         {t('buttons.delete')}
                     </AlertDialogAction>
