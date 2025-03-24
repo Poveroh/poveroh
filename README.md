@@ -180,9 +180,9 @@ This project uses:
 
 ## :handshake: Contribuite
 
-This repository follows the [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) approach.
+This repository follows the [GitHub](https://docs.github.com/en/get-started/using-github/github-flow) approach.
 
-The development branch is `dev`, while the production branch is `main`.
+The development branch is `main`.
 
 For more info, read the [docs](CONTRIBUTING.md).
 
