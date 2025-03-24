@@ -194,7 +194,7 @@ In running order:
 
 - [x] Login
 - [ ] Categories & subcategories
-- [ ] Bank accounts
+- [x] Bank accounts
 - [ ] Transaction
     - [ ] Manual insert
     - [ ] Upload from CSV or PDF
