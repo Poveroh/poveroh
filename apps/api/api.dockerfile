@@ -26,6 +26,7 @@ WORKDIR /app
 # First install dependencies
 COPY --from=builder /app/out/json/ .
 RUN npm install
+RUN npm update
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
