@@ -1,12 +1,27 @@
 'use client'
 
 import { Button } from '@poveroh/ui/components/button'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@poveroh/ui/components/breadcrumb'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator
+} from '@poveroh/ui/components/breadcrumb'
 import { useTranslations } from 'next-intl'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserService } from '@/services/user.service'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@poveroh/ui/components/form'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
@@ -108,9 +123,15 @@ export default function SecurityView() {
                                     name='oldPassword'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('settings.account.security.form.password.oldpassword')}</FormLabel>
+                                            <FormLabel>
+                                                {t('settings.account.security.form.password.oldpassword')}
+                                            </FormLabel>
                                             <FormControl>
-                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                                <PasswordInput
+                                                    type='password'
+                                                    placeholder='&bull;&bull;&bull;&bull;'
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -123,12 +144,22 @@ export default function SecurityView() {
                                     name='newPassword'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('settings.account.security.form.password.newpassword')}</FormLabel>
+                                            <FormLabel>
+                                                {t('settings.account.security.form.password.newpassword')}
+                                            </FormLabel>
                                             <FormControl>
-                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                                <PasswordInput
+                                                    type='password'
+                                                    placeholder='&bull;&bull;&bull;&bull;'
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage />
-                                            <FormDescription dangerouslySetInnerHTML={{ __html: t('settings.account.security.form.password.description') }}></FormDescription>
+                                            <FormDescription
+                                                dangerouslySetInnerHTML={{
+                                                    __html: t('settings.account.security.form.password.description')
+                                                }}
+                                            ></FormDescription>
                                         </FormItem>
                                     )}
                                 />
@@ -137,9 +168,15 @@ export default function SecurityView() {
                                     name='confirmPassword'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('settings.account.security.form.password.confirmPassword')}</FormLabel>
+                                            <FormLabel>
+                                                {t('settings.account.security.form.password.confirmPassword')}
+                                            </FormLabel>
                                             <FormControl>
-                                                <PasswordInput type='password' placeholder='&bull;&bull;&bull;&bull;' {...field} />
+                                                <PasswordInput
+                                                    type='password'
+                                                    placeholder='&bull;&bull;&bull;&bull;'
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

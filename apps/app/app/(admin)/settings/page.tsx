@@ -13,7 +13,10 @@ type SettingsCardType = {
 
 function SettingsCard(props: SettingsCardType) {
     return (
-        <Link href={props.link} className='flex flex-col space-y-10 h-full p-10 bg-box border border-hr rounded-lg w-full'>
+        <Link
+            href={props.link}
+            className='flex flex-col space-y-10 h-full p-10 bg-box border border-hr rounded-lg w-full'
+        >
             {props.icon}
             <div className='flex flex-col space-y-1'>
                 <p className='font-bold'>{props.title}</p>
@@ -61,7 +64,12 @@ export default function SettingsPage() {
                         subtitle={t('settings.manage.bankAccount.subtitle')}
                         icon={<Landmark />}
                     ></SettingsCard>
-                    <SettingsCard link='#' title={t('settings.manage.category.title')} subtitle={t('settings.manage.category.subtitle')} icon={<Shapes />}></SettingsCard>
+                    <SettingsCard
+                        link='#'
+                        title={t('settings.manage.category.title')}
+                        subtitle={t('settings.manage.category.subtitle')}
+                        icon={<Shapes />}
+                    ></SettingsCard>
                     <SettingsCard
                         link='#'
                         title={t('settings.manage.subscriptions.title')}

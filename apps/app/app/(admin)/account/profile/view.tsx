@@ -1,12 +1,27 @@
 'use client'
 
 import { Button } from '@poveroh/ui/components/button'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@poveroh/ui/components/breadcrumb'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator
+} from '@poveroh/ui/components/breadcrumb'
 import { useTranslations } from 'next-intl'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserService } from '@/services/user.service'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { useForm } from 'react-hook-form'
 import { IUserToSave } from '@poveroh/types'
@@ -101,7 +116,10 @@ export default function ProfileView() {
                                     name='name'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel> {t('settings.account.personalInfo.form.generalities.name')}</FormLabel>
+                                            <FormLabel>
+                                                {' '}
+                                                {t('settings.account.personalInfo.form.generalities.name')}
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>
@@ -115,7 +133,10 @@ export default function ProfileView() {
                                     name='surname'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel> {t('settings.account.personalInfo.form.generalities.surname')}</FormLabel>
+                                            <FormLabel>
+                                                {' '}
+                                                {t('settings.account.personalInfo.form.generalities.surname')}
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>
@@ -134,7 +155,9 @@ export default function ProfileView() {
                                             <FormControl>
                                                 <Input placeholder='example@mail.com' {...field} />
                                             </FormControl>
-                                            <FormDescription>{t('settings.account.personalInfo.form.generalities.email.subTitle')}</FormDescription>
+                                            <FormDescription>
+                                                {t('settings.account.personalInfo.form.generalities.email.subTitle')}
+                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}

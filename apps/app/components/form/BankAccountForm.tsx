@@ -205,10 +205,16 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                             <div className='items-top flex space-x-2'>
                                 <Checkbox id='keepAdding' checked={keepAdding} onChange={handleKeepAddingChange} />
                                 <div className='grid gap-1.5 leading-none cursor-pointer'>
-                                    <label htmlFor='keepAdding' className='text-sm font-medium leading-none' onClick={handleKeepAddingChange}>
+                                    <label
+                                        htmlFor='keepAdding'
+                                        className='text-sm font-medium leading-none'
+                                        onClick={handleKeepAddingChange}
+                                    >
                                         {t('modal.continueInsert.label')}
                                     </label>
-                                    <p className='text-sm text-muted-foreground'>{t('modal.continueInsert.subtitle')}</p>
+                                    <p className='text-sm text-muted-foreground'>
+                                        {t('modal.continueInsert.subtitle')}
+                                    </p>
                                 </div>
                             </div>
                         )}
