@@ -31,14 +31,14 @@ The development branch is `main`.
 
 6. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
-## Setup Database
+### Setup Database and CDN
 
 > Docker and Docker Compose must be installed, up, and running on the machine.
 
-1. Run `setup-db` file
+1. Run `setup` file
 
     ```bash
-    npm run setup:db
+    npm run setup
     ```
 
     The command will execute the following steps:
@@ -47,12 +47,18 @@ The development branch is `main`.
     - Navigate to the `packages/prisma` directory.
     - Generate the Prisma client.
     - Apply any pending migrations to the database using Prisma.
+    - Create and run CDN ngix docker image.
 
-    > **⚠️ Warning:**
+    <br>
 
+    > **⚠️ Warning:**  
     > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
-2. Create a user: open a browser to http://localhost:5555 and fill out filds `name`, `surname`, `email` and `password` (password must encrypt with [BCrypt](https://bcrypt-generator.com/)).
+2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
+    - `name`
+    - `surname`
+    - `email`
+    - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) with 12 rounds (store this in password field).
 
 ## Build and run
 
@@ -68,9 +74,9 @@ The development branch is `main`.
     npm run dev
     ```
 
-# Some commands
+# Project Commands
 
-### Build Commands
+## Build Commands
 
 ```bash
 # Build all packages and applications
@@ -90,7 +96,7 @@ npm run build:api         # Build only the API
 npm run build:app         # Build only the app
 ```
 
-### Development Commands
+## Development Commands
 
 ```bash
 # Start development servers for API and app
@@ -105,14 +111,14 @@ npm run dev:api           # Start API development server
 npm run dev:app           # Start app development server
 ```
 
-### UI Commands
+## UI Commands
 
 ```bash
 # Add new UI components
 npm run ui:add
 ```
 
-### Database Commands
+## Database Commands
 
 ```bash
 # Set up the database
@@ -121,9 +127,10 @@ npm run setup:db
 # Prisma commands
 npm run prisma:generate   # Generate Prisma client
 npm run prisma:migrate    # Run Prisma migrations
+npm run prisma:studio     # Open Prisma Studio
 ```
 
-### Cleaning Commands
+## Cleaning Commands
 
 ```bash
 # Clean everything (node_modules, build files)
@@ -137,19 +144,44 @@ npm run clean:turbo
 
 # Remove all .env files
 npm run clean:env
+
+# Clean database data
+npm run clean:data
 ```
 
-### Formatting Commands
+## Formatting Commands
 
 ```bash
 # Format all code with Prettier
 npm run format
 ```
 
-## Linting
-
-To lint and format your code:
+## Docker Commands
 
 ```bash
-npm run format
+# Create Docker network
+npm run docker:create-network
+
+# Start specific services
+npm run docker:db        # Start database service
+npm run docker:api       # Start API service
+npm run docker:app       # Start application service
+npm run docker:studio    # Start Prisma Studio service
+npm run docker:cdn       # Start CDN service
+
+# Start all services
+npm run docker           # Build and start all Docker services
+```
+
+## Prisma Commands
+
+```bash
+# Generate Prisma client
+npm run prisma:generate
+
+# Run database migrations
+npm run prisma:migrate
+
+# Open Prisma Studio
+npm run prisma:studio
 ```
