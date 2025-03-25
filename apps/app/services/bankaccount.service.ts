@@ -1,46 +1,18 @@
-import { server } from '@/lib/server'
 import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
+import { BaseService } from './base.service'
 
-export class BankAccountService {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getTypeList(t: any): IItem[] {
+export class BankAccountService extends BaseService<IBankAccount> {
+    constructor() {
+        super('/bank-account')
+    }
+
+    getTypeList(t: (key: string) => string): IItem[] {
         return [
-            {
-                value: BankAccountType.ONLINE_BANK,
-                label: t('bankAccounts.types.online')
-            },
-            {
-                value: BankAccountType.BANK_ACCOUNT,
-                label: t('bankAccounts.types.bank')
-            },
-            {
-                value: BankAccountType.CIRCUIT,
-                label: t('bankAccounts.types.circuit')
-            },
-            {
-                value: BankAccountType.DEPOSIT_BANK,
-                label: t('bankAccounts.types.deposit')
-            },
-            {
-                value: BankAccountType.BROKER,
-                label: t('bankAccounts.types.broker')
-            }
+            { value: BankAccountType.ONLINE_BANK, label: t('bankAccounts.types.online') },
+            { value: BankAccountType.BANK_ACCOUNT, label: t('bankAccounts.types.bank') },
+            { value: BankAccountType.CIRCUIT, label: t('bankAccounts.types.circuit') },
+            { value: BankAccountType.DEPOSIT_BANK, label: t('bankAccounts.types.deposit') },
+            { value: BankAccountType.BROKER, label: t('bankAccounts.types.broker') }
         ]
-    }
-
-    async add(bankAccountToAdd: FormData) {
-        return await server.post<IBankAccount>('/bank-account/add', bankAccountToAdd, true)
-    }
-
-    async save(bankAccountToSave: FormData) {
-        return await server.post<IBankAccount>('/bank-account/save', bankAccountToSave, true)
-    }
-
-    async delete(bankAccountToDelete: string) {
-        return await server.post<boolean>('/bank-account/delete', { id: bankAccountToDelete })
-    }
-
-    async read<T>(query?: string[] | { id?: string; title?: string; description?: string }): Promise<T> {
-        return await server.post<T>('/bank-account/read', query)
     }
 }

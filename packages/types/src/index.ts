@@ -1,4 +1,5 @@
 export * from './lib/bankaccount.js'
+export * from './lib/category.js'
 export * from './lib/constants.js'
 export * from './lib/currency.js'
 export * from './lib/exeption.js'

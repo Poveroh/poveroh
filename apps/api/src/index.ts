@@ -6,6 +6,8 @@ import cors from 'cors'
 import statusRoutes from './routes/status'
 import authRoutes from './routes/auth'
 import userRoutes from './routes/user'
+import categoryRoutes from './routes/category'
+import subcategoryRoutes from './routes/subcategory'
 import bankAccountRoutes from './routes/bankaccount'
 import { config } from './utils/environment'
 
@@ -34,6 +36,8 @@ app.use('/status', statusRoutes)
 app.use('/auth', authRoutes)
 app.use('/user', userRoutes)
 app.use('/bank-account', bankAccountRoutes)
+app.use('/category', categoryRoutes)
+app.use('/subcategory', subcategoryRoutes)
 
 app.listen(config.PORT, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${config.PORT}`)
