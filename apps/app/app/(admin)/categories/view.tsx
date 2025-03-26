@@ -52,7 +52,6 @@ function CategoryItem({ category, reload }: ItemProps) {
     return (
         <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
             <div className='flex flex-row items-center space-x-5'>
-                <div className='brands' style={{ backgroundImage: logo_icon }}></div>
                 <DynamicIcon name='camera' />
                 <div>
                     <p>{category.title}</p>
