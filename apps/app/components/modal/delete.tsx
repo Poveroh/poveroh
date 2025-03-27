@@ -8,11 +8,10 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger
+    AlertDialogTitle
 } from '@poveroh/ui/components/alert-dialog'
 import { buttonVariants } from '@poveroh/ui/components/button'
-import { Loader2, Trash2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 type ModalProps = {
@@ -20,18 +19,15 @@ type ModalProps = {
     description?: string
     loading: boolean
     open: boolean
-    setOpen: (open: boolean) => void
+    closeDialog: () => void
     onConfirm: () => void
 }
 
-export function DeleteModal({ title, description, open, setOpen, loading, onConfirm }: ModalProps) {
+export function DeleteModal({ title, description, open, closeDialog, loading, onConfirm }: ModalProps) {
     const t = useTranslations()
 
     return (
         <AlertDialog open={open}>
-            <AlertDialogTrigger asChild>
-                <Trash2 className='danger cursor-pointer' onClick={() => setOpen(true)} />
-            </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
@@ -42,7 +38,7 @@ export function DeleteModal({ title, description, open, setOpen, loading, onConf
                     {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel disabled={loading} onClick={() => setOpen(false)}>
+                    <AlertDialogCancel disabled={loading} onClick={() => closeDialog()}>
                         {t('buttons.cancel')}
                     </AlertDialogCancel>
                     <AlertDialogAction

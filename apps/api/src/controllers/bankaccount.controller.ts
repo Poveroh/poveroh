@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { IBankAccount, IBankAccountBase } from '@poveroh/types'
 import { isLocalStorageMode, uploadClient } from '../utils/storage'
-import path from 'path'
 import { config } from '../utils/environment'
 import _ from 'lodash'
 
@@ -89,27 +88,28 @@ export class BankAccountController {
 
     static async read(req: Request, res: Response) {
         try {
-            let sql: any = {}
+            const { id, title, description } = req.body
 
-            if (!_.isEmpty(req.body)) {
-                if (_.isArray(req.body)) {
-                    sql = {
-                        where: {
-                            id: {
-                                in: req.body
-                            }
-                        }
+            const sql: any = {
+                where: {},
+                orderBy: {
+                    created_at: 'desc'
+                }
+            }
+
+            if (Array.isArray(req.body)) {
+                sql.where = {
+                    id: {
+                        in: req.body
                     }
-                } else {
-                    sql = {
-                        where: {
-                            OR: [
-                                { id: req.body.id },
-                                { title: { contains: req.body.title, mode: 'insensitive' } },
-                                { description: { contains: req.body.description, mode: 'insensitive' } }
-                            ]
-                        }
-                    }
+                }
+            } else if (!_.isEmpty(req.body)) {
+                sql.where = {
+                    OR: [
+                        id && { id },
+                        title && { title: { contains: title, mode: 'insensitive' } },
+                        description && { description: { contains: description, mode: 'insensitive' } }
+                    ].filter(Boolean)
                 }
             }
 
@@ -117,7 +117,7 @@ export class BankAccountController {
 
             res.status(200).json(accounts)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

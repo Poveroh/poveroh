@@ -1,7 +1,6 @@
 'use client'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@poveroh/ui/components/dialog'
-import { useRouter } from 'next/navigation'
 
 type ModalProps = {
     open: boolean
@@ -9,15 +8,10 @@ type ModalProps = {
     description?: string
     icon?: string
     children: React.ReactNode
+    handleOpenChange: (open: boolean) => void
 }
 
-export function Modal({ children, open, title, description, icon }: ModalProps) {
-    const router = useRouter()
-
-    const handleOpenChange = () => {
-        router.back()
-    }
-
+export function Modal({ children, open, title, description, icon, handleOpenChange }: ModalProps) {
     return (
         <Dialog defaultOpen={true} open={open} onOpenChange={handleOpenChange}>
             <DialogContent className='sm:max-w-[40vw]'>
