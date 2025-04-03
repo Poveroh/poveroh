@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,10 +8,13 @@ import { useTranslations } from 'next-intl'
 
 import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
+import { toast } from '@poveroh/ui/components/sonner'
 import { Button } from '@poveroh/ui/components/button'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { DialogFooter } from '@poveroh/ui/components/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import { Input } from '@poveroh/ui/components/input'
+import { Textarea } from '@poveroh/ui/components/textarea'
 import {
     Select,
     SelectContent,
@@ -21,9 +24,6 @@ import {
     SelectValue
 } from '@poveroh/ui/components/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
-import { Input } from '@poveroh/ui/components/input'
-import { Textarea } from '@poveroh/ui/components/textarea'
-import { toast } from '@poveroh/ui/components/sonner'
 
 import { Loader2 } from 'lucide-react'
 
@@ -117,12 +117,6 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
         setKeepAdding(!keepAdding)
     }
 
-    const tt = (value: any) => {
-        console.log(value)
-
-        return <></>
-    }
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-10'>
@@ -174,7 +168,6 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('subcategories.form.category.placeholder')} />
-                                            {tt(field.value)}
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
