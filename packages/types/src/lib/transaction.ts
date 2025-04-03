@@ -16,7 +16,9 @@ export interface ITransaction {
 }
 
 export enum TransactionAction {
-    INTERNAL,
-    INCOME,
-    EXPENSES
+    INTERNAL = 'INTERNAL',
+    INCOME = 'INCOME',
+    EXPENSES = 'EXPENSES'
 }
+
+export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>

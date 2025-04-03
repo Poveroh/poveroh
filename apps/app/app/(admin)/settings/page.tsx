@@ -65,7 +65,7 @@ export default function SettingsPage() {
                         icon={<Landmark />}
                     ></SettingsCard>
                     <SettingsCard
-                        link='#'
+                        link='/categories'
                         title={t('settings.manage.category.title')}
                         subtitle={t('settings.manage.category.subtitle')}
                         icon={<Shapes />}

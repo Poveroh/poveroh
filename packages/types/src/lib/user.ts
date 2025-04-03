@@ -11,7 +11,7 @@ export interface IUserToSave {
 
 export interface IUser extends IUserToSave {
     id: string
-    created_at: Date
+    created_at: string
 }
 
 export const defaultUser: IUser = {
@@ -19,5 +19,5 @@ export const defaultUser: IUser = {
     name: '',
     surname: '',
     email: '',
-    created_at: new Date()
+    created_at: ''
 }

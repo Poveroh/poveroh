@@ -1,0 +1,82 @@
+[
+    {
+        "id": "f876ebc1-18ad-43c8-b2a6-2386d0c6c21a",
+        "category_id": "c6b06384-90df-44e0-9b71-48830a6d145f",
+        "title": "Groceries",
+        "description": "Expenses related to groceries and shopping.",
+        "logo_icon": "shopping-bag",
+        "created_at": "2025-03-25T10:30:00Z"
+    },
+    {
+        "id": "a3a9d6cb-9054-4a9a-bf8b-4fa34e8b06c9",
+        "category_id": "c6b06384-90df-44e0-9b71-48830a6d145f",
+        "title": "Dining Out",
+        "description": "Expenses for eating at restaurants.",
+        "logo_icon": "coffee",
+        "created_at": "2025-03-25T12:45:00Z"
+    },
+    {
+        "id": "da5db0de-4db7-4c76-9f92-081bcf6b2495",
+        "category_id": "d5a7265f-ea3e-4f1f-a0d7-93b9f557ae67",
+        "title": "Public Transport",
+        "description": "Expenses for buses, trains, etc.",
+        "logo_icon": "tickets-plane",
+        "created_at": "2025-03-22T09:00:00Z"
+    },
+    {
+        "id": "58748273-1f82-4e07-bfb1-5a897d20b9b7",
+        "category_id": "d5a7265f-ea3e-4f1f-a0d7-93b9f557ae67",
+        "title": "Fuel",
+        "description": "Fuel costs for personal vehicles.",
+        "logo_icon": "zap",
+        "created_at": "2025-03-23T15:30:00Z"
+    },
+    {
+        "id": "315f8e29-0b13-42bc-bf51-b17f9250d745",
+        "category_id": "d5a7265f-ea3e-4f1f-a0d7-93b9f557ae67",
+        "title": "Taxis & Ride Share",
+        "description": "Expenses related to taxis and ride-sharing services like Uber.",
+        "logo_icon": "credit-card",
+        "created_at": "2025-03-24T14:20:00Z"
+    },
+    {
+        "id": "77f87f49-47bb-4a8b-b510-8ff3db3d1d25",
+        "category_id": "a383e437-65b3-469d-b39b-b3cd87b97a51",
+        "title": "Movies & Shows",
+        "description": "Expenses related to watching movies, shows, or theaters.",
+        "logo_icon": "tv",
+        "created_at": "2025-03-20T17:00:00Z"
+    },
+    {
+        "id": "ef78b9f5-b88e-48d1-9090-b2f45b9446f2",
+        "category_id": "a383e437-65b3-469d-b39b-b3cd87b97a51",
+        "title": "Music & Concerts",
+        "description": "Expenses for concerts, music events, or subscriptions.",
+        "logo_icon": "music",
+        "created_at": "2025-03-21T16:10:00Z"
+    },
+    {
+        "id": "e35cf388-df32-4d35-a8f3-b3c2c85c0c34",
+        "category_id": "a383e437-65b3-469d-b39b-b3cd87b97a51",
+        "title": "Books & Hobbies",
+        "description": "Expenses for books, hobbies, and other leisure activities.",
+        "logo_icon": "library",
+        "created_at": "2025-03-25T11:30:00Z"
+    },
+    {
+        "id": "e5db6b65-d319-4683-8c91-4c506d37cd69",
+        "category_id": "4f66cb57-3d7f-4874-a4f0-df7424e2e5b2",
+        "title": "Gym & Fitness",
+        "description": "Expenses for gym memberships and fitness activities.",
+        "logo_icon": "heart",
+        "created_at": "2025-03-22T19:40:00Z"
+    },
+    {
+        "id": "af2271b7-b022-4a1a-b3a9-68ab6d89a6cb",
+        "category_id": "4f66cb57-3d7f-4874-a4f0-df7424e2e5b2",
+        "title": "Health Insurance",
+        "description": "Expenses for health insurance plans.",
+        "logo_icon": "stethoscope",
+        "created_at": "2025-03-23T08:50:00Z"
+    }
+]

@@ -40,6 +40,9 @@ const prisma = new PrismaClient()
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
 
+// Add other tables in the order based on prisma schemas
+const IMPORT_ORDER = ['users', 'bank_accounts', 'categories', 'subcategories']
+
 function parseArgs() {
     const args = process.argv.slice(2)
     let folderName = DEFAULT_FOLDER
@@ -197,11 +200,33 @@ async function main() {
         } else {
             const dirFiles = fs.readdirSync(fullPath)
 
+            // Filter valid files
             const validFiles = dirFiles.filter(file => ALLOWED_EXTENSIONS.includes(path.extname(file).toLowerCase()))
 
-            console.log(`Found ${validFiles.length} valid files to process`)
+            // First, process files in the specified import order
+            for (const orderedTable of IMPORT_ORDER) {
+                const matchingFiles = validFiles.filter(
+                    file => path.basename(file, path.extname(file)).toLowerCase() === orderedTable.toLowerCase()
+                )
 
-            for (const file of validFiles) {
+                for (const file of matchingFiles) {
+                    await processFile(fullPath, file)
+                }
+            }
+
+            // Then process any remaining files not in the specified order
+            const processedFiles = new Set(
+                IMPORT_ORDER.map(table =>
+                    validFiles.find(
+                        file => path.basename(file, path.extname(file)).toLowerCase() === table.toLowerCase()
+                    )
+                ).filter(Boolean)
+            )
+
+            const remainingFiles = validFiles.filter(file => !processedFiles.has(file))
+
+            console.log(`\n🔍 Processing remaining files not in specified order`)
+            for (const file of remainingFiles) {
                 await processFile(fullPath, file)
             }
 
