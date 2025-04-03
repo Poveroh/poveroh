@@ -119,20 +119,37 @@ export default function CategoryView() {
     }, [])
 
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
+        const textToSearch = event.target.value.toLowerCase()
 
-        // if (_.isEmpty(textToSearch)) {
-        //     setBankAccountList(backupAccountList)
-        //     return
-        // }
+        if (_.isEmpty(textToSearch)) {
+            setCategoryList(backupCategoryList)
+            return
+        }
 
-        // const filteredList = backupAccountList.filter(
-        //     account =>
-        //         account.title.toLowerCase().includes(textToSearch) ||
-        //         account.description.toLowerCase().includes(textToSearch)
-        // )
+        const filteredList = backupCategoryList
+            .map(category => {
+                const matchingSubcategories = category.subcategories.filter(
+                    subcategory =>
+                        subcategory.title.toLowerCase().includes(textToSearch) ||
+                        subcategory.description?.toLowerCase().includes(textToSearch)
+                )
 
-        // setBankAccountList(filteredList)
+                if (
+                    category.title.toLowerCase().includes(textToSearch) ||
+                    category.description?.toLowerCase().includes(textToSearch) ||
+                    matchingSubcategories.length > 0
+                ) {
+                    return {
+                        ...category,
+                        subcategories: matchingSubcategories.length > 0 ? matchingSubcategories : category.subcategories
+                    }
+                }
+
+                return null
+            })
+            .filter(Boolean) as ICategory[]
+
+        setCategoryList(filteredList)
     }
 
     const openDelete = (mode: modelMode, item: ICategory | ISubcategory) => {
