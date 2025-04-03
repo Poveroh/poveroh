@@ -1,28 +1,20 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { IBankAccount, IBankAccountBase, ICategory, ICategoryBase } from '@poveroh/types'
-import { isLocalStorageMode, uploadClient } from '../utils/storage'
-import { config } from '../utils/environment'
+import { ISubcategory, ISubcategoryBase } from '@poveroh/types'
 import _ from 'lodash'
 
-export class CategoryController {
+export class SubcategoryController {
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
+            if (!req.body.subcategory) throw new Error('Data not provided')
 
-            let readedCategory: ICategoryBase = JSON.parse(req.body.category)
+            let readedCategory: ISubcategoryBase = JSON.parse(req.body.subcategory)
 
-            const category = await prisma.categories.create({
-                data: {
-                    ...readedCategory,
-                    user_id: req.user.id
-                },
-                include: {
-                    subcategories: true
-                }
+            const subcategory = await prisma.subcategories.create({
+                data: readedCategory
             })
 
-            res.status(200).json(category)
+            res.status(200).json(subcategory)
         } catch (error) {
             res.status(500).json({ message: 'An error occurred', error })
             console.log(error)
@@ -31,18 +23,18 @@ export class CategoryController {
 
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
+            if (!req.body.subcategory) throw new Error('Data not provided')
 
-            let readedCategory: ICategory = JSON.parse(req.body.category)
+            let readedSubcategory: ISubcategory = JSON.parse(req.body.subcategory)
 
-            const category = await prisma.categories.update({
+            const subcategory = await prisma.subcategories.update({
                 where: {
-                    id: readedCategory.id
+                    id: readedSubcategory.id
                 },
-                data: _.omit(readedCategory, ['subcategories'])
+                data: readedSubcategory
             })
 
-            res.status(200).json(category)
+            res.status(200).json(subcategory)
         } catch (error) {
             res.status(500).json({ message: 'An error occurred', error })
         }
@@ -50,16 +42,8 @@ export class CategoryController {
 
     static async delete(req: Request, res: Response) {
         try {
-            await prisma.subcategories.deleteMany({
-                where: {
-                    category_id: req.body.id
-                }
-            })
-
-            await prisma.categories.delete({
-                where: {
-                    id: req.body.id
-                }
+            await prisma.subcategories.delete({
+                where: req.body
             })
 
             res.status(200).json(true)
@@ -76,9 +60,6 @@ export class CategoryController {
                 where: {},
                 orderBy: {
                     created_at: 'desc'
-                },
-                include: {
-                    subcategories: true
                 }
             }
 
@@ -98,9 +79,9 @@ export class CategoryController {
                 }
             }
 
-            const categories = await prisma.categories.findMany(sql)
+            const subcategories = await prisma.subcategories.findMany(sql)
 
-            res.status(200).json(categories)
+            res.status(200).json(subcategories)
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: 'An error occurred', error })

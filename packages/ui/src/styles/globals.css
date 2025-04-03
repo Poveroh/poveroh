@@ -33,7 +33,9 @@
     --ring-color: #393939;
 
     --body-color: #1c1c1c;
-    --body-gradient-color: radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00), radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00), var(--body-color);
+    --body-gradient-color:
+        radial-gradient(circle 600px at bottom right, var(--brand-color-2), #1c1c1c00),
+        radial-gradient(circle 600px at top left, var(--brand-color-2), #1c1c1c00), var(--body-color);
     --input-color: #313131;
     --box-color: #212121;
 
@@ -100,6 +102,10 @@ html {
     font-weight: var(--weight-regular);
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+body[data-scroll-locked] {
+    margin-right: 0 !important;
 }
 
 /* BACKGROUND */

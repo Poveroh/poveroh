@@ -5,7 +5,7 @@
         "title": "Food",
         "description": "Everything related to food and meals.",
         "for": "INCOME",
-        "logo_icon": "food-icon.png",
+        "logo_icon": "pizza",
         "created_at": "2025-03-20T08:00:00Z"
     },
     {
@@ -14,7 +14,7 @@
         "title": "Transportation",
         "description": "Expenses related to travel and transportation.",
         "for": "EXPENSES",
-        "logo_icon": "transport-icon.png",
+        "logo_icon": "car",
         "created_at": "2025-03-18T10:00:00Z"
     },
     {
@@ -23,7 +23,7 @@
         "title": "Entertainment",
         "description": "Expenses related to leisure activities and hobbies.",
         "for": "EXPENSES",
-        "logo_icon": "entertainment-icon.png",
+        "logo_icon": "clapperboard",
         "created_at": "2025-03-17T13:40:00Z"
     },
     {
@@ -32,7 +32,7 @@
         "title": "Health & Fitness",
         "description": "Health-related expenses and fitness activities.",
         "for": "EXPENSES",
-        "logo_icon": "health-icon.png",
+        "logo_icon": "dumbbell",
         "created_at": "2025-03-19T12:10:00Z"
     }
 ]

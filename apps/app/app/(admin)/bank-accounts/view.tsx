@@ -12,7 +12,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
 import { useEffect, useState } from 'react'
-import { Download, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
+import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
 import Box from '@/components/box/boxWrapper'
 import { BankAccountService } from '@/services/bankaccount.service'
 import { IBankAccount } from '@poveroh/types/dist'
@@ -184,18 +184,28 @@ export default function BankAccountView() {
                         onChange={onSearch}
                     />
                 </div>
-                <Box>
-                    <>
-                        {bankAccountList.map(account => (
-                            <BankAccountItem
-                                key={account.id}
-                                account={account}
-                                openEdit={openEdit}
-                                openDelete={openDelete}
-                            />
-                        ))}
-                    </>
-                </Box>
+                {bankAccountList.length > 0 ? (
+                    <Box>
+                        <>
+                            {bankAccountList.map(account => (
+                                <BankAccountItem
+                                    key={account.id}
+                                    account={account}
+                                    openEdit={openEdit}
+                                    openDelete={openDelete}
+                                />
+                            ))}
+                        </>
+                    </Box>
+                ) : (
+                    <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                        <Landmark />
+                        <div className='flex flex-col items-center space-y-2 justify-center'>
+                            <h4>{t('bankAccounts.empty.title')}</h4>
+                            <p>{t('bankAccounts.empty.subtitle')}</p>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {itemToDelete && (

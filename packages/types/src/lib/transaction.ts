@@ -20,3 +20,5 @@ export enum TransactionAction {
     INCOME = 'INCOME',
     EXPENSES = 'EXPENSES'
 }
+
+export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>

@@ -18,15 +18,13 @@ for (const name of icons) {
 }
 
 type DynamicIconProps = {
-    name: IconName
+    name: string
     className?: string
 }
 
 const DynamicIcon = memo(({ name, ...props }: DynamicIconProps) => {
-    const Icon = icons_components[name]
-
+    const Icon = icons_components[name as IconName]
     if (!Icon) return null
-
     return <Icon {...props} />
 })
 DynamicIcon.displayName = 'DynamicIcon'

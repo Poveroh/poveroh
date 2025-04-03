@@ -1,52 +1,59 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@poveroh/ui/components/button'
-import { DialogFooter } from '@poveroh/ui/components/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { useTranslations } from 'next-intl'
-import { Input } from '@poveroh/ui/components/input'
-import { Textarea } from '@poveroh/ui/components/textarea'
-import { Badge } from '@poveroh/ui/components/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { Checkbox } from '@poveroh/ui/components/checkbox'
-import { FileInput } from '@poveroh/ui/components/file'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { BankAccountService } from '@/services/bankaccount.service'
-import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
-import { Loader2, X } from 'lucide-react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+
+import { ICategory, IItem } from '@poveroh/types'
+import { TransactionService } from '@/services/transaction.service'
+
+import { Button } from '@poveroh/ui/components/button'
+import { Checkbox } from '@poveroh/ui/components/checkbox'
+import { DialogFooter } from '@poveroh/ui/components/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
+import { Input } from '@poveroh/ui/components/input'
+import { Textarea } from '@poveroh/ui/components/textarea'
 import { toast } from '@poveroh/ui/components/sonner'
 
-type BankAccountFormProps = {
-    initialData?: IBankAccount
+import { Loader2 } from 'lucide-react'
+
+import { iconList } from '../icon'
+import DynamicIcon from '../icon/dynamicIcon'
+
+type FormProps = {
+    initialData?: ICategory
     inEditingMode: boolean
     onSubmit: (formData: FormData) => Promise<void>
     closeDialog: () => void
 }
 
-export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDialog }: BankAccountFormProps) {
+export function CategoryForm({ initialData, inEditingMode, onSubmit, closeDialog }: FormProps) {
     const t = useTranslations()
 
-    const bankAccountService = new BankAccountService()
-    const bankAccountTypes = bankAccountService.getTypeList(t)
+    const transactionService = new TransactionService()
+    const transactionActions = transactionService.getActionList(t, true)
 
-    const [file, setFile] = useState<FileList | null>(null)
-    const [fileError, setFileError] = useState(false)
+    const [icon, setIcon] = useState(iconList[0])
+    const [iconError, setIconError] = useState(false)
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
     const defaultValues = {
         title: '',
         description: '',
-        type: initialData?.type || BankAccountType.BANK_ACCOUNT
+        logo_icon: iconList[0] as string,
+        for: initialData?.for || 'EXPENSES'
     }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         description: z.string(),
-        type: z.enum(Object.values(BankAccountType) as [BankAccountType, ...BankAccountType[]])
+        logo_icon: z.string().nonempty(t('messages.errors.required')),
+        for: z.string()
     })
 
     const form = useForm({
@@ -57,6 +64,7 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
     useEffect(() => {
         if (initialData) {
             form.reset(initialData)
+            setIcon(initialData.logo_icon)
         }
     }, [initialData, form])
 
@@ -66,14 +74,7 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
         try {
             const formData = new FormData()
 
-            formData.append('account', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            if (file && file[0]) {
-                formData.append('file', file[0])
-            } else if (!inEditingMode) {
-                setFileError(true)
-                return
-            }
+            formData.append('category', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
 
             await onSubmit(formData)
 
@@ -85,8 +86,8 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                 }
             }
 
-            setFile(null)
-            setFileError(false)
+            setIcon(iconList[0])
+            setIconError(false)
 
             toast.success(
                 t('messages.successfully', {
@@ -95,8 +96,8 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                 })
             )
         } catch (error) {
-            console.log(error)
             toast.error(t('messages.error'))
+            console.log(error)
         } finally {
             setLoading(false)
         }
@@ -115,7 +116,7 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                         name='title'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('bankAccounts.form.title.label')}</FormLabel>
+                                <FormLabel mandatory>{t('categories.form.title.label')}</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -129,9 +130,9 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                         name='description'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('bankAccounts.form.description.label')}</FormLabel>
+                                <FormLabel>{t('categories.form.description.label')}</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder={t('bankAccounts.form.description.placeholder')} {...field} />
+                                    <Textarea placeholder={t('categories.form.description.placeholder')} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -140,19 +141,19 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
 
                     <FormField
                         control={form.control}
-                        name='type'
+                        name='for'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('bankAccounts.form.type.label')}</FormLabel>
+                                <FormLabel mandatory>{t('categories.form.type.label')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('bankAccounts.form.type.placeholder')} />
+                                            <SelectValue placeholder={t('categories.form.type.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccountTypes.map((item: IItem) => (
-                                            <SelectItem key={item.value} value={item.value}>
+                                        {transactionActions.map((item: IItem) => (
+                                            <SelectItem key={item.value} value={item.value.toString()}>
                                                 {item.label}
                                             </SelectItem>
                                         ))}
@@ -165,37 +166,39 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('bankAccounts.form.icon.label')}</FormLabel>
+                            <FormLabel mandatory={!inEditingMode}>{t('categories.form.icon.label')}</FormLabel>
                             <FormControl>
                                 {
-                                    <FileInput
-                                        onChange={e => {
-                                            setFile(e.target.files)
-                                            setFileError(false)
-                                        }}
-                                    />
+                                    <div className='grid grid-cols-12 gap-5 rounded-md box-border'>
+                                        {iconList.map(x => {
+                                            return (
+                                                <TooltipProvider key={x}>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <div
+                                                                key={x}
+                                                                className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
+                                                                    ${icon === x ? 'bg-white text-black border border-hr' : ''}`}
+                                                                onClick={() => {
+                                                                    form.setValue('logo_icon', x)
+                                                                    setIcon(x)
+                                                                }}
+                                                            >
+                                                                <DynamicIcon key={x} name={x}></DynamicIcon>
+                                                            </div>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>{x}</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            )
+                                        })}
+                                    </div>
                                 }
                             </FormControl>
-                            {fileError && <p className='danger'>{t('messages.errors.required')}</p>}
+                            {iconError && <p className='danger'>{t('messages.errors.required')}</p>}
                         </FormItem>
-
-                        {file && (
-                            <div className='flex flex-row items-center space-x-2'>
-                                <p>{t('messages.toUpload')}:</p>
-                                <Badge className='flex items-center gap-1 w-fit'>
-                                    {file.item(0)?.name}
-                                    <button
-                                        onClick={() => {
-                                            setFile(null)
-                                        }}
-                                        className='ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5 transition-colors'
-                                        aria-label='Remove'
-                                    >
-                                        <X className='h-3 w-3' />
-                                    </button>
-                                </Badge>
-                            </div>
-                        )}
                     </div>
                 </div>
 
