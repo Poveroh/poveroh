@@ -193,7 +193,7 @@ For more info, read the [docs](CONTRIBUTING.md).
 In running order:
 
 - [x] Login
-- [ ] Categories & subcategories
+- [x] Categories & subcategories
 - [x] Bank accounts
 - [ ] Transaction
     - [ ] Manual insert
