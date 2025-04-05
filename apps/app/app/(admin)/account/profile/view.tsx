@@ -96,7 +96,7 @@ export default function ProfileView() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href=''>{t('settings.account.title')}</BreadcrumbLink>
+                            <BreadcrumbLink href='/settings'>{t('settings.account.title')}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>

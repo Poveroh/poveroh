@@ -103,7 +103,7 @@ export default function SecurityView() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href=''>{t('settings.account.title')}</BreadcrumbLink>
+                            <BreadcrumbLink href='/settings'>{t('settings.account.title')}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
