@@ -1,18 +1,20 @@
-export interface ITransactionBankAccountTransfer {
-    from: string
-    to: string
+export interface IAmount {
+    amount: number
+    currency_id: string
+    action: TransactionAction
+    created_at: string
 }
 
 export interface ITransaction {
-    name: string
-    date: string
-    logo?: string
-    action: TransactionAction
-    amount: number
-    currency: string
-    bankAccount: ITransactionBankAccountTransfer | string | []
-    category: string
-    subcategory: string
+    id: string
+    title: string
+    type: TransactionAction
+    category_id: string
+    subcategory_id: string
+    amounts: IAmount[]
+    note?: string
+    ignore: boolean
+    created_at: Date
 }
 
 export enum TransactionAction {

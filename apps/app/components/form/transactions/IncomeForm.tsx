@@ -1,0 +1,434 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import { format } from 'date-fns'
+
+import { IBankAccount, ICategory, IItem, ISubcategory, ITransaction } from '@poveroh/types'
+
+import { Button } from '@poveroh/ui/components/button'
+import { DialogFooter } from '@poveroh/ui/components/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import { Input } from '@poveroh/ui/components/input'
+import { Calendar } from '@poveroh/ui/components/calendar'
+import { Badge } from '@poveroh/ui/components/badge'
+import { Checkbox } from '@poveroh/ui/components/checkbox'
+import { FileInput } from '@poveroh/ui/components/file'
+import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
+
+import { CalendarIcon, Loader2, X } from 'lucide-react'
+import icons from 'currency-icons'
+
+import { cn } from '@poveroh/ui/lib/utils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
+import { useCache } from '@/hooks/useCache'
+import DynamicIcon from '@/components/icon/dynamicIcon'
+import { currencies } from '@/services/currency.service'
+import { BrandIcon } from '@/components/icon/brandIcon'
+import { Textarea } from '@poveroh/ui/components/textarea'
+
+type FormProps = {
+    initialData?: ITransaction
+    inEditingMode: boolean
+    onSubmit: (formData: FormData) => Promise<void>
+    closeDialog: () => void
+}
+
+export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }: FormProps) {
+    const t = useTranslations()
+
+    const { categoryList, bankAccountList } = useCache()
+
+    const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
+
+    const [file, setFile] = useState<FileList | null>(null)
+    const [fileError, setFileError] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [keepAdding, setKeepAdding] = useState(false)
+
+    const defaultValues = {
+        title: '',
+        date: new Date(),
+        amount: 0,
+        currency_id: 'EUR',
+        bank_account_id: '',
+        category_id: '',
+        subcategory_id: '',
+        note: '',
+        ignore: false
+    }
+
+    const formSchema = z.object({
+        title: z.string().nonempty(t('messages.errors.required')),
+        date: z.date({
+            required_error: t('messages.errors.required')
+        }),
+        amount: z
+            .number({
+                required_error: t('messages.errors.required'),
+                invalid_type_error: t('messages.errors.pattern')
+            })
+            .positive(),
+        currency_id: z.string().nonempty(t('messages.errors.required')),
+        bank_account_id: z.string().nonempty(t('messages.errors.required')),
+        category_id: z.string().nonempty(t('messages.errors.required')),
+        subcategory_id: z.string().nonempty(t('messages.errors.required')),
+        note: z.string().nonempty(t('messages.errors.required')),
+        ignore: z.boolean()
+    })
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: defaultValues
+    })
+
+    const parseSubcategoryList = async (categoryId: string) => {
+        const category = categoryList.find(item => item.id === categoryId)
+        const res = category ? category.subcategories : []
+
+        setSubcategoryList(res)
+    }
+
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        setLoading(true)
+
+        console.log('values', values)
+        // try {
+        //     const formData = new FormData()
+        //     formData.append('account', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+        //     if (file && file[0]) {
+        //         formData.append('file', file[0])
+        //     } else if (!inEditingMode) {
+        //         setFileError(true)
+        //         return
+        //     }
+        //     await onSubmit(formData)
+        //     if (!inEditingMode) {
+        //         if (keepAdding) {
+        //             form.reset(defaultValues)
+        //         } else {
+        //             closeDialog()
+        //         }
+        //     }
+        //     setFile(null)
+        //     setFileError(false)
+        //     toast.success(
+        //         t('messages.successfully', {
+        //             a: values.title,
+        //             b: t(inEditingMode ? 'messages.saved' : 'messages.uploaded')
+        //         })
+        //     )
+        // } catch (error) {
+        //     console.log(error)
+        //     toast.error(t('messages.error'))
+        // } finally {
+        //     setLoading(false)
+        // }
+    }
+
+    const handleKeepAddingChange = () => {
+        setKeepAdding(!keepAdding)
+    }
+
+    return (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-10'>
+                <div className='flex flex-col space-y-6'>
+                    <FormField
+                        control={form.control}
+                        name='title'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel mandatory>{t('form.title.label')}</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name='date'
+                        render={({ field }) => (
+                            <FormItem className='flex flex-col'>
+                                <FormLabel mandatory>{t('form.date.label')}</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant='secondary'
+                                                className={cn(
+                                                    'w-full pl-3 text-left font-normal',
+                                                    !field.value && 'text-muted-foreground'
+                                                )}
+                                            >
+                                                {field.value ? (
+                                                    format(field.value, 'PPP')
+                                                ) : (
+                                                    <span>{t('form.date.placeholder')}</span>
+                                                )}
+                                                <CalendarIcon className='ml-auto h-4 w-4' />
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className='w-auto p-0' align='start'>
+                                        <Calendar
+                                            mode='single'
+                                            selected={field.value}
+                                            onSelect={x => field.onChange(x)}
+                                            disabled={date => date > new Date() || date < new Date('1900-01-01')}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className='flex flex-row space-x-2'>
+                        <FormField
+                            control={form.control}
+                            name='amount'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.amount.label')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='number'
+                                            step='0.01'
+                                            min='0'
+                                            {...field}
+                                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                                            placeholder={t('form.amount.placeholder')}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='currency_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder={t('form.currency.placeholder')} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {currencies.map((item: IItem) => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    <div className='flex items-center flex-row space-x-4'>
+                                                        <span>{icons[item.value]?.symbol || ''}</span>
+                                                        <span>{item.label}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <FormField
+                        control={form.control}
+                        name='bank_account_id'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {bankAccountList.map((item: IBankAccount) => (
+                                            <SelectItem key={item.id} value={item.id}>
+                                                <div className='flex items-center flex-row space-x-4'>
+                                                    <BrandIcon icon={`url(${item.logo_icon})`} size='sm' />
+                                                    <span>{item.title}</span>
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className='flex flex-row space-x-2'>
+                        <FormField
+                            control={form.control}
+                            name='category_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.category.label')}</FormLabel>
+                                    <Select
+                                        onValueChange={x => {
+                                            parseSubcategoryList(x)
+                                            field.onChange(x)
+                                        }}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder={t('form.category.placeholder')} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {categoryList.map((item: ICategory) => (
+                                                <SelectItem key={item.id} value={item.id}>
+                                                    <div className='flex items-center flex-row space-x-4'>
+                                                        <DynamicIcon
+                                                            name={item.logo_icon}
+                                                            className='h-4 w-4'
+                                                        ></DynamicIcon>
+                                                        <span>{item.title}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='subcategory_id'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.subcategory.label')}</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder={t('form.subcategory.placeholder')} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {subcategoryList.map((item: ISubcategory) => (
+                                                <SelectItem key={item.id} value={item.id}>
+                                                    <div className='flex items-center flex-row space-x-4'>
+                                                        <DynamicIcon
+                                                            name={item.logo_icon}
+                                                            className='h-4 w-4'
+                                                        ></DynamicIcon>
+                                                        <span>{item.title}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <FormField
+                        control={form.control}
+                        name='note'
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t('form.note.label')}</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder={t('form.note.placeholder')} {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className='flex flex-col space-y-4'>
+                        <FormItem>
+                            <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
+                            <FormControl>
+                                {
+                                    <FileInput
+                                        onChange={e => {
+                                            setFile(e.target.files)
+                                            setFileError(false)
+                                        }}
+                                    />
+                                }
+                            </FormControl>
+                            {fileError && <p className='danger'>{t('messages.errors.required')}</p>}
+                        </FormItem>
+
+                        {file && (
+                            <div className='flex flex-row items-center space-x-2'>
+                                <p>{t('messages.toUpload')}:</p>
+                                <Badge className='flex items-center gap-1 w-fit'>
+                                    {file.item(0)?.name}
+                                    <button
+                                        onClick={() => {
+                                            setFile(null)
+                                        }}
+                                        className='ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5 transition-colors'
+                                        aria-label='Remove'
+                                    >
+                                        <X className='h-3 w-3' />
+                                    </button>
+                                </Badge>
+                            </div>
+                        )}
+                    </div>
+
+                    <FormField
+                        control={form.control}
+                        name='ignore'
+                        render={({ field }) => (
+                            <FormItem className='flex flex-row items-start space-x-3'>
+                                <div className='flex items-center space-x-2'>
+                                    <FormControl>
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                    <FormLabel>{t('form.ignore.label')}</FormLabel>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <DialogFooter>
+                    <div className={'flex ' + (inEditingMode ? 'justify-end' : 'justify-between') + ' w-full'}>
+                        {!inEditingMode && (
+                            <div className='items-top flex space-x-2'>
+                                <Checkbox id='keepAdding' checked={keepAdding} onChange={handleKeepAddingChange} />
+                                <div className='grid gap-1.5 leading-none cursor-pointer'>
+                                    <label
+                                        htmlFor='keepAdding'
+                                        className='text-sm font-medium leading-none'
+                                        onClick={handleKeepAddingChange}
+                                    >
+                                        {t('modal.continueInsert.label')}
+                                    </label>
+                                    <p className='text-sm text-muted-foreground'>
+                                        {t('modal.continueInsert.subtitle')}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                        <Button type='submit' disabled={loading}>
+                            {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
+                        </Button>
+                    </div>
+                </DialogFooter>
+            </form>
+        </Form>
+    )
+}

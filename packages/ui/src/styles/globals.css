@@ -255,7 +255,12 @@ hr {
     background-position: center;
 }
 
-.brands.big {
+.brands.sm {
+    width: 20px;
+    height: 20px;
+}
+
+.brands.xl {
     width: 50px;
     height: 50px;
 }

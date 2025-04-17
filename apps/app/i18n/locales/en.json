@@ -47,6 +47,55 @@
             "selected": "Export selected"
         }
     },
+    "form": {
+        "title": {
+            "label": "Title"
+        },
+        "date": {
+            "label": "Date",
+            "placeholder": "Select a date"
+        },
+        "amount": {
+            "label": "Amount",
+            "placeholder": "0,00"
+        },
+        "bankaccount": {
+            "label": "Bank account",
+            "placeholder": "Select a bank account"
+        },
+        "currency": {
+            "label": "Currency",
+            "placeholder": "Select a currency"
+        },
+        "category": {
+            "label": "Category",
+            "placeholder": "Select a category"
+        },
+        "subcategory": {
+            "label": "Subcategory",
+            "placeholder": "Select a subcategory"
+        },
+        "note": {
+            "label": "Type a note",
+            "placeholder": "Note"
+        },
+        "ignore": {
+            "label": "Exclude from budget"
+        },
+        "description": {
+            "label": "Description",
+            "placeholder": "Type a note"
+        },
+        "type": {
+            "label": "Type",
+            "placeholder": "Select a type"
+        },
+        "icon": {
+            "label": "Icon",
+            "addAsUrl": "Add as URL",
+            "addAsFile": "Add as file"
+        }
+    },
     "notFound": {
         "title": "Page not found",
         "description": "The page you're looking for doesn't exist"
@@ -163,24 +212,6 @@
             "circuit": "Circuit",
             "deposit": "Deposit account",
             "broker": "Broker"
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "type": {
-                "label": "Type",
-                "placeholder": "Select a type"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "categories": {
@@ -193,24 +224,6 @@
             "newTitle": "New category",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the category."
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "type": {
-                "label": "Type",
-                "placeholder": "Select a type"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "subcategories": {
@@ -219,24 +232,6 @@
             "newTitle": "New subcategory",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the subcategory."
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "category": {
-                "label": "Category",
-                "placeholder": "Select a category"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "investments": {

@@ -15,11 +15,13 @@ import { useEffect, useState } from 'react'
 import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
 import Box from '@/components/box/boxWrapper'
 import { BankAccountService } from '@/services/bankaccount.service'
-import { IBankAccount } from '@poveroh/types/dist'
+import { IBankAccount, ITransaction } from '@poveroh/types/dist'
 import { DeleteModal } from '@/components/modal/delete'
 import _ from 'lodash'
 import { Modal } from '@/components/modal/form'
 import { BankAccountForm } from '@/components/form/BankAccountForm'
+import { TransactionsForm } from '@/components/form/TransactionsForm'
+import { IncomeForm } from '@/components/form/transactions/IncomeForm'
 import { BrandIcon } from '@/components/icon/brandIcon'
 
 const bankAccountService = new BankAccountService()
@@ -52,7 +54,7 @@ function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps
     )
 }
 
-export default function BankAccountView() {
+export default function TransactionsView() {
     const t = useTranslations()
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
@@ -146,7 +148,7 @@ export default function BankAccountView() {
             <div className='space-y-12'>
                 <div className='flex flex-row items-end justify-between'>
                     <div className='flex flex-col space-y-3'>
-                        <h2>{t('settings.manage.bankAccount.title')}</h2>
+                        <h2>{t('transactions.title')}</h2>
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
@@ -158,7 +160,7 @@ export default function BankAccountView() {
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('settings.manage.bankAccount.title')}</BreadcrumbPage>
+                                    <BreadcrumbPage>{t('transactions.title')}</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
@@ -220,17 +222,17 @@ export default function BankAccountView() {
                 ></DeleteModal>
             )}
 
-            {dialogNewOpen && (
-                <Modal open={true} title={t('bankAccounts.modal.newTitle')} handleOpenChange={setDialogNewOpen}>
-                    <BankAccountForm
-                        onSubmit={addNewBankAccount}
-                        inEditingMode={false}
-                        closeDialog={() => setDialogNewOpen(false)}
-                    />
-                </Modal>
-            )}
+            <Modal open={true} title={t('bankAccounts.modal.newTitle')} handleOpenChange={setDialogNewOpen}>
+                <TransactionsForm
+                    onSubmit={addNewBankAccount}
+                    inEditingMode={false}
+                    closeDialog={() => setDialogNewOpen(false)}
+                />
+            </Modal>
 
-            {itemToEdit && (
+            {/* <IncomeForm inEditingMode={true} onSubmit={saveBankAccount} closeDialog={closeEdit}></IncomeForm> */}
+
+            {/* {itemToEdit && (
                 <Modal
                     open={true}
                     title={itemToEdit?.title || ''}
@@ -244,7 +246,7 @@ export default function BankAccountView() {
                         closeDialog={closeEdit}
                     />
                 </Modal>
-            )}
+            )} */}
         </>
     )
 }

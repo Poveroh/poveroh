@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@poveroh/ui/components/dialog'
 import DynamicIcon from '../icon/dynamicIcon'
+import { BrandIcon } from '../icon/brandIcon'
 
 type ModalProps = {
     open: boolean
@@ -16,12 +17,12 @@ type ModalProps = {
 export function Modal({ children, open, title, description, icon, iconMode, handleOpenChange }: ModalProps) {
     return (
         <Dialog defaultOpen={true} open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className='sm:max-w-[40vw]'>
+            <DialogContent className='sm:max-w-[40vw] h-[80vh]'>
                 <DialogHeader>
                     <div className='flex flex-row items-center space-x-3'>
                         {icon &&
                             (iconMode === 'img' ? (
-                                <div className='brands big' style={{ backgroundImage: `url(${icon})` }}></div>
+                                <BrandIcon icon={`url(${icon})`} size='xl'></BrandIcon>
                             ) : (
                                 <DynamicIcon key={icon} name={icon} />
                             ))}
@@ -31,7 +32,7 @@ export function Modal({ children, open, title, description, icon, iconMode, hand
                         </div>
                     </div>
                 </DialogHeader>
-                {children}
+                <div className='flex flex-grow w-full overflow-y-auto'>{children}</div>
             </DialogContent>
         </Dialog>
     )
