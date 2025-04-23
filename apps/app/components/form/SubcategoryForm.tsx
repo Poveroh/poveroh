@@ -1,20 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
 import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { TransactionService } from '@/services/transaction.service'
 
-import { toast } from '@poveroh/ui/components/sonner'
-import { Button } from '@poveroh/ui/components/button'
-import { Checkbox } from '@poveroh/ui/components/checkbox'
-import { DialogFooter } from '@poveroh/ui/components/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Input } from '@poveroh/ui/components/input'
-import { Textarea } from '@poveroh/ui/components/textarea'
 import {
     Select,
     SelectContent,
@@ -24,27 +19,31 @@ import {
     SelectValue
 } from '@poveroh/ui/components/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
-
-import { Loader2 } from 'lucide-react'
+import { Input } from '@poveroh/ui/components/input'
+import { Textarea } from '@poveroh/ui/components/textarea'
+import { toast } from '@poveroh/ui/components/sonner'
 
 import { iconList } from '../icon'
 import DynamicIcon from '../icon/dynamicIcon'
+import { useCache } from '@/hooks/useCache'
 
 type FormProps = {
-    initialData?: ISubcategory
+    initialData?: ISubcategory | null
     inEditingMode: boolean
-    categoryList: ICategory[]
-    onSubmit: (formData: FormData) => Promise<void>
+    dataCallback: (formData: FormData) => Promise<void>
     closeDialog: () => void
 }
 
-export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSubmit, closeDialog }: FormProps) {
+export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
+
+    const { categoryCacheList } = useCache()
+
+    const transactionService = new TransactionService()
+    const transactionActions = transactionService.getActionList(t, true)
 
     const [icon, setIcon] = useState(iconList[0])
     const [iconError, setIconError] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [keepAdding, setKeepAdding] = useState(false)
 
     const defaultValues = {
         title: '',
@@ -67,66 +66,47 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
 
     useEffect(() => {
         if (initialData) {
-            form.reset({
-                title: initialData.title,
-                description: initialData.description || '',
-                logo_icon: initialData.logo_icon,
-                category_id: initialData.category_id
-            })
-            form.setValue('category_id', initialData.category_id)
+            form.reset(initialData)
             setIcon(initialData.logo_icon)
         }
     }, [initialData, form])
 
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            form.handleSubmit(handleLocalSubmit)()
+        }
+    }))
 
+    const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const formData = new FormData()
 
-            formData.append('subcategory', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
 
-            await onSubmit(formData)
-
-            if (!inEditingMode) {
-                if (keepAdding) {
-                    form.reset(defaultValues)
-                } else {
-                    closeDialog()
-                }
+            if (icon && icon[0]) {
+                formData.append('file', icon[0])
+            } else if (!inEditingMode) {
+                setIconError(true)
+                return
             }
 
-            setIcon(iconList[0])
-            setIconError(false)
-
-            toast.success(
-                t('messages.successfully', {
-                    a: values.title,
-                    b: t(inEditingMode ? 'messages.saved' : 'messages.uploaded')
-                })
-            )
+            await dataCallback(formData)
         } catch (error) {
-            toast.error(t('messages.error'))
             console.log(error)
-        } finally {
-            setLoading(false)
+            toast.error(t('messages.error'))
         }
-    }
-
-    const handleKeepAddingChange = () => {
-        setKeepAdding(!keepAdding)
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-10'>
+            <form className='flex flex-col space-y-10'>
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
                         name='title'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('subcategories.form.title.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.title.label')}</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -140,12 +120,9 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                         name='description'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('subcategories.form.description.label')}</FormLabel>
+                                <FormLabel>{t('form.description.label')}</FormLabel>
                                 <FormControl>
-                                    <Textarea
-                                        placeholder={t('subcategories.form.description.placeholder')}
-                                        {...field}
-                                    />
+                                    <Textarea placeholder={t('form.description.placeholder')} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -157,7 +134,7 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                         name='category_id'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('subcategories.form.category.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.category.label')}</FormLabel>
                                 <Select
                                     value={field.value}
                                     defaultValue={field.value}
@@ -167,12 +144,12 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                                 >
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('subcategories.form.category.placeholder')} />
+                                            <SelectValue placeholder={t('form.category.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                         <p className='p-2'>{t('transactions.types.expenses')}</p>
-                                        {categoryList
+                                        {categoryCacheList
                                             .filter(x => x.for == TransactionAction.EXPENSES)
                                             .map((item: ICategory) => (
                                                 <SelectItem key={item.id} value={item.id.toString()}>
@@ -187,7 +164,7 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                                             ))}
                                         <SelectSeparator />
                                         <p className='p-2'>{t('transactions.types.income')}</p>
-                                        {categoryList
+                                        {categoryCacheList
                                             .filter(x => x.for == TransactionAction.INCOME)
                                             .map((item: ICategory) => (
                                                 <SelectItem key={item.id} value={item.id.toString()}>
@@ -209,7 +186,7 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('subcategories.form.icon.label')}</FormLabel>
+                            <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
                             <FormControl>
                                 {
                                     <div className='grid grid-cols-12 gap-5 rounded-md box-border'>
@@ -244,32 +221,9 @@ export function SubcategoryForm({ initialData, inEditingMode, categoryList, onSu
                         </FormItem>
                     </div>
                 </div>
-
-                <DialogFooter>
-                    <div className={'flex ' + (inEditingMode ? 'justify-end' : 'justify-between') + ' w-full'}>
-                        {!inEditingMode && (
-                            <div className='items-top flex space-x-2'>
-                                <Checkbox id='keepAdding' checked={keepAdding} onChange={handleKeepAddingChange} />
-                                <div className='grid gap-1.5 leading-none cursor-pointer'>
-                                    <label
-                                        htmlFor='keepAdding'
-                                        className='text-sm font-medium leading-none'
-                                        onClick={handleKeepAddingChange}
-                                    >
-                                        {t('modal.continueInsert.label')}
-                                    </label>
-                                    <p className='text-sm text-muted-foreground'>
-                                        {t('modal.continueInsert.subtitle')}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        <Button type='submit' disabled={loading}>
-                            {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
-                        </Button>
-                    </div>
-                </DialogFooter>
             </form>
         </Form>
     )
-}
+})
+
+SubcategoryForm.displayName = 'SubcategoryForm'

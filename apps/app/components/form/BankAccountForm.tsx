@@ -1,32 +1,32 @@
 'use client'
 
+import { forwardRef, useImperativeHandle, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@poveroh/ui/components/button'
-import { DialogFooter } from '@poveroh/ui/components/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { useTranslations } from 'next-intl'
+
+import { BankAccountService } from '@/services/bankaccount.service'
+import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
+
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import { Badge } from '@poveroh/ui/components/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { FileInput } from '@poveroh/ui/components/file'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { BankAccountService } from '@/services/bankaccount.service'
-import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
-import { Loader2, X } from 'lucide-react'
 import { toast } from '@poveroh/ui/components/sonner'
 
-type BankAccountFormProps = {
-    initialData?: IBankAccount
+import { X } from 'lucide-react'
+
+type FormProps = {
+    initialData?: IBankAccount | null
     inEditingMode: boolean
-    onSubmit: (formData: FormData) => Promise<void>
+    dataCallback: (formData: FormData) => Promise<void>
     closeDialog: () => void
 }
 
-export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDialog }: BankAccountFormProps) {
+export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
 
     const bankAccountService = new BankAccountService()
@@ -34,13 +34,11 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
 
     const [file, setFile] = useState<FileList | null>(null)
     const [fileError, setFileError] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [keepAdding, setKeepAdding] = useState(false)
 
-    const defaultValues = {
+    const defaultValues = initialData || {
         title: '',
         description: '',
-        type: initialData?.type || BankAccountType.BANK_ACCOUNT
+        type: BankAccountType.BANK_ACCOUNT
     }
 
     const formSchema = z.object({
@@ -49,24 +47,22 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
         type: z.enum(Object.values(BankAccountType) as [BankAccountType, ...BankAccountType[]])
     })
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: defaultValues
     })
 
-    useEffect(() => {
-        if (initialData) {
-            form.reset(initialData)
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            form.handleSubmit(handleLocalSubmit)()
         }
-    }, [initialData, form])
+    }))
 
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
-
+    const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             const formData = new FormData()
 
-            formData.append('account', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
 
             if (file && file[0]) {
                 formData.append('file', file[0])
@@ -75,47 +71,23 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                 return
             }
 
-            await onSubmit(formData)
-
-            if (!inEditingMode) {
-                if (keepAdding) {
-                    form.reset(defaultValues)
-                } else {
-                    closeDialog()
-                }
-            }
-
-            setFile(null)
-            setFileError(false)
-
-            toast.success(
-                t('messages.successfully', {
-                    a: values.title,
-                    b: t(inEditingMode ? 'messages.saved' : 'messages.uploaded')
-                })
-            )
+            await dataCallback(formData)
         } catch (error) {
             console.log(error)
             toast.error(t('messages.error'))
-        } finally {
-            setLoading(false)
         }
-    }
-
-    const handleKeepAddingChange = () => {
-        setKeepAdding(!keepAdding)
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-10'>
+            <form className='flex flex-col space-y-10'>
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
                         name='title'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('bankAccounts.form.title.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.title.label')}</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -129,9 +101,9 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                         name='description'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('bankAccounts.form.description.label')}</FormLabel>
+                                <FormLabel>{t('form.description.label')}</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder={t('bankAccounts.form.description.placeholder')} {...field} />
+                                    <Textarea placeholder={t('form.description.placeholder')} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -143,11 +115,11 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                         name='type'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('bankAccounts.form.type.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.type.label')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('bankAccounts.form.type.placeholder')} />
+                                            <SelectValue placeholder={t('form.type.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -165,7 +137,7 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('bankAccounts.form.icon.label')}</FormLabel>
+                            <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
                             <FormControl>
                                 {
                                     <FileInput
@@ -198,32 +170,9 @@ export function BankAccountForm({ initialData, inEditingMode, onSubmit, closeDia
                         )}
                     </div>
                 </div>
-
-                <DialogFooter>
-                    <div className={'flex ' + (inEditingMode ? 'justify-end' : 'justify-between') + ' w-full'}>
-                        {!inEditingMode && (
-                            <div className='items-top flex space-x-2'>
-                                <Checkbox id='keepAdding' checked={keepAdding} onChange={handleKeepAddingChange} />
-                                <div className='grid gap-1.5 leading-none cursor-pointer'>
-                                    <label
-                                        htmlFor='keepAdding'
-                                        className='text-sm font-medium leading-none'
-                                        onClick={handleKeepAddingChange}
-                                    >
-                                        {t('modal.continueInsert.label')}
-                                    </label>
-                                    <p className='text-sm text-muted-foreground'>
-                                        {t('modal.continueInsert.subtitle')}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        <Button type='submit' disabled={loading}>
-                            {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
-                        </Button>
-                    </div>
-                </DialogFooter>
             </form>
         </Form>
     )
-}
+})
+
+BankAccountForm.displayName = 'BankAccountForm'

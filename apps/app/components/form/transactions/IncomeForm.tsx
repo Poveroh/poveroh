@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +10,6 @@ import { format } from 'date-fns'
 import { IBankAccount, ICategory, IItem, ISubcategory, ITransaction } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
-import { DialogFooter } from '@poveroh/ui/components/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Calendar } from '@poveroh/ui/components/calendar'
@@ -19,25 +18,26 @@ import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { FileInput } from '@poveroh/ui/components/file'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
-import { CalendarIcon, Loader2, X } from 'lucide-react'
+import { CalendarIcon, X } from 'lucide-react'
 import icons from 'currency-icons'
 
 import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { useCache } from '@/hooks/useCache'
 import DynamicIcon from '@/components/icon/dynamicIcon'
 import { currencies } from '@/services/currency.service'
 import { BrandIcon } from '@/components/icon/brandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
+import { useCache } from '@/hooks/useCache'
+import { toast } from '@poveroh/ui/components/sonner'
 
 type FormProps = {
     initialData?: ITransaction
     inEditingMode: boolean
-    onSubmit: (formData: FormData) => Promise<void>
+    dataCallback: (formData: FormData) => Promise<void>
     closeDialog: () => void
 }
 
-export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }: FormProps) {
+export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
 
     const { categoryList, bankAccountList } = useCache()
@@ -46,10 +46,8 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
 
     const [file, setFile] = useState<FileList | null>(null)
     const [fileError, setFileError] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [keepAdding, setKeepAdding] = useState(false)
 
-    const defaultValues = {
+    const defaultValues = initialData || {
         title: '',
         date: new Date(),
         amount: 0,
@@ -76,7 +74,7 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
         bank_account_id: z.string().nonempty(t('messages.errors.required')),
         category_id: z.string().nonempty(t('messages.errors.required')),
         subcategory_id: z.string().nonempty(t('messages.errors.required')),
-        note: z.string().nonempty(t('messages.errors.required')),
+        note: z.string(),
         ignore: z.boolean()
     })
 
@@ -85,6 +83,12 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
         defaultValues: defaultValues
     })
 
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            form.handleSubmit(handleLocalSubmit)()
+        }
+    }))
+
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryList.find(item => item.id === categoryId)
         const res = category ? category.subcategories : []
@@ -92,50 +96,31 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
         setSubcategoryList(res)
     }
 
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
-
+    const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log('values', values)
-        // try {
-        //     const formData = new FormData()
-        //     formData.append('account', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-        //     if (file && file[0]) {
-        //         formData.append('file', file[0])
-        //     } else if (!inEditingMode) {
-        //         setFileError(true)
-        //         return
-        //     }
-        //     await onSubmit(formData)
-        //     if (!inEditingMode) {
-        //         if (keepAdding) {
-        //             form.reset(defaultValues)
-        //         } else {
-        //             closeDialog()
-        //         }
-        //     }
-        //     setFile(null)
-        //     setFileError(false)
-        //     toast.success(
-        //         t('messages.successfully', {
-        //             a: values.title,
-        //             b: t(inEditingMode ? 'messages.saved' : 'messages.uploaded')
-        //         })
-        //     )
-        // } catch (error) {
-        //     console.log(error)
-        //     toast.error(t('messages.error'))
-        // } finally {
-        //     setLoading(false)
-        // }
-    }
 
-    const handleKeepAddingChange = () => {
-        setKeepAdding(!keepAdding)
+        try {
+            const formData = new FormData()
+
+            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+
+            if (file && file[0]) {
+                formData.append('file', file[0])
+            } else if (!inEditingMode) {
+                setFileError(true)
+                return
+            }
+
+            await dataCallback(formData)
+        } catch (error) {
+            console.log(error)
+            toast.error(t('messages.error'))
+        }
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-10'>
+            <form>
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
@@ -354,7 +339,7 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
+                            <FormLabel mandatory={!inEditingMode}>{t('form.file.label')}</FormLabel>
                             <FormControl>
                                 {
                                     <FileInput
@@ -403,32 +388,9 @@ export function IncomeForm({ initialData, inEditingMode, onSubmit, closeDialog }
                         )}
                     />
                 </div>
-
-                <DialogFooter>
-                    <div className={'flex ' + (inEditingMode ? 'justify-end' : 'justify-between') + ' w-full'}>
-                        {!inEditingMode && (
-                            <div className='items-top flex space-x-2'>
-                                <Checkbox id='keepAdding' checked={keepAdding} onChange={handleKeepAddingChange} />
-                                <div className='grid gap-1.5 leading-none cursor-pointer'>
-                                    <label
-                                        htmlFor='keepAdding'
-                                        className='text-sm font-medium leading-none'
-                                        onClick={handleKeepAddingChange}
-                                    >
-                                        {t('modal.continueInsert.label')}
-                                    </label>
-                                    <p className='text-sm text-muted-foreground'>
-                                        {t('modal.continueInsert.subtitle')}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        <Button type='submit' disabled={loading}>
-                            {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
-                        </Button>
-                    </div>
-                </DialogFooter>
             </form>
         </Form>
     )
-}
+})
+
+IncomeForm.displayName = 'IncomeForm'

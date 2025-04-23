@@ -15,14 +15,12 @@ import { useEffect, useState } from 'react'
 import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
 import Box from '@/components/box/boxWrapper'
 import { BankAccountService } from '@/services/bankaccount.service'
-import { IBankAccount, ITransaction } from '@poveroh/types/dist'
+import { IBankAccount } from '@poveroh/types/dist'
 import { DeleteModal } from '@/components/modal/delete'
 import _ from 'lodash'
 import { Modal } from '@/components/modal/form'
-import { BankAccountForm } from '@/components/form/BankAccountForm'
-import { TransactionsForm } from '@/components/form/TransactionsForm'
-import { IncomeForm } from '@/components/form/transactions/IncomeForm'
 import { BrandIcon } from '@/components/icon/brandIcon'
+import { TransactionDialog } from '@/components/dialog/transactionDialog'
 
 const bankAccountService = new BankAccountService()
 
@@ -222,13 +220,22 @@ export default function TransactionsView() {
                 ></DeleteModal>
             )}
 
-            <Modal open={true} title={t('bankAccounts.modal.newTitle')} handleOpenChange={setDialogNewOpen}>
+            {dialogNewOpen && (
+                <TransactionDialog
+                    open={dialogNewOpen}
+                    inEditingMode={false}
+                    dialogHeight='h-[80vh]'
+                    closeDialog={() => setDialogNewOpen(false)}
+                ></TransactionDialog>
+            )}
+
+            {/* <Modal open={true} title={t('transactions.modal.newTitle')} handleOpenChange={setDialogNewOpen}>
                 <TransactionsForm
                     onSubmit={addNewBankAccount}
                     inEditingMode={false}
                     closeDialog={() => setDialogNewOpen(false)}
                 />
-            </Modal>
+            </Modal> */}
 
             {/* <IncomeForm inEditingMode={true} onSubmit={saveBankAccount} closeDialog={closeEdit}></IncomeForm> */}
 

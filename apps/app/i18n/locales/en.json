@@ -28,7 +28,8 @@
             "pattern": "Invalid format",
             "passwordAtLeastChar": "Password must be at least {a} characters",
             "passwordMismatch": "Passwords do not match.",
-            "passwordMustBeDifferent": "Passwords must be different with old password."
+            "passwordMustBeDifferent": "Passwords must be different with old password.",
+            "bankAccountMismatch": "Bank account must be different"
         }
     },
     "buttons": {
@@ -76,8 +77,8 @@
             "placeholder": "Select a subcategory"
         },
         "note": {
-            "label": "Type a note",
-            "placeholder": "Note"
+            "label": "Note",
+            "placeholder": "Type a note"
         },
         "ignore": {
             "label": "Exclude from budget"
@@ -89,6 +90,16 @@
         "type": {
             "label": "Type",
             "placeholder": "Select a type"
+        },
+        "file": {
+            "label": "File",
+            "placeholder": "Select a file",
+            "accept": {
+                "image": "Image",
+                "video": "Video",
+                "audio": "Audio",
+                "document": "Document"
+            }
         },
         "icon": {
             "label": "Icon",
@@ -186,6 +197,11 @@
     },
     "transactions": {
         "title": "Transactions",
+        "modal": {
+            "newTitle": "New transaction",
+            "editTitle": "Edit {a}",
+            "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
+        },
         "types": {
             "internalTransfer": "Internal transfer",
             "income": "Income",

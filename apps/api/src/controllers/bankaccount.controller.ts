@@ -8,9 +8,9 @@ import _ from 'lodash'
 export class BankAccountController {
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.account) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedBankAccount: IBankAccountBase = JSON.parse(req.body.account)
+            let readedBankAccount: IBankAccountBase = JSON.parse(req.body.data)
 
             if (req.file) {
                 const readedUser = req.user.id
@@ -38,9 +38,9 @@ export class BankAccountController {
 
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.account) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedBankAccount: IBankAccount = JSON.parse(req.body.account)
+            let readedBankAccount: IBankAccount = JSON.parse(req.body.data)
 
             if (req.file) {
                 const readedUser = req.user.id

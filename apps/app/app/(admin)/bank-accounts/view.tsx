@@ -1,6 +1,11 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import _ from 'lodash'
+import { useTranslations } from 'next-intl'
+
 import { Button } from '@poveroh/ui/components/button'
+import { Input } from '@poveroh/ui/components/input'
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -9,20 +14,18 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-import { useTranslations } from 'next-intl'
-import { Input } from '@poveroh/ui/components/input'
-import { useEffect, useState } from 'react'
+
 import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
+
 import Box from '@/components/box/boxWrapper'
+import { BrandIcon } from '@/components/icon/brandIcon'
+import { DeleteModal } from '@/components/modal/delete'
+import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
+
 import { BankAccountService } from '@/services/bankaccount.service'
 import { IBankAccount } from '@poveroh/types/dist'
-import { DeleteModal } from '@/components/modal/delete'
-import _ from 'lodash'
-import { Modal } from '@/components/modal/form'
-import { BankAccountForm } from '@/components/form/BankAccountForm'
-import { BrandIcon } from '@/components/icon/brandIcon'
 
-const bankAccountService = new BankAccountService()
+import { useCache } from '@/hooks/useCache'
 
 type BankAccountItemProps = {
     account: IBankAccount
@@ -55,56 +58,46 @@ function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps
 export default function BankAccountView() {
     const t = useTranslations()
 
+    const { bankAccountCacheList, bankAccountCache } = useCache()
+
+    const bankAccountService = new BankAccountService()
+
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const [bankAccountList, setBankAccountList] = useState<IBankAccount[]>([])
-    const [backupAccountList, setBackupAccountList] = useState<IBankAccount[]>([])
+    const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
 
     useEffect(() => {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        setLocalBankAccountList(bankAccountCacheList)
+    }, [bankAccountCacheList])
+
     const fetchData = async () => {
         const res = await bankAccountService.read<IBankAccount[]>()
 
-        setBankAccountList(res)
-        setBackupAccountList(res)
+        bankAccountCache.set(res)
     }
 
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
         if (_.isEmpty(textToSearch)) {
-            setBankAccountList(backupAccountList)
+            setLocalBankAccountList(bankAccountCacheList)
             return
         }
 
-        const filteredList = backupAccountList.filter(
+        const filteredList = bankAccountCacheList.filter(
             account =>
                 account.title.toLowerCase().includes(textToSearch) ||
                 account.description.toLowerCase().includes(textToSearch)
         )
 
-        setBankAccountList(filteredList)
-    }
-
-    const openDelete = (item: IBankAccount) => {
-        setItemToDelete(item)
-    }
-
-    const closeDelete = () => {
-        setItemToDelete(null)
-    }
-
-    const openEdit = (item: IBankAccount) => {
-        setItemToEdit(item)
-    }
-
-    const closeEdit = () => {
-        setItemToEdit(null)
+        setLocalBankAccountList(filteredList)
     }
 
     const onDelete = async () => {
@@ -118,27 +111,6 @@ export default function BankAccountView() {
         if (res) setItemToDelete(null)
 
         fetchData()
-    }
-
-    const saveBankAccount = async (formData: FormData) => {
-        const acccount = await bankAccountService.save(formData)
-        const newList = bankAccountList.map(account => {
-            if (account.id === acccount.id) {
-                return acccount
-            }
-            return account
-        })
-        setBankAccountList(newList)
-        setBackupAccountList(newList)
-        setItemToEdit(null)
-    }
-
-    const addNewBankAccount = async (formData: FormData) => {
-        const resAccount = await bankAccountService.add(formData)
-        const newList = [...bankAccountList, resAccount].sort((a, b) => b.created_at.localeCompare(a.created_at))
-        setBankAccountList(newList)
-        setBackupAccountList(newList)
-        setDialogNewOpen(false)
     }
 
     return (
@@ -185,15 +157,15 @@ export default function BankAccountView() {
                         onChange={onSearch}
                     />
                 </div>
-                {bankAccountList.length > 0 ? (
+                {localBankAccountList.length > 0 ? (
                     <Box>
                         <>
-                            {bankAccountList.map(account => (
+                            {localBankAccountList.map(account => (
                                 <BankAccountItem
                                     key={account.id}
                                     account={account}
-                                    openEdit={openEdit}
-                                    openDelete={openDelete}
+                                    openEdit={setItemToEdit}
+                                    openDelete={setItemToDelete}
                                 />
                             ))}
                         </>
@@ -214,36 +186,27 @@ export default function BankAccountView() {
                     title={itemToDelete.title}
                     description={t('bankAccounts.modal.deleteDescription')}
                     open={true}
-                    closeDialog={closeDelete}
+                    closeDialog={() => setItemToDelete(null)}
                     loading={loading}
                     onConfirm={onDelete}
                 ></DeleteModal>
             )}
 
             {dialogNewOpen && (
-                <Modal open={true} title={t('bankAccounts.modal.newTitle')} handleOpenChange={setDialogNewOpen}>
-                    <BankAccountForm
-                        onSubmit={addNewBankAccount}
-                        inEditingMode={false}
-                        closeDialog={() => setDialogNewOpen(false)}
-                    />
-                </Modal>
+                <BankAccountDialog
+                    open={dialogNewOpen}
+                    inEditingMode={false}
+                    closeDialog={() => setDialogNewOpen(false)}
+                ></BankAccountDialog>
             )}
 
             {itemToEdit && (
-                <Modal
-                    open={true}
-                    title={itemToEdit?.title || ''}
-                    icon={itemToEdit?.logo_icon}
-                    handleOpenChange={closeEdit}
-                >
-                    <BankAccountForm
-                        initialData={itemToEdit}
-                        inEditingMode={true}
-                        onSubmit={saveBankAccount}
-                        closeDialog={closeEdit}
-                    />
-                </Modal>
+                <BankAccountDialog
+                    initialData={itemToEdit}
+                    open={itemToEdit !== null}
+                    inEditingMode={true}
+                    closeDialog={() => setItemToEdit(null)}
+                ></BankAccountDialog>
             )}
         </>
     )
