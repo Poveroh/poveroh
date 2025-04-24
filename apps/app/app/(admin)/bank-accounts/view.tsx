@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import _ from 'lodash'
+import { isEmpty } from 'lodash'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -22,10 +22,9 @@ import { BrandIcon } from '@/components/icon/brandIcon'
 import { DeleteModal } from '@/components/modal/delete'
 import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
 
-import { BankAccountService } from '@/services/bankaccount.service'
 import { IBankAccount } from '@poveroh/types/dist'
 
-import { useCache } from '@/hooks/useCache'
+import { useBankAccountStore } from '@/store/bankaccount.store'
 
 type BankAccountItemProps = {
     account: IBankAccount
@@ -58,9 +57,7 @@ function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, bankAccountCache } = useCache()
-
-    const bankAccountService = new BankAccountService()
+    const { bankAccountCacheList, remove, fetch } = useBankAccountStore()
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
@@ -70,23 +67,17 @@ export default function BankAccountView() {
     const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
 
     useEffect(() => {
-        fetchData()
+        fetch()
     }, [])
 
     useEffect(() => {
         setLocalBankAccountList(bankAccountCacheList)
     }, [bankAccountCacheList])
 
-    const fetchData = async () => {
-        const res = await bankAccountService.read<IBankAccount[]>()
-
-        bankAccountCache.set(res)
-    }
-
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        if (_.isEmpty(textToSearch)) {
+        if (isEmpty(textToSearch)) {
             setLocalBankAccountList(bankAccountCacheList)
             return
         }
@@ -105,12 +96,13 @@ export default function BankAccountView() {
 
         setLoading(true)
 
-        const res = await bankAccountService.delete(itemToDelete?.id)
+        const res = await remove(itemToDelete.id)
 
         setLoading(false)
-        if (res) setItemToDelete(null)
 
-        fetchData()
+        if (res) {
+            setItemToDelete(null)
+        }
     }
 
     return (
@@ -136,7 +128,7 @@ export default function BankAccountView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchData} />
+                        <RotateCcw className='cursor-pointer' onClick={fetch} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>

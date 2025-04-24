@@ -1,5 +1,13 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { isEqual } from 'lodash'
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+
 import { Button } from '@poveroh/ui/components/button'
 import {
     Breadcrumb,
@@ -9,10 +17,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-import { useTranslations } from 'next-intl'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { UserService } from '@/services/user.service'
 import {
     Form,
     FormControl,
@@ -23,15 +27,15 @@ import {
     FormMessage
 } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { useForm } from 'react-hook-form'
-import { IUserToSave } from '@poveroh/types'
-import { useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
 import { toast } from '@poveroh/ui/components/sonner'
-import { isEqual } from 'lodash'
-import { useRouter } from 'next/navigation'
-import { useUser } from '@/hooks/useUser'
+
+import { Loader2 } from 'lucide-react'
+
+import { UserService } from '@/services/user.service'
 import Box from '@/components/box/boxWrapper'
+import { useAuthStore } from '@/store/auth.store'
+
+import { IUserToSave } from '@poveroh/types'
 
 const userService = new UserService()
 
@@ -39,30 +43,28 @@ export default function ProfileView() {
     const t = useTranslations()
     const router = useRouter()
 
-    const { user, setUser } = useUser()
+    const { user, setUser } = useAuthStore()
     const [loading, setLoading] = useState(false)
 
-    const userGeneralitiesSchema = z.object({
+    const formSchema = z.object({
         name: z.string().nonempty(t('messages.errors.required')),
         surname: z.string().nonempty(t('messages.errors.required')),
         email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email'))
     })
 
+    const defaultValues = user || {
+        name: '',
+        surname: '',
+        email: ''
+    }
+
     const form = useForm({
-        resolver: zodResolver(userGeneralitiesSchema),
-        defaultValues: {
-            name: '',
-            surname: '',
-            email: ''
-        }
+        resolver: zodResolver(formSchema),
+        defaultValues: defaultValues
     })
 
     useEffect(() => {
-        form.reset({
-            name: user.name,
-            surname: user.surname,
-            email: user.email
-        })
+        form.reset(user)
     }, [user, form])
 
     const saveUser = async (userToSave: IUserToSave) => {
@@ -117,7 +119,6 @@ export default function ProfileView() {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                {' '}
                                                 {t('settings.account.personalInfo.form.generalities.name')}
                                             </FormLabel>
                                             <FormControl>
@@ -134,7 +135,6 @@ export default function ProfileView() {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>
-                                                {' '}
                                                 {t('settings.account.personalInfo.form.generalities.surname')}
                                             </FormLabel>
                                             <FormControl>

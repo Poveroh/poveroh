@@ -1,56 +1,28 @@
 'use client'
 
-import { storage } from '@/lib/storage'
-import { AuthService } from '@/services/auth.service'
 import { UserService } from '@/services/user.service'
-import { IUser, defaultUser } from '@poveroh/types/dist'
-import { createContext, useEffect, useState } from 'react'
+import { useAuthStore } from '@/store/auth.store'
+import { createContext, useEffect } from 'react'
 
-const userService = new UserService()
-const authService = new AuthService()
-
-type AppContextType = {
-    user: IUser
-    logged: boolean
-    setUser: (newUser: IUser) => void
-    setLogged: (newLoggedState: boolean) => void
-}
-
-const initialContext: AppContextType = {
-    user: defaultUser,
-    logged: false,
-    setUser: (newUser: IUser) => {},
-    setLogged: (newLoggedState: boolean) => {}
-}
-
-const AppContext = createContext<AppContextType>(initialContext)
+const AppContext = createContext({})
 
 type AppContextProviderProps = {
     children: React.ReactNode
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    const [user, setUserState] = useState<IUser>(defaultUser)
-    const [logged, setLoggedState] = useState(false)
+    const userService = new UserService()
+    const { isAuthenticate, setUser, logged } = useAuthStore()
 
     useEffect(() => {
-        if (authService.isAuthenticate()) {
+        if (isAuthenticate()) {
             userService.me(true).then(readedUser => {
-                setUserState(readedUser)
+                setUser(readedUser)
             })
         }
     }, [logged])
 
-    const setUser = (newUser: IUser) => {
-        storage.set('user', newUser)
-        setUserState(newUser)
-    }
-
-    const setLogged = (newLoggedState: boolean) => {
-        setLoggedState(newLoggedState)
-    }
-
-    const context = { user, setUser, logged, setLogged }
+    const context = {}
 
     return <AppContext.Provider value={context}>{children}</AppContext.Provider>
 }

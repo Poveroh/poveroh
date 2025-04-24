@@ -1,13 +1,13 @@
 'use client'
 
-import { AuthService } from '@/services/auth.service'
+import { useAuthStore } from '@/store/auth.store'
 import { useEffect } from 'react'
 
-const authService = new AuthService()
-
 export default function LogoutPage() {
+    const { logout } = useAuthStore()
+
     useEffect(() => {
-        authService.logout(true)
+        logout(true)
     }, [])
 
     return <></>

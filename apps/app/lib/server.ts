@@ -54,6 +54,6 @@ export const server = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get<T>(url: string, data: any): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data)
+        return this.send<T>(ServerRequest.GET, url, data)
     }
 }

@@ -1,11 +1,11 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { BankAccountForm } from '../form/BankAccountForm'
 import { BankAccountService } from '@/services/bankaccount.service'
-import { useCache } from '@/hooks/useCache'
+import { useBankAccountStore } from '@/store/bankaccount.store'
 
 type DialogProps = {
     open: boolean
@@ -17,7 +17,7 @@ type DialogProps = {
 
 export function BankAccountDialog(props: DialogProps) {
     const t = useTranslations()
-    const { bankAccountCache } = useCache()
+    const { add, edit } = useBankAccountStore()
 
     const bankAccountService = new BankAccountService()
 
@@ -41,12 +41,12 @@ export function BankAccountDialog(props: DialogProps) {
         // edit dialog
         if (props.inEditingMode) {
             resAccount = await bankAccountService.save(data)
-            bankAccountCache.edit(resAccount)
+            edit(resAccount)
             props.closeDialog()
         } else {
             // new dialog
             resAccount = await bankAccountService.add(data)
-            bankAccountCache.add(resAccount)
+            add(resAccount)
 
             if (keepAdding) {
                 formRef.current?.reset()

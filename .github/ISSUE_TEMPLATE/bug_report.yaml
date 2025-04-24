@@ -1,5 +1,5 @@
 name: Bug report
-description: Create a bug report to help us improve Poveroh 
+description: Create a bug report to help us improve Poveroh
 title: "[bug]: "
 labels: [🐛bug]
 assignees: []
@@ -13,7 +13,7 @@ body:
     label: Current behavior
     description: A concise description of what you're experiencing and what you expect
     placeholder: |
-      A summary of the issue. 
+      A summary of the issue.
   validations:
     required: true
 - type: textarea

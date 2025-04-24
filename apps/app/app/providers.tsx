@@ -1,5 +1,4 @@
 import { AppContextProvider } from '@/context/appContext'
-import { CacheContextProvider } from '@/context/cacheContext'
 import { ThemeProviders } from '@/providers/themeProvider'
 import { Toaster } from '@poveroh/ui/components/sonner'
 import { NextIntlClientProvider } from 'next-intl'
@@ -12,10 +11,8 @@ export async function Providers({ children }: { children: React.ReactNode }) {
         <NextIntlClientProvider messages={messages}>
             <ThemeProviders>
                 <AppContextProvider>
-                    <CacheContextProvider>
-                        <Toaster richColors />
-                        {children}
-                    </CacheContextProvider>
+                    <Toaster richColors />
+                    {children}
                 </AppContextProvider>
             </ThemeProviders>
         </NextIntlClientProvider>
