@@ -1,5 +1,4 @@
 import { type IUserLogin } from '@poveroh/types'
-import { redirect } from 'next/navigation'
 import { server } from '@/lib/server'
 import { encryptString, isValidEmail } from '@poveroh/utils'
 import { isEmpty } from 'lodash'
@@ -12,13 +11,6 @@ export class AuthService {
 
         user.password = await encryptString(user.password)
 
-        const res = await server.post<boolean>('/auth/login', user)
-
-        if (res) {
-            window.location.href = '/dashboard'
-            return true
-        } else {
-            return false
-        }
+        return await server.post<boolean>('/auth/login', user)
     }
 }

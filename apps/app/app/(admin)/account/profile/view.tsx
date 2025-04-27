@@ -33,9 +33,9 @@ import { Loader2 } from 'lucide-react'
 
 import { UserService } from '@/services/user.service'
 import Box from '@/components/box/boxWrapper'
-import { useAuthStore } from '@/store/auth.store'
 
 import { IUserToSave } from '@poveroh/types'
+import { useUser } from '@/hooks/useUser'
 
 const userService = new UserService()
 
@@ -43,7 +43,7 @@ export default function ProfileView() {
     const t = useTranslations()
     const router = useRouter()
 
-    const { user, setUser } = useAuthStore()
+    const { user, setUser } = useUser()
     const [loading, setLoading] = useState(false)
 
     const formSchema = z.object({

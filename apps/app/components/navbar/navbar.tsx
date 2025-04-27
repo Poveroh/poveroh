@@ -6,8 +6,8 @@ import { Logo } from '@poveroh/ui/components/logo'
 import { AlignJustify } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import { useUser } from '@/hooks/useUser'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
+import { useUser } from '@/hooks/useUser'
 
 function NavBarLink({ direction }: { direction: 'row' | 'col' }) {
     const t = useTranslations()

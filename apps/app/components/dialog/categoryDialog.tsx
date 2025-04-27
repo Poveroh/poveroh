@@ -2,10 +2,9 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 import { ICategory } from '@poveroh/types'
-import { useCache } from '@/hooks/useCache'
-import { CategoryService } from '@/services/category.service'
 import { Modal } from '../modal/form'
 import { CategoryForm } from '../form/CategoryForm'
+import { useCategory } from '@/hooks/useCategory'
 
 type DialogProps = {
     open: boolean
@@ -17,15 +16,13 @@ type DialogProps = {
 
 export function CategoryDialog(props: DialogProps) {
     const t = useTranslations()
-    const { categoryCache } = useCache()
-
-    const categoryService = new CategoryService()
+    const { editCategory, addCategory } = useCategory()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
-    const [title, setTitle] = useState(
+    const [title] = useState(
         props.inEditingMode && props.initialData
             ? t('categories.modal.editTitle', {
                   a: props.initialData?.title
@@ -36,17 +33,15 @@ export function CategoryDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let resCategory: ICategory | null = null
+        let res: ICategory
 
         // edit dialog
         if (props.inEditingMode) {
-            resCategory = await categoryService.save(data)
-            categoryCache.edit(resCategory)
+            res = await editCategory(data)
             props.closeDialog()
         } else {
             // new dialog
-            resCategory = await categoryService.add(data)
-            categoryCache.add(resCategory)
+            res = await addCategory(data)
 
             if (keepAdding) {
                 formRef.current?.reset()
@@ -57,7 +52,7 @@ export function CategoryDialog(props: DialogProps) {
 
         toast.success(
             t('messages.successfully', {
-                a: resCategory?.title,
+                a: res.title,
                 b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )

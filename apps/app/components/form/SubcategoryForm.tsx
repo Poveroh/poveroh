@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
 import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
-import { TransactionService } from '@/services/transaction.service'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import {
@@ -21,11 +20,11 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { Input } from '@poveroh/ui/components/input'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import { toast } from '@poveroh/ui/components/sonner'
 
 import { iconList } from '../icon'
 import DynamicIcon from '../icon/dynamicIcon'
-import { useCache } from '@/hooks/useCache'
+import { useCategory } from '@/hooks/useCategory'
+import { useError } from '@/hooks/useError'
 
 type FormProps = {
     initialData?: ISubcategory | null
@@ -36,11 +35,9 @@ type FormProps = {
 
 export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
+    const { handleError } = useError()
 
-    const { categoryCacheList } = useCache()
-
-    const transactionService = new TransactionService()
-    const transactionActions = transactionService.getActionList(t, true)
+    const { categoryCacheList } = useCategory()
 
     const [icon, setIcon] = useState(iconList[0])
     const [iconError, setIconError] = useState(false)
@@ -92,8 +89,7 @@ export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCal
 
             await dataCallback(formData)
         } catch (error) {
-            console.log(error)
-            toast.error(t('messages.error'))
+            handleError(error)
         }
     }
 

@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value || ''
 
     if (!token && !authPaths.includes(path)) {
-        return NextResponse.redirect(new URL('/sign-in', request.url))
+        return NextResponse.redirect(new URL('/logout', request.url))
     }
 
     if (token && authPaths.includes(path) && path !== '/logout') {

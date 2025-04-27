@@ -22,9 +22,9 @@ import { BrandIcon } from '@/components/icon/brandIcon'
 import { DeleteModal } from '@/components/modal/delete'
 import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
 
-import { IBankAccount } from '@poveroh/types/dist'
+import { IBankAccount } from '@poveroh/types'
 
-import { useBankAccountStore } from '@/store/bankaccount.store'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type BankAccountItemProps = {
     account: IBankAccount
@@ -57,7 +57,7 @@ function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, remove, fetch } = useBankAccountStore()
+    const { bankAccountCacheList, removeBankAccount, fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
@@ -67,7 +67,7 @@ export default function BankAccountView() {
     const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
 
     useEffect(() => {
-        fetch()
+        fetchBankAccount()
     }, [])
 
     useEffect(() => {
@@ -96,7 +96,7 @@ export default function BankAccountView() {
 
         setLoading(true)
 
-        const res = await remove(itemToDelete.id)
+        const res = await removeBankAccount(itemToDelete.id)
 
         setLoading(false)
 
@@ -128,7 +128,7 @@ export default function BankAccountView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetch} />
+                        <RotateCcw className='cursor-pointer' onClick={fetchBankAccount} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>

@@ -1,12 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import _ from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { useTranslations } from 'next-intl'
 
 import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
-
-import { CategoryService, SubcategoryService } from '@/services/category.service'
 
 import Box from '@/components/box/boxWrapper'
 import DynamicIcon from '@/components/icon/dynamicIcon'
@@ -26,9 +24,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
 import { Download, List, ListTree, Pencil, Plus, RotateCcw, Search, Trash2, Shapes } from 'lucide-react'
-import { useCache } from '@/hooks/useCache'
 import { CategoryDialog } from '@/components/dialog/categoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/subcategoryDialog'
+import { useCategory } from '@/hooks/useCategory'
 
 type modelMode = 'category' | 'subcategory'
 
@@ -94,10 +92,7 @@ function CategoryItem({ category, openDelete, openEdit }: CategoryItemProps) {
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryCache } = useCache()
-
-    const categoryService = new CategoryService()
-    const subcategoryService = new SubcategoryService()
+    const { categoryCacheList, removeSubcategory, removeCategory, fetchCategory } = useCategory()
 
     const [itemToDelete, setItemToDelete] = useState<ICategory | ISubcategory | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ICategory | ISubcategory | null>(null)
@@ -112,23 +107,17 @@ export default function CategoryView() {
     const [activeTab, setActiveTab] = useState('expenses')
 
     useEffect(() => {
-        fetchData()
+        fetchCategory()
     }, [])
 
     useEffect(() => {
         setLocalCategoryList(categoryCacheList)
     }, [categoryCacheList])
 
-    const fetchData = async () => {
-        const res = await categoryService.read<ICategory[]>()
-
-        categoryCache.set(res)
-    }
-
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value.toLowerCase()
 
-        if (_.isEmpty(textToSearch)) {
+        if (isEmpty(textToSearch)) {
             setLocalCategoryList(categoryCacheList)
             return
         }
@@ -183,14 +172,14 @@ export default function CategoryView() {
 
         setLoading(true)
 
-        const service = dialogModel === 'category' ? categoryService : subcategoryService
-
-        const res = await service.delete(itemToDelete?.id)
+        const res =
+            dialogModel === 'category'
+                ? await removeCategory(itemToDelete.id)
+                : await removeSubcategory(itemToDelete.id)
 
         setLoading(false)
-        if (res) setItemToDelete(null)
 
-        fetchData()
+        if (res) setItemToDelete(null)
     }
 
     return (
@@ -216,7 +205,7 @@ export default function CategoryView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchData} />
+                        <RotateCcw className='cursor-pointer' onClick={fetchCategory} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
@@ -314,7 +303,7 @@ export default function CategoryView() {
                         ? 'categories.modal.deleteDescription'
                         : 'subcategories.modal.deleteDescription'
                 )}
-                open={!_.isNil(itemToDelete)}
+                open={!isNil(itemToDelete)}
                 closeDialog={closeDelete}
                 loading={loading}
                 onConfirm={onDelete}

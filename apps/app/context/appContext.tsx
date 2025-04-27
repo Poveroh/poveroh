@@ -1,7 +1,7 @@
 'use client'
 
+import { useUser } from '@/hooks/useUser'
 import { UserService } from '@/services/user.service'
-import { useAuthStore } from '@/store/auth.store'
 import { createContext, useEffect } from 'react'
 
 const AppContext = createContext({})
@@ -12,7 +12,7 @@ type AppContextProviderProps = {
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
     const userService = new UserService()
-    const { isAuthenticate, setUser, logged } = useAuthStore()
+    const { isAuthenticate, setUser, logged } = useUser()
 
     useEffect(() => {
         if (isAuthenticate()) {

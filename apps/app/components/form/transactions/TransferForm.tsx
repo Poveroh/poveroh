@@ -20,9 +20,9 @@ import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { BrandIcon } from '@/components/icon/brandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import { useCache } from '@/hooks/useCache'
-import { toast } from '@poveroh/ui/components/sonner'
 import DynamicIcon from '@/components/icon/dynamicIcon'
+import { useError } from '@/hooks/useError'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type FormProps = {
     initialData?: ITransaction
@@ -33,8 +33,9 @@ type FormProps = {
 
 export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
+    const { handleError } = useError()
 
-    const { categoryList, bankAccountList } = useCache()
+    const { bankAccountCacheList } = useBankAccount()
 
     const defaultValues = initialData || {
         title: '',
@@ -89,8 +90,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
             await dataCallback(formData)
         } catch (error) {
-            console.log(error)
-            toast.error(t('messages.error'))
+            handleError(error)
         }
     }
 
@@ -188,7 +188,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {bankAccountList.list.map((item: IBankAccount) => (
+                                                {bankAccountCacheList.map((item: IBankAccount) => (
                                                     <SelectItem key={item.id} value={item.id}>
                                                         <div className='flex items-center flex-row space-x-4'>
                                                             <BrandIcon icon={`url(${item.logo_icon})`} size='sm' />
@@ -215,7 +215,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {bankAccountList.list.map((item: IBankAccount) => (
+                                                {bankAccountCacheList.map((item: IBankAccount) => (
                                                     <SelectItem key={item.id} value={item.id}>
                                                         <div className='flex items-center flex-row space-x-4'>
                                                             <BrandIcon icon={`url(${item.logo_icon})`} size='sm' />

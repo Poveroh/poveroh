@@ -2,11 +2,13 @@ import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { IncomeForm } from '../form/transactions/IncomeForm'
-import { useRef, useState } from 'react'
-import { TransactionService } from '@/services/transaction.service'
+import { useEffect, useRef, useState } from 'react'
 import { IItem, ITransaction } from '@poveroh/types'
 import { TransferForm } from '../form/transactions/TransferForm'
 import { toast } from '@poveroh/ui/components/sonner'
+import { useTransaction } from '@/hooks/useTransaction'
+import { useBankAccount } from '@/hooks/useBankAccount'
+import { useCategory } from '@/hooks/useCategory'
 
 type DialogProps = {
     open: boolean
@@ -19,6 +21,10 @@ type DialogProps = {
 export function TransactionDialog(props: DialogProps) {
     const t = useTranslations()
 
+    const { getActionList } = useTransaction()
+    const { fetchBankAccount } = useBankAccount()
+    const { fetchCategory } = useCategory()
+
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
@@ -26,8 +32,14 @@ export function TransactionDialog(props: DialogProps) {
 
     const [currentAction, setCurrentAction] = useState<string>('INCOME')
 
-    const transactionService = new TransactionService()
-    const transactionActions = transactionService.getActionList(t)
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    async function fetchData() {
+        await fetchBankAccount()
+        await fetchCategory()
+    }
 
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
@@ -62,7 +74,7 @@ export function TransactionDialog(props: DialogProps) {
                         <SelectValue placeholder={t('form.type.placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                        {transactionActions.map((item: IItem) => (
+                        {getActionList().map((item: IItem) => (
                             <SelectItem key={item.value} value={item.value.toString()}>
                                 {item.label}
                             </SelectItem>

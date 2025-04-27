@@ -27,8 +27,9 @@ import DynamicIcon from '@/components/icon/dynamicIcon'
 import { currencies } from '@/services/currency.service'
 import { BrandIcon } from '@/components/icon/brandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import { useCache } from '@/hooks/useCache'
-import { toast } from '@poveroh/ui/components/sonner'
+import { useError } from '@/hooks/useError'
+import { useCategory } from '@/hooks/useCategory'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type FormProps = {
     initialData?: ITransaction
@@ -39,8 +40,10 @@ type FormProps = {
 
 export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
+    const { handleError } = useError()
 
-    const { categoryList, bankAccountList } = useCache()
+    const { categoryCacheList } = useCategory()
+    const { bankAccountCacheList } = useBankAccount()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
@@ -90,7 +93,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
     }))
 
     const parseSubcategoryList = async (categoryId: string) => {
-        const category = categoryList.find(item => item.id === categoryId)
+        const category = categoryCacheList.find(item => item.id === categoryId)
         const res = category ? category.subcategories : []
 
         setSubcategoryList(res)
@@ -113,8 +116,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
 
             await dataCallback(formData)
         } catch (error) {
-            console.log(error)
-            toast.error(t('messages.error'))
+            handleError(error)
         }
     }
 
@@ -239,7 +241,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccountList.map((item: IBankAccount) => (
+                                        {bankAccountCacheList.map((item: IBankAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={`url(${item.logo_icon})`} size='sm' />
@@ -274,7 +276,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {categoryList.map((item: ICategory) => (
+                                            {categoryCacheList.map((item: ICategory) => (
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <DynamicIcon

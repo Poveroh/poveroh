@@ -7,17 +7,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
 import { ICategory, IItem } from '@poveroh/types'
-import { TransactionService } from '@/services/transaction.service'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { Input } from '@poveroh/ui/components/input'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import { toast } from '@poveroh/ui/components/sonner'
 
 import { iconList } from '../icon'
 import DynamicIcon from '../icon/dynamicIcon'
+import { useError } from '@/hooks/useError'
+import { useTransaction } from '@/hooks/useTransaction'
 
 type FormProps = {
     initialData?: ICategory | null
@@ -28,9 +28,8 @@ type FormProps = {
 
 export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
-
-    const transactionService = new TransactionService()
-    const transactionActions = transactionService.getActionList(t, true)
+    const { handleError } = useError()
+    const { getActionList } = useTransaction()
 
     const [icon, setIcon] = useState(iconList[0])
     const [iconError, setIconError] = useState(false)
@@ -82,8 +81,7 @@ export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
             await dataCallback(formData)
         } catch (error) {
-            console.log(error)
-            toast.error(t('messages.error'))
+            handleError(error)
         }
     }
 
@@ -132,7 +130,7 @@ export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {transactionActions.map((item: IItem) => (
+                                        {getActionList(true).map((item: IItem) => (
                                             <SelectItem key={item.value} value={item.value.toString()}>
                                                 {item.label}
                                             </SelectItem>

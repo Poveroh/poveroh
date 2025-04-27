@@ -21,6 +21,7 @@
         "saved": "saved",
         "successfully": "{a} {b} successfully",
         "errors": {
+            "generic": "Error: {a}",
             "required": "This field is required",
             "email": "Invalid email address",
             "minlength": "The input is too short",
@@ -197,11 +198,16 @@
     },
     "transactions": {
         "title": "Transactions",
+        "empty": {
+            "title": "Add a transaction",
+            "subtitle": "Click the + Add button to create a new one"
+        },
         "modal": {
             "newTitle": "New transaction",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },
+
         "types": {
             "internalTransfer": "Internal transfer",
             "income": "Income",

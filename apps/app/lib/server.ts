@@ -40,6 +40,10 @@ export const server = {
 
                 if (error instanceof AxiosError) {
                     errorMessage = error.response?.data.message || error.message
+
+                    if (error.status == 403) {
+                        window.location.href = '/logout'
+                    }
                 } else if (error instanceof Error) {
                     errorMessage = error.message
                 }

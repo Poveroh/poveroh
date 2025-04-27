@@ -4,8 +4,7 @@ import { useRef, useState } from 'react'
 import { IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { BankAccountForm } from '../form/BankAccountForm'
-import { BankAccountService } from '@/services/bankaccount.service'
-import { useBankAccountStore } from '@/store/bankaccount.store'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type DialogProps = {
     open: boolean
@@ -17,15 +16,13 @@ type DialogProps = {
 
 export function BankAccountDialog(props: DialogProps) {
     const t = useTranslations()
-    const { add, edit } = useBankAccountStore()
-
-    const bankAccountService = new BankAccountService()
+    const { addBankAccount, editBankAccount } = useBankAccount()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
-    const [title, setTitle] = useState(
+    const [title] = useState(
         props.inEditingMode && props.initialData
             ? t('bankAccounts.modal.editTitle', {
                   a: props.initialData?.title
@@ -36,17 +33,15 @@ export function BankAccountDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let resAccount: IBankAccount | null = null
+        let res: IBankAccount
 
         // edit dialog
         if (props.inEditingMode) {
-            resAccount = await bankAccountService.save(data)
-            edit(resAccount)
+            res = await editBankAccount(data)
             props.closeDialog()
         } else {
             // new dialog
-            resAccount = await bankAccountService.add(data)
-            add(resAccount)
+            res = await addBankAccount(data)
 
             if (keepAdding) {
                 formRef.current?.reset()
@@ -57,7 +52,7 @@ export function BankAccountDialog(props: DialogProps) {
 
         toast.success(
             t('messages.successfully', {
-                a: resAccount?.title,
+                a: res.title,
                 b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )

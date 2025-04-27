@@ -5,10 +5,10 @@ import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
 import { appConfig } from '@/config'
-import { IUser } from '@poveroh/types/dist'
+import { IUser } from '@poveroh/types'
 import { ReactNode } from 'react'
 import Link from 'next/link'
-import { useAuthStore } from '@/store/auth.store'
+import { useUser } from '@/hooks/useUser'
 
 type UserPopoverContentProps = {
     user: IUser
@@ -58,7 +58,7 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
 }
 
 export function UserPopover() {
-    const { user } = useAuthStore()
+    const { user } = useUser()
 
     return (
         <Popover>

@@ -22,9 +22,9 @@ type ModalProps = {
 export function Modal(props: ModalProps) {
     return (
         <Dialog defaultOpen={true} open={props.open} onOpenChange={props.handleOpenChange}>
-            <DialogContent className='sm:max-w-[40vw] max-h-[90vh]'>
+            <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh]', props.dialogHeight)}>
                 <DialogHeader>
-                    <div className={cn('flex flex-row items-center space-x-3', props.dialogHeight)}>
+                    <div className='flex flex-row items-center space-x-3'>
                         {props.icon &&
                             (props.iconMode === 'img' ? (
                                 <BrandIcon icon={`url(${props.icon})`} size='xl'></BrandIcon>

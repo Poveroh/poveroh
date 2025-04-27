@@ -15,9 +15,9 @@ import { Textarea } from '@poveroh/ui/components/textarea'
 import { Badge } from '@poveroh/ui/components/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { FileInput } from '@poveroh/ui/components/file'
-import { toast } from '@poveroh/ui/components/sonner'
 
 import { X } from 'lucide-react'
+import { useError } from '@/hooks/useError'
 
 type FormProps = {
     initialData?: IBankAccount | null
@@ -28,6 +28,7 @@ type FormProps = {
 
 export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
+    const { handleError } = useError()
 
     const bankAccountService = new BankAccountService()
     const bankAccountTypes = bankAccountService.getTypeList(t)
@@ -73,8 +74,7 @@ export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCal
 
             await dataCallback(formData)
         } catch (error) {
-            console.log(error)
-            toast.error(t('messages.error'))
+            handleError(error)
         }
     }
 
