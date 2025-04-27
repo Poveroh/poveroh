@@ -29,8 +29,12 @@ export const storage = {
         window.localStorage.clear()
     },
 
-    parse<T>(key: string): T {
-        return JSON.parse(<string>this.get(key)) as T
+    parse<T>(key: string): T | null {
+        const el = this.get(key)
+
+        if (!el) return null
+
+        return JSON.parse(<string>el) as T
     }
 }
 

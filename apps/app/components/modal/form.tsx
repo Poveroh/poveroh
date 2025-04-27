@@ -2,6 +2,11 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@poveroh/ui/components/dialog'
 import DynamicIcon from '../icon/dynamicIcon'
+import { BrandIcon } from '../icon/brandIcon'
+import { ModalFooter, ModalFooterProps } from './formFooter'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import 'react-perfect-scrollbar/dist/css/styles.css'
+import { cn } from '@poveroh/ui/lib/utils'
 
 type ModalProps = {
     open: boolean
@@ -10,28 +15,40 @@ type ModalProps = {
     icon?: string
     iconMode?: 'icon' | 'img'
     children: React.ReactNode
+    dialogHeight?: string
     handleOpenChange: (open: boolean) => void
-}
+} & ModalFooterProps
 
-export function Modal({ children, open, title, description, icon, iconMode, handleOpenChange }: ModalProps) {
+export function Modal(props: ModalProps) {
     return (
-        <Dialog defaultOpen={true} open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className='sm:max-w-[40vw]'>
+        <Dialog defaultOpen={true} open={props.open} onOpenChange={props.handleOpenChange}>
+            <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh]', props.dialogHeight)}>
                 <DialogHeader>
                     <div className='flex flex-row items-center space-x-3'>
-                        {icon &&
-                            (iconMode === 'img' ? (
-                                <div className='brands big' style={{ backgroundImage: `url(${icon})` }}></div>
+                        {props.icon &&
+                            (props.iconMode === 'img' ? (
+                                <BrandIcon icon={`url(${props.icon})`} size='xl'></BrandIcon>
                             ) : (
-                                <DynamicIcon key={icon} name={icon} />
+                                <DynamicIcon key={props.icon} name={props.icon} />
                             ))}
                         <div className='flex flex-col space-y-1'>
-                            <DialogTitle>{title}</DialogTitle>
-                            {description && <DialogDescription>{description}</DialogDescription>}
+                            <DialogTitle>{props.title}</DialogTitle>
+                            {props.description && <DialogDescription>{props.description}</DialogDescription>}
                         </div>
                     </div>
                 </DialogHeader>
-                {children}
+                <div className='flex flex-grow overflow-y-auto'>
+                    <PerfectScrollbar className='w-full' option={{ suppressScrollX: true }}>
+                        {props.children}
+                    </PerfectScrollbar>
+                </div>
+                <ModalFooter
+                    loading={props.loading}
+                    inEditingMode={props.inEditingMode}
+                    keepAdding={props.keepAdding}
+                    setKeepAdding={props.setKeepAdding}
+                    onClick={props.onClick}
+                />
             </DialogContent>
         </Dialog>
     )

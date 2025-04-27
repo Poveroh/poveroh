@@ -1,14 +1,27 @@
 'use client'
 
-import AppContext from '@/context/appContext'
-import { useContext } from 'react'
+import { cookie, storage } from '@/lib/storage'
+import { useUserStore } from '@/store/auth.store'
+import { redirect } from 'next/navigation'
 
 export const useUser = () => {
-    const context = useContext(AppContext)
+    const userStore = useUserStore()
 
-    if (!context) {
-        throw new Error('useUser must be used within a AppContextProvider')
+    const logout = (redirectToLogin?: boolean) => {
+        storage.clear()
+        cookie.remove('token')
+        userStore.resetAll()
+
+        if (redirectToLogin) redirect('/sign-in')
     }
 
-    return context
+    const isAuthenticate = () => {
+        return cookie.has('token')
+    }
+
+    return {
+        ...userStore,
+        logout,
+        isAuthenticate
+    }
 }

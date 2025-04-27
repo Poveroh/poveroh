@@ -15,7 +15,7 @@ import { Loader2 } from 'lucide-react'
 
 import PasswordInput from '@poveroh/ui/components/password'
 import { AuthService } from '@/services/auth.service'
-import { IUserLogin } from '@poveroh/types/dist'
+import { IUserLogin } from '@poveroh/types'
 
 const authService = new AuthService()
 
@@ -47,11 +47,16 @@ export default function LoginView() {
 
     const signIn = async (user: IUserLogin) => {
         setLoading(true)
-        await authService.signIn(user).catch(error => {
-            toast.error(error, {
-                position: 'bottom-left'
+        await authService
+            .signIn(user)
+            .then(() => {
+                window.location.href = '/dashboard'
             })
-        })
+            .catch(error => {
+                toast.error(error, {
+                    position: 'bottom-left'
+                })
+            })
         setLoading(false)
     }
 

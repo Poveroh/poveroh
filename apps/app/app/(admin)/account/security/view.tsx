@@ -1,5 +1,15 @@
 'use client'
 
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import { toast } from '@poveroh/ui/components/sonner'
+import { UserService } from '@/services/user.service'
+import PasswordInput from '@poveroh/ui/components/password'
+import Box from '@/components/box/boxWrapper'
+import { Loader2 } from 'lucide-react'
 import { Button } from '@poveroh/ui/components/button'
 import {
     Breadcrumb,
@@ -9,10 +19,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-import { useTranslations } from 'next-intl'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { UserService } from '@/services/user.service'
 import {
     Form,
     FormControl,
@@ -22,12 +28,6 @@ import {
     FormLabel,
     FormMessage
 } from '@poveroh/ui/components/form'
-import { useForm } from 'react-hook-form'
-import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { toast } from '@poveroh/ui/components/sonner'
-import PasswordInput from '@poveroh/ui/components/password'
-import Box from '@/components/box/boxWrapper'
 
 const userService = new UserService()
 
@@ -52,7 +52,7 @@ export default function SecurityView() {
             })
         )
 
-    const userGeneralitiesSchema = z
+    const formSchema = z
         .object({
             oldPassword: objectSetup,
             newPassword: objectSetup,
@@ -67,13 +67,15 @@ export default function SecurityView() {
             path: ['newPassword']
         })
 
+    const defaultValues = {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    }
+
     const form = useForm({
-        resolver: zodResolver(userGeneralitiesSchema),
-        defaultValues: {
-            oldPassword: '',
-            newPassword: '',
-            confirmPassword: ''
-        }
+        resolver: zodResolver(formSchema),
+        defaultValues: defaultValues
     })
 
     const savePassword = async (passwordToSave: IPassword) => {

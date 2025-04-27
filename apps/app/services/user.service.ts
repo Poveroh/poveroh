@@ -5,12 +5,14 @@ import { encryptString } from '@poveroh/utils/dist'
 
 export class UserService {
     async me(readFromServer?: boolean): Promise<IUser> {
-        let user: IUser
+        let user: IUser | null
 
         if (readFromServer) {
             user = await server.post<IUser>('/user/me', {})
             storage.set('user', JSON.stringify(user))
         } else user = storage.parse<IUser>('user')
+
+        if (!user) throw new Error('User not found')
 
         return user
     }

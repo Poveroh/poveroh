@@ -21,6 +21,7 @@
         "saved": "saved",
         "successfully": "{a} {b} successfully",
         "errors": {
+            "generic": "Error: {a}",
             "required": "This field is required",
             "email": "Invalid email address",
             "minlength": "The input is too short",
@@ -28,7 +29,8 @@
             "pattern": "Invalid format",
             "passwordAtLeastChar": "Password must be at least {a} characters",
             "passwordMismatch": "Passwords do not match.",
-            "passwordMustBeDifferent": "Passwords must be different with old password."
+            "passwordMustBeDifferent": "Passwords must be different with old password.",
+            "bankAccountMismatch": "Bank account must be different"
         }
     },
     "buttons": {
@@ -45,6 +47,65 @@
             "base": "Export",
             "all": "Export all",
             "selected": "Export selected"
+        }
+    },
+    "form": {
+        "title": {
+            "label": "Title"
+        },
+        "date": {
+            "label": "Date",
+            "placeholder": "Select a date"
+        },
+        "amount": {
+            "label": "Amount",
+            "placeholder": "0,00"
+        },
+        "bankaccount": {
+            "label": "Bank account",
+            "placeholder": "Select a bank account"
+        },
+        "currency": {
+            "label": "Currency",
+            "placeholder": "Select a currency"
+        },
+        "category": {
+            "label": "Category",
+            "placeholder": "Select a category"
+        },
+        "subcategory": {
+            "label": "Subcategory",
+            "placeholder": "Select a subcategory"
+        },
+        "note": {
+            "label": "Note",
+            "placeholder": "Type a note"
+        },
+        "ignore": {
+            "label": "Exclude from budget"
+        },
+        "description": {
+            "label": "Description",
+            "placeholder": "Type a note"
+        },
+        "type": {
+            "label": "Type",
+            "placeholder": "Select a type"
+        },
+        "file": {
+            "label": "File",
+            "placeholder": "Select a file",
+            "accept": {
+                "image": "Image",
+                "video": "Video",
+                "audio": "Audio",
+                "document": "Document"
+            }
+        },
+        "icon": {
+            "label": "Icon",
+            "addAsUrl": "Add as URL",
+            "addAsFile": "Add as file"
         }
     },
     "notFound": {
@@ -137,6 +198,16 @@
     },
     "transactions": {
         "title": "Transactions",
+        "empty": {
+            "title": "Add a transaction",
+            "subtitle": "Click the + Add button to create a new one"
+        },
+        "modal": {
+            "newTitle": "New transaction",
+            "editTitle": "Edit {a}",
+            "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
+        },
+
         "types": {
             "internalTransfer": "Internal transfer",
             "income": "Income",
@@ -163,24 +234,6 @@
             "circuit": "Circuit",
             "deposit": "Deposit account",
             "broker": "Broker"
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "type": {
-                "label": "Type",
-                "placeholder": "Select a type"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "categories": {
@@ -193,24 +246,6 @@
             "newTitle": "New category",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the category."
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "type": {
-                "label": "Type",
-                "placeholder": "Select a type"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "subcategories": {
@@ -219,24 +254,6 @@
             "newTitle": "New subcategory",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the subcategory."
-        },
-        "form": {
-            "title": {
-                "label": "Title"
-            },
-            "description": {
-                "label": "Description",
-                "placeholder": "Type a note"
-            },
-            "category": {
-                "label": "Category",
-                "placeholder": "Select a category"
-            },
-            "icon": {
-                "label": "Icon",
-                "addAsUrl": "Add as URL",
-                "addAsFile": "Add as file"
-            }
         }
     },
     "investments": {

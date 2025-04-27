@@ -40,6 +40,10 @@ export const server = {
 
                 if (error instanceof AxiosError) {
                     errorMessage = error.response?.data.message || error.message
+
+                    if (error.status == 403) {
+                        window.location.href = '/logout'
+                    }
                 } else if (error instanceof Error) {
                     errorMessage = error.message
                 }
@@ -54,6 +58,6 @@ export const server = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get<T>(url: string, data: any): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data)
+        return this.send<T>(ServerRequest.GET, url, data)
     }
 }

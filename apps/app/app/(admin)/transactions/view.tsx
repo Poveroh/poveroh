@@ -1,11 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { isEmpty } from 'lodash'
-import { useTranslations } from 'next-intl'
-
 import { Button } from '@poveroh/ui/components/button'
-import { Input } from '@poveroh/ui/components/input'
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -14,34 +9,31 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-
+import { useTranslations } from 'next-intl'
+import { Input } from '@poveroh/ui/components/input'
+import { useEffect, useState } from 'react'
 import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
-
 import Box from '@/components/box/boxWrapper'
-import { BrandIcon } from '@/components/icon/brandIcon'
+import { ITransaction } from '@poveroh/types'
 import { DeleteModal } from '@/components/modal/delete'
-import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
+import _ from 'lodash'
+import { BrandIcon } from '@/components/icon/brandIcon'
+import { TransactionDialog } from '@/components/dialog/transactionDialog'
+import { useTransaction } from '@/hooks/useTransaction'
 
-import { IBankAccount } from '@poveroh/types'
-
-import { useBankAccount } from '@/hooks/useBankAccount'
-
-type BankAccountItemProps = {
-    account: IBankAccount
-    openDelete: (item: IBankAccount) => void
-    openEdit: (item: IBankAccount) => void
+type TransactionItemProps = {
+    account: ITransaction
+    openDelete: (item: ITransaction) => void
+    openEdit: (item: ITransaction) => void
 }
 
-function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps) {
-    const logo_icon = `url(${account.logo_icon})`
-
+function TrasanctionItem({ account, openDelete, openEdit }: TransactionItemProps) {
     return (
         <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
             <div className='flex flex-row items-center space-x-5'>
-                <BrandIcon icon={logo_icon}></BrandIcon>
+                <BrandIcon icon={''}></BrandIcon>
                 <div>
                     <p>{account.title}</p>
-                    <p className='sub'>{account.description}</p>
                 </div>
             </div>
             <div className='flex flex-col items-center'>
@@ -54,41 +46,32 @@ function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps
     )
 }
 
-export default function BankAccountView() {
+export default function TransactionsView() {
     const t = useTranslations()
+    const { transactionCacheList, removeTransaction, fetchTransaction } = useTransaction()
 
-    const { bankAccountCacheList, removeBankAccount, fetchBankAccount } = useBankAccount()
-
-    const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
+    const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
+    const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
+    const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
 
     useEffect(() => {
-        fetchBankAccount()
+        // fetchTransaction()
     }, [])
-
-    useEffect(() => {
-        setLocalBankAccountList(bankAccountCacheList)
-    }, [bankAccountCacheList])
 
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        if (isEmpty(textToSearch)) {
-            setLocalBankAccountList(bankAccountCacheList)
+        if (_.isEmpty(textToSearch)) {
+            setLocalTransactionList(transactionCacheList)
             return
         }
 
-        const filteredList = bankAccountCacheList.filter(
-            account =>
-                account.title.toLowerCase().includes(textToSearch) ||
-                account.description.toLowerCase().includes(textToSearch)
-        )
+        const filteredList = transactionCacheList.filter(x => x.title.toLowerCase().includes(textToSearch))
 
-        setLocalBankAccountList(filteredList)
+        setLocalTransactionList(filteredList)
     }
 
     const onDelete = async () => {
@@ -96,7 +79,7 @@ export default function BankAccountView() {
 
         setLoading(true)
 
-        const res = await removeBankAccount(itemToDelete.id)
+        const res = await removeTransaction(itemToDelete.id)
 
         setLoading(false)
 
@@ -110,7 +93,7 @@ export default function BankAccountView() {
             <div className='space-y-12'>
                 <div className='flex flex-row items-end justify-between'>
                     <div className='flex flex-col space-y-3'>
-                        <h2>{t('settings.manage.bankAccount.title')}</h2>
+                        <h2>{t('transactions.title')}</h2>
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
@@ -122,13 +105,13 @@ export default function BankAccountView() {
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('settings.manage.bankAccount.title')}</BreadcrumbPage>
+                                    <BreadcrumbPage>{t('transactions.title')}</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchBankAccount} />
+                        <RotateCcw className='cursor-pointer' onClick={fetchTransaction} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
@@ -149,11 +132,11 @@ export default function BankAccountView() {
                         onChange={onSearch}
                     />
                 </div>
-                {localBankAccountList.length > 0 ? (
+                {localTransactionList.length > 0 ? (
                     <Box>
                         <>
-                            {localBankAccountList.map(account => (
-                                <BankAccountItem
+                            {localTransactionList.map(account => (
+                                <TrasanctionItem
                                     key={account.id}
                                     account={account}
                                     openEdit={setItemToEdit}
@@ -166,8 +149,8 @@ export default function BankAccountView() {
                     <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
                         <Landmark />
                         <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('bankAccounts.empty.title')}</h4>
-                            <p>{t('bankAccounts.empty.subtitle')}</p>
+                            <h4>{t('transactions.empty.title')}</h4>
+                            <p>{t('transactions.empty.subtitle')}</p>
                         </div>
                     </div>
                 )}
@@ -176,7 +159,7 @@ export default function BankAccountView() {
             {itemToDelete && (
                 <DeleteModal
                     title={itemToDelete.title}
-                    description={t('bankAccounts.modal.deleteDescription')}
+                    description={t('transactions.modal.deleteDescription')}
                     open={true}
                     closeDialog={() => setItemToDelete(null)}
                     loading={loading}
@@ -185,20 +168,22 @@ export default function BankAccountView() {
             )}
 
             {dialogNewOpen && (
-                <BankAccountDialog
+                <TransactionDialog
                     open={dialogNewOpen}
                     inEditingMode={false}
+                    dialogHeight='h-[80vh]'
                     closeDialog={() => setDialogNewOpen(false)}
-                ></BankAccountDialog>
+                ></TransactionDialog>
             )}
 
             {itemToEdit && (
-                <BankAccountDialog
+                <TransactionDialog
                     initialData={itemToEdit}
                     open={itemToEdit !== null}
                     inEditingMode={true}
+                    dialogHeight='h-[80vh]'
                     closeDialog={() => setItemToEdit(null)}
-                ></BankAccountDialog>
+                />
             )}
         </>
     )

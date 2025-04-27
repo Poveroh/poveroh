@@ -1,8 +1,6 @@
 import { type IUserLogin } from '@poveroh/types'
-import { redirect } from 'next/navigation'
 import { server } from '@/lib/server'
 import { encryptString, isValidEmail } from '@poveroh/utils'
-import { cookie, storage } from '@/lib/storage'
 import { isEmpty } from 'lodash'
 
 export class AuthService {
@@ -13,25 +11,6 @@ export class AuthService {
 
         user.password = await encryptString(user.password)
 
-        const res = await server.post<boolean>('/auth/login', user)
-
-        if (res) {
-            window.location.href = '/dashboard'
-            return true
-        } else {
-            return false
-        }
-    }
-
-    isAuthenticate() {
-        return cookie.has('token')
-    }
-
-    logout(redirectToLogin?: boolean) {
-        storage.clear()
-
-        cookie.remove('token')
-
-        if (redirectToLogin) redirect('/sign-in')
+        return await server.post<boolean>('/auth/login', user)
     }
 }
