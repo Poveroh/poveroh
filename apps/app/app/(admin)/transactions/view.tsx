@@ -176,13 +176,6 @@ export default function TransactionsView() {
                 ></TransactionDialog>
             )}
 
-            <TransactionDialog
-                open={true}
-                inEditingMode={false}
-                dialogHeight='h-[80vh]'
-                closeDialog={() => setDialogNewOpen(false)}
-            ></TransactionDialog>
-
             {itemToEdit && (
                 <TransactionDialog
                     initialData={itemToEdit}
