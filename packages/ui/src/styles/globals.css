@@ -241,6 +241,18 @@ hr {
     border-color: var(--hr-color);
 }
 
+.hr {
+    width: 100%;
+    height: 1px;
+    background-color: var(--hr-color);
+}
+
+.hr.vertical {
+    height: 100%;
+    width: 1px;
+    background-color: var(--hr-color);
+}
+
 .nav-app {
     backdrop-filter: saturate(180%) blur(20px);
     z-index: 5;

@@ -9,6 +9,7 @@ import { toast } from '@poveroh/ui/components/sonner'
 import { useTransaction } from '@/hooks/useTransaction'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
+import { ExpensesForm } from '../form/transactions/ExpensesForm'
 
 type DialogProps = {
     open: boolean
@@ -30,7 +31,7 @@ export function TransactionDialog(props: DialogProps) {
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
-    const [currentAction, setCurrentAction] = useState<string>('INCOME')
+    const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
 
     useEffect(() => {
         fetchData()
@@ -90,6 +91,15 @@ export function TransactionDialog(props: DialogProps) {
                         dataCallback={handleFormSubmit}
                         closeDialog={props.closeDialog}
                     ></IncomeForm>
+                )}
+                {currentAction == 'EXPENSES' && (
+                    <ExpensesForm
+                        ref={formRef}
+                        initialData={props.initialData}
+                        inEditingMode={props.inEditingMode}
+                        dataCallback={handleFormSubmit}
+                        closeDialog={props.closeDialog}
+                    ></ExpensesForm>
                 )}
                 {currentAction == 'INTERNAL' && (
                     <TransferForm

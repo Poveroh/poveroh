@@ -16,6 +16,7 @@
         "dev:storybook": "turbo dev --filter=storybook",
         "dev:api": "turbo dev --filter=api",
         "dev:app": "turbo dev --filter=app",
+        "preview": "turbo run",
         "ui:add": "cd ./apps/app && npm run ui:add",
         "setup": "npm run setup:db && npm run setup:cdn",
         "setup:db": "node ./scripts/setup-db.js",
