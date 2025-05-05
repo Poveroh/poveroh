@@ -9,6 +9,7 @@ import userRoutes from './routes/user'
 import categoryRoutes from './routes/category'
 import subcategoryRoutes from './routes/subcategory'
 import bankAccountRoutes from './routes/bankaccount'
+import transactionRoutes from './routes/transaction'
 import { config } from './utils/environment'
 
 const app = express()
@@ -38,6 +39,7 @@ app.use('/user', userRoutes)
 app.use('/bank-account', bankAccountRoutes)
 app.use('/category', categoryRoutes)
 app.use('/subcategory', subcategoryRoutes)
+app.use('/transaction', transactionRoutes)
 
 app.listen(config.PORT, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${config.PORT}`)

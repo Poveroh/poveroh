@@ -22,7 +22,7 @@ type DialogProps = {
 export function TransactionDialog(props: DialogProps) {
     const t = useTranslations()
 
-    const { getActionList } = useTransaction()
+    const { getActionList, addTransaction, editTransaction } = useTransaction()
     const { fetchBankAccount } = useBankAccount()
     const { fetchCategory } = useCategory()
 
@@ -31,7 +31,7 @@ export function TransactionDialog(props: DialogProps) {
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
-    const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
+    const [currentAction, setCurrentAction] = useState<string>('INTERNAL')
 
     useEffect(() => {
         fetchData()
@@ -45,16 +45,31 @@ export function TransactionDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        console.log('Submitted data:', data)
+        let res: ITransaction
+
+        // edit dialog
+        if (props.inEditingMode) {
+            res = await editTransaction(data)
+            props.closeDialog()
+        } else {
+            // new dialog
+            res = await addTransaction(data)
+
+            if (keepAdding) {
+                formRef.current?.reset()
+            } else {
+                props.closeDialog()
+            }
+        }
 
         toast.success(
             t('messages.successfully', {
-                a: '',
+                a: res.title,
                 b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )
 
-        setLoading(true)
+        setLoading(false)
     }
 
     return (

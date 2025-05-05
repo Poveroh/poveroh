@@ -7,6 +7,7 @@ export interface IBankAccountBase {
 
 export interface IBankAccount extends IBankAccountBase {
     id: string
+    user_id: string
     created_at: string
 }
 

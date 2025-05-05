@@ -1,63 +1,44 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ICategory, ICategoryBase } from '@poveroh/types'
 import _ from 'lodash'
+import { TransactionHelper } from '../helpers/transaction.helper'
 
-export class CategoryController {
+export class TransactionController {
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
+            const { data, action } = req.body
 
-            let readedCategory: ICategoryBase = JSON.parse(req.body.category)
+            if (!data || !action) {
+                res.status(400).json({ message: 'Data or action not provided' })
+                return
+            }
 
-            const category = await prisma.categories.create({
-                data: {
-                    ...readedCategory,
-                    user_id: req.user.id
-                },
-                include: {
-                    subcategories: true
-                }
-            })
+            let parsedData = JSON.parse(data)
 
-            res.status(200).json(category)
+            const userId = req.user.id
+
+            const result = await TransactionHelper.handleTransaction(action, parsedData, userId)
+            res.status(200).json(result)
         } catch (error) {
             res.status(500).json({ message: 'An error occurred', error })
-            console.log(error)
         }
     }
 
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
-
-            let readedCategory: ICategory = JSON.parse(req.body.category)
-
-            const category = await prisma.categories.update({
-                where: {
-                    id: readedCategory.id
-                },
-                data: _.omit(readedCategory, ['subcategories'])
-            })
-
-            res.status(200).json(category)
         } catch (error) {
-            res.status(500).json({ message: 'An error occurred', error })
+            console.error('Error updating transaction:', error)
+            res.status(500).json({
+                message: 'An error occurred while updating the transaction',
+                error: process.env.NODE_ENV === 'production' ? undefined : error
+            })
         }
     }
 
     static async delete(req: Request, res: Response) {
         try {
-            await prisma.subcategories.deleteMany({
-                where: {
-                    category_id: req.body.id
-                }
-            })
-
-            await prisma.categories.delete({
-                where: {
-                    id: req.body.id
-                }
+            await prisma.transactions.delete({
+                where: req.body
             })
 
             res.status(200).json(true)
@@ -74,9 +55,6 @@ export class CategoryController {
                 where: {},
                 orderBy: {
                     created_at: 'desc'
-                },
-                include: {
-                    subcategories: true
                 }
             }
 
@@ -96,11 +74,11 @@ export class CategoryController {
                 }
             }
 
-            const categories = await prisma.categories.findMany(sql)
+            const data = await prisma.transactions.findMany(sql)
 
-            res.status(200).json(categories)
+            res.status(200).json(data)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

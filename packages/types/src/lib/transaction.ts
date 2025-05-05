@@ -1,20 +1,34 @@
-export interface IAmount {
+import { Currencies } from './currency.js'
+
+export interface IAmountBase {
+    transaction_id: string
     amount: number
-    currency_id: string
+    currency: Currencies
     action: TransactionAction
+    bank_account_id: string
+}
+
+export interface IAmount extends IAmountBase {
+    id: string
+
     created_at: string
 }
 
-export interface ITransaction {
-    id: string
+export interface ITransactionBase {
     title: string
     type: TransactionAction
-    category_id: string
-    subcategory_id: string
-    amounts: IAmount[]
+    category_id?: string
+    subcategory_id?: string
+    date: string
     note?: string
     ignore: boolean
+}
+
+export interface ITransaction extends ITransactionBase {
+    id: string
+    user_id: string
     created_at: Date
+    amounts: IAmount[]
 }
 
 export enum TransactionAction {

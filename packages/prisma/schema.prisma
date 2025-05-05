@@ -19,6 +19,7 @@ model users {
     subscriptions subscriptions[]
     categories    categories[]
     login         users_login[]
+    bank_accounts bank_accounts[]
 }
 
 model users_login {
@@ -39,15 +40,15 @@ model transactions {
     title          String
     date           DateTime
     type           TransactionType @default(EXPENSES)
-    category_id    String
-    subcategory_id String
+    category_id    String?
+    subcategory_id String?
     note           String?
     ignore         Boolean         @default(false)
     created_at     DateTime        @default(now())
 
-    user        users         @relation(fields: [user_id], references: [id])
-    category    categories    @relation(fields: [category_id], references: [id])
-    subcategory subcategories @relation(fields: [subcategory_id], references: [id])
+    user        users          @relation(fields: [user_id], references: [id])
+    category    categories?    @relation(fields: [category_id], references: [id])
+    subcategory subcategories? @relation(fields: [subcategory_id], references: [id])
 
     media   transactions_media[]
     amounts amounts[]
@@ -60,7 +61,6 @@ model subscriptions {
     description     String
     amount          Float
     currency        Currency
-    current_id      String
     first_payment   DateTime
     cycle_number    Int
     cycle_period    String
@@ -88,6 +88,7 @@ model transactions_media {
 
 model bank_accounts {
     id          String          @id @default(uuid())
+    user_id     String
     title       String
     description String
     type        BankAccountType @default(BANK_ACCOUNT)
@@ -96,6 +97,7 @@ model bank_accounts {
 
     subscriptions subscriptions[]
     amounts       amounts[]
+    user          users           @relation(fields: [user_id], references: [id])
 }
 
 model categories {
@@ -132,7 +134,6 @@ model amounts {
     amount          Float
     currency        Currency
     action          TransactionType @default(EXPENSES)
-    currency_id     String
     bank_account_id String
     created_at      DateTime        @default(now())
 
@@ -141,7 +142,7 @@ model amounts {
 }
 
 enum TransactionType {
-    INTERNAL_TRANSFER
+    INTERNAL
     EXPENSES
     INCOME
 }

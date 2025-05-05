@@ -7,7 +7,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { format } from 'date-fns'
 
-import { IBankAccount, ICategory, IItem, ISubcategory, ITransaction } from '@poveroh/types'
+import {
+    Currencies,
+    currencyCatalog,
+    IBankAccount,
+    ICategory,
+    IItem,
+    ISubcategory,
+    ITransaction,
+    TransactionAction
+} from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
@@ -24,7 +33,6 @@ import icons from 'currency-icons'
 import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import DynamicIcon from '@/components/icon/dynamicIcon'
-import { currencies } from '@/services/currency.service'
 import { BrandIcon } from '@/components/icon/brandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/useError'
@@ -50,11 +58,11 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
     const [file, setFile] = useState<FileList | null>(null)
     const [fileError, setFileError] = useState(false)
 
-    const defaultValues = initialData || {
+    const defaultValues = {
         title: '',
         date: new Date(),
         amount: 0,
-        currency_id: 'EUR',
+        currency: Currencies.EUR,
         bank_account_id: '',
         category_id: '',
         subcategory_id: '',
@@ -73,7 +81,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                 invalid_type_error: t('messages.errors.pattern')
             })
             .positive(),
-        currency_id: z.string().nonempty(t('messages.errors.required')),
+        currency: z.string().nonempty(t('messages.errors.required')),
         bank_account_id: z.string().nonempty(t('messages.errors.required')),
         category_id: z.string().nonempty(t('messages.errors.required')),
         subcategory_id: z.string().nonempty(t('messages.errors.required')),
@@ -106,12 +114,10 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            formData.append('action', TransactionAction.INCOME)
 
             if (file && file[0]) {
                 formData.append('file', file[0])
-            } else if (!inEditingMode) {
-                setFileError(true)
-                return
             }
 
             await dataCallback(formData)
@@ -201,7 +207,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                         />
                         <FormField
                             control={form.control}
-                            name='currency_id'
+                            name='currency'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
@@ -212,7 +218,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {currencies.map((item: IItem) => (
+                                            {currencyCatalog.map((item: IItem) => (
                                                 <SelectItem key={item.value} value={item.value}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <span>{icons[item.value]?.symbol || ''}</span>
@@ -341,7 +347,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('form.file.label')}</FormLabel>
+                            <FormLabel>{t('form.file.label')}</FormLabel>
                             <FormControl>
                                 {
                                     <FileInput

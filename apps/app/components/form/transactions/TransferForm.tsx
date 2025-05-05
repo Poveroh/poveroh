@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { format } from 'date-fns'
 
-import { IBankAccount, ITransaction } from '@poveroh/types'
+import { currencyCatalog, IBankAccount, IItem, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
@@ -15,6 +15,7 @@ import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
 import { CalendarIcon } from 'lucide-react'
+import icons from 'currency-icons'
 
 import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
@@ -37,10 +38,11 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
     const { bankAccountCacheList } = useBankAccount()
 
-    const defaultValues = initialData || {
+    const defaultValues = {
         title: '',
         date: new Date(),
         amount: 0,
+        currency: 'EUR',
         from: '',
         to: '',
         note: '',
@@ -53,6 +55,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
             date: z.date({
                 required_error: t('messages.errors.required')
             }),
+            currency: z.string().nonempty(t('messages.errors.required')),
             amount: z
                 .number({
                     required_error: t('messages.errors.required'),
@@ -87,6 +90,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            formData.append('action', TransactionAction.INTERNAL)
 
             await dataCallback(formData)
         } catch (error) {
@@ -152,26 +156,55 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name='amount'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel mandatory>{t('form.amount.label')}</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type='number'
-                                        step='0.01'
-                                        min='0'
-                                        {...field}
-                                        onChange={e => field.onChange(parseFloat(e.target.value))}
-                                        placeholder={t('form.amount.placeholder')}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className='flex flex-row space-x-2'>
+                        <FormField
+                            control={form.control}
+                            name='amount'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.amount.label')}</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type='number'
+                                            step='0.01'
+                                            min='0'
+                                            {...field}
+                                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                                            placeholder={t('form.amount.placeholder')}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name='currency'
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder={t('form.currency.placeholder')} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {currencyCatalog.map((item: IItem) => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    <div className='flex items-center flex-row space-x-4'>
+                                                        <span>{icons[item.value]?.symbol || ''}</span>
+                                                        <span>{item.label}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
                     <div className='flex flex-col space-y-2'>
                         <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>

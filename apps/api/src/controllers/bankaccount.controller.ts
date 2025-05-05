@@ -1,9 +1,8 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { IBankAccount, IBankAccountBase } from '@poveroh/types'
-import { isLocalStorageMode, uploadClient } from '../utils/storage'
-import { config } from '../utils/environment'
 import _ from 'lodash'
+import { MediaHelper } from '../helpers/media.helper'
 
 export class BankAccountController {
     static async add(req: Request, res: Response) {
@@ -13,21 +12,15 @@ export class BankAccountController {
             let readedBankAccount: IBankAccountBase = JSON.parse(req.body.data)
 
             if (req.file) {
-                const readedUser = req.user.id
-
-                let filePath = `${readedUser}/bankaccount/${readedBankAccount.title}/${req.file.originalname}`
-
-                await uploadClient.uploadFile(filePath, req.file.buffer)
-
-                if (isLocalStorageMode) {
-                    const baseCdnUrl = `http://localhost:${config.CDN_PORT}`
-                    filePath = new URL(filePath, baseCdnUrl).toString()
-                }
+                const filePath = await MediaHelper.handleUpload(
+                    req.file,
+                    `${req.user.id}/bankaccount/${readedBankAccount.title}`
+                )
                 readedBankAccount.logo_icon = filePath
             }
 
             let account = await prisma.bank_accounts.create({
-                data: readedBankAccount
+                data: { ...readedBankAccount, user_id: req.user.id }
             })
 
             res.status(200).json(account)
@@ -43,16 +36,10 @@ export class BankAccountController {
             let readedBankAccount: IBankAccount = JSON.parse(req.body.data)
 
             if (req.file) {
-                const readedUser = req.user.id
-
-                let filePath = `${readedUser}/bankaccount/${readedBankAccount.title}/${req.file.originalname}`
-
-                await uploadClient.uploadFile(filePath, req.file.buffer)
-
-                if (isLocalStorageMode) {
-                    const baseCdnUrl = `http://localhost:${config.CDN_PORT}`
-                    filePath = new URL(filePath, baseCdnUrl).toString()
-                }
+                const filePath = await MediaHelper.handleUpload(
+                    req.file,
+                    `${req.user.id}/bankaccount/${readedBankAccount.title}`
+                )
                 readedBankAccount.logo_icon = filePath
             }
 

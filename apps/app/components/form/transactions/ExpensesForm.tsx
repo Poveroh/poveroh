@@ -8,7 +8,16 @@ import { useTranslations } from 'next-intl'
 import { format } from 'date-fns'
 import Image from 'next/image'
 
-import { IBankAccount, ICategory, IItem, ISubcategory, ITransaction } from '@poveroh/types'
+import {
+    Currencies,
+    currencyCatalog,
+    IBankAccount,
+    ICategory,
+    IItem,
+    ISubcategory,
+    ITransaction,
+    TransactionAction
+} from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
@@ -25,7 +34,6 @@ import icons from 'currency-icons'
 import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import DynamicIcon from '@/components/icon/dynamicIcon'
-import { currencies } from '@/services/currency.service'
 import { BrandIcon } from '@/components/icon/brandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/useError'
@@ -57,10 +65,10 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
         bank_account_id: ''
     }
 
-    const defaultValues = initialData || {
+    const defaultValues = {
         title: '',
         date: new Date(),
-        currency_id: 'EUR',
+        currency: Currencies.EUR,
         total_amount: 0,
         amounts: [defaultAmounts],
         category_id: '',
@@ -95,7 +103,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                     })
                 )
                 .min(1, 'At least one entry is required'),
-            currency_id: z.string().nonempty(t('messages.errors.required')),
+            currency: z.string().nonempty(t('messages.errors.required')),
             category_id: z.string().nonempty(t('messages.errors.required')),
             subcategory_id: z.string().nonempty(t('messages.errors.required')),
             note: z.string(),
@@ -132,6 +140,10 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
         return form.getValues().amounts.reduce((acc, curr) => acc + curr.amount, 0)
     }
 
+    const parseAmountValue = (e: string) => {
+        return e === '' ? 0 : parseFloat(e)
+    }
+
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryCacheList.find(item => item.id === categoryId)
         const res = category ? category.subcategories : []
@@ -146,12 +158,10 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            formData.append('action', TransactionAction.EXPENSES)
 
             if (file && file[0]) {
                 formData.append('file', file[0])
-            } else if (!inEditingMode) {
-                setFileError(true)
-                return
             }
 
             await dataCallback(formData)
@@ -220,7 +230,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
                     <FormField
                         control={form.control}
-                        name='currency_id'
+                        name='currency'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
@@ -231,7 +241,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {currencies.map((item: IItem) => (
+                                        {currencyCatalog.map((item: IItem) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <span>{icons[item.value]?.symbol || ''}</span>
@@ -311,7 +321,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                                     min='0'
                                                     {...field}
                                                     onChange={e => {
-                                                        field.onChange(parseFloat(e.target.value))
+                                                        field.onChange(parseAmountValue(e.target.value))
                                                         form.setValue('total_amount', calculateTotal())
                                                     }}
                                                     placeholder={t('form.amount.placeholder')}
@@ -354,7 +364,10 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     variant='ghost'
                                     className='mt-1'
                                     disabled={index == 0}
-                                    onClick={() => remove(index)}
+                                    onClick={() => {
+                                        remove(index)
+                                        form.setValue('total_amount', calculateTotal())
+                                    }}
                                 >
                                     <Trash2 className='danger cursor-pointer' />
                                 </Button>
@@ -476,7 +489,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
-                            <FormLabel mandatory={!inEditingMode}>{t('form.file.label')}</FormLabel>
+                            <FormLabel>{t('form.file.label')}</FormLabel>
                             <FormControl>
                                 {
                                     <FileInput
