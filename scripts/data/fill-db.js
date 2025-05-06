@@ -41,7 +41,7 @@ const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
 
 // Add other tables in the order based on prisma schemas
-const IMPORT_ORDER = ['users', 'bank_accounts', 'categories', 'subcategories']
+const IMPORT_ORDER = ['users', 'bank_accounts', 'categories', 'subcategories', 'transactions']
 
 function parseArgs() {
     const args = process.argv.slice(2)
@@ -66,7 +66,7 @@ function parseArgs() {
 async function tableExists(tableName) {
     const table = await prisma.$queryRaw`
     SELECT EXISTS (
-      SELECT FROM information_schema.tables 
+      SELECT FROM information_schema.tables
       WHERE table_name = ${tableName}
     )
   `

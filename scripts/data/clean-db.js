@@ -26,8 +26,8 @@ function askQuestion(question) {
 
 async function getAllTables() {
     const tables = await prisma.$queryRaw`
-    SELECT tablename 
-    FROM pg_catalog.pg_tables 
+    SELECT tablename
+    FROM pg_catalog.pg_tables
     WHERE schemaname = 'public'
   `
 
@@ -89,7 +89,9 @@ async function main() {
             const selection = await askQuestion('\nYour selection (e.g., 1,3,5): ')
             const selectedIndices = selection.split(',').map(num => parseInt(num.trim()) - 1)
 
-            tablesToClear = selectedIndices.filter(index => index >= 0 && index < allTables.length).map(index => allTables[index])
+            tablesToClear = selectedIndices
+                .filter(index => index >= 0 && index < allTables.length)
+                .map(index => allTables[index])
 
             if (tablesToClear.length === 0) {
                 console.log('\n⚠️ No valid tables selected. Operation cancelled.')
@@ -110,14 +112,6 @@ async function main() {
         const confirmation = await askQuestion('\n❓ Are you sure you want to proceed? (y/n): ')
 
         if (confirmation.toLowerCase() !== 'y') {
-            console.log('\n🛑 Operation cancelled.')
-            rl.close()
-            return
-        }
-
-        const doubleConfirmation = await askQuestion('\n❗ Type "confirm" to proceed with deletion: ')
-
-        if (doubleConfirmation.toLowerCase() !== 'confirm') {
             console.log('\n🛑 Operation cancelled.')
             rl.close()
             return
