@@ -1,137 +1,245 @@
 [
     {
-        "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        "transaction_id": "t1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "amount": 2500.0,
-        "currency": "EUR",
-        "action": "INCOME",
-        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
-        "created_at": "2025-03-26T09:00:00.000Z"
-    },
-    {
-        "id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
-        "transaction_id": "t9c8b7a6-5e4d-3c2b-1a0f-9e8d7c6b5a4e",
-        "amount": 75.5,
+        "id": "9a3146d0-547f-44f4-bdf5-1128e7ee42d6",
+        "transaction_id": "cbfa6afd-98cc-4cc9-8104-288d6719302b",
+        "amount": 12.49,
         "currency": "EUR",
         "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-26T10:30:00.000Z"
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2023-10-28T22:00:00Z"
     },
     {
-        "id": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
-        "transaction_id": "t8a7b6c5-4d3c-2b1a-0f9e-8d7c6b5a4e3d",
-        "amount": 62.8,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-25T19:00:00.000Z"
-    },
-    {
-        "id": "d4e5f6a7-b8c9-0123-4567-890abcdef123",
-        "transaction_id": "t7b6c5a4-3d2c-1b0a-9e8d-7c6b5a4e3d2c",
-        "amount": 15.2,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
-        "created_at": "2025-03-24T11:15:00.000Z"
-    },
-    {
-        "id": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
-        "transaction_id": "t6c5a4b3-2d1c-0a9f-e8d7-c6b5a4e3d2ca",
-        "amount": 22.0,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-23T20:45:00.000Z"
-    },
-    {
-        "id": "f6a7b8c9-d0e1-2345-6789-0abcdef12345",
-        "transaction_id": "t5a4b3c2-1d0c-9f8e-d7c6-b5a4e3d2cab1",
-        "amount": 45.0,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-22T07:30:00.000Z"
-    },
-    {
-        "id": "7a8b9c0d-e1f2-3456-7890-abcdef123456",
-        "transaction_id": "t4b3c2a1-0c9f-8ed7-c6b5-a4e3d2cab12",
-        "amount": 35.75,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "e4d8f7b2-9a1c-42c6-8e5b-4c2a3b9d7f5e",
-        "created_at": "2025-03-21T14:00:00.000Z"
-    },
-    {
-        "id": "8b9c0d1e-f2a3-4567-890a-bcdef1234567",
-        "transaction_id": "t3c2a1b0-9f8e-d7c6-b5a4-e3d2cab123",
-        "amount": 19.99,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-20T16:45:00.000Z"
-    },
-    {
-        "id": "9c0d1e2f-a3b4-5678-90ab-cdef12345678",
-        "transaction_id": "t2a1b0c9-f8e7-d6c5-b4a3-e2d1cab1234",
-        "amount": 85.0,
+        "id": "2b14c3cd-1725-4552-a0a0-e0357f37f6e6",
+        "transaction_id": "4dbe8205-3bdc-4aa2-ae73-eec9982e3400",
+        "amount": 11.99,
         "currency": "EUR",
         "action": "EXPENSES",
         "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
-        "created_at": "2025-03-19T09:30:00.000Z"
+        "created_at": "2023-07-06T22:00:00Z"
     },
     {
-        "id": "0d1e2f3a-b4c5-6789-0abc-def123456789",
-        "transaction_id": "t0b9c8a7-e6d5-c4b3-a2f1-9e8d7c6b5a4e",
-        "amount": 55.4,
+        "id": "2f53be9b-8c48-4ecb-880d-294a5c8f2d19",
+        "transaction_id": "4ca70c3c-c974-437c-a90d-f52af41fc72b",
+        "amount": 7.99,
         "currency": "EUR",
         "action": "EXPENSES",
-        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
-        "created_at": "2025-03-18T18:00:00.000Z"
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2023-08-13T22:00:00Z"
     },
     {
-        "id": "o8p7q6r5-s4t3-u2v1-w0x9-y8z7a6b5c4d3",
-        "transaction_id": "u9v8w7x6-y5z4-a3b2-c1d0-e9f8a7b6c5d4",
-        "amount": 12.99,
+        "id": "abd4c8e6-5224-477f-be97-ba83edd15cb2",
+        "transaction_id": "981222cc-9a3b-4a46-9030-1d91d40a9c9e",
+        "amount": 11.99,
         "currency": "EUR",
         "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-27T11:45:00.000Z"
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2023-05-24T22:00:00Z"
     },
     {
-        "id": "k9j8i7h6-g5f4-e3d2-c1b0-a9z8y7x6w5v4",
-        "transaction_id": "l0m9n8o7-p6q5-r4s3-t2u1-v0w9x8y7z6a5",
-        "amount": 2.5,
+        "id": "58c0c473-0270-4e6d-88c9-23a7d20089ed",
+        "transaction_id": "892a0bd7-e078-4e33-8fec-b1362ee4a2ab",
+        "amount": 12.49,
         "currency": "EUR",
         "action": "EXPENSES",
-        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
-        "created_at": "2025-03-28T08:20:00.000Z"
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2023-08-28T22:00:00Z"
     },
     {
-        "id": "y0x9w8v7-u6t5-s4r3-q2p1-o9n8m7l6k5j4",
-        "transaction_id": "z1a2b3c4-d5e6-f7g8-h9i0-j8k7l6m5n4o3",
-        "amount": 4.8,
-        "currency": "EUR",
-        "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-29T14:55:00.000Z"
-    },
-    {
-        "id": "p1o2i3u4-y5t6-r7e8-w9q0-z1x2c3v4b5n6",
-        "transaction_id": "q2w3e4r5-t6y7-u8i9-o0p9-l8k7j6h5g4f3",
+        "id": "377abc94-2c75-4558-a0de-30e16136661b",
+        "transaction_id": "95dc0cd6-16ce-4093-82e3-5fbd294f405a",
         "amount": 9.99,
         "currency": "EUR",
         "action": "EXPENSES",
-        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
-        "created_at": "2025-03-30T19:10:00.000Z"
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2024-10-24T22:00:00Z"
     },
     {
-        "id": "l2k3j4h5-g6f7-e8d9-c0b1-a9z8y7x6w5v4u3t2",
-        "transaction_id": "m3n4b5v6-c7x8-z9a0-s1d2-f3g4h5j6k7l8",
-        "amount": 25.0,
+        "id": "9a368416-7136-4f9e-96a7-2032672a5b52",
+        "transaction_id": "231522ee-5028-4a04-86a5-d8ce1ffe3fbb",
+        "amount": 12.49,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2024-09-24T22:00:00Z"
+    },
+    {
+        "id": "8f64b590-9ac0-4146-87c6-ffe2d7222dc2",
+        "transaction_id": "9beaf71f-30a6-400f-9dbd-bf730ef5c3f9",
+        "amount": 13.99,
         "currency": "EUR",
         "action": "EXPENSES",
         "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
-        "created_at": "2025-03-31T10:05:00.000Z"
+        "created_at": "2023-09-16T22:00:00Z"
+    },
+    {
+        "id": "7e2ea4d3-cf46-4e4c-90d6-12b95d63e969",
+        "transaction_id": "1b0601bc-57ad-49c8-8fca-e27d54b6a184",
+        "amount": 8.99,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
+        "created_at": "2024-02-27T23:00:00Z"
+    },
+    {
+        "id": "7eaf3a7f-eef4-4956-a267-637da68415cb",
+        "transaction_id": "e33059f0-daf2-4db2-ba46-489fbd9b1961",
+        "amount": 8.99,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2024-03-30T23:00:00Z"
+    },
+    {
+        "id": "41e14a86-2c9e-4a12-a79f-b0ec40162dec",
+        "transaction_id": "74cc043c-5b13-487d-bc0c-a9029ef4c48e",
+        "amount": 110,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2023-06-20T22:00:00Z"
+    },
+    {
+        "id": "c999b0b8-1efa-4842-a1b0-f0ad17d7765e",
+        "transaction_id": "8c7b86c5-3d84-4845-8e1b-12788ff702fc",
+        "amount": 56.2,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2023-02-17T23:00:00Z"
+    },
+    {
+        "id": "cf169183-70ae-42aa-89af-b73d07ef9d6a",
+        "transaction_id": "6ec8c4e3-a271-4a83-bfe5-342823175669",
+        "amount": 35,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2023-02-02T23:00:00Z"
+    },
+    {
+        "id": "5addc405-3370-4281-987e-e3f8a458d5b0",
+        "transaction_id": "35a397ba-b315-453d-bfa2-290651fb0211",
+        "amount": 10.5,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "d5b8d6f7-62a4-490a-8f7e-b5e8a1c4c7a2",
+        "created_at": "2024-06-16T22:00:00Z"
+    },
+    {
+        "id": "e8107155-6477-40d9-85e5-a4e9b8257e00",
+        "transaction_id": "085fd9aa-37ec-44fa-9c27-5b59d21abbcc",
+        "amount": 10.5,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2023-11-04T23:00:00Z"
+    },
+    {
+        "id": "170500d8-4fc1-4aac-abf1-5c283aff6813",
+        "transaction_id": "22cccf2d-063a-45c3-b464-385153cf4196",
+        "amount": 2500,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2023-02-01T23:00:00Z"
+    },
+    {
+        "id": "3d1174fd-3d62-48ae-a6b3-45a805d826db",
+        "transaction_id": "7b1a2ddb-f26a-45a5-af30-85eab1455734",
+        "amount": 800,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "d5b8d6f7-62a4-490a-8f7e-b5e8a1c4c7a2",
+        "created_at": "2024-11-12T23:00:00Z"
+    },
+    {
+        "id": "1ffc0a3b-34ac-4a16-b52d-c2b9d3fb7cb2",
+        "transaction_id": "ab2ade55-4e40-4e83-9cdc-9cbf242e9a5f",
+        "amount": 150,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "c5f1a3b8-7d9e-42c3-9a5b-8f7d6e2b4a0c",
+        "created_at": "2023-01-15T23:00:00Z"
+    },
+    {
+        "id": "fb8b228e-f118-48ea-860b-9c1c824703f9",
+        "transaction_id": "58d1512a-bba2-4d42-933d-47f24d878604",
+        "amount": 320,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2023-01-03T23:00:00Z"
+    },
+    {
+        "id": "30927c12-fdfc-4f49-a6e2-4d967edc69c1",
+        "transaction_id": "3632b333-4fc6-4686-a85e-2dc2d5c43507",
+        "amount": 420,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2023-06-06T22:00:00Z"
+    },
+    {
+        "id": "9f008d03-ff40-4105-a124-028ecfd596e6",
+        "transaction_id": "56e9cead-b13a-4dd9-9b04-e0909938330a",
+        "amount": 95,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "f6c2a3e5-5b4e-4a92-9fd6-7e3c4b9e0d2f",
+        "created_at": "2024-05-15T22:00:00Z"
+    },
+    {
+        "id": "5a5be35c-0cff-41e3-ac88-6e101ef2bf87",
+        "transaction_id": "1725a945-d53d-42ec-8169-b76090e9eb94",
+        "amount": 174,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2023-02-26T23:00:00Z"
+    },
+    {
+        "id": "45fc0e02-fe31-46c5-83f1-1281d0461166",
+        "transaction_id": "1725a945-d53d-42ec-8169-b76090e9eb94",
+        "amount": 174,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2023-02-26T23:00:00Z"
+    },
+    {
+        "id": "dfdb199a-1b8b-49df-9e5e-4f222d53d7a3",
+        "transaction_id": "c37a04f6-e8f3-4ac6-a408-13ffa42b7f7f",
+        "amount": 181,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
+        "created_at": "2023-08-11T22:00:00Z"
+    },
+    {
+        "id": "eaa3ae78-a920-4868-8325-03f3053f2eff",
+        "transaction_id": "c37a04f6-e8f3-4ac6-a408-13ffa42b7f7f",
+        "amount": 181,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "a3c9f1d6-83b9-4018-9b75-bff12caa2d8a",
+        "created_at": "2023-08-11T22:00:00Z"
+    },
+    {
+        "id": "23935922-484f-4bb3-8773-81f3038cebf9",
+        "transaction_id": "3e0653b2-5fd4-4af0-bc2c-3dda0e2d090e",
+        "amount": 176,
+        "currency": "EUR",
+        "action": "EXPENSES",
+        "bank_account_id": "f2d4a1b6-83c7-4d5e-9b2a-5c7e3f9d6a8f",
+        "created_at": "2023-06-29T22:00:00Z"
+    },
+    {
+        "id": "507b599d-d487-42a8-8f3f-2543f586e5fc",
+        "transaction_id": "3e0653b2-5fd4-4af0-bc2c-3dda0e2d090e",
+        "amount": 176,
+        "currency": "EUR",
+        "action": "INCOME",
+        "bank_account_id": "d5b8d6f7-62a4-490a-8f7e-b5e8a1c4c7a2",
+        "created_at": "2023-06-29T22:00:00Z"
     }
 ]
