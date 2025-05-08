@@ -4,7 +4,9 @@
     "private": true,
     "scripts": {
         "dev": "storybook dev -p 6006",
-        "build": "storybook build"
+        "build-storybook": "storybook build",
+        "build": "storybook build",
+        "chromatic": "npx chromatic --project-token=chpt_b683b0adc804d06"
     },
     "dependencies": {
         "@poveroh/ui": "^0.0.0",
@@ -27,6 +29,7 @@
         "@types/node": "^20",
         "@types/react": "18.3.0",
         "@types/react-dom": "18.3.1",
+        "chromatic": "^11.28.2",
         "eslint": "^8",
         "eslint-config-next": "14.2.23",
         "eslint-plugin-storybook": "^0.11.2",

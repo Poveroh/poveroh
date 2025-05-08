@@ -39,7 +39,8 @@
         "docker": "npm run docker:create-network && docker compose up -d --build && docker compose up -d",
         "docker-prod": "node ./scripts/download-docker.js",
         "docker:create-network": "docker network ls | grep -w poveroh_network || docker network create poveroh_network",
-        "prepare": "husky"
+        "prepare": "husky",
+        "chromatic": "cd apps/storybook && npm run chromatic"
     },
     "devDependencies": {
         "husky": "^9.1.7",
