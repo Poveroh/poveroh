@@ -36,7 +36,7 @@ It provides flexible options for specifying the data source and handles data val
 1.  Run the script using Node.js:
 
     ```bash
-    node filler.js --folder <folderName> --file <fileName>
+    node fill*db.js --folder <folderName> --file <fileName>
     ```
 
     or with npm:
