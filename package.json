@@ -38,9 +38,11 @@
         "docker:cdn": "npm run docker:create-network && docker compose up -d --build cdn && docker compose up -d cdn",
         "docker": "npm run docker:create-network && docker compose up -d --build && docker compose up -d",
         "docker-prod": "node ./scripts/download-docker.js",
-        "docker:create-network": "docker network ls | grep -w poveroh_network || docker network create poveroh_network"
+        "docker:create-network": "docker network ls | grep -w poveroh_network || docker network create poveroh_network",
+        "prepare": "husky"
     },
     "devDependencies": {
+        "husky": "^9.1.7",
         "prettier": "^3.2.5",
         "turbo": "^2.5.3",
         "typescript": "5.5.4"
