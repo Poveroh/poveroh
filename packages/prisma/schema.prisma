@@ -39,6 +39,7 @@ model transactions {
     user_id        String
     title          String
     date           DateTime
+    icon           String?
     type           TransactionType @default(EXPENSES)
     category_id    String?
     subcategory_id String?

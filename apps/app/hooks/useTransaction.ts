@@ -2,7 +2,7 @@
 
 import { TransactionService } from '@/services/transaction.service'
 import { useTransactionStore } from '@/store/transaction.store'
-import { IItem, ITransaction, TransactionAction } from '@poveroh/types'
+import { GroupedTransactions, IItem, ITransaction, TransactionAction } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 
 export const useTransaction = () => {
@@ -62,6 +62,17 @@ export const useTransaction = () => {
         return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.INTERNAL) : actionList
     }
 
+    const groupTransactionsByDate = (transactions: ITransaction[]): GroupedTransactions => {
+        return transactions.reduce((acc, transaction) => {
+            const dateKey = transaction.date.slice(0, 10)
+            if (!acc[dateKey]) {
+                acc[dateKey] = []
+            }
+            acc[dateKey].push(transaction)
+            return acc
+        }, {} as GroupedTransactions)
+    }
+
     return {
         transactionCacheList: transactionStore.transactionCacheList,
         addTransaction,
@@ -69,6 +80,7 @@ export const useTransaction = () => {
         removeTransaction,
         getTransaction,
         fetchTransaction,
-        getActionList
+        getActionList,
+        groupTransactionsByDate
     }
 }

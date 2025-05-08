@@ -12,43 +12,22 @@ import {
 import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
 import { useEffect, useState } from 'react'
-import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
+import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 import Box from '@/components/box/boxWrapper'
 import { ITransaction } from '@poveroh/types'
 import { DeleteModal } from '@/components/modal/delete'
 import _ from 'lodash'
-import { BrandIcon } from '@/components/icon/brandIcon'
 import { TransactionDialog } from '@/components/dialog/transactionDialog'
 import { useTransaction } from '@/hooks/useTransaction'
-
-type TransactionItemProps = {
-    account: ITransaction
-    openDelete: (item: ITransaction) => void
-    openEdit: (item: ITransaction) => void
-}
-
-function TrasanctionItem({ account, openDelete, openEdit }: TransactionItemProps) {
-    return (
-        <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
-            <div className='flex flex-row items-center space-x-5'>
-                <BrandIcon icon={''}></BrandIcon>
-                <div>
-                    <p>{account.title}</p>
-                </div>
-            </div>
-            <div className='flex flex-col items-center'>
-                <div className='flex flex-row space-x-5 items-center'>
-                    <Pencil className='cursor-pointer' onClick={() => openEdit(account)} />
-                    <Trash2 className='danger cursor-pointer' onClick={() => openDelete(account)} />
-                </div>
-            </div>
-        </div>
-    )
-}
+import { TransactionItem } from '@/components/item/transaction.item'
+import { useCategory } from '@/hooks/useCategory'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 export default function TransactionsView() {
     const t = useTranslations()
-    const { transactionCacheList, removeTransaction, fetchTransaction } = useTransaction()
+    const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate } = useTransaction()
+    const { fetchCategory } = useCategory()
+    const { fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
@@ -58,8 +37,14 @@ export default function TransactionsView() {
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
 
     useEffect(() => {
-        // fetchTransaction()
+        fetchTransaction()
+        fetchCategory()
+        fetchBankAccount()
     }, [])
+
+    useEffect(() => {
+        setLocalTransactionList(transactionCacheList)
+    }, [transactionCacheList])
 
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
@@ -133,18 +118,39 @@ export default function TransactionsView() {
                     />
                 </div>
                 {localTransactionList.length > 0 ? (
-                    <Box>
-                        <>
-                            {localTransactionList.map(account => (
-                                <TrasanctionItem
-                                    key={account.id}
-                                    account={account}
-                                    openEdit={setItemToEdit}
-                                    openDelete={setItemToDelete}
-                                />
+                    <>
+                        {Object.entries(groupTransactionsByDate(localTransactionList))
+                            .sort(([a], [b]) => b.localeCompare(a))
+                            .map(([date, transactions]) => (
+                                <div key={date} className='flex flex-col space-y-2'>
+                                    <h4>
+                                        {(() => {
+                                            const currentYear = new Date().getFullYear()
+                                            const dateObj = new Date(date)
+                                            const isCurrentYear = dateObj.getFullYear() === currentYear
+
+                                            const options: Intl.DateTimeFormatOptions = isCurrentYear
+                                                ? { day: 'numeric', month: 'long' }
+                                                : { day: 'numeric', month: 'long', year: 'numeric' }
+
+                                            return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
+                                        })()}
+                                    </h4>
+                                    <Box>
+                                        <>
+                                            {transactions.map(transaction => (
+                                                <TransactionItem
+                                                    key={transaction.id}
+                                                    transaction={transaction}
+                                                    openEdit={setItemToEdit}
+                                                    openDelete={setItemToDelete}
+                                                />
+                                            ))}
+                                        </>
+                                    </Box>
+                                </div>
                             ))}
-                        </>
-                    </Box>
+                    </>
                 ) : (
                     <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
                         <Landmark />

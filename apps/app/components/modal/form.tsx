@@ -27,7 +27,7 @@ export function Modal(props: ModalProps) {
                     <div className='flex flex-row items-center space-x-3'>
                         {props.icon &&
                             (props.iconMode === 'img' ? (
-                                <BrandIcon icon={`url(${props.icon})`} size='xl'></BrandIcon>
+                                <BrandIcon icon={props.icon} size='xl'></BrandIcon>
                             ) : (
                                 <DynamicIcon key={props.icon} name={props.icon} />
                             ))}

@@ -55,6 +55,9 @@ export class TransactionController {
                 where: {},
                 orderBy: {
                     created_at: 'desc'
+                },
+                include: {
+                    amounts: true
                 }
             }
 

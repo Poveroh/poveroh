@@ -6,5 +6,5 @@ type BrandIconProps = {
 }
 
 export const BrandIcon = ({ icon, size }: BrandIconProps) => {
-    return <div className={cn('brands', size)} style={{ backgroundImage: icon }}></div>
+    return <div className={cn('brands', size)} style={{ backgroundImage: `url(${icon})` }}></div>
 }

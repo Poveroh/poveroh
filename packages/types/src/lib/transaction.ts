@@ -19,6 +19,7 @@ export interface ITransactionBase {
     type: TransactionAction
     category_id?: string
     subcategory_id?: string
+    icon?: string
     date: string
     note?: string
     ignore: boolean
@@ -38,3 +39,4 @@ export enum TransactionAction {
 }
 
 export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>
+export type GroupedTransactions = Record<string, ITransaction[]>

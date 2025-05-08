@@ -250,7 +250,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                                         {bankAccountCacheList.map((item: IBankAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
-                                                    <BrandIcon icon={`url(${item.logo_icon})`} size='sm' />
+                                                    <BrandIcon icon={item.logo_icon} size='sm' />
                                                     <span>{item.title}</span>
                                                 </div>
                                             </SelectItem>
