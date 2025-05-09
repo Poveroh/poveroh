@@ -31,6 +31,10 @@ The development branch is `main`.
 
 6. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
+    > If you don't modify them, the default values are sufficient to run the project.
+    >
+    > **Warning**: Since these are default values, security is not guaranteed.
+
 ### Setup Database and CDN
 
 > Docker and Docker Compose must be installed, up, and running on the machine.

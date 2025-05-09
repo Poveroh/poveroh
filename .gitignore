@@ -44,3 +44,4 @@ yarn-error.log*
 
 # app
 /scripts/data/import/*
+/cdn-data

@@ -7,9 +7,9 @@
 #### A unified platform to track your wealth.
 
 <h4>
-<a href="https://github.com/DavideTarditi/poveroh/issues/">Report Bug</a>
+<a href="https://github.com/Poveroh/poveroh/issues/">Report Bug</a>
 <span> · </span>
-<a href="https://github.com/DavideTarditi/poveroh/issues/">Request Feature</a>
+<a href="https://github.com/Poveroh/poveroh/issues/">Request Feature</a>
 </h4>
 
 <div>
@@ -123,6 +123,10 @@ This project uses:
 
 4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
+    > If you don't modify them, the default values are sufficient to run the project.
+    >
+    > **Warning**: Since these are default values, security is not guaranteed.
+
 ### Setup Database and CDN
 
 > Docker and Docker Compose must be installed, up, and running on the machine.
@@ -147,10 +151,17 @@ This project uses:
     > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
 2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
+
     - `name`
     - `surname`
     - `email`
     - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) with 12 rounds (store this in password field).
+
+3. _Optionally_, you can run the following exactly script to generate and fill database with fake data:
+
+    ```bash
+    npm run setup:data --user=<user_id_created_before>
+    ```
 
 ### Build and run
 

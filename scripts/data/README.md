@@ -36,23 +36,22 @@ It provides flexible options for specifying the data source and handles data val
 1.  Run the script using Node.js:
 
     ```bash
-    node fill-db.js --folder <folderName> --file <fileName>
+    node fill-db.js --folder=folderName --file=fileName --user=userId
     ```
 
     or with npm:
 
     ```bash
-    npm run setup:data -- --folder <folderName> --file <fileName>
+    npm run setup:data --folder=folderName --file=fileName --user=userId
     ```
-
-    (Note: Double "--" is required with npm run commands)
 
 ### Options
 
 Use this options to customize the script. You can omit them and script will load data from "sample" folder.
 
-- `--folder <folderName>`: Specifies the folder containing the data files. Defaults to `sample`.
-- `--file <fileName>`: Specifies a specific file to import. If not provided, all valid files in the folder are imported.
+- `--folder=<folderName>`: Specifies the folder containing the data files. Defaults to `sample`.
+- `--file=<fileName>`: Specifies a specific file to import. If not provided, all valid files in the folder are imported.
+- `--user=<userId>`: user ID to associate imported data with; if not provided, data will be linked to default user
 
 ### File Naming
 
@@ -68,7 +67,7 @@ Use this options to customize the script. You can omit them and script will load
 ## Example
 
 ```bash
-node filler.js --folder sample --file users.json
+npm run setup:data --folder=sample --file=users.json --user=7376ba72-f1ea-4921-b7dd-f18af38639c3
 ```
 
 # Database clear tables

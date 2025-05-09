@@ -5,12 +5,11 @@
  * Validates table existence and prevents duplicate records.
  *
  * Usage:
- * node filler.js --folder folderName --file fileName
+ * node fill-db.js --folder=folderName --file=fileName --user=userId
  *
  * or with npm:
  *
- * npm run setup:data -- --folder folderName --file fileName
- * (Note: Double "--" is required with npm run commands)
+ * npm run setup:data --folder=folderName --file=fileName --user=userId
  *
  * Folders:
  * - "sample" (default): Standard sample data files
@@ -23,6 +22,7 @@
  * Options:
  * --folder: Data directory (default: "sample")
  * --file: Import specific file; else imports all valid files in folder
+ * --user: user ID to associate imported data with; if not provided, data will be linked to default user
  *
  * Data Format:
  * - JSON: Array of objects
@@ -39,82 +39,74 @@ require('dotenv').config()
 const prisma = new PrismaClient()
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
-
-// Add other tables in the order based on prisma schemas
-const IMPORT_ORDER = ['users', 'bank_accounts', 'categories', 'subcategories', 'transactions']
+const IMPORT_ORDER = ['users', 'bank_accounts', 'categories', 'subcategories', 'transactions', 'amounts']
 
 function parseArgs() {
-    const args = process.argv.slice(2)
-    let folderName = DEFAULT_FOLDER
-    let fileName = null
-
-    for (let i = 0; i < args.length; i++) {
-        if (args[i] === '--folder' && args[i + 1]) {
-            folderName = args[i + 1]
-        }
-        if (args[i] === '--file' && args[i + 1]) {
-            fileName = args[i + 1]
-        }
-    }
+    const folderName = process.env.npm_config_folder || DEFAULT_FOLDER
+    const fileName = process.env.npm_config_file || null
+    const userId = process.env.npm_config_user || null
 
     console.log('Folder:', folderName)
     console.log('File:', fileName || 'not provided')
+    console.log('User:', userId || 'not provided')
 
-    return { folderName, fileName }
+    return { folderName, fileName, userId }
 }
 
 async function tableExists(tableName) {
     const table = await prisma.$queryRaw`
-    SELECT EXISTS (
-      SELECT FROM information_schema.tables
-      WHERE table_name = ${tableName}
-    )
-  `
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables
+            WHERE table_name = ${tableName}
+        )
+    `
     return table[0].exists
 }
 
-async function itemExists(tableName, columnName, value) {
-    const query = `
-    SELECT EXISTS (
-      SELECT 1 FROM "${tableName}" WHERE "${columnName}" = $1
-    )
-  `
-    const result = await prisma.$queryRawUnsafe(query, value)
+const columnCache = {}
+
+async function columnExists(tableName, columnName) {
+    const cacheKey = `${tableName}.${columnName}`
+    if (columnCache[cacheKey] !== undefined) return columnCache[cacheKey]
+
+    const result = await prisma.$queryRaw`
+        SELECT EXISTS (
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_name = ${tableName}
+            AND column_name = ${columnName}
+        )
+    `
+    columnCache[cacheKey] = result[0].exists
     return result[0].exists
 }
 
-async function addRecord(tableName, item) {
-    try {
-        const dateFields = ['created_at', 'updated_at', 'deleted_at']
-        const processedItem = { ...item }
-        for (const field of dateFields) {
-            if (processedItem[field]) {
-                processedItem[field] = new Date(processedItem[field]).toISOString()
-            }
-        }
+async function prepareRecord(tableName, item, userId) {
+    const dateFields = ['created_at', 'updated_at', 'deleted_at']
+    const processedItem = { ...item }
 
-        if (prisma[tableName]) {
-            await prisma[tableName].create({ data: processedItem })
-            console.log(`✅ Successfully added item ${item.id} to ${tableName}`)
-        } else {
-            console.log(`⚠️ No Prisma model defined for table ${tableName}`)
+    for (const field of dateFields) {
+        if (processedItem[field]) {
+            processedItem[field] = new Date(processedItem[field]).toISOString()
         }
-    } catch (error) {
-        console.error(`❌ Error adding record to ${tableName}:`, error.message)
-        throw error
     }
+
+    if (userId && (await columnExists(tableName, 'user_id'))) {
+        processedItem.user_id = userId
+    }
+
+    return processedItem
 }
 
-async function processFile(basePath, filename) {
-    console.log(`\n--------------------------------------------------------------------`)
-    console.log(`\n➡️ Parsing --> ${filename}`)
+async function processFile(basePath, filename, userId) {
+    console.log(`\n➡️  Processing file: ${filename}`)
 
     const tableName = path.basename(filename, path.extname(filename))
     const filePath = path.join(basePath, filename)
     const fileExtension = path.extname(filename).toLowerCase()
 
     if (!(await tableExists(tableName))) {
-        console.log(`⚠️ Table "${tableName}" does not exist, skipping import`)
+        console.log(`⚠️ Table "${tableName}" does not exist, skipping`)
         return
     }
 
@@ -122,8 +114,8 @@ async function processFile(basePath, filename) {
         let data = []
 
         if (fileExtension === '.json') {
-            const fileContent = fs.readFileSync(filePath, 'utf8')
-            data = JSON.parse(fileContent)
+            const content = await fs.promises.readFile(filePath, 'utf8')
+            data = JSON.parse(content)
         } else if (fileExtension === '.csv') {
             await new Promise((resolve, reject) => {
                 fs.createReadStream(filePath)
@@ -138,48 +130,48 @@ async function processFile(basePath, filename) {
         }
 
         if (!Array.isArray(data)) {
-            console.log(`⚠️ Invalid data format in ${filename}: expected an array`)
+            console.log(`⚠️ File ${filename} does not contain a valid array`)
             return
         }
 
-        console.log(`📊 Processing ${data.length} records from ${filename}`)
+        const existingIdsRaw = await prisma[tableName].findMany({ select: { id: true } })
+        const existingIds = new Set(existingIdsRaw.map(e => e.id))
 
-        let successCount = 0
-        let skipCount = 0
-        let errorCount = 0
+        const toInsert = []
+        let skip = 0,
+            errors = 0
 
         for (const item of data) {
-            try {
-                if (!item.id) {
-                    console.log(`⚠️ Item missing ID field, skipping`)
-                    skipCount++
-                    continue
-                }
+            if (!item.id || existingIds.has(item.id)) {
+                skip++
+                continue
+            }
 
-                if (await itemExists(tableName, 'id', item.id)) {
-                    console.log(`⚠️ Item ${item.id} already exists in ${tableName}, skipping`)
-                    skipCount++
-                } else {
-                    await addRecord(tableName, item)
-                    successCount++
-                }
+            try {
+                const record = await prepareRecord(tableName, item, userId)
+                toInsert.push(record)
             } catch (err) {
-                console.error(`❌ Error processing item:`, err.message)
-                errorCount++
+                errors++
             }
         }
 
-        console.log(`\n📋 Import summary for ${filename}:`)
-        console.log(`   ✅ Successfully imported: ${successCount}`)
-        console.log(`   ⏭️ Skipped: ${skipCount}`)
-        console.log(`   ❌ Errors: ${errorCount}`)
+        if (toInsert.length > 0) {
+            await prisma[tableName].createMany({
+                data: toInsert,
+                skipDuplicates: true
+            })
+        }
+
+        console.log(`Imported: ${toInsert.length}`)
+        console.log(`Skipped: ${skip}`)
+        console.log(`Errors: ${errors}`)
     } catch (err) {
-        console.error(`❌ Error processing file ${filename}:`, err.message)
+        console.error(`❌ Error processing ${filename}:`, err.message)
     }
 }
 
 async function main() {
-    const { folderName, fileName } = parseArgs()
+    const { folderName, fileName, userId } = parseArgs()
 
     try {
         const basePath = __dirname
@@ -189,6 +181,13 @@ async function main() {
             throw new Error(`Folder '${folderName}' not found at ${fullPath}`)
         }
 
+        if (userId) {
+            const userExists = await prisma.users.findUnique({ where: { id: userId } })
+            if (!userExists) {
+                throw new Error(`User with ID '${userId}' not found in the users table.`)
+            }
+        }
+
         if (fileName) {
             const fullPathFileName = path.join(fullPath, fileName)
 
@@ -196,25 +195,22 @@ async function main() {
                 throw new Error(`File '${fileName}' not found at ${fullPathFileName}`)
             }
 
-            await processFile(fullPath, fileName)
+            await processFile(fullPath, fileName, userId)
         } else {
             const dirFiles = fs.readdirSync(fullPath)
 
-            // Filter valid files
             const validFiles = dirFiles.filter(file => ALLOWED_EXTENSIONS.includes(path.extname(file).toLowerCase()))
 
-            // First, process files in the specified import order
-            for (const orderedTable of IMPORT_ORDER) {
-                const matchingFiles = validFiles.filter(
-                    file => path.basename(file, path.extname(file)).toLowerCase() === orderedTable.toLowerCase()
+            for (const tableName of IMPORT_ORDER) {
+                const matchingFile = validFiles.find(
+                    file => path.basename(file, path.extname(file)).toLowerCase() === tableName.toLowerCase()
                 )
 
-                for (const file of matchingFiles) {
-                    await processFile(fullPath, file)
+                if (matchingFile) {
+                    await processFile(fullPath, matchingFile, userId)
                 }
             }
 
-            // Then process any remaining files not in the specified order
             const processedFiles = new Set(
                 IMPORT_ORDER.map(table =>
                     validFiles.find(
@@ -225,9 +221,11 @@ async function main() {
 
             const remainingFiles = validFiles.filter(file => !processedFiles.has(file))
 
-            console.log(`\n🔍 Processing remaining files not in specified order`)
-            for (const file of remainingFiles) {
-                await processFile(fullPath, file)
+            if (remainingFiles.length > 0) {
+                console.log(`\nProcessing remaining files not in specified order`)
+                for (const file of remainingFiles) {
+                    await processFile(fullPath, file, userId)
+                }
             }
 
             const skippedFiles = dirFiles.filter(file => !ALLOWED_EXTENSIONS.includes(path.extname(file).toLowerCase()))
@@ -244,7 +242,7 @@ async function main() {
         console.error('\n❌ Critical error:', err.message)
     } finally {
         await prisma.$disconnect()
-        console.log('\n🔌 Database connection closed')
+        console.log('\nDatabase connection closed')
     }
 }
 
