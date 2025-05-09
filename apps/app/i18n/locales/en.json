@@ -20,6 +20,8 @@
         "uploaded": "uploaded",
         "saved": "saved",
         "successfully": "{a} {b} successfully",
+        "noCategoriesAndAccountTitle": "It looks like you don’t have any bank accounts or categories yet.",
+        "noCategoriesAndAccountSub": "Please create them before adding a transaction.",
         "errors": {
             "generic": "Error: {a}",
             "required": "This field is required",

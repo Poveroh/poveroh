@@ -1,5 +1,9 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 import { Button } from '@poveroh/ui/components/button'
 import {
     Breadcrumb,
@@ -9,25 +13,28 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
-import { useEffect, useState } from 'react'
-import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
+
+import { ArrowLeftRight, Download, Plus, RotateCcw, Search } from 'lucide-react'
+
 import Box from '@/components/box/boxWrapper'
-import { ITransaction } from '@poveroh/types'
 import { DeleteModal } from '@/components/modal/delete'
-import _ from 'lodash'
 import { TransactionDialog } from '@/components/dialog/transactionDialog'
-import { useTransaction } from '@/hooks/useTransaction'
 import { TransactionItem } from '@/components/item/transaction.item'
+
+import { useTransaction } from '@/hooks/useTransaction'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
+
+import { ITransaction } from '@poveroh/types'
+
+import _ from 'lodash'
 
 export default function TransactionsView() {
     const t = useTranslations()
     const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate } = useTransaction()
-    const { fetchCategory } = useCategory()
-    const { fetchBankAccount } = useBankAccount()
+    const { categoryCacheList, fetchCategory } = useCategory()
+    const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
@@ -152,13 +159,44 @@ export default function TransactionsView() {
                             ))}
                     </>
                 ) : (
-                    <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                        <Landmark />
-                        <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('transactions.empty.title')}</h4>
-                            <p>{t('transactions.empty.subtitle')}</p>
+                    <>
+                        <div className='flex justify-center w-full pt-20'>
+                            <div className='flex flex-col items-center space-y-8 justify-center w-[400px]'>
+                                <div className='flex flex-col items-center space-y-8 justify-center'>
+                                    <ArrowLeftRight />
+                                    <div className='flex flex-col items-center space-y-2 justify-center'>
+                                        <h4>{t('transactions.empty.title')}</h4>
+                                        <p>{t('transactions.empty.subtitle')}</p>
+                                    </div>
+                                </div>
+                                {(bankAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                    <>
+                                        <hr className='w-full' />
+                                        <div className='flex flex-col items-center space-y-8 justify-center'>
+                                            <div className='flex flex-col items-center space-y-2 justify-center'>
+                                                <p className='warning'>{t('messages.noCategoriesAndAccountTitle')}</p>
+                                                <p className='warning'>{t('messages.noCategoriesAndAccountSub')}</p>
+                                            </div>
+                                            <div className='flex flex-row space-x-4'>
+                                                <Link href='/bank-accounts'>
+                                                    <Button variant='outline'>
+                                                        <Plus />
+                                                        {t('bankAccounts.title')}
+                                                    </Button>
+                                                </Link>
+                                                <Link href='/categories'>
+                                                    <Button variant='outline'>
+                                                        <Plus />
+                                                        {t('categories.title')}
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
 
