@@ -1,5 +1,7 @@
 import { TransactionAction, TransactionActionSimple } from './transaction.js'
 
+export type categoryModelMode = 'category' | 'subcategory'
+
 export interface ISubcategoryBase {
     category_id: string
     title: string

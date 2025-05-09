@@ -6,9 +6,9 @@ import _ from 'lodash'
 export class SubcategoryController {
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.subcategory) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedCategory: ISubcategoryBase = JSON.parse(req.body.subcategory)
+            let readedCategory: ISubcategoryBase = JSON.parse(req.body.data)
 
             const subcategory = await prisma.subcategories.create({
                 data: readedCategory
@@ -23,9 +23,9 @@ export class SubcategoryController {
 
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.subcategory) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedSubcategory: ISubcategory = JSON.parse(req.body.subcategory)
+            let readedSubcategory: ISubcategory = JSON.parse(req.body.data)
 
             const subcategory = await prisma.subcategories.update({
                 where: {

@@ -6,9 +6,9 @@ import _ from 'lodash'
 export class CategoryController {
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedCategory: ICategoryBase = JSON.parse(req.body.category)
+            let readedCategory: ICategoryBase = JSON.parse(req.body.data)
 
             const category = await prisma.categories.create({
                 data: {
@@ -29,9 +29,9 @@ export class CategoryController {
 
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.category) throw new Error('Data not provided')
+            if (!req.body.data) throw new Error('Data not provided')
 
-            let readedCategory: ICategory = JSON.parse(req.body.category)
+            let readedCategory: ICategory = JSON.parse(req.body.data)
 
             const category = await prisma.categories.update({
                 where: {

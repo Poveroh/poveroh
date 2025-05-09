@@ -40,7 +40,7 @@ export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCal
     const { categoryCacheList } = useCategory()
 
     const [icon, setIcon] = useState(iconList[0])
-    const [iconError, setIconError] = useState(false)
+    const [iconError] = useState(false)
 
     const defaultValues = {
         title: '',
@@ -79,13 +79,6 @@ export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCal
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            if (icon && icon[0]) {
-                formData.append('file', icon[0])
-            } else if (!inEditingMode) {
-                setIconError(true)
-                return
-            }
 
             await dataCallback(formData)
         } catch (error) {

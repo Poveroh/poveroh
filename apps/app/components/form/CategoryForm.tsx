@@ -32,13 +32,13 @@ export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallba
     const { getActionList } = useTransaction()
 
     const [icon, setIcon] = useState(iconList[0])
-    const [iconError, setIconError] = useState(false)
+    const [iconError] = useState(false)
 
     const defaultValues = {
         title: '',
         description: '',
         logo_icon: iconList[0] as string,
-        for: 'EXPENSES'
+        for: initialData?.for || 'EXPENSES'
     }
 
     const formSchema = z.object({
@@ -71,13 +71,6 @@ export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallba
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            if (icon && icon[0]) {
-                formData.append('file', icon[0])
-            } else if (!inEditingMode) {
-                setIconError(true)
-                return
-            }
 
             await dataCallback(formData)
         } catch (error) {

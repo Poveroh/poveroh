@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { remove } from 'lodash'
+import { remove, cloneDeep } from 'lodash'
 import { ICategory, ISubcategory } from '@poveroh/types'
 
 type CategoryStore = {
@@ -34,7 +34,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
                 return state
             }
 
-            const list = structuredClone(state.categoryCacheList)
+            const list = cloneDeep(state.categoryCacheList)
             list[index] = category
 
             return {

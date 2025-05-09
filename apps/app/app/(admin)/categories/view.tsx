@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react'
 import { isEmpty, isNil } from 'lodash'
 import { useTranslations } from 'next-intl'
 
-import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { categoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import Box from '@/components/box/boxWrapper'
-import DynamicIcon from '@/components/icon/dynamicIcon'
 import { DeleteModal } from '@/components/modal/delete'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -23,71 +22,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
-import { Download, List, ListTree, Pencil, Plus, RotateCcw, Search, Trash2, Shapes } from 'lucide-react'
+import { Download, List, ListTree, Plus, RotateCcw, Search, Shapes } from 'lucide-react'
 import { CategoryDialog } from '@/components/dialog/categoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/subcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
-
-type modelMode = 'category' | 'subcategory'
-
-type CategoryItemProps = {
-    category: ICategory
-    openDelete: (mode: modelMode, item: ICategory | ISubcategory) => void
-    openEdit: (mode: modelMode, item: ICategory | ISubcategory) => void
-}
-
-function CategoryItem({ category, openDelete, openEdit }: CategoryItemProps) {
-    return (
-        <>
-            <div className='border-border'>
-                <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
-                    <div className='flex flex-row items-center space-x-5'>
-                        <DynamicIcon name={category.logo_icon} />
-                        <div>
-                            <p>{category.title}</p>
-                            <p className='sub'>{category.description}</p>
-                        </div>
-                    </div>
-                    <div className='flex flex-col items-center'>
-                        <div className='flex flex-row space-x-5 items-center'>
-                            <Pencil className='cursor-pointer' onClick={() => openEdit('category', category)} />
-                            <Trash2
-                                className='danger cursor-pointer'
-                                onClick={() => openDelete('category', category)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                {category.subcategories.map(subcategory => (
-                    <div
-                        key={subcategory.id}
-                        className='flex flex-row justify-between items-center w-full pl-20 p-5 border-border'
-                    >
-                        <div className='flex flex-row items-center space-x-5'>
-                            <DynamicIcon name={subcategory.logo_icon} />
-                            <div>
-                                <p>{subcategory.title}</p>
-                                <p className='sub'>{subcategory.description}</p>
-                            </div>
-                        </div>
-                        <div className='flex flex-col items-center'>
-                            <div className='flex flex-row space-x-5 items-center'>
-                                <Pencil
-                                    className='cursor-pointer'
-                                    onClick={() => openEdit('subcategory', subcategory)}
-                                />
-                                <Trash2
-                                    className='danger cursor-pointer'
-                                    onClick={() => openDelete('subcategory', subcategory)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </>
-    )
-}
+import { CategoryItem } from '@/components/item/category.item'
 
 export default function CategoryView() {
     const t = useTranslations()
@@ -98,7 +37,7 @@ export default function CategoryView() {
     const [itemToEdit, setItemToEdit] = useState<ICategory | ISubcategory | null>(null)
 
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [dialogModel, setDialogModel] = useState<modelMode>('category')
+    const [dialogModel, setDialogModel] = useState<categoryModelMode>('category')
 
     const [loading, setLoading] = useState(false)
 
@@ -148,7 +87,7 @@ export default function CategoryView() {
         setLocalCategoryList(filteredList)
     }
 
-    const openDelete = (mode: modelMode, item: ICategory | ISubcategory) => {
+    const openDelete = (mode: categoryModelMode, item: ICategory | ISubcategory) => {
         setDialogModel(mode)
         setItemToDelete(item)
     }
@@ -157,12 +96,12 @@ export default function CategoryView() {
         setItemToDelete(null)
     }
 
-    const openEdit = (mode: modelMode, item: ICategory | ISubcategory) => {
+    const openEdit = (mode: categoryModelMode, item: ICategory | ISubcategory) => {
         setDialogModel(mode)
         setItemToEdit(item)
     }
 
-    const openNew = (mode: modelMode) => {
+    const openNew = (mode: categoryModelMode) => {
         setDialogModel(mode)
         setDialogNewOpen(true)
     }
