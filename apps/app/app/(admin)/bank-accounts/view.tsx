@@ -15,44 +15,16 @@ import {
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
 
-import { Download, Landmark, Pencil, Plus, RotateCcw, Search, Trash2 } from 'lucide-react'
+import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 
 import Box from '@/components/box/boxWrapper'
-import { BrandIcon } from '@/components/icon/brandIcon'
 import { DeleteModal } from '@/components/modal/delete'
 import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
 
 import { IBankAccount } from '@poveroh/types'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
-
-type BankAccountItemProps = {
-    account: IBankAccount
-    openDelete: (item: IBankAccount) => void
-    openEdit: (item: IBankAccount) => void
-}
-
-function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps) {
-    const logo_icon = `url(${account.logo_icon})`
-
-    return (
-        <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
-            <div className='flex flex-row items-center space-x-5'>
-                <BrandIcon icon={logo_icon}></BrandIcon>
-                <div>
-                    <p>{account.title}</p>
-                    <p className='sub'>{account.description}</p>
-                </div>
-            </div>
-            <div className='flex flex-col items-center'>
-                <div className='flex flex-row space-x-5 items-center'>
-                    <Pencil className='cursor-pointer' onClick={() => openEdit(account)} />
-                    <Trash2 className='danger cursor-pointer' onClick={() => openDelete(account)} />
-                </div>
-            </div>
-        </div>
-    )
-}
+import { BankAccountItem } from '@/components/item/bank-account.item'
 
 export default function BankAccountView() {
     const t = useTranslations()
