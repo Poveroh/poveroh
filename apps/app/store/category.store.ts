@@ -49,7 +49,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     },
     removeCategory: category_id => {
         set(state => {
-            const list = structuredClone(state.categoryCacheList)
+            const list = cloneDeep(state.categoryCacheList)
             remove(list, item => item.id === category_id)
 
             return { categoryCacheList: list }
@@ -70,7 +70,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
                 return state
             }
 
-            const list = structuredClone(state.categoryCacheList)
+            const list = cloneDeep(state.categoryCacheList)
 
             list.at(index)?.subcategories.push(subcategory)
             list.at(index)?.subcategories.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
@@ -87,7 +87,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
                 return state
             }
 
-            const list = structuredClone(state.categoryCacheList)
+            const list = cloneDeep(state.categoryCacheList)
 
             const indexSub = list.at(indexCat)?.subcategories.findIndex(sub => sub.id == subcategory.id)
 
@@ -117,7 +117,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
                 return state
             }
 
-            const list = structuredClone(state.categoryCacheList)
+            const list = cloneDeep(state.categoryCacheList)
 
             const subcategories = list[indexCat]?.subcategories
 

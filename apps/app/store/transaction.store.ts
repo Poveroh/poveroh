@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { remove } from 'lodash'
+import { cloneDeep, remove } from 'lodash'
 import { ITransaction } from '@poveroh/types'
 
 type TransactionStore = {
@@ -25,7 +25,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
         set(state => {
             const index = state.transactionCacheList.findIndex(item => item.id === transaction.id)
             if (index !== -1) {
-                const list = structuredClone(state.transactionCacheList)
+                const list = cloneDeep(state.transactionCacheList)
                 list[index] = transaction
                 return {
                     transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
@@ -41,7 +41,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
     },
     removeTransaction: transaction_id => {
         set(state => {
-            const list = structuredClone(state.transactionCacheList)
+            const list = cloneDeep(state.transactionCacheList)
             remove(list, item => item.id === transaction_id)
             return {
                 transactionCacheList: list

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { remove } from 'lodash'
+import { cloneDeep, remove } from 'lodash'
 import { IBankAccount } from '@poveroh/types'
 
 type BankAccountStore = {
@@ -25,7 +25,7 @@ export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
         set(state => {
             const index = state.bankAccountCacheList.findIndex(item => item.id === bankAccount.id)
             if (index !== -1) {
-                const list = structuredClone(state.bankAccountCacheList)
+                const list = cloneDeep(state.bankAccountCacheList)
                 list[index] = bankAccount
                 return {
                     bankAccountCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
@@ -41,7 +41,7 @@ export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
     },
     removeBankAccount: bankAccount_id => {
         set(state => {
-            const list = structuredClone(state.bankAccountCacheList)
+            const list = cloneDeep(state.bankAccountCacheList)
             remove(list, item => item.id === bankAccount_id)
             return {
                 bankAccountCacheList: list
