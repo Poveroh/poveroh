@@ -186,8 +186,12 @@ This project uses:
 2. Then, run:
 
     ```bash
-    npm run docker
+    npm run docker-prod
     ```
+
+    > This command will download Poveroh's packages from cloud and will run them.
+
+    > If you want to build and run from scratch, run `npm run docker`
 
 ## :handshake: Contribuite
 
