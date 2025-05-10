@@ -2,10 +2,12 @@
 
 Environment variables are stored in a single file but are divided by application.
 
-For both development and local deployment, copy the `.env.example` file into `.env`.
+For development and local deployment, either copy the `.env.example` file to `.env` manually or run `npm run setup:env`.
+This will copy the file and populate it with default values. However, for improved application security, it is recommended to replace these defaults with your own custom values.
+
 All applications retrieve the necessary variables from this file.
 
-There are also `.env` files inside `packages/prisma`, `apps/app` and `apps/api` folder that directly link to `.env` file in project root. Do not touch them.
+There are also `.env` files inside `packages/prisma`, `apps/app`, `apps/api` and `docker` folder that directly link to `.env` file in project root. Do not touch them.
 
 ## Database
 
@@ -67,4 +69,11 @@ AZURE_CONTAINER=
 NEXT_PUBLIC_API_URL=http://localhost:${API_PORT}
 NEXT_PUBLIC_APP_VERSION=1.0.0
 NEXT_PUBLIC_APP_NAME=Poveroh
+```
+
+## Docker
+
+```
+# Set the base name for Docker containers created by Docker Compose
+COMPOSE_PROJECT_NAME=poveroh
 ```
