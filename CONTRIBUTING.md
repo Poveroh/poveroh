@@ -59,10 +59,17 @@ The development branch is `main`.
     > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
 2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
+
     - `name`
     - `surname`
     - `email`
     - `password`, the password must first be encrypted using [SHA-256](https://codebeautify.org/sha256-hash-generator), and then the resulting hash should be encrypted using [BCrypt](https://bcrypt-generator.com/) with 12 rounds (store this in password field).
+
+3. _Optionally_, you can run the following exactly script to generate and fill database with fake data:
+
+    ```bash
+    npm run setup:data --user=<user_id_created_before>
+    ```
 
 ## Build and run
 
@@ -83,64 +90,74 @@ The development branch is `main`.
 ## Build Commands
 
 ```bash
-# Build all packages and applications
+# Build all packages and apps
 npm run build
 
-# Build only the packages (types, prisma, utils)
+# Build all internal packages (types, prisma, utils)
 npm run build:packages
 
 # Build individual packages
 npm run build:types       # Build types package
-npm run build:prisma      # Build prisma package
+npm run build:prisma      # Build Prisma package
 npm run build:utils       # Build utils package
 
-# Build specific applications
-npm run build:storybook   # Build only storybook
-npm run build:api         # Build only the API
-npm run build:app         # Build only the app
+# Build individual apps
+npm run build:storybook   # Build Storybook
+npm run build:api         # Build API
+npm run build:app         # Build frontend app
 ```
 
 ## Development Commands
 
 ```bash
-# Start development servers for API and app
+# Start dev servers for API and app
 npm run dev
 
-# Start development servers for all projects
+# Start dev servers for all projects (API, app, storybook, etc.)
 npm run dev:all
 
-# Start specific development servers
-npm run dev:storybook     # Start Storybook development server
-npm run dev:api           # Start API development server
-npm run dev:app           # Start app development server
+# Start individual dev servers
+npm run dev:storybook     # Start Storybook in dev mode
+npm run dev:api           # Start API dev server
+npm run dev:app           # Start app dev server
 ```
 
 ## UI Commands
 
 ```bash
-# Add new UI components
+# Add new UI components (from the app)
 npm run ui:add
 ```
 
-## Database Commands
+## Setup Commands
 
 ```bash
-# Set up the database
+# Run all setup tasks (DB and CDN)
+npm run setup
+
+# Set up database
 npm run setup:db
 
-# Prisma commands
-npm run prisma:generate   # Generate Prisma client
-npm run prisma:migrate    # Run Prisma migrations
-npm run prisma:studio     # Open Prisma Studio
+# Set up CDN
+npm run setup:cdn
+
+# Set up environment files
+npm run setup:env
+
+# Seed the database with sample data
+npm run setup:data
+
+# Generate sample transactions in the database
+npm run setup:generate-transactions
 ```
 
-## Cleaning Commands
+## Clean Commands
 
 ```bash
-# Clean everything (node_modules, build files)
+# Remove node_modules and all build artifacts
 npm run clean
 
-# Clean only build files (dist, .next, storybook-static, .turbo)
+# Clean build artifacts (.next, dist, .turbo, storybook-static)
 npm run clean:build
 
 # Clean only Turbo cache
@@ -149,32 +166,38 @@ npm run clean:turbo
 # Remove all .env files
 npm run clean:env
 
-# Clean database data
+# Clean seeded database data
 npm run clean:data
 ```
 
-## Formatting Commands
+## Formatting & Linting
 
 ```bash
-# Format all code with Prettier
+# Format all code (TS/MD/TSX) using Prettier
 npm run format
+
+# Run TurboRepo linting
+npm run lint
 ```
 
 ## Docker Commands
 
 ```bash
-# Create Docker network
+# Create Docker network if not exists
 npm run docker:create-network
 
-# Start specific services
-npm run docker:db        # Start database service
-npm run docker:api       # Start API service
-npm run docker:app       # Start application service
-npm run docker:studio    # Start Prisma Studio service
-npm run docker:cdn       # Start CDN service
+# Start individual Docker services
+npm run docker:db        # Start DB container
+npm run docker:api       # Start API container
+npm run docker:app       # Start app container
+npm run docker:studio    # Start Prisma Studio container
+npm run docker:cdn       # Start CDN container
 
-# Start all services
-npm run docker           # Build and start all Docker services
+# Start all dev Docker services
+npm run docker
+
+# Start all production Docker services
+npm run docker-prod
 ```
 
 ## Prisma Commands
@@ -183,9 +206,19 @@ npm run docker           # Build and start all Docker services
 # Generate Prisma client
 npm run prisma:generate
 
-# Run database migrations
+# Run DB migrations
 npm run prisma:migrate
 
 # Open Prisma Studio
 npm run prisma:studio
+```
+
+## Management
+
+```bash
+# Install husky hooks
+npm run prepare
+
+# Publish Storybook via Chromatic
+npm run chromatic
 ```
