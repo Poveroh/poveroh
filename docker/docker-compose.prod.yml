@@ -1,3 +1,5 @@
+version: '3.8'
+
 volumes:
     database-data:
 
@@ -7,10 +9,8 @@ networks:
 
 services:
     db:
+        image: ghcr.io/poveroh/poveroh-db:latest
         container_name: db
-        build:
-            context: .
-            dockerfile: ./packages/prisma/db.dockerfile
         restart: always
         env_file: .env
         ports:
@@ -20,14 +20,9 @@ services:
         networks:
             - poveroh_network
 
-    #Better if you comment out the studio service in production
     studio:
+        image: ghcr.io/poveroh/poveroh-studio:latest
         container_name: studio
-        build:
-            context: .
-            dockerfile: ./packages/prisma/studio.dockerfile
-            args:
-                DATABASE_URL: ${DATABASE_URL}
         restart: always
         env_file: .env
         environment:
@@ -40,20 +35,14 @@ services:
             - db
 
     api:
+        image: ghcr.io/poveroh/poveroh-api:latest
         container_name: api
-        build:
-            context: .
-            dockerfile: ./apps/api/api.dockerfile
-            args:
-                API_PORT: ${API_PORT}
-                JWT_KEY: ${JWT_KEY}
-                DATABASE_URL: ${DATABASE_URL}
         restart: always
         env_file: .env
         environment:
             - API_PORT=${API_PORT}
             - JWT_KEY=${JWT_KEY}
-            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
+            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
             - CDN_LOCAL_DATA_PATH=${CDN_LOCAL_DATA_PATH}
         ports:
             - 3001:3001
@@ -65,12 +54,8 @@ services:
             - db
 
     app:
+        image: ghcr.io/poveroh/poveroh-app:latest
         container_name: app
-        build:
-            context: .
-            dockerfile: ./apps/app/app.dockerfile
-            args:
-                NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
         restart: always
         env_file: .env
         environment:
@@ -84,10 +69,9 @@ services:
             - api
 
     cdn:
+        image: ghcr.io/poveroh/poveroh-cdn:latest
         container_name: cdn
-        build:
-            context: .
-            dockerfile: ./apps/cdn/cdn.dockerfile
+        restart: always
         env_file: .env
         ports:
             - '3002:3002'

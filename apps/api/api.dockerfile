@@ -43,6 +43,7 @@ COPY --from=installer /app/apps/api/dist /app/apps/api/dist
 COPY --from=installer /app/apps/api/package.json /app/apps/api/
 COPY --from=installer /app/node_modules /app/node_modules
 COPY --from=installer /app/packages/prisma /app/packages/prisma
+COPY --from=installer /app/packages/types /app/packages/types
 
 # Copy the entrypoint script
 COPY ./scripts/docker-api-start.sh /app/
