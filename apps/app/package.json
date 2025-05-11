@@ -16,6 +16,7 @@
         "@poveroh/ui": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^6.4.1",
+        "@tanstack/react-table": "^8.21.3",
         "axios": "^1.7.9",
         "currency-icons": "^1.0.14",
         "dotenv": "^16.4.7",
