@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { isEmpty } from 'lodash'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -15,21 +14,24 @@ import {
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
 
-import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
+import { Download, Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/boxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
 import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
 
-import { IBankAccount } from '@poveroh/types'
+import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { BankAccountItem } from '@/components/item/bank-account.item'
+import { FilterButton } from '@/components/filter/FilterButton'
 
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, removeBankAccount, fetchBankAccount } = useBankAccount()
+    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, getTypeList } = useBankAccount()
+
+    const [typeList] = useState(getTypeList())
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
@@ -37,6 +39,8 @@ export default function BankAccountView() {
     const [loading, setLoading] = useState(false)
 
     const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
+
+    const [filters, setFilters] = useState<IBankAccountFilters>({})
 
     useEffect(() => {
         fetchBankAccount()
@@ -46,21 +50,44 @@ export default function BankAccountView() {
         setLocalBankAccountList(bankAccountCacheList)
     }, [bankAccountCacheList])
 
-    const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
+    const onFilter = (filter: IBankAccountFilters) => {
+        const updatedFilter = { ...filters, ...filter }
 
-        if (isEmpty(textToSearch)) {
-            setLocalBankAccountList(bankAccountCacheList)
-            return
-        }
+        const filteredList = bankAccountCacheList.filter(account => {
+            const titleMatch = updatedFilter.title?.contains
+                ? account.title?.toLowerCase().includes(updatedFilter.title.contains.toLowerCase())
+                : true
 
-        const filteredList = bankAccountCacheList.filter(
-            account =>
-                account.title.toLowerCase().includes(textToSearch) ||
-                account.description.toLowerCase().includes(textToSearch)
-        )
+            const descriptionMatch = updatedFilter.description?.contains
+                ? account.description?.toLowerCase().includes(updatedFilter.description.contains.toLowerCase())
+                : true
+
+            const typeMatch = updatedFilter.type ? account.type === updatedFilter.type : true
+
+            return titleMatch && descriptionMatch && typeMatch
+        })
+
+        setFilters(updatedFilter)
 
         setLocalBankAccountList(filteredList)
+    }
+
+    const removeFilter = (key: keyof IBankAccountFilters) => {
+        const newFilters = { ...filters }
+        delete newFilters[key]
+
+        setFilters(newFilters)
+    }
+
+    const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const textToSearch = event.target.value
+
+        const newFilters: IBankAccountFilters = {
+            title: textToSearch ? { contains: textToSearch } : undefined,
+            description: textToSearch ? { contains: textToSearch } : undefined
+        }
+
+        onFilter(newFilters)
     }
 
     const onDelete = async () => {
@@ -113,12 +140,47 @@ export default function BankAccountView() {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-row space-x-3'>
                     <Input
                         startIcon={Search}
                         placeholder={t('messages.search')}
                         className='w-1/3'
                         onChange={onSearch}
+                    />
+
+                    {Object.entries(filters)
+                        .filter(([key]) => key === 'type')
+                        .map(([key, value]) => {
+                            if (!value) return null
+
+                            const item = typeList.find(x => x.value == value)
+
+                            if (!item) return
+
+                            return (
+                                <Button
+                                    key={key}
+                                    variant='secondary'
+                                    className='flex items-center gap-1'
+                                    onClick={() => removeFilter(key as keyof IBankAccountFilters)}
+                                >
+                                    {item.label}
+                                    <X />
+                                </Button>
+                            )
+                        })}
+
+                    <FilterButton
+                        fields={[
+                            {
+                                name: 'type',
+                                label: 'form.type.label',
+                                type: 'select',
+                                options: typeList
+                            }
+                        ]}
+                        filters={filters}
+                        onFilterChange={onFilter}
                     />
                 </div>
                 {localBankAccountList.length > 0 ? (

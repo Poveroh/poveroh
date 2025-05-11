@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import _ from 'lodash'
 import { TransactionHelper } from '../helpers/transaction.helper'
+import { buildWhere } from '../helpers/filter.helper'
+import { ITransactionFilters } from '@poveroh/types'
 
 export class TransactionController {
     static async add(req: Request, res: Response) {
@@ -49,35 +51,26 @@ export class TransactionController {
 
     static async read(req: Request, res: Response) {
         try {
-            const { id, title, description } = req.body
+            const filters: ITransactionFilters | string[] = req.body
+            const isArrayRequest = Array.isArray(filters)
 
-            const sql: any = {
-                where: {},
-                orderBy: {
-                    created_at: 'desc'
-                },
-                include: {
-                    amounts: true
-                }
-            }
+            const where = isArrayRequest
+                ? { id: { in: filters } }
+                : {
+                      ...buildWhere(filters),
+                      ...(filters.fromDate && {
+                          date: {
+                              ...(filters.date || {}),
+                              gte: new Date(filters.fromDate)
+                          }
+                      })
+                  }
 
-            if (Array.isArray(req.body)) {
-                sql.where = {
-                    id: {
-                        in: req.body
-                    }
-                }
-            } else if (!_.isEmpty(req.body)) {
-                sql.where = {
-                    OR: [
-                        id && { id },
-                        title && { title: { contains: title, mode: 'insensitive' } },
-                        description && { description: { contains: description, mode: 'insensitive' } }
-                    ].filter(Boolean)
-                }
-            }
-
-            const data = await prisma.transactions.findMany(sql)
+            const data = await prisma.transactions.findMany({
+                where,
+                include: { amounts: true },
+                orderBy: { created_at: 'desc' }
+            })
 
             res.status(200).json(data)
         } catch (error) {

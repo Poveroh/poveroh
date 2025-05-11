@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ISubcategory, ISubcategoryBase } from '@poveroh/types'
+import { ISubcategory, ISubcategoryBase, ISubcategoryFilters } from '@poveroh/types'
 import _ from 'lodash'
+import { buildWhere } from '../helpers/filter.helper'
 
 export class SubcategoryController {
     static async add(req: Request, res: Response) {
@@ -54,36 +55,17 @@ export class SubcategoryController {
 
     static async read(req: Request, res: Response) {
         try {
-            const { id, title, description } = req.body
+            const filters: ISubcategoryFilters | string[] = req.body
+            const where = buildWhere(filters)
 
-            const sql: any = {
-                where: {},
-                orderBy: {
-                    created_at: 'desc'
-                }
-            }
+            const data = await prisma.subcategories.findMany({
+                where,
+                orderBy: { created_at: 'desc' }
+            })
 
-            if (Array.isArray(req.body)) {
-                sql.where = {
-                    id: {
-                        in: req.body
-                    }
-                }
-            } else if (!_.isEmpty(req.body)) {
-                sql.where = {
-                    OR: [
-                        id && { id },
-                        title && { title: { contains: title, mode: 'insensitive' } },
-                        description && { description: { contains: description, mode: 'insensitive' } }
-                    ].filter(Boolean)
-                }
-            }
-
-            const subcategories = await prisma.subcategories.findMany(sql)
-
-            res.status(200).json(subcategories)
+            res.status(200).json(data)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

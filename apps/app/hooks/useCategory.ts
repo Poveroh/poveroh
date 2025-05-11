@@ -2,7 +2,7 @@
 
 import { CategoryService, SubcategoryService } from '@/services/category.service'
 import { useCategoryStore } from '@/store/category.store'
-import { ICategory } from '@poveroh/types'
+import { ICategory, ICategoryFilters } from '@poveroh/types'
 
 export const useCategory = () => {
     const categoryService = new CategoryService()
@@ -41,7 +41,7 @@ export const useCategory = () => {
 
     const getCategory = async (Category_id: string, fetchFromServer?: boolean) => {
         return fetchFromServer
-            ? await categoryService.read<ICategory | null>({ id: Category_id })
+            ? await categoryService.read<ICategory | null, ICategoryFilters>({ id: Category_id })
             : categoryStore.getCategory(Category_id)
     }
 
@@ -76,12 +76,12 @@ export const useCategory = () => {
 
     const getSubcategory = async (category_id: string, fetchFromServer?: boolean) => {
         return fetchFromServer
-            ? await subcategoryService.read<ICategory | null>({ id: category_id })
+            ? await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: category_id })
             : categoryStore.getSubcategory(category_id)
     }
 
     const fetchCategory = async () => {
-        const res = await categoryService.read<ICategory[]>()
+        const res = await categoryService.read<ICategory[], ICategoryFilters>()
 
         categoryStore.setCategory(res)
 

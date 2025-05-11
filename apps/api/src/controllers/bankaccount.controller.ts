@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { IBankAccount, IBankAccountBase } from '@poveroh/types'
+import { IBankAccount, IBankAccountBase, IBankAccountFilters } from '@poveroh/types'
 import _ from 'lodash'
 import { MediaHelper } from '../helpers/media.helper'
+import { buildWhere } from '../helpers/filter.helper'
 
 export class BankAccountController {
     static async add(req: Request, res: Response) {
@@ -75,34 +76,15 @@ export class BankAccountController {
 
     static async read(req: Request, res: Response) {
         try {
-            const { id, title, description } = req.body
+            const filters: IBankAccountFilters | string[] = req.body
+            const where = buildWhere(filters)
 
-            const sql: any = {
-                where: {},
-                orderBy: {
-                    created_at: 'desc'
-                }
-            }
+            const data = await prisma.bank_accounts.findMany({
+                where,
+                orderBy: { created_at: 'desc' }
+            })
 
-            if (Array.isArray(req.body)) {
-                sql.where = {
-                    id: {
-                        in: req.body
-                    }
-                }
-            } else if (!_.isEmpty(req.body)) {
-                sql.where = {
-                    OR: [
-                        id && { id },
-                        title && { title: { contains: title, mode: 'insensitive' } },
-                        description && { description: { contains: description, mode: 'insensitive' } }
-                    ].filter(Boolean)
-                }
-            }
-
-            const accounts = await prisma.bank_accounts.findMany(sql)
-
-            res.status(200).json(accounts)
+            res.status(200).json(data)
         } catch (error) {
             console.error(error)
             res.status(500).json({ message: 'An error occurred', error })

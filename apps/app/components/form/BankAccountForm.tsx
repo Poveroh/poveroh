@@ -18,6 +18,7 @@ import { FileInput } from '@poveroh/ui/components/file'
 
 import { X } from 'lucide-react'
 import { useError } from '@/hooks/useError'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type FormProps = {
     initialData?: IBankAccount | null
@@ -28,10 +29,9 @@ type FormProps = {
 
 export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
-    const { handleError } = useError()
 
-    const bankAccountService = new BankAccountService()
-    const bankAccountTypes = bankAccountService.getTypeList(t)
+    const { getTypeList } = useBankAccount()
+    const { handleError } = useError()
 
     const [file, setFile] = useState<FileList | null>(null)
     const [fileError, setFileError] = useState(false)
@@ -123,7 +123,7 @@ export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCal
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccountTypes.map((item: IItem) => (
+                                        {getTypeList().map((item: IItem) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 {item.label}
                                             </SelectItem>

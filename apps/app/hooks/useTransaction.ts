@@ -2,7 +2,7 @@
 
 import { TransactionService } from '@/services/transaction.service'
 import { useTransactionStore } from '@/store/transaction.store'
-import { GroupedTransactions, IItem, ITransaction, TransactionAction } from '@poveroh/types'
+import { GroupedTransactions, IItem, ITransaction, ITransactionFilters, TransactionAction } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 
 export const useTransaction = () => {
@@ -41,12 +41,12 @@ export const useTransaction = () => {
 
     const getTransaction = async (transaction_id: string, fetchFromServer?: boolean) => {
         return fetchFromServer
-            ? await transactionService.read<ITransaction | null>({ id: transaction_id })
+            ? await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transaction_id })
             : transactionStore.getTransaction(transaction_id)
     }
 
     const fetchTransaction = async () => {
-        const res = await transactionService.read<ITransaction[]>()
+        const res = await transactionService.read<ITransaction[], ITransactionFilters>()
 
         transactionStore.setTransaction(res)
 

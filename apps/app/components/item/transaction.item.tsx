@@ -1,6 +1,6 @@
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
-import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types/dist'
+import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types'
 import DynamicIcon from '../icon/dynamicIcon'
 import { useEffect, useState } from 'react'
 import icons from 'currency-icons'
