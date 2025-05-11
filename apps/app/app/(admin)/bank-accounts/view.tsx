@@ -50,8 +50,8 @@ export default function BankAccountView() {
         setLocalBankAccountList(bankAccountCacheList)
     }, [bankAccountCacheList])
 
-    const onFilter = (filter: IBankAccountFilters) => {
-        const updatedFilter = { ...filters, ...filter }
+    const onFilter = (filter: IBankAccountFilters = {}) => {
+        const updatedFilter = { ...filter }
 
         const filteredList = bankAccountCacheList.filter(account => {
             const titleMatch = updatedFilter.title?.contains
@@ -68,21 +68,25 @@ export default function BankAccountView() {
         })
 
         setFilters(updatedFilter)
-
         setLocalBankAccountList(filteredList)
     }
 
     const removeFilter = (key: keyof IBankAccountFilters) => {
-        const newFilters = { ...filters }
+        const newFilters: IBankAccountFilters = { ...filters }
         delete newFilters[key]
 
-        setFilters(newFilters)
+        if (key === 'title' || key === 'description') {
+            delete newFilters[key]
+        }
+
+        onFilter(newFilters)
     }
 
     const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
         const newFilters: IBankAccountFilters = {
+            ...filters,
             title: textToSearch ? { contains: textToSearch } : undefined,
             description: textToSearch ? { contains: textToSearch } : undefined
         }
