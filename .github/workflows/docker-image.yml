@@ -34,6 +34,10 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Copy and patch .env
+              run: |
+                  cp .env.example .env
+
             - name: Build Docker images using local compose file
               run: cd ./docker && docker compose -f docker-compose.local.yml build
 
