@@ -1,9 +1,6 @@
 FROM node:23-alpine AS base
 
-ARG DATABASE_URL
-
-ENV DATABASE_URL=$DATABASE_URL
-
+# Don't set DATABASE_URL as ENV here, it will be passed at runtime
 WORKDIR /app
 
 RUN npm install -g prisma
@@ -11,5 +8,11 @@ RUN npm install -g prisma
 COPY ./packages/prisma/schema.prisma ./schema.prisma
 
 EXPOSE 5555
+
+# Use an entrypoint script to modify DATABASE_URL if needed
+COPY ./scripts/docker-studio-start.sh /app/
+RUN chmod +x ./docker-studio-start.sh
+
+ENTRYPOINT ["/app/docker-studio-start.sh"]
 
 CMD ["prisma", "studio"]
