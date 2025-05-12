@@ -3,13 +3,13 @@
 1. Build and run docker database
 
     ```bash
-    npm run docker:db
+    npm run docker-dev:db
     ```
 
 2. Build and run docker prisma studio
 
     ```bash
-    npm run docker:studio
+    npm run docker-dev:studio
     ```
 
 3. Go to prisma folder
@@ -35,5 +35,5 @@
 1. Build and run docker ngix CDN
 
     ```bash
-    npm run docker:cdn
+    npm run docker-dev:cdn
     ```
