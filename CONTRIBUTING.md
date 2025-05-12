@@ -186,18 +186,17 @@ npm run lint
 # Create Docker network if not exists
 npm run docker:create-network
 
-# Start individual Docker services
-npm run docker:db        # Start DB container
-npm run docker:api       # Start API container
-npm run docker:app       # Start app container
-npm run docker:studio    # Start Prisma Studio container
-npm run docker:cdn       # Start CDN container
+npm run docker-dev:db       # Avvia solo il container DB
+npm run docker-dev:api      # Avvia solo il container API
+npm run docker-dev:app      # Avvia solo il container frontend app
+npm run docker-dev:studio   # Avvia Prisma Studio
+npm run docker-dev:cdn      # Avvia il container CDN
 
 # Start all dev Docker services
-npm run docker
+npm run docker-dev
 
 # Start all production Docker services
-npm run docker-prod
+npm run docker
 ```
 
 ## Prisma Commands

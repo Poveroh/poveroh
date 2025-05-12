@@ -2,7 +2,7 @@ const { existsSync, copyFileSync, readFileSync, writeFileSync, mkdirSync } = req
 const path = require('path')
 
 function getProjectRoot() {
-    return path.resolve(__dirname, '../..')
+    return path.resolve(__dirname, '..')
 }
 
 function ensureEnvFile(envPaths) {

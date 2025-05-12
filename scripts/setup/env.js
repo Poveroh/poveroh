@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const { getProjectRoot, ensureEnvFile, getEnvContent, saveEnvContent, path, fs } = require('./utils')
+const { getProjectRoot, ensureEnvFile, getEnvContent, saveEnvContent, path, fs } = require('../utils')
 
 const projectRoot = getProjectRoot()
 const envPaths = {

@@ -34,11 +34,6 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Copy and patch .env
-              run: |
-                  cp .env.example .env
-                  sed -i 's|DATABASE_HOST=localhost:5432|DATABASE_HOST=db:5432|' .env
-
             - name: Build Docker images using local compose file
               run: cd ./docker && docker compose -f docker-compose.local.yml build
 
