@@ -121,7 +121,7 @@ This project uses:
     npm install
     ```
 
-4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
+4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](docs/ENV_SETUP.md).
 
     > If you don't modify them, the default values are sufficient to run the project.
     >
@@ -148,7 +148,7 @@ This project uses:
     <br>
 
     > **⚠️ Warning:**  
-    > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
+    > If you encounter any difficulties or something doesn't go as planned, read [this file](scripts/README.md) to execute it manually.
 
 2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
 
@@ -199,7 +199,7 @@ This repository follows the [GitHub](https://docs.github.com/en/get-started/usin
 
 The development branch is `main`.
 
-For more info, read the [docs](CONTRIBUTING.md).
+For more info, read the [docs](docs/CONTRIBUTING.md).
 
 <!-- Roadmap -->
 
