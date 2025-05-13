@@ -1,13 +1,13 @@
 #!/bin/sh
 set -e
 
-# Check if DATABASE_URL contains localhost:5432
-if echo "$DATABASE_URL" | grep -q "localhost:5432"; then
-  # Replace localhost:5432 with db:5432 for Docker networking
-  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/localhost:5432/db:5432/')
-  echo "Modified DATABASE_URL to use Docker networking: $DATABASE_URL"
+# Check if DATABASE_HOST contains 'localhost'
+if echo "$DATABASE_HOST" | grep -q "localhost"; then
+  # Replace 'localhost' with 'db' in DATABASE_URL
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/localhost/db/')
 else
-  echo "Using provided DATABASE_URL: $DATABASE_URL"
+  :
+  # No change needed; DATABASE_URL remains as is
 fi
 
 # Execute the provided command

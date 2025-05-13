@@ -9,9 +9,10 @@ COPY ./packages/prisma/schema.prisma ./schema.prisma
 
 EXPOSE 5555
 
-# Use an entrypoint script to modify DATABASE_URL if needed
 COPY ./scripts/docker-studio-start.sh /app/
-RUN chmod +x ./docker-studio-start.sh
+# Fix for Windows line endings if needed
+RUN sed -i 's/\r$//' /app/docker-studio-start.sh
+RUN chmod +x /app/docker-studio-start.sh
 
 ENTRYPOINT ["/app/docker-studio-start.sh"]
 
