@@ -1,0 +1,64 @@
+'use client'
+
+import { cookie, storage } from '@/lib/storage'
+import { AuthService } from '@/services/auth.service'
+import { useUserStore } from '@/store/auth.store'
+import { IUserLogin, IUserToSave } from '@poveroh/types/dist'
+import { encryptString, isValidEmail } from '@poveroh/utils'
+import { isEmpty } from 'lodash'
+import { redirect } from 'next/navigation'
+
+export const useAuth = () => {
+    const authService = new AuthService()
+
+    const userStore = useUserStore()
+
+    const signIn = async (userToLogin: IUserLogin) => {
+        if (!isValidEmail(userToLogin.email)) throw new Error('E-mail not valid')
+
+        if (isEmpty(userToLogin.password)) throw new Error('Password not valid')
+
+        userToLogin.password = await encryptString(userToLogin.password)
+
+        return await authService.signIn(userToLogin)
+    }
+
+    const signUp = async (userToSave: IUserToSave) => {
+        if (!isValidEmail(userToSave.email)) throw new Error('E-mail not valid')
+
+        if (!userToSave.password || isEmpty(userToSave.password)) throw new Error('Password not valid')
+
+        userToSave.password = await encryptString(userToSave.password)
+
+        const resUser = await authService.signUp(userToSave)
+
+        if (resUser) {
+            userStore.setUser(resUser)
+            return true
+        }
+
+        return false
+    }
+
+    const logout = (redirectToLogin?: boolean) => {
+        storage.clear()
+        cookie.remove('token')
+        userStore.resetAll()
+
+        if (redirectToLogin) {
+            redirect('/sign-in')
+        }
+    }
+
+    const isAuthenticate = () => {
+        return cookie.has('token')
+    }
+
+    return {
+        logged: userStore.logged,
+        logout,
+        signIn,
+        signUp,
+        isAuthenticate
+    }
+}

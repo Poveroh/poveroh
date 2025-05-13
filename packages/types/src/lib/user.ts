@@ -3,15 +3,24 @@ export interface IUserLogin {
     password: string
 }
 
-export interface IUserToSave {
+export interface IUserBase {
     name: string
     surname: string
     email: string
 }
 
-export interface IUser extends IUserToSave {
+export interface IUserToSave extends IUserBase {
+    password?: string
+}
+
+export interface IUser extends IUserBase {
     id: string
     created_at: string
+}
+
+export interface IPasswordToChange {
+    oldPassword: string
+    newPassword: string
 }
 
 export const defaultUser: IUser = {

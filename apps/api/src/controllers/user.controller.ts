@@ -27,6 +27,30 @@ export class UserController {
         }
     }
 
+    static async add(req: Request, res: Response) {
+        try {
+            const user = await prisma.users.findUnique({
+                where: { email: req.user.email },
+                select: {
+                    id: true,
+                    name: true,
+                    surname: true,
+                    email: true,
+                    created_at: true
+                }
+            })
+
+            if (!user) {
+                res.status(404).json({ message: 'User not found' })
+                return
+            }
+
+            res.status(200).json(user)
+        } catch (error) {
+            res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
     static async save(req: Request, res: Response) {
         try {
             const user = await prisma.users.findUnique({

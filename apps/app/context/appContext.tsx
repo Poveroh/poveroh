@@ -1,7 +1,7 @@
 'use client'
 
+import { useAuth } from '@/hooks/userAuth'
 import { useUser } from '@/hooks/useUser'
-import { UserService } from '@/services/user.service'
 import { createContext, useEffect } from 'react'
 
 const AppContext = createContext({})
@@ -11,15 +11,17 @@ type AppContextProviderProps = {
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    const userService = new UserService()
-    const { isAuthenticate, setUser, logged } = useUser()
+    const { me } = useUser()
+    const { isAuthenticate, logged } = useAuth()
 
     useEffect(() => {
-        if (isAuthenticate()) {
-            userService.me(true).then(readedUser => {
-                setUser(readedUser)
-            })
+        async function fetchUser() {
+            if (isAuthenticate()) {
+                await me(true)
+            }
         }
+
+        fetchUser()
     }, [logged])
 
     const context = {}

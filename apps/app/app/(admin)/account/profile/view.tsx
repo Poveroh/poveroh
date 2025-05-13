@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { isEqual } from 'lodash'
-import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
+import { CopyableInput } from '@poveroh/ui/components/input-copyable'
 import { Button } from '@poveroh/ui/components/button'
 import {
     Breadcrumb,
@@ -27,23 +26,19 @@ import {
     FormMessage
 } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { toast } from '@poveroh/ui/components/sonner'
 
 import { Loader2 } from 'lucide-react'
 
-import { UserService } from '@/services/user.service'
 import Box from '@/components/box/boxWrapper'
 
 import { IUserToSave } from '@poveroh/types'
 import { useUser } from '@/hooks/useUser'
-
-const userService = new UserService()
+import { toast } from '@poveroh/ui/components/sonner'
 
 export default function ProfileView() {
     const t = useTranslations()
-    const router = useRouter()
 
-    const { user, setUser } = useUser()
+    const { user, saveUser } = useUser()
     const [loading, setLoading] = useState(false)
 
     const formSchema = z.object({
@@ -67,22 +62,13 @@ export default function ProfileView() {
         form.reset(user)
     }, [user, form])
 
-    const saveUser = async (userToSave: IUserToSave) => {
+    const save = async (userToSave: IUserToSave) => {
         setLoading(true)
-        await userService
-            .save(userToSave)
-            .then(() => {
-                toast.success(t('settings.account.personalInfo.form.generalities.messages.success'))
 
-                setUser({ ...user, ...userToSave })
-
-                if (!isEqual(user.email, userToSave.email)) {
-                    router.push('/logout')
-                }
-            })
-            .catch(error => {
-                toast.error(error)
-            })
+        const res = await saveUser(userToSave)
+        if (res) {
+            toast.success(t('form.messages.userSavedSuccess'))
+        }
 
         setLoading(false)
     }
@@ -108,21 +94,26 @@ export default function ProfileView() {
                 </Breadcrumb>
             </div>
             <div className='flex flex-col space-y-3'>
-                <h4>{t('settings.account.personalInfo.form.generalities.title')}</h4>
+                <h4>{t('settings.account.personalInfo.title')}</h4>
                 <Box>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(saveUser)} className='flex flex-col space-y-7 w-full'>
-                            <div className='flex flex-row gap-7 w-full'>
+                        <form onSubmit={form.handleSubmit(save)} className='flex flex-col space-y-7 w-full'>
+                            <FormItem>
+                                <FormLabel>{t('form.id.label')}</FormLabel>
+                                <FormControl>
+                                    <CopyableInput value={user.id} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            <div className='flex flex-row space-x-2 w-full'>
                                 <FormField
                                     control={form.control}
                                     name='name'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>
-                                                {t('settings.account.personalInfo.form.generalities.name')}
-                                            </FormLabel>
+                                            <FormLabel mandatory>{t('form.name.label')}</FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input {...field} placeholder={t('form.name.placeholder')} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -134,30 +125,26 @@ export default function ProfileView() {
                                     name='surname'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>
-                                                {t('settings.account.personalInfo.form.generalities.surname')}
-                                            </FormLabel>
+                                            <FormLabel mandatory>{t('form.surname.label')}</FormLabel>
                                             <FormControl>
-                                                <Input {...field} />
+                                                <Input {...field} placeholder={t('form.surname.placeholder')} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                             </div>
-                            <div className='flex flex-col space-y-3'>
+                            <div className='flex flex-row space-x-2 w-full'>
                                 <FormField
                                     control={form.control}
                                     name='email'
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>E-mail</FormLabel>
+                                            <FormLabel>{t('form.email.label')}</FormLabel>
                                             <FormControl>
-                                                <Input placeholder='example@mail.com' {...field} />
+                                                <Input placeholder={t('form.email.placeholder')} {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                {t('settings.account.personalInfo.form.generalities.email.subTitle')}
-                                            </FormDescription>
+                                            <FormDescription>{t('form.email.subTitle')}</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}

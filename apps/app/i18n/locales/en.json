@@ -52,6 +52,42 @@
         }
     },
     "form": {
+        "password": {
+            "label": "Password"
+        },
+        "oldpassword": {
+            "label": "Old password"
+        },
+        "newpassword": {
+            "label": "New password",
+            "description": "It must contain:<br/> - At least one uppercase letter<br/> - At least one number<br/>- At least 8 characters in length"
+        },
+        "confirmPassword": {
+            "label": "Confirm password"
+        },
+        "id": {
+            "label": "ID"
+        },
+        "email": {
+            "label": "E-mail",
+            "placeholder": "example@mail.com",
+            "subTitle": "The email change requires logging out."
+        },
+        "phone": {
+            "label": "Phone"
+        },
+        "name": {
+            "label": "Name",
+            "placeholder": "Paperon"
+        },
+        "surname": {
+            "label": "Surname",
+            "placeholder": "De paperoni"
+        },
+        "messages": {
+            "userSavedSuccess": "User is saved successfully.",
+            "passwordSuccess": "Password is updated successfully"
+        },
         "title": {
             "label": "Title"
         },
@@ -110,6 +146,12 @@
             "addAsFile": "Add as file"
         }
     },
+    "layout": {
+        "navbar": {
+            "signInLink": "Already have an account?",
+            "signUpLink": "Already have an account?"
+        }
+    },
     "filter": {
         "title": "Filtra"
     },
@@ -120,12 +162,19 @@
     "logout": {
         "title": "Logout"
     },
-    "login": {
-        "title": "Login",
-        "subtitle": "Enter your credentials to access the system.",
+    "signin": {
+        "title": "Sign in",
+        "subtitle": "Enter your credentials to access the system",
         "buttons": {
             "sign_in": "Sign in",
             "forgot_password": "Forgot your password?"
+        }
+    },
+    "signup": {
+        "title": "Sign up",
+        "subtitle": "Enter credentials you will use to access the system",
+        "buttons": {
+            "sign_up": "Sign up"
         }
     },
     "dashboard": {
@@ -144,38 +193,11 @@
             "title": "Account",
             "personalInfo": {
                 "title": "Personal information",
-                "subtitle": "Edit your personal information.",
-                "form": {
-                    "generalities": {
-                        "title": "Generalities",
-                        "name": "Name",
-                        "surname": "Surname",
-                        "email": {
-                            "label": "E-mail",
-                            "subTitle": "The email change requires logging out."
-                        },
-                        "phone": "Phone",
-                        "messages": {
-                            "success": "User is saved successfully."
-                        }
-                    }
-                }
+                "subtitle": "Edit your personal information."
             },
             "security": {
                 "title": "Security",
-                "subtitle": "Update password and protect account.",
-                "form": {
-                    "password": {
-                        "title": "Password",
-                        "oldpassword": "Old password",
-                        "newpassword": "New password",
-                        "confirmPassword": "Confirm password",
-                        "description": "It must contain:<br/> - At least one uppercase letter<br/> - At least one number<br/>- At least 8 characters in length",
-                        "messages": {
-                            "success": "Password is updated successfully"
-                        }
-                    }
-                }
+                "subtitle": "Update password and protect account."
             }
         },
         "manage": {
