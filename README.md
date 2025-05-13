@@ -150,7 +150,7 @@ This project uses:
     > **⚠️ Warning:**  
     > If you encounter any difficulties or something doesn't go as planned, read [this file](scripts/README.md) to execute it manually.
 
-2. Create a user; open a browser to [http://localhost:3000/sign-up](http://localhost:3000/sign-up) and sign up.
+2. Create a user; open a browser to [localhost:3000/sign-up](http://localhost:3000/sign-up) and sign up.
 
 3. _Optionally_, you can run the following exactly script to generate and fill database with fake data:
 
