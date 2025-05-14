@@ -6,7 +6,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useTranslations } from 'next-intl'
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
@@ -20,28 +28,20 @@ export default function SignupView() {
 
     const [loading, setLoading] = useState(false)
 
-    const objectSetup = z
-        .string()
-        .nonempty(t('messages.errors.required'))
-        .min(
-            6,
-            t('messages.errors.passwordAtLeastChar', {
-                a: 6
-            })
-        )
-
-    const formSchema = z
-        .object({
-            name: z.string().nonempty(t('messages.errors.required')),
-            surname: z.string().nonempty(t('messages.errors.required')),
-            email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
-            password: objectSetup,
-            confirmPassword: objectSetup
-        })
-        .refine(data => data.password === data.confirmPassword, {
-            message: t('messages.errors.passwordMismatch'),
-            path: ['confirmPassword']
-        })
+    const formSchema = z.object({
+        name: z.string().nonempty(t('messages.errors.required')),
+        surname: z.string().nonempty(t('messages.errors.required')),
+        email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
+        password: z
+            .string()
+            .nonempty(t('messages.errors.required'))
+            .min(
+                6,
+                t('messages.errors.passwordAtLeastChar', {
+                    a: 6
+                })
+            )
+    })
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -49,17 +49,14 @@ export default function SignupView() {
             name: '',
             surname: '',
             email: '',
-            password: '',
-            confirmPassword: ''
+            password: ''
         }
     })
 
     const handleSignUp = async (values: z.infer<typeof formSchema>) => {
         setLoading(true)
 
-        const { confirmPassword, ...user } = values
-
-        const res = await signUp(user)
+        const res = await signUp(values)
 
         if (res) {
             window.location.href = '/dashboard'
@@ -136,23 +133,11 @@ export default function SignupView() {
                                             />
                                         </FormControl>
                                         <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name='confirmPassword'
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel mandatory>{t('form.confirmPassword.label')}</FormLabel>
-                                        <FormControl>
-                                            <PasswordInput
-                                                type='password'
-                                                placeholder='&bull;&bull;&bull;&bull;'
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
+                                        <FormDescription
+                                            dangerouslySetInnerHTML={{
+                                                __html: t('form.newpassword.description')
+                                            }}
+                                        ></FormDescription>
                                     </FormItem>
                                 )}
                             />
