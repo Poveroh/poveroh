@@ -3,89 +3,122 @@
 import { CategoryService, SubcategoryService } from '@/services/category.service'
 import { useCategoryStore } from '@/store/category.store'
 import { ICategory, ICategoryFilters } from '@poveroh/types'
+import { useError } from './useError'
 
 export const useCategory = () => {
+    const { handleError } = useError()
+
     const categoryService = new CategoryService()
     const subcategoryService = new SubcategoryService()
-
     const categoryStore = useCategoryStore()
 
-    //category
+    // Category
     const addCategory = async (data: FormData) => {
-        const resAccount = await categoryService.add(data)
+        try {
+            const res = await categoryService.add(data)
+            categoryStore.addCategory(res)
 
-        categoryStore.addCategory(resAccount)
-
-        return resAccount
+            return res
+        } catch (error) {
+            return handleError(error, 'Error adding category')
+        }
     }
 
     const editCategory = async (data: FormData) => {
-        const resAccount = await categoryService.save(data)
+        try {
+            const res = await categoryService.save(data)
+            categoryStore.editCategory(res)
 
-        categoryStore.editCategory(resAccount)
-
-        return resAccount
-    }
-
-    const removeCategory = async (Category_id: string) => {
-        const res = await categoryService.delete(Category_id)
-
-        if (!res) {
-            throw new Error('Error deleting category')
+            return res
+        } catch (error) {
+            return handleError(error, 'Error editing category')
         }
-
-        categoryStore.removeCategory(Category_id)
-
-        return res
     }
 
-    const getCategory = async (Category_id: string, fetchFromServer?: boolean) => {
-        return fetchFromServer
-            ? await categoryService.read<ICategory | null, ICategoryFilters>({ id: Category_id })
-            : categoryStore.getCategory(Category_id)
+    const removeCategory = async (categoryId: string) => {
+        try {
+            const res = await categoryService.delete(categoryId)
+
+            if (!res) {
+                throw new Error('No response from server')
+            }
+
+            categoryStore.removeCategory(categoryId)
+
+            return res
+        } catch (error) {
+            return handleError(error, 'Error deleting category')
+        }
     }
 
-    //subcategory
+    const getCategory = async (categoryId: string, fetchFromServer?: boolean) => {
+        try {
+            return fetchFromServer
+                ? await categoryService.read<ICategory | null, ICategoryFilters>({ id: categoryId })
+                : categoryStore.getCategory(categoryId)
+        } catch (error) {
+            return handleError(error, 'Error fetching category')
+        }
+    }
+
+    // Subcategory methods
     const addSubcategory = async (data: FormData) => {
-        const res = await subcategoryService.add(data)
+        try {
+            const res = await subcategoryService.add(data)
+            categoryStore.addSubcategory(res)
 
-        categoryStore.addSubcategory(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error adding subcategory')
+        }
     }
 
     const editSubcategory = async (data: FormData) => {
-        const res = await subcategoryService.save(data)
+        try {
+            const res = await subcategoryService.save(data)
+            categoryStore.editSubcategory(res)
 
-        categoryStore.editSubcategory(res)
-
-        return res
-    }
-
-    const removeSubcategory = async (category_id: string) => {
-        const res = await subcategoryService.delete(category_id)
-
-        if (!res) {
-            throw new Error('Error deleting category')
+            return res
+        } catch (error) {
+            return handleError(error, 'Error editing subcategory')
         }
-
-        categoryStore.removeCategory(category_id)
-
-        return res
     }
 
-    const getSubcategory = async (category_id: string, fetchFromServer?: boolean) => {
-        return fetchFromServer
-            ? await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: category_id })
-            : categoryStore.getSubcategory(category_id)
+    const removeSubcategory = async (subcategoryId: string) => {
+        try {
+            const res = await subcategoryService.delete(subcategoryId)
+
+            if (!res) {
+                throw new Error('No response from server')
+            }
+
+            categoryStore.removeCategory(subcategoryId)
+
+            return res
+        } catch (error) {
+            return handleError(error, 'Error deleting subcategory')
+        }
+    }
+
+    const getSubcategory = async (subcategoryId: string, fetchFromServer?: boolean) => {
+        try {
+            return fetchFromServer
+                ? await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: subcategoryId })
+                : categoryStore.getSubcategory(subcategoryId)
+        } catch (error) {
+            return handleError(error, 'Error fetching subcategory')
+        }
     }
 
     const fetchCategory = async () => {
-        const res = await categoryService.read<ICategory[], ICategoryFilters>()
+        try {
+            const res = await categoryService.read<ICategory[], ICategoryFilters>()
+            categoryStore.setCategory(res)
 
-        categoryStore.setCategory(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error fetching categories')
+        }
     }
 
     return {

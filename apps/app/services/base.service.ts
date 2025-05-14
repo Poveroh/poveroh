@@ -16,7 +16,7 @@ export class BaseService<T> {
     }
 
     async delete(dataToDelete: string) {
-        return await server.post<boolean>(`${this.endpoint}/delete`, { id: dataToDelete })
+        return await server.delete<boolean>(`${this.endpoint}/delete/${dataToDelete}`)
     }
 
     async read<U, T>(query?: string[] | T): Promise<U> {

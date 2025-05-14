@@ -8,6 +8,6 @@ const router: Router = Router()
 router.post('/add', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.add)
 router.post('/read', AuthMiddleware.isAuthenticated, CategoryController.read)
 router.post('/save', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.save)
-router.post('/delete', AuthMiddleware.isAuthenticated, CategoryController.delete)
+router.delete('/delete/:id', AuthMiddleware.isAuthenticated, CategoryController.delete)
 
 export default router

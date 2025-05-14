@@ -39,8 +39,10 @@ export class TransactionController {
 
     static async delete(req: Request, res: Response) {
         try {
+            const { id } = req.params
+
             await prisma.transactions.delete({
-                where: req.body
+                where: { id: id }
             })
 
             res.status(200).json(true)

@@ -4,54 +4,72 @@ import { BankAccountService } from '@/services/bankaccount.service'
 import { useBankAccountStore } from '@/store/bankaccount.store'
 import { BankAccountType, IBankAccount, IBankAccountFilters, IItem } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
+import { useError } from './useError'
 
 export const useBankAccount = () => {
     const t = useTranslations()
+    const { handleError } = useError()
 
     const bankAccountService = new BankAccountService()
-
     const bankAccountStore = useBankAccountStore()
 
     const addBankAccount = async (data: FormData) => {
-        const res = await bankAccountService.add(data)
+        try {
+            const res = await bankAccountService.add(data)
+            bankAccountStore.addBankAccount(res)
 
-        bankAccountStore.addBankAccount(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error adding bank account')
+        }
     }
 
     const editBankAccount = async (data: FormData) => {
-        const res = await bankAccountService.save(data)
+        try {
+            const res = await bankAccountService.save(data)
+            bankAccountStore.editBankAccount(res)
 
-        bankAccountStore.editBankAccount(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error editing bank account')
+        }
     }
 
     const removeBankAccount = async (bankAccount_id: string) => {
-        const res = await bankAccountService.delete(bankAccount_id)
+        try {
+            const res = await bankAccountService.delete(bankAccount_id)
 
-        if (!res) {
-            throw new Error('Error deleting bank account')
+            if (!res) {
+                throw new Error('No response from server')
+            }
+
+            bankAccountStore.removeBankAccount(bankAccount_id)
+
+            return res
+        } catch (error) {
+            return handleError(error, 'Error deleting bank account')
         }
-
-        bankAccountStore.removeBankAccount(bankAccount_id)
-
-        return res
     }
 
     const getBankAccount = async (bankAccount_id: string, fetchFromServer?: boolean) => {
-        return fetchFromServer
-            ? await bankAccountService.read<IBankAccount | null, IBankAccountFilters>({ id: bankAccount_id })
-            : bankAccountStore.getBankAccount(bankAccount_id)
+        try {
+            return fetchFromServer
+                ? await bankAccountService.read<IBankAccount | null, IBankAccountFilters>({ id: bankAccount_id })
+                : bankAccountStore.getBankAccount(bankAccount_id)
+        } catch (error) {
+            return handleError(error, 'Error fetching bank account')
+        }
     }
 
     const fetchBankAccount = async () => {
-        const res = await bankAccountService.read<IBankAccount[], IBankAccountFilters>()
+        try {
+            const res = await bankAccountService.read<IBankAccount[], IBankAccountFilters>()
+            bankAccountStore.setBankAccount(res)
 
-        bankAccountStore.setBankAccount(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error fetching bank accounts')
+        }
     }
 
     const getTypeList = (): IItem[] => {

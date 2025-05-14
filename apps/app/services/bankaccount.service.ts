@@ -1,4 +1,4 @@
-import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
+import { IBankAccount } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 export class BankAccountService extends BaseService<IBankAccount> {

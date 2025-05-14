@@ -33,15 +33,20 @@ export function CategoryDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let res: ICategory
+        let res: ICategory | null
 
         // edit dialog
         if (props.inEditingMode) {
             res = await editCategory(data)
+
+            if (!res) return
+
             props.closeDialog()
         } else {
             // new dialog
             res = await addCategory(data)
+
+            if (!res) return
 
             if (keepAdding) {
                 formRef.current?.reset()

@@ -1,4 +1,5 @@
 export enum ServerRequest {
     GET,
-    POST
+    POST,
+    DELETE
 }

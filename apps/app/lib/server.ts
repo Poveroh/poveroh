@@ -4,7 +4,7 @@ import { appConfig } from '@/config'
 
 export const server = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    send<T>(type: ServerRequest, url: string, data: any, formData?: boolean): Promise<T> {
+    send<T>(type: ServerRequest, url: string, data: any, authenticate: boolean, formData?: boolean): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
 
@@ -16,14 +16,21 @@ export const server = {
                 const urlToSend = new URL(url, appConfig.apiUrl)
                 switch (type) {
                     case ServerRequest.GET:
-                        res = await axios.get(urlToSend.href)
+                        res = await axios.get(urlToSend.href, {
+                            withCredentials: authenticate
+                        })
                         break
                     case ServerRequest.POST:
                         res = await axios.post(urlToSend.href, data, {
-                            withCredentials: true,
+                            withCredentials: authenticate,
                             headers: {
                                 ...headers
                             }
+                        })
+                        break
+                    case ServerRequest.DELETE:
+                        res = await axios.delete(urlToSend.href, {
+                            withCredentials: authenticate
                         })
                         break
                     default:
@@ -53,11 +60,13 @@ export const server = {
         })
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    post<T>(url: string, data: any, formData?: boolean): Promise<T> {
-        return this.send<T>(ServerRequest.POST, url, data, formData)
+    post<T>(url: string, data: any, formData?: boolean) {
+        return this.send<T>(ServerRequest.POST, url, data, true, formData)
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    get<T>(url: string, data: any): Promise<T> {
-        return this.send<T>(ServerRequest.GET, url, data)
+    get<T>(url: string, authenticate: boolean) {
+        return this.send<T>(ServerRequest.GET, url, null, authenticate)
+    },
+    delete<T>(url: string) {
+        return this.send<T>(ServerRequest.DELETE, url, null, true)
     }
 }

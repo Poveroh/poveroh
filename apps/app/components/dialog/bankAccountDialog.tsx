@@ -33,15 +33,20 @@ export function BankAccountDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let res: IBankAccount
+        let res: IBankAccount | null
 
         // edit dialog
         if (props.inEditingMode) {
             res = await editBankAccount(data)
+
+            if (!res) return
+
             props.closeDialog()
         } else {
             // new dialog
             res = await addBankAccount(data)
+
+            if (!res) return
 
             if (keepAdding) {
                 formRef.current?.reset()

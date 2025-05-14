@@ -4,39 +4,51 @@ import { TransactionService } from '@/services/transaction.service'
 import { useTransactionStore } from '@/store/transaction.store'
 import { GroupedTransactions, IItem, ITransaction, ITransactionFilters, TransactionAction } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
+import { useError } from './useError'
 
 export const useTransaction = () => {
     const t = useTranslations()
-    const transactionService = new TransactionService()
+    const { handleError } = useError()
 
+    const transactionService = new TransactionService()
     const transactionStore = useTransactionStore()
 
     const addTransaction = async (data: FormData) => {
-        const res = await transactionService.add(data)
+        try {
+            const res = await transactionService.add(data)
+            transactionStore.addTransaction(res)
 
-        transactionStore.addTransaction(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error adding transaction')
+        }
     }
 
     const editTransaction = async (data: FormData) => {
-        const res = await transactionService.save(data)
+        try {
+            const res = await transactionService.save(data)
+            transactionStore.editTransaction(res)
 
-        transactionStore.editTransaction(res)
-
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error editing transaction')
+        }
     }
 
     const removeTransaction = async (transaction_id: string) => {
-        const res = await transactionService.delete(transaction_id)
+        try {
+            const res = await transactionService.delete(transaction_id)
 
-        if (!res) {
-            throw new Error('Error deleting transaction')
+            if (!res) {
+                throw new Error('No response from server')
+            }
+
+            transactionStore.removeTransaction(transaction_id)
+
+            return res
+        } catch (error) {
+            return handleError(error, 'Error deleting transaction')
         }
-
-        transactionStore.removeTransaction(transaction_id)
-
-        return res
     }
 
     const getTransaction = async (transaction_id: string, fetchFromServer?: boolean) => {

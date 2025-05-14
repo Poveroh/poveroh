@@ -74,7 +74,7 @@ export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
             await dataCallback(formData)
         } catch (error) {
-            handleError(error)
+            handleError(error, 'Form error')
         }
     }
 

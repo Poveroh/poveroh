@@ -43,8 +43,10 @@ export class SubcategoryController {
 
     static async delete(req: Request, res: Response) {
         try {
+            const { id } = req.params
+
             await prisma.subcategories.delete({
-                where: req.body
+                where: { id: id }
             })
 
             res.status(200).json(true)

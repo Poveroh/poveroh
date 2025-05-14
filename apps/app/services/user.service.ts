@@ -3,7 +3,7 @@ import { IPasswordToChange, IUser, IUserToSave } from '@poveroh/types'
 
 export class UserService {
     async me(): Promise<IUser> {
-        return await server.post<IUser>('/user/me', {})
+        return await server.get<IUser>('/user/me', true)
     }
 
     async save(userToSave: IUserToSave): Promise<boolean> {

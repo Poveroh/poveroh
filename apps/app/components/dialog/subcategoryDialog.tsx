@@ -33,15 +33,20 @@ export function SubcategoryDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let res: ISubcategory
+        let res: ISubcategory | null
 
         // edit dialog
         if (props.inEditingMode) {
             res = await editSubcategory(data)
+
+            if (!res) return
+
             props.closeDialog()
         } else {
             // new dialog
             res = await addSubcategory(data)
+
+            if (!res) return
 
             if (keepAdding) {
                 formRef.current?.reset()

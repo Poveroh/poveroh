@@ -8,6 +8,6 @@ const router: Router = Router()
 router.post('/add', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.add)
 router.post('/read', AuthMiddleware.isAuthenticated, TransactionController.read)
 router.post('/save', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.save)
-router.post('/delete', AuthMiddleware.isAuthenticated, TransactionController.delete)
+router.delete('/delete/:id', AuthMiddleware.isAuthenticated, TransactionController.delete)
 
 export default router

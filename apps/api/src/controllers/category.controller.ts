@@ -49,15 +49,17 @@ export class CategoryController {
 
     static async delete(req: Request, res: Response) {
         try {
+            const { id } = req.params
+
             await prisma.subcategories.deleteMany({
                 where: {
-                    category_id: req.body.id
+                    category_id: id
                 }
             })
 
             await prisma.categories.delete({
                 where: {
-                    id: req.body.id
+                    id: id
                 }
             })
 

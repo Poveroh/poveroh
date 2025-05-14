@@ -122,7 +122,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
 
             await dataCallback(formData)
         } catch (error) {
-            handleError(error)
+            handleError(error, 'Form error')
         }
     }
 

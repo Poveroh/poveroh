@@ -45,15 +45,20 @@ export function TransactionDialog(props: DialogProps) {
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
-        let res: ITransaction
+        let res: ITransaction | null
 
         // edit dialog
         if (props.inEditingMode) {
             res = await editTransaction(data)
+
+            if (!res) return
+
             props.closeDialog()
         } else {
             // new dialog
             res = await addTransaction(data)
+
+            if (!res) return
 
             if (keepAdding) {
                 formRef.current?.reset()

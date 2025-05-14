@@ -82,7 +82,7 @@ export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCal
 
             await dataCallback(formData)
         } catch (error) {
-            handleError(error)
+            handleError(error, 'Form error')
         }
     }
 

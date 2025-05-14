@@ -64,8 +64,10 @@ export class BankAccountController {
 
     static async delete(req: Request, res: Response) {
         try {
+            const { id } = req.params
+
             await prisma.bank_accounts.delete({
-                where: req.body
+                where: { id: id }
             })
 
             res.status(200).json(true)

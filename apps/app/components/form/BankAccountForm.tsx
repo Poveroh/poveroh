@@ -6,7 +6,6 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { BankAccountService } from '@/services/bankaccount.service'
 import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
@@ -74,7 +73,7 @@ export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCal
 
             await dataCallback(formData)
         } catch (error) {
-            handleError(error)
+            handleError(error, 'Form error')
         }
     }
 
