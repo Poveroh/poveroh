@@ -57,4 +57,6 @@ RUN adduser --system --uid 1001 userapi
 RUN chown -R userapi:userapi /app
 USER userapi
 
+EXPOSE 3001
+
 ENTRYPOINT ["/app/docker-api-start.sh"]
