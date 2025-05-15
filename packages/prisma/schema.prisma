@@ -20,6 +20,9 @@ model users {
     categories    categories[]
     login         users_login[]
     bank_accounts bank_accounts[]
+
+    @@index([surname])
+    @@index([created_at])
 }
 
 model users_login {
@@ -32,6 +35,9 @@ model users_login {
 
     user    users  @relation(fields: [user_id], references: [id])
     user_id String
+
+    @@index([user_id])
+    @@index([created_at])
 }
 
 model transactions {
@@ -53,6 +59,12 @@ model transactions {
 
     media   transactions_media[]
     amounts amounts[]
+
+    @@index([user_id])
+    @@index([category_id])
+    @@index([subcategory_id])
+    @@index([date])
+    @@index([user_id, date])
 }
 
 model subscriptions {
@@ -74,6 +86,11 @@ model subscriptions {
 
     user         users         @relation(fields: [user_id], references: [id])
     bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
+
+    @@index([user_id])
+    @@index([bank_account_id])
+    @@index([expires_date])
+    @@index([is_enabled])
 }
 
 model transactions_media {
@@ -85,6 +102,8 @@ model transactions_media {
     created_at     DateTime @default(now())
 
     transaction transactions @relation(fields: [transaction_id], references: [id])
+
+    @@index([transaction_id])
 }
 
 model bank_accounts {
@@ -99,6 +118,8 @@ model bank_accounts {
     subscriptions subscriptions[]
     amounts       amounts[]
     user          users           @relation(fields: [user_id], references: [id])
+
+    @@index([user_id])
 }
 
 model categories {
@@ -114,6 +135,9 @@ model categories {
     subcategories subcategories[]
 
     user users @relation(fields: [user_id], references: [id])
+
+    @@index([user_id])
+    @@index([for])
 }
 
 model subcategories {
@@ -127,6 +151,8 @@ model subcategories {
     transactions transactions[]
 
     category categories @relation(fields: [category_id], references: [id])
+
+    @@index([category_id])
 }
 
 model amounts {
@@ -140,6 +166,10 @@ model amounts {
 
     bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
     transaction  transactions  @relation(fields: [transaction_id], references: [id])
+
+    @@index([transaction_id])
+    @@index([bank_account_id])
+    @@index([action])
 }
 
 enum TransactionType {
