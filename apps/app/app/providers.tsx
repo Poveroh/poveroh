@@ -14,7 +14,7 @@ export async function Providers({ children }: { children: React.ReactNode }) {
                 <AppContextProvider>
                     <TooltipProvider>
                         <Toaster richColors />
-                        {children}{' '}
+                        {children}
                     </TooltipProvider>
                 </AppContextProvider>
             </ThemeProviders>
