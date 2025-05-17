@@ -6,11 +6,23 @@ networks:
         external: true
 
 services:
+    redis:
+        container_name: redis
+        build:
+            context: ..
+            dockerfile: ./infra/redis/redis.dockerfile
+        restart: always
+        env_file: .env
+        ports:
+            - 6379:6379
+        networks:
+            - poveroh_network
+
     db:
         container_name: db
         build:
             context: ..
-            dockerfile: ./packages/prisma/db.dockerfile
+            dockerfile: ./infra/db/db.dockerfile
         restart: always
         env_file: .env
         ports:
@@ -24,7 +36,7 @@ services:
         container_name: studio
         build:
             context: ..
-            dockerfile: ./packages/prisma/studio.dockerfile
+            dockerfile: ./infra/db/studio.dockerfile
             args:
                 DATABASE_URL: ${DATABASE_URL}
         restart: always
@@ -82,7 +94,7 @@ services:
         container_name: cdn
         build:
             context: ..
-            dockerfile: ./apps/cdn/cdn.dockerfile
+            dockerfile: ./infra/cdn/cdn.dockerfile
         restart: always
         env_file: .env
         ports:
