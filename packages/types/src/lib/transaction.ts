@@ -10,7 +10,6 @@ export interface IAmountBase {
 
 export interface IAmount extends IAmountBase {
     id: string
-
     created_at: string
 }
 

@@ -1,6 +1,7 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import DynamicIcon from '../icon/dynamicIcon'
 import { categoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
+import { OptionsPopover } from '../navbar/options.popover'
 
 type CategoryItemProps = {
     category: ICategory
@@ -20,15 +21,11 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                             <p className='sub'>{category.description}</p>
                         </div>
                     </div>
-                    <div className='flex flex-col items-center'>
-                        <div className='flex flex-row space-x-5 items-center'>
-                            <Pencil className='cursor-pointer' onClick={() => openEdit('category', category)} />
-                            <Trash2
-                                className='danger cursor-pointer'
-                                onClick={() => openDelete('category', category)}
-                            />
-                        </div>
-                    </div>
+                    <OptionsPopover<ICategory>
+                        data={category}
+                        openDelete={item => openDelete('category', item)}
+                        openEdit={item => openEdit('category', item)}
+                    ></OptionsPopover>
                 </div>
                 {category.subcategories?.map((subcategory: ISubcategory) => (
                     <div
@@ -42,18 +39,11 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                                 <p className='sub'>{subcategory.description}</p>
                             </div>
                         </div>
-                        <div className='flex flex-col items-center'>
-                            <div className='flex flex-row space-x-5 items-center'>
-                                <Pencil
-                                    className='cursor-pointer'
-                                    onClick={() => openEdit('subcategory', subcategory)}
-                                />
-                                <Trash2
-                                    className='danger cursor-pointer'
-                                    onClick={() => openDelete('subcategory', subcategory)}
-                                />
-                            </div>
-                        </div>
+                        <OptionsPopover<ISubcategory>
+                            data={subcategory}
+                            openDelete={item => openDelete('subcategory', item)}
+                            openEdit={item => openEdit('subcategory', item)}
+                        ></OptionsPopover>
                     </div>
                 ))}
             </div>

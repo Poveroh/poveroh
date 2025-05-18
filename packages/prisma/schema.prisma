@@ -74,6 +74,8 @@ model subscriptions {
     description     String
     amount          Float
     currency        Currency
+    logo            String?
+    icon            String?
     first_payment   DateTime
     cycle_number    Int
     cycle_period    String

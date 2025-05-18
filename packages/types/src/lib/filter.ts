@@ -1,8 +1,10 @@
 import { BankAccountType } from './bankaccount.js'
+import { CyclePeriod } from './subscription.js'
 import { TransactionAction } from './transaction.js'
 
 export type StringFilter = { equals?: string; contains?: string }
 export type DateFilter = { gte?: string; lte?: string }
+export type NumberFilter = { equals?: number; gte?: number; lte?: number }
 
 export interface ITransactionFilters {
     id?: string
@@ -35,6 +37,21 @@ export interface IBankAccountFilters {
     title?: StringFilter
     description?: StringFilter
     type?: BankAccountType
+}
+
+export interface ISubscriptionFilters {
+    id?: string
+    title?: StringFilter
+    description?: StringFilter
+    bank_account_id?: string
+    cycle_period?: CyclePeriod
+    remember_period?: CyclePeriod
+    user_id?: string
+    first_payment?: DateFilter
+    expires_date?: DateFilter
+    created_at?: DateFilter
+    is_enabled?: boolean
+    amount?: NumberFilter
 }
 
 export type FilterField =

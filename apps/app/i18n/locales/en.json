@@ -12,6 +12,15 @@
             "subtitle": "It does not close the modal and allows adding more items."
         }
     },
+    "format": {
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "inLabel": "In {a} {b}",
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months",
+        "years": "Years"
+    },
     "messages": {
         "mandatory": "Mandatory",
         "selectValue": "Select a value",
@@ -38,6 +47,9 @@
     "buttons": {
         "cancel": "Cancel",
         "delete": "Delete",
+        "edit": "Edit",
+        "editItem": "Edit item",
+        "deleteItem": "Delete item",
         "returnHome": "Return home",
         "add": {
             "base": "Add",
@@ -144,6 +156,21 @@
             "label": "Icon",
             "addAsUrl": "Add as URL",
             "addAsFile": "Add as file"
+        },
+        "first_payment": {
+            "label": "FIrst payment"
+        },
+        "cycle_number": {
+            "label": "Cycle number"
+        },
+        "cycle_period": {
+            "label": "Cycle period"
+        },
+        "remember_period": {
+            "label": "Remember period"
+        },
+        "expires_date": {
+            "label": "Expires date"
         }
     },
     "layout": {
@@ -242,7 +269,12 @@
         }
     },
     "subscriptions": {
-        "title": "Subscriptions"
+        "title": "Subscriptions",
+        "modal": {
+            "newTitle": "New subscription",
+            "editTitle": "Edit {a}",
+            "deleteDescription": "This action cannot be undone. This will permanently delete the subscription."
+        }
     },
     "bankAccounts": {
         "title": "Bank accounts",
