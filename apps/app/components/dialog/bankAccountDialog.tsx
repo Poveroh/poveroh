@@ -22,13 +22,10 @@ export function BankAccountDialog(props: DialogProps) {
 
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
-    const [title] = useState(
+    const title =
         props.inEditingMode && props.initialData
-            ? t('bankAccounts.modal.editTitle', {
-                  a: props.initialData?.title
-              })
+            ? t('bankAccounts.modal.editTitle', { a: props.initialData?.title })
             : t('bankAccounts.modal.newTitle')
-    )
 
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)

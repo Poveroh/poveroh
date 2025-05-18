@@ -22,13 +22,10 @@ export function SubcategoryDialog(props: DialogProps) {
 
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
-    const [title] = useState(
+    const title =
         props.inEditingMode && props.initialData
-            ? t('subcategories.modal.editTitle', {
-                  a: props.initialData?.title
-              })
+            ? t('subcategories.modal.editTitle', { a: props.initialData?.title })
             : t('subcategories.modal.newTitle')
-    )
 
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
