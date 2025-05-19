@@ -68,7 +68,7 @@ model transactions {
 }
 
 model subscriptions {
-    id              String   @id @default(uuid())
+    id              String             @id @default(uuid())
     user_id         String
     title           String
     description     String
@@ -77,14 +77,13 @@ model subscriptions {
     logo            String?
     icon            String?
     first_payment   DateTime
-    cycle_number    Int
+    cycle_number    String
     cycle_period    String
-    remember_number Int
-    remember_period String
+    remember_period RememberPeriodType
     expires_date    DateTime
     bank_account_id String
     is_enabled      Boolean
-    created_at      DateTime @default(now())
+    created_at      DateTime           @default(now())
 
     user         users         @relation(fields: [user_id], references: [id])
     bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
@@ -206,4 +205,13 @@ enum Currency {
     NOK
     KRW
     TRY
+}
+
+enum RememberPeriodType {
+    SAME_DAY
+    THREE_DAYS
+    SEVEN_DAYS
+    FOURTEEN_DAYS
+    THIRTY_DAYS
+    NINETY_DAYS
 }

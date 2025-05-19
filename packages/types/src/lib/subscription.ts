@@ -8,10 +8,9 @@ export interface ISubscriptionBase {
     logo?: string
     icon?: string
     first_payment: string
-    cycle_number: number
+    cycle_number: string
     cycle_period: CyclePeriod
-    remember_number: number
-    remember_period: CyclePeriod
+    remember_period: RememberPeriodType
     expires_date: string
     bank_account_id: string
     is_enabled: boolean
@@ -28,4 +27,13 @@ export enum CyclePeriod {
     WEEK = 'WEEK',
     MONTH = 'MONTH',
     YEAR = 'YEAR'
+}
+
+export enum RememberPeriodType {
+    SAME_DAY = 'SAME_DAY',
+    THREE_DAYS = 'THREE_DAYS',
+    SEVEN_DAYS = 'SEVEN_DAYS',
+    FOURTEEN_DAYS = 'FOURTEEN_DAYS',
+    THIRTY_DAYS = 'THIRTY_DAYS',
+    NINETY_DAYS = 'NINETY_DAYS'
 }

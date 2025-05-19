@@ -64,24 +64,28 @@ export const useSubscriptions = () => {
         }
     }
 
-    const getNextExecutionText = (subscription: ISubscription) => {
-        const now = new Date()
+    const getNextExecutionText = (
+        subscription: ISubscription,
+        fromDate: Date = new Date() // 🆕 now is configurable
+    ) => {
+        const now = fromDate
         let next = new Date(subscription.first_payment)
 
+        const cycle_number = Number(subscription.cycle_number)
         // Ensure next is in the future
         while (next < now) {
             switch (subscription.cycle_period) {
                 case CyclePeriod.DAY:
-                    next.setDate(next.getDate() + subscription.cycle_number)
+                    next.setDate(next.getDate() + cycle_number)
                     break
                 case CyclePeriod.WEEK:
-                    next.setDate(next.getDate() + 7 * subscription.cycle_number)
+                    next.setDate(next.getDate() + 7 * cycle_number)
                     break
                 case CyclePeriod.MONTH:
-                    next.setMonth(next.getMonth() + subscription.cycle_number)
+                    next.setMonth(next.getMonth() + cycle_number)
                     break
                 case CyclePeriod.YEAR:
-                    next.setFullYear(next.getFullYear() + subscription.cycle_number)
+                    next.setFullYear(next.getFullYear() + cycle_number)
                     break
             }
         }
@@ -98,25 +102,25 @@ export const useSubscriptions = () => {
         if (days < 7) {
             return t('format.inLabel', {
                 a: days,
-                b: t('format.days').toLocaleLowerCase()
+                b: t('format.day').toLocaleLowerCase()
             })
         }
         if (days < 30) {
             return t('format.inLabel', {
                 a: Math.round(days / 7),
-                b: t('format.weeks').toLocaleLowerCase()
+                b: t('format.week').toLocaleLowerCase()
             })
         }
         if (days < 365) {
             return t('format.inLabel', {
                 a: Math.round(days / 30),
-                b: t('format.months').toLocaleLowerCase()
+                b: t('format.month').toLocaleLowerCase()
             })
         }
 
         return t('format.inLabel', {
             a: Math.round(days / 365),
-            b: t('format.years').toLocaleLowerCase()
+            b: t('format.year').toLocaleLowerCase()
         })
     }
 

@@ -48,20 +48,20 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                     </div>
                 </div>
             </div>
-            <div className='flex flex-col items-center'>
+            <div className='flex flex-row items-center space-x-6'>
                 <div className='flex flex-col space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
-                        <h5 className='font-bold'>{}</h5>
+                        <h5 className='font-bold'>{subscription.amount}</h5>
                         <span>{currencySymbol}</span>
                     </div>
                     <p className='sub'>{getNextExecutionText(subscription)}</p>
                 </div>
+                <OptionsPopover<ISubscription>
+                    data={subscription}
+                    openDelete={openDelete}
+                    openEdit={openEdit}
+                ></OptionsPopover>
             </div>
-            <OptionsPopover<ISubscription>
-                data={subscription}
-                openDelete={openDelete}
-                openEdit={openEdit}
-            ></OptionsPopover>
         </div>
     )
 }

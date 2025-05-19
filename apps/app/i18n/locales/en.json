@@ -16,10 +16,10 @@
         "today": "Today",
         "tomorrow": "Tomorrow",
         "inLabel": "In {a} {b}",
-        "days": "Days",
-        "weeks": "Weeks",
-        "months": "Months",
-        "years": "Years"
+        "day": "Days",
+        "week": "Weeks",
+        "month": "Months",
+        "year": "Years"
     },
     "messages": {
         "mandatory": "Mandatory",

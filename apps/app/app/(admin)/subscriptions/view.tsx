@@ -14,24 +14,24 @@ import {
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
 
-import { Download, Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
+import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 
 import Box from '@/components/box/boxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
-import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
 
 import { IBankAccountFilters, ISubscription } from '@poveroh/types'
 
-import { BankAccountItem } from '@/components/item/bank-account.item'
 import { FilterButton } from '@/components/filter/FilterButton'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionItem } from '@/components/item/subscription.item'
 import { SubscriptionDialog } from '@/components/dialog/subscriptions.dialog'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
 
     const { subscriptionCacheList, removeSubscription, fetchSubscriptions } = useSubscriptions()
+    const { fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<ISubscription | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ISubscription | null>(null)
@@ -43,6 +43,7 @@ export default function SubscriptionsView() {
     const [filters, setFilters] = useState<IBankAccountFilters>({})
 
     useEffect(() => {
+        fetchBankAccount()
         fetchSubscriptions()
     }, [])
 

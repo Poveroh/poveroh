@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { Currencies, CyclePeriod, ISubscription } from '@poveroh/types'
+import { Currencies, CyclePeriod, ISubscription, RememberPeriodType } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -37,10 +37,10 @@ export const SubscriptionForm = forwardRef(({ initialData, inEditingMode, dataCa
         logo: '',
         icon: '',
         first_payment: '',
-        cycle_number: 1,
+        cycle_number: '1',
         cycle_period: CyclePeriod.MONTH,
-        remember_number: 1,
-        remember_period: CyclePeriod.DAY,
+        remember_number: 0,
+        remember_period: RememberPeriodType.SAME_DAY,
         expires_date: '',
         bank_account_id: ''
     }
@@ -53,10 +53,10 @@ export const SubscriptionForm = forwardRef(({ initialData, inEditingMode, dataCa
         logo: z.string().url().optional().or(z.literal('')),
         icon: z.string().optional().or(z.literal('')),
         first_payment: z.string(),
-        cycle_number: z.number().int().min(1),
+        cycle_number: z.string(),
         cycle_period: z.nativeEnum(CyclePeriod),
         remember_number: z.number().int().min(0),
-        remember_period: z.nativeEnum(CyclePeriod),
+        remember_period: z.nativeEnum(RememberPeriodType),
         expires_date: z.string(),
         bank_account_id: z.string().nonempty(t('messages.errors.required'))
     })
@@ -178,9 +178,20 @@ export const SubscriptionForm = forwardRef(({ initialData, inEditingMode, dataCa
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.cycle_number.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input type='number' min={1} max={30} {...field} />
-                                    </FormControl>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder={t('form.cycle_number.placeholder')} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+                                                <SelectItem key={day} value={day.toString()}>
+                                                    {day}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -202,47 +213,6 @@ export const SubscriptionForm = forwardRef(({ initialData, inEditingMode, dataCa
                                             {Object.values(CyclePeriod).map(period => (
                                                 <SelectItem key={period} value={period}>
                                                     {t(`format.${period.toLowerCase()}`)}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className='flex flex-row space-x-2'>
-                        <FormField
-                            control={form.control}
-                            name='remember_number'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel mandatory>{t('form.remember_number.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input type='number' min={0} {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name='remember_period'
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel mandatory>{t('form.remember_period.label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder={t('form.remember_period.placeholder')} />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {Object.values(CyclePeriod).map(period => (
-                                                <SelectItem key={period} value={period}>
-                                                    {t(`cycle.${period.toLowerCase()}`)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
