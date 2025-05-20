@@ -19,9 +19,9 @@ import icons from 'currency-icons'
 
 import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { BrandIcon } from '@/components/icon/brandIcon'
+import { BrandIcon } from '@/components/icon/BrandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import DynamicIcon from '@/components/icon/dynamicIcon'
+import DynamicIcon from '@/components/icon/DynamicIcon'
 import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 

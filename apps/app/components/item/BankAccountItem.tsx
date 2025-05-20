@@ -1,7 +1,7 @@
-import { BrandIcon } from '../icon/brandIcon'
+import { BrandIcon } from '../icon/BrandIcon'
 import { IBankAccount } from '@poveroh/types'
 import { useBankAccount } from '@/hooks/useBankAccount'
-import { OptionsPopover } from '../navbar/options.popover'
+import { OptionsPopover } from '../navbar/OptionsPopoverr'
 
 type BankAccountItemProps = {
     account: IBankAccount

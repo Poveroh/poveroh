@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 
 import { categoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
-import Box from '@/components/box/boxWrapper'
+import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -23,10 +23,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
 import { Download, List, ListTree, Plus, RotateCcw, Search, Shapes } from 'lucide-react'
-import { CategoryDialog } from '@/components/dialog/categoryDialog'
-import { SubcategoryDialog } from '@/components/dialog/subcategoryDialog'
+import { CategoryDialog } from '@/components/dialog/CategoryDialog'
+import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
-import { CategoryItem } from '@/components/item/category.item'
+import { CategoryItem } from '@/components/item/CategoryItem'
 
 export default function CategoryView() {
     const t = useTranslations()

@@ -17,10 +17,10 @@ import { Input } from '@poveroh/ui/components/input'
 
 import { ArrowLeftRight, Download, Plus, RotateCcw, Search } from 'lucide-react'
 
-import Box from '@/components/box/boxWrapper'
+import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
-import { TransactionDialog } from '@/components/dialog/transactionDialog'
-import { TransactionItem } from '@/components/item/transaction.item'
+import { TransactionDialog } from '@/components/dialog/TransactionDialog'
+import { TransactionItem } from '@/components/item/TransactionItem'
 
 import { useTransaction } from '@/hooks/useTransaction'
 import { useCategory } from '@/hooks/useCategory'

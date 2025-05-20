@@ -20,9 +20,9 @@ import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 
 import { ISubscription } from '@poveroh/types'
 
-import Box from '@/components/box/boxWrapper'
-import { SubscriptionDialog } from '@/components/dialog/subscriptions.dialog'
-import { SubscriptionItem } from '@/components/item/subscription.item'
+import Box from '@/components/box/BoxWrapper'
+import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
+import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
 import { DeleteModal } from '@/components/modal/delete'
 
 import { useBankAccount } from '@/hooks/useBankAccount'

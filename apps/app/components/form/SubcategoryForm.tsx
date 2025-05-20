@@ -22,7 +22,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { Textarea } from '@poveroh/ui/components/textarea'
 
 import { iconList } from '../icon'
-import DynamicIcon from '../icon/dynamicIcon'
+import DynamicIcon from '../icon/DynamicIcon'
 import { useCategory } from '@/hooks/useCategory'
 import { useError } from '@/hooks/useError'
 

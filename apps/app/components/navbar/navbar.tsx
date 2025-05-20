@@ -1,6 +1,6 @@
 'use client'
 
-import { UserPopover, UserPopoverContent } from '@/components/navbar/userPopover'
+import { UserPopover, UserPopoverContent } from '@/components/navbar/UserPopover'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@poveroh/ui/components/sheet'
 import { Logo } from '@poveroh/ui/components/logo'
 import { AlignJustify } from 'lucide-react'

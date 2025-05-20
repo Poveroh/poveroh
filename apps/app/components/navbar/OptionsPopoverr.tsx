@@ -1,7 +1,6 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
-import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
 

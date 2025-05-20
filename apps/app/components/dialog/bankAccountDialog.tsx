@@ -3,8 +3,8 @@ import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
 import { IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
-import { BankAccountForm } from '../form/BankAccountForm'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import { BankAccountForm } from '../form/BankaccountForm'
 
 type DialogProps = {
     open: boolean

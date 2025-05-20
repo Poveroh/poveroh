@@ -1,12 +1,10 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
-import { IBankAccount, ISubscription } from '@poveroh/types'
+import { ISubscription } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
-import { BankAccountForm } from '../form/BankAccountForm'
-import { useBankAccount } from '@/hooks/useBankAccount'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
-import { SubscriptionForm } from '../form/subscriptions.form'
+import { SubscriptionForm } from '../form/SubscriptionsForm'
 
 type DialogProps = {
     open: boolean

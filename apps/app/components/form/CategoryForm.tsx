@@ -15,7 +15,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { Textarea } from '@poveroh/ui/components/textarea'
 
 import { iconList } from '../icon'
-import DynamicIcon from '../icon/dynamicIcon'
+import DynamicIcon from '../icon/DynamicIcon'
 import { useError } from '@/hooks/useError'
 import { useTransaction } from '@/hooks/useTransaction'
 

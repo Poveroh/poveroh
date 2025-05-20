@@ -1,9 +1,9 @@
 'use client'
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@poveroh/ui/components/dialog'
-import DynamicIcon from '../icon/dynamicIcon'
-import { BrandIcon } from '../icon/brandIcon'
-import { ModalFooter, ModalFooterProps } from './formFooter'
+import DynamicIcon from '../icon/DynamicIcon'
+import { BrandIcon } from '../icon/BrandIcon'
+import { ModalFooter, ModalFooterProps } from './FormFooter'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import { cn } from '@poveroh/ui/lib/utils'

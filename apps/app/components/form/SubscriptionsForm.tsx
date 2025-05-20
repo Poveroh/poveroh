@@ -17,7 +17,7 @@ import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { iconList } from '../icon'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
-import DynamicIcon from '../icon/dynamicIcon'
+import DynamicIcon from '../icon/DynamicIcon'
 
 type FormProps = {
     initialData?: ISubscription | null

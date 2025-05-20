@@ -29,7 +29,7 @@ import { Input } from '@poveroh/ui/components/input'
 
 import { Loader2 } from 'lucide-react'
 
-import Box from '@/components/box/boxWrapper'
+import Box from '@/components/box/BoxWrapper'
 
 import { IUserToSave } from '@poveroh/types'
 import { useUser } from '@/hooks/useUser'

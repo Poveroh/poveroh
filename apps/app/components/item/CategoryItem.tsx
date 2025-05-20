@@ -1,7 +1,6 @@
-import { Pencil, Trash2 } from 'lucide-react'
-import DynamicIcon from '../icon/dynamicIcon'
+import DynamicIcon from '../icon/DynamicIcon'
 import { categoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
-import { OptionsPopover } from '../navbar/options.popover'
+import { OptionsPopover } from '../navbar/OptionsPopoverr'
 
 type CategoryItemProps = {
     category: ICategory

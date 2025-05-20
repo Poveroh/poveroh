@@ -16,14 +16,14 @@ import {
 
 import { Download, Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
 
-import Box from '@/components/box/boxWrapper'
+import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
-import { BankAccountDialog } from '@/components/dialog/bankAccountDialog'
+import { BankAccountDialog } from '@/components/dialog/BankAccountDialog'
 
 import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
-import { BankAccountItem } from '@/components/item/bank-account.item'
+import { BankAccountItem } from '@/components/item/BankAccountItem'
 import { FilterButton } from '@/components/filter/FilterButton'
 
 export default function BankAccountView() {

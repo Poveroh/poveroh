@@ -1,11 +1,12 @@
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
 import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types'
-import DynamicIcon from '../icon/dynamicIcon'
+
 import { useEffect, useState } from 'react'
 import icons from 'currency-icons'
 import { ArrowRightLeft } from 'lucide-react'
-import { BrandIcon } from '../icon/brandIcon'
+import { BrandIcon } from '../icon/BrandIcon'
+import DynamicIcon from '../icon/DynamicIcon'
 
 type TransactionItemProps = {
     transaction: ITransaction

@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 import PasswordInput from '@poveroh/ui/components/password'
-import Box from '@/components/box/boxWrapper'
+import Box from '@/components/box/BoxWrapper'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@poveroh/ui/components/button'
 import {
