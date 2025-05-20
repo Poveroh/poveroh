@@ -11,7 +11,6 @@ export interface ISubscriptionBase {
     cycle_number: string
     cycle_period: CyclePeriod
     remember_period: RememberPeriodType
-    expires_date: string
     bank_account_id: string
     is_enabled: boolean
 }

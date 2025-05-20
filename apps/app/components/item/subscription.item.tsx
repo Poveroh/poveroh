@@ -49,7 +49,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                 </div>
             </div>
             <div className='flex flex-row items-center space-x-6'>
-                <div className='flex flex-col space-y-1 items-end'>
+                <div className='flex flex-col justify-center space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
                         <h5 className='font-bold'>{subscription.amount}</h5>
                         <span>{currencySymbol}</span>

@@ -270,6 +270,7 @@
     },
     "subscriptions": {
         "title": "Subscriptions",
+        "total": "Total: {a}",
         "modal": {
             "newTitle": "New subscription",
             "editTitle": "Edit {a}",

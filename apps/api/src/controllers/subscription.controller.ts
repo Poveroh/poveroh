@@ -10,6 +10,8 @@ export class SubscriptionController {
 
             let parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
 
+            parsedSubscription.is_enabled = true
+
             const subscription = await prisma.subscriptions.create({
                 data: {
                     ...parsedSubscription,

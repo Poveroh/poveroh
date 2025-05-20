@@ -71,7 +71,7 @@ model subscriptions {
     id              String             @id @default(uuid())
     user_id         String
     title           String
-    description     String
+    description     String?
     amount          Float
     currency        Currency
     logo            String?
@@ -80,7 +80,6 @@ model subscriptions {
     cycle_number    String
     cycle_period    String
     remember_period RememberPeriodType
-    expires_date    DateTime
     bank_account_id String
     is_enabled      Boolean
     created_at      DateTime           @default(now())
@@ -90,7 +89,6 @@ model subscriptions {
 
     @@index([user_id])
     @@index([bank_account_id])
-    @@index([expires_date])
     @@index([is_enabled])
 }
 
