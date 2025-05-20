@@ -144,35 +144,37 @@ export default function BankAccountView() {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-row space-x-3'>
-                    <Input
-                        startIcon={Search}
-                        placeholder={t('messages.search')}
-                        className='w-1/3'
-                        onChange={onSearch}
-                    />
+                <div className='flex flex-row space-x-6 w-full'>
+                    <div className='flex flex-row space-x-3 w-full'>
+                        <Input
+                            startIcon={Search}
+                            placeholder={t('messages.search')}
+                            className='w-1/3'
+                            onChange={onSearch}
+                        />
 
-                    {Object.entries(filters)
-                        .filter(([key]) => key === 'type')
-                        .map(([key, value]) => {
-                            if (!value) return null
+                        {Object.entries(filters)
+                            .filter(([key]) => key === 'type')
+                            .map(([key, value]) => {
+                                if (!value) return null
 
-                            const item = typeList.find(x => x.value == value)
+                                const item = typeList.find(x => x.value == value)
 
-                            if (!item) return
+                                if (!item) return
 
-                            return (
-                                <Button
-                                    key={key}
-                                    variant='secondary'
-                                    className='flex items-center gap-1'
-                                    onClick={() => removeFilter(key as keyof IBankAccountFilters)}
-                                >
-                                    {item.label}
-                                    <X />
-                                </Button>
-                            )
-                        })}
+                                return (
+                                    <Button
+                                        key={key}
+                                        variant='secondary'
+                                        className='flex items-center gap-1'
+                                        onClick={() => removeFilter(key as keyof IBankAccountFilters)}
+                                    >
+                                        {item.label}
+                                        <X />
+                                    </Button>
+                                )
+                            })}
+                    </div>
 
                     <FilterButton
                         fields={[

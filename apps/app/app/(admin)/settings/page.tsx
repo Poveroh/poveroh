@@ -71,7 +71,7 @@ export default function SettingsPage() {
                         icon={<Shapes />}
                     ></SettingsCard>
                     <SettingsCard
-                        link='#'
+                        link='/subscriptions'
                         title={t('settings.manage.subscriptions.title')}
                         subtitle={t('settings.manage.subscriptions.subtitle')}
                         icon={<WalletCards />}
