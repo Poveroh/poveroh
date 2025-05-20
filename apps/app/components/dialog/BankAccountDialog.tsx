@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useBankAccount } from '@/hooks/useBankAccount'
-import { BankAccountForm } from '../form/BankaccountForm'
+import { BankAccountForm } from '../form/BankAccountForm'
 
 type DialogProps = {
     open: boolean
