@@ -207,11 +207,11 @@ In running order:
 - [x] Login
 - [x] Categories & subcategories
 - [x] Bank accounts
+- [x] Subscriptions
 - [ ] Transaction
     - [ ] Manual insert
     - [ ] Upload from CSV or PDF
 - [ ] Month's snapshot
-- [ ] Subscriptions
 - [ ] Reports
 - [ ] Investments
 - [ ] Mobile app (iOS/Android) [probably in Flutter]
