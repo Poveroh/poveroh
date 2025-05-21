@@ -12,7 +12,7 @@ If you believe you have found a security vulnerability in this project, please f
 
 Please report security vulnerabilities **privately** to our security team at:
 
-📧 **business.davide.tarditi@gmail.com**  
+📧 **business.davide.tarditi@gmail.com**
 
 Do **not** file an issue on GitHub for a security vulnerability.
 
