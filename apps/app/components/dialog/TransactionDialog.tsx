@@ -48,8 +48,8 @@ export function TransactionDialog(props: DialogProps) {
         let res: ITransaction | null
 
         // edit dialog
-        if (props.inEditingMode) {
-            res = await editTransaction(data)
+        if (props.inEditingMode && props.initialData) {
+            res = await editTransaction(props.initialData.id, data)
 
             if (!res) return
 

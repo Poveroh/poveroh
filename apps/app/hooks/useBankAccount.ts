@@ -24,9 +24,9 @@ export const useBankAccount = () => {
         }
     }
 
-    const editBankAccount = async (data: FormData) => {
+    const editBankAccount = async (id: string, data: FormData) => {
         try {
-            const res = await bankAccountService.save(data)
+            const res = await bankAccountService.save(id, data)
             bankAccountStore.editBankAccount(res)
 
             return res

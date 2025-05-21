@@ -1,24 +1,19 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
-import cors from 'cors'
+dotenv.config()
 
-import statusRoutes from './routes/status'
-import authRoutes from './routes/auth'
-import userRoutes from './routes/user'
-import categoryRoutes from './routes/category'
-import subcategoryRoutes from './routes/subcategory'
-import bankAccountRoutes from './routes/bankaccount'
-import transactionRoutes from './routes/transaction'
-import subscriptionRoutes from './routes/subscription'
-import { config } from './utils/environment'
+import config from './utils/environment'
+import v1Route from './api/v1'
+import cors from 'cors'
+import qs from 'qs'
 
 const app = express()
-dotenv.config({ path: '.env' })
 
 app.set('trust proxy', true)
 app.use(express.json())
 app.use(cookieParser())
+app.set('query parser', (str: string) => qs.parse(str))
 app.use(
     cors({
         origin: 'http://localhost:3000',
@@ -34,14 +29,7 @@ app.get('/', (req, res) => {
     res.status(200).json({})
 })
 
-app.use('/status', statusRoutes)
-app.use('/auth', authRoutes)
-app.use('/user', userRoutes)
-app.use('/bank-account', bankAccountRoutes)
-app.use('/category', categoryRoutes)
-app.use('/subcategory', subcategoryRoutes)
-app.use('/transaction', transactionRoutes)
-app.use('/subscription', subscriptionRoutes)
+app.use('/v1', v1Route)
 
 app.listen(config.PORT, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${config.PORT}`)

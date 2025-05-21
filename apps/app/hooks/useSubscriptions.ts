@@ -23,9 +23,9 @@ export const useSubscriptions = () => {
         }
     }
 
-    const editSubscription = async (data: FormData) => {
+    const editSubscription = async (id: string, data: FormData) => {
         try {
-            const res = await subscriptionService.save(data)
+            const res = await subscriptionService.save(id, data)
             subscriptionStore.editSubscription(res)
             return res
         } catch (error) {

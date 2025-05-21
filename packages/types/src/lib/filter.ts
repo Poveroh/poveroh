@@ -44,14 +44,6 @@ export interface ISubscriptionFilters {
     title?: StringFilter
     description?: StringFilter
     bank_account_id?: string
-    cycle_period?: CyclePeriod
-    remember_period?: CyclePeriod
-    user_id?: string
-    first_payment?: DateFilter
-    expires_date?: DateFilter
-    created_at?: DateFilter
-    is_enabled?: boolean
-    amount?: NumberFilter
 }
 
 export type FilterField =

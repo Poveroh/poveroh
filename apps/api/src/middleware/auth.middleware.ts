@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { config } from '../utils/environment'
+import config from '../utils/environment'
 
 export class AuthMiddleware {
     static isAuthenticated(req: Request, res: Response, next: NextFunction) {

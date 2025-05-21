@@ -33,8 +33,8 @@ export function SubscriptionDialog(props: DialogProps) {
         let res: ISubscription | null
 
         // edit dialog
-        if (props.inEditingMode) {
-            res = await editSubscription(data)
+        if (props.inEditingMode && props.initialData) {
+            res = await editSubscription(props.initialData.id, data)
 
             if (!res) return
 

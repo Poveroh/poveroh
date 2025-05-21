@@ -24,9 +24,9 @@ export const useCategory = () => {
         }
     }
 
-    const editCategory = async (data: FormData) => {
+    const editCategory = async (id: string, data: FormData) => {
         try {
-            const res = await categoryService.save(data)
+            const res = await categoryService.save(id, data)
             categoryStore.editCategory(res)
 
             return res
@@ -73,9 +73,9 @@ export const useCategory = () => {
         }
     }
 
-    const editSubcategory = async (data: FormData) => {
+    const editSubcategory = async (id: string, data: FormData) => {
         try {
-            const res = await subcategoryService.save(data)
+            const res = await subcategoryService.save(id, data)
             categoryStore.editSubcategory(res)
 
             return res

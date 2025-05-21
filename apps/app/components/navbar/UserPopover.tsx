@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
-import { appConfig } from '@/config'
+import appConfig from '@/config'
 import { IUser } from '@poveroh/types'
 import { ReactNode } from 'react'
 import Link from 'next/link'

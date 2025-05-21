@@ -1,4 +1,5 @@
 import { server } from '@/lib/server'
+import { toQueryString } from '@/utils/query'
 
 export class BaseService<T> {
     private endpoint: string
@@ -7,19 +8,20 @@ export class BaseService<T> {
         this.endpoint = endpoint
     }
 
-    async add(dataToAdd: FormData) {
-        return await server.post<T>(`${this.endpoint}/add`, dataToAdd, true)
+    async add(data: FormData): Promise<T> {
+        return await server.post<T>(this.endpoint, data, true)
     }
 
-    async save(dataToSave: FormData) {
-        return await server.post<T>(`${this.endpoint}/save`, dataToSave, true)
+    async save(id: string, data: FormData): Promise<T> {
+        return await server.put<T>(`${this.endpoint}/${id}`, data, true)
     }
 
-    async delete(dataToDelete: string) {
-        return await server.delete<boolean>(`${this.endpoint}/delete/${dataToDelete}`)
+    async delete(id: string): Promise<boolean> {
+        return await server.delete<boolean>(`${this.endpoint}/${id}`)
     }
 
-    async read<U, T>(query?: string[] | T): Promise<U> {
-        return await server.post<U>(`${this.endpoint}/read`, query)
+    async read<U, F = any>(filters?: F): Promise<U> {
+        const query = filters ? toQueryString(filters) : ''
+        return await server.get<U>(`${this.endpoint}?${query}`)
     }
 }

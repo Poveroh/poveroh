@@ -1,9 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ServerRequest } from '@poveroh/types'
-import { appConfig } from '@/config'
+import appConfig from '@/config'
+import { urlJoiner } from '@poveroh/utils'
 
 export const server = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // Generic send method
     send<T>(type: ServerRequest, url: string, data: any, authenticate: boolean, formData?: boolean): Promise<T> {
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
@@ -13,26 +14,35 @@ export const server = {
             }
 
             try {
-                const urlToSend = new URL(url, appConfig.apiUrl)
+                const urlToSend = urlJoiner(appConfig.apiUrl, url)
+
                 switch (type) {
                     case ServerRequest.GET:
-                        res = await axios.get(urlToSend.href, {
+                        res = await axios.get(urlToSend, {
                             withCredentials: authenticate
                         })
                         break
+
                     case ServerRequest.POST:
-                        res = await axios.post(urlToSend.href, data, {
+                        res = await axios.post(urlToSend, data, {
                             withCredentials: authenticate,
-                            headers: {
-                                ...headers
-                            }
+                            headers
                         })
                         break
+
+                    case ServerRequest.PUT:
+                        res = await axios.put(urlToSend, data, {
+                            withCredentials: authenticate,
+                            headers
+                        })
+                        break
+
                     case ServerRequest.DELETE:
-                        res = await axios.delete(urlToSend.href, {
+                        res = await axios.delete(urlToSend, {
                             withCredentials: authenticate
                         })
                         break
+
                     default:
                         throw new Error('Invalid request type')
                 }
@@ -43,12 +53,12 @@ export const server = {
 
                 resolve(res.data as T)
             } catch (error) {
-                let errorMessage: string = 'Error occurred'
+                let errorMessage = 'An error occurred'
 
                 if (error instanceof AxiosError) {
                     errorMessage = error.response?.data.message || error.message
 
-                    if (error.status == 403) {
+                    if (error.response?.status === 403) {
                         window.location.href = '/logout'
                     }
                 } else if (error instanceof Error) {
@@ -59,14 +69,20 @@ export const server = {
             }
         })
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     post<T>(url: string, data: any, formData?: boolean) {
-        return this.send<T>(ServerRequest.POST, url, data, true, formData)
+        return server.send<T>(ServerRequest.POST, url, data, true, formData)
     },
-    get<T>(url: string, authenticate: boolean) {
-        return this.send<T>(ServerRequest.GET, url, null, authenticate)
+
+    put<T>(url: string, data: any, formData?: boolean) {
+        return server.send<T>(ServerRequest.PUT, url, data, true, formData)
     },
+
+    get<T>(url: string, authenticate = true) {
+        return server.send<T>(ServerRequest.GET, url, null, authenticate)
+    },
+
     delete<T>(url: string) {
-        return this.send<T>(ServerRequest.DELETE, url, null, true)
+        return server.send<T>(ServerRequest.DELETE, url, null, true)
     }
 }

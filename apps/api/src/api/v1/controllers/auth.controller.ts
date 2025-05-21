@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
-import { AuthHelper } from '../helpers/auth.helper'
+import { AuthHelper } from '../../../helpers/auth.helper'
 import { IUserToSave } from '@poveroh/types/dist'
 
 export class AuthController {
+    //POST /login
     static async signIn(req: Request, res: Response) {
         try {
             const { email, password } = req.body
@@ -45,6 +46,7 @@ export class AuthController {
         }
     }
 
+    //POST /sign-up
     static async signUp(req: Request, res: Response) {
         try {
             const user: IUserToSave = req.body

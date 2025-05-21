@@ -33,8 +33,8 @@ export function SubcategoryDialog(props: DialogProps) {
         let res: ISubcategory | null
 
         // edit dialog
-        if (props.inEditingMode) {
-            res = await editSubcategory(data)
+        if (props.inEditingMode && props.initialData) {
+            res = await editSubcategory(props.initialData.id, data)
 
             if (!res) return
 

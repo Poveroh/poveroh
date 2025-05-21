@@ -1,16 +1,25 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { ISubscription, ISubscriptionBase, ISubscriptionFilters } from '@poveroh/types'
-import { buildWhere } from '../helpers/filter.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
+import { MediaHelper } from '../../../helpers/media.helper'
 
 export class SubscriptionController {
+    //POST /
     static async add(req: Request, res: Response) {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
-
+            const parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
             parsedSubscription.is_enabled = true
+
+            if (req.file) {
+                const filePath = await MediaHelper.handleUpload(
+                    req.file,
+                    `${req.user.id}/subscription/${parsedSubscription.title}`
+                )
+                parsedSubscription.icon = filePath
+            }
 
             const subscription = await prisma.subscriptions.create({
                 data: {
@@ -25,20 +34,30 @@ export class SubscriptionController {
         }
     }
 
+    //POST /:id
     static async save(req: Request, res: Response) {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let parsedSubscription: ISubscription = JSON.parse(req.body.data)
+            const parsedSubscription: ISubscription = JSON.parse(req.body.data)
+            const { id } = req.params
+
+            if (!id) {
+                res.status(400).json({ message: 'Missing subscription ID' })
+                return
+            }
+
+            if (req.file) {
+                const filePath = await MediaHelper.handleUpload(
+                    req.file,
+                    `${req.user.id}/subscription/${parsedSubscription.title}`
+                )
+                parsedSubscription.icon = filePath
+            }
 
             const subscription = await prisma.subscriptions.update({
-                where: {
-                    id: parsedSubscription.id
-                },
-                data: {
-                    ...parsedSubscription
-                    // icon: parsedSubscription.icon
-                }
+                where: { id },
+                data: parsedSubscription
             })
 
             res.status(200).json(subscription)
@@ -47,13 +66,17 @@ export class SubscriptionController {
         }
     }
 
+    //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
             const { id } = req.params
 
-            await prisma.subscriptions.delete({
-                where: { id }
-            })
+            if (!id) {
+                res.status(400).json({ message: 'Missing subscription ID' })
+                return
+            }
+
+            await prisma.subscriptions.delete({ where: { id } })
 
             res.status(200).json(true)
         } catch (error) {
@@ -61,14 +84,20 @@ export class SubscriptionController {
         }
     }
 
+    //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters: ISubscriptionFilters | string[] = req.body
+            const filters = req.query as unknown as ISubscriptionFilters
+            const skip = Number(req.query.skip) || 0
+            const take = Number(req.query.take) || 20
+
             const where = buildWhere(filters)
 
             const data = await prisma.subscriptions.findMany({
                 where,
-                orderBy: { created_at: 'desc' }
+                orderBy: { created_at: 'desc' },
+                skip,
+                take
             })
 
             res.status(200).json(data)

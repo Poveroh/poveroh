@@ -33,8 +33,8 @@ export function BankAccountDialog(props: DialogProps) {
         let res: IBankAccount | null
 
         // edit dialog
-        if (props.inEditingMode) {
-            res = await editBankAccount(data)
+        if (props.inEditingMode && props.initialData) {
+            res = await editBankAccount(props.initialData.id, data)
 
             if (!res) return
 

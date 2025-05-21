@@ -7,10 +7,10 @@ export class UserService {
     }
 
     async save(userToSave: IUserToSave): Promise<boolean> {
-        return await server.post<boolean>('/user/save', userToSave)
+        return await server.put<boolean>('/user/save', userToSave)
     }
 
     async updatePassword(passwords: IPasswordToChange): Promise<boolean> {
-        return await server.post<boolean>('/user/set-password', passwords)
+        return await server.put<boolean>('/user/set-password', passwords)
     }
 }

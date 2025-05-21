@@ -1,4 +1,4 @@
-import { appConfig } from '@/config'
+import appConfig from '@/config'
 import { Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'

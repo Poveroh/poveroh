@@ -1,5 +1,6 @@
 export enum ServerRequest {
-    GET,
-    POST,
-    DELETE
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE'
 }

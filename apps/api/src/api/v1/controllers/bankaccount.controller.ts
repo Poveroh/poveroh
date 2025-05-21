@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { IBankAccount, IBankAccountBase, IBankAccountFilters } from '@poveroh/types'
-import _ from 'lodash'
-import { MediaHelper } from '../helpers/media.helper'
-import { buildWhere } from '../helpers/filter.helper'
+import { MediaHelper } from '../../../helpers/media.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
 
 export class BankAccountController {
+    //POST /
     static async add(req: Request, res: Response) {
         try {
             if (!req.body.data) throw new Error('Data not provided')
@@ -30,6 +30,7 @@ export class BankAccountController {
         }
     }
 
+    //POST /:id
     static async save(req: Request, res: Response) {
         try {
             if (!req.body.data) throw new Error('Data not provided')
@@ -62,6 +63,7 @@ export class BankAccountController {
         }
     }
 
+    //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
             const { id } = req.params
@@ -76,14 +78,20 @@ export class BankAccountController {
         }
     }
 
+    //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters: IBankAccountFilters | string[] = req.body
+            const filters = req.query as unknown as IBankAccountFilters
+            const skip = Number(req.query.skip) || 0
+            const take = Number(req.query.take) || 20
+
             const where = buildWhere(filters)
 
             const data = await prisma.bank_accounts.findMany({
                 where,
-                orderBy: { created_at: 'desc' }
+                orderBy: { created_at: 'desc' },
+                skip,
+                take
             })
 
             res.status(200).json(data)

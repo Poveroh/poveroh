@@ -1,5 +1,5 @@
 import path from 'path'
-import { config } from '../utils/environment'
+import config from '../utils/environment'
 import { isLocalStorageMode, uploadClient } from '../utils/storage'
 
 export const MediaHelper = {

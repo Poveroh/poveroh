@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import _ from 'lodash'
 import { TransactionHelper } from '../helpers/transaction.helper'
-import { buildWhere } from '../helpers/filter.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
 import { ITransactionFilters } from '@poveroh/types'
 
 export class TransactionController {
+    //POST /
     static async add(req: Request, res: Response) {
         try {
             const { data, action } = req.body
@@ -15,8 +15,7 @@ export class TransactionController {
                 return
             }
 
-            let parsedData = JSON.parse(data)
-
+            const parsedData = JSON.parse(data)
             const userId = req.user.id
 
             const result = await TransactionHelper.handleTransaction(action, parsedData, userId)
@@ -26,8 +25,25 @@ export class TransactionController {
         }
     }
 
+    //POST /:id
     static async save(req: Request, res: Response) {
         try {
+            const { id } = req.params
+            const { data } = req.body
+
+            if (!id || !data) {
+                res.status(400).json({ message: 'Missing transaction ID or data' })
+                return
+            }
+
+            const parsedData = JSON.parse(data)
+
+            const transaction = await prisma.transactions.update({
+                where: { id },
+                data: parsedData
+            })
+
+            res.status(200).json(transaction)
         } catch (error) {
             console.error('Error updating transaction:', error)
             res.status(500).json({
@@ -37,12 +53,18 @@ export class TransactionController {
         }
     }
 
+    //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
             const { id } = req.params
 
+            if (!id) {
+                res.status(400).json({ message: 'Missing transaction ID' })
+                return
+            }
+
             await prisma.transactions.delete({
-                where: { id: id }
+                where: { id }
             })
 
             res.status(200).json(true)
@@ -51,27 +73,29 @@ export class TransactionController {
         }
     }
 
+    //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters: ITransactionFilters | string[] = req.body
-            const isArrayRequest = Array.isArray(filters)
+            const filters = req.query as unknown as ITransactionFilters
+            const skip = Number(req.query.skip) || 0
+            const take = Number(req.query.take) || 20
 
-            const where = isArrayRequest
-                ? { id: { in: filters } }
-                : {
-                      ...buildWhere(filters),
-                      ...(filters.fromDate && {
-                          date: {
-                              ...(filters.date || {}),
-                              gte: new Date(filters.fromDate)
-                          }
-                      })
-                  }
+            const where = {
+                ...buildWhere(filters),
+                ...(filters.fromDate && {
+                    date: {
+                        ...(filters.date || {}),
+                        gte: new Date(filters.fromDate)
+                    }
+                })
+            }
 
             const data = await prisma.transactions.findMany({
                 where,
                 include: { amounts: true },
-                orderBy: { created_at: 'desc' }
+                orderBy: { created_at: 'desc' },
+                skip,
+                take
             })
 
             res.status(200).json(data)

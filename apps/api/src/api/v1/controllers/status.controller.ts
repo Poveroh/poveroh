@@ -6,6 +6,7 @@ export class StatusController {
             res.json({
                 status: 'ok',
                 uptime: process.uptime(),
+                version: 'v1',
                 timestamp: new Date()
             })
         } catch (error: any) {

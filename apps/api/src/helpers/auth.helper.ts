@@ -1,5 +1,5 @@
 import { UAParser } from 'ua-parser-js'
-import { config } from '../utils/environment'
+import config from '../utils/environment'
 import jwt from 'jsonwebtoken'
 
 export const AuthHelper = {

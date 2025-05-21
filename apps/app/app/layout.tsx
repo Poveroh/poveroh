@@ -1,6 +1,6 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
-import { appConfig } from '@/config'
+import appConfig from '@/config'
 
 const getFallbackProps = () => ({
     locale: 'en',

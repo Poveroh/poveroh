@@ -34,8 +34,8 @@ export function CategoryDialog(props: DialogProps) {
         let res: ICategory | null
 
         // edit dialog
-        if (props.inEditingMode) {
-            res = await editCategory(data)
+        if (props.inEditingMode && props.initialData) {
+            res = await editCategory(props.initialData.id, data)
 
             if (!res) return
 

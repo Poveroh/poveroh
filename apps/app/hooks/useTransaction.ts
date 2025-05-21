@@ -24,9 +24,9 @@ export const useTransaction = () => {
         }
     }
 
-    const editTransaction = async (data: FormData) => {
+    const editTransaction = async (id: string, data: FormData) => {
         try {
-            const res = await transactionService.save(data)
+            const res = await transactionService.save(id, data)
             transactionStore.editTransaction(res)
 
             return res
