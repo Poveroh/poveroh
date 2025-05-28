@@ -1,10 +1,11 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
-import { ISubscription } from '@poveroh/types'
+import { Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriodType } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionForm } from '../form/SubscriptionsForm'
+import { SubscriptionsSelector } from '../form/SubscriptionsSelector'
 
 type DialogProps = {
     open: boolean
@@ -18,14 +19,18 @@ export function SubscriptionDialog(props: DialogProps) {
     const t = useTranslations()
     const { addSubscription, editSubscription } = useSubscriptions()
 
+    const [fromTemplate, setFromTemplate] = useState(true)
+    const [mode, setMode] = useState<'template' | 'editor'>(props.inEditingMode ? 'editor' : 'template')
+    const [localSubscription, setLocalSubscription] = useState(props.initialData)
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
-    const title =
+    const [title, setTitle] = useState(
         props.inEditingMode && props.initialData
             ? t('subscriptions.modal.editTitle', { a: props.initialData?.title })
             : t('subscriptions.modal.newTitle')
+    )
 
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
@@ -62,29 +67,60 @@ export function SubscriptionDialog(props: DialogProps) {
         setLoading(false)
     }
 
+    const onTemplateSelected = (brand: IBrand) => {
+        setLocalSubscription({
+            id: '',
+            user_id: '',
+            created_at: new Date().toISOString(),
+            title: brand.name,
+            description: '',
+            amount: 0,
+            currency: 'USD' as Currencies,
+            logo: brand.logo,
+            icon: undefined,
+            first_payment: new Date().toISOString(),
+            cycle_number: '1',
+            cycle_period: 'MONTH' as CyclePeriod,
+            remember_period: 'DAY' as RememberPeriodType,
+            bank_account_id: '',
+            is_enabled: true
+        })
+        setFromTemplate(true)
+        setTitle(brand.name)
+        setMode('editor')
+    }
+
     return (
         <Modal
             open={props.open}
             title={title}
-            icon={props.initialData?.logo}
-            iconMode='icon'
+            icon={localSubscription?.logo}
+            iconMode='img'
+            iconCircled={true}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
+            showFooter={mode == 'editor'}
+            contentHeight='h-[60vh]'
             onClick={() => formRef.current?.submit()}
         >
-            <div className='flex flex-col space-y-6 w-full'>
-                <SubscriptionForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    inEditingMode={props.inEditingMode}
-                    dataCallback={handleFormSubmit}
-                    closeDialog={props.closeDialog}
-                />
-            </div>
+            {mode == 'template' ? (
+                <SubscriptionsSelector dataCallback={onTemplateSelected} closeDialog={props.closeDialog} />
+            ) : (
+                <div className='flex flex-col space-y-6 w-full'>
+                    <SubscriptionForm
+                        ref={formRef}
+                        fromTemplate={fromTemplate}
+                        initialData={localSubscription}
+                        inEditingMode={props.inEditingMode}
+                        dataCallback={handleFormSubmit}
+                        closeDialog={props.closeDialog}
+                    />
+                </div>
+            )}
         </Modal>
     )
 }

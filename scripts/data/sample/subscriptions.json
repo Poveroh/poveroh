@@ -11,7 +11,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-11-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2023-11-01T08:30:00Z"
@@ -28,7 +27,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-01-10T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2024-01-10T09:00:00Z"
@@ -45,7 +43,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2025-06-15T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2024-06-01T10:00:00Z"
@@ -62,7 +59,6 @@
         "cycle_number": "1",
         "cycle_period": "YEAR",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-03-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": false,
         "created_at": "2024-03-01T11:00:00Z"
@@ -79,7 +75,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-05-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2025-05-01T12:00:00Z"
@@ -96,7 +91,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-04-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2024-04-01T14:45:00Z"
@@ -113,7 +107,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-02-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2025-02-01T15:00:00Z"
@@ -130,7 +123,6 @@
         "cycle_number": "1",
         "cycle_period": "MONTH",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2025-09-15T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": true,
         "created_at": "2024-09-15T16:00:00Z"
@@ -147,7 +139,6 @@
         "cycle_number": "1",
         "cycle_period": "YEAR",
         "remember_period": "THREE_DAYS",
-        "expires_date": "2026-07-01T00:00:00Z",
         "bank_account_id": "b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4",
         "is_enabled": false,
         "created_at": "2024-07-01T17:00:00Z"

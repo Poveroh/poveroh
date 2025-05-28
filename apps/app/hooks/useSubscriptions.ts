@@ -3,7 +3,7 @@
 import { useError } from './useError'
 import { SubscriptionService } from '@/services/subscriptions.service'
 import { useSubscriptionsStore } from '@/store/subscriptions.store'
-import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
+import { CyclePeriod, IBrand, ISubscription, ISubscriptionFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 
 export const useSubscriptions = () => {

@@ -1,3 +1,4 @@
+import { Card } from '@/components/card/Card'
 import appConfig from '@/config'
 import { Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -13,15 +14,8 @@ type SettingsCardType = {
 
 function SettingsCard(props: SettingsCardType) {
     return (
-        <Link
-            href={props.link}
-            className='flex flex-col space-y-10 h-full p-10 bg-box border border-hr rounded-lg w-full'
-        >
-            {props.icon}
-            <div className='flex flex-col space-y-1'>
-                <p className='font-bold'>{props.title}</p>
-                <p>{props.subtitle}</p>
-            </div>
+        <Link href={props.link} className='h-full w-full'>
+            <Card {...props}></Card>
         </Link>
     )
 }

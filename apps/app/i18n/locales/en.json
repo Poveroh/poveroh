@@ -179,6 +179,20 @@
             "signUpLink": "Already have an account?"
         }
     },
+    "brand": {
+        "categories": {
+            "entertainment": "Entertainment",
+            "productivity": "Productivity",
+            "finance": "Finance",
+            "health": "Health",
+            "utilities": "Utilities",
+            "shopping": "Shopping",
+            "education": "Education",
+            "gaming": "Gaming",
+            "transport": "Transport",
+            "lifestyle": "Lifestyle"
+        }
+    },
     "filter": {
         "title": "Add filter"
     },

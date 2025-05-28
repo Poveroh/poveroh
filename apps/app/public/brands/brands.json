@@ -1,0 +1,692 @@
+[
+    {
+        "name": "Netflix",
+        "logo": "/brands/logos/netflix.svg",
+        "color": "#E50914",
+        "category": "entertainment"
+    },
+    {
+        "name": "Apple Music",
+        "logo": "/brands/logos/applemusic.svg",
+        "color": "#FA243C",
+        "category": "entertainment"
+    },
+    {
+        "name": "Youtube music",
+        "logo": "/brands/logos/youtubemusic.svg",
+        "color": "#FF0000",
+        "category": "entertainment"
+    },
+    {
+        "name": "Crunchyroll",
+        "logo": "/brands/logos/crunchyroll.svg",
+        "color": "#F47521",
+        "category": "entertainment"
+    },
+    {
+        "name": "Audible",
+        "logo": "/brands/logos/audible.svg",
+        "color": "#f7991c",
+        "category": "entertainment"
+    },
+    {
+        "name": "Kindle",
+        "logo": "/brands/logos/kindle.svg",
+        "color": "#FF940B",
+        "category": "entertainment"
+    },
+    {
+        "name": "Spotify",
+        "logo": "/brands/logos/spotify.svg",
+        "color": "#1DB954",
+        "category": "entertainment"
+    },
+    {
+        "name": "Hulu",
+        "logo": "/brands/logos/hulu.svg",
+        "color": "#1ce783",
+        "category": "entertainment"
+    },
+    {
+        "name": "Disney+",
+        "logo": "/brands/logos/disneyplus.svg",
+        "color": "#113CCF",
+        "category": "entertainment"
+    },
+    {
+        "name": "Amazon Prime Video",
+        "logo": "/brands/logos/primevideo.svg",
+        "color": "#1399FF",
+        "category": "entertainment"
+    },
+    {
+        "name": "Sky",
+        "logo": "/brands/logos/sky.svg",
+        "color": "#0072CE",
+        "category": "entertainment"
+    },
+    {
+        "name": "Paramount+",
+        "logo": "/brands/logos/paramountplus.svg",
+        "color": "#11518a",
+        "category": "entertainment"
+    },
+    {
+        "name": "MUBI",
+        "logo": "/brands/logos/mubi.svg",
+        "color": "#001588",
+        "category": "entertainment"
+    },
+    {
+        "name": "Now tv",
+        "logo": "/brands/logos/nowtv.svg",
+        "color": "#05646c",
+        "category": "entertainment"
+    },
+    {
+        "name": "Amazon music",
+        "logo": "/brands/logos/amazonmusic.svg",
+        "color": "#23d3da",
+        "category": "entertainment"
+    },
+    {
+        "name": "Deezer",
+        "logo": "/brands/logos/deezer.svg",
+        "color": "#A237FF",
+        "category": "entertainment"
+    },
+    {
+        "name": "Twitch",
+        "logo": "/brands/logos/twitch.svg",
+        "color": "#6441a5",
+        "category": "entertainment"
+    },
+    {
+        "name": "Discord",
+        "logo": "/brands/logos/discord.svg",
+        "color": "#5865F2",
+        "category": "entertainment"
+    },
+    {
+        "name": "New York Times",
+        "logo": "/brands/logos/nyt.svg",
+        "color": "#000000",
+        "category": "entertainment"
+    },
+    {
+        "name": "Hbo",
+        "logo": "/brands/logos/hbo.svg",
+        "color": "#000000",
+        "category": "entertainment"
+    },
+    {
+        "name": "Peacock",
+        "logo": "/brands/logos/peacock.svg",
+        "color": "#000000",
+        "category": "entertainment"
+    },
+    {
+        "name": "vimeo",
+        "logo": "/brands/logos/vimeo.svg",
+        "color": "#141A20",
+        "category": "entertainment"
+    },
+    {
+        "name": "AppleTV+",
+        "logo": "/brands/logos/appletv.svg",
+        "color": "#1d1d1f",
+        "category": "entertainment"
+    },
+    {
+        "name": "DAZN",
+        "logo": "/brands/logos/dazn.svg",
+        "color": "#121820",
+        "category": "entertainment"
+    },
+    {
+        "name": "Adobe Creative Cloud",
+        "logo": "/brands/logos/adobe.svg",
+        "color": "#F80500",
+        "category": "productivity"
+    },
+    {
+        "name": "Asana",
+        "logo": "/brands/logos/asana.svg",
+        "color": "#FC636B",
+        "category": "productivity"
+    },
+    {
+        "name": "Lovable.ai",
+        "logo": "/brands/logos/lovableai.svg",
+        "color": "#FF6B6B",
+        "category": "productivity"
+    },
+    {
+        "name": "Flickr",
+        "logo": "/brands/logos/flickr.svg",
+        "color": "#FF0084",
+        "category": "productivity"
+    },
+    {
+        "name": "JetBrains",
+        "logo": "/brands/logos/jetbrains.svg",
+        "color": "#f42865",
+        "category": "productivity"
+    },
+    {
+        "name": "Cloudflare",
+        "logo": "/brands/logos/cloudflare.svg",
+        "color": "#F38020",
+        "category": "productivity"
+    },
+    {
+        "name": "Auth0",
+        "logo": "/brands/logos/auth0.svg",
+        "color": "#EB5424",
+        "category": "productivity"
+    },
+    {
+        "name": "Firebase",
+        "logo": "/brands/logos/firebase.svg",
+        "color": "#FFCA28",
+        "category": "productivity"
+    },
+    {
+        "name": "Evernote",
+        "logo": "/brands/logos/evernote.svg",
+        "color": "#00A82D",
+        "category": "productivity"
+    },
+    {
+        "name": "Grammarly",
+        "logo": "/brands/logos/grammarly.svg",
+        "color": "#027E6F",
+        "category": "productivity"
+    },
+    {
+        "name": "Canva",
+        "logo": "/brands/logos/canva.svg",
+        "color": "#00C4CC",
+        "category": "productivity"
+    },
+    {
+        "name": "Netlify",
+        "logo": "/brands/logos/netlify.svg",
+        "color": "#00C7B7",
+        "category": "productivity"
+    },
+    {
+        "name": "Dropbox",
+        "logo": "/brands/logos/dropbox.svg",
+        "color": "#0061FE",
+        "category": "productivity"
+    },
+    {
+        "name": "Jira",
+        "logo": "/brands/logos/jira.svg",
+        "color": "#0052CC",
+        "category": "productivity"
+    },
+    {
+        "name": "Framer",
+        "logo": "/brands/logos/framer.svg",
+        "color": "#0055FF",
+        "category": "productivity"
+    },
+    {
+        "name": "DreamHost",
+        "logo": "/brands/logos/dreamhost.svg",
+        "color": "#0073ed",
+        "category": "productivity"
+    },
+    {
+        "name": "LinkedIn",
+        "logo": "/brands/logos/linkedin.svg",
+        "color": "#0077B5",
+        "category": "productivity"
+    },
+    {
+        "name": "DigitalOcean",
+        "logo": "/brands/logos/digitalocean.svg",
+        "color": "#0080FF",
+        "category": "productivity"
+    },
+    {
+        "name": "Microsoft 365",
+        "logo": "/brands/logos/microsoft365.svg",
+        "color": "#0B71C7",
+        "category": "productivity"
+    },
+    {
+        "name": "Google Business",
+        "logo": "/brands/logos/googlebusiness.svg",
+        "color": "#4285F4",
+        "category": "productivity"
+    },
+    {
+        "name": "Flaticon",
+        "logo": "/brands/logos/flaticon.svg",
+        "color": "#4FC3F7",
+        "category": "productivity"
+    },
+    {
+        "name": "Copilot",
+        "logo": "/brands/logos/copilot.svg",
+        "color": "#5C6BC0",
+        "category": "productivity"
+    },
+    {
+        "name": "Figma",
+        "logo": "/brands/logos/figma.svg",
+        "color": "#884fff",
+        "category": "productivity"
+    },
+    {
+        "name": "Heroku",
+        "logo": "/brands/logos/heroku.svg",
+        "color": "#430098",
+        "category": "productivity"
+    },
+    {
+        "name": "Hostinger",
+        "logo": "/brands/logos/hostinger.svg",
+        "color": "#673DE6",
+        "category": "productivity"
+    },
+    {
+        "name": "Claude",
+        "logo": "/brands/logos/claude.svg",
+        "color": "#DE7356",
+        "category": "productivity"
+    },
+    {
+        "name": "Midjourney",
+        "logo": "/brands/logos/midjourney.svg",
+        "color": "#770785",
+        "category": "productivity"
+    },
+    {
+        "name": "Setapp",
+        "logo": "/brands/logos/setapp.svg",
+        "color": "#ddb797",
+        "category": "productivity"
+    },
+    {
+        "name": "Notion",
+        "logo": "/brands/logos/notion.svg",
+        "color": "#000000",
+        "category": "productivity"
+    },
+    {
+        "name": "ChatGPT",
+        "logo": "/brands/logos/chatgpt.svg",
+        "color": "#000000",
+        "category": "productivity"
+    },
+    {
+        "name": "Squarespace",
+        "logo": "/brands/logos/squarespace.svg",
+        "color": "#000000",
+        "category": "productivity"
+    },
+    {
+        "name": "CodePen",
+        "logo": "/brands/logos/codepen.svg",
+        "color": "#000000",
+        "category": "productivity"
+    },
+    {
+        "name": "GitHub",
+        "logo": "/brands/logos/github.svg",
+        "color": "#181717",
+        "category": "productivity"
+    },
+    {
+        "name": "Cursor",
+        "logo": "/brands/logos/cursor.svg",
+        "color": "#444444",
+        "category": "productivity"
+    },
+    {
+        "name": "Codecademy",
+        "logo": "/brands/logos/codeacademy.svg",
+        "color": "#1F4056",
+        "category": "productivity"
+    },
+    {
+        "name": "Slack",
+        "logo": "/brands/logos/slack.svg",
+        "color": "#4A154B",
+        "category": "productivity"
+    },
+    {
+        "name": "Dribbble",
+        "logo": "/brands/logos/dribbble.svg",
+        "color": "#EA4C89",
+        "category": "productivity"
+    },
+    {
+        "name": "Revolut",
+        "logo": "/brands/logos/revolut.svg",
+        "color": "#00000",
+        "category": "finance"
+    },
+    {
+        "name": "Intesa Sanpaolo",
+        "logo": "/brands/logos/intesa.svg",
+        "color": "#016932",
+        "category": "finance"
+    },
+    {
+        "name": "N26",
+        "logo": "/brands/logos/n26.svg",
+        "color": "#078076",
+        "category": "finance"
+    },
+    {
+        "name": "American Express",
+        "logo": "/brands/logos/amex.svg",
+        "color": "#016ed1",
+        "category": "finance"
+    },
+    {
+        "name": "Bbva",
+        "logo": "/brands/logos/bbva.svg",
+        "color": "#004280",
+        "category": "finance"
+    },
+    {
+        "name": "Fineco",
+        "logo": "/brands/logos/fineco.svg",
+        "color": "#004b99",
+        "category": "finance"
+    },
+    {
+        "name": "Mediolanum",
+        "logo": "/brands/logos/mediolanum.svg",
+        "color": "#213272",
+        "category": "finance"
+    },
+    {
+        "name": "Vodafone",
+        "logo": "/brands/logos/vodafone.svg",
+        "color": "#E60000",
+        "category": "utilities"
+    },
+    {
+        "name": "Iliad",
+        "logo": "/brands/logos/iliad.svg",
+        "color": "#E60026",
+        "category": "utilities"
+    },
+    {
+        "name": "Bitdefender",
+        "logo": "/brands/logos/bitdefender.svg",
+        "color": "#ED1C24",
+        "category": "utilities"
+    },
+    {
+        "name": "Expressvpn",
+        "logo": "/brands/logos/expressvpn.svg",
+        "color": "#DA3940",
+        "category": "utilities"
+    },
+    {
+        "name": "Lastpass",
+        "logo": "/brands/logos/lastpass.svg",
+        "color": "#D32D27",
+        "category": "utilities"
+    },
+    {
+        "name": "mega",
+        "logo": "/brands/logos/mega.svg",
+        "color": "#D9272E",
+        "category": "utilities"
+    },
+    {
+        "name": "Fastweb",
+        "logo": "/brands/logos/fastweb.svg",
+        "color": "#febd01",
+        "category": "utilities"
+    },
+    {
+        "name": "Intesa Sanpaolo",
+        "logo": "/brands/logos/intesa.svg",
+        "color": "#016932",
+        "category": "utilities"
+    },
+    {
+        "name": "Nordpass",
+        "logo": "/brands/logos/nordpass.svg",
+        "color": "#00cfb6",
+        "category": "utilities"
+    },
+    {
+        "name": "Telegram",
+        "logo": "/brands/logos/telegram.svg",
+        "color": "#0088CC",
+        "category": "utilities"
+    },
+    {
+        "name": "Nordvpn",
+        "logo": "/brands/logos/nordvpn.svg",
+        "color": "#4690FF",
+        "category": "utilities"
+    },
+    {
+        "name": "Google one",
+        "logo": "/brands/logos/googleone.svg",
+        "color": "#4285F4",
+        "category": "utilities"
+    },
+    {
+        "name": "Bitwarden",
+        "logo": "/brands/logos/bitwarden.svg",
+        "color": "#175DDC",
+        "category": "utilities"
+    },
+    {
+        "name": "1password",
+        "logo": "/brands/logos/1password.svg",
+        "color": "#0F62FE",
+        "category": "utilities"
+    },
+    {
+        "name": "Tim",
+        "logo": "/brands/logos/tim.svg",
+        "color": "#1228c0",
+        "category": "utilities"
+    },
+    {
+        "name": "iCloud",
+        "logo": "/brands/logos/icloud.svg",
+        "color": "#3B82F6",
+        "category": "utilities"
+    },
+    {
+        "name": "Bluehost",
+        "logo": "/brands/logos/bluehost.svg",
+        "color": "#3E5998",
+        "category": "utilities"
+    },
+    {
+        "name": "Behance",
+        "logo": "/brands/logos/behance.svg",
+        "color": "#1769FF",
+        "category": "utilities"
+    },
+    {
+        "name": "Obsidian",
+        "logo": "/brands/logos/obsidian.svg",
+        "color": "#7C3AED",
+        "category": "utilities"
+    },
+    {
+        "name": "ho",
+        "logo": "/brands/logos/ho.svg",
+        "color": "#7B2CBF",
+        "category": "utilities"
+    },
+    {
+        "name": "Apple one",
+        "logo": "/brands/logos/appleone.svg",
+        "color": "#1d1d1f",
+        "category": "utilities"
+    },
+    {
+        "name": "Apple News+",
+        "logo": "/brands/logos/applenews.svg",
+        "color": "#1d1d1f",
+        "category": "utilities"
+    },
+    {
+        "name": "Mobbin",
+        "logo": "/brands/logos/mobbin.svg",
+        "color": "#111111",
+        "category": "utilities"
+    },
+    {
+        "name": "Dashlane",
+        "logo": "/brands/logos/dashlane.svg",
+        "color": "#0F3F3C",
+        "category": "utilities"
+    },
+    {
+        "name": "Wind tre",
+        "logo": "/brands/logos/windtre.svg",
+        "color": "#FF6600",
+        "category": "utilities"
+    },
+    {
+        "name": "Hellofresh",
+        "logo": "/brands/logos/hellofresh.svg",
+        "color": "#94dd13",
+        "category": "shopping"
+    },
+    {
+        "name": "Walmart+",
+        "logo": "/brands/logos/walmartplus.svg",
+        "color": "#0053e2",
+        "category": "shopping"
+    },
+    {
+        "name": "Amazon Prime",
+        "logo": "/brands/logos/amazonprime.svg",
+        "color": "#0678ff",
+        "category": "shopping"
+    },
+    {
+        "name": "Babbel",
+        "logo": "/brands/logos/babbel.svg",
+        "color": "#fe4d00",
+        "category": "education"
+    },
+    {
+        "name": "Masterclass",
+        "logo": "/brands/logos/masterclass.svg",
+        "color": "#e22452",
+        "category": "education"
+    },
+    {
+        "name": "Skillshare",
+        "logo": "/brands/logos/skillshare.svg",
+        "color": "#00FF88",
+        "category": "education"
+    },
+    {
+        "name": "Duolingo",
+        "logo": "/brands/logos/duolingo.svg",
+        "color": "#58CC02",
+        "category": "education"
+    },
+    {
+        "name": "Medium",
+        "logo": "/brands/logos/medium.svg",
+        "color": "#000000",
+        "category": "education"
+    },
+    {
+        "name": "Nintendo switch online",
+        "logo": "/brands/logos/nintendo.svg",
+        "color": "#E60012",
+        "category": "gaming"
+    },
+    {
+        "name": "Ea play",
+        "logo": "/brands/logos/ea.svg",
+        "color": "#ff4747",
+        "category": "gaming"
+    },
+    {
+        "name": "Xbox games pass",
+        "logo": "/brands/logos/xboxgamespass.svg",
+        "color": "#107C10",
+        "category": "gaming"
+    },
+    {
+        "name": "Playstation plus",
+        "logo": "/brands/logos/playstation.svg",
+        "color": "#003087",
+        "category": "gaming"
+    },
+    {
+        "name": "Ubisoft",
+        "logo": "/brands/logos/ubisoft.svg",
+        "color": "#0078F2",
+        "category": "gaming"
+    },
+    {
+        "name": "Blizard entertainment",
+        "logo": "/brands/logos/blizardentertainment.svg",
+        "color": "#00AEFF",
+        "category": "gaming"
+    },
+    {
+        "name": "Apple Arcade",
+        "logo": "/brands/logos/arcade.svg",
+        "color": "#1d1d1f",
+        "category": "gaming"
+    },
+    {
+        "name": "Uber",
+        "logo": "/brands/logos/uber.svg",
+        "color": "#000000",
+        "category": "transport"
+    },
+    {
+        "name": "Lime",
+        "logo": "/brands/logos/lime.svg",
+        "color": "#32DE84",
+        "category": "transport"
+    },
+    {
+        "name": "Patreon",
+        "logo": "/brands/logos/patreon.svg",
+        "color": "#FF424D",
+        "category": "lifestyle"
+    },
+    {
+        "name": "Substack",
+        "logo": "/brands/logos/substack.svg",
+        "color": "#FF6719",
+        "category": "lifestyle"
+    },
+    {
+        "name": "Tinder",
+        "logo": "/brands/logos/tinder.svg",
+        "color": "#FD5068",
+        "category": "lifestyle"
+    },
+    {
+        "name": "Calm",
+        "logo": "/brands/logos/calm.svg",
+        "color": "#2ACCEE",
+        "category": "lifestyle"
+    },
+    {
+        "name": "Komoot",
+        "logo": "/brands/logos/komoot.svg",
+        "color": "#6AA127",
+        "category": "lifestyle"
+    }
+]
