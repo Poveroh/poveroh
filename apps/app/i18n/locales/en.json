@@ -21,6 +21,14 @@
         "month": "Months",
         "year": "Years"
     },
+    "reminderPeriod": {
+        "same_day": "Same day",
+        "three_days": "3 days",
+        "seven_days": "7 days",
+        "fourteen_days": "14 days",
+        "thirty_days": "30 days",
+        "ninety_days": "90 days"
+    },
     "messages": {
         "mandatory": "Mandatory",
         "selectValue": "Select a value",
@@ -289,6 +297,9 @@
             "newTitle": "New subscription",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the subscription."
+        },
+        "buttons": {
+            "addCustom": "Add custom"
         }
     },
     "bankAccounts": {

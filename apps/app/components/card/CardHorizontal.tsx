@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 import { BrandIcon } from '../icon/BrandIcon'
-import { IBrand } from '@poveroh/types'
 
 type CardProp = {
     onClick: () => void

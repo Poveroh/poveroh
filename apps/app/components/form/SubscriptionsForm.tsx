@@ -38,16 +38,16 @@ export const SubscriptionForm = forwardRef(
         const [iconError] = useState(false)
 
         const defaultValues = initialData || {
-            title: '',
+            title: '-',
             description: '',
             amount: 0,
             currency: Currencies.EUR,
-            logo: '',
+            logo: '-',
             icon: iconList[0] as string,
             first_payment: new Date().toISOString(),
             cycle_number: '1',
             cycle_period: CyclePeriod.MONTH,
-            remember_period: RememberPeriodType.SAME_DAY,
+            remember_period: RememberPeriodType.THREE_DAYS,
             bank_account_id: ''
         }
 
@@ -123,7 +123,7 @@ export const SubscriptionForm = forwardRef(
                                                 min='0'
                                                 step='0.01'
                                                 {...field}
-                                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                                onChange={e => field.onChange(parseFloat(e.target.value ?? 0))}
                                                 placeholder={t('form.amount.placeholder')}
                                             />
                                         </FormControl>
@@ -301,9 +301,9 @@ export const SubscriptionForm = forwardRef(
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(CyclePeriod).map(period => (
+                                            {Object.values(RememberPeriodType).map(period => (
                                                 <SelectItem key={period} value={period}>
-                                                    {t(`format.${period.toLowerCase()}`)}
+                                                    {t(`reminderPeriod.${period.toLowerCase()}`)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

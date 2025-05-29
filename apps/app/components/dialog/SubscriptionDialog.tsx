@@ -6,6 +6,8 @@ import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionForm } from '../form/SubscriptionsForm'
 import { SubscriptionsSelector } from '../form/SubscriptionsSelector'
+import { Button } from '@poveroh/ui/components/button'
+import { DialogFooter } from '@poveroh/ui/components/dialog'
 
 type DialogProps = {
     open: boolean
@@ -105,6 +107,15 @@ export function SubscriptionDialog(props: DialogProps) {
             dialogHeight={props.dialogHeight}
             showFooter={mode == 'editor'}
             contentHeight='h-[60vh]'
+            customFooter={
+                mode === 'template' ? (
+                    <DialogFooter>
+                        <Button type='button' onClick={() => setMode('editor')} className='w-full'>
+                            {t('subscriptions.buttons.addCustom')}
+                        </Button>
+                    </DialogFooter>
+                ) : undefined
+            }
             onClick={() => formRef.current?.submit()}
         >
             {mode == 'template' ? (

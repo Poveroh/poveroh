@@ -7,6 +7,7 @@ import { ModalFooter, ModalFooterProps } from './FormFooter'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import { cn } from '@poveroh/ui/lib/utils'
+import { ReactElement } from 'react'
 
 type ModalProps = {
     open: boolean
@@ -17,6 +18,7 @@ type ModalProps = {
     iconCircled?: boolean
     children: React.ReactNode
     showFooter?: boolean
+    customFooter?: ReactElement
     dialogHeight?: string
     contentHeight?: string
     handleOpenChange: (open: boolean) => void
@@ -25,7 +27,7 @@ type ModalProps = {
 export function Modal({ showFooter = true, ...props }: ModalProps) {
     return (
         <Dialog defaultOpen={true} open={props.open} onOpenChange={props.handleOpenChange}>
-            <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh] gap-5', props.dialogHeight)}>
+            <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh]', props.dialogHeight)}>
                 <DialogHeader>
                     <div className='flex flex-row items-center space-x-3'>
                         {props.icon &&
@@ -54,6 +56,7 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                         onClick={props.onClick}
                     />
                 )}
+                {props.customFooter}
             </DialogContent>
         </Dialog>
     )
