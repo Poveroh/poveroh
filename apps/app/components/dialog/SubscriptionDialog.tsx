@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
-import { Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriodType } from '@poveroh/types'
+import { Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionForm } from '../form/SubscriptionsForm'
@@ -83,7 +83,7 @@ export function SubscriptionDialog(props: DialogProps) {
             first_payment: new Date().toISOString(),
             cycle_number: '1',
             cycle_period: 'MONTH' as CyclePeriod,
-            remember_period: 'DAY' as RememberPeriodType,
+            remember_period: 'DAY' as RememberPeriod,
             bank_account_id: '',
             is_enabled: true
         })

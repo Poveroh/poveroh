@@ -10,7 +10,7 @@ export interface ISubscriptionBase {
     first_payment: string
     cycle_number: string
     cycle_period: CyclePeriod
-    remember_period: RememberPeriodType
+    remember_period: RememberPeriod
     bank_account_id: string
     is_enabled: boolean
 }
@@ -28,7 +28,7 @@ export enum CyclePeriod {
     YEAR = 'YEAR'
 }
 
-export enum RememberPeriodType {
+export enum RememberPeriod {
     SAME_DAY = 'SAME_DAY',
     THREE_DAYS = 'THREE_DAYS',
     SEVEN_DAYS = 'SEVEN_DAYS',

@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { Currencies, CyclePeriod, ISubscription, RememberPeriodType } from '@poveroh/types'
+import { Currencies, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -44,10 +44,10 @@ export const SubscriptionForm = forwardRef(
             currency: Currencies.EUR,
             logo: '-',
             icon: iconList[0] as string,
-            first_payment: new Date().toISOString(),
+            first_payment: new Date().toISOString().split('T')[0],
             cycle_number: '1',
             cycle_period: CyclePeriod.MONTH,
-            remember_period: RememberPeriodType.THREE_DAYS,
+            remember_period: RememberPeriod.THREE_DAYS,
             bank_account_id: ''
         }
 
@@ -61,7 +61,7 @@ export const SubscriptionForm = forwardRef(
             first_payment: z.string(),
             cycle_number: z.string(),
             cycle_period: z.nativeEnum(CyclePeriod),
-            remember_period: z.nativeEnum(RememberPeriodType).optional(),
+            remember_period: z.nativeEnum(RememberPeriod).optional(),
             bank_account_id: z.string().nonempty(t('messages.errors.required'))
         })
 
@@ -165,7 +165,12 @@ export const SubscriptionForm = forwardRef(
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.first_payment.label')}</FormLabel>
                                     <FormControl>
-                                        <Input type='date' {...field} />
+                                        <Input
+                                            type='date'
+                                            {...field}
+                                            value={field.value ? field.value.split('T')[0] : ''}
+                                            onChange={e => field.onChange(e.target.value)}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -301,7 +306,7 @@ export const SubscriptionForm = forwardRef(
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {Object.values(RememberPeriodType).map(period => (
+                                            {Object.values(RememberPeriod).map(period => (
                                                 <SelectItem key={period} value={period}>
                                                     {t(`reminderPeriod.${period.toLowerCase()}`)}
                                                 </SelectItem>
