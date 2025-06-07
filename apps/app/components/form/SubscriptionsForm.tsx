@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -38,11 +38,11 @@ export const SubscriptionForm = forwardRef(
         const [iconError] = useState(false)
 
         const defaultValues = initialData || {
-            title: '-',
+            title: '',
             description: '',
             amount: 0,
             currency: Currencies.EUR,
-            logo: '-',
+            logo: '',
             icon: iconList[0] as string,
             first_payment: new Date().toISOString().split('T')[0],
             cycle_number: '1',
@@ -57,7 +57,7 @@ export const SubscriptionForm = forwardRef(
             amount: z.number().min(0),
             currency: z.nativeEnum(Currencies),
             logo: z.string().url().optional().or(z.literal('')),
-            icon: z.string().nonempty(t('messages.errors.required')),
+            icon: z.string(),
             first_payment: z.string(),
             cycle_number: z.string(),
             cycle_period: z.nativeEnum(CyclePeriod),
@@ -75,6 +75,10 @@ export const SubscriptionForm = forwardRef(
                 form.handleSubmit(handleLocalSubmit)()
             }
         }))
+
+        useEffect(() => {
+            console.debug('Form errors:', form.formState.errors)
+        }, [form.formState.errors])
 
         const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
             try {

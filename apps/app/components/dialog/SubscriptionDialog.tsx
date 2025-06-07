@@ -8,6 +8,7 @@ import { SubscriptionForm } from '../form/SubscriptionsForm'
 import { SubscriptionsSelector } from '../form/SubscriptionsSelector'
 import { Button } from '@poveroh/ui/components/button'
 import { DialogFooter } from '@poveroh/ui/components/dialog'
+import { iconList } from '../icon'
 
 type DialogProps = {
     open: boolean
@@ -77,13 +78,13 @@ export function SubscriptionDialog(props: DialogProps) {
             title: brand.name,
             description: '',
             amount: 0,
-            currency: 'USD' as Currencies,
+            currency: Currencies.USD,
             logo: brand.logo,
-            icon: undefined,
+            icon: iconList[0] as string,
             first_payment: new Date().toISOString(),
             cycle_number: '1',
-            cycle_period: 'MONTH' as CyclePeriod,
-            remember_period: 'DAY' as RememberPeriod,
+            cycle_period: CyclePeriod.MONTH,
+            remember_period: RememberPeriod.SAME_DAY,
             bank_account_id: '',
             is_enabled: true
         })
@@ -110,7 +111,14 @@ export function SubscriptionDialog(props: DialogProps) {
             customFooter={
                 mode === 'template' ? (
                     <DialogFooter>
-                        <Button type='button' onClick={() => setMode('editor')} className='w-full'>
+                        <Button
+                            type='button'
+                            onClick={() => {
+                                setFromTemplate(false)
+                                setMode('editor')
+                            }}
+                            className='w-full'
+                        >
                             {t('subscriptions.buttons.addCustom')}
                         </Button>
                     </DialogFooter>
