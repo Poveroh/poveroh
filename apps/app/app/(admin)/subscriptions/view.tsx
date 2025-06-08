@@ -114,7 +114,6 @@ export default function SubscriptionsView() {
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
-                                {t('buttons.export.base')}
                             </Button>
                             <Button onClick={() => setDialogNewOpen(true)}>
                                 <Plus />
