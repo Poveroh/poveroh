@@ -8,13 +8,14 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import { cn } from '@poveroh/ui/lib/utils'
 import { ReactElement } from 'react'
+import { AppearanceMode } from '@poveroh/types'
 
 type ModalProps = {
     open: boolean
     title: string
     description?: string
     icon?: string
-    iconMode?: 'icon' | 'img'
+    iconMode?: AppearanceMode
     iconCircled?: boolean
     children: React.ReactNode
     showFooter?: boolean
@@ -31,7 +32,7 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                 <DialogHeader>
                     <div className='flex flex-row items-center space-x-3'>
                         {props.icon &&
-                            (props.iconMode === 'img' ? (
+                            (props.iconMode === AppearanceMode.LOGO ? (
                                 <BrandIcon circled={props.iconCircled} icon={props.icon} size='xl'></BrandIcon>
                             ) : (
                                 <DynamicIcon key={props.icon} name={props.icon} />

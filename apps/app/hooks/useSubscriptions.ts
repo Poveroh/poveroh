@@ -64,15 +64,12 @@ export const useSubscriptions = () => {
         }
     }
 
-    const getNextExecutionText = (
-        subscription: ISubscription,
-        fromDate: Date = new Date() // 🆕 now is configurable
-    ) => {
+    const getNextExecutionText = (subscription: ISubscription, fromDate: Date = new Date()) => {
         const now = fromDate
         let next = new Date(subscription.first_payment)
 
         const cycle_number = Number(subscription.cycle_number)
-        // Ensure next is in the future
+
         while (next < now) {
             switch (subscription.cycle_period) {
                 case CyclePeriod.DAY:

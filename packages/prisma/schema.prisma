@@ -68,21 +68,21 @@ model transactions {
 }
 
 model subscriptions {
-    id              String         @id @default(uuid())
-    user_id         String
-    title           String
-    description     String?
-    amount          Float
-    currency        Currency
-    logo            String?
-    icon            String?
-    first_payment   DateTime
-    cycle_number    String
-    cycle_period    String
-    remember_period RememberPeriod
-    bank_account_id String
-    is_enabled      Boolean
-    created_at      DateTime       @default(now())
+    id                   String         @id @default(uuid())
+    user_id              String
+    title                String
+    description          String?
+    amount               Float
+    currency             Currency
+    appearance_mode      AppearanceMode
+    appearance_logo_icon String
+    first_payment        DateTime
+    cycle_number         String
+    cycle_period         String
+    remember_period      RememberPeriod
+    bank_account_id      String
+    is_enabled           Boolean
+    created_at           DateTime       @default(now())
 
     user         users         @relation(fields: [user_id], references: [id])
     bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
@@ -212,4 +212,9 @@ enum RememberPeriod {
     FOURTEEN_DAYS
     THIRTY_DAYS
     NINETY_DAYS
+}
+
+enum AppearanceMode {
+    LOGO
+    ICON
 }

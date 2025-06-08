@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { Currencies, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
+import { AppearanceMode, Currencies, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -42,8 +42,8 @@ export const SubscriptionForm = forwardRef(
             description: '',
             amount: 0,
             currency: Currencies.EUR,
-            logo: '',
-            icon: iconList[0] as string,
+            appearance_mode: AppearanceMode.ICON,
+            appearance_logo_icon: iconList[0] as string,
             first_payment: new Date().toISOString().split('T')[0],
             cycle_number: '1',
             cycle_period: CyclePeriod.MONTH,
@@ -51,19 +51,32 @@ export const SubscriptionForm = forwardRef(
             bank_account_id: ''
         }
 
-        const formSchema = z.object({
-            title: z.string().nonempty(t('messages.errors.required')),
-            description: z.string().optional(),
-            amount: z.number().min(0),
-            currency: z.nativeEnum(Currencies),
-            logo: z.string().url().optional().or(z.literal('')),
-            icon: z.string(),
-            first_payment: z.string(),
-            cycle_number: z.string(),
-            cycle_period: z.nativeEnum(CyclePeriod),
-            remember_period: z.nativeEnum(RememberPeriod).optional(),
-            bank_account_id: z.string().nonempty(t('messages.errors.required'))
-        })
+        const formSchema = z
+            .object({
+                title: z.string().nonempty(t('messages.errors.required')),
+                description: z.string().optional(),
+                amount: z.number().min(0),
+                currency: z.nativeEnum(Currencies),
+                appearance_mode: z.nativeEnum(AppearanceMode),
+                appearance_logo_icon: z.string().nonempty(t('messages.errors.required')),
+                first_payment: z.string(),
+                cycle_number: z.string(),
+                cycle_period: z.nativeEnum(CyclePeriod),
+                remember_period: z.nativeEnum(RememberPeriod).optional(),
+                bank_account_id: z.string().nonempty(t('messages.errors.required'))
+            })
+            .refine(
+                data => {
+                    if (data.appearance_mode === AppearanceMode.LOGO) {
+                        return z.string().safeParse(data.appearance_logo_icon).success
+                    }
+                    return true
+                },
+                {
+                    message: t('messages.errors.url'),
+                    path: ['appearance_logo_icon']
+                }
+            )
 
         const form = useForm<z.infer<typeof formSchema>>({
             resolver: zodResolver(formSchema),
@@ -77,8 +90,8 @@ export const SubscriptionForm = forwardRef(
         }))
 
         useEffect(() => {
-            console.debug('Form errors:', form.formState.errors)
-        }, [form.formState.errors])
+            console.log(!fromTemplate)
+        })
 
         const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
             try {
@@ -258,7 +271,7 @@ export const SubscriptionForm = forwardRef(
                             )}
                         />
 
-                        {!fromTemplate && (
+                        {(!fromTemplate || initialData?.appearance_mode == AppearanceMode.ICON) && (
                             <div className='flex flex-col space-y-4'>
                                 <FormItem>
                                     <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
@@ -275,7 +288,7 @@ export const SubscriptionForm = forwardRef(
                                                                         className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
                                                                                         ${icon === x ? 'bg-white text-black border border-hr' : ''}`}
                                                                         onClick={() => {
-                                                                            form.setValue('icon', x)
+                                                                            form.setValue('appearance_logo_icon', x)
                                                                             setIcon(x)
                                                                         }}
                                                                     >

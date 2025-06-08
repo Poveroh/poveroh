@@ -18,7 +18,7 @@ export class SubscriptionController {
                     req.file,
                     `${req.user.id}/subscription/${parsedSubscription.title}`
                 )
-                parsedSubscription.icon = filePath
+                parsedSubscription.appearance_logo_icon = filePath
             }
 
             const subscription = await prisma.subscriptions.create({
@@ -52,7 +52,7 @@ export class SubscriptionController {
                     req.file,
                     `${req.user.id}/subscription/${parsedSubscription.title}`
                 )
-                parsedSubscription.icon = filePath
+                parsedSubscription.appearance_logo_icon = filePath
             }
 
             const subscription = await prisma.subscriptions.update({

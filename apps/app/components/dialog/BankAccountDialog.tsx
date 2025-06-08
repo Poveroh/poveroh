@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
-import { IBankAccount } from '@poveroh/types'
+import { AppearanceMode, IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { BankAccountForm } from '../form/BankAccountForm'
@@ -67,7 +67,7 @@ export function BankAccountDialog(props: DialogProps) {
             open={props.open}
             title={title}
             icon={props.initialData?.logo_icon}
-            iconMode='icon'
+            iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}

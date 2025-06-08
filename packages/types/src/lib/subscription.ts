@@ -1,12 +1,13 @@
 import { Currencies } from './currency.js'
+import { AppearanceMode } from './modal.js'
 
 export interface ISubscriptionBase {
     title: string
     description: string
     amount: number
     currency: Currencies
-    logo?: string
-    icon?: string
+    appearance_mode: AppearanceMode
+    appearance_logo_icon: string
     first_payment: string
     cycle_number: string
     cycle_period: CyclePeriod

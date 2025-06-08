@@ -146,8 +146,8 @@ export default function SubscriptionsView() {
                     <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
                         <Landmark />
                         <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('bankAccounts.empty.title')}</h4>
-                            <p>{t('bankAccounts.empty.subtitle')}</p>
+                            <h4>{t('subscriptions.empty.title')}</h4>
+                            <p>{t('subscriptions.empty.subtitle')}</p>
                         </div>
                     </div>
                 )}
@@ -156,7 +156,7 @@ export default function SubscriptionsView() {
             {itemToDelete && (
                 <DeleteModal
                     title={itemToDelete.title}
-                    description={t('bankAccounts.modal.deleteDescription')}
+                    description={t('subscriptions.modal.deleteDescription')}
                     open={true}
                     closeDialog={() => setItemToDelete(null)}
                     loading={loading}

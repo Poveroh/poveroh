@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
-import { ICategory } from '@poveroh/types'
+import { AppearanceMode, ICategory } from '@poveroh/types'
 import { Modal } from '../modal/form'
 import { CategoryForm } from '../form/CategoryForm'
 import { useCategory } from '@/hooks/useCategory'
@@ -68,7 +68,7 @@ export function CategoryDialog(props: DialogProps) {
             open={props.open}
             title={title}
             icon={props.initialData?.logo_icon}
-            iconMode='icon'
+            iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}

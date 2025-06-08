@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
-import { ISubcategory } from '@poveroh/types'
+import { AppearanceMode, ISubcategory } from '@poveroh/types'
 import { Modal } from '../modal/form'
 import { SubcategoryForm } from '../form/SubcategoryForm'
 import { useCategory } from '@/hooks/useCategory'
@@ -67,7 +67,7 @@ export function SubcategoryDialog(props: DialogProps) {
             open={props.open}
             title={title}
             icon={props.initialData?.logo_icon}
-            iconMode='icon'
+            iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}

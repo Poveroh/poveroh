@@ -1,14 +1,13 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
 import { useRef, useState } from 'react'
-import { Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
+import { AppearanceMode, Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
 import { SubscriptionForm } from '../form/SubscriptionsForm'
 import { SubscriptionsSelector } from '../form/SubscriptionsSelector'
 import { Button } from '@poveroh/ui/components/button'
 import { DialogFooter } from '@poveroh/ui/components/dialog'
-import { iconList } from '../icon'
 
 type DialogProps = {
     open: boolean
@@ -79,8 +78,8 @@ export function SubscriptionDialog(props: DialogProps) {
             description: '',
             amount: 0,
             currency: Currencies.USD,
-            logo: brand.logo,
-            icon: iconList[0] as string,
+            appearance_mode: AppearanceMode.LOGO,
+            appearance_logo_icon: brand.logo,
             first_payment: new Date().toISOString(),
             cycle_number: '1',
             cycle_period: CyclePeriod.MONTH,
@@ -97,8 +96,8 @@ export function SubscriptionDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={localSubscription?.logo}
-            iconMode='img'
+            icon={localSubscription?.appearance_logo_icon}
+            iconMode={localSubscription?.appearance_mode}
             iconCircled={true}
             handleOpenChange={props.closeDialog}
             loading={loading}

@@ -1,5 +1,5 @@
 import { BrandIcon } from '../icon/BrandIcon'
-import { IBankAccount, ISubscription } from '@poveroh/types'
+import { AppearanceMode, IBankAccount, ISubscription } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/OptionsPopoverr'
 import DynamicIcon from '../icon/DynamicIcon'
 import icons from 'currency-icons'
@@ -33,10 +33,15 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
                     {(() => {
-                        if (subscription.logo) {
-                            return <BrandIcon icon={subscription.logo} />
+                        if (subscription.appearance_mode == AppearanceMode.LOGO) {
+                            return <BrandIcon circled icon={subscription.appearance_logo_icon} />
                         } else {
-                            return <DynamicIcon name={subscription?.icon || 'landmark'} className='h-[30px] w-[30px]' />
+                            return (
+                                <DynamicIcon
+                                    name={subscription?.appearance_logo_icon || 'landmark'}
+                                    className='h-[30px] w-[30px]'
+                                />
+                            )
                         }
                     })()}
                 </div>
