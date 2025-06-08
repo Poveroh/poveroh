@@ -20,13 +20,14 @@ import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 
 import { ISubscription } from '@poveroh/types'
 
-import Box from '@/components/box/BoxWrapper'
 import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
-import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
 import { DeleteModal } from '@/components/modal/delete'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useSubscriptions } from '@/hooks/useSubscriptions'
+import SkeletonItem from '@/components/skeleton/SkeletonItem'
+import Box from '@/components/box/BoxWrapper'
+import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
@@ -37,15 +38,23 @@ export default function SubscriptionsView() {
     const [itemToDelete, setItemToDelete] = useState<ISubscription | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ISubscription | null>(null)
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
+
     const [loading, setLoading] = useState(false)
+    const [loadingData, setLoadingData] = useState(true)
 
     const [localSubscriptionList, setLocalSubscriptionList] = useState<ISubscription[]>(subscriptionCacheList)
     const subscriptionsTotal = parseFloat(localSubscriptionList.reduce((sum, sub) => sum + sub.amount, 0).toFixed(2))
 
     useEffect(() => {
+        fetchData()
         fetchBankAccount()
-        fetchSubscriptions()
     }, [])
+
+    const fetchData = () => {
+        setLoadingData(true)
+        fetchSubscriptions()
+        setLoadingData(false)
+    }
 
     useEffect(() => {
         setLocalSubscriptionList(subscriptionCacheList)
@@ -101,7 +110,7 @@ export default function SubscriptionsView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchSubscriptions} />
+                        <RotateCcw className='cursor-pointer' onClick={fetchData} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
@@ -129,7 +138,9 @@ export default function SubscriptionsView() {
                         })}
                     </p>
                 </div>
-                {localSubscriptionList.length > 0 ? (
+                {loadingData ? (
+                    <SkeletonItem repeat={5} />
+                ) : localSubscriptionList.length > 0 ? (
                     <Box>
                         <>
                             {localSubscriptionList.map(item => (
