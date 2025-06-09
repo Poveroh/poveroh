@@ -3,6 +3,7 @@ import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { ITransactionFilters } from '@poveroh/types'
+import logger from '../../../utils/logger'
 
 export class TransactionController {
     //POST /
@@ -21,6 +22,7 @@ export class TransactionController {
             const result = await TransactionHelper.handleTransaction(action, parsedData, userId)
             res.status(200).json(result)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -45,7 +47,7 @@ export class TransactionController {
 
             res.status(200).json(transaction)
         } catch (error) {
-            console.error('Error updating transaction:', error)
+            logger.error(error)
             res.status(500).json({
                 message: 'An error occurred while updating the transaction',
                 error: process.env.NODE_ENV === 'production' ? undefined : error
@@ -69,6 +71,7 @@ export class TransactionController {
 
             res.status(200).json(true)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -100,7 +103,7 @@ export class TransactionController {
 
             res.status(200).json(data)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

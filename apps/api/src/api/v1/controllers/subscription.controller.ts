@@ -3,6 +3,7 @@ import prisma from '@poveroh/prisma'
 import { ISubscription, ISubscriptionBase, ISubscriptionFilters } from '@poveroh/types'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
+import logger from '../../../utils/logger'
 
 export class SubscriptionController {
     //POST /
@@ -30,6 +31,7 @@ export class SubscriptionController {
 
             res.status(200).json(subscription)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -62,6 +64,7 @@ export class SubscriptionController {
 
             res.status(200).json(subscription)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -80,6 +83,7 @@ export class SubscriptionController {
 
             res.status(200).json(true)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -102,7 +106,7 @@ export class SubscriptionController {
 
             res.status(200).json(data)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

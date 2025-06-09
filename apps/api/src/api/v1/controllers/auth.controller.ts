@@ -3,6 +3,7 @@ import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
 import { AuthHelper } from '../../../helpers/auth.helper'
 import { IUserToSave } from '@poveroh/types/dist'
+import logger from '../../../utils/logger'
 
 export class AuthController {
     //POST /login
@@ -38,7 +39,7 @@ export class AuthController {
 
             res.status(200).json({ success: true })
         } catch (error: any) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({
                 message: 'An error occurred during login',
                 error: error.message
@@ -95,7 +96,7 @@ export class AuthController {
 
             res.status(200).json(newUser)
         } catch (error: any) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({
                 message: 'An error occurred during registration',
                 error: error.message

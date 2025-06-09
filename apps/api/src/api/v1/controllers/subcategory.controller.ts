@@ -3,6 +3,7 @@ import prisma from '@poveroh/prisma'
 import { ISubcategory, ISubcategoryBase, ISubcategoryFilters } from '@poveroh/types'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
+import logger from '../../../utils/logger'
 
 export class SubcategoryController {
     //POST /
@@ -26,7 +27,7 @@ export class SubcategoryController {
 
             res.status(200).json(subcategory)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -59,7 +60,7 @@ export class SubcategoryController {
 
             res.status(200).json(subcategory)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -78,6 +79,7 @@ export class SubcategoryController {
 
             res.status(200).json(true)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -100,7 +102,7 @@ export class SubcategoryController {
 
             res.status(200).json(data)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

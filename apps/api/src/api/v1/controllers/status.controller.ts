@@ -1,3 +1,4 @@
+import logger from '../../../utils/logger'
 import { Request, Response } from 'express'
 
 export class StatusController {
@@ -10,7 +11,7 @@ export class StatusController {
                 timestamp: new Date()
             })
         } catch (error: any) {
-            console.log(error)
+            logger.error(error)
             res.status(500).json({
                 message: 'An error occurred during login',
                 error: error.message

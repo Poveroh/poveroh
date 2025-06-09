@@ -4,6 +4,7 @@ import { ICategory, ICategoryBase, ICategoryFilters } from '@poveroh/types'
 import { omit } from 'lodash'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
+import logger from '../../../utils/logger'
 
 export class CategoryController {
     //POST /
@@ -33,7 +34,7 @@ export class CategoryController {
 
             res.status(200).json(category)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -66,6 +67,7 @@ export class CategoryController {
 
             res.status(200).json(category)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -85,6 +87,7 @@ export class CategoryController {
 
             res.status(200).json(true)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -108,7 +111,7 @@ export class CategoryController {
 
             res.status(200).json(data)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

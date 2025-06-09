@@ -3,6 +3,7 @@ import prisma from '@poveroh/prisma'
 import { IBankAccount, IBankAccountBase, IBankAccountFilters } from '@poveroh/types'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
+import logger from '../../../utils/logger'
 
 export class BankAccountController {
     //POST /
@@ -26,6 +27,7 @@ export class BankAccountController {
 
             res.status(200).json(account)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -59,6 +61,7 @@ export class BankAccountController {
 
             res.status(200).json(account)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -74,6 +77,7 @@ export class BankAccountController {
 
             res.status(200).json(true)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -96,7 +100,7 @@ export class BankAccountController {
 
             res.status(200).json(data)
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
+import logger from '../../../utils/logger'
 
 export class UserController {
     // GET /me
@@ -24,6 +25,7 @@ export class UserController {
 
             res.status(200).json(user)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -62,6 +64,7 @@ export class UserController {
 
             res.status(201).json(newUser)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
         }
     }
@@ -97,6 +100,7 @@ export class UserController {
 
             res.status(200).json(updatedUser)
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'Failed to update user', error })
         }
     }
@@ -133,6 +137,7 @@ export class UserController {
 
             res.status(200).json({ success: true })
         } catch (error) {
+            logger.error(error)
             res.status(500).json({ message: 'Failed to update password', error })
         }
     }
