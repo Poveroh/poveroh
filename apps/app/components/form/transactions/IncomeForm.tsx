@@ -60,7 +60,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
 
     const defaultValues = {
         title: '',
-        date: new Date(),
+        date: new Date().toISOString().split('T')[0],
         amount: 0,
         currency: Currencies.EUR,
         bank_account_id: '',
@@ -72,7 +72,7 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
-        date: z.date({
+        date: z.string({
             required_error: t('messages.errors.required')
         }),
         amount: z
@@ -150,35 +150,14 @@ export const IncomeForm = forwardRef(({ initialData, inEditingMode, dataCallback
                         render={({ field }) => (
                             <FormItem className='flex flex-col'>
                                 <FormLabel mandatory>{t('form.date.label')}</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant='secondary'
-                                                className={cn(
-                                                    'w-full pl-3 text-left font-normal',
-                                                    !field.value && 'text-muted-foreground'
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, 'PPP')
-                                                ) : (
-                                                    <span>{t('form.date.placeholder')}</span>
-                                                )}
-                                                <CalendarIcon className='ml-auto h-4 w-4' />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className='w-auto p-0' align='start'>
-                                        <Calendar
-                                            mode='single'
-                                            selected={field.value}
-                                            onSelect={x => field.onChange(x)}
-                                            disabled={date => date > new Date() || date < new Date('1900-01-01')}
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                <FormControl>
+                                    <Input
+                                        type='date'
+                                        {...field}
+                                        value={field.value ? field.value.split('T')[0] : ''}
+                                        onChange={e => field.onChange(e.target.value)}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}

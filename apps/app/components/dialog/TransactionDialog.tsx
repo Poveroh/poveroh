@@ -31,7 +31,7 @@ export function TransactionDialog(props: DialogProps) {
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
-    const [currentAction, setCurrentAction] = useState<string>('INTERNAL')
+    const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
 
     useEffect(() => {
         fetchData()

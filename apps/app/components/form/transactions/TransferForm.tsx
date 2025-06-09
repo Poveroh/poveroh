@@ -3,27 +3,22 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
-import { format } from 'date-fns'
 
 import { currencyCatalog, IBankAccount, IItem, ITransaction, TransactionAction } from '@poveroh/types'
 
-import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { Calendar } from '@poveroh/ui/components/calendar'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
-import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
-import { CalendarIcon } from 'lucide-react'
 import icons from 'currency-icons'
 
-import { cn } from '@poveroh/ui/lib/utils'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { BrandIcon } from '@/components/icon/BrandIcon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import DynamicIcon from '@/components/icon/DynamicIcon'
 import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import { Button } from '@poveroh/ui/components/button'
 
 type FormProps = {
     initialData?: ITransaction
@@ -40,7 +35,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
 
     const defaultValues = {
         title: '',
-        date: new Date(),
+        date: new Date().toISOString().split('T')[0],
         amount: 0,
         currency: 'EUR',
         from: '',
@@ -52,7 +47,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
     const formSchema = z
         .object({
             title: z.string().nonempty(t('messages.errors.required')),
-            date: z.date({
+            date: z.string({
                 required_error: t('messages.errors.required')
             }),
             currency: z.string().nonempty(t('messages.errors.required')),
@@ -82,6 +77,14 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
             form.handleSubmit(handleLocalSubmit)()
         }
     }))
+
+    const switchBankAccount = () => {
+        const fromBankAccount = form.getValues('from')
+        const toBankAccount = form.getValues('to')
+
+        form.setValue('from', toBankAccount, { shouldValidate: false })
+        form.setValue('to', fromBankAccount, { shouldValidate: false })
+    }
 
     const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log('values', values)
@@ -122,35 +125,14 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                         render={({ field }) => (
                             <FormItem className='flex flex-col'>
                                 <FormLabel mandatory>{t('form.date.label')}</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant='secondary'
-                                                className={cn(
-                                                    'w-full pl-3 text-left font-normal',
-                                                    !field.value && 'text-muted-foreground'
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, 'PPP')
-                                                ) : (
-                                                    <span>{t('form.date.placeholder')}</span>
-                                                )}
-                                                <CalendarIcon className='ml-auto h-4 w-4' />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className='w-auto p-0' align='start'>
-                                        <Calendar
-                                            mode='single'
-                                            selected={field.value}
-                                            onSelect={x => field.onChange(x)}
-                                            disabled={date => date > new Date() || date < new Date('1900-01-01')}
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                <FormControl>
+                                    <Input
+                                        type='date'
+                                        {...field}
+                                        value={field.value ? field.value.split('T')[0] : ''}
+                                        onChange={e => field.onChange(e.target.value)}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -169,7 +151,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                             step='0.01'
                                             min='0'
                                             {...field}
-                                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                                            onChange={e => field.onChange(parseFloat(e.target.value ?? 0))}
                                             placeholder={t('form.amount.placeholder')}
                                         />
                                     </FormControl>
@@ -214,7 +196,11 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                 name='from'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder={t('form.bankaccount.placeholder')} />
@@ -235,13 +221,24 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     </FormItem>
                                 )}
                             />
-                            <DynamicIcon name='move-right' className='h-[40px] w-[40px]' />
+                            <Button
+                                type='button'
+                                variant='ghost'
+                                className='h-[40px] w-[40px] cursor-pointer'
+                                onClick={switchBankAccount}
+                            >
+                                <DynamicIcon name='move-right' />
+                            </Button>
                             <FormField
                                 control={form.control}
                                 name='to'
                                 render={({ field }) => (
                                     <FormItem>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            value={field.value}
+                                            defaultValue={field.value}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder={t('form.bankaccount.placeholder')} />
