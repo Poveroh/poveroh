@@ -19,7 +19,7 @@ export const TransactionHelper = {
         const transaction = await this.createTransaction({
             title: data.title,
             type: TransactionAction.INTERNAL,
-            date: data.date,
+            date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
             user_id: userId
@@ -46,7 +46,7 @@ export const TransactionHelper = {
             type: TransactionAction.INCOME,
             category_id: data.category_id,
             subcategory_id: data.subcategory_id,
-            date: data.date,
+            date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
             user_id: userId
@@ -70,7 +70,7 @@ export const TransactionHelper = {
             type: TransactionAction.EXPENSES,
             category_id: data.category_id,
             subcategory_id: data.subcategory_id,
-            date: data.date,
+            date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
             user_id: userId
