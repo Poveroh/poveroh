@@ -81,7 +81,7 @@ export class TransactionController {
         try {
             const filters = req.query as unknown as ITransactionFilters
             const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take) || 20
+            const take = Number(req.query.take)
 
             const where = {
                 ...buildWhere(filters),
@@ -93,13 +93,18 @@ export class TransactionController {
                 })
             }
 
-            const data = await prisma.transactions.findMany({
+            const queryOptions: any = {
                 where,
                 include: { amounts: true },
                 orderBy: { created_at: 'desc' },
-                skip,
-                take
-            })
+                skip
+            }
+
+            if (!isNaN(take) && take > 0) {
+                queryOptions.take = take
+            }
+
+            const data = await prisma.transactions.findMany(queryOptions)
 
             res.status(200).json(data)
         } catch (error) {
