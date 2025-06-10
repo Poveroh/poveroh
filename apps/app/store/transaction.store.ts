@@ -5,6 +5,7 @@ import { ITransaction } from '@poveroh/types'
 type TransactionStore = {
     transactionCacheList: ITransaction[]
     addTransaction: (transaction: ITransaction) => void
+    appendTransactions: (transactions: ITransaction[]) => void
     editTransaction: (transaction: ITransaction) => void
     setTransaction: (transactions: ITransaction[]) => void
     removeTransaction: (transaction_id: string) => void
@@ -16,6 +17,15 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
     addTransaction: transaction => {
         set(state => {
             const list = [...state.transactionCacheList, transaction]
+            return {
+                transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+            }
+        })
+    },
+    appendTransactions: transactions => {
+        set(state => {
+            const list = [...state.transactionCacheList]
+            list.push(...transactions)
             return {
                 transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
             }

@@ -66,7 +66,7 @@ export const useSubscriptions = () => {
 
     const getNextExecutionText = (subscription: ISubscription, fromDate: Date = new Date()) => {
         const now = fromDate
-        let next = new Date(subscription.first_payment)
+        const next = new Date(subscription.first_payment)
 
         const cycle_number = Number(subscription.cycle_number)
 

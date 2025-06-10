@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { ITransactionFilters } from '@poveroh/types'
+import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 
 export class TransactionController {
@@ -79,9 +79,14 @@ export class TransactionController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ITransactionFilters
-            const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take)
+            const rawFilters = req.query['filter'] || {}
+            const rawOptions = req.query['options'] || {}
+
+            const filters = rawFilters as unknown as ITransactionFilters
+            const options = rawOptions as unknown as IFilterOptions
+
+            const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
+            const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
 
             const where = {
                 ...buildWhere(filters),
@@ -100,7 +105,7 @@ export class TransactionController {
                 skip
             }
 
-            if (!isNaN(take) && take > 0) {
+            if (take && take > 0) {
                 queryOptions.take = take
             }
 

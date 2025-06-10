@@ -38,8 +38,8 @@ export function TransactionDialog(props: DialogProps) {
     }, [])
 
     async function fetchData() {
-        await fetchBankAccount()
-        await fetchCategory()
+        // fetchBankAccount()
+        // fetchCategory()
     }
 
     const handleFormSubmit = async (data: FormData) => {

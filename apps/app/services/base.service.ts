@@ -1,5 +1,6 @@
 import { server } from '@/lib/server'
-import { toQueryString } from '@/utils/query'
+import { IFilterOptions } from '@poveroh/types/dist'
+import qs from 'qs'
 
 export class BaseService<T> {
     private endpoint: string
@@ -20,8 +21,14 @@ export class BaseService<T> {
         return await server.delete<boolean>(`${this.endpoint}/${id}`)
     }
 
-    async read<U, F = any>(filters?: F): Promise<U> {
-        const query = filters ? toQueryString(filters) : ''
+    async read<U, F = any>(filters?: F, options?: IFilterOptions): Promise<U> {
+        const queryObject: any = {}
+
+        if (filters) queryObject.filter = filters
+        if (options) queryObject.options = options
+
+        const query = qs.stringify(queryObject, { encode: true, indices: false })
+
         return await server.get<U>(`${this.endpoint}?${query}`)
     }
 }

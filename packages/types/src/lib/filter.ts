@@ -6,6 +6,11 @@ export type StringFilter = { equals?: string; contains?: string }
 export type DateFilter = { gte?: string; lte?: string }
 export type NumberFilter = { equals?: number; gte?: number; lte?: number }
 
+export interface IFilterOptions {
+    skip?: number
+    take?: number
+}
+
 export interface ITransactionFilters {
     id?: string
     title?: StringFilter

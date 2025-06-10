@@ -26,9 +26,9 @@ import { useTransaction } from '@/hooks/useTransaction'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 
-import { ITransaction } from '@poveroh/types'
+import { IFilterOptions, ITransaction } from '@poveroh/types'
 
-import _ from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -43,20 +43,39 @@ export default function TransactionsView() {
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
 
+    const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
+        skip: 0,
+        take: 20
+    })
+
     useEffect(() => {
-        fetchTransaction()
-        fetchCategory()
-        fetchBankAccount()
+        fetchTransaction({}, transactionFilterSetting)
+        // fetchCategory()
+        // fetchBankAccount()
     }, [])
 
     useEffect(() => {
         setLocalTransactionList(transactionCacheList)
     }, [transactionCacheList])
 
+    const loadMore = async () => {
+        const currentSkip = transactionFilterSetting.skip ?? 0
+        const currentTake = transactionFilterSetting.take ?? 20
+
+        const newOptions = {
+            skip: currentSkip + currentTake,
+            take: currentTake
+        }
+
+        await fetchTransaction({}, newOptions, true)
+
+        setTransactionFilterSetting(newOptions)
+    }
+
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        if (_.isEmpty(textToSearch)) {
+        if (isEmpty(textToSearch)) {
             setLocalTransactionList(transactionCacheList)
             return
         }
@@ -103,7 +122,10 @@ export default function TransactionsView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchTransaction} />
+                        <RotateCcw
+                            className='cursor-pointer'
+                            onClick={() => fetchTransaction({}, transactionFilterSetting)}
+                        />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
@@ -156,6 +178,11 @@ export default function TransactionsView() {
                                     </Box>
                                 </div>
                             ))}
+                        <div className='flex flex-col flex-y-2 justify-center items-center w-full'>
+                            <Button variant='outline' onClick={loadMore}>
+                                {t('buttons.loadMore')}
+                            </Button>
+                        </div>
                     </>
                 ) : (
                     <>

@@ -2,7 +2,14 @@
 
 import { TransactionService } from '@/services/transaction.service'
 import { useTransactionStore } from '@/store/transaction.store'
-import { GroupedTransactions, IItem, ITransaction, ITransactionFilters, TransactionAction } from '@poveroh/types'
+import {
+    GroupedTransactions,
+    IFilterOptions,
+    IItem,
+    ITransaction,
+    ITransactionFilters,
+    TransactionAction
+} from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useError } from './useError'
 
@@ -57,10 +64,11 @@ export const useTransaction = () => {
             : transactionStore.getTransaction(transaction_id)
     }
 
-    const fetchTransaction = async () => {
-        const res = await transactionService.read<ITransaction[], ITransactionFilters>()
+    const fetchTransaction = async (filters?: ITransactionFilters, options?: IFilterOptions, append?: boolean) => {
+        const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
 
-        transactionStore.setTransaction(res)
+        if (append) transactionStore.appendTransactions(res)
+        else transactionStore.setTransaction(res)
 
         return res
     }

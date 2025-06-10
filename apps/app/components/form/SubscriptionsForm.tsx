@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -88,10 +88,6 @@ export const SubscriptionForm = forwardRef(
                 form.handleSubmit(handleLocalSubmit)()
             }
         }))
-
-        useEffect(() => {
-            console.log(!fromTemplate)
-        })
 
         const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
             try {

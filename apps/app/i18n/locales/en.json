@@ -60,6 +60,7 @@
         "editItem": "Edit item",
         "deleteItem": "Delete item",
         "returnHome": "Return home",
+        "loadMore": "Load more",
         "add": {
             "base": "Add",
             "import": "Import",
