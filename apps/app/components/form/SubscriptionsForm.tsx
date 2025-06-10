@@ -89,10 +89,6 @@ export const SubscriptionForm = forwardRef(
             }
         }))
 
-        useEffect(() => {
-            console.log(!fromTemplate)
-        })
-
         const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
             try {
                 const formData = new FormData()
