@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { cloneDeep, remove } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ITransaction } from '@poveroh/types'
 
 type TransactionStore = {
@@ -50,13 +50,9 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
         }))
     },
     removeTransaction: transaction_id => {
-        set(state => {
-            const list = cloneDeep(state.transactionCacheList)
-            remove(list, item => item.id === transaction_id)
-            return {
-                transactionCacheList: list
-            }
-        })
+        set(state => ({
+            transactionCacheList: state.transactionCacheList.filter(item => item.id !== transaction_id)
+        }))
     },
     getTransaction: transaction_id => {
         const list = get().transactionCacheList

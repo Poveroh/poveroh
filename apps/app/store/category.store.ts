@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { remove, cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ICategory, ISubcategory } from '@poveroh/types'
 
 type CategoryStore = {
@@ -48,12 +48,9 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
         }))
     },
     removeCategory: category_id => {
-        set(state => {
-            const list = cloneDeep(state.categoryCacheList)
-            remove(list, item => item.id === category_id)
-
-            return { categoryCacheList: list }
-        })
+        set(state => ({
+            categoryCacheList: state.categoryCacheList.filter(item => item.id !== category_id)
+        }))
     },
     getCategory: category_id => {
         const list = get().categoryCacheList
@@ -105,31 +102,19 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
 
     removeSubcategory: subcategory_id => {
         set(state => {
-            const subcategory = state.categoryCacheList.flatMap(x => x.subcategories).find(x => x.id == subcategory_id)
+            const updated = state.categoryCacheList.map(category => {
+                const hasSub = category.subcategories.some(sub => sub.id === subcategory_id)
+                if (!hasSub) return category
 
-            if (!subcategory) {
-                return state
-            }
+                return {
+                    ...category,
+                    subcategories: category.subcategories
+                        .filter(sub => sub.id !== subcategory_id)
+                        .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                }
+            })
 
-            const indexCat = state.categoryCacheList.findIndex(cat => cat.id === subcategory.category_id)
-
-            if (indexCat === -1) {
-                return state
-            }
-
-            const list = cloneDeep(state.categoryCacheList)
-
-            const subcategories = list[indexCat]?.subcategories
-
-            if (!subcategories) {
-                return state
-            }
-
-            remove(subcategories, sub => sub.id == subcategory.id)
-
-            subcategories.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
-
-            return { categoryCacheList: list }
+            return { categoryCacheList: updated }
         })
     },
 

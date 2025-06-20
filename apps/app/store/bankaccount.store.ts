@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { cloneDeep, remove } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { IBankAccount } from '@poveroh/types'
 
 type BankAccountStore = {
@@ -40,13 +40,9 @@ export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
         }))
     },
     removeBankAccount: bankAccount_id => {
-        set(state => {
-            const list = cloneDeep(state.bankAccountCacheList)
-            remove(list, item => item.id === bankAccount_id)
-            return {
-                bankAccountCacheList: list
-            }
-        })
+        set(state => ({
+            bankAccountCacheList: state.bankAccountCacheList.filter(item => item.id !== bankAccount_id)
+        }))
     },
     getBankAccount: bankAccount_id => {
         const bankAccountCacheList = get().bankAccountCacheList
