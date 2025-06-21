@@ -49,9 +49,9 @@ export default function TransactionsView() {
     })
 
     useEffect(() => {
+        fetchCategory()
+        fetchBankAccount()
         fetchTransaction({}, transactionFilterSetting)
-        // fetchCategory()
-        // fetchBankAccount()
     }, [])
 
     useEffect(() => {
