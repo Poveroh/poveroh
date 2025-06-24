@@ -53,6 +53,8 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                         loading={props.loading}
                         inEditingMode={props.inEditingMode}
                         keepAdding={props.keepAdding}
+                        hideKeepAdding={props.hideKeepAdding}
+                        buttonDisabled={props.buttonDisabled}
                         setKeepAdding={props.setKeepAdding}
                         onClick={props.onClick}
                     />

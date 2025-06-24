@@ -10,11 +10,12 @@ import { useTransaction } from '@/hooks/useTransaction'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
 import { ExpensesForm } from '../form/transactions/ExpensesForm'
+import { UploadForm } from '../form/transactions/UploadForm'
 
 type DialogProps = {
     open: boolean
     initialData?: ITransaction
-    inEditingMode: boolean
+    mode: 'upload' | 'edit' | 'add'
     dialogHeight?: string
     closeDialog: () => void
 }
@@ -28,6 +29,7 @@ export function TransactionDialog(props: DialogProps) {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
+    const [disabled, setDisabled] = useState(props.mode == 'upload')
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
@@ -42,13 +44,31 @@ export function TransactionDialog(props: DialogProps) {
         // fetchCategory()
     }
 
+    const generateTitle = () => {
+        let suffixTitle = ''
+
+        switch (props.mode) {
+            case 'upload':
+                suffixTitle = 'uploadTitle'
+                break
+            case 'add':
+                suffixTitle = 'newTitle'
+                break
+            case 'edit':
+                suffixTitle = 'editTitle'
+                break
+        }
+
+        return t(`transactions.modal.${suffixTitle}`)
+    }
+
     const handleFormSubmit = async (data: FormData) => {
         setLoading(true)
 
         let res: ITransaction | null
 
         // edit dialog
-        if (props.inEditingMode && props.initialData) {
+        if (props.mode == 'edit' && props.initialData) {
             res = await editTransaction(props.initialData.id, data)
 
             if (!res) return
@@ -70,7 +90,7 @@ export function TransactionDialog(props: DialogProps) {
         toast.success(
             t('messages.successfully', {
                 a: res.title,
-                b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
+                b: t(props.mode == 'edit' ? 'messages.saved' : 'messages.uploaded')
             })
         )
 
@@ -80,57 +100,63 @@ export function TransactionDialog(props: DialogProps) {
     return (
         <Modal
             open={props.open}
-            title={t('transactions.modal.newTitle')}
+            title={generateTitle()}
             handleOpenChange={props.closeDialog}
             loading={loading}
-            inEditingMode={props.inEditingMode}
+            inEditingMode={props.mode == 'edit'}
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
+            hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
+            buttonDisabled={disabled}
             onClick={() => formRef.current?.submit()}
         >
-            <div className='flex flex-col space-y-6 w-full'>
-                <Select onValueChange={setCurrentAction} defaultValue={currentAction}>
-                    <SelectTrigger>
-                        <SelectValue placeholder={t('form.type.placeholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {getActionList().map((item: IItem) => (
-                            <SelectItem key={item.value} value={item.value.toString()}>
-                                {item.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+            {props.mode == 'upload' ? (
+                <UploadForm ref={formRef} dataCallback={handleFormSubmit} closeDialog={props.closeDialog}></UploadForm>
+            ) : (
+                <div className='flex flex-col space-y-6 w-full'>
+                    <Select onValueChange={setCurrentAction} defaultValue={currentAction}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={t('form.type.placeholder')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {getActionList().map((item: IItem) => (
+                                <SelectItem key={item.value} value={item.value.toString()}>
+                                    {item.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
 
-                {currentAction == 'INCOME' && (
-                    <IncomeForm
-                        ref={formRef}
-                        initialData={props.initialData}
-                        inEditingMode={props.inEditingMode}
-                        dataCallback={handleFormSubmit}
-                        closeDialog={props.closeDialog}
-                    ></IncomeForm>
-                )}
-                {currentAction == 'EXPENSES' && (
-                    <ExpensesForm
-                        ref={formRef}
-                        initialData={props.initialData}
-                        inEditingMode={props.inEditingMode}
-                        dataCallback={handleFormSubmit}
-                        closeDialog={props.closeDialog}
-                    ></ExpensesForm>
-                )}
-                {currentAction == 'INTERNAL' && (
-                    <TransferForm
-                        ref={formRef}
-                        initialData={props.initialData}
-                        inEditingMode={props.inEditingMode}
-                        dataCallback={handleFormSubmit}
-                        closeDialog={props.closeDialog}
-                    ></TransferForm>
-                )}
-            </div>
+                    {currentAction == 'INCOME' && (
+                        <IncomeForm
+                            ref={formRef}
+                            initialData={props.initialData}
+                            inEditingMode={props.mode == 'edit'}
+                            dataCallback={handleFormSubmit}
+                            closeDialog={props.closeDialog}
+                        ></IncomeForm>
+                    )}
+                    {currentAction == 'EXPENSES' && (
+                        <ExpensesForm
+                            ref={formRef}
+                            initialData={props.initialData}
+                            inEditingMode={props.mode == 'edit'}
+                            dataCallback={handleFormSubmit}
+                            closeDialog={props.closeDialog}
+                        ></ExpensesForm>
+                    )}
+                    {currentAction == 'INTERNAL' && (
+                        <TransferForm
+                            ref={formRef}
+                            initialData={props.initialData}
+                            inEditingMode={props.mode == 'edit'}
+                            dataCallback={handleFormSubmit}
+                            closeDialog={props.closeDialog}
+                        ></TransferForm>
+                    )}
+                </div>
+            )}
         </Modal>
     )
 }

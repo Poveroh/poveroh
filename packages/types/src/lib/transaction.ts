@@ -14,10 +14,10 @@ export interface IAmount extends IAmountBase {
 }
 
 export interface ICsvReadedTransaction {
-    date: string
+    date: Date
     amount: number
     type: TransactionAction
-    currency: string
+    currency: Currencies
     title: string
     originalRow?: Record<string, any>
 }

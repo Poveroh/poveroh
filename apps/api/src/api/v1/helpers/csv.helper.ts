@@ -1,6 +1,5 @@
 import Papa from 'papaparse'
-import _ from 'lodash'
-import { ICsvReadedTransaction, IFieldMapping, TransactionAction, Currencies } from '@poveroh/types'
+import { ICsvReadedTransaction, IFieldMapping, TransactionAction, Currencies, ICSVValueReturned } from '@poveroh/types'
 
 class CSVParser {
     private datePatterns = [
@@ -53,7 +52,92 @@ class CSVParser {
         'transaction',
         'details',
         'product',
-        'legenda'
+        'legenda',
+        'remark',
+        'text',
+        'transaction type',
+        'item',
+        'purpose',
+        'label',
+        'activity',
+        'particulars',
+        'explanation',
+        'subject',
+        'category',
+        'origin',
+        'destination',
+        'info',
+        'transaktionstext',
+        'betreff',
+        'Verwendungszweck',
+        'libelle',
+        'intitulé',
+        'descripción',
+        'concepto',
+        'referencia',
+        'historia',
+        'articolo',
+        'causale',
+        'ragione sociale',
+        'beneficiary',
+        'payer',
+        'counterparty',
+        'transaction id',
+        'trans id',
+        'operation',
+        'reason',
+        'comment',
+        'type',
+        'channel',
+        'document',
+        'invoice',
+        'receipt',
+        'statement',
+        'intestatario',
+        'beneficiario',
+        'ordinante',
+        'movimento',
+        'operazione',
+        'causale ABI',
+        'causale SIA',
+        'tipo operazione',
+        'descrizione operazione',
+        'dettaglio',
+        'trans details',
+        'trans description',
+        'account name',
+        'bank name',
+        'branch',
+        'location',
+        'description 1',
+        'description 2',
+        'narrative',
+        'posting text',
+        'source',
+        'recipient',
+        'sender',
+        'payee name',
+        'description of goods',
+        'order id',
+        'billing ref',
+        'clearing text',
+        'conto',
+        'codice operazione',
+        'riferimento',
+        'concept',
+        'designation',
+        'item description',
+        'line item',
+        'transaction detail',
+        'payment details',
+        'transaction reference',
+        'payment reference',
+        'transaction info',
+        'trans info',
+        'bank reference',
+        'customer reference',
+        'segno',
+        'descrizione estesa'
     ]
 
     private dateKeywords = [
@@ -66,7 +150,58 @@ class CSVParser {
         'started',
         'when',
         'day',
-        'datetime'
+        'datetime',
+        'posting date',
+        'transaction date',
+        'effective date',
+        'value date',
+        'settlement date',
+        'processing date',
+        'activity date',
+        'booked date',
+        'entry date',
+        'execution date',
+        'journal date',
+        'ora',
+        'giorno',
+        'fecha',
+        'hora',
+        'datum',
+        'uhrzeit',
+        'date operation',
+        'date valeur',
+        'date comptable',
+        'jour',
+        'transactiontime',
+        'system date',
+        'record date',
+        'payment date',
+        'emission date',
+        'scadenza',
+        'data contabile',
+        'data valuta',
+        'data operazione',
+        'data esecuzione',
+        'transfer date',
+        'report date',
+        'received date',
+        'sent date',
+        'cut-off date',
+        'statement date',
+        'period start',
+        'period end',
+        'data di accredito',
+        'data di addebito',
+        'data registrazione',
+        'start date',
+        'end date',
+        'due date',
+        'occurrence date',
+        'transaction_date',
+        'posting_date',
+        'valuta',
+        'data movimento',
+        'data contabilizzazione'
     ]
 
     private amountKeywords = [
@@ -81,7 +216,89 @@ class CSVParser {
         'charge',
         'balance',
         'debit',
-        'credit'
+        'credit',
+        'deposit',
+        'withdrawal',
+        'outflow',
+        'inflow',
+        'paid',
+        'received',
+        'currency',
+        'valore',
+        'prezzo',
+        'totale',
+        'saldo',
+        'addebito',
+        'accredito',
+        'montante',
+        'somme',
+        'débit',
+        'crédit',
+        'solde',
+        'importe',
+        'saldo',
+        'débito',
+        'crédito',
+        'betrag',
+        'summe',
+        'solde',
+        'soll',
+        'haben',
+        'net amount',
+        'gross amount',
+        'principal',
+        'interest',
+        'tax',
+        'payment',
+        'return',
+        'refund',
+        'disbursement',
+        'remittance',
+        'exchange',
+        'commission',
+        'discount',
+        'vat',
+        'tva',
+        'imposta',
+        'spese',
+        'interessi',
+        'capitale',
+        'salario',
+        'stipendio',
+        'rata',
+        'ammontare',
+        'due amount',
+        'final amount',
+        'subtotal',
+        'grand total',
+        'transaction amount',
+        'transfer amount',
+        'loan amount',
+        'initial amount',
+        'remaining balance',
+        'current balance',
+        'previous balance',
+        'commissione',
+        'prelievo',
+        'versamento',
+        'rata capitale',
+        'rata interessi',
+        'oneri',
+        'lordo',
+        'totale lordo',
+        'totale netto',
+        'importo originale',
+        'amount_usd',
+        'amount_eur',
+        'total_amount',
+        'current_balance',
+        'available balance',
+        'book balance',
+        'posted amount',
+        'transaction_amount',
+        'entry amount',
+        'valore nominale',
+        'differenza'
     ]
 
     private detectFields(headers: string[], sampleRows: Record<string, any>[]): IFieldMapping {
@@ -218,8 +435,8 @@ class CSVParser {
         return isNaN(parsed) ? 0 : parsed
     }
 
-    private parseDate(value: string): string {
-        if (!value) return new Date().toISOString().split('T')[0]
+    private parseDate(value: string): Date {
+        if (!value) return new Date()
 
         const attempts = [
             () => new Date(value),
@@ -267,7 +484,7 @@ class CSVParser {
             try {
                 const date = attempt()
                 if (date instanceof Date && !isNaN(date.getTime())) {
-                    return date.toISOString().split('T')[0]
+                    return date
                 }
             } catch {
                 continue
@@ -275,27 +492,32 @@ class CSVParser {
         }
 
         console.warn(`Unable to parse date: ${value}, using current date`)
-        return new Date().toISOString().split('T')[0]
+        return new Date()
     }
 
-    private extractCurrency(row: Record<string, any>, currencyField?: string): string {
+    private extractCurrency(row: Record<string, any>, currencyField?: string): Currencies {
         if (currencyField && row[currencyField]) {
-            const currency = String(row[currencyField]).trim()
+            const currency = String(row[currencyField])
+                .trim()
+                .replace(/[^A-Z€$£¥₹₽]/g, '')
             if (this.isLikelyCurrency(currency)) {
-                return currency.replace(/[^A-Z€$£¥₹₽]/g, '')
+                const match = Currencies[currency as keyof typeof Currencies]
+                return match ?? Currencies.UNKNOWN
             }
         }
 
-        for (const [key, value] of Object.entries(row)) {
+        for (const [_, value] of Object.entries(row)) {
             if (value && this.isLikelyCurrency(String(value))) {
                 const match = String(value).match(/EUR|USD|GBP|JPY|CHF|CAD|AUD|€|\$|£|¥|₹|₽/i)
                 if (match) {
-                    return match[0].toUpperCase()
+                    const cleaned = match[0].toUpperCase().replace(/[^A-Z€$£¥₹₽]/g, '')
+                    const matchCurrency = Currencies[cleaned as keyof typeof Currencies]
+                    return matchCurrency ?? Currencies.UNKNOWN
                 }
             }
         }
 
-        return 'UNKNOWN'
+        return Currencies.UNKNOWN
     }
 
     private findDataTableStart(csvData: string): {
@@ -495,19 +717,7 @@ class CSVParser {
         })
     }
 
-    public async parseCSVFile(fileContent: string): Promise<{
-        transactions: ICsvReadedTransaction[]
-        mapping: IFieldMapping
-        errors: string[]
-        detectedStartRow?: number
-        summary: {
-            totalTransactions: number
-            totalIncome: number
-            totalExpenses: number
-            dateRange: { from: string; to: string }
-            currencies: string[]
-        }
-    }> {
+    public async parseCSVFile(fileContent: string): Promise<ICSVValueReturned> {
         const result = await this.parseCSV(fileContent)
 
         const summary = {
@@ -517,12 +727,7 @@ class CSVParser {
                 .reduce((sum, t) => sum + t.amount, 0),
             totalExpenses: result.transactions
                 .filter(t => t.type === TransactionAction.EXPENSES)
-                .reduce((sum, t) => sum + t.amount, 0),
-            dateRange: {
-                from: result.transactions.length > 0 ? _.min(result.transactions.map(t => t.date)) || '' : '',
-                to: result.transactions.length > 0 ? _.max(result.transactions.map(t => t.date)) || '' : ''
-            },
-            currencies: _.uniq(result.transactions.map(t => t.currency))
+                .reduce((sum, t) => sum + t.amount, 0)
         }
 
         return { ...result, summary }

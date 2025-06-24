@@ -15,7 +15,7 @@ import {
 } from '@poveroh/ui/components/breadcrumb'
 import { Input } from '@poveroh/ui/components/input'
 
-import { ArrowLeftRight, Download, Plus, RotateCcw, Search } from 'lucide-react'
+import { ArrowLeftRight, Download, Import, Plus, RotateCcw, Search, Upload } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
@@ -29,6 +29,7 @@ import { useBankAccount } from '@/hooks/useBankAccount'
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
 import { isEmpty } from 'lodash'
+import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -38,6 +39,7 @@ export default function TransactionsView() {
 
     const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
+    const [addMode, setAddMode] = useState<'add' | 'upload'>('add')
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -130,10 +132,39 @@ export default function TransactionsView() {
                             <Button variant='outline'>
                                 <Download></Download>
                             </Button>
-                            <Button onClick={() => setDialogNewOpen(true)}>
-                                <Plus />
-                                {t('buttons.add.base')}
-                            </Button>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button>
+                                        <Plus />
+                                        {t('buttons.add.base')}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent align='end'>
+                                    <div className='flex flex-col space-y-5'>
+                                        <a
+                                            className='flex items-center space-x-2 w-full'
+                                            onClick={() => {
+                                                setAddMode('upload')
+                                                setDialogNewOpen(true)
+                                            }}
+                                        >
+                                            <Upload />
+                                            <p>{t('buttons.add.import')}</p>
+                                        </a>
+                                        <hr />
+                                        <a
+                                            className='flex items-center space-x-2 w-full'
+                                            onClick={() => {
+                                                setAddMode('add')
+                                                setDialogNewOpen(true)
+                                            }}
+                                        >
+                                            <Plus />
+                                            <p>{t('buttons.add.base')}</p>
+                                        </a>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
                         </div>
                     </div>
                 </div>
@@ -240,8 +271,8 @@ export default function TransactionsView() {
             {dialogNewOpen && (
                 <TransactionDialog
                     open={dialogNewOpen}
-                    inEditingMode={false}
-                    dialogHeight='h-[80vh]'
+                    mode={addMode}
+                    dialogHeight={addMode == 'add' ? 'h-[80vh]' : undefined}
                     closeDialog={() => setDialogNewOpen(false)}
                 ></TransactionDialog>
             )}
@@ -249,8 +280,8 @@ export default function TransactionsView() {
             {itemToEdit && (
                 <TransactionDialog
                     initialData={itemToEdit}
+                    mode='edit'
                     open={itemToEdit !== null}
-                    inEditingMode={true}
                     dialogHeight='h-[80vh]'
                     closeDialog={() => setItemToEdit(null)}
                 />

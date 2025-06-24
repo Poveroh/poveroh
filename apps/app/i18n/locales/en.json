@@ -57,6 +57,7 @@
         "cancel": "Cancel",
         "delete": "Delete",
         "edit": "Edit",
+        "upload": "Upload",
         "editItem": "Edit item",
         "deleteItem": "Delete item",
         "returnHome": "Return home",
@@ -282,6 +283,7 @@
         },
         "modal": {
             "newTitle": "New transaction",
+            "uploadTitle": "Upload transactions",
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },

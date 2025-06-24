@@ -17,7 +17,8 @@ export enum Currencies {
     HKD = 'HKD',
     NOK = 'NOK',
     KRW = 'KRW',
-    TRY = 'TRY'
+    TRY = 'TRY',
+    UNKNOWN = 'UNKNOWN'
 }
 
 export const currencyCatalog: IItem[] = Object.values(Currencies).map(currency => ({
