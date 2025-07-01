@@ -138,7 +138,6 @@ This project uses:
     ```
 
     The command will execute the following steps:
-
     - Create and run database docker image.
     - Navigate to the `packages/prisma` directory.
     - Generate the Prisma client.

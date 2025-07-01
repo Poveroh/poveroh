@@ -46,7 +46,6 @@ The development branch is `main`.
     ```
 
     The command will execute the following steps:
-
     - Create and run database docker image.
     - Navigate to the `packages/prisma` directory.
     - Generate the Prisma client.
@@ -59,7 +58,6 @@ The development branch is `main`.
     > If you encounter any difficulties or something doesn't go as planned, read [this file](./scripts/README.md) to execute it manually.
 
 2. Create a user; open a browser to [http://localhost:5555](http://localhost:5555) and fill out Users table with fields:
-
     - `name`
     - `surname`
     - `email`
