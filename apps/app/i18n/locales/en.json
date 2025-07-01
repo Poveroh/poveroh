@@ -287,11 +287,15 @@
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },
-
         "types": {
             "internalTransfer": "Internal transfer",
             "income": "Income",
             "expenses": "Expenses"
+        },
+        "approvalList": {
+            "transactionFound": "Transactions found ({a}):",
+            "rejectAll": "Reject all",
+            "approveAll": "Approve all"
         }
     },
     "subscriptions": {

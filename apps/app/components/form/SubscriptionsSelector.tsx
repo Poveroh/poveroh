@@ -5,8 +5,8 @@ import { CardHorizontal } from '../card/CardHorizontal'
 import { groupBrandByCategory } from '@/utils/brands'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { Input } from '@poveroh/ui/components/input'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import 'react-perfect-scrollbar/dist/css/styles.css'
+import SimpleBar from 'simplebar-react'
+import 'simplebar-react/dist/simplebar.min.css'
 
 type FormProps = {
     dataCallback: (brand: IBrand) => void
@@ -88,7 +88,7 @@ export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
             ) : (
                 <Tabs value={activeTab} onValueChange={setActiveTab} className='flex flex-col grow overflow-y-auto'>
                     <div className='relative rounded-sm'>
-                        <PerfectScrollbar>
+                        <SimpleBar>
                             <TabsList>
                                 {Object.keys(groupedBrands).map(category => (
                                     <TabsTrigger key={category} value={category}>
@@ -96,7 +96,7 @@ export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
-                        </PerfectScrollbar>
+                        </SimpleBar>
                     </div>
                     {Object.entries(groupedBrands).map(([category, brands]) => (
                         <TabsContent key={category} value={category} className='grow overflow-y-auto'>

@@ -4,8 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import DynamicIcon from '../icon/DynamicIcon'
 import { BrandIcon } from '../icon/BrandIcon'
 import { ModalFooter, ModalFooterProps } from './FormFooter'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import 'react-perfect-scrollbar/dist/css/styles.css'
+import SimpleBar from 'simplebar-react'
+import 'simplebar-react/dist/simplebar.min.css'
 import { cn } from '@poveroh/ui/lib/utils'
 import { ReactElement } from 'react'
 import { AppearanceMode } from '@poveroh/types'
@@ -44,9 +44,7 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                     </div>
                 </DialogHeader>
                 <div className={cn('flex flex-grow items-start overflow-y-auto', props.contentHeight)}>
-                    <PerfectScrollbar className='w-full h-full' option={{ suppressScrollX: true }}>
-                        {props.children}
-                    </PerfectScrollbar>
+                    <SimpleBar className='w-full h-full'>{props.children}</SimpleBar>
                 </div>
                 {showFooter && (
                     <ModalFooter

@@ -127,6 +127,8 @@ export class TransactionController {
             const files = req.files as Express.Multer.File[]
             const parser = new CSVParser()
 
+            const bankAccountId: string = req.body.bankAccountId
+
             const results: ICsvReadedTransaction[] = []
             for (const file of files) {
                 const content = file.buffer.toString('utf-8')
@@ -136,7 +138,7 @@ export class TransactionController {
                 results.push(...res.transactions)
             }
 
-            const parsedTransactions = TransactionHelper.normalizeTransaction(req.user.id, '', results)
+            const parsedTransactions = TransactionHelper.normalizeTransaction(req.user.id, bankAccountId, results)
 
             res.status(200).json(parsedTransactions)
         } catch (error) {

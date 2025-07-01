@@ -10,9 +10,11 @@ import Image from 'next/image'
 import {
     Currencies,
     currencyCatalog,
+    FormProps,
     IBankAccount,
     ICategory,
     IItem,
+    InputVariantStyle,
     ISubcategory,
     ITransaction,
     TransactionAction
@@ -36,14 +38,7 @@ import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 
-type FormProps = {
-    initialData?: ITransaction
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-    closeDialog: () => void
-}
-
-export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
+export const ExpensesForm = forwardRef(({ initialData, inEditingMode, inputStyle, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
     const { handleError } = useError()
 
@@ -177,7 +172,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                             <FormItem>
                                 <FormLabel mandatory>{t('form.title.label')}</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input {...field} variant={inputStyle} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -194,8 +189,9 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     <Input
                                         type='date'
                                         {...field}
-                                        value={field.value ? field.value.split('T')[0] : ''}
+                                        variant={inputStyle}
                                         onChange={e => field.onChange(e.target.value)}
+                                        value={field.value ? field.value.split('T')[0] : ''}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -211,7 +207,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                 <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger variant={inputStyle}>
                                             <SelectValue placeholder={t('form.currency.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
@@ -265,6 +261,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                         type='number'
                                         step='0.01'
                                         min='0'
+                                        variant={inputStyle}
                                         disabled={multipleAmount}
                                         {...field}
                                         onChange={e => {
@@ -295,6 +292,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                                     step='0.01'
                                                     min='0'
                                                     {...field}
+                                                    variant={inputStyle}
                                                     onChange={e => {
                                                         field.onChange(parseAmountValue(e.target.value))
                                                         form.setValue('total_amount', calculateTotal())
@@ -314,7 +312,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                         <FormItem>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger variant={inputStyle}>
                                                         <SelectValue placeholder={t('form.bankaccount.placeholder')} />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -358,7 +356,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.bankaccount.placeholder')} />
                                             </SelectTrigger>
                                         </FormControl>
@@ -394,7 +392,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.category.placeholder')} />
                                             </SelectTrigger>
                                         </FormControl>
@@ -424,7 +422,7 @@ export const ExpensesForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     <FormLabel mandatory>{t('form.subcategory.label')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.subcategory.placeholder')} />
                                             </SelectTrigger>
                                         </FormControl>

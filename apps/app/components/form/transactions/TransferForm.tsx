@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { currencyCatalog, IBankAccount, IItem, ITransaction, TransactionAction } from '@poveroh/types'
+import { currencyCatalog, FormProps, IBankAccount, IItem, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -20,14 +20,7 @@ import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { Button } from '@poveroh/ui/components/button'
 
-type FormProps = {
-    initialData?: ITransaction
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-    closeDialog: () => void
-}
-
-export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
+export const TransferForm = forwardRef(({ initialData, inEditingMode, inputStyle, dataCallback }: FormProps, ref) => {
     const t = useTranslations()
     const { handleError } = useError()
 
@@ -112,7 +105,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                             <FormItem>
                                 <FormLabel mandatory>{t('form.title.label')}</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <Input {...field} variant={inputStyle} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -129,6 +122,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     <Input
                                         type='date'
                                         {...field}
+                                        variant={inputStyle}
                                         value={field.value ? field.value.split('T')[0] : ''}
                                         onChange={e => field.onChange(e.target.value)}
                                     />
@@ -151,6 +145,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                             step='0.01'
                                             min='0'
                                             {...field}
+                                            variant={inputStyle}
                                             onChange={e => field.onChange(parseFloat(e.target.value ?? 0))}
                                             placeholder={t('form.amount.placeholder')}
                                         />
@@ -167,7 +162,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                     <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
-                                            <SelectTrigger>
+                                            <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.currency.placeholder')} />
                                             </SelectTrigger>
                                         </FormControl>
@@ -202,7 +197,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                             defaultValue={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger variant={inputStyle}>
                                                     <SelectValue placeholder={t('form.bankaccount.placeholder')} />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -240,7 +235,7 @@ export const TransferForm = forwardRef(({ initialData, inEditingMode, dataCallba
                                             defaultValue={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger variant={inputStyle}>
                                                     <SelectValue placeholder={t('form.bankaccount.placeholder')} />
                                                 </SelectTrigger>
                                             </FormControl>

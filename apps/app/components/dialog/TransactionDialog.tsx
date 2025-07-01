@@ -1,16 +1,11 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { IncomeForm } from '../form/transactions/IncomeForm'
-import { useEffect, useRef, useState } from 'react'
-import { IItem, ITransaction } from '@poveroh/types'
-import { TransferForm } from '../form/transactions/TransferForm'
+import { useRef, useState } from 'react'
+import { ITransaction } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useTransaction } from '@/hooks/useTransaction'
-import { useBankAccount } from '@/hooks/useBankAccount'
-import { useCategory } from '@/hooks/useCategory'
-import { ExpensesForm } from '../form/transactions/ExpensesForm'
 import { UploadForm } from '../form/transactions/UploadForm'
+import { TransactionForm } from '../form/TransactionForm'
 
 type DialogProps = {
     open: boolean
@@ -23,26 +18,16 @@ type DialogProps = {
 export function TransactionDialog(props: DialogProps) {
     const t = useTranslations()
 
-    const { getActionList, addTransaction, editTransaction } = useTransaction()
-    const { fetchBankAccount } = useBankAccount()
-    const { fetchCategory } = useCategory()
+    const { addTransaction, editTransaction } = useTransaction()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [disabled, setDisabled] = useState(props.mode == 'upload')
+    const disabled = props.mode == 'upload'
+
     const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
     const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
-
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    async function fetchData() {
-        // fetchBankAccount()
-        // fetchCategory()
-    }
 
     const generateTitle = () => {
         let suffixTitle = ''
@@ -114,48 +99,14 @@ export function TransactionDialog(props: DialogProps) {
             {props.mode == 'upload' ? (
                 <UploadForm ref={formRef} dataCallback={handleFormSubmit} closeDialog={props.closeDialog}></UploadForm>
             ) : (
-                <div className='flex flex-col space-y-6 w-full'>
-                    <Select onValueChange={setCurrentAction} defaultValue={currentAction}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={t('form.type.placeholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {getActionList().map((item: IItem) => (
-                                <SelectItem key={item.value} value={item.value.toString()}>
-                                    {item.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    {currentAction == 'INCOME' && (
-                        <IncomeForm
-                            ref={formRef}
-                            initialData={props.initialData}
-                            inEditingMode={props.mode == 'edit'}
-                            dataCallback={handleFormSubmit}
-                            closeDialog={props.closeDialog}
-                        ></IncomeForm>
-                    )}
-                    {currentAction == 'EXPENSES' && (
-                        <ExpensesForm
-                            ref={formRef}
-                            initialData={props.initialData}
-                            inEditingMode={props.mode == 'edit'}
-                            dataCallback={handleFormSubmit}
-                            closeDialog={props.closeDialog}
-                        ></ExpensesForm>
-                    )}
-                    {currentAction == 'INTERNAL' && (
-                        <TransferForm
-                            ref={formRef}
-                            initialData={props.initialData}
-                            inEditingMode={props.mode == 'edit'}
-                            dataCallback={handleFormSubmit}
-                            closeDialog={props.closeDialog}
-                        ></TransferForm>
-                    )}
-                </div>
+                <TransactionForm
+                    ref={formRef}
+                    initialData={props.initialData}
+                    mode={props.mode}
+                    action={currentAction}
+                    setAction={setCurrentAction}
+                    handleSubmit={handleFormSubmit}
+                ></TransactionForm>
             )}
         </Modal>
     )
