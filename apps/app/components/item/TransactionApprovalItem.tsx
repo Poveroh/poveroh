@@ -4,12 +4,13 @@ import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@pover
 
 import { useEffect, useRef, useState } from 'react'
 import icons from 'currency-icons'
-import { Pencil } from 'lucide-react'
+import { Pencil, Trash } from 'lucide-react'
 import DynamicIcon from '../icon/DynamicIcon'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { useTranslations } from 'next-intl'
 import Divider from '../other/Divider'
 import { TransactionForm } from '../form/TransactionForm'
+import { Button } from '@poveroh/ui/components/button'
 
 type TransactionItemProps = {
     transaction: ITransaction
@@ -63,7 +64,7 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
     return (
         <div className='w-full p-5 bg-input rounded-md'>
             {editingMode ? (
-                <div className='flex flex-col space-y-2 items-center w-full'>
+                <div className='flex flex-col space-y-4 items-center w-full'>
                     <TransactionForm
                         ref={formRef}
                         initialData={transaction}
@@ -72,6 +73,38 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
                         action={transaction.type}
                         handleSubmit={async (data: FormData) => {}}
                     ></TransactionForm>
+                    <Divider></Divider>
+                    <div className='flex flex-row items-center justify-between w-full'>
+                        <Button
+                            variant='danger'
+                            onClick={() => {
+                                // setEditingMode(false)
+                                // openDelete(transaction)
+                            }}
+                        >
+                            <Trash />
+                            {t('buttons.delete')}
+                        </Button>
+                        <div className='flex flex-row items-center space-x-2'>
+                            <Button
+                                variant='outline'
+                                onClick={async () => {
+                                    setEditingMode(false)
+                                    // openEdit(transaction)
+                                }}
+                            >
+                                {t('buttons.cancel')}
+                            </Button>
+                            <Button
+                                onClick={async () => {
+                                    // setEditingMode(false)
+                                    // openEdit(transaction)
+                                }}
+                            >
+                                {t('buttons.save')}
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <div className='flex flex-col space-y-2 items-center w-full'>
@@ -105,8 +138,11 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
                                 <div className='flex flex-row space-x-1'>
                                     {transaction.type !== TransactionAction.INTERNAL && (
                                         <>
-                                            {isExpense && <p className='danger font-bold'>-</p>}
-                                            {!isExpense && <p className='success font-bold'>+</p>}
+                                            {isExpense ? (
+                                                <p className='danger font-bold'>-</p>
+                                            ) : (
+                                                <p className='success font-bold'>+</p>
+                                            )}
                                         </>
                                     )}
                                     <h5 className='font-bold'>{amount}</h5>

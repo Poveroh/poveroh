@@ -30,6 +30,7 @@ import { IFilterOptions, ITransaction } from '@poveroh/types'
 
 import { isEmpty } from 'lodash'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
+import Divider from '@/components/other/Divider'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -151,7 +152,7 @@ export default function TransactionsView() {
                                             <Upload />
                                             <p>{t('buttons.add.import')}</p>
                                         </a>
-                                        <hr />
+                                        <Divider />
                                         <a
                                             className='flex items-center space-x-2 w-full'
                                             onClick={() => {
@@ -228,7 +229,7 @@ export default function TransactionsView() {
                                 </div>
                                 {(bankAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
                                     <>
-                                        <hr className='w-full' />
+                                        <Divider />
                                         <div className='flex flex-col items-center space-y-8 justify-center'>
                                             <div className='flex flex-col items-center space-y-2 justify-center'>
                                                 <p className='warning'>{t('messages.noCategoriesAndAccountTitle')}</p>

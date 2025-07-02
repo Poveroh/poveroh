@@ -27,6 +27,7 @@ import { CategoryDialog } from '@/components/dialog/CategoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
 import { CategoryItem } from '@/components/item/CategoryItem'
+import Divider from '@/components/other/Divider'
 
 export default function CategoryView() {
     const t = useTranslations()
@@ -167,7 +168,7 @@ export default function CategoryView() {
                                         </a>
                                         {localCategoryList.length > 0 && (
                                             <>
-                                                <hr />
+                                                <Divider></Divider>
                                                 <a
                                                     className='flex items-center space-x-2 w-full'
                                                     onClick={() => openNew('subcategory')}

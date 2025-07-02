@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { ICategory, IItem } from '@poveroh/types'
+import { FormRef, ICategory, IItem } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
@@ -26,8 +26,11 @@ type FormProps = {
     closeDialog: () => void
 }
 
-export const CategoryForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
+export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
+
+    const { initialData, inEditingMode, dataCallback } = props
+
     const { handleError } = useError()
     const { getActionList } = useTransaction()
 

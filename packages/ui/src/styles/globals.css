@@ -28,9 +28,9 @@
     --black-color: #0d0d0d;
     --white-color: #fafafa;
 
-    --hr-color: #393939;
-    --border-color: #393939;
-    --ring-color: #393939;
+    --hr-color: #4a4747; /*#393939 */
+    --border-color: #4a4747;
+    --ring-color: #4a4747;
 
     --body-color: #1c1c1c;
     --body-gradient-color:

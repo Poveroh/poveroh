@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ListFilter } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { FilterField } from '@poveroh/types'
+import Divider from '../other/Divider'
 
 type FilterButtonProps<T extends Record<string, any>> = {
     fields: FilterField[]
@@ -68,7 +69,7 @@ export function FilterButton<T extends Record<string, any>>({ fields, filters, o
                                 />
                             )}
 
-                            {fields.length - 1 !== index && <hr />}
+                            {fields.length - 1 !== index && <Divider />}
                         </div>
                     ))}
                 </div>

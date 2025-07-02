@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { BankAccountType, IBankAccount, IItem } from '@poveroh/types'
+import { BankAccountType, FormRef, IBankAccount, IItem } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -26,8 +26,10 @@ type FormProps = {
     closeDialog: () => void
 }
 
-export const BankAccountForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
+export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
+
+    const { initialData, inEditingMode, dataCallback } = props
 
     const { getTypeList } = useBankAccount()
     const { handleError } = useError()

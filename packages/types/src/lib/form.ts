@@ -7,3 +7,7 @@ export type FormProps = {
     inputStyle?: InputVariantStyle
     dataCallback: (formData: FormData) => Promise<void>
 }
+
+export type FormRef = {
+    submit: () => void
+}

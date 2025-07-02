@@ -9,6 +9,7 @@ import { IUser } from '@poveroh/types'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { useUser } from '@/hooks/useUser'
+import Divider from '../other/Divider'
 
 type UserPopoverContentProps = {
     user: IUser
@@ -27,11 +28,11 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
                     </p>
                     <p className='font-bold sub'>{user.email}</p>
                 </div>
-                <hr />
+                <Divider />
                 {link && (
                     <>
                         {link}
-                        <hr />
+                        <Divider />
                     </>
                 )}
                 <div className='flex flex-col space-y-5'>
@@ -44,7 +45,7 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
                         <p>{t('logout.title')}</p>
                     </a>
                 </div>
-                <hr />
+                <Divider />
                 <div className='flex space-x-2'>
                     <p className='sub small'>
                         {appConfig.name} &#64; {year}

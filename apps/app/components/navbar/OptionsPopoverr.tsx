@@ -2,7 +2,8 @@
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import { useTranslations } from 'next-intl'
-import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
+import { Divide, EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
+import Divider from '../other/Divider'
 
 type OptionsPopoverContentProps<T> = {
     data: T
@@ -19,7 +20,7 @@ function OptionsContent<T>({ data, openDelete, openEdit }: OptionsPopoverContent
                 <Pencil size={20} />
                 <p>{t('buttons.editItem')}</p>
             </a>
-            <hr />
+            <Divider />
             <a className='flex items-center space-x-2 w-full cursor-pointer' onClick={() => openDelete(data)}>
                 <Trash2 className='danger' size={20} />
                 <p>{t('buttons.deleteItem')}</p>

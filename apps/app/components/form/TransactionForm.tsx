@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { IncomeForm } from '../form/transactions/IncomeForm'
-import { use, useEffect, useRef, useState } from 'react'
-import { IItem, InputVariantStyle, ITransaction } from '@poveroh/types'
+import { useEffect, useRef, useState } from 'react'
+import { FormRef, IItem, InputVariantStyle, ITransaction } from '@poveroh/types'
 import { TransferForm } from '../form/transactions/TransferForm'
 import { useTransaction } from '@/hooks/useTransaction'
 import { ExpensesForm } from '../form/transactions/ExpensesForm'
@@ -17,7 +17,7 @@ type TransactionFormProps = {
     handleSubmit: (data: FormData) => Promise<void>
 }
 
-export const TransactionForm = forwardRef<HTMLFormElement, TransactionFormProps>((props, ref) => {
+export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props: TransactionFormProps, ref) => {
     const t = useTranslations()
 
     const { getActionList } = useTransaction()
@@ -30,7 +30,11 @@ export const TransactionForm = forwardRef<HTMLFormElement, TransactionFormProps>
         }
     }, [props.action])
 
-    useImperativeHandle(ref, () => formRef.current as HTMLFormElement, [])
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            formRef.current?.submit()
+        }
+    }))
 
     return (
         <div className='flex flex-col space-y-6 w-full'>
@@ -53,6 +57,7 @@ export const TransactionForm = forwardRef<HTMLFormElement, TransactionFormProps>
                     initialData={props.initialData}
                     inEditingMode={props.mode == 'edit'}
                     dataCallback={props.handleSubmit}
+                    inputStyle={props.inputStyle}
                 />
             )}
             {localCurrentAction == 'EXPENSES' && (
@@ -71,6 +76,7 @@ export const TransactionForm = forwardRef<HTMLFormElement, TransactionFormProps>
                     initialData={props.initialData}
                     inEditingMode={props.mode == 'edit'}
                     dataCallback={props.handleSubmit}
+                    inputStyle={props.inputStyle}
                 />
             )}
         </div>

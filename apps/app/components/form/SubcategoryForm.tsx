@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { FormRef, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import {
@@ -33,8 +33,11 @@ type FormProps = {
     closeDialog: () => void
 }
 
-export const SubcategoryForm = forwardRef(({ initialData, inEditingMode, dataCallback }: FormProps, ref) => {
+export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
+
+    const { initialData, inEditingMode, dataCallback } = props
+
     const { handleError } = useError()
 
     const { categoryCacheList } = useCategory()

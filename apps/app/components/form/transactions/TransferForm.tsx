@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { currencyCatalog, FormProps, IBankAccount, IItem, ITransaction, TransactionAction } from '@poveroh/types'
+import { currencyCatalog, FormProps, FormRef, IBankAccount, IItem, TransactionAction } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -20,10 +20,12 @@ import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { Button } from '@poveroh/ui/components/button'
 
-export const TransferForm = forwardRef(({ initialData, inEditingMode, inputStyle, dataCallback }: FormProps, ref) => {
+export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
-    const { handleError } = useError()
 
+    const { initialData, inEditingMode, inputStyle, dataCallback } = props
+
+    const { handleError } = useError()
     const { bankAccountCacheList } = useBankAccount()
 
     const defaultValues = {

@@ -10,11 +10,11 @@ import {
     Currencies,
     currencyCatalog,
     FormProps,
+    FormRef,
     IBankAccount,
     ICategory,
     IItem,
     ISubcategory,
-    ITransaction,
     TransactionAction
 } from '@poveroh/types'
 
@@ -35,10 +35,12 @@ import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 
-export const IncomeForm = forwardRef(({ initialData, inEditingMode, inputStyle, dataCallback }: FormProps, ref) => {
+export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
-    const { handleError } = useError()
 
+    const { initialData, inEditingMode, inputStyle, dataCallback } = props
+
+    const { handleError } = useError()
     const { categoryCacheList } = useCategory()
     const { bankAccountCacheList } = useBankAccount()
 
