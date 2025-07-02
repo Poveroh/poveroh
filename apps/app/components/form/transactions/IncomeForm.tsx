@@ -310,7 +310,11 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                             <FormItem>
                                 <FormLabel>{t('form.note.label')}</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder={t('form.note.placeholder')} {...field} />
+                                    <Textarea
+                                        placeholder={t('form.note.placeholder')}
+                                        {...field}
+                                        variant={inputStyle}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

@@ -266,7 +266,11 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                             <FormItem>
                                 <FormLabel>{t('form.note.label')}</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder={t('form.note.placeholder')} {...field} />
+                                    <Textarea
+                                        placeholder={t('form.note.placeholder')}
+                                        {...field}
+                                        variant={inputStyle}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
