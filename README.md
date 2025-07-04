@@ -4,7 +4,7 @@
 
 # Poveroh
 
-#### A unified platform to track your wealth.
+#### A Open-Source platform to track personal finance, built for clarity
 
 <h4>
 <a href="https://github.com/Poveroh/poveroh/issues/">Report Bug</a>
@@ -28,7 +28,7 @@
 
 <!-- About the Project -->
 
-## :star2: About the Project
+## :star2: About Poveroh
 
 <div align="center"> 
   <img src="./assets/dashboard_screenshot.jpg" alt="screenshot" />
@@ -40,9 +40,9 @@ Poveroh is an open-source, web-based platform for tracking personal finances.
 
 This platform was born from the desire to track personal finances in a detailed and structured way.
 
-Ok, there are thousands of similar applications out there, but none of them truly fit my needs or convince me entirely. That’s why, driven by the wish to learn new technologies, improve my skills, and create something of my own, I decided to develop this platform—without any big ambitions, just as a personal project.
+Ok, there are thousands of similar applications out there, but none of them truly fit certain needs. Many lack a clean and intuitive UI/UX, and the few that do are often expensive—locked behind subscriptions or premium plans. That’s why this project was started - it aims to provide a scalable, open-source alternative that is easy to use, fast, and flexible—built with simplicity and clarity in mind.
 
-Currently, I track my finances using a Google Spreadsheet. This platform is essentially the web version of that spreadsheet (with some cool features to make everything more user-friendly).
+This platform is essentially a web-based version of a Google Spreadsheet finance tracker, enhanced with features to make everything more user-friendly (the mobile app is planned and is included in the roadmap :) ).
 
 ### How it works?
 
@@ -54,7 +54,9 @@ Since it’s designed to track personal wealth, a snapshot of the month (includi
 
 In addition to individual transactions and bank account aggregation, the goal is to provide a platform for tracking investments as well, allowing to add financial products such as ETFs, stocks, bonds, crypto, and more.
 
-> **Note**: This platform is currently tailored to meet my personal needs. It may not be fully complete or include features and services that others might find essential.
+> **Note**: Since this platform was designed based on personal needs, it may not be fully complete or include all the features that other users might consider essential.
+>
+> If you notice something missing from the roadmap or have an idea you’d like to see implemented, feel free to open an issue and share your suggestion!
 
 <!-- TechStack -->
 
@@ -74,12 +76,12 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 ## :art: Color Reference
 
-| Color            | Hex                                                              |
-| ---------------- | ---------------------------------------------------------------- |
-| Primary Color    | ![#4E594A](https://via.placeholder.com/10/4E594A?text=+) #4E594A |
-| Secondary Color  | ![#278664](https://via.placeholder.com/10/278664?text=+) #278664 |
-| Background Color | ![#1C1C1C](https://via.placeholder.com/10/1C1C1C?text=+) #1C1C1C |
-| Text Color       | ![#EEEEEE](https://via.placeholder.com/10/EEEEEE?text=+) #FFFFFF |
+| Color            | Hex     |
+| ---------------- | ------- |
+| Primary Color    | #4E594A |
+| Secondary Color  | #278664 |
+| Background Color | #1C1C1C |
+| Text Color       | #FFFFFF |
 
 <!-- Getting Started -->
 
