@@ -114,7 +114,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: props.initialData || defaultValues
     })
 
     const { fields, append, remove } = useFieldArray({

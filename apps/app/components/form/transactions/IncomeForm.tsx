@@ -82,7 +82,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: props.initialData || defaultValues
     })
 
     useImperativeHandle(ref, () => ({

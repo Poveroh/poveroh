@@ -64,7 +64,7 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: props.initialData || defaultValues
     })
 
     useImperativeHandle(ref, () => ({
