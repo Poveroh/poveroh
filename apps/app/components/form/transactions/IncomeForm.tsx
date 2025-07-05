@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,6 +34,7 @@ import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import logger from '@/lib/logger'
 
 export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -90,6 +91,12 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
             form.handleSubmit(handleLocalSubmit)()
         }
     }))
+
+    useEffect(() => {
+        if (Object.keys(form.formState.errors).length > 0) {
+            logger.debug('Form errors:', form.formState.errors)
+        }
+    }, [form.formState.errors])
 
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryCacheList.find(item => item.id === categoryId)

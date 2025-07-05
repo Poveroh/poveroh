@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +19,7 @@ import DynamicIcon from '@/components/icon/DynamicIcon'
 import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { Button } from '@poveroh/ui/components/button'
+import logger from '@/lib/logger'
 
 export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -72,6 +73,12 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
             form.handleSubmit(handleLocalSubmit)()
         }
     }))
+
+    useEffect(() => {
+        if (Object.keys(form.formState.errors).length > 0) {
+            logger.debug('Form errors:', form.formState.errors)
+        }
+    }, [form.formState.errors])
 
     const switchBankAccount = () => {
         const fromBankAccount = form.getValues('from')

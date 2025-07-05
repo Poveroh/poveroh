@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -36,6 +36,7 @@ import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import logger from '@/lib/logger'
 
 export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -127,6 +128,12 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
             form.handleSubmit(handleLocalSubmit)()
         }
     }))
+
+    useEffect(() => {
+        if (Object.keys(form.formState.errors).length > 0) {
+            logger.debug('Form errors:', form.formState.errors)
+        }
+    }, [form.formState.errors])
 
     const calculateTotal = () => {
         return form.getValues().amounts.reduce((acc, curr) => acc + curr.amount, 0)

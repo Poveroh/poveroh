@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -59,6 +59,12 @@ export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps,
             form.handleSubmit(handleLocalSubmit)()
         }
     }))
+
+    useEffect(() => {
+        if (Object.keys(form.formState.errors).length > 0) {
+            console.debug('Form errors:', form.formState.errors)
+        }
+    }, [form.formState.errors])
 
     const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
         try {

@@ -47,6 +47,12 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
         const formData = new FormData()
 
+        if (bankAccount === '') {
+            setFileError(true)
+            setLoading(false)
+            return
+        }
+
         formData.append('bankAccountId', bankAccount)
 
         files?.forEach(file => {
