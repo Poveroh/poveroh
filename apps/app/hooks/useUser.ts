@@ -2,7 +2,7 @@
 
 import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUser, IUserToSave } from '@poveroh/types/dist'
+import { IUser, IUserToSave } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { isEqual } from 'lodash'
 import { useRouter } from 'next/navigation'

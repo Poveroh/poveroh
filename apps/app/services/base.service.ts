@@ -1,5 +1,5 @@
 import { server } from '@/lib/server'
-import { IFilterOptions } from '@poveroh/types/dist'
+import { IFilterOptions } from '@poveroh/types'
 import qs from 'qs'
 
 export class BaseService<T> {

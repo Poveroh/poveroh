@@ -1,4 +1,4 @@
-import { ITransaction } from '@poveroh/types/dist'
+import { ITransaction } from '@poveroh/types'
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { TransactionApprovalItem } from '../item/TransactionApprovalItem'

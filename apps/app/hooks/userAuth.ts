@@ -3,7 +3,7 @@
 import { cookie, storage } from '@/lib/storage'
 import { AuthService } from '@/services/auth.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUserLogin, IUserToSave } from '@poveroh/types/dist'
+import { IUserLogin, IUserToSave } from '@poveroh/types'
 import { encryptString, isValidEmail } from '@poveroh/utils'
 import { isEmpty } from 'lodash'
 import { redirect } from 'next/navigation'

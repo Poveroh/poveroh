@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
 import { AuthHelper } from '../../../helpers/auth.helper'
-import { IUserToSave } from '@poveroh/types/dist'
+import { IUserToSave } from '@poveroh/types'
 import logger from '../../../utils/logger'
 
 export class AuthController {
