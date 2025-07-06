@@ -37,6 +37,8 @@ import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import logger from '@/lib/logger'
+import { amountSchema } from '@/types/form'
+import { cloneDeep } from 'lodash'
 
 export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -48,7 +50,6 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     const { bankAccountCacheList } = useBankAccount()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
-    const [multipleAmount, setMultipleAmount] = useState(false)
 
     const [file, setFile] = useState<FileList | null>(null)
     const [fileError, setFileError] = useState(false)
@@ -67,51 +68,60 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
         category_id: '',
         subcategory_id: '',
         note: '',
-        ignore: false
+        ignore: false,
+        multipleAmount: false
     }
 
-    const formSchema = z
-        .object({
-            title: z.string().nonempty(t('messages.errors.required')),
-            date: z.string({
-                required_error: t('messages.errors.required')
-            }),
-            total_amount: z
-                .number({
-                    required_error: t('messages.errors.required'),
-                    invalid_type_error: t('messages.errors.pattern')
+    const baseSchema = z.object({
+        title: z.string().nonempty(t('messages.errors.required')),
+        date: z.string({
+            required_error: t('messages.errors.required')
+        }),
+        total_amount: amountSchema({
+            required_error: t('messages.errors.required'),
+            invalid_type_error: t('messages.errors.pattern')
+        }),
+        multipleAmount: z.boolean().default(false),
+        currency: z.string().nonempty(t('messages.errors.required')),
+        category_id: z.string().nonempty(t('messages.errors.required')),
+        subcategory_id: z.string().nonempty(t('messages.errors.required')),
+        note: z.string(),
+        ignore: z.boolean()
+    })
+
+    const amountsSchema = baseSchema.extend({
+        multipleAmount: z.literal(true),
+        amounts: z
+            .array(
+                z.object({
+                    amount: amountSchema({
+                        required_error: t('messages.errors.required'),
+                        invalid_type_error: t('messages.errors.pattern')
+                    }),
+                    bank_account_id: z.string().nonempty(t('messages.errors.required'))
                 })
-                .positive(),
-            total_bank_account_id: z.string().nonempty(t('messages.errors.required')),
-            amounts: z
-                .array(
-                    z.object({
-                        amount: z
-                            .number({
-                                required_error: t('messages.errors.required'),
-                                invalid_type_error: t('messages.errors.pattern')
-                            })
-                            .positive(),
-                        bank_account_id: z.string().nonempty(t('messages.errors.required'))
-                    })
-                )
-                .min(1, 'At least one entry is required'),
-            currency: z.string().nonempty(t('messages.errors.required')),
-            category_id: z.string().nonempty(t('messages.errors.required')),
-            subcategory_id: z.string().nonempty(t('messages.errors.required')),
-            note: z.string(),
-            ignore: z.boolean()
-        })
-        .refine(
-            data => {
+            )
+            .min(1, 'At least one entry is required')
+    })
+
+    const bankacountSchema = baseSchema.extend({
+        multipleAmount: z.literal(false),
+        total_bank_account_id: z.string().nonempty(t('messages.errors.required'))
+    })
+
+    const formSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, bankacountSchema]).refine(
+        data => {
+            if (data.multipleAmount && 'amounts' in data) {
                 const sum = data.amounts.reduce((acc, curr) => acc + curr.amount, 0)
                 return sum === data.total_amount
-            },
-            {
-                message: 'Total amount must match the sum of all amounts',
-                path: ['total_amount']
             }
-        )
+            return true
+        },
+        {
+            message: 'Total amount must match the sum of all amounts',
+            path: ['total_amount']
+        }
+    )
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -122,6 +132,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
         control: form.control,
         name: 'amounts'
     })
+
+    const multipleAmount = form.watch('multipleAmount')
+    const toggleMultipleAmount = () => {
+        form.setValue('multipleAmount', !multipleAmount)
+    }
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -136,11 +151,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     }, [form.formState.errors])
 
     const calculateTotal = () => {
-        return form.getValues().amounts.reduce((acc, curr) => acc + curr.amount, 0)
-    }
-
-    const parseAmountValue = (e: string) => {
-        return e === '' ? 0 : parseFloat(e)
+        const values = form.getValues()
+        if ('amounts' in values && Array.isArray(values.amounts)) {
+            return values.amounts.reduce((acc, curr) => acc + curr.amount, 0)
+        }
+        return 0
     }
 
     const parseSubcategoryList = async (categoryId: string) => {
@@ -151,12 +166,31 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     }
 
     const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log('values', values)
+        logger.debug('values', values)
 
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let localTransaction: any = cloneDeep(values)
+
             const formData = new FormData()
 
-            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            if (!multipleAmount) {
+                const { total_amount, total_bank_account_id, ...rest } = localTransaction
+                localTransaction = {
+                    ...rest,
+                    amounts: [
+                        {
+                            amount: total_amount,
+                            bank_account_id: total_bank_account_id
+                        }
+                    ]
+                }
+            }
+
+            formData.append(
+                'data',
+                JSON.stringify(inEditingMode ? { ...initialData, ...localTransaction } : localTransaction)
+            )
             formData.append('action', TransactionAction.EXPENSES)
 
             if (file && file[0]) {
@@ -247,7 +281,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             type='button'
                                             size='sm'
                                             variant='ghost'
-                                            onClick={() => setMultipleAmount(x => !x)}
+                                            onClick={() => toggleMultipleAmount()}
                                         >
                                             {!multipleAmount ? <Split></Split> : <Merge />}
                                         </Button>
@@ -272,6 +306,9 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                         variant={inputStyle}
                                         disabled={multipleAmount}
                                         {...field}
+                                        value={
+                                            Number.isNaN(field.value) || field.value === undefined ? '' : field.value
+                                        }
                                         onChange={e => {
                                             const val = parseFloat(e.target.value)
                                             field.onChange(val)
@@ -300,9 +337,14 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                     step='0.01'
                                                     min='0'
                                                     {...field}
+                                                    value={
+                                                        Number.isNaN(field.value) || field.value === undefined
+                                                            ? ''
+                                                            : field.value
+                                                    }
                                                     variant={inputStyle}
                                                     onChange={e => {
-                                                        field.onChange(parseAmountValue(e.target.value))
+                                                        field.onChange(e.target.value)
                                                         form.setValue('total_amount', calculateTotal())
                                                     }}
                                                     placeholder={t('form.amount.placeholder')}

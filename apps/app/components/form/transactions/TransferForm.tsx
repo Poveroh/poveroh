@@ -20,6 +20,7 @@ import { useError } from '@/hooks/useError'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { Button } from '@poveroh/ui/components/button'
 import logger from '@/lib/logger'
+import { amountSchema } from '@/types/form'
 
 export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -47,12 +48,10 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                 required_error: t('messages.errors.required')
             }),
             currency: z.string().nonempty(t('messages.errors.required')),
-            amount: z
-                .number({
-                    required_error: t('messages.errors.required'),
-                    invalid_type_error: t('messages.errors.pattern')
-                })
-                .positive(),
+            amount: amountSchema({
+                required_error: t('messages.errors.required'),
+                invalid_type_error: t('messages.errors.pattern')
+            }),
             from: z.string().nonempty(t('messages.errors.required')),
             to: z.string().nonempty(t('messages.errors.required')),
             note: z.string(),

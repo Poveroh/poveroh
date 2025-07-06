@@ -22,9 +22,9 @@ export function TransactionDialog(props: DialogProps) {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const disabled = props.mode == 'upload'
-
     const [loading, setLoading] = useState(false)
+    const [saveDisabled, setSaveDisabled] = useState(props.mode == 'upload')
+    const [showSaveButton, setShowSaveButton] = useState(props.mode != 'upload')
     const [keepAdding, setKeepAdding] = useState(false)
 
     const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
@@ -56,14 +56,20 @@ export function TransactionDialog(props: DialogProps) {
         if (props.mode == 'edit' && props.initialData) {
             res = await editTransaction(props.initialData.id, data)
 
-            if (!res) return
+            if (!res) {
+                setLoading(false)
+                return
+            }
 
             props.closeDialog()
         } else {
             // new dialog
             res = await addTransaction(data)
 
-            if (!res) return
+            if (!res) {
+                setLoading(false)
+                return
+            }
 
             if (keepAdding) {
                 formRef.current?.reset()
@@ -93,17 +99,24 @@ export function TransactionDialog(props: DialogProps) {
             setKeepAdding={() => setKeepAdding(x => !x)}
             hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
-            buttonDisabled={disabled}
+            buttonDisabled={saveDisabled}
+            showSaveButton={showSaveButton}
             onClick={() => formRef.current?.submit()}
         >
             {props.mode == 'upload' ? (
-                <UploadForm ref={formRef} dataCallback={handleFormSubmit} closeDialog={props.closeDialog}></UploadForm>
+                <UploadForm
+                    ref={formRef}
+                    dataCallback={handleFormSubmit}
+                    showSaveButton={() => setShowSaveButton(true)}
+                    closeDialog={props.closeDialog}
+                ></UploadForm>
             ) : (
                 <TransactionForm
                     ref={formRef}
                     initialData={props.initialData}
                     mode={props.mode}
                     action={currentAction}
+                    inputStyle='contained'
                     setAction={setCurrentAction}
                     handleSubmit={handleFormSubmit}
                 ></TransactionForm>

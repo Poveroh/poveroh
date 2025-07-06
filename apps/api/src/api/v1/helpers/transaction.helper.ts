@@ -27,7 +27,7 @@ export const TransactionHelper = {
         })
 
         const baseAmount = {
-            amount: data.amount,
+            amount: data.amounts,
             currency: data.currency,
             transaction_id: transaction.id
         }
@@ -82,7 +82,7 @@ export const TransactionHelper = {
             amount: element.amount,
             currency: data.currency,
             action: TransactionAction.EXPENSES,
-            bank_account_id: data.bank_account_id
+            bank_account_id: element.bank_account_id
         }))
 
         await prisma.amounts.createMany({

@@ -35,6 +35,7 @@ import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import logger from '@/lib/logger'
+import { amountSchema } from '@/types/form'
 
 export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
@@ -67,12 +68,10 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         date: z.string({
             required_error: t('messages.errors.required')
         }),
-        amount: z
-            .number({
-                required_error: t('messages.errors.required'),
-                invalid_type_error: t('messages.errors.pattern')
-            })
-            .positive(),
+        amount: amountSchema({
+            required_error: t('messages.errors.required'),
+            invalid_type_error: t('messages.errors.pattern')
+        }),
         currency: z.string().nonempty(t('messages.errors.required')),
         bank_account_id: z.string().nonempty(t('messages.errors.required')),
         category_id: z.string().nonempty(t('messages.errors.required')),

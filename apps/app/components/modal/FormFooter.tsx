@@ -12,6 +12,7 @@ export type ModalFooterProps = {
     keepAdding: boolean
     hideKeepAdding?: boolean
     buttonDisabled?: boolean
+    showSaveButton?: boolean
     setKeepAdding: () => void
     onClick: () => void
 }
@@ -41,9 +42,11 @@ export function ModalFooter(props: ModalFooterProps) {
                             </div>
                         </div>
                     ))}
-                <Button type='submit' disabled={loading || props.buttonDisabled} onClick={onClick}>
-                    {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
-                </Button>
+                {props.showSaveButton && (
+                    <Button type='submit' disabled={loading || props.buttonDisabled} onClick={onClick}>
+                        {loading && <Loader2 className='animate-spin mr-2' />} {t('buttons.save')}
+                    </Button>
+                )}
             </div>
         </DialogFooter>
     )

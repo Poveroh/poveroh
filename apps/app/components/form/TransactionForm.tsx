@@ -39,7 +39,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     return (
         <div className='flex flex-col space-y-6 w-full'>
             <Select onValueChange={setLocalCurrentAction} defaultValue={localCurrentAction}>
-                <SelectTrigger variant='outlined'>
+                <SelectTrigger variant={props.inputStyle || 'contained'}>
                     <SelectValue placeholder={t('form.type.placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
