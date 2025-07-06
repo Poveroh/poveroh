@@ -4,7 +4,7 @@ import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { ICsvReadedTransaction, IFilterOptions, ITransactionFilters, TransactionAction } from '@poveroh/types'
 import logger from '../../../utils/logger'
-import CSVParser from '../helpers/csv.helper'
+import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 
 export class TransactionController {
     //POST /
@@ -125,7 +125,7 @@ export class TransactionController {
             if (!req.files || req.files.length === 0) throw new Error('Data not provided')
 
             const files = req.files as Express.Multer.File[]
-            const parser = new CSVParser()
+            const parser = new HowIParsedYourDataAlgorithm()
 
             const bankAccountId: string = req.body.bankAccountId
 

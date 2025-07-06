@@ -1,7 +1,15 @@
 import Papa from 'papaparse'
 import { ICsvReadedTransaction, IFieldMapping, TransactionAction, Currencies, ICSVValueReturned } from '@poveroh/types'
 
-class CSVParser {
+/**
+ *
+ * "Kids, I'm going to tell you an incredible story — the story of how I parsed your data."
+ *
+ * The "How I Parsed Your Data" algorith, like Ted with relationships, will search transactions
+ * in CSV file. Class provides robust heuristics to automatically detect and map
+ * CSV columns to transaction fields such as date, amount, currency, and title/description.
+ */
+class HowIParsedYourDataAlgorithm {
     private datePatterns = [
         // ISO formats
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
@@ -734,4 +742,4 @@ class CSVParser {
     }
 }
 
-export default CSVParser
+export default HowIParsedYourDataAlgorithm
