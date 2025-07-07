@@ -14,7 +14,12 @@
 
 <div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/poveroh/poveroh)
+![GitHub contributors](https://img.shields.io/github/contributors/poveroh/poveroh)
+
+
+
 
 </div>
 
