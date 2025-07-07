@@ -8,6 +8,7 @@ import { ICsvReadedTransaction, IFieldMapping, TransactionAction, Currencies, IC
  * The "How I Parsed Your Data" algorith, like Ted with relationships, will search transactions
  * in CSV file. Class provides robust heuristics to automatically detect and map
  * CSV columns to transaction fields such as date, amount, currency, and title/description.
+ * Enhanced with fallback field search when primary fields are empty.
  */
 class HowIParsedYourDataAlgorithm {
     private datePatterns = [
@@ -389,6 +390,12 @@ class HowIParsedYourDataAlgorithm {
         mapping.currency = this.getBestField(scores.currency)
         mapping.title = this.getBestField(scores.title)
 
+        // Store fallback options for each field type
+        mapping.dateFallbacks = this.getFallbackFields(scores.date, mapping.date)
+        mapping.amountFallbacks = this.getFallbackFields(scores.amount, mapping.amount)
+        mapping.currencyFallbacks = this.getFallbackFields(scores.currency, mapping.currency)
+        mapping.titleFallbacks = this.getFallbackFields(scores.title, mapping.title)
+
         const totalScore =
             (scores.date.get(mapping.date || '') || 0) +
             (scores.amount.get(mapping.amount || '') || 0) +
@@ -410,6 +417,62 @@ class HowIParsedYourDataAlgorithm {
         })
 
         return bestScore > 0 ? bestField : undefined
+    }
+
+    private getFallbackFields(scoreMap: Map<string, number>, primaryField?: string): string[] {
+        const fallbacks: Array<{ field: string; score: number }> = []
+
+        scoreMap.forEach((score, field) => {
+            if (field !== primaryField && score > 0) {
+                fallbacks.push({ field, score })
+            }
+        })
+
+        return fallbacks
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3) // Keep top 3 fallbacks
+            .map(f => f.field)
+    }
+
+    private findValueInRow(
+        row: Record<string, any>,
+        primaryField?: string,
+        fallbackFields?: string[],
+        validator?: (value: string) => boolean
+    ): string | null {
+        // First try primary field
+        if (primaryField && row[primaryField] != null) {
+            const value = String(row[primaryField]).trim()
+            if (value && (!validator || validator(value))) {
+                return value
+            }
+        }
+
+        // Then try fallback fields
+        if (fallbackFields) {
+            for (const fallbackField of fallbackFields) {
+                if (row[fallbackField] != null) {
+                    const value = String(row[fallbackField]).trim()
+                    if (value && (!validator || validator(value))) {
+                        return value
+                    }
+                }
+            }
+        }
+
+        // Finally, search all fields if validator is provided
+        if (validator) {
+            for (const [key, value] of Object.entries(row)) {
+                if (value != null && key !== primaryField && !fallbackFields?.includes(key)) {
+                    const strValue = String(value).trim()
+                    if (strValue && validator(strValue)) {
+                        return strValue
+                    }
+                }
+            }
+        }
+
+        return null
     }
 
     private isLikelyDate(value: string): boolean {
@@ -503,24 +566,45 @@ class HowIParsedYourDataAlgorithm {
         return new Date()
     }
 
-    private extractCurrency(row: Record<string, any>, currencyField?: string): Currencies {
+    private extractCurrency(
+        row: Record<string, any>,
+        currencyField?: string,
+        currencyFallbacks?: string[]
+    ): Currencies {
+        // Try primary currency field first
         if (currencyField && row[currencyField]) {
             const currency = String(row[currencyField])
                 .trim()
                 .replace(/[^A-Z€$£¥₹₽]/g, '')
             if (this.isLikelyCurrency(currency)) {
                 const match = Currencies[currency as keyof typeof Currencies]
-                return match ?? Currencies.UNKNOWN
+                if (match) return match
             }
         }
 
+        // Try fallback fields
+        if (currencyFallbacks) {
+            for (const fallbackField of currencyFallbacks) {
+                if (row[fallbackField]) {
+                    const currency = String(row[fallbackField])
+                        .trim()
+                        .replace(/[^A-Z€$£¥₹₽]/g, '')
+                    if (this.isLikelyCurrency(currency)) {
+                        const match = Currencies[currency as keyof typeof Currencies]
+                        if (match) return match
+                    }
+                }
+            }
+        }
+
+        // Search all fields for currency indicators
         for (const [_, value] of Object.entries(row)) {
             if (value && this.isLikelyCurrency(String(value))) {
                 const match = String(value).match(/EUR|USD|GBP|JPY|CHF|CAD|AUD|€|\$|£|¥|₹|₽/i)
                 if (match) {
                     const cleaned = match[0].toUpperCase().replace(/[^A-Z€$£¥₹₽]/g, '')
                     const matchCurrency = Currencies[cleaned as keyof typeof Currencies]
-                    return matchCurrency ?? Currencies.UNKNOWN
+                    if (matchCurrency) return matchCurrency
                 }
             }
         }
@@ -676,25 +760,38 @@ class HowIParsedYourDataAlgorithm {
                             try {
                                 if (!row || typeof row !== 'object') return
 
-                                const amountValue = row[mapping.amount!]
-                                const dateValue = row[mapping.date!]
+                                // Enhanced field extraction with fallback search
+                                const amountValue = this.findValueInRow(
+                                    row,
+                                    mapping.amount,
+                                    mapping.amountFallbacks,
+                                    this.isLikelyAmount.bind(this)
+                                )
+
+                                const dateValue = this.findValueInRow(
+                                    row,
+                                    mapping.date,
+                                    mapping.dateFallbacks,
+                                    this.isLikelyDate.bind(this)
+                                )
 
                                 if (!amountValue || !dateValue) return
 
-                                const amount = this.parseAmount(String(amountValue))
+                                const amount = this.parseAmount(amountValue)
                                 if (amount === 0) return
 
-                                const currency = this.extractCurrency(row, mapping.currency)
-                                const title = mapping.title
-                                    ? String(row[mapping.title] || '').trim()
-                                    : `Transaction ${index + 1}`
+                                const currency = this.extractCurrency(row, mapping.currency, mapping.currencyFallbacks)
+
+                                const titleValue = this.findValueInRow(row, mapping.title, mapping.titleFallbacks)
+
+                                const title = titleValue || `Transaction ${index + 1}`
 
                                 transactions.push({
-                                    date: this.parseDate(String(dateValue)),
+                                    date: this.parseDate(dateValue),
                                     amount: Math.abs(amount),
                                     type: amount >= 0 ? TransactionAction.INCOME : TransactionAction.EXPENSES,
                                     currency,
-                                    title: title || `Transaction ${index + 1}`,
+                                    title,
                                     originalRow: row
                                 })
                             } catch (error) {

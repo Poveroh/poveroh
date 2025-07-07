@@ -6,6 +6,10 @@ export interface IFieldMapping {
     currency?: string
     title?: string
     confidence: number
+    dateFallbacks?: string[]
+    amountFallbacks?: string[]
+    currencyFallbacks?: string[]
+    titleFallbacks?: string[]
 }
 
 export interface ICSVValueReturned {

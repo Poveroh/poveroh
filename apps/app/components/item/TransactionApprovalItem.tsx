@@ -11,15 +11,25 @@ import { useTranslations } from 'next-intl'
 import Divider from '../other/Divider'
 import { TransactionForm } from '../form/TransactionForm'
 import { Button } from '@poveroh/ui/components/button'
+import { cn } from '@poveroh/ui/lib/utils'
 
 type TransactionItemProps = {
     transaction: ITransaction
     index: number
+    isApproved: boolean
     openDelete: (item: ITransaction) => void
     openEdit: (item: ITransaction) => void
+    onApprove: (transactionId: string) => void
 }
 
-export function TransactionApprovalItem({ transaction, index, openDelete, openEdit }: TransactionItemProps) {
+export function TransactionApprovalItem({
+    transaction,
+    index,
+    isApproved,
+    onApprove,
+    openDelete,
+    openEdit
+}: TransactionItemProps) {
     const t = useTranslations()
 
     const { getCategory } = useCategory()
@@ -27,6 +37,7 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
+    const [localIsApproved, setLocalIsApproved] = useState(isApproved)
     const [editingMode, setEditingMode] = useState(false)
 
     const [fromAccount, setFromAccount] = useState<IBankAccount | null>(null)
@@ -35,6 +46,10 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
     const [amount, setAmount] = useState<number>(0)
     const [currencySymbol, setCurrencySymbol] = useState('')
     const [isExpense, setIsExpense] = useState(false)
+
+    useEffect(() => {
+        setLocalIsApproved(isApproved)
+    }, [isApproved])
 
     useEffect(() => {
         async function fetchData() {
@@ -61,6 +76,9 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
         fetchData()
     }, [transaction, getBankAccount, getCategory])
 
+    const toggleApproval = () => {
+        onApprove(transaction.id)
+    }
     return (
         <div className='w-full p-5 bg-input rounded-md'>
             {editingMode ? (
@@ -159,8 +177,24 @@ export function TransactionApprovalItem({ transaction, index, openDelete, openEd
                             <p>{t('form.ignore.label')}</p>
                         </div>
                         <div className='flex flex-row space-x-2'>
-                            <DynamicIcon name='x' className='h-[20px] w-[20px] cursor-pointer danger' />
-                            <DynamicIcon name='check' className='h-[20px] w-[20px] cursor-pointer success' />
+                            <Button variant={localIsApproved ? 'ghost' : 'danger'} size='xs' onClick={toggleApproval}>
+                                <DynamicIcon
+                                    name='x'
+                                    className={cn(
+                                        'h-[20px] w-[20px] cursor-pointer',
+                                        localIsApproved ? 'danger' : 'ghost'
+                                    )}
+                                />
+                            </Button>
+                            <Button variant={localIsApproved ? 'success' : 'ghost'} size='xs' onClick={toggleApproval}>
+                                <DynamicIcon
+                                    name='check'
+                                    className={cn(
+                                        'h-[20px] w-[20px] cursor-pointer',
+                                        localIsApproved ? 'ghost' : 'success'
+                                    )}
+                                />
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -22,7 +22,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
 
     const { getActionList } = useTransaction()
     const [localCurrentAction, setLocalCurrentAction] = useState<string>(props.action || 'EXPENSES')
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
     useEffect(() => {
         if (props.action) {
