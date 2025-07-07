@@ -18,9 +18,6 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/poveroh/poveroh)
 ![GitHub contributors](https://img.shields.io/github/contributors/poveroh/poveroh)
 
-
-
-
 </div>
 
 ---
