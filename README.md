@@ -228,7 +228,7 @@ To give it an extra boost:
 
 ## :warning: License
 
-Poveroh is released under MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact.
+Poveroh is released under the [GNU Affero General Public License v3.0](https://github.com/Poveroh/poveroh/blob/main/LICENSE).
 
 See LICENSE.txt for more information.
 
