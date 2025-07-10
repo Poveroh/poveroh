@@ -9,6 +9,6 @@ router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), Transact
 router.get('/', AuthMiddleware.isAuthenticated, TransactionController.read)
 router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.save)
 router.delete('/:id', AuthMiddleware.isAuthenticated, TransactionController.delete)
-router.post('/read-csv', AuthMiddleware.isAuthenticated, upload.array('files'), TransactionController.parseCSV)
+router.post('/read-file', AuthMiddleware.isAuthenticated, upload.array('files'), TransactionController.parseFile)
 
 export default router

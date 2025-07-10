@@ -1,6 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { ICsvReadedTransaction, ITransaction, TransactionAction } from '@poveroh/types'
-import { v4 as uuidv4 } from 'uuid'
+import { TransactionAction } from '@poveroh/types'
 
 export const TransactionHelper = {
     async handleTransaction(action: string, data: any, userId: string) {
@@ -101,35 +100,5 @@ export const TransactionHelper = {
             where: { id: transactionId },
             include: { amounts: true }
         })
-    },
-    normalizeTransaction(idUser: string, bankAccountId: string, rawTransactions: ICsvReadedTransaction[]) {
-        let transactions: ITransaction[] = []
-
-        for (const rawTransaction of rawTransactions) {
-            const transactionId = uuidv4()
-
-            transactions.push({
-                id: transactionId,
-                user_id: idUser,
-                created_at: new Date(),
-                amounts: [
-                    {
-                        id: uuidv4(),
-                        created_at: new Date().toISOString(),
-                        transaction_id: transactionId,
-                        amount: rawTransaction.amount,
-                        currency: rawTransaction.currency,
-                        action: rawTransaction.type,
-                        bank_account_id: bankAccountId
-                    }
-                ],
-                title: rawTransaction.title,
-                type: rawTransaction.type,
-                date: rawTransaction.date.toISOString(),
-                ignore: false
-            })
-        }
-
-        return transactions
     }
 }

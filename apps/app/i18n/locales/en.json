@@ -358,5 +358,9 @@
     },
     "reports": {
         "title": "Reports"
+    },
+    "imports": {
+        "title": "Imports",
+        "subtitle": "Magage your transactions by importing them from a file"
     }
 }

@@ -1,5 +1,5 @@
 import { IApiConfig } from '@/types/config'
-import { LogLevel } from '@poveroh/types/dist'
+import { LogLevel } from '@poveroh/types'
 
 const config: IApiConfig = {
     PORT: process.env.API_PORT || '3001',

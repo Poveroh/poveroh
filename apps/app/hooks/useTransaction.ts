@@ -73,10 +73,6 @@ export const useTransaction = () => {
         return res
     }
 
-    const parseTransactionFromCSV = async (data: FormData) => {
-        return await transactionService.readcsv(data)
-    }
-
     const getActionList = (excludeInternal?: boolean): IItem[] => {
         const actionList = [
             { value: TransactionAction.INTERNAL, label: t('transactions.types.internalTransfer') },
@@ -105,7 +101,6 @@ export const useTransaction = () => {
         getTransaction,
         fetchTransaction,
         getActionList,
-        groupTransactionsByDate,
-        parseTransactionFromCSV
+        groupTransactionsByDate
     }
 }

@@ -88,6 +88,11 @@ export function TransactionDialog(props: DialogProps) {
         setLoading(false)
     }
 
+    const handleShowSaveButton = (enable?: boolean) => {
+        setSaveDisabled(!enable)
+        setShowSaveButton(true)
+    }
+
     return (
         <Modal
             open={props.open}
@@ -107,7 +112,7 @@ export function TransactionDialog(props: DialogProps) {
                 <UploadForm
                     ref={formRef}
                     dataCallback={handleFormSubmit}
-                    showSaveButton={() => setShowSaveButton(true)}
+                    showSaveButton={handleShowSaveButton}
                     closeDialog={props.closeDialog}
                 ></UploadForm>
             ) : (
