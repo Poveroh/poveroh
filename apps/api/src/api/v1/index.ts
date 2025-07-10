@@ -6,6 +6,7 @@ import subcategoryRoutes from './routes/subcategory'
 import bankAccountRoutes from './routes/bankaccount'
 import transactionRoutes from './routes/transaction'
 import subscriptionRoutes from './routes/subscription'
+import importRoutes from './routes/import'
 
 import { Router } from 'express'
 
@@ -19,5 +20,6 @@ router.use('/category', categoryRoutes)
 router.use('/subcategory', subcategoryRoutes)
 router.use('/transaction', transactionRoutes)
 router.use('/subscription', subscriptionRoutes)
+router.use('/import', importRoutes)
 
 export default router

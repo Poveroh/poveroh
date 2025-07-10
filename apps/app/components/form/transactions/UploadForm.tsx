@@ -2,30 +2,33 @@
 
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
-import { FormRef, ITransaction } from '@poveroh/types'
+import { FormRef, IImports, IPendingTransaction } from '@poveroh/types'
 
 import { TransactionsApprovalList } from '@/components/other/TransactionsApprovalList'
 import { BankAccountAndFileForm } from './BankAccountAndFileForm'
 import { cloneDeep } from 'lodash'
+import { useTransaction } from '@/hooks/useTransaction'
 
 type FormProps = {
     dataCallback: (formData: FormData) => Promise<void>
-    showSaveButton: () => void
+    showSaveButton: (enable?: boolean) => void
     closeDialog: () => void
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>([])
+    const [parsedTransaction, setParsedTransaction] = useState<IPendingTransaction[]>([])
+
+    const {} = useTransaction()
 
     useImperativeHandle(ref, () => ({
         submit: () => {}
     }))
 
-    const handleCallback = async (transactions: ITransaction[]) => {
+    const handleCallback = async (importedFiles: IImports) => {
         const readedTransactions = cloneDeep(parsedTransaction)
-        readedTransactions.push(...transactions)
+        readedTransactions.push(...importedFiles.transactions)
         setParsedTransaction(readedTransactions)
-        props.showSaveButton()
+        props.showSaveButton(true)
     }
 
     return (

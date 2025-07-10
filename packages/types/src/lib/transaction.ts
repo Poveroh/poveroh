@@ -13,15 +13,6 @@ export interface IAmount extends IAmountBase {
     created_at: string
 }
 
-export interface ICsvReadedTransaction {
-    date: Date
-    amount: number
-    type: TransactionAction
-    currency: Currencies
-    title: string
-    originalRow?: Record<string, any>
-}
-
 export interface ITransactionBase {
     title: string
     type: TransactionAction

@@ -2,22 +2,14 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import {
-    FileType,
-    IFilterOptions,
-    IImports,
-    IImportsFile,
-    ImportStatus,
-    IReadedTransaction,
-    ITransactionFilters
-} from '@poveroh/types'
+import { FileType, IFilterOptions, IImportsFile, ImportStatus, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
 
-export class TransactionController {
+export class ImportController {
     //POST /
     static async add(req: Request, res: Response) {
         try {
@@ -46,22 +38,22 @@ export class TransactionController {
             const { data } = req.body
 
             if (!id || !data) {
-                res.status(400).json({ message: 'Missing transaction ID or data' })
+                res.status(400).json({ message: 'Missing import ID or data' })
                 return
             }
 
             const parsedData = JSON.parse(data)
 
-            const transaction = await prisma.transactions.update({
+            const imports = await prisma.imports.update({
                 where: { id },
                 data: parsedData
             })
 
-            res.status(200).json(transaction)
+            res.status(200).json(imports)
         } catch (error) {
             logger.error(error)
             res.status(500).json({
-                message: 'An error occurred while updating the transaction',
+                message: 'An error occurred while updating the import',
                 error: process.env.NODE_ENV === 'production' ? undefined : error
             })
         }
@@ -73,11 +65,11 @@ export class TransactionController {
             const { id } = req.params
 
             if (!id) {
-                res.status(400).json({ message: 'Missing transaction ID' })
+                res.status(400).json({ message: 'Missing import ID' })
                 return
             }
 
-            await prisma.transactions.delete({
+            await prisma.imports.delete({
                 where: { id }
             })
 
@@ -121,9 +113,52 @@ export class TransactionController {
                 queryOptions.take = take
             }
 
-            const data = await prisma.transactions.findMany(queryOptions)
+            const data = await prisma.imports.findMany(queryOptions)
 
             res.status(200).json(data)
+        } catch (error) {
+            logger.error(error)
+            res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
+    static async deletePendingTransaction(req: Request, res: Response) {
+        try {
+            const { transaction_id } = req.params
+
+            if (!transaction_id) {
+                res.status(400).json({ message: 'Missing transaction ID' })
+                return
+            }
+            await prisma.pending_transactions.delete({
+                where: { id: transaction_id }
+            })
+
+            res.status(200).json(true)
+        } catch (error) {
+            logger.error(error)
+            res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
+    static async editPendingTransaction(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+            const data = req.body
+
+            if (!id || !data) {
+                res.status(400).json({ message: 'Missing transaction ID or data' })
+                return
+            }
+
+            const parsedData = JSON.parse(data)
+
+            const transaction = await prisma.pending_transactions.update({
+                where: { id },
+                data: parsedData
+            })
+
+            res.status(200).json(transaction)
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

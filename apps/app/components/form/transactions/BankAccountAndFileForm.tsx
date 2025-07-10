@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
-import { IBankAccount, ITransaction } from '@poveroh/types'
+import { IBankAccount, IImports } from '@poveroh/types'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
@@ -18,18 +18,18 @@ import { Button } from '@poveroh/ui/components/button'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/useError'
-import { useTransaction } from '@/hooks/useTransaction'
 import logger from '@/lib/logger'
+import { useImports } from '@/hooks/useImports'
 
 type BankAccountAndFileFormProps = {
-    dataCallback: (transactions: ITransaction[]) => void
+    dataCallback: (importedFiles: IImports) => void
 }
 
 export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormProps) {
     const t = useTranslations()
 
     const { handleError } = useError()
-    const { parseTransactionFromCSV } = useTransaction()
+    const { parseTransactionFromFile } = useImports()
     const { bankAccountCacheList } = useBankAccount()
 
     const [loading, setLoading] = useState(false)
@@ -67,7 +67,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                 formData.append('files', file)
             })
 
-            const readedParsedTransaction = await parseTransactionFromCSV(formData)
+            const readedParsedTransaction = await parseTransactionFromFile(formData)
             setLoading(true)
             setShowButton(false)
 
