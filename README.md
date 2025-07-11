@@ -237,4 +237,4 @@ See LICENSE.txt for more information.
 ## :link: Useful links
 
 - [Github Repo](https://github.com/Poveroh/poveroh)
-- [Figma file](https://www.figma.com/design/SZz6f8cZ1mIE5s6Z4WGshu/Poveroh?node-id=232-100&t=1ozuf8X78WOqBXYH-1)
+- [Figma file](https://www.figma.com/design/SZz6f8cZ1mIE5s6Z4WGshu/Poveroh)
