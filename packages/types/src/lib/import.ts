@@ -1,5 +1,5 @@
 import { Currencies } from './currency.js'
-import { ITransaction, TransactionAction } from './transaction.js'
+import { ITransaction, TransactionAction, TransactionStatus } from './transaction.js'
 
 export interface IFieldMapping {
     date?: string
@@ -34,10 +34,6 @@ export interface IReadedTransaction {
     originalRow?: Record<string, any>
 }
 
-export interface IPendingTransaction extends ITransaction {
-    status: ImportStatus
-}
-
 export interface IImportsFile {
     id: string
     import_id: string
@@ -51,16 +47,10 @@ export interface IImports {
     id: string
     user_id: string
     title: string
-    status: ImportStatus
+    status: TransactionStatus
     created_at: string
     files: IImportsFile[]
-    transactions: IPendingTransaction[]
-}
-
-export enum ImportStatus {
-    APPROVED = 'APPROVED',
-    REJECTED = 'REJECTED',
-    IMPORTING = 'IMPORTING'
+    transactions: ITransaction[]
 }
 
 export enum FileType {

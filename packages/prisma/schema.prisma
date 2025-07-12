@@ -15,13 +15,12 @@ model users {
     password   String
     created_at DateTime @default(now())
 
-    transactions         transactions[]
-    subscriptions        subscriptions[]
-    categories           categories[]
-    login                users_login[]
-    bank_accounts        bank_accounts[]
-    imports              imports[]
-    pending_transactions pending_transactions[]
+    transactions  transactions[]
+    subscriptions subscriptions[]
+    categories    categories[]
+    login         users_login[]
+    bank_accounts bank_accounts[]
+    imports       imports[]
 
     @@index([surname])
     @@index([created_at])
@@ -43,14 +42,14 @@ model users_login {
 }
 
 model imports {
-    id         String       @id @default(uuid())
+    id         String            @id @default(uuid())
     user_id    String
     title      String
-    status     ImportStatus @default(IMPORTING)
-    created_at DateTime     @default(now())
+    status     TransactionStatus @default(IMPORT_PENDING)
+    created_at DateTime          @default(now())
 
-    user                 users                  @relation(fields: [user_id], references: [id])
-    pending_transactions pending_transactions[]
+    user                 users          @relation(fields: [user_id], references: [id])
+    pending_transactions transactions[]
     files                import_files[]
 
     @@index([user_id])
@@ -71,17 +70,19 @@ model import_files {
 }
 
 model transactions {
-    id             String          @id @default(uuid())
+    id             String            @id @default(uuid())
     user_id        String
     title          String
     date           DateTime
     icon           String?
-    type           TransactionType @default(EXPENSES)
+    type           TransactionType   @default(EXPENSES)
     category_id    String?
     subcategory_id String?
+    import_id      String?
     note           String?
-    ignore         Boolean         @default(false)
-    created_at     DateTime        @default(now())
+    status         TransactionStatus @default(APPROVED)
+    ignore         Boolean           @default(false)
+    created_at     DateTime          @default(now())
 
     user        users          @relation(fields: [user_id], references: [id])
     category    categories?    @relation(fields: [category_id], references: [id])
@@ -89,69 +90,13 @@ model transactions {
 
     media   transactions_media[]
     amounts amounts[]
+    imports imports?             @relation(fields: [import_id], references: [id])
 
     @@index([user_id])
     @@index([category_id])
     @@index([subcategory_id])
     @@index([date])
     @@index([user_id, date])
-}
-
-model pending_transactions {
-    id             String          @id @default(uuid())
-    import_id      String
-    user_id        String
-    title          String
-    date           DateTime
-    icon           String?
-    type           TransactionType @default(EXPENSES)
-    category_id    String?
-    subcategory_id String?
-    note           String?
-    ignore         Boolean         @default(false)
-    status         ImportStatus    @default(REJECTED)
-    created_at     DateTime        @default(now())
-
-    import      imports        @relation(fields: [import_id], references: [id])
-    user        users          @relation(fields: [user_id], references: [id])
-    category    categories?    @relation(fields: [category_id], references: [id])
-    subcategory subcategories? @relation(fields: [subcategory_id], references: [id])
-
-    amounts pending_transactions_amounts[]
-    media   pending_transactions_media[]
-
-    @@index([user_id])
-    @@index([import_id])
-    @@index([date])
-}
-
-model pending_transactions_amounts {
-    id              String          @id @default(uuid())
-    transaction_id  String
-    amount          Float
-    currency        Currency
-    bank_account_id String
-    action          TransactionType @default(EXPENSES)
-    created_at      DateTime        @default(now())
-
-    transaction  pending_transactions @relation(fields: [transaction_id], references: [id])
-    bank_account bank_accounts        @relation(fields: [bank_account_id], references: [id])
-
-    @@index([transaction_id])
-    @@index([bank_account_id])
-}
-
-model pending_transactions_media {
-    id             String   @id @default(uuid())
-    transaction_id String
-    filename       String
-    filetype       String
-    path           String
-    created_at     DateTime @default(now())
-
-    transaction pending_transactions @relation(fields: [transaction_id], references: [id])
-
-    @@index([transaction_id])
 }
 
 model subscriptions {
@@ -201,10 +146,9 @@ model bank_accounts {
     logo_icon   String?
     created_at  DateTime        @default(now())
 
-    subscriptions   subscriptions[]
-    amounts         amounts[]
-    user            users                          @relation(fields: [user_id], references: [id])
-    pending_amounts pending_transactions_amounts[]
+    subscriptions subscriptions[]
+    amounts       amounts[]
+    user          users           @relation(fields: [user_id], references: [id])
 
     @@index([user_id])
 }
@@ -221,8 +165,7 @@ model categories {
     transactions  transactions[]
     subcategories subcategories[]
 
-    user                 users                  @relation(fields: [user_id], references: [id])
-    pending_transactions pending_transactions[]
+    user users @relation(fields: [user_id], references: [id])
 
     @@index([user_id])
     @@index([for])
@@ -238,8 +181,7 @@ model subcategories {
 
     transactions transactions[]
 
-    category             categories             @relation(fields: [category_id], references: [id])
-    pending_transactions pending_transactions[]
+    category categories @relation(fields: [category_id], references: [id])
 
     @@index([category_id])
 }
@@ -267,10 +209,12 @@ enum TransactionType {
     INCOME
 }
 
-enum ImportStatus {
+enum TransactionStatus {
     APPROVED
     REJECTED
-    IMPORTING
+    IMPORT_PENDING
+    IMPORT_REJECTED
+    IMPORT_APPROVED
 }
 
 enum BankAccountType {

@@ -1,4 +1,4 @@
-import { ImportStatus, IPendingTransaction } from '@poveroh/types'
+import { TransactionStatus, ITransaction } from '@poveroh/types'
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { TransactionApprovalItem } from '../item/TransactionApprovalItem'
@@ -7,13 +7,13 @@ import logger from '@/lib/logger'
 import { cloneDeep } from 'lodash'
 
 type TransactionsApprovalListProps = {
-    transactions: IPendingTransaction[]
+    transactions: ITransaction[]
 }
 
 export function TransactionsApprovalList({ transactions }: TransactionsApprovalListProps) {
     const t = useTranslations()
 
-    const [localTransactions, setLocalTransactions] = useState<IPendingTransaction[]>(transactions)
+    const [localTransactions, setLocalTransactions] = useState<ITransaction[]>(transactions)
 
     useEffect(() => {
         setLocalTransactions(transactions)
@@ -30,7 +30,8 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
             return
         }
 
-        transaction.status = transaction.status == ImportStatus.APPROVED ? ImportStatus.REJECTED : ImportStatus.APPROVED
+        transaction.status =
+            transaction.status == TransactionStatus.APPROVED ? TransactionStatus.REJECTED : TransactionStatus.APPROVED
 
         clonedTransactions[clonedTransactions.findIndex(t => t.id === transactionId)] = transaction
 
@@ -49,7 +50,7 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
 
         logger.debug(`Setting all transactions to ${approveAll ? 'approved' : 'rejected'}`)
 
-        const newTransactionStatus = approveAll ? ImportStatus.APPROVED : ImportStatus.REJECTED
+        const newTransactionStatus = approveAll ? TransactionStatus.APPROVED : TransactionStatus.REJECTED
 
         clonedTransactions.forEach(item => {
             item.status = newTransactionStatus
@@ -58,7 +59,7 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
         setLocalTransactions(clonedTransactions)
     }
 
-    const handleOnEditTransaction = (transaction: IPendingTransaction) => {
+    const handleOnEditTransaction = (transaction: ITransaction) => {
         logger.debug('Edit transaction:', transaction)
 
         const clonedTransaction = cloneDeep(localTransactions)

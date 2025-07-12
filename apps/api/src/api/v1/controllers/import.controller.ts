@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { FileType, IFilterOptions, IImportsFile, ImportStatus, ITransactionFilters } from '@poveroh/types'
+import { FileType, IFilterOptions, IImportsFile, TransactionStatus, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
@@ -130,7 +130,7 @@ export class ImportController {
                 res.status(400).json({ message: 'Missing transaction ID' })
                 return
             }
-            await prisma.pending_transactions.delete({
+            await prisma.transactions.delete({
                 where: { id: transaction_id }
             })
 
@@ -153,7 +153,7 @@ export class ImportController {
 
             const parsedData = JSON.parse(data)
 
-            const transaction = await prisma.pending_transactions.update({
+            const transaction = await prisma.transactions.update({
                 where: { id },
                 data: parsedData
             })
@@ -165,7 +165,27 @@ export class ImportController {
         }
     }
 
-    //POST /read-file
+    /**
+     * @summary Parse uploaded files and create transactions
+     * @route POST /api/v1/imports/read-file
+     *
+     * This controller method performs the following steps:
+     * 1. Validates that files are provided in the request.
+     * 2. Uploads each file and parses its content to extract transactions using a heuristic parser.
+     * 3. Normalizes and prepares transaction data for database insertion.
+     * 4. Creates import and import file records in the database.
+     * 5. Inserts parsed transactions and their associated amounts into the database.
+     * 6. Returns a JSON response with import details, files, and transactions.
+     *
+     * @param req - Express request object.
+     * @param res - Express response object used to send the result or error.
+     * @returns A JSON response with import metadata, file information, and parsed transactions.
+     *
+     * @remarks
+     * - Expects files to be uploaded via multipart/form-data.
+     * - Uses Multer for file handling and Prisma for database operations.
+     * - Handles errors gracefully and logs them.
+     */
     static async parseFile(req: Request, res: Response) {
         try {
             if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
@@ -174,11 +194,13 @@ export class ImportController {
             }
 
             const files = req.files as Express.Multer.File[]
-            const parser = new HowIParsedYourDataAlgorithm()
             const bank_account_id: string = req.body.bank_account_id
             const userId = req.user.id
             const importId = uuidv4()
             const now = new Date()
+
+            // This algorithm parses the CSV files and extracts transactions dinamically
+            const parser = new HowIParsedYourDataAlgorithm()
 
             // Upload files and parse transactions in parallel
             const fileResults = await Promise.all(
@@ -196,6 +218,11 @@ export class ImportController {
 
             const savedFiles = fileResults.map(f => f.filePath)
             const allTransactions = fileResults.flatMap(f => f.transactions)
+
+            /*
+             * Normalize transactions to match the expected format for the database.
+             * The algorithm check back existing transactions and subscription to fill new transactions with the correct data.
+             */
             const parsedTransactions = ImportHelper.normalizeTransaction(userId, bank_account_id, allTransactions)
 
             const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
@@ -212,14 +239,14 @@ export class ImportController {
                     id: importId,
                     user_id: userId,
                     title: '',
-                    status: ImportStatus.IMPORTING,
+                    status: TransactionStatus.IMPORT_PENDING,
                     created_at: now
                 }
             })
 
             await prisma.import_files.createMany({ data: importFiles })
 
-            await prisma.pending_transactions.createMany({
+            await prisma.transactions.createMany({
                 data: parsedTransactions.map(({ amounts, ...transaction }) => ({
                     ...transaction,
                     import_id: importId
@@ -234,7 +261,7 @@ export class ImportController {
             )
 
             if (allAmounts.length > 0) {
-                await prisma.pending_transactions_amounts.createMany({ data: allAmounts })
+                await prisma.amounts.createMany({ data: allAmounts })
             }
 
             res.status(200).json({

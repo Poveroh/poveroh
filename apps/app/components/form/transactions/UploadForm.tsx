@@ -2,7 +2,7 @@
 
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
-import { FormRef, IImports, IPendingTransaction } from '@poveroh/types'
+import { FormRef, IImports, ITransaction } from '@poveroh/types'
 
 import { TransactionsApprovalList } from '@/components/other/TransactionsApprovalList'
 import { BankAccountAndFileForm } from './BankAccountAndFileForm'
@@ -16,7 +16,7 @@ type FormProps = {
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const [parsedTransaction, setParsedTransaction] = useState<IPendingTransaction[]>([])
+    const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>([])
 
     const {} = useTransaction()
 

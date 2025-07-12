@@ -1,6 +1,6 @@
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
-import { ICategory, ImportStatus, IPendingTransaction, TransactionAction } from '@poveroh/types'
+import { ICategory, TransactionStatus, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useEffect, useRef, useState } from 'react'
 import icons from 'currency-icons'
@@ -26,10 +26,10 @@ import {
 import { useImports } from '@/hooks/useImports'
 
 type TransactionItemProps = {
-    transaction: IPendingTransaction
+    transaction: ITransaction
     index: number
     onDelete: (transactionId: string) => void
-    onEdit: (item: IPendingTransaction) => void
+    onEdit: (item: ITransaction) => void
     onApprove: (transactionId: string) => void
 }
 
@@ -42,7 +42,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const isApproved = transaction.status == ImportStatus.APPROVED
+    const isApproved = transaction.status == TransactionStatus.APPROVED
 
     const [editingMode, setEditingMode] = useState(false)
 
@@ -144,7 +144,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             <Button
                                 onClick={async () => {
                                     formRef.current?.submit()
-                                    setEditingMode(false)
+                                    // setEditingMode(false)
                                 }}
                             >
                                 {t('buttons.save')}
