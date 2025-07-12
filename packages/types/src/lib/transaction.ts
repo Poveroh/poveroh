@@ -28,6 +28,7 @@ export interface ITransaction extends ITransactionBase {
     id: string
     user_id: string
     created_at: Date
+    status: TransactionStatus
     amounts: IAmount[]
 }
 
@@ -35,6 +36,14 @@ export enum TransactionAction {
     INTERNAL = 'INTERNAL',
     INCOME = 'INCOME',
     EXPENSES = 'EXPENSES'
+}
+
+export enum TransactionStatus {
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
+    IMPORT_PENDING = 'IMPORT_PENDING',
+    IMPORT_REJECTED = 'IMPORT_REJECTED',
+    IMPORT_APPROVED = 'IMPORT_APPROVED'
 }
 
 export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>

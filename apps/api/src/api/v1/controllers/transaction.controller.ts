@@ -2,20 +2,8 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import {
-    FileType,
-    IFilterOptions,
-    IImports,
-    IImportsFile,
-    ImportStatus,
-    IReadedTransaction,
-    ITransactionFilters
-} from '@poveroh/types'
+import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
-import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
-import { ImportHelper } from '../helpers/import.helper'
-import { v4 as uuidv4 } from 'uuid'
-import { MediaHelper } from '../../../helpers/media.helper'
 
 export class TransactionController {
     //POST /
@@ -124,89 +112,6 @@ export class TransactionController {
             const data = await prisma.transactions.findMany(queryOptions)
 
             res.status(200).json(data)
-        } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
-    //POST /read-file
-    static async parseFile(req: Request, res: Response) {
-        try {
-            if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-                res.status(400).json({ message: 'No files provided' })
-                return
-            }
-
-            const files = req.files as Express.Multer.File[]
-            const parser = new HowIParsedYourDataAlgorithm()
-            const bank_account_id: string = req.body.bank_account_id
-            const userId = req.user.id
-            const importId = uuidv4()
-            const now = new Date()
-
-            // Upload files and parse transactions in parallel
-            const fileResults = await Promise.all(
-                files.map(async file => {
-                    const content = file.buffer.toString('utf-8')
-                    const filePath = await MediaHelper.handleUpload(file, `${userId}/imports/${importId}`)
-                    const parsed = await parser.parseCSVFile(content)
-                    return {
-                        filePath,
-                        originalname: file.originalname,
-                        transactions: parsed.transactions
-                    }
-                })
-            )
-
-            const savedFiles = fileResults.map(f => f.filePath)
-            const allTransactions = fileResults.flatMap(f => f.transactions)
-            const parsedTransactions = ImportHelper.normalizeTransaction(userId, bank_account_id, allTransactions)
-
-            const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
-                id: uuidv4(),
-                import_id: importId,
-                filename: files[idx]?.originalname || '',
-                filetype: FileType.CSV,
-                path,
-                created_at: now.toISOString()
-            }))
-
-            const imports = await prisma.imports.create({
-                data: {
-                    id: importId,
-                    user_id: userId,
-                    title: '',
-                    status: ImportStatus.IMPORTING,
-                    created_at: now
-                }
-            })
-
-            await prisma.import_files.createMany({ data: importFiles })
-
-            await prisma.pending_transactions.createMany({
-                data: parsedTransactions.map(({ amounts, ...transaction }) => ({
-                    ...transaction,
-                    import_id: importId
-                }))
-            })
-
-            const allAmounts = parsedTransactions.flatMap(transaction =>
-                transaction.amounts.map(amount => ({
-                    ...amount,
-                    transaction_id: transaction.id
-                }))
-            )
-
-            if (allAmounts.length > 0) {
-                await prisma.pending_transactions_amounts.createMany({ data: allAmounts })
-            }
-
-            res.status(200).json({
-                ...imports,
-                files: importFiles,
-                transactions: parsedTransactions
-            })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

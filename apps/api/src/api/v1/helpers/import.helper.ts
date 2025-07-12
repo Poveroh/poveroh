@@ -1,14 +1,10 @@
-import { ImportStatus, IPendingTransaction } from '@poveroh/types'
+import { TransactionStatus, ITransaction } from '@poveroh/types'
 import { IReadedTransaction } from '@poveroh/types'
 import { v4 as uuidv4 } from 'uuid'
 
 export const ImportHelper = {
-    normalizeTransaction(
-        idUser: string,
-        bankAccountId: string,
-        rawTransactions: IReadedTransaction[]
-    ): IPendingTransaction[] {
-        let transactions: IPendingTransaction[] = []
+    normalizeTransaction(idUser: string, bankAccountId: string, rawTransactions: IReadedTransaction[]): ITransaction[] {
+        let transactions: ITransaction[] = []
 
         for (const rawTransaction of rawTransactions) {
             const transactionId = uuidv4()
@@ -31,7 +27,7 @@ export const ImportHelper = {
                 title: rawTransaction.title,
                 type: rawTransaction.type,
                 date: rawTransaction.date.toISOString(),
-                status: ImportStatus.REJECTED,
+                status: TransactionStatus.REJECTED,
                 note: '',
                 ignore: false
             })
