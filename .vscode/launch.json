@@ -17,20 +17,15 @@
             "type": "node",
             "args": []
         },
+
         {
-            "type": "node",
+            "type": "chrome",
             "request": "launch",
             "name": "Poveroh:app",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/next/dist/bin/next",
-            "env": {
-                "NODE_OPTIONS": "--inspect"
-            },
-            "cwd": "${workspaceFolder}/apps/app",
-            "console": "integratedTerminal",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
             "sourceMapPathOverrides": {
-                "meteor://💻app/*": "${workspaceFolder}/*",
-                "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-                "webpack://?:*/*": "${workspaceFolder}/*"
+                "/turbopack/[project]/*": "${webRoot}/*"
             }
         },
         {
@@ -42,6 +37,12 @@
             "sourceMaps": true,
             "protocol": "inspector",
             "timeout": 10000
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Poveroh:app+api",
+            "configurations": ["Poveroh:api", "Poveroh:app"]
         }
     ]
 }
