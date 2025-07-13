@@ -6,7 +6,15 @@ import { IBankAccount, IImports } from '@poveroh/types'
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@poveroh/ui/components/form'
 
 import { Loader2, X, Upload } from 'lucide-react'
 
@@ -113,6 +121,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
                             <FormLabel>{t('form.file.label')}</FormLabel>
+                            <FormDescription>{t('imports.modal.fileDescription')}</FormDescription>
                             <FormControl>
                                 {
                                     <FileInput
