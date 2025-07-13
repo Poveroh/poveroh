@@ -361,6 +361,9 @@
     },
     "imports": {
         "title": "Imports",
-        "subtitle": "Magage your transactions by importing them from a file"
+        "subtitle": "Magage your transactions by importing them from a file",
+        "modal": {
+            "fileDescription": "Upload a CSV file with your transactions. The algorithm will try to extract and match them with existing transactions and subscriptions. Check the transactions before saving them."
+        }
     }
 }
