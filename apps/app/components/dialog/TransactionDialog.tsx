@@ -84,7 +84,7 @@ export function TransactionDialog(props: DialogProps) {
             setKeepAdding={() => setKeepAdding(x => !x)}
             hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
-            showConfirmationDialog={true}
+            askForConfirmation={false}
             onClick={() => formRef.current?.submit()}
         >
             <TransactionForm
