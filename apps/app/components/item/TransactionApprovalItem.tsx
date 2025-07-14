@@ -38,7 +38,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
     const { getCategory } = useCategory()
     const { getBankAccount } = useBankAccount()
-    const { editPendingTransaction, deletePendingTransaction } = useImports()
+    const { editPendingTransaction, removePendingTransaction } = useImports()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -84,7 +84,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
     }
 
     const handleDeleteTransaction = async () => {
-        const editedTransaction = await deletePendingTransaction(transaction.id)
+        const editedTransaction = await removePendingTransaction(transaction.id)
 
         if (!editedTransaction) return
 
@@ -98,7 +98,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                     <TransactionForm
                         ref={formRef}
                         initialData={transaction}
-                        mode='edit'
+                        inEditingMode={true}
                         inputStyle='outlined'
                         action={transaction.type}
                         handleSubmit={handleEditTransaction}

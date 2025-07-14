@@ -10,9 +10,9 @@ import React, { forwardRef, useImperativeHandle } from 'react'
 
 type TransactionFormProps = {
     initialData?: ITransaction
-    mode: 'upload' | 'edit' | 'add'
     action: string
     inputStyle?: InputVariantStyle
+    inEditingMode?: boolean
     setAction?: (action: string) => void
     handleSubmit: (data: FormData) => Promise<void>
 }
@@ -55,7 +55,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <IncomeForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />
@@ -64,7 +64,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <ExpensesForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />
@@ -74,7 +74,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <TransferForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />

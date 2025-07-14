@@ -48,9 +48,9 @@ model imports {
     status     TransactionStatus @default(IMPORT_PENDING)
     created_at DateTime          @default(now())
 
-    user                 users          @relation(fields: [user_id], references: [id])
-    pending_transactions transactions[]
-    files                import_files[]
+    user         users          @relation(fields: [user_id], references: [id])
+    transactions transactions[]
+    files        import_files[]
 
     @@index([user_id])
     @@index([status])

@@ -7,18 +7,19 @@ import { FormRef, IImports, ITransaction } from '@poveroh/types'
 import { TransactionsApprovalList } from '@/components/other/TransactionsApprovalList'
 import { BankAccountAndFileForm } from './BankAccountAndFileForm'
 import { cloneDeep } from 'lodash'
-import { useTransaction } from '@/hooks/useTransaction'
+import { useImports } from '@/hooks/useImports'
 
 type FormProps = {
+    initialData?: IImports
     dataCallback: (formData: FormData) => Promise<void>
     showSaveButton: (enable?: boolean) => void
     closeDialog: () => void
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>([])
+    const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>(props.initialData?.transactions || [])
 
-    const {} = useTransaction()
+    const { appendImports } = useImports()
 
     useImperativeHandle(ref, () => ({
         submit: () => {}
@@ -28,6 +29,8 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         const readedTransactions = cloneDeep(parsedTransaction)
         readedTransactions.push(...importedFiles.transactions)
         setParsedTransaction(readedTransactions)
+        appendImports([importedFiles])
+        props.dataCallback(new FormData())
         props.showSaveButton(true)
     }
 

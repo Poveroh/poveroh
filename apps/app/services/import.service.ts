@@ -11,6 +11,10 @@ export class ImportService extends BaseService<IImports> {
         return await server.post<IImports>('/import/read-file', data, true)
     }
 
+    async readTransaction(id: string): Promise<ITransaction[]> {
+        return await server.get<ITransaction[]>(`/import/transaction/${id}`)
+    }
+
     async saveTransaction(id: string, data: FormData): Promise<ITransaction> {
         return await server.put<ITransaction>(`/import/transaction/${id}`, data, true)
     }

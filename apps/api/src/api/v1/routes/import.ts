@@ -18,6 +18,7 @@ router.put(
     upload.single('file'),
     ImportController.editPendingTransaction
 )
+router.get('/transaction/:id', AuthMiddleware.isAuthenticated, ImportController.readPendingTransactions)
 router.delete('/transaction/:id', AuthMiddleware.isAuthenticated, ImportController.deletePendingTransaction)
 
 export default router

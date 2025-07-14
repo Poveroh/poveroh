@@ -10,6 +10,12 @@
         "continueInsert": {
             "label": "Keep adding",
             "subtitle": "It does not close the modal and allows adding more items."
+        },
+        "confirmationDialog": {
+            "title": "Are you sure you want to leave?",
+            "description": "You have unsaved changes. If you leave now, your changes will be lost.",
+            "cancel": "Stay and Continue Editing",
+            "confirm": "Leave Without Saving"
         }
     },
     "format": {
@@ -361,9 +367,21 @@
     },
     "imports": {
         "title": "Imports",
-        "subtitle": "Magage your transactions by importing them from a file",
+        "subtitle": "Manage your transactions by importing them from a file",
+        "empty": {
+            "title": "Import a file",
+            "subtitle": "Click the + Add button to import and parse your transactions"
+        },
         "modal": {
-            "fileDescription": "Upload a CSV file with your transactions. The algorithm will try to extract and match them with existing transactions and subscriptions. Check the transactions before saving them."
+            "fileDescription": "Upload a CSV file with your transactions. The algorithm will try to extract and match them with existing transactions and subscriptions. Check the transactions before saving them.",
+            "deleteDescription": "This action cannot be undone. This will permanently delete the import and related transactions."
+        },
+        "status": {
+            "APPROVED": "Approved",
+            "REJECTED": "Rejected",
+            "IMPORT_PENDING": "Import pending",
+            "IMPORT_REJECTED": "Import rejected",
+            "IMPORT_APPROVED": "Import approved"
         }
     }
 }
