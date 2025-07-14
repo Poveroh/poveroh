@@ -1,6 +1,6 @@
 import { Card } from '@/components/card/Card'
 import appConfig from '@/config'
-import { Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
+import { FolderUp, Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { ReactNode } from 'react'
@@ -69,6 +69,12 @@ export default function SettingsPage() {
                         title={t('settings.manage.subscriptions.title')}
                         subtitle={t('settings.manage.subscriptions.subtitle')}
                         icon={<WalletCards />}
+                    ></SettingsCard>
+                    <SettingsCard
+                        link='/imports'
+                        title={t('imports.title')}
+                        subtitle={t('imports.subtitle')}
+                        icon={<FolderUp />}
                     ></SettingsCard>
                 </SettingsRow>
             </div>

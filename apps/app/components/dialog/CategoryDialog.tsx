@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 import { AppearanceMode, ICategory } from '@poveroh/types'
-import { Modal } from '../modal/form'
+import { Modal } from '../modal/dialog'
 import { CategoryForm } from '../form/CategoryForm'
 import { useCategory } from '@/hooks/useCategory'
 

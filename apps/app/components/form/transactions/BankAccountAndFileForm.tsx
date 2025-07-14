@@ -38,7 +38,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
 
     const { handleError } = useError()
     const { parseTransactionFromFile } = useImports()
-    const { bankAccountCacheList } = useBankAccount()
+    const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
 
     const [loading, setLoading] = useState(false)
     const [showButton, setShowButton] = useState(false)
@@ -79,7 +79,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
             setLoading(true)
             setShowButton(false)
 
-            await dataCallback(readedParsedTransaction)
+            dataCallback(readedParsedTransaction)
         } catch (error) {
             setLoading(false)
             handleError(error, 'Form error')
@@ -96,7 +96,13 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('form.bankaccount.label')}</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    onOpenChange={open => {
+                                        if (open) fetchBankAccount()
+                                    }}
+                                >
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('form.bankaccount.placeholder')} />

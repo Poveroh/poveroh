@@ -69,9 +69,29 @@ export class ImportController {
                 return
             }
 
-            await prisma.imports.delete({
-                where: { id }
+            const transactions = await prisma.transactions.findMany({
+                where: { import_id: id },
+                select: { id: true }
             })
+            const transactionIds = transactions.map(t => t.id)
+
+            if (transactionIds.length > 0) {
+                await prisma.amounts.deleteMany({
+                    where: { transaction_id: { in: transactionIds } }
+                })
+            }
+
+            await prisma.$transaction([
+                prisma.transactions.deleteMany({
+                    where: { import_id: id }
+                }),
+                prisma.import_files.deleteMany({
+                    where: { import_id: id }
+                }),
+                prisma.imports.delete({
+                    where: { id }
+                })
+            ])
 
             res.status(200).json(true)
         } catch (error) {
@@ -83,37 +103,48 @@ export class ImportController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const rawFilters = req.query['filter'] || {}
-            const rawOptions = req.query['options'] || {}
+            const filters = req.query as unknown as IImportsFile
+            const skip = Number(req.query.skip) || 0
+            const take = Number(req.query.take) || 20
 
-            const filters = rawFilters as unknown as ITransactionFilters
-            const options = rawOptions as unknown as IFilterOptions
+            const where = buildWhere(filters)
 
-            const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
-            const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
-
-            const where = {
-                ...buildWhere(filters),
-                ...(filters.fromDate && {
-                    date: {
-                        ...(filters.date || {}),
-                        gte: new Date(filters.fromDate)
-                    }
-                })
-            }
-
-            const queryOptions: any = {
+            const data = await prisma.imports.findMany({
                 where,
+                include: { files: true },
+                orderBy: { created_at: 'desc' },
+                skip,
+                take
+            })
+
+            res.status(200).json(data)
+        } catch (error) {
+            logger.error(error)
+            res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
+    static async readPendingTransactions(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+
+            const filters = req.query as unknown as ITransactionFilters
+            const skip = Number(req.query.skip) || 0
+            const take = Number(req.query.take) || 20
+
+            const where = buildWhere(filters)
+
+            const data = await prisma.transactions.findMany({
+                where: {
+                    ...where,
+                    import_id: id,
+                    status: TransactionStatus.IMPORT_PENDING
+                },
                 include: { amounts: true },
                 orderBy: { created_at: 'desc' },
-                skip
-            }
-
-            if (take && take > 0) {
-                queryOptions.take = take
-            }
-
-            const data = await prisma.imports.findMany(queryOptions)
+                skip,
+                take
+            })
 
             res.status(200).json(data)
         } catch (error) {
@@ -206,8 +237,11 @@ export class ImportController {
             const fileResults = await Promise.all(
                 files.map(async file => {
                     const content = file.buffer.toString('utf-8')
+
                     const filePath = await MediaHelper.handleUpload(file, `${userId}/imports/${importId}`)
+
                     const parsed = await parser.parseCSVFile(content)
+
                     return {
                         filePath,
                         originalname: file.originalname,
@@ -223,7 +257,7 @@ export class ImportController {
              * Normalize transactions to match the expected format for the database.
              * The algorithm check back existing transactions and subscription to fill new transactions with the correct data.
              */
-            const parsedTransactions = ImportHelper.normalizeTransaction(userId, bank_account_id, allTransactions)
+            const parsedTransactions = await ImportHelper.normalizeTransaction(userId, bank_account_id, allTransactions)
 
             const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
                 id: uuidv4(),
@@ -238,7 +272,7 @@ export class ImportController {
                 data: {
                     id: importId,
                     user_id: userId,
-                    title: '',
+                    title: 'Import at ' + now.toISOString(),
                     status: TransactionStatus.IMPORT_PENDING,
                     created_at: now
                 }

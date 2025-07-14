@@ -4,6 +4,7 @@ import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
+import { TransactionStatus } from '@prisma/client'
 
 export class TransactionController {
     //POST /
@@ -90,6 +91,7 @@ export class TransactionController {
 
             const where = {
                 ...buildWhere(filters),
+                status: TransactionStatus.APPROVED,
                 ...(filters.fromDate && {
                     date: {
                         ...(filters.date || {}),

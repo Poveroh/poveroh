@@ -1,6 +1,6 @@
 import DynamicIcon from '../icon/DynamicIcon'
 import { categoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
-import { OptionsPopover } from '../navbar/OptionsPopoverr'
+import { OptionsPopover } from '../navbar/OptionsPopover'
 
 type CategoryItemProps = {
     category: ICategory

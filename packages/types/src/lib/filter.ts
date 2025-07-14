@@ -11,6 +11,11 @@ export interface IFilterOptions {
     take?: number
 }
 
+export interface IImportsFilters {
+    id?: string
+    title?: StringFilter
+}
+
 export interface ITransactionFilters {
     id?: string
     title?: StringFilter
