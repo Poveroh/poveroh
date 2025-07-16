@@ -37,7 +37,7 @@ export class ImportController {
             const { id } = req.params
 
             const deletePattern = {
-                import_id: id,
+                importId: id,
                 status: {
                     in: [TransactionStatus.IMPORT_PENDING, TransactionStatus.IMPORT_REJECTED]
                 }
@@ -45,26 +45,26 @@ export class ImportController {
 
             const imports = await prisma.$transaction(async tx => {
                 // Update transactions
-                await tx.transactions.updateMany({
-                    where: { status: TransactionStatus.IMPORT_APPROVED, import_id: id },
+                await tx.transaction.updateMany({
+                    where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
                     data: {
                         status: TransactionStatus.APPROVED
                     }
                 })
 
                 // Delete amounts and transactions for both statuses in a single transaction, but separate deleteMany calls are required
-                await tx.amounts.deleteMany({
+                await tx.amount.deleteMany({
                     where: {
                         transaction: deletePattern
                     }
                 })
 
-                await tx.transactions.deleteMany({
+                await tx.transaction.deleteMany({
                     where: deletePattern
                 })
 
                 // Update import
-                return tx.imports.update({
+                return tx.import.update({
                     where: { id },
                     data: {
                         status: TransactionStatus.APPROVED
@@ -92,26 +92,26 @@ export class ImportController {
                 return
             }
 
-            const transactions = await prisma.transactions.findMany({
-                where: { import_id: id },
+            const transactions = await prisma.transaction.findMany({
+                where: { importId: id },
                 select: { id: true }
             })
             const transactionIds = transactions.map(t => t.id)
 
             if (transactionIds.length > 0) {
-                await prisma.amounts.deleteMany({
-                    where: { transaction_id: { in: transactionIds } }
+                await prisma.amount.deleteMany({
+                    where: { transactionId: { in: transactionIds } }
                 })
             }
 
             await prisma.$transaction([
-                prisma.transactions.deleteMany({
-                    where: { import_id: id }
+                prisma.transaction.deleteMany({
+                    where: { importId: id }
                 }),
-                prisma.import_files.deleteMany({
-                    where: { import_id: id }
+                prisma.importFile.deleteMany({
+                    where: { importId: id }
                 }),
-                prisma.imports.delete({
+                prisma.import.delete({
                     where: { id }
                 })
             ])
@@ -132,10 +132,10 @@ export class ImportController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.imports.findMany({
+            const data = await prisma.import.findMany({
                 where,
                 include: { files: true },
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take
             })
@@ -155,10 +155,10 @@ export class ImportController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.transactions.findMany({
+            const data = await prisma.transaction.findMany({
                 where: {
                     ...where,
-                    import_id: id,
+                    importId: id,
                     status: {
                         in: [
                             TransactionStatus.IMPORT_PENDING,
@@ -168,7 +168,7 @@ export class ImportController {
                     }
                 },
                 include: { amounts: true },
-                orderBy: { created_at: 'desc' }
+                orderBy: { createdAt: 'desc' }
             })
 
             res.status(200).json(data)
@@ -180,14 +180,14 @@ export class ImportController {
 
     static async deletePendingTransaction(req: Request, res: Response) {
         try {
-            const { transaction_id } = req.params
+            const { transactionId } = req.params
 
-            if (!transaction_id) {
+            if (!transactionId) {
                 res.status(400).json({ message: 'Missing transaction ID' })
                 return
             }
-            await prisma.transactions.delete({
-                where: { id: transaction_id }
+            await prisma.transaction.delete({
+                where: { id: transactionId }
             })
 
             res.status(200).json(true)
@@ -211,7 +211,7 @@ export class ImportController {
             const updatedTransactions = await prisma.$transaction(
                 parsedData.map((t: ITransaction) => {
                     const { amounts, ...transactionData } = t
-                    return prisma.transactions.update({
+                    return prisma.transaction.update({
                         where: { id: t.id },
                         data: transactionData
                     })
@@ -254,7 +254,7 @@ export class ImportController {
             }
 
             const files = req.files as Express.Multer.File[]
-            const bank_account_id: string = req.body.bank_account_id
+            const bankAccountId: string = req.body.bank_account_id
             const userId = req.user.id
             const importId = uuidv4()
             const now = new Date()
@@ -286,46 +286,46 @@ export class ImportController {
              * Normalize transactions to match the expected format for the database.
              * The algorithm check back existing transactions and subscription to fill new transactions with the correct data.
              */
-            const parsedTransactions = await ImportHelper.normalizeTransaction(userId, bank_account_id, allTransactions)
+            const parsedTransactions = await ImportHelper.normalizeTransaction(userId, bankAccountId, allTransactions)
 
             const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
                 id: uuidv4(),
-                import_id: importId,
+                importId: importId,
                 filename: files[idx]?.originalname || '',
                 filetype: FileType.CSV,
                 path,
-                created_at: now.toISOString()
+                createdAt: now.toISOString()
             }))
 
-            const imports = await prisma.imports.create({
+            const imports = await prisma.import.create({
                 data: {
                     id: importId,
-                    user_id: userId,
-                    bank_account_id,
+                    userId: userId,
+                    bankAccountId,
                     title: 'Import at ' + now.toISOString(),
                     status: TransactionStatus.IMPORT_PENDING,
-                    created_at: now
+                    createdAt: now
                 }
             })
 
-            await prisma.import_files.createMany({ data: importFiles })
+            await prisma.importFile.createMany({ data: importFiles })
 
-            await prisma.transactions.createMany({
+            await prisma.transaction.createMany({
                 data: parsedTransactions.map(({ amounts, ...transaction }) => ({
                     ...transaction,
-                    import_id: importId
+                    importId: importId
                 }))
             })
 
             const allAmounts = parsedTransactions.flatMap(transaction =>
                 transaction.amounts.map(amount => ({
                     ...amount,
-                    transaction_id: transaction.id
+                    transactionId: transaction.id
                 }))
             )
 
             if (allAmounts.length > 0) {
-                await prisma.amounts.createMany({ data: allAmounts })
+                await prisma.amount.createMany({ data: allAmounts })
             }
 
             res.status(200).json({

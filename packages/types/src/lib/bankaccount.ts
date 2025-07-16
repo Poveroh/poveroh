@@ -2,13 +2,13 @@ export interface IBankAccountBase {
     title: string
     description: string
     type: BankAccountType
-    logo_icon: string
+    logoIcon: string
 }
 
 export interface IBankAccount extends IBankAccountBase {
     id: string
-    user_id: string
-    created_at: string
+    userId: string
+    createdAt: string
 }
 
 export enum BankAccountType {

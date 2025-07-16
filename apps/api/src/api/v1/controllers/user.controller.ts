@@ -7,14 +7,14 @@ export class UserController {
     // GET /me
     static async me(req: Request, res: Response) {
         try {
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { email: req.user.email },
                 select: {
                     id: true,
                     name: true,
                     surname: true,
                     email: true,
-                    created_at: true
+                    createdAt: true
                 }
             })
 
@@ -35,7 +35,7 @@ export class UserController {
         try {
             const { name, surname, email, password } = req.body
 
-            const existingUser = await prisma.users.findUnique({
+            const existingUser = await prisma.user.findUnique({
                 where: { email }
             })
 
@@ -46,7 +46,7 @@ export class UserController {
 
             const hashedPassword = await bcrypt.hash(password, 12)
 
-            const newUser = await prisma.users.create({
+            const newUser = await prisma.user.create({
                 data: {
                     name,
                     surname,
@@ -58,7 +58,7 @@ export class UserController {
                     name: true,
                     surname: true,
                     email: true,
-                    created_at: true
+                    createdAt: true
                 }
             })
 
@@ -74,7 +74,7 @@ export class UserController {
         try {
             const { id } = req.params
 
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { id }
             })
 
@@ -83,7 +83,7 @@ export class UserController {
                 return
             }
 
-            const updatedUser = await prisma.users.update({
+            const updatedUser = await prisma.user.update({
                 where: { id },
                 data: {
                     name: req.body.name,
@@ -94,7 +94,7 @@ export class UserController {
                     name: true,
                     surname: true,
                     email: true,
-                    created_at: true
+                    createdAt: true
                 }
             })
 
@@ -111,7 +111,7 @@ export class UserController {
             const { id } = req.params
             const { oldPassword, newPassword } = req.body
 
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { id }
             })
 
@@ -130,7 +130,7 @@ export class UserController {
 
             const hashedPassword = await bcrypt.hash(newPassword, 12)
 
-            await prisma.users.update({
+            await prisma.user.update({
                 where: { id },
                 data: { password: hashedPassword }
             })

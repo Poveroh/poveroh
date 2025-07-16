@@ -36,20 +36,20 @@ export interface IReadedTransaction {
 
 export interface IImportsFile {
     id: string
-    import_id: string
+    importId: string
     filename: string
     filetype: FileType
     path: string
-    created_at: string
+    createdAt: string
 }
 
 export interface IImports {
     id: string
-    user_id: string
+    userId: string
     title: string
     status: TransactionStatus
-    created_at: string
-    bank_account_id: string
+    createdAt: string
+    bankAccountId: string
     files: IImportsFile[]
     transactions: ITransaction[]
 }

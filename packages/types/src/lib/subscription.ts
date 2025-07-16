@@ -6,20 +6,20 @@ export interface ISubscriptionBase {
     description: string
     amount: number
     currency: Currencies
-    appearance_mode: AppearanceMode
-    appearance_logo_icon: string
-    first_payment: string
-    cycle_number: string
-    cycle_period: CyclePeriod
-    remember_period: RememberPeriod
-    bank_account_id: string
-    is_enabled: boolean
+    appearanceMode: AppearanceMode
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: string
+    cyclePeriod: CyclePeriod
+    rememberPeriod: RememberPeriod
+    bankAccountId: string
+    isEnabled: boolean
 }
 
 export interface ISubscription extends ISubscriptionBase {
     id: string
-    user_id: string
-    created_at: string
+    userId: string
+    createdAt: string
 }
 
 export enum CyclePeriod {

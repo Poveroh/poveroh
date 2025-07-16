@@ -12,20 +12,20 @@ export class CategoryController {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            const readedCategory: ICategoryBase = JSON.parse(req.body.data)
+            const readCategory: ICategoryBase = JSON.parse(req.body.data)
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
-                    `${req.user.id}/category/${readedCategory.title}`
+                    `${req.user.id}/category/${readCategory.title}`
                 )
-                readedCategory.logo_icon = filePath
+                readCategory.logoIcon = filePath
             }
 
-            const category = await prisma.categories.create({
+            const category = await prisma.category.create({
                 data: {
-                    ...readedCategory,
-                    user_id: req.user.id
+                    ...readCategory,
+                    userId: req.user.id
                 },
                 include: {
                     subcategories: true
@@ -44,7 +44,7 @@ export class CategoryController {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            const readedCategory: ICategory = JSON.parse(req.body.data)
+            const readCategory: ICategory = JSON.parse(req.body.data)
             const { id } = req.params
 
             if (!id) {
@@ -55,14 +55,14 @@ export class CategoryController {
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
-                    `${req.user.id}/category/${readedCategory.title}`
+                    `${req.user.id}/category/${readCategory.title}`
                 )
-                readedCategory.logo_icon = filePath
+                readCategory.logoIcon = filePath
             }
 
-            const category = await prisma.categories.update({
+            const category = await prisma.category.update({
                 where: { id },
-                data: omit(readedCategory, ['subcategories'])
+                data: omit(readCategory, ['subcategories'])
             })
 
             res.status(200).json(category)
@@ -82,8 +82,8 @@ export class CategoryController {
                 return
             }
 
-            await prisma.subcategories.deleteMany({ where: { category_id: id } })
-            await prisma.categories.delete({ where: { id } })
+            await prisma.subcategory.deleteMany({ where: { categoryId: id } })
+            await prisma.category.delete({ where: { id } })
 
             res.status(200).json(true)
         } catch (error) {
@@ -101,10 +101,10 @@ export class CategoryController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.categories.findMany({
+            const data = await prisma.category.findMany({
                 where,
                 include: { subcategories: true },
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take
             })

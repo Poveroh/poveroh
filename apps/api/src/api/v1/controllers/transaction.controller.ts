@@ -41,7 +41,7 @@ export class TransactionController {
 
             const parsedData = JSON.parse(data)
 
-            const transaction = await prisma.transactions.update({
+            const transaction = await prisma.transaction.update({
                 where: { id },
                 data: parsedData
             })
@@ -66,7 +66,7 @@ export class TransactionController {
                 return
             }
 
-            await prisma.transactions.delete({
+            await prisma.transaction.delete({
                 where: { id }
             })
 
@@ -103,7 +103,7 @@ export class TransactionController {
             const queryOptions: any = {
                 where,
                 include: { amounts: true },
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip
             }
 
@@ -111,7 +111,7 @@ export class TransactionController {
                 queryOptions.take = take
             }
 
-            const data = await prisma.transactions.findMany(queryOptions)
+            const data = await prisma.transaction.findMany(queryOptions)
 
             res.status(200).json(data)
         } catch (error) {

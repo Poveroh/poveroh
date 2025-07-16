@@ -15,7 +15,7 @@ export interface IUserToSave extends IUserBase {
 
 export interface IUser extends IUserBase {
     id: string
-    created_at: string
+    createdAt: string
 }
 
 export interface IPasswordToChange {
@@ -28,5 +28,5 @@ export const defaultUser: IUser = {
     name: '',
     surname: '',
     email: '',
-    created_at: ''
+    createdAt: ''
 }

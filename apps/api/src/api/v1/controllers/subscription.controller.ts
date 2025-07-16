@@ -12,20 +12,20 @@ export class SubscriptionController {
             if (!req.body.data) throw new Error('Data not provided')
 
             const parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
-            parsedSubscription.is_enabled = true
+            parsedSubscription.isEnabled = true
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
                     `${req.user.id}/subscription/${parsedSubscription.title}`
                 )
-                parsedSubscription.appearance_logo_icon = filePath
+                parsedSubscription.appearanceLogoIcon = filePath
             }
 
-            const subscription = await prisma.subscriptions.create({
+            const subscription = await prisma.subscription.create({
                 data: {
                     ...parsedSubscription,
-                    user_id: req.user.id
+                    userId: req.user.id
                 }
             })
 
@@ -54,10 +54,10 @@ export class SubscriptionController {
                     req.file,
                     `${req.user.id}/subscription/${parsedSubscription.title}`
                 )
-                parsedSubscription.appearance_logo_icon = filePath
+                parsedSubscription.appearanceLogoIcon = filePath
             }
 
-            const subscription = await prisma.subscriptions.update({
+            const subscription = await prisma.subscription.update({
                 where: { id },
                 data: parsedSubscription
             })
@@ -79,7 +79,7 @@ export class SubscriptionController {
                 return
             }
 
-            await prisma.subscriptions.delete({ where: { id } })
+            await prisma.subscription.delete({ where: { id } })
 
             res.status(200).json(true)
         } catch (error) {
@@ -97,9 +97,9 @@ export class SubscriptionController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.subscriptions.findMany({
+            const data = await prisma.subscription.findMany({
                 where,
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take
             })
