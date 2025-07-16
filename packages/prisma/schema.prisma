@@ -20,6 +20,7 @@ model users {
     categories    categories[]
     login         users_login[]
     bank_accounts bank_accounts[]
+    imports       imports[]
 
     @@index([surname])
     @@index([created_at])
@@ -40,18 +41,50 @@ model users_login {
     @@index([created_at])
 }
 
+model imports {
+    id              String            @id @default(uuid())
+    user_id         String
+    title           String
+    bank_account_id String
+    status          TransactionStatus @default(IMPORT_PENDING)
+    created_at      DateTime          @default(now())
+
+    user         users          @relation(fields: [user_id], references: [id])
+    bank_account bank_accounts  @relation(fields: [bank_account_id], references: [id])
+    transactions transactions[]
+    files        import_files[]
+
+    @@index([user_id])
+    @@index([status])
+}
+
+model import_files {
+    id         String   @id @default(uuid())
+    import_id  String
+    filename   String
+    filetype   FileType
+    path       String
+    created_at DateTime @default(now())
+
+    imports imports @relation(fields: [import_id], references: [id])
+
+    @@index([import_id])
+}
+
 model transactions {
-    id             String          @id @default(uuid())
+    id             String            @id @default(uuid())
     user_id        String
     title          String
     date           DateTime
     icon           String?
-    type           TransactionType @default(EXPENSES)
+    type           TransactionType   @default(EXPENSES)
     category_id    String?
     subcategory_id String?
+    import_id      String?
     note           String?
-    ignore         Boolean         @default(false)
-    created_at     DateTime        @default(now())
+    status         TransactionStatus @default(APPROVED)
+    ignore         Boolean           @default(false)
+    created_at     DateTime          @default(now())
 
     user        users          @relation(fields: [user_id], references: [id])
     category    categories?    @relation(fields: [category_id], references: [id])
@@ -59,6 +92,7 @@ model transactions {
 
     media   transactions_media[]
     amounts amounts[]
+    imports imports?             @relation(fields: [import_id], references: [id])
 
     @@index([user_id])
     @@index([category_id])
@@ -117,6 +151,7 @@ model bank_accounts {
     subscriptions subscriptions[]
     amounts       amounts[]
     user          users           @relation(fields: [user_id], references: [id])
+    imports       imports[]
 
     @@index([user_id])
 }
@@ -177,6 +212,14 @@ enum TransactionType {
     INCOME
 }
 
+enum TransactionStatus {
+    APPROVED
+    REJECTED
+    IMPORT_PENDING
+    IMPORT_REJECTED
+    IMPORT_APPROVED
+}
+
 enum BankAccountType {
     ONLINE_BANK
     BANK_ACCOUNT
@@ -218,4 +261,9 @@ enum RememberPeriod {
 enum AppearanceMode {
     LOGO
     ICON
+}
+
+enum FileType {
+    CSV
+    PDF
 }

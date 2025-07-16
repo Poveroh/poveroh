@@ -1,9 +1,11 @@
-import { ITransaction } from '@poveroh/types'
+import { TransactionStatus, ITransaction } from '@poveroh/types'
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { TransactionApprovalItem } from '../item/TransactionApprovalItem'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import logger from '@/lib/logger'
+import { cloneDeep } from 'lodash'
+import { useImports } from '@/hooks/useImports'
 
 type TransactionsApprovalListProps = {
     transactions: ITransaction[]
@@ -14,32 +16,89 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
 
     const [localTransactions, setLocalTransactions] = useState<ITransaction[]>(transactions)
 
-    const [approvedTransactions, setApprovedTransactions] = useState<string[]>([])
+    const { editPendingTransaction } = useImports()
 
     useEffect(() => {
         setLocalTransactions(transactions)
     }, [transactions])
 
-    useEffect(() => {
-        logger.debug('Approved Transactions:', approvedTransactions)
-    }, [approvedTransactions])
+    const handleApproveTransaction = async (transactionId: string, newValue: TransactionStatus) => {
+        logger.debug('Toggle approve transaction:', transactionId)
 
-    const handleApproveTransaction = (transactionId: string) => {
-        setApprovedTransactions(prev =>
-            prev.includes(transactionId) ? prev.filter(id => id !== transactionId) : [...prev, transactionId]
-        )
+        const clonedTransactions = cloneDeep(localTransactions)
+        const transaction = localTransactions.find(t => t.id === transactionId)
+
+        if (!transaction) {
+            logger.error('Transaction not found:', transactionId)
+            return
+        }
+
+        if (transaction.status == newValue) return
+
+        transaction.status = newValue
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify([transaction]))
+
+        editPendingTransaction(transactionId, formData)
+
+        clonedTransactions[clonedTransactions.findIndex(t => t.id === transactionId)] = transaction
+
+        setLocalTransactions(clonedTransactions)
     }
 
     const handleAllApprovedTransactions = (approveAll: boolean) => {
-        if (approveAll && approvedTransactions.length === transactions.length) return
+        logger.debug('Handle all transactions approval:', approveAll)
 
-        setApprovedTransactions(approveAll ? localTransactions.map(t => t.id) : [])
+        const clonedTransactions = cloneDeep(localTransactions)
+
+        if (clonedTransactions.length === 0) {
+            logger.debug('No transactions to approve or reject')
+            return
+        }
+
+        logger.debug(`Setting all transactions to ${approveAll ? 'approved' : 'rejected'}`)
+
+        const newTransactionStatus = approveAll ? TransactionStatus.IMPORT_APPROVED : TransactionStatus.IMPORT_REJECTED
+
+        clonedTransactions.forEach(item => {
+            item.status = newTransactionStatus
+        })
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify(clonedTransactions))
+
+        editPendingTransaction('', formData)
+
+        setLocalTransactions(clonedTransactions)
+    }
+
+    const handleOnEditTransaction = (transaction: ITransaction) => {
+        logger.debug('Edit transaction:', transaction)
+
+        const clonedTransaction = cloneDeep(localTransactions)
+        const index = clonedTransaction.findIndex(t => t.id === transaction.id)
+        if (index !== -1) {
+            clonedTransaction[index] = transaction
+            setLocalTransactions(clonedTransaction)
+        }
+    }
+
+    const handleOnDeleteTransaction = (transactionId: string) => {
+        logger.debug('Delete transaction:', transactionId)
+
+        const clonedTransactions = cloneDeep(localTransactions)
+        const index = clonedTransactions.findIndex(t => t.id === transactionId)
+        if (index !== -1) {
+            clonedTransactions.splice(index, 1)
+            setLocalTransactions(clonedTransactions)
+        }
     }
 
     return (
         <div className='flex flex-col space-y-4'>
             <div className='flex flex-row items-center justify-between'>
-                <p>{t('transactions.approvalList.transactionFound', { a: transactions.length })}</p>
+                <p>{t('transactions.approvalList.transactionFound', { a: localTransactions.length })}</p>
                 <div className='flex flex-row justify-between space-x-2'>
                     <Button variant='danger' size='sm' onClick={() => handleAllApprovedTransactions(false)}>
                         {t('transactions.approvalList.rejectAll')}
@@ -51,16 +110,15 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
             </div>
 
             <div className='flex flex-col space-y-2'>
-                {transactions.map((transaction, index) => {
+                {localTransactions.map((transaction, index) => {
                     return (
                         <TransactionApprovalItem
                             key={transaction.id}
                             index={index}
                             transaction={transaction}
-                            isApproved={approvedTransactions.includes(transaction.id)}
                             onApprove={handleApproveTransaction}
-                            openDelete={(item: ITransaction) => {}}
-                            openEdit={(item: ITransaction) => {}}
+                            onDelete={handleOnDeleteTransaction}
+                            onEdit={handleOnEditTransaction}
                         ></TransactionApprovalItem>
                     )
                 })}

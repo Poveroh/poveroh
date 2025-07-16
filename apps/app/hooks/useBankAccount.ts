@@ -63,7 +63,12 @@ export const useBankAccount = () => {
 
     const fetchBankAccount = async () => {
         try {
+            if (bankAccountStore.bankAccountCacheList.length > 0) {
+                return bankAccountStore.bankAccountCacheList
+            }
+
             const res = await bankAccountService.read<IBankAccount[], IBankAccountFilters>()
+
             bankAccountStore.setBankAccount(res)
 
             return res

@@ -1,6 +1,6 @@
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useCategory } from '@/hooks/useCategory'
-import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types'
+import { ICategory, TransactionStatus, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useEffect, useRef, useState } from 'react'
 import icons from 'currency-icons'
@@ -10,46 +10,47 @@ import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { useTranslations } from 'next-intl'
 import Divider from '../other/Divider'
 import { TransactionForm } from '../form/TransactionForm'
-import { Button } from '@poveroh/ui/components/button'
+import { Button, buttonVariants } from '@poveroh/ui/components/button'
 import { cn } from '@poveroh/ui/lib/utils'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from '@poveroh/ui/components/alert-dialog'
+import { useImports } from '@/hooks/useImports'
 
 type TransactionItemProps = {
     transaction: ITransaction
     index: number
-    isApproved: boolean
-    openDelete: (item: ITransaction) => void
-    openEdit: (item: ITransaction) => void
-    onApprove: (transactionId: string) => void
+    onDelete: (transactionId: string) => void
+    onEdit: (item: ITransaction) => void
+    onApprove: (transactionId: string, newValue: TransactionStatus) => void
 }
 
-export function TransactionApprovalItem({
-    transaction,
-    index,
-    isApproved,
-    onApprove,
-    openDelete,
-    openEdit
-}: TransactionItemProps) {
+export function TransactionApprovalItem({ transaction, index, onApprove, onDelete, onEdit }: TransactionItemProps) {
     const t = useTranslations()
 
     const { getCategory } = useCategory()
     const { getBankAccount } = useBankAccount()
+    const { editPendingTransaction, removePendingTransaction } = useImports()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [localIsApproved, setLocalIsApproved] = useState(isApproved)
+    const isApproved =
+        transaction.status == TransactionStatus.IMPORT_APPROVED || transaction.status == TransactionStatus.APPROVED
+
     const [editingMode, setEditingMode] = useState(false)
 
-    const [fromAccount, setFromAccount] = useState<IBankAccount | null>(null)
-    const [toAccount, setToAccount] = useState<IBankAccount | null>(null)
     const [category, setCategory] = useState<ICategory | null>(null)
     const [amount, setAmount] = useState<number>(0)
     const [currencySymbol, setCurrencySymbol] = useState('')
     const [isExpense, setIsExpense] = useState(false)
-
-    useEffect(() => {
-        setLocalIsApproved(isApproved)
-    }, [isApproved])
 
     useEffect(() => {
         async function fetchData() {
@@ -61,11 +62,6 @@ export function TransactionApprovalItem({
                 setAmount(firstAmount.amount)
                 setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
                 setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
-                setFromAccount(await getBankAccount(firstAmount.bank_account_id))
-
-                if (transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]) {
-                    setToAccount(await getBankAccount(transaction.amounts[1].bank_account_id))
-                }
             }
 
             if (transaction.category_id) {
@@ -76,9 +72,22 @@ export function TransactionApprovalItem({
         fetchData()
     }, [transaction, getBankAccount, getCategory])
 
-    const toggleApproval = () => {
-        onApprove(transaction.id)
+    const handleEditTransaction = async (formData: FormData) => {
+        const editedTransaction = await editPendingTransaction(transaction.id, formData)
+
+        if (!editedTransaction) return
+
+        onEdit(editedTransaction)
     }
+
+    const handleDeleteTransaction = async () => {
+        const editedTransaction = await removePendingTransaction(transaction.id)
+
+        if (!editedTransaction) return
+
+        onDelete(transaction.id)
+    }
+
     return (
         <div className='w-full p-5 bg-input rounded-md'>
             {editingMode ? (
@@ -86,37 +95,53 @@ export function TransactionApprovalItem({
                     <TransactionForm
                         ref={formRef}
                         initialData={transaction}
-                        mode='edit'
+                        inEditingMode={true}
                         inputStyle='outlined'
                         action={transaction.type}
-                        handleSubmit={async (data: FormData) => {}}
+                        handleSubmit={handleEditTransaction}
                     ></TransactionForm>
                     <Divider></Divider>
                     <div className='flex flex-row items-center justify-between w-full'>
-                        <Button
-                            variant='danger'
-                            onClick={() => {
-                                // setEditingMode(false)
-                                // openDelete(transaction)
-                            }}
-                        >
-                            <Trash />
-                            {t('buttons.delete')}
-                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger className={buttonVariants({ variant: 'danger' })}>
+                                <Trash />
+                                {t('buttons.delete')}
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        {t('modal.delete.title', {
+                                            a: transaction.title
+                                        })}
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        {t('transactions.modal.deleteDescription')}
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        className={buttonVariants({ variant: 'danger' })}
+                                        onClick={() => handleDeleteTransaction}
+                                    >
+                                        {t('buttons.delete')}
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                         <div className='flex flex-row items-center space-x-2'>
                             <Button
                                 variant='outline'
                                 onClick={async () => {
                                     setEditingMode(false)
-                                    // openEdit(transaction)
                                 }}
                             >
                                 {t('buttons.cancel')}
                             </Button>
                             <Button
                                 onClick={async () => {
+                                    formRef.current?.submit()
                                     // setEditingMode(false)
-                                    // openEdit(transaction)
                                 }}
                             >
                                 {t('buttons.save')}
@@ -141,13 +166,7 @@ export function TransactionApprovalItem({
                                     ></Pencil>
                                 </div>
                                 <div className='flex flex-row space-x-2'>
-                                    <p className='sub'>{fromAccount?.title}</p>
-                                    {toAccount && (
-                                        <>
-                                            <DynamicIcon name='move-right' className='h-[20px] w-[20px] sub' />
-                                            <p className='sub'>{toAccount.title}</p>
-                                        </>
-                                    )}
+                                    {<p className='sub'>{new Date(transaction.date).toLocaleString()}</p>}
                                 </div>
                             </div>
                         </div>
@@ -177,22 +196,24 @@ export function TransactionApprovalItem({
                             <p>{t('form.ignore.label')}</p>
                         </div>
                         <div className='flex flex-row space-x-2'>
-                            <Button variant={localIsApproved ? 'ghost' : 'danger'} size='xs' onClick={toggleApproval}>
+                            <Button
+                                variant={isApproved ? 'ghost' : 'danger'}
+                                size='xs'
+                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_REJECTED)}
+                            >
                                 <DynamicIcon
                                     name='x'
-                                    className={cn(
-                                        'h-[20px] w-[20px] cursor-pointer',
-                                        localIsApproved ? 'danger' : 'ghost'
-                                    )}
+                                    className={cn('h-[20px] w-[20px] cursor-pointer', isApproved ? 'danger' : 'ghost')}
                                 />
                             </Button>
-                            <Button variant={localIsApproved ? 'success' : 'ghost'} size='xs' onClick={toggleApproval}>
+                            <Button
+                                variant={isApproved ? 'success' : 'ghost'}
+                                size='xs'
+                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_APPROVED)}
+                            >
                                 <DynamicIcon
                                     name='check'
-                                    className={cn(
-                                        'h-[20px] w-[20px] cursor-pointer',
-                                        localIsApproved ? 'ghost' : 'success'
-                                    )}
+                                    className={cn('h-[20px] w-[20px] cursor-pointer', isApproved ? 'ghost' : 'success')}
                                 />
                             </Button>
                         </div>

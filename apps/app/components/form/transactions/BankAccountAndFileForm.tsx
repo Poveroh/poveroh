@@ -1,12 +1,20 @@
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
-import { IBankAccount, ITransaction } from '@poveroh/types'
+import { IBankAccount, IImports } from '@poveroh/types'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@poveroh/ui/components/form'
 
 import { Loader2, X, Upload } from 'lucide-react'
 
@@ -18,19 +26,20 @@ import { Button } from '@poveroh/ui/components/button'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/useError'
-import { useTransaction } from '@/hooks/useTransaction'
 import logger from '@/lib/logger'
+import { useImports } from '@/hooks/useImports'
 
 type BankAccountAndFileFormProps = {
-    dataCallback: (transactions: ITransaction[]) => void
+    initialData?: IImports
+    dataCallback: (importedFiles: IImports) => void
 }
 
-export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormProps) {
+export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccountAndFileFormProps) {
     const t = useTranslations()
 
     const { handleError } = useError()
-    const { parseTransactionFromCSV } = useTransaction()
-    const { bankAccountCacheList } = useBankAccount()
+    const { parseTransactionFromFile } = useImports()
+    const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
 
     const [loading, setLoading] = useState(false)
     const [showButton, setShowButton] = useState(false)
@@ -45,7 +54,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            bank_account_id: ''
+            bank_account_id: initialData?.bank_account_id || ''
         }
     })
 
@@ -67,11 +76,11 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                 formData.append('files', file)
             })
 
-            const readedParsedTransaction = await parseTransactionFromCSV(formData)
+            const readedParsedTransaction = await parseTransactionFromFile(formData)
             setLoading(true)
             setShowButton(false)
 
-            await dataCallback(readedParsedTransaction)
+            dataCallback(readedParsedTransaction)
         } catch (error) {
             setLoading(false)
             handleError(error, 'Form error')
@@ -88,7 +97,19 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('form.bankaccount.label')}</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    onOpenChange={async open => {
+                                        if (open) {
+                                            await fetchBankAccount()
+                                            form.setValue(
+                                                'bank_account_id',
+                                                initialData?.bank_account_id || field.value || ''
+                                            )
+                                        }
+                                    }}
+                                >
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder={t('form.bankaccount.placeholder')} />
@@ -113,6 +134,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                     <div className='flex flex-col space-y-4'>
                         <FormItem>
                             <FormLabel>{t('form.file.label')}</FormLabel>
+                            <FormDescription>{t('imports.modal.fileDescription')}</FormDescription>
                             <FormControl>
                                 {
                                     <FileInput

@@ -154,6 +154,11 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             min='0'
                                             {...field}
                                             variant={inputStyle}
+                                            value={
+                                                Number.isNaN(field.value) || field.value === undefined
+                                                    ? ''
+                                                    : field.value
+                                            }
                                             onChange={e => field.onChange(parseFloat(e.target.value ?? 0))}
                                             placeholder={t('form.amount.placeholder')}
                                         />

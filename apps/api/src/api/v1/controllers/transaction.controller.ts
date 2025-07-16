@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { ICsvReadedTransaction, IFilterOptions, ITransactionFilters, TransactionAction } from '@poveroh/types'
+import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
-import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
+import { TransactionStatus } from '@prisma/client'
 
 export class TransactionController {
     //POST /
@@ -91,6 +91,7 @@ export class TransactionController {
 
             const where = {
                 ...buildWhere(filters),
+                status: TransactionStatus.APPROVED,
                 ...(filters.fromDate && {
                     date: {
                         ...(filters.date || {}),
@@ -113,34 +114,6 @@ export class TransactionController {
             const data = await prisma.transactions.findMany(queryOptions)
 
             res.status(200).json(data)
-        } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
-    //POST /read-csv
-    static async parseCSV(req: Request, res: Response) {
-        try {
-            if (!req.files || req.files.length === 0) throw new Error('Data not provided')
-
-            const files = req.files as Express.Multer.File[]
-            const parser = new HowIParsedYourDataAlgorithm()
-
-            const bank_account_id: string = req.body.bank_account_id
-
-            const results: ICsvReadedTransaction[] = []
-            for (const file of files) {
-                const content = file.buffer.toString('utf-8')
-
-                const res = await parser.parseCSVFile(content)
-
-                results.push(...res.transactions)
-            }
-
-            const parsedTransactions = TransactionHelper.normalizeTransaction(req.user.id, bank_account_id, results)
-
-            res.status(200).json(parsedTransactions)
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

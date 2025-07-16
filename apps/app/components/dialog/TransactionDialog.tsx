@@ -1,16 +1,15 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/form'
+import { Modal } from '../modal/dialog'
 import { useRef, useState } from 'react'
 import { ITransaction } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useTransaction } from '@/hooks/useTransaction'
-import { UploadForm } from '../form/transactions/UploadForm'
 import { TransactionForm } from '../form/TransactionForm'
 
 type DialogProps = {
     open: boolean
     initialData?: ITransaction
-    mode: 'upload' | 'edit' | 'add'
+    inEditingMode?: boolean
     dialogHeight?: string
     closeDialog: () => void
 }
@@ -23,26 +22,12 @@ export function TransactionDialog(props: DialogProps) {
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
-    const [saveDisabled, setSaveDisabled] = useState(props.mode == 'upload')
-    const [showSaveButton, setShowSaveButton] = useState(props.mode != 'upload')
-    const [keepAdding, setKeepAdding] = useState(false)
+    const [keepAdding, setKeepAdding] = useState(true)
 
     const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
 
     const generateTitle = () => {
-        let suffixTitle = ''
-
-        switch (props.mode) {
-            case 'upload':
-                suffixTitle = 'uploadTitle'
-                break
-            case 'add':
-                suffixTitle = 'newTitle'
-                break
-            case 'edit':
-                suffixTitle = 'editTitle'
-                break
-        }
+        const suffixTitle = props.inEditingMode ? 'editTitle' : 'newTitle'
 
         return t(`transactions.modal.${suffixTitle}`)
     }
@@ -53,7 +38,7 @@ export function TransactionDialog(props: DialogProps) {
         let res: ITransaction | null
 
         // edit dialog
-        if (props.mode == 'edit' && props.initialData) {
+        if (props.inEditingMode && props.initialData) {
             res = await editTransaction(props.initialData.id, data)
 
             if (!res) {
@@ -81,7 +66,7 @@ export function TransactionDialog(props: DialogProps) {
         toast.success(
             t('messages.successfully', {
                 a: res.title,
-                b: t(props.mode == 'edit' ? 'messages.saved' : 'messages.uploaded')
+                b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )
 
@@ -94,33 +79,24 @@ export function TransactionDialog(props: DialogProps) {
             title={generateTitle()}
             handleOpenChange={props.closeDialog}
             loading={loading}
-            inEditingMode={props.mode == 'edit'}
+            inEditingMode={props.inEditingMode || false}
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
             hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
-            buttonDisabled={saveDisabled}
-            showSaveButton={showSaveButton}
+            showSaveButton={true}
+            askForConfirmation={false}
             onClick={() => formRef.current?.submit()}
         >
-            {props.mode == 'upload' ? (
-                <UploadForm
-                    ref={formRef}
-                    dataCallback={handleFormSubmit}
-                    showSaveButton={() => setShowSaveButton(true)}
-                    closeDialog={props.closeDialog}
-                ></UploadForm>
-            ) : (
-                <TransactionForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    mode={props.mode}
-                    action={currentAction}
-                    inputStyle='contained'
-                    setAction={setCurrentAction}
-                    handleSubmit={handleFormSubmit}
-                ></TransactionForm>
-            )}
+            <TransactionForm
+                ref={formRef}
+                initialData={props.initialData}
+                action={currentAction}
+                inputStyle='contained'
+                inEditingMode={props.inEditingMode || false}
+                setAction={setCurrentAction}
+                handleSubmit={handleFormSubmit}
+            ></TransactionForm>
         </Modal>
     )
 }

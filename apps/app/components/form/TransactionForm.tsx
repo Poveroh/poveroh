@@ -7,12 +7,14 @@ import { TransferForm } from '../form/transactions/TransferForm'
 import { useTransaction } from '@/hooks/useTransaction'
 import { ExpensesForm } from '../form/transactions/ExpensesForm'
 import React, { forwardRef, useImperativeHandle } from 'react'
+import { useCategory } from '@/hooks/useCategory'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type TransactionFormProps = {
     initialData?: ITransaction
-    mode: 'upload' | 'edit' | 'add'
     action: string
     inputStyle?: InputVariantStyle
+    inEditingMode?: boolean
     setAction?: (action: string) => void
     handleSubmit: (data: FormData) => Promise<void>
 }
@@ -21,6 +23,10 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     const t = useTranslations()
 
     const { getActionList } = useTransaction()
+
+    const { fetchCategory } = useCategory()
+    const { fetchBankAccount } = useBankAccount()
+
     const [localCurrentAction, setLocalCurrentAction] = useState<string>(props.action || 'EXPENSES')
     const formRef = useRef<FormRef | null>(null)
 
@@ -29,6 +35,14 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
             setLocalCurrentAction(props.action)
         }
     }, [props.action])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchCategory()
+            await fetchBankAccount()
+        }
+        fetchData()
+    }, [])
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -55,7 +69,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <IncomeForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />
@@ -64,7 +78,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <ExpensesForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />
@@ -74,7 +88,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 <TransferForm
                     ref={formRef}
                     initialData={props.initialData}
-                    inEditingMode={props.mode == 'edit'}
+                    inEditingMode={props.inEditingMode || false}
                     dataCallback={props.handleSubmit}
                     inputStyle={props.inputStyle}
                 />

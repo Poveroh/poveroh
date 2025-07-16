@@ -16,6 +16,7 @@ import {
     ICategory,
     IItem,
     ISubcategory,
+    ITransaction,
     TransactionAction
 } from '@poveroh/types'
 
@@ -150,6 +151,34 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
         }
     }, [form.formState.errors])
 
+    useEffect(() => {
+        if (initialData) {
+            let dataInitialToShow: any
+
+            // If there are multiple amounts, use the multipleAmount: true schema
+            if (initialData.amounts && initialData.amounts.length > 1) {
+                dataInitialToShow = {
+                    ...initialData,
+                    multipleAmount: true,
+                    // Remove total_bank_account_id if present
+                    total_bank_account_id: undefined
+                }
+            } else {
+                // Otherwise, use the multipleAmount: false schema
+                dataInitialToShow = {
+                    ...initialData,
+                    multipleAmount: false,
+                    total_amount: initialData.amounts?.[0]?.amount || 0,
+                    total_bank_account_id: initialData.amounts?.[0]?.bank_account_id || '',
+                    currency: initialData.amounts?.[0]?.currency || Currencies.EUR,
+                    amounts: undefined
+                }
+            }
+
+            form.reset(dataInitialToShow)
+        }
+    }, [initialData])
+
     const calculateTotal = () => {
         const values = form.getValues()
         if ('amounts' in values && Array.isArray(values.amounts)) {
@@ -170,7 +199,9 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let localTransaction: any = cloneDeep(values)
+            let localTransaction: any = { ...props.initialData, ...cloneDeep(values) }
+
+            console.log('localTransaction', localTransaction)
 
             const formData = new FormData()
 
@@ -247,13 +278,13 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.currency.label')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger variant={inputStyle}>
                                             <SelectValue placeholder={t('form.currency.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent defaultValue={field.value}>
                                         {currencyCatalog.map((item: IItem) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 <div className='flex items-center flex-row space-x-4'>
@@ -360,7 +391,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                     name={`amounts.${index}.bank_account_id`}
                                     render={({ field }) => (
                                         <FormItem>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                value={field.value}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger variant={inputStyle}>
                                                         <SelectValue placeholder={t('form.bankaccount.placeholder')} />
@@ -404,7 +439,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        value={field.value}
+                                    >
                                         <FormControl>
                                             <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.bankaccount.placeholder')} />
@@ -439,6 +478,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             parseSubcategoryList(x)
                                             field.onChange(x)
                                         }}
+                                        value={field.value}
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
@@ -470,7 +510,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.subcategory.label')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        value={field.value}
+                                    >
                                         <FormControl>
                                             <SelectTrigger variant={inputStyle}>
                                                 <SelectValue placeholder={t('form.subcategory.placeholder')} />

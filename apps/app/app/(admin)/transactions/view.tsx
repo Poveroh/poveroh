@@ -31,6 +31,7 @@ import { IFilterOptions, ITransaction } from '@poveroh/types'
 import { isEmpty } from 'lodash'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import Divider from '@/components/other/Divider'
+import { ImportDialog } from '@/components/dialog/ImportDialog'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -40,8 +41,8 @@ export default function TransactionsView() {
 
     const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
-    const [addMode, setAddMode] = useState<'add' | 'upload'>('add')
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
+    const [dialogUploadOpen, setDialogUploadOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
@@ -145,8 +146,7 @@ export default function TransactionsView() {
                                         <a
                                             className='flex items-center space-x-2 w-full'
                                             onClick={() => {
-                                                setAddMode('upload')
-                                                setDialogNewOpen(true)
+                                                setDialogUploadOpen(true)
                                             }}
                                         >
                                             <Upload />
@@ -156,7 +156,6 @@ export default function TransactionsView() {
                                         <a
                                             className='flex items-center space-x-2 w-full'
                                             onClick={() => {
-                                                setAddMode('add')
                                                 setDialogNewOpen(true)
                                             }}
                                         >
@@ -272,8 +271,7 @@ export default function TransactionsView() {
             {dialogNewOpen && (
                 <TransactionDialog
                     open={dialogNewOpen}
-                    mode={addMode}
-                    dialogHeight={addMode == 'add' ? 'h-[80vh]' : undefined}
+                    dialogHeight={'h-[80vh]'}
                     closeDialog={() => setDialogNewOpen(false)}
                 ></TransactionDialog>
             )}
@@ -281,11 +279,15 @@ export default function TransactionsView() {
             {itemToEdit && (
                 <TransactionDialog
                     initialData={itemToEdit}
-                    mode='edit'
                     open={itemToEdit !== null}
                     dialogHeight='h-[80vh]'
+                    inEditingMode={true}
                     closeDialog={() => setItemToEdit(null)}
                 />
+            )}
+
+            {dialogUploadOpen && (
+                <ImportDialog open={true} inEditingMode={true} closeDialog={() => setItemToEdit(null)} />
             )}
         </>
     )

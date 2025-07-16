@@ -1,5 +1,5 @@
 import Papa from 'papaparse'
-import { ICsvReadedTransaction, IFieldMapping, TransactionAction, Currencies, ICSVValueReturned } from '@poveroh/types'
+import { IReadedTransaction, IFieldMapping, TransactionAction, Currencies, IValueReturned } from '@poveroh/types'
 
 /**
  *
@@ -699,14 +699,14 @@ class HowIParsedYourDataAlgorithm {
     }
 
     public parseCSV(csvData: string): Promise<{
-        transactions: ICsvReadedTransaction[]
+        transactions: IReadedTransaction[]
         mapping: IFieldMapping
         errors: string[]
         detectedStartRow?: number
     }> {
         return new Promise(resolve => {
             const errors: string[] = []
-            const transactions: ICsvReadedTransaction[] = []
+            const transactions: IReadedTransaction[] = []
 
             const { startRow, headers } = this.findDataTableStart(csvData)
 
@@ -822,7 +822,7 @@ class HowIParsedYourDataAlgorithm {
         })
     }
 
-    public async parseCSVFile(fileContent: string): Promise<ICSVValueReturned> {
+    public async parseCSVFile(fileContent: string): Promise<IValueReturned> {
         const result = await this.parseCSV(fileContent)
 
         const summary = {

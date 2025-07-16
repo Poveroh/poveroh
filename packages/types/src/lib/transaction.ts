@@ -13,15 +13,6 @@ export interface IAmount extends IAmountBase {
     created_at: string
 }
 
-export interface ICsvReadedTransaction {
-    date: Date
-    amount: number
-    type: TransactionAction
-    currency: Currencies
-    title: string
-    originalRow?: Record<string, any>
-}
-
 export interface ITransactionBase {
     title: string
     type: TransactionAction
@@ -37,6 +28,8 @@ export interface ITransaction extends ITransactionBase {
     id: string
     user_id: string
     created_at: Date
+    status: TransactionStatus
+    import_id?: string
     amounts: IAmount[]
 }
 
@@ -44,6 +37,14 @@ export enum TransactionAction {
     INTERNAL = 'INTERNAL',
     INCOME = 'INCOME',
     EXPENSES = 'EXPENSES'
+}
+
+export enum TransactionStatus {
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
+    IMPORT_PENDING = 'IMPORT_PENDING',
+    IMPORT_REJECTED = 'IMPORT_REJECTED',
+    IMPORT_APPROVED = 'IMPORT_APPROVED'
 }
 
 export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>
