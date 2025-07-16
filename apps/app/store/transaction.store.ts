@@ -7,9 +7,9 @@ type TransactionStore = {
     addTransaction: (transaction: ITransaction) => void
     appendTransactions: (transactions: ITransaction[]) => void
     editTransaction: (transaction: ITransaction) => void
-    setTransaction: (transactions: ITransaction[]) => void
-    removeTransaction: (transaction_id: string) => void
-    getTransaction: (transaction_id: string) => ITransaction | null
+    setTransactions: (transactions: ITransaction[]) => void
+    removeTransaction: (transactionId: string) => void
+    getTransaction: (transactionId: string) => ITransaction | null
 }
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
@@ -18,7 +18,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
         set(state => {
             const list = [...state.transactionCacheList, transaction]
             return {
-                transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                transactionCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
@@ -27,7 +27,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
             const list = [...state.transactionCacheList]
             list.push(...transactions)
             return {
-                transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                transactionCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
@@ -38,25 +38,25 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
                 const list = cloneDeep(state.transactionCacheList)
                 list[index] = transaction
                 return {
-                    transactionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                    transactionCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             }
             return state
         })
     },
-    setTransaction: transactions => {
+    setTransactions: transactions => {
         set(() => ({
             transactionCacheList: transactions
         }))
     },
-    removeTransaction: transaction_id => {
+    removeTransaction: transactionId => {
         set(state => ({
-            transactionCacheList: state.transactionCacheList.filter(item => item.id !== transaction_id)
+            transactionCacheList: state.transactionCacheList.filter(item => item.id !== transactionId)
         }))
     },
-    getTransaction: transaction_id => {
+    getTransaction: transactionId => {
         const list = get().transactionCacheList
-        const index = list.findIndex(item => item.id === transaction_id)
+        const index = list.findIndex(item => item.id === transactionId)
         if (index !== -1) {
             return list[index] || null
         }

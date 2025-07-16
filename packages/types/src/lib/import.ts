@@ -43,7 +43,7 @@ export interface IImportsFile {
     createdAt: string
 }
 
-export interface IImports {
+export interface IImport {
     id: string
     userId: string
     title: string

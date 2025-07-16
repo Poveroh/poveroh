@@ -1,18 +1,18 @@
-import { IImports, ITransaction } from '@poveroh/types'
+import { IImport, ITransaction } from '@poveroh/types'
 import { BaseService } from './base.service'
 import { server } from '@/lib/server'
 
-export class ImportService extends BaseService<IImports> {
+export class ImportService extends BaseService<IImport> {
     constructor() {
         super('/import')
     }
 
-    async complete(id: string): Promise<IImports> {
-        return await server.put<IImports>(`/import/complete${'/' + id}`, {}, false)
+    async complete(id: string): Promise<IImport> {
+        return await server.put<IImport>(`/import/complete${'/' + id}`, {}, false)
     }
 
-    async readFile(data: FormData): Promise<IImports> {
-        return await server.post<IImports>('/import/read-file', data, true)
+    async readFile(data: FormData): Promise<IImport> {
+        return await server.post<IImport>('/import/read-file', data, true)
     }
 
     async readTransaction(id: string): Promise<ITransaction[]> {

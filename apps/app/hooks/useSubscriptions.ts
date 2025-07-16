@@ -2,16 +2,16 @@
 
 import { useError } from './useError'
 import { SubscriptionService } from '@/services/subscriptions.service'
-import { useSubscriptionsStore } from '@/store/subscriptions.store'
+import { useSubscriptionStore } from '@/store/subscriptions.store'
 import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 
-export const useSubscriptions = () => {
+export const useSubscription = () => {
     const t = useTranslations()
     const { handleError } = useError()
 
     const subscriptionService = new SubscriptionService()
-    const subscriptionStore = useSubscriptionsStore()
+    const subscriptionStore = useSubscriptionStore()
 
     const addSubscription = async (data: FormData) => {
         try {
@@ -33,22 +33,22 @@ export const useSubscriptions = () => {
         }
     }
 
-    const removeSubscription = async (subscription_id: string) => {
+    const removeSubscription = async (subscriptionId: string) => {
         try {
-            const res = await subscriptionService.delete(subscription_id)
+            const res = await subscriptionService.delete(subscriptionId)
             if (!res) throw new Error('No response from server')
-            subscriptionStore.removeSubscription(subscription_id)
+            subscriptionStore.removeSubscription(subscriptionId)
             return res
         } catch (error) {
             return handleError(error, 'Error deleting subscription')
         }
     }
 
-    const getSubscription = async (subscription_id: string, fetchFromServer?: boolean) => {
+    const getSubscription = async (subscriptionId: string, fetchFromServer?: boolean) => {
         try {
             return fetchFromServer
-                ? await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({ id: subscription_id })
-                : subscriptionStore.getSubscription(subscription_id)
+                ? await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({ id: subscriptionId })
+                : subscriptionStore.getSubscription(subscriptionId)
         } catch (error) {
             return handleError(error, 'Error fetching subscription')
         }
@@ -57,7 +57,7 @@ export const useSubscriptions = () => {
     const fetchSubscriptions = async () => {
         try {
             const res = await subscriptionService.read<ISubscription[], ISubscriptionFilters>()
-            subscriptionStore.setSubscription(res)
+            subscriptionStore.setSubscriptions(res)
             return res
         } catch (error) {
             return handleError(error, 'Error fetching subscriptions')
@@ -66,23 +66,23 @@ export const useSubscriptions = () => {
 
     const getNextExecutionText = (subscription: ISubscription, fromDate: Date = new Date()) => {
         const now = fromDate
-        const next = new Date(subscription.first_payment)
+        const next = new Date(subscription.firstPayment)
 
-        const cycle_number = Number(subscription.cycle_number)
+        const cycleNumber = Number(subscription.cycleNumber)
 
         while (next < now) {
-            switch (subscription.cycle_period) {
+            switch (subscription.cyclePeriod) {
                 case CyclePeriod.DAY:
-                    next.setDate(next.getDate() + cycle_number)
+                    next.setDate(next.getDate() + cycleNumber)
                     break
                 case CyclePeriod.WEEK:
-                    next.setDate(next.getDate() + 7 * cycle_number)
+                    next.setDate(next.getDate() + 7 * cycleNumber)
                     break
                 case CyclePeriod.MONTH:
-                    next.setMonth(next.getMonth() + cycle_number)
+                    next.setMonth(next.getMonth() + cycleNumber)
                     break
                 case CyclePeriod.YEAR:
-                    next.setFullYear(next.getFullYear() + cycle_number)
+                    next.setFullYear(next.getFullYear() + cycleNumber)
                     break
             }
         }

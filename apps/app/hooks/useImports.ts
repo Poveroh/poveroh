@@ -1,31 +1,31 @@
 'use client'
 
-import { IFilterOptions, IImports, IImportsFilters } from '@poveroh/types'
+import { IFilterOptions, IImport, IImportsFilters } from '@poveroh/types'
 import { useError } from './useError'
 import { ImportService } from '@/services/import.service'
-import { useImportsStore } from '@/store/imports.store'
+import { useImportStore } from '@/store/imports.store'
 
-export const useImports = () => {
+export const useImport = () => {
     const { handleError } = useError()
 
     const importService = new ImportService()
 
-    const importsStore = useImportsStore()
+    const importStore = useImportStore()
 
-    const fetchImports = async (filters?: IImportsFilters, options?: IFilterOptions) => {
-        const res = await importService.read<IImports[], IImportsFilters>(filters, options)
+    const fetchImport = async (filters?: IImportsFilters, options?: IFilterOptions) => {
+        const res = await importService.read<IImport[], IImportsFilters>(filters, options)
 
-        importsStore.setImports(res)
+        importStore.setImports(res)
 
         return res
     }
 
-    const appendImports = async (imports: IImports[]) => {
-        importsStore.addImport(imports)
+    const appendImport = async (imports: IImport[]) => {
+        importStore.addImport(imports)
         return imports
     }
 
-    const removeImports = async (importId: string) => {
+    const removeImport = async (importId: string) => {
         try {
             const res = await importService.delete(importId)
 
@@ -33,7 +33,7 @@ export const useImports = () => {
                 throw new Error('No response from server')
             }
 
-            importsStore.removeImport(importId)
+            importStore.removeImport(importId)
 
             return res
         } catch (error) {
@@ -41,7 +41,7 @@ export const useImports = () => {
         }
     }
 
-    const completeImports = async (id: string) => {
+    const completeImport = async (id: string) => {
         try {
             const res = await importService.complete(id)
 
@@ -51,7 +51,7 @@ export const useImports = () => {
         }
     }
 
-    const readPendingTransactions = async (id: string) => {
+    const readPendingTransaction = async (id: string) => {
         try {
             const res = await importService.readTransaction(id)
 
@@ -88,12 +88,12 @@ export const useImports = () => {
     }
 
     return {
-        importsCacheList: importsStore.importsCacheList,
-        fetchImports,
-        removeImports,
-        appendImports,
-        completeImports,
-        readPendingTransactions,
+        importCacheList: importStore.importCacheList,
+        fetchImport,
+        removeImport,
+        appendImport,
+        completeImport,
+        readPendingTransaction,
         editPendingTransaction,
         removePendingTransaction,
         parseTransactionFromFile

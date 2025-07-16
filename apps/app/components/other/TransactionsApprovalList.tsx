@@ -5,7 +5,7 @@ import { TransactionApprovalItem } from '../item/TransactionApprovalItem'
 import { useEffect, useState } from 'react'
 import logger from '@/lib/logger'
 import { cloneDeep } from 'lodash'
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 
 type TransactionsApprovalListProps = {
     transactions: ITransaction[]
@@ -16,7 +16,7 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
 
     const [localTransactions, setLocalTransactions] = useState<ITransaction[]>(transactions)
 
-    const { editPendingTransaction } = useImports()
+    const { editPendingTransaction } = useImport()
 
     useEffect(() => {
         setLocalTransactions(transactions)
@@ -33,7 +33,7 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
             return
         }
 
-        if (transaction.status == newValue) return
+        if (transaction.status === newValue) return
 
         transaction.status = newValue
 
@@ -47,7 +47,7 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
         setLocalTransactions(clonedTransactions)
     }
 
-    const handleAllApprovedTransactions = (approveAll: boolean) => {
+    const handleAllApproveTransactions = (approveAll: boolean) => {
         logger.debug('Handle all transactions approval:', approveAll)
 
         const clonedTransactions = cloneDeep(localTransactions)
@@ -73,18 +73,18 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
         setLocalTransactions(clonedTransactions)
     }
 
-    const handleOnEditTransaction = (transaction: ITransaction) => {
+    const handleEditTransaction = (transaction: ITransaction) => {
         logger.debug('Edit transaction:', transaction)
 
-        const clonedTransaction = cloneDeep(localTransactions)
-        const index = clonedTransaction.findIndex(t => t.id === transaction.id)
+        const clonedTransactions = cloneDeep(localTransactions)
+        const index = clonedTransactions.findIndex(t => t.id === transaction.id)
         if (index !== -1) {
-            clonedTransaction[index] = transaction
-            setLocalTransactions(clonedTransaction)
+            clonedTransactions[index] = transaction
+            setLocalTransactions(clonedTransactions)
         }
     }
 
-    const handleOnDeleteTransaction = (transactionId: string) => {
+    const handleDeleteTransaction = (transactionId: string) => {
         logger.debug('Delete transaction:', transactionId)
 
         const clonedTransactions = cloneDeep(localTransactions)
@@ -100,10 +100,10 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
             <div className='flex flex-row items-center justify-between'>
                 <p>{t('transactions.approvalList.transactionFound', { a: localTransactions.length })}</p>
                 <div className='flex flex-row justify-between space-x-2'>
-                    <Button variant='danger' size='sm' onClick={() => handleAllApprovedTransactions(false)}>
+                    <Button variant='danger' size='sm' onClick={() => handleAllApproveTransactions(false)}>
                         {t('transactions.approvalList.rejectAll')}
                     </Button>
-                    <Button variant='success' size='sm' onClick={() => handleAllApprovedTransactions(true)}>
+                    <Button variant='success' size='sm' onClick={() => handleAllApproveTransactions(true)}>
                         {t('transactions.approvalList.approveAll')}
                     </Button>
                 </div>
@@ -117,8 +117,8 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
                             index={index}
                             transaction={transaction}
                             onApprove={handleApproveTransaction}
-                            onDelete={handleOnDeleteTransaction}
-                            onEdit={handleOnEditTransaction}
+                            onDelete={handleDeleteTransaction}
+                            onEdit={handleEditTransaction}
                         ></TransactionApprovalItem>
                     )
                 })}

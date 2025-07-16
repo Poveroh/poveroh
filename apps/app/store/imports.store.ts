@@ -1,36 +1,36 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { IImports } from '@poveroh/types'
+import { IImport } from '@poveroh/types'
 
-type ImportsStore = {
-    importsCacheList: IImports[]
-    addImport: (importItem: IImports[]) => void
-    editImport: (importItem: IImports) => void
-    setImports: (imports: IImports[]) => void
-    removeImport: (import_id: string) => void
-    getImport: (import_id: string) => IImports | null
+type ImportStore = {
+    importCacheList: IImport[]
+    addImport: (importItems: IImport[]) => void
+    editImport: (importItem: IImport) => void
+    setImports: (imports: IImport[]) => void
+    removeImport: (importId: string) => void
+    getImport: (importId: string) => IImport | null
 }
 
-export const useImportsStore = create<ImportsStore>((set, get) => ({
-    importsCacheList: [],
+export const useImportStore = create<ImportStore>((set, get) => ({
+    importCacheList: [],
 
-    addImport: importItem => {
+    addImport: importItems => {
         set(state => {
-            const list = [...state.importsCacheList, ...importItem]
+            const list = [...state.importCacheList, ...importItems]
             return {
-                importsCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                importCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
 
     editImport: importItem => {
         set(state => {
-            const index = state.importsCacheList.findIndex(item => item.id === importItem.id)
+            const index = state.importCacheList.findIndex(item => item.id === importItem.id)
             if (index !== -1) {
-                const list = cloneDeep(state.importsCacheList)
+                const list = cloneDeep(state.importCacheList)
                 list[index] = importItem
                 return {
-                    importsCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                    importCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             }
             return state
@@ -39,18 +39,18 @@ export const useImportsStore = create<ImportsStore>((set, get) => ({
 
     setImports: imports => {
         set(() => ({
-            importsCacheList: imports.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+            importCacheList: imports.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
         }))
     },
 
-    removeImport: import_id => {
+    removeImport: importId => {
         set(state => ({
-            importsCacheList: state.importsCacheList.filter(item => item.id !== import_id)
+            importCacheList: state.importCacheList.filter(item => item.id !== importId)
         }))
     },
 
-    getImport: import_id => {
-        const importsCacheList = get().importsCacheList
-        return importsCacheList.find(item => item.id === import_id) || null
+    getImport: importId => {
+        const importCacheList = get().importCacheList
+        return importCacheList.find(item => item.id === importId) || null
     }
 }))
