@@ -30,10 +30,11 @@ import logger from '@/lib/logger'
 import { useImports } from '@/hooks/useImports'
 
 type BankAccountAndFileFormProps = {
+    initialData?: IImports
     dataCallback: (importedFiles: IImports) => void
 }
 
-export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormProps) {
+export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccountAndFileFormProps) {
     const t = useTranslations()
 
     const { handleError } = useError()
@@ -53,7 +54,7 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            bank_account_id: ''
+            bank_account_id: initialData?.bank_account_id || ''
         }
     })
 
@@ -99,8 +100,14 @@ export function BankAccountAndFileForm({ dataCallback }: BankAccountAndFileFormP
                                 <Select
                                     onValueChange={field.onChange}
                                     value={field.value}
-                                    onOpenChange={open => {
-                                        if (open) fetchBankAccount()
+                                    onOpenChange={async open => {
+                                        if (open) {
+                                            await fetchBankAccount()
+                                            form.setValue(
+                                                'bank_account_id',
+                                                initialData?.bank_account_id || field.value || ''
+                                            )
+                                        }
                                     }}
                                 >
                                     <FormControl>

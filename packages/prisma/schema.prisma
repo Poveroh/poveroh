@@ -42,13 +42,15 @@ model users_login {
 }
 
 model imports {
-    id         String            @id @default(uuid())
-    user_id    String
-    title      String
-    status     TransactionStatus @default(IMPORT_PENDING)
-    created_at DateTime          @default(now())
+    id              String            @id @default(uuid())
+    user_id         String
+    title           String
+    bank_account_id String
+    status          TransactionStatus @default(IMPORT_PENDING)
+    created_at      DateTime          @default(now())
 
     user         users          @relation(fields: [user_id], references: [id])
+    bank_account bank_accounts  @relation(fields: [bank_account_id], references: [id])
     transactions transactions[]
     files        import_files[]
 
@@ -64,7 +66,7 @@ model import_files {
     path       String
     created_at DateTime @default(now())
 
-    import_ imports @relation(fields: [import_id], references: [id])
+    imports imports @relation(fields: [import_id], references: [id])
 
     @@index([import_id])
 }
@@ -149,6 +151,7 @@ model bank_accounts {
     subscriptions subscriptions[]
     amounts       amounts[]
     user          users           @relation(fields: [user_id], references: [id])
+    imports       imports[]
 
     @@index([user_id])
 }

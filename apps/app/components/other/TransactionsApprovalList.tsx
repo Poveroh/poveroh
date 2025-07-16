@@ -5,6 +5,7 @@ import { TransactionApprovalItem } from '../item/TransactionApprovalItem'
 import { useEffect, useState } from 'react'
 import logger from '@/lib/logger'
 import { cloneDeep } from 'lodash'
+import { useImports } from '@/hooks/useImports'
 
 type TransactionsApprovalListProps = {
     transactions: ITransaction[]
@@ -15,11 +16,13 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
 
     const [localTransactions, setLocalTransactions] = useState<ITransaction[]>(transactions)
 
+    const { editPendingTransaction } = useImports()
+
     useEffect(() => {
         setLocalTransactions(transactions)
     }, [transactions])
 
-    const handleApproveTransaction = (transactionId: string) => {
+    const handleApproveTransaction = async (transactionId: string, newValue: TransactionStatus) => {
         logger.debug('Toggle approve transaction:', transactionId)
 
         const clonedTransactions = cloneDeep(localTransactions)
@@ -30,8 +33,14 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
             return
         }
 
-        transaction.status =
-            transaction.status == TransactionStatus.APPROVED ? TransactionStatus.REJECTED : TransactionStatus.APPROVED
+        if (transaction.status == newValue) return
+
+        transaction.status = newValue
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify([transaction]))
+
+        editPendingTransaction(transactionId, formData)
 
         clonedTransactions[clonedTransactions.findIndex(t => t.id === transactionId)] = transaction
 
@@ -50,11 +59,16 @@ export function TransactionsApprovalList({ transactions }: TransactionsApprovalL
 
         logger.debug(`Setting all transactions to ${approveAll ? 'approved' : 'rejected'}`)
 
-        const newTransactionStatus = approveAll ? TransactionStatus.APPROVED : TransactionStatus.REJECTED
+        const newTransactionStatus = approveAll ? TransactionStatus.IMPORT_APPROVED : TransactionStatus.IMPORT_REJECTED
 
         clonedTransactions.forEach(item => {
             item.status = newTransactionStatus
         })
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify(clonedTransactions))
+
+        editPendingTransaction('', formData)
 
         setLocalTransactions(clonedTransactions)
     }

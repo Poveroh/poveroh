@@ -12,7 +12,7 @@ export const useImports = () => {
 
     const importsStore = useImportsStore()
 
-    const fetchImports = async (filters?: IImportsFilters, options?: IFilterOptions, append?: boolean) => {
+    const fetchImports = async (filters?: IImportsFilters, options?: IFilterOptions) => {
         const res = await importService.read<IImports[], IImportsFilters>(filters, options)
 
         importsStore.setImports(res)
@@ -38,6 +38,16 @@ export const useImports = () => {
             return res
         } catch (error) {
             return handleError(error, 'Error deleting import')
+        }
+    }
+
+    const completeImports = async (id: string) => {
+        try {
+            const res = await importService.complete(id)
+
+            return res
+        } catch (error) {
+            return handleError(error, 'Error saving import')
         }
     }
 
@@ -82,6 +92,7 @@ export const useImports = () => {
         fetchImports,
         removeImports,
         appendImports,
+        completeImports,
         readPendingTransactions,
         editPendingTransaction,
         removePendingTransaction,

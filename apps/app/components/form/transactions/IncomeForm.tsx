@@ -97,6 +97,15 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         }
     }, [form.formState.errors])
 
+    useEffect(() => {
+        if (initialData) {
+            form.reset({
+                ...initialData,
+                amount: initialData.amounts[0]?.amount || 0
+            })
+        }
+    }, [initialData])
+
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryCacheList.find(item => item.id === categoryId)
         const res = category ? category.subcategories : []
@@ -174,6 +183,11 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                                             step='0.01'
                                             min='0'
                                             {...field}
+                                            value={
+                                                Number.isNaN(field.value) || field.value === undefined
+                                                    ? ''
+                                                    : field.value
+                                            }
                                             variant={inputStyle}
                                             onChange={e => field.onChange(parseFloat(e.target.value))}
                                             placeholder={t('form.amount.placeholder')}

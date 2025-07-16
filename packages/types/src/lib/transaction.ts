@@ -29,6 +29,7 @@ export interface ITransaction extends ITransactionBase {
     user_id: string
     created_at: Date
     status: TransactionStatus
+    import_id?: string
     amounts: IAmount[]
 }
 

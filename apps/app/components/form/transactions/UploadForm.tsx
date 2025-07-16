@@ -11,7 +11,7 @@ import { useImports } from '@/hooks/useImports'
 
 type FormProps = {
     initialData?: IImports
-    dataCallback: (formData: FormData) => Promise<void>
+    dataCallback: (data: IImports) => Promise<void>
     showSaveButton: (enable?: boolean) => void
     closeDialog: () => void
 }
@@ -19,10 +19,19 @@ type FormProps = {
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>(props.initialData?.transactions || [])
 
+    const [localImports, setLocalImports] = useState<IImports | undefined>(props.initialData)
+
     const { appendImports } = useImports()
 
     useImperativeHandle(ref, () => ({
-        submit: () => {}
+        submit: () => {
+            if (!localImports) return
+
+            const clonedImports = cloneDeep(localImports)
+            clonedImports.transactions = parsedTransaction
+
+            return props.dataCallback(clonedImports)
+        }
     }))
 
     const handleCallback = async (importedFiles: IImports) => {
@@ -30,7 +39,7 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         readedTransactions.push(...importedFiles.transactions)
         setParsedTransaction(readedTransactions)
         appendImports([importedFiles])
-        props.dataCallback(new FormData())
+        setLocalImports(importedFiles)
         props.showSaveButton(true)
     }
 

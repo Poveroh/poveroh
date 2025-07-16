@@ -15,7 +15,7 @@ import {
 } from '@poveroh/ui/components/breadcrumb'
 import { Input } from '@poveroh/ui/components/input'
 
-import { ArrowLeftRight, Download, Import, Plus, RotateCcw, Search, Upload } from 'lucide-react'
+import { ArrowLeftRight, Download, Plus, RotateCcw, Search, Upload } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'

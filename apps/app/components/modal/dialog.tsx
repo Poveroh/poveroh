@@ -96,6 +96,7 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                             hideKeepAdding={props.hideKeepAdding}
                             buttonDisabled={props.buttonDisabled}
                             showSaveButton={props.showSaveButton}
+                            confirmButtonText={props.confirmButtonText}
                             setKeepAdding={props.setKeepAdding}
                             onClick={props.onClick}
                         />

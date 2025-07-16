@@ -1,9 +1,10 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/dialog'
 import { useRef, useState } from 'react'
-import { IImports, ITransaction } from '@poveroh/types'
+import { IImports } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UploadForm } from '../form/transactions/UploadForm'
+import { useImports } from '@/hooks/useImports'
 
 type DialogProps = {
     open: boolean
@@ -18,63 +19,29 @@ export function ImportDialog(props: DialogProps) {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
+    const [localImports, setLocalImports] = useState<IImports | undefined>(props.initialData)
+
+    const { completeImports } = useImports()
+
     const [loading, setLoading] = useState(false)
-    const [saveDisabled, setSaveDisabled] = useState(true)
-    const [showSaveButton, setShowSaveButton] = useState(false)
+    const [saveDisabled, setSaveDisabled] = useState(props.initialData ? false : true)
+    const [showSaveButton, setShowSaveButton] = useState(props.initialData ? true : false)
     const [askForConfirmation, setAskForConfirmation] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
     const generateTitle = () => {
-        // let suffixTitle = ''
-
-        // switch (props.mode) {
-        //     case 'upload':
-        //         suffixTitle = 'uploadTitle'
-        //         break
-        //     case 'add':
-        //         suffixTitle = 'newTitle'
-        //         break
-        //     case 'edit':
-        //         suffixTitle = 'editTitle'
-        //         break
-        // }
-
-        // return t(`transactions.modal.${suffixTitle}`)
-
-        return ''
+        return t(`imports.modal.${props.inEditingMode ? 'editTitle' : 'uploadTitle'}`)
     }
 
-    const handleFormSubmit = async (data: FormData) => {
-        setAskForConfirmation(true)
+    const handleFormSubmit = async (data: IImports) => {
         setLoading(true)
 
-        let res: ITransaction | null
+        const res: IImports | null = await completeImports(data.id)
 
-        // edit dialog
-        // if (props.mode == 'edit' && props.initialData) {
-        //     res = await editTransaction(props.initialData.id, data)
-
-        //     if (!res) {
-        //         setLoading(false)
-        //         return
-        //     }
-
-        //     props.closeDialog()
-        // } else {
-        //     // new dialog
-        //     res = await addTransaction(data)
-
-        //     if (!res) {
-        //         setLoading(false)
-        //         return
-        //     }
-
-        //     if (keepAdding) {
-        //         formRef.current?.reset()
-        //     } else {
-        //         props.closeDialog()
-        //     }
-        // }
+        if (!res) {
+            setLoading(false)
+            return
+        }
 
         toast.success(
             t('messages.successfully', {
@@ -83,7 +50,11 @@ export function ImportDialog(props: DialogProps) {
             })
         )
 
+        setLocalImports(res)
+
         setLoading(false)
+
+        props.closeDialog()
     }
 
     const handleShowSaveButton = (enable?: boolean) => {
@@ -104,12 +75,13 @@ export function ImportDialog(props: DialogProps) {
             dialogHeight={props.dialogHeight}
             buttonDisabled={saveDisabled}
             showSaveButton={showSaveButton}
+            confirmButtonText='modal.confirmationDialog.complete'
             askForConfirmation={askForConfirmation}
             onClick={() => formRef.current?.submit()}
         >
             <UploadForm
                 ref={formRef}
-                initialData={props.initialData}
+                initialData={localImports}
                 dataCallback={handleFormSubmit}
                 showSaveButton={handleShowSaveButton}
                 closeDialog={props.closeDialog}

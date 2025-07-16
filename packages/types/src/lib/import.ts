@@ -49,6 +49,7 @@ export interface IImports {
     title: string
     status: TransactionStatus
     created_at: string
+    bank_account_id: string
     files: IImportsFile[]
     transactions: ITransaction[]
 }

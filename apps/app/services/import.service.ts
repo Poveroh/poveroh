@@ -7,6 +7,10 @@ export class ImportService extends BaseService<IImports> {
         super('/import')
     }
 
+    async complete(id: string): Promise<IImports> {
+        return await server.put<IImports>(`/import/complete${'/' + id}`, {}, false)
+    }
+
     async readFile(data: FormData): Promise<IImports> {
         return await server.post<IImports>('/import/read-file', data, true)
     }

@@ -7,6 +7,8 @@ import { TransferForm } from '../form/transactions/TransferForm'
 import { useTransaction } from '@/hooks/useTransaction'
 import { ExpensesForm } from '../form/transactions/ExpensesForm'
 import React, { forwardRef, useImperativeHandle } from 'react'
+import { useCategory } from '@/hooks/useCategory'
+import { useBankAccount } from '@/hooks/useBankAccount'
 
 type TransactionFormProps = {
     initialData?: ITransaction
@@ -21,6 +23,10 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     const t = useTranslations()
 
     const { getActionList } = useTransaction()
+
+    const { fetchCategory } = useCategory()
+    const { fetchBankAccount } = useBankAccount()
+
     const [localCurrentAction, setLocalCurrentAction] = useState<string>(props.action || 'EXPENSES')
     const formRef = useRef<FormRef | null>(null)
 
@@ -29,6 +35,14 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
             setLocalCurrentAction(props.action)
         }
     }, [props.action])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchCategory()
+            await fetchBankAccount()
+        }
+        fetchData()
+    }, [])
 
     useImperativeHandle(ref, () => ({
         submit: () => {

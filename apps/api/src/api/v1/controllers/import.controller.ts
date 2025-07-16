@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { FileType, IFilterOptions, IImportsFile, TransactionStatus, ITransactionFilters } from '@poveroh/types'
+import { FileType, IImportsFile, TransactionStatus, ITransactionFilters, ITransaction } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
@@ -31,22 +31,45 @@ export class ImportController {
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PUT /:id
+    static async complete(req: Request, res: Response) {
         try {
             const { id } = req.params
-            const { data } = req.body
 
-            if (!id || !data) {
-                res.status(400).json({ message: 'Missing import ID or data' })
-                return
+            const deletePattern = {
+                import_id: id,
+                status: {
+                    in: [TransactionStatus.IMPORT_PENDING, TransactionStatus.IMPORT_REJECTED]
+                }
             }
 
-            const parsedData = JSON.parse(data)
+            const imports = await prisma.$transaction(async tx => {
+                // Update transactions
+                await tx.transactions.updateMany({
+                    where: { status: TransactionStatus.IMPORT_APPROVED, import_id: id },
+                    data: {
+                        status: TransactionStatus.APPROVED
+                    }
+                })
 
-            const imports = await prisma.imports.update({
-                where: { id },
-                data: parsedData
+                // Delete amounts and transactions for both statuses in a single transaction, but separate deleteMany calls are required
+                await tx.amounts.deleteMany({
+                    where: {
+                        transaction: deletePattern
+                    }
+                })
+
+                await tx.transactions.deleteMany({
+                    where: deletePattern
+                })
+
+                // Update import
+                return tx.imports.update({
+                    where: { id },
+                    data: {
+                        status: TransactionStatus.APPROVED
+                    }
+                })
             })
 
             res.status(200).json(imports)
@@ -129,8 +152,6 @@ export class ImportController {
             const { id } = req.params
 
             const filters = req.query as unknown as ITransactionFilters
-            const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take) || 20
 
             const where = buildWhere(filters)
 
@@ -138,12 +159,16 @@ export class ImportController {
                 where: {
                     ...where,
                     import_id: id,
-                    status: TransactionStatus.IMPORT_PENDING
+                    status: {
+                        in: [
+                            TransactionStatus.IMPORT_PENDING,
+                            TransactionStatus.IMPORT_APPROVED,
+                            TransactionStatus.IMPORT_REJECTED
+                        ]
+                    }
                 },
                 include: { amounts: true },
-                orderBy: { created_at: 'desc' },
-                skip,
-                take
+                orderBy: { created_at: 'desc' }
             })
 
             res.status(200).json(data)
@@ -174,22 +199,26 @@ export class ImportController {
 
     static async editPendingTransaction(req: Request, res: Response) {
         try {
-            const { id } = req.params
-            const data = req.body
+            const { data } = req.body
 
-            if (!id || !data) {
-                res.status(400).json({ message: 'Missing transaction ID or data' })
+            const parsedData: ITransaction[] = JSON.parse(data)
+
+            if (!Array.isArray(parsedData) || parsedData.length === 0) {
+                res.status(400).json({ message: 'Missing or empty transactions array' })
                 return
             }
 
-            const parsedData = JSON.parse(data)
+            const updatedTransactions = await prisma.$transaction(
+                parsedData.map((t: ITransaction) => {
+                    const { amounts, ...transactionData } = t
+                    return prisma.transactions.update({
+                        where: { id: t.id },
+                        data: transactionData
+                    })
+                })
+            )
 
-            const transaction = await prisma.transactions.update({
-                where: { id },
-                data: parsedData
-            })
-
-            res.status(200).json(transaction)
+            res.status(200).json(updatedTransactions)
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
@@ -272,6 +301,7 @@ export class ImportController {
                 data: {
                     id: importId,
                     user_id: userId,
+                    bank_account_id,
                     title: 'Import at ' + now.toISOString(),
                     status: TransactionStatus.IMPORT_PENDING,
                     created_at: now

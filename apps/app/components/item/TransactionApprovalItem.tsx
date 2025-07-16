@@ -30,7 +30,7 @@ type TransactionItemProps = {
     index: number
     onDelete: (transactionId: string) => void
     onEdit: (item: ITransaction) => void
-    onApprove: (transactionId: string) => void
+    onApprove: (transactionId: string, newValue: TransactionStatus) => void
 }
 
 export function TransactionApprovalItem({ transaction, index, onApprove, onDelete, onEdit }: TransactionItemProps) {
@@ -42,7 +42,8 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const isApproved = transaction.status == TransactionStatus.APPROVED
+    const isApproved =
+        transaction.status == TransactionStatus.IMPORT_APPROVED || transaction.status == TransactionStatus.APPROVED
 
     const [editingMode, setEditingMode] = useState(false)
 
@@ -70,10 +71,6 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
         fetchData()
     }, [transaction, getBankAccount, getCategory])
-
-    const toggleApproval = () => {
-        onApprove(transaction.id)
-    }
 
     const handleEditTransaction = async (formData: FormData) => {
         const editedTransaction = await editPendingTransaction(transaction.id, formData)
@@ -199,13 +196,21 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             <p>{t('form.ignore.label')}</p>
                         </div>
                         <div className='flex flex-row space-x-2'>
-                            <Button variant={isApproved ? 'ghost' : 'danger'} size='xs' onClick={toggleApproval}>
+                            <Button
+                                variant={isApproved ? 'ghost' : 'danger'}
+                                size='xs'
+                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_REJECTED)}
+                            >
                                 <DynamicIcon
                                     name='x'
                                     className={cn('h-[20px] w-[20px] cursor-pointer', isApproved ? 'danger' : 'ghost')}
                                 />
                             </Button>
-                            <Button variant={isApproved ? 'success' : 'ghost'} size='xs' onClick={toggleApproval}>
+                            <Button
+                                variant={isApproved ? 'success' : 'ghost'}
+                                size='xs'
+                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_APPROVED)}
+                            >
                                 <DynamicIcon
                                     name='check'
                                     className={cn('h-[20px] w-[20px] cursor-pointer', isApproved ? 'ghost' : 'success')}

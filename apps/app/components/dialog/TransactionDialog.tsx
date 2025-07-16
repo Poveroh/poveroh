@@ -22,7 +22,7 @@ export function TransactionDialog(props: DialogProps) {
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const [loading, setLoading] = useState(false)
-    const [keepAdding, setKeepAdding] = useState(false)
+    const [keepAdding, setKeepAdding] = useState(true)
 
     const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
 
@@ -84,6 +84,7 @@ export function TransactionDialog(props: DialogProps) {
             setKeepAdding={() => setKeepAdding(x => !x)}
             hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
+            showSaveButton={true}
             askForConfirmation={false}
             onClick={() => formRef.current?.submit()}
         >
