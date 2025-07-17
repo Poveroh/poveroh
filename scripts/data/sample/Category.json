@@ -1,38 +1,38 @@
 [
     {
         "id": "c6b06384-90df-44e0-9b71-48830a6d145f",
-        "user_id": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
         "title": "Food",
         "description": "Everything related to food and meals.",
         "for": "INCOME",
-        "logo_icon": "pizza",
-        "created_at": "2025-03-20T08:00:00Z"
+        "logoIcon": "pizza",
+        "createdAt": "2025-03-20T08:00:00Z"
     },
     {
         "id": "d5a7265f-ea3e-4f1f-a0d7-93b9f557ae67",
-        "user_id": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
         "title": "Transportation",
         "description": "Expenses related to travel and transportation.",
         "for": "EXPENSES",
-        "logo_icon": "car",
-        "created_at": "2025-03-18T10:00:00Z"
+        "logoIcon": "car",
+        "createdAt": "2025-03-18T10:00:00Z"
     },
     {
         "id": "a383e437-65b3-469d-b39b-b3cd87b97a51",
-        "user_id": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
         "title": "Entertainment",
         "description": "Expenses related to leisure activities and hobbies.",
         "for": "EXPENSES",
-        "logo_icon": "clapperboard",
-        "created_at": "2025-03-17T13:40:00Z"
+        "logoIcon": "clapperboard",
+        "createdAt": "2025-03-17T13:40:00Z"
     },
     {
         "id": "4f66cb57-3d7f-4874-a4f0-df7424e2e5b2",
-        "user_id": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
         "title": "Health & Fitness",
         "description": "Health-related expenses and fitness activities.",
         "for": "EXPENSES",
-        "logo_icon": "dumbbell",
-        "created_at": "2025-03-19T12:10:00Z"
+        "logoIcon": "dumbbell",
+        "createdAt": "2025-03-19T12:10:00Z"
     }
 ]

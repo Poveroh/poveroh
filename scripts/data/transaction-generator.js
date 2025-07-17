@@ -38,25 +38,25 @@ function generateTransaction(title, amount, categoryId, subcategoryId, date, ban
     const createdAt = formatDate(date)
     transactions.push({
         id: transId,
-        user_id: userId,
+        userId: userId,
         title: title,
         type: 'EXPENSES',
         icon: icon,
-        category_id: categoryId,
-        subcategory_id: subcategoryId,
+        categoryId: categoryId,
+        subcategoryId: subcategoryId,
         date: createdAt,
         note: `${title} monthly fee`,
         ignore: false,
-        created_at: createdAt
+        createdAt: createdAt
     })
     amounts.push({
         id: amtId,
-        transaction_id: transId,
+        transactionId: transId,
         amount: amount,
         currency: 'EUR',
         action: 'EXPENSES',
-        bank_account_id: bankAccountId,
-        created_at: createdAt
+        bankAccountId: bankAccountId,
+        createdAt: createdAt
     })
 }
 
@@ -66,23 +66,23 @@ function generateIncome(title, amount, date, bankAccountId, icon) {
     const createdAt = formatDate(date)
     transactions.push({
         id: transId,
-        user_id: userId,
+        userId: userId,
         title: title,
         type: 'INCOME',
         icon: icon,
         date: createdAt,
         note: `${title} deposit`,
         ignore: false,
-        created_at: createdAt
+        createdAt: createdAt
     })
     amounts.push({
         id: amtId,
-        transaction_id: transId,
+        transactionId: transId,
         amount: amount,
         currency: 'EUR',
         action: 'INCOME',
-        bank_account_id: bankAccountId,
-        created_at: createdAt
+        bankAccountId: bankAccountId,
+        createdAt: createdAt
     })
 }
 
@@ -91,32 +91,32 @@ function generateInternalTransfer(fromId, toId, amount, date) {
     const createdAt = formatDate(date)
     transactions.push({
         id: transId,
-        user_id: userId,
+        userId: userId,
         title: 'Internal Transfer',
         type: 'INTERNAL',
         date: createdAt,
         note: `Transfer from ${fromId.slice(-4)} to ${toId.slice(-4)}`,
         ignore: false,
-        created_at: createdAt
+        createdAt: createdAt
     })
     amounts.push(
         {
             id: generateUUID(),
-            transaction_id: transId,
+            transactionId: transId,
             amount: amount,
             currency: 'EUR',
             action: 'EXPENSES',
-            bank_account_id: fromId,
-            created_at: createdAt
+            bankAccountId: fromId,
+            createdAt: createdAt
         },
         {
             id: generateUUID(),
-            transaction_id: transId,
+            transactionId: transId,
             amount: amount,
             currency: 'EUR',
             action: 'INCOME',
-            bank_account_id: toId,
-            created_at: createdAt
+            bankAccountId: toId,
+            createdAt: createdAt
         }
     )
 }
@@ -281,7 +281,7 @@ for (let i = 0; i < daysRange; i++) {
     const currentDate = new Date(startDate)
     currentDate.setDate(currentDate.getDate() + i)
 
-    // Genera da 0 a 3 spese giornaliere casuali
+    // Generate 0 to 3 random daily expenses
     const numTransactions = Math.floor(Math.random() * 4)
 
     for (let j = 0; j < numTransactions; j++) {

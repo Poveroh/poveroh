@@ -27,7 +27,7 @@
  * Data Format:
  * - JSON: Array of objects
  * - CSV: Comma-separated values, first row must be headers
- * - Date fields (created_at, updated_at, deleted_at) auto-converted to ISO format
+ * - Date fields (createdAt, updatedAt, deletedAt) auto-converted to ISO format
  */
 
 const { PrismaClient } = require('@prisma/client')
@@ -39,15 +39,7 @@ require('dotenv').config()
 const prisma = new PrismaClient()
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
-const IMPORT_ORDER = [
-    'users',
-    'bank_accounts',
-    'categories',
-    'subcategories',
-    'transactions',
-    'amounts',
-    'subscriptions'
-]
+const IMPORT_ORDER = ['User', 'BankAccount', 'Category', 'Subcategory', 'Transaction', 'Amount', 'Subscription']
 
 function parseArgs() {
     const folderName = process.env.npm_config_folder || DEFAULT_FOLDER
@@ -90,7 +82,7 @@ async function columnExists(tableName, columnName) {
 }
 
 async function prepareRecord(tableName, item, userId) {
-    const dateFields = ['created_at', 'updated_at', 'deleted_at']
+    const dateFields = ['createdAt', 'updatedAt', 'deletedAt']
     const processedItem = { ...item }
 
     for (const field of dateFields) {
@@ -99,8 +91,8 @@ async function prepareRecord(tableName, item, userId) {
         }
     }
 
-    if (userId && (await columnExists(tableName, 'user_id'))) {
-        processedItem.user_id = userId
+    if (userId && (await columnExists(tableName, 'userId'))) {
+        processedItem.userId = userId
     }
 
     return processedItem
