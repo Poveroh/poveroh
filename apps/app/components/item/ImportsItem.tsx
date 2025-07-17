@@ -1,11 +1,11 @@
-import { IImports } from '@poveroh/types'
+import { IImport } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/OptionsPopover'
 import { useTranslations } from 'next-intl'
 
 type ImportsItemProps = {
-    imports: IImports
-    openDelete: (item: IImports) => void
-    openEdit: (item: IImports) => void
+    imports: IImport
+    openDelete: (item: IImport) => void
+    openEdit: (item: IImport) => void
 }
 
 export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps) {
@@ -22,7 +22,7 @@ export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps)
                     <p className='sub'>{t(`imports.status.${imports.status}`)}</p>
                 </div>
             </div>
-            <OptionsPopover<IImports> data={imports} openDelete={openDelete} openEdit={openEdit}></OptionsPopover>
+            <OptionsPopover<IImport> data={imports} openDelete={openDelete} openEdit={openEdit}></OptionsPopover>
         </div>
     )
 }

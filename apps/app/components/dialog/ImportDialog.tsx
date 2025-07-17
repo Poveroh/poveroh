@@ -1,14 +1,14 @@
 import { useTranslations } from 'next-intl'
 import { Modal } from '../modal/dialog'
 import { useRef, useState } from 'react'
-import { IImports } from '@poveroh/types'
+import { IImport } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UploadForm } from '../form/transactions/UploadForm'
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 
 type DialogProps = {
     open: boolean
-    initialData?: IImports
+    initialData?: IImport
     dialogHeight?: string
     inEditingMode: boolean
     closeDialog: () => void
@@ -19,9 +19,9 @@ export function ImportDialog(props: DialogProps) {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [localImports, setLocalImports] = useState<IImports | undefined>(props.initialData)
+    const [localImports, setLocalImports] = useState<IImport | undefined>(props.initialData)
 
-    const { completeImports } = useImports()
+    const { completeImport } = useImport()
 
     const [loading, setLoading] = useState(false)
     const [saveDisabled, setSaveDisabled] = useState(props.initialData ? false : true)
@@ -33,10 +33,10 @@ export function ImportDialog(props: DialogProps) {
         return t(`imports.modal.${props.inEditingMode ? 'editTitle' : 'uploadTitle'}`)
     }
 
-    const handleFormSubmit = async (data: IImports) => {
+    const handleFormSubmit = async (data: IImport) => {
         setLoading(true)
 
-        const res: IImports | null = await completeImports(data.id)
+        const res: IImport | null = await completeImport(data.id)
 
         if (!res) {
             setLoading(false)

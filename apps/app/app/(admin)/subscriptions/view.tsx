@@ -24,7 +24,7 @@ import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
 import { DeleteModal } from '@/components/modal/delete'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
-import { useSubscriptions } from '@/hooks/useSubscriptions'
+import { useSubscription } from '@/hooks/useSubscriptions'
 import SkeletonItem from '@/components/skeleton/SkeletonItem'
 import Box from '@/components/box/BoxWrapper'
 import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
@@ -32,7 +32,7 @@ import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const { subscriptionCacheList, removeSubscription, fetchSubscriptions } = useSubscriptions()
+    const { subscriptionCacheList, removeSubscription, fetchSubscriptions } = useSubscription()
     const { fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<ISubscription | null>(null)

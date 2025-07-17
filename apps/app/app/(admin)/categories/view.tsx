@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { isEmpty, isNil } from 'lodash'
 import { useTranslations } from 'next-intl'
 
-import { categoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/delete'
@@ -38,7 +38,7 @@ export default function CategoryView() {
     const [itemToEdit, setItemToEdit] = useState<ICategory | ISubcategory | null>(null)
 
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [dialogModel, setDialogModel] = useState<categoryModelMode>('category')
+    const [dialogModel, setDialogModel] = useState<CategoryModelMode>('category')
 
     const [loading, setLoading] = useState(false)
 
@@ -88,7 +88,7 @@ export default function CategoryView() {
         setLocalCategoryList(filteredList)
     }
 
-    const openDelete = (mode: categoryModelMode, item: ICategory | ISubcategory) => {
+    const openDelete = (mode: CategoryModelMode, item: ICategory | ISubcategory) => {
         setDialogModel(mode)
         setItemToDelete(item)
     }
@@ -97,12 +97,12 @@ export default function CategoryView() {
         setItemToDelete(null)
     }
 
-    const openEdit = (mode: categoryModelMode, item: ICategory | ISubcategory) => {
+    const openEdit = (mode: CategoryModelMode, item: ICategory | ISubcategory) => {
         setDialogModel(mode)
         setItemToEdit(item)
     }
 
-    const openNew = (mode: categoryModelMode) => {
+    const openNew = (mode: CategoryModelMode) => {
         setDialogModel(mode)
         setDialogNewOpen(true)
     }

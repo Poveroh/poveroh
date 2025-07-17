@@ -16,7 +16,6 @@ import {
     ICategory,
     IItem,
     ISubcategory,
-    ITransaction,
     TransactionAction
 } from '@poveroh/types'
 
@@ -57,17 +56,17 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
     const defaultAmounts = {
         amount: 0,
-        bank_account_id: ''
+        bankAccountId: ''
     }
 
     const defaultValues = {
         title: '',
         date: new Date().toISOString().split('T')[0],
         currency: Currencies.EUR,
-        total_amount: 0,
+        totalAmount: 0,
         amounts: [defaultAmounts],
-        category_id: '',
-        subcategory_id: '',
+        categoryId: '',
+        subcategoryId: '',
         note: '',
         ignore: false,
         multipleAmount: false
@@ -78,14 +77,14 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
         date: z.string({
             required_error: t('messages.errors.required')
         }),
-        total_amount: amountSchema({
+        totalAmount: amountSchema({
             required_error: t('messages.errors.required'),
             invalid_type_error: t('messages.errors.pattern')
         }),
         multipleAmount: z.boolean().default(false),
         currency: z.string().nonempty(t('messages.errors.required')),
-        category_id: z.string().nonempty(t('messages.errors.required')),
-        subcategory_id: z.string().nonempty(t('messages.errors.required')),
+        categoryId: z.string().nonempty(t('messages.errors.required')),
+        subcategoryId: z.string().nonempty(t('messages.errors.required')),
         note: z.string(),
         ignore: z.boolean()
     })
@@ -99,28 +98,28 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                         required_error: t('messages.errors.required'),
                         invalid_type_error: t('messages.errors.pattern')
                     }),
-                    bank_account_id: z.string().nonempty(t('messages.errors.required'))
+                    bankAccountId: z.string().nonempty(t('messages.errors.required'))
                 })
             )
             .min(1, 'At least one entry is required')
     })
 
-    const bankacountSchema = baseSchema.extend({
+    const bankAccountSchema = baseSchema.extend({
         multipleAmount: z.literal(false),
-        total_bank_account_id: z.string().nonempty(t('messages.errors.required'))
+        totalBankAccountId: z.string().nonempty(t('messages.errors.required'))
     })
 
-    const formSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, bankacountSchema]).refine(
+    const formSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, bankAccountSchema]).refine(
         data => {
             if (data.multipleAmount && 'amounts' in data) {
                 const sum = data.amounts.reduce((acc, curr) => acc + curr.amount, 0)
-                return sum === data.total_amount
+                return sum === data.totalAmount
             }
             return true
         },
         {
             message: 'Total amount must match the sum of all amounts',
-            path: ['total_amount']
+            path: ['totalAmount']
         }
     )
 
@@ -160,16 +159,16 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                 dataInitialToShow = {
                     ...initialData,
                     multipleAmount: true,
-                    // Remove total_bank_account_id if present
-                    total_bank_account_id: undefined
+                    // Remove totalBankAccountId if present
+                    totalBankAccountId: undefined
                 }
             } else {
                 // Otherwise, use the multipleAmount: false schema
                 dataInitialToShow = {
                     ...initialData,
                     multipleAmount: false,
-                    total_amount: initialData.amounts?.[0]?.amount || 0,
-                    total_bank_account_id: initialData.amounts?.[0]?.bank_account_id || '',
+                    totalAmount: initialData.amounts?.[0]?.amount || 0,
+                    totalBankAccountId: initialData.amounts?.[0]?.bankAccountId || '',
                     currency: initialData.amounts?.[0]?.currency || Currencies.EUR,
                     amounts: undefined
                 }
@@ -206,13 +205,13 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
             const formData = new FormData()
 
             if (!multipleAmount) {
-                const { total_amount, total_bank_account_id, ...rest } = localTransaction
+                const { totalAmount, totalBankAccountId, ...rest } = localTransaction
                 localTransaction = {
                     ...rest,
                     amounts: [
                         {
-                            amount: total_amount,
-                            bank_account_id: total_bank_account_id
+                            amount: totalAmount,
+                            bankAccountId: totalBankAccountId
                         }
                     ]
                 }
@@ -302,7 +301,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
                     <FormField
                         control={form.control}
-                        name='total_amount'
+                        name='totalAmount'
                         render={({ field }) => (
                             <FormItem>
                                 <div className='flex flex-row items-center justify-between'>
@@ -376,7 +375,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                     variant={inputStyle}
                                                     onChange={e => {
                                                         field.onChange(e.target.value)
-                                                        form.setValue('total_amount', calculateTotal())
+                                                        form.setValue('totalAmount', calculateTotal())
                                                     }}
                                                     placeholder={t('form.amount.placeholder')}
                                                 />
@@ -388,7 +387,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
                                 <FormField
                                     control={form.control}
-                                    name={`amounts.${index}.bank_account_id`}
+                                    name={`amounts.${index}.bankAccountId`}
                                     render={({ field }) => (
                                         <FormItem>
                                             <Select
@@ -405,7 +404,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                     {bankAccountCacheList.map((item: IBankAccount) => (
                                                         <SelectItem key={item.id} value={item.id}>
                                                             <div className='flex items-center flex-row space-x-4'>
-                                                                <BrandIcon icon={item.logo_icon} size='sm' />
+                                                                <BrandIcon icon={item.logoIcon} size='sm' />
                                                                 <span>{item.title}</span>
                                                             </div>
                                                         </SelectItem>
@@ -424,7 +423,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                     disabled={index == 0}
                                     onClick={() => {
                                         remove(index)
-                                        form.setValue('total_amount', calculateTotal())
+                                        form.setValue('totalAmount', calculateTotal())
                                     }}
                                 >
                                     <Trash2 className='danger cursor-pointer' />
@@ -435,7 +434,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     {!multipleAmount && (
                         <FormField
                             control={form.control}
-                            name='total_bank_account_id'
+                            name='totalBankAccountId'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
@@ -453,7 +452,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             {bankAccountCacheList.map((item: IBankAccount) => (
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
-                                                        <BrandIcon icon={item.logo_icon} size='sm' />
+                                                        <BrandIcon icon={item.logoIcon} size='sm' />
                                                         <span>{item.title}</span>
                                                     </div>
                                                 </SelectItem>
@@ -469,7 +468,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     <div className='flex flex-row space-x-2'>
                         <FormField
                             control={form.control}
-                            name='category_id'
+                            name='categoryId'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.category.label')}</FormLabel>
@@ -491,7 +490,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <DynamicIcon
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                             className='h-4 w-4'
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>
@@ -506,7 +505,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                         />
                         <FormField
                             control={form.control}
-                            name='subcategory_id'
+                            name='subcategoryId'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.subcategory.label')}</FormLabel>
@@ -525,7 +524,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <DynamicIcon
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                             className='h-4 w-4'
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>

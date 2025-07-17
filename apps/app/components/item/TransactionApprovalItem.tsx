@@ -23,7 +23,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from '@poveroh/ui/components/alert-dialog'
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 
 type TransactionItemProps = {
     transaction: ITransaction
@@ -38,7 +38,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
     const { getCategory } = useCategory()
     const { getBankAccount } = useBankAccount()
-    const { editPendingTransaction, removePendingTransaction } = useImports()
+    const { editPendingTransaction, removePendingTransaction } = useImport()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -64,8 +64,8 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                 setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
             }
 
-            if (transaction.category_id) {
-                setCategory(await getCategory(transaction.category_id))
+            if (transaction.categoryId) {
+                setCategory(await getCategory(transaction.categoryId))
             }
         }
 

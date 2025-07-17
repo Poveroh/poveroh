@@ -56,9 +56,9 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         date: new Date().toISOString().split('T')[0],
         amount: 0,
         currency: Currencies.EUR,
-        bank_account_id: '',
-        category_id: '',
-        subcategory_id: '',
+        bankAccountId: '',
+        categoryId: '',
+        subcategoryId: '',
         note: '',
         ignore: false
     }
@@ -73,9 +73,9 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
             invalid_type_error: t('messages.errors.pattern')
         }),
         currency: z.string().nonempty(t('messages.errors.required')),
-        bank_account_id: z.string().nonempty(t('messages.errors.required')),
-        category_id: z.string().nonempty(t('messages.errors.required')),
-        subcategory_id: z.string().nonempty(t('messages.errors.required')),
+        bankAccountId: z.string().nonempty(t('messages.errors.required')),
+        categoryId: z.string().nonempty(t('messages.errors.required')),
+        subcategoryId: z.string().nonempty(t('messages.errors.required')),
         note: z.string(),
         ignore: z.boolean()
     })
@@ -228,7 +228,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
                     <FormField
                         control={form.control}
-                        name='bank_account_id'
+                        name='bankAccountId'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
@@ -242,7 +242,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                                         {bankAccountCacheList.map((item: IBankAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
-                                                    <BrandIcon icon={item.logo_icon} size='sm' />
+                                                    <BrandIcon icon={item.logoIcon} size='sm' />
                                                     <span>{item.title}</span>
                                                 </div>
                                             </SelectItem>
@@ -257,7 +257,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                     <div className='flex flex-row space-x-2'>
                         <FormField
                             control={form.control}
-                            name='category_id'
+                            name='categoryId'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.category.label')}</FormLabel>
@@ -278,7 +278,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <DynamicIcon
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                             className='h-4 w-4'
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>
@@ -293,7 +293,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                         />
                         <FormField
                             control={form.control}
-                            name='subcategory_id'
+                            name='subcategoryId'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.subcategory.label')}</FormLabel>
@@ -308,7 +308,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <DynamicIcon
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                             className='h-4 w-4'
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>

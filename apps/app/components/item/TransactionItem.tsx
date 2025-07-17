@@ -35,15 +35,15 @@ export function TransactionItem({ transaction, openDelete, openEdit }: Transacti
                 setAmount(firstAmount.amount)
                 setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
                 setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
-                setFromAccount(await getBankAccount(firstAmount.bank_account_id))
+                setFromAccount(await getBankAccount(firstAmount.bankAccountId))
 
                 if (transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]) {
-                    setToAccount(await getBankAccount(transaction.amounts[1].bank_account_id))
+                    setToAccount(await getBankAccount(transaction.amounts[1].bankAccountId))
                 }
             }
 
-            if (transaction.category_id) {
-                setCategory(await getCategory(transaction.category_id))
+            if (transaction.categoryId) {
+                setCategory(await getCategory(transaction.categoryId))
             }
         }
 
@@ -60,9 +60,7 @@ export function TransactionItem({ transaction, openDelete, openEdit }: Transacti
                         } else if (transaction.icon) {
                             return <BrandIcon icon={transaction.icon} />
                         } else {
-                            return (
-                                <DynamicIcon name={category?.logo_icon || 'landmark'} className='h-[30px] w-[30px]' />
-                            )
+                            return <DynamicIcon name={category?.logoIcon || 'landmark'} className='h-[30px] w-[30px]' />
                         }
                     })()}
                 </div>

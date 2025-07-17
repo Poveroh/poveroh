@@ -43,13 +43,13 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
         description: '',
         amount: 0,
         currency: Currencies.EUR,
-        appearance_mode: AppearanceMode.ICON,
-        appearance_logo_icon: iconList[0] as string,
-        first_payment: new Date().toISOString().split('T')[0],
-        cycle_number: '1',
-        cycle_period: CyclePeriod.MONTH,
-        remember_period: RememberPeriod.THREE_DAYS,
-        bank_account_id: ''
+        appearanceMode: AppearanceMode.ICON,
+        appearanceLogoIcon: iconList[0] as string,
+        firstPayment: new Date().toISOString().split('T')[0],
+        cycleNumber: '1',
+        cyclePeriod: CyclePeriod.MONTH,
+        rememberPeriod: RememberPeriod.THREE_DAYS,
+        bankAccountId: ''
     }
 
     const formSchema = z
@@ -58,24 +58,24 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
             description: z.string().optional(),
             amount: z.number().min(0),
             currency: z.nativeEnum(Currencies),
-            appearance_mode: z.nativeEnum(AppearanceMode),
-            appearance_logo_icon: z.string().nonempty(t('messages.errors.required')),
-            first_payment: z.string(),
-            cycle_number: z.string(),
-            cycle_period: z.nativeEnum(CyclePeriod),
-            remember_period: z.nativeEnum(RememberPeriod).optional(),
-            bank_account_id: z.string().nonempty(t('messages.errors.required'))
+            appearanceMode: z.nativeEnum(AppearanceMode),
+            appearanceLogoIcon: z.string().nonempty(t('messages.errors.required')),
+            firstPayment: z.string(),
+            cycleNumber: z.string(),
+            cyclePeriod: z.nativeEnum(CyclePeriod),
+            rememberPeriod: z.nativeEnum(RememberPeriod).optional(),
+            bankAccountId: z.string().nonempty(t('messages.errors.required'))
         })
         .refine(
             data => {
-                if (data.appearance_mode === AppearanceMode.LOGO) {
-                    return z.string().safeParse(data.appearance_logo_icon).success
+                if (data.appearanceMode === AppearanceMode.LOGO) {
+                    return z.string().safeParse(data.appearanceLogoIcon).success
                 }
                 return true
             },
             {
                 message: t('messages.errors.url'),
-                path: ['appearance_logo_icon']
+                path: ['appearanceLogoIcon']
             }
         )
 
@@ -94,7 +94,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
         try {
             const formData = new FormData()
 
-            values.first_payment = new Date(values.first_payment).toISOString()
+            values.firstPayment = new Date(values.firstPayment).toISOString()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
 
@@ -174,7 +174,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
                     <FormField
                         control={form.control}
-                        name='first_payment'
+                        name='firstPayment'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.first_payment.label')}</FormLabel>
@@ -194,7 +194,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                     <div className='flex flex-row space-x-2'>
                         <FormField
                             control={form.control}
-                            name='cycle_number'
+                            name='cycleNumber'
                             render={({ field }) => (
                                 <FormItem className='w-[30%]'>
                                     <FormLabel mandatory>{t('form.cycle_number.label')}</FormLabel>
@@ -219,7 +219,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
                         <FormField
                             control={form.control}
-                            name='cycle_period'
+                            name='cyclePeriod'
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel mandatory>{t('form.cycle_period.label')}</FormLabel>
@@ -245,7 +245,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
                     <FormField
                         control={form.control}
-                        name='bank_account_id'
+                        name='bankAccountId'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
@@ -268,7 +268,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                         )}
                     />
 
-                    {(!fromTemplate || initialData?.appearance_mode == AppearanceMode.ICON) && (
+                    {(!fromTemplate || initialData?.appearanceMode == AppearanceMode.ICON) && (
                         <div className='flex flex-col space-y-4'>
                             <FormItem>
                                 <FormLabel mandatory={!inEditingMode}>{t('form.icon.label')}</FormLabel>
@@ -285,7 +285,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                                                                     className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
                                                                                         ${icon === x ? 'bg-white text-black border border-hr' : ''}`}
                                                                     onClick={() => {
-                                                                        form.setValue('appearance_logo_icon', x)
+                                                                        form.setValue('appearanceLogoIcon', x)
                                                                         setIcon(x)
                                                                     }}
                                                                 >
@@ -309,7 +309,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
                     <FormField
                         control={form.control}
-                        name='remember_period'
+                        name='rememberPeriod'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('form.remember_period.label')}</FormLabel>

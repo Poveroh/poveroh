@@ -1,11 +1,11 @@
 import DynamicIcon from '../icon/DynamicIcon'
-import { categoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
+import { CategoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/OptionsPopover'
 
 type CategoryItemProps = {
     category: ICategory
-    openDelete: (mode: categoryModelMode, item: ICategory | ISubcategory) => void
-    openEdit: (mode: categoryModelMode, item: ICategory | ISubcategory) => void
+    openDelete: (mode: CategoryModelMode, item: ICategory | ISubcategory) => void
+    openEdit: (mode: CategoryModelMode, item: ICategory | ISubcategory) => void
 }
 
 export function CategoryItem({ category, openDelete, openEdit }: CategoryItemProps) {
@@ -14,7 +14,7 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
             <div className='border-border'>
                 <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
                     <div className='flex flex-row items-center space-x-5'>
-                        <DynamicIcon name={category.logo_icon} />
+                        <DynamicIcon name={category.logoIcon} />
                         <div>
                             <p>{category.title}</p>
                             <p className='sub'>{category.description}</p>
@@ -32,7 +32,7 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                         className='flex flex-row justify-between items-center w-full pl-20 p-5 border-border'
                     >
                         <div className='flex flex-row items-center space-x-5'>
-                            <DynamicIcon name={subcategory.logo_icon} />
+                            <DynamicIcon name={subcategory.logoIcon} />
                             <div>
                                 <p>{subcategory.title}</p>
                                 <p className='sub'>{subcategory.description}</p>

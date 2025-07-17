@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
-import { IBankAccount, IImports } from '@poveroh/types'
+import { IBankAccount, IImport } from '@poveroh/types'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
@@ -27,18 +27,18 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/useError'
 import logger from '@/lib/logger'
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 
 type BankAccountAndFileFormProps = {
-    initialData?: IImports
-    dataCallback: (importedFiles: IImports) => void
+    initialData?: IImport
+    dataCallback: (importedFiles: IImport) => void
 }
 
 export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccountAndFileFormProps) {
     const t = useTranslations()
 
     const { handleError } = useError()
-    const { parseTransactionFromFile } = useImports()
+    const { parseTransactionFromFile } = useImport()
     const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
 
     const [loading, setLoading] = useState(false)
@@ -48,13 +48,13 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
     const [fileError, setFileError] = useState(false)
 
     const formSchema = z.object({
-        bank_account_id: z.string().nonempty(t('messages.errors.required'))
+        bankAccountId: z.string().nonempty(t('messages.errors.required'))
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            bank_account_id: initialData?.bank_account_id || ''
+            bankAccountId: initialData?.bankAccountId || ''
         }
     })
 
@@ -70,7 +70,7 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
 
             const formData = new FormData()
 
-            formData.append('bank_account_id', values.bank_account_id)
+            formData.append('bankAccountId', values.bankAccountId)
 
             files?.forEach(file => {
                 formData.append('files', file)
@@ -93,7 +93,7 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
-                        name='bank_account_id'
+                        name='bankAccountId'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('form.bankaccount.label')}</FormLabel>
@@ -104,8 +104,8 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
                                         if (open) {
                                             await fetchBankAccount()
                                             form.setValue(
-                                                'bank_account_id',
-                                                initialData?.bank_account_id || field.value || ''
+                                                'bankAccountId',
+                                                initialData?.bankAccountId || field.value || ''
                                             )
                                         }
                                     }}
@@ -119,7 +119,7 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
                                         {bankAccountCacheList.map((item: IBankAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
-                                                    <BrandIcon icon={item.logo_icon} size='sm' />
+                                                    <BrandIcon icon={item.logoIcon} size='sm' />
                                                     <span>{item.title}</span>
                                                 </div>
                                             </SelectItem>
