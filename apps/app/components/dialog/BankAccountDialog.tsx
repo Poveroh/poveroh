@@ -66,7 +66,7 @@ export function BankAccountDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={props.initialData?.logo_icon}
+            icon={props.initialData?.logoIcon}
             iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}

@@ -35,15 +35,15 @@ export const useBankAccount = () => {
         }
     }
 
-    const removeBankAccount = async (bankAccount_id: string) => {
+    const removeBankAccount = async (bankAccountId: string) => {
         try {
-            const res = await bankAccountService.delete(bankAccount_id)
+            const res = await bankAccountService.delete(bankAccountId)
 
             if (!res) {
                 throw new Error('No response from server')
             }
 
-            bankAccountStore.removeBankAccount(bankAccount_id)
+            bankAccountStore.removeBankAccount(bankAccountId)
 
             return res
         } catch (error) {
@@ -51,11 +51,11 @@ export const useBankAccount = () => {
         }
     }
 
-    const getBankAccount = async (bankAccount_id: string, fetchFromServer?: boolean) => {
+    const getBankAccount = async (bankAccountId: string, fetchFromServer?: boolean) => {
         try {
             return fetchFromServer
-                ? await bankAccountService.read<IBankAccount | null, IBankAccountFilters>({ id: bankAccount_id })
-                : bankAccountStore.getBankAccount(bankAccount_id)
+                ? await bankAccountService.read<IBankAccount | null, IBankAccountFilters>({ id: bankAccountId })
+                : bankAccountStore.getBankAccount(bankAccountId)
         } catch (error) {
             return handleError(error, 'Error fetching bank account')
         }
@@ -69,7 +69,7 @@ export const useBankAccount = () => {
 
             const res = await bankAccountService.read<IBankAccount[], IBankAccountFilters>()
 
-            bankAccountStore.setBankAccount(res)
+            bankAccountStore.setBankAccounts(res)
 
             return res
         } catch (error) {

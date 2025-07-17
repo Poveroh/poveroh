@@ -17,7 +17,7 @@ export function BankAccountItem({ account, openDelete, openEdit }: BankAccountIt
     return (
         <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
             <div className='flex flex-row items-center space-x-5'>
-                <BrandIcon icon={account.logo_icon}></BrandIcon>
+                <BrandIcon icon={account.logoIcon}></BrandIcon>
                 <div>
                     <p>{account.title}</p>
                     <p className='sub'>{type?.label}</p>

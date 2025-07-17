@@ -16,9 +16,9 @@ import { DeleteModal } from '@/components/modal/delete'
 
 import { Download, Plus, RotateCcw, Upload } from 'lucide-react'
 
-import { IImports } from '@poveroh/types'
+import { IImport } from '@poveroh/types'
 
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 import { ImportDialog } from '@/components/dialog/ImportDialog'
 import Box from '@/components/box/BoxWrapper'
 import { ImportsItem } from '@/components/item/ImportsItem'
@@ -26,29 +26,29 @@ import { ImportsItem } from '@/components/item/ImportsItem'
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importsCacheList, fetchImports, removeImports, readPendingTransactions } = useImports()
+    const { importCacheList, fetchImport, removeImport, readPendingTransaction } = useImport()
 
-    const [itemToDelete, setItemToDelete] = useState<IImports | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<IImports | null>(null)
+    const [itemToDelete, setItemToDelete] = useState<IImport | null>(null)
+    const [itemToEdit, setItemToEdit] = useState<IImport | null>(null)
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const [localImports, setLocalImports] = useState<IImports[]>([])
+    const [localImports, setLocalImports] = useState<IImport[]>([])
 
     useEffect(() => {
-        fetchImports()
+        fetchImport()
     }, [])
 
     useEffect(() => {
-        setLocalImports(importsCacheList)
-    }, [importsCacheList])
+        setLocalImports(importCacheList)
+    }, [importCacheList])
 
     const onDelete = async () => {
         if (!itemToDelete) return
 
         setLoading(true)
 
-        const res = await removeImports(itemToDelete.id)
+        const res = await removeImport(itemToDelete.id)
 
         if (!res) {
             setLoading(false)
@@ -58,14 +58,14 @@ export default function ImportsView() {
         setItemToDelete(null)
     }
 
-    const handleItemToItEdit = async (item: IImports) => {
-        const readedTransactions = await readPendingTransactions(item.id)
+    const handleItemToItEdit = async (item: IImport) => {
+        const readedTransactions = await readPendingTransaction(item.id)
 
         if (!readedTransactions) {
             return
         }
 
-        const itemToEdit: IImports = {
+        const itemToEdit: IImport = {
             ...item,
             transactions: readedTransactions
         }
@@ -96,7 +96,7 @@ export default function ImportsView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={() => fetchImports()} />
+                        <RotateCcw className='cursor-pointer' onClick={() => fetchImport()} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>

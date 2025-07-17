@@ -16,7 +16,7 @@ export class AuthController {
                 return
             }
 
-            const user = await prisma.users.findUnique({ where: { email } })
+            const user = await prisma.user.findUnique({ where: { email } })
             if (!user || !(await bcrypt.compare(password, user.password))) {
                 res.status(401).json({ message: 'Invalid credentials' })
                 return
@@ -24,13 +24,13 @@ export class AuthController {
 
             const { browser, os } = AuthHelper.getDeviceInfo(req.headers['user-agent'])
 
-            await prisma.users_login.create({
+            await prisma.userLogin.create({
                 data: {
                     device: os,
                     browser: browser,
                     ip: req.ip || '-',
                     location: '-',
-                    user_id: user.id
+                    userId: user.id
                 }
             })
 
@@ -57,7 +57,7 @@ export class AuthController {
                 return
             }
 
-            const existingUser = await prisma.users.findUnique({ where: { email: user.email } })
+            const existingUser = await prisma.user.findUnique({ where: { email: user.email } })
             if (existingUser) {
                 res.status(409).json({ message: 'Email already in use' })
                 return
@@ -65,7 +65,7 @@ export class AuthController {
 
             const hashedPassword = await bcrypt.hash(user.password, 12)
 
-            const newUser = await prisma.users.create({
+            const newUser = await prisma.user.create({
                 data: {
                     ...user,
                     password: hashedPassword
@@ -75,19 +75,19 @@ export class AuthController {
                     name: true,
                     surname: true,
                     email: true,
-                    created_at: true
+                    createdAt: true
                 }
             })
 
             const { browser, os } = AuthHelper.getDeviceInfo(req.headers['user-agent'])
 
-            await prisma.users_login.create({
+            await prisma.userLogin.create({
                 data: {
                     device: os,
                     browser: browser,
                     ip: req.ip || '-',
                     location: '-',
-                    user_id: newUser.id
+                    userId: newUser.id
                 }
             })
 

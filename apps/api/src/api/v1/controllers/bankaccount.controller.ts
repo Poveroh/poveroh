@@ -18,11 +18,11 @@ export class BankAccountController {
                     req.file,
                     `${req.user.id}/bankaccount/${readedBankAccount.title}`
                 )
-                readedBankAccount.logo_icon = filePath
+                readedBankAccount.logoIcon = filePath
             }
 
-            let account = await prisma.bank_accounts.create({
-                data: { ...readedBankAccount, user_id: req.user.id }
+            let account = await prisma.bankAccount.create({
+                data: { ...readedBankAccount, userId: req.user.id }
             })
 
             res.status(200).json(account)
@@ -44,10 +44,10 @@ export class BankAccountController {
                     req.file,
                     `${req.user.id}/bankaccount/${readedBankAccount.title}`
                 )
-                readedBankAccount.logo_icon = filePath
+                readedBankAccount.logoIcon = filePath
             }
 
-            const account = await prisma.bank_accounts.update({
+            const account = await prisma.bankAccount.update({
                 where: {
                     id: readedBankAccount.id
                 },
@@ -55,7 +55,7 @@ export class BankAccountController {
                     title: readedBankAccount.title,
                     description: readedBankAccount.description,
                     type: readedBankAccount.type,
-                    logo_icon: readedBankAccount.logo_icon
+                    logoIcon: readedBankAccount.logoIcon
                 }
             })
 
@@ -71,7 +71,7 @@ export class BankAccountController {
         try {
             const { id } = req.params
 
-            await prisma.bank_accounts.delete({
+            await prisma.bankAccount.delete({
                 where: { id: id }
             })
 
@@ -91,9 +91,9 @@ export class BankAccountController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.bank_accounts.findMany({
+            const data = await prisma.bankAccount.findMany({
                 where,
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take
             })

@@ -3,7 +3,7 @@ import { AppearanceMode, IBankAccount, ISubscription } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/OptionsPopover'
 import DynamicIcon from '../icon/DynamicIcon'
 import icons from 'currency-icons'
-import { useSubscriptions } from '@/hooks/useSubscriptions'
+import { useSubscription } from '@/hooks/useSubscriptions'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useEffect, useState } from 'react'
 
@@ -14,7 +14,7 @@ type SubscriptionItemProps = {
 }
 
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
-    const { getNextExecutionText } = useSubscriptions()
+    const { getNextExecutionText } = useSubscription()
     const { getBankAccount } = useBankAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
@@ -22,7 +22,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getBankAccount(subscription.bank_account_id)
+            const account = await getBankAccount(subscription.bankAccountId)
             setBankAccount(account)
         }
         fetchData()
@@ -33,12 +33,12 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
                     {(() => {
-                        if (subscription.appearance_mode == AppearanceMode.LOGO) {
-                            return <BrandIcon circled icon={subscription.appearance_logo_icon} />
+                        if (subscription.appearanceMode == AppearanceMode.LOGO) {
+                            return <BrandIcon circled icon={subscription.appearanceLogoIcon} />
                         } else {
                             return (
                                 <DynamicIcon
-                                    name={subscription?.appearance_logo_icon || 'landmark'}
+                                    name={subscription?.appearanceLogoIcon || 'landmark'}
                                     className='h-[30px] w-[30px]'
                                 />
                             )

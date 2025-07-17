@@ -7,7 +7,7 @@ import { ModalFooter, ModalFooterProps } from './FormFooter'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 import { cn } from '@poveroh/ui/lib/utils'
-import { ReactElement, use, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { AppearanceMode } from '@poveroh/types'
 import {
     AlertDialog,

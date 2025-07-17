@@ -22,19 +22,19 @@ export const TransactionHelper = {
             date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
-            user_id: userId
+            userId: userId
         })
 
         const baseAmount = {
             amount: data.amounts,
             currency: data.currency,
-            transaction_id: transaction.id
+            transactionId: transaction.id
         }
 
-        await prisma.amounts.createMany({
+        await prisma.amount.createMany({
             data: [
-                { ...baseAmount, action: TransactionAction.EXPENSES, bank_account_id: data.from },
-                { ...baseAmount, action: TransactionAction.INCOME, bank_account_id: data.to }
+                { ...baseAmount, action: TransactionAction.EXPENSES, bankAccountId: data.from },
+                { ...baseAmount, action: TransactionAction.INCOME, bankAccountId: data.to }
             ]
         })
 
@@ -44,21 +44,21 @@ export const TransactionHelper = {
         const transaction = await this.createTransaction({
             title: data.title,
             type: TransactionAction.INCOME,
-            category_id: data.category_id,
-            subcategory_id: data.subcategory_id,
+            categoryId: data.categoryId,
+            subcategoryId: data.subcategoryId,
             date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
-            user_id: userId
+            userId: userId
         })
 
-        await prisma.amounts.create({
+        await prisma.amount.create({
             data: {
                 amount: data.amount,
                 currency: data.currency,
-                transaction_id: transaction.id,
+                transactionId: transaction.id,
                 action: TransactionAction.INCOME,
-                bank_account_id: data.bank_account_id
+                bankAccountId: data.bankAccountId
             }
         })
 
@@ -68,35 +68,35 @@ export const TransactionHelper = {
         const transaction = await this.createTransaction({
             title: data.title,
             type: TransactionAction.EXPENSES,
-            category_id: data.category_id,
-            subcategory_id: data.subcategory_id,
+            categoryId: data.categoryId,
+            subcategoryId: data.subcategoryId,
             date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
-            user_id: userId
+            userId: userId
         })
 
         const amountsData = data.amounts.map((element: any) => ({
-            transaction_id: transaction.id,
+            transactionId: transaction.id,
             amount: element.amount,
             currency: data.currency,
             action: TransactionAction.EXPENSES,
-            bank_account_id: element.bank_account_id
+            bankAccountId: element.bankAccountId
         }))
 
-        await prisma.amounts.createMany({
+        await prisma.amount.createMany({
             data: amountsData
         })
 
         return await this.fetchTransactionWithAmounts(transaction.id)
     },
     async createTransaction(transactionData: any) {
-        return await prisma.transactions.create({
+        return await prisma.transaction.create({
             data: transactionData
         })
     },
     async fetchTransactionWithAmounts(transactionId: string) {
-        return await prisma.transactions.findUnique({
+        return await prisma.transaction.findUnique({
             where: { id: transactionId },
             include: { amounts: true }
         })

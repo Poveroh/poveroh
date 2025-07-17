@@ -42,15 +42,15 @@ export const useTransaction = () => {
         }
     }
 
-    const removeTransaction = async (transaction_id: string) => {
+    const removeTransaction = async (transactionId: string) => {
         try {
-            const res = await transactionService.delete(transaction_id)
+            const res = await transactionService.delete(transactionId)
 
             if (!res) {
                 throw new Error('No response from server')
             }
 
-            transactionStore.removeTransaction(transaction_id)
+            transactionStore.removeTransaction(transactionId)
 
             return res
         } catch (error) {
@@ -58,17 +58,17 @@ export const useTransaction = () => {
         }
     }
 
-    const getTransaction = async (transaction_id: string, fetchFromServer?: boolean) => {
+    const getTransaction = async (transactionId: string, fetchFromServer?: boolean) => {
         return fetchFromServer
-            ? await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transaction_id })
-            : transactionStore.getTransaction(transaction_id)
+            ? await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transactionId })
+            : transactionStore.getTransaction(transactionId)
     }
 
     const fetchTransaction = async (filters?: ITransactionFilters, options?: IFilterOptions, append?: boolean) => {
         const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
 
         if (append) transactionStore.appendTransactions(res)
-        else transactionStore.setTransaction(res)
+        else transactionStore.setTransactions(res)
 
         return res
     }

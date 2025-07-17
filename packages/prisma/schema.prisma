@@ -7,202 +7,202 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model users {
-    id         String   @id @default(uuid())
-    name       String
-    surname    String
-    email      String   @unique
-    password   String
-    created_at DateTime @default(now())
+model User {
+    id        String   @id @default(uuid())
+    name      String
+    surname   String
+    email     String   @unique
+    password  String
+    createdAt DateTime @default(now())
 
-    transactions  transactions[]
-    subscriptions subscriptions[]
-    categories    categories[]
-    login         users_login[]
-    bank_accounts bank_accounts[]
-    imports       imports[]
+    transactions  Transaction[]
+    subscriptions Subscription[]
+    categories    Category[]
+    logins        UserLogin[]
+    bankAccounts  BankAccount[]
+    imports       Import[]
 
     @@index([surname])
-    @@index([created_at])
+    @@index([createdAt])
 }
 
-model users_login {
-    id         String   @id @default(uuid())
-    device     String
-    browser    String
-    ip         String
-    location   String
-    created_at DateTime @default(now())
+model UserLogin {
+    id        String   @id @default(uuid())
+    device    String
+    browser   String
+    ip        String
+    location  String
+    createdAt DateTime @default(now())
 
-    user    users  @relation(fields: [user_id], references: [id])
-    user_id String
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 
-    @@index([user_id])
-    @@index([created_at])
+    @@index([userId])
+    @@index([createdAt])
 }
 
-model imports {
-    id              String            @id @default(uuid())
-    user_id         String
-    title           String
-    bank_account_id String
-    status          TransactionStatus @default(IMPORT_PENDING)
-    created_at      DateTime          @default(now())
+model Import {
+    id            String            @id @default(uuid())
+    userId        String
+    title         String
+    bankAccountId String
+    status        TransactionStatus @default(IMPORT_PENDING)
+    createdAt     DateTime          @default(now())
 
-    user         users          @relation(fields: [user_id], references: [id])
-    bank_account bank_accounts  @relation(fields: [bank_account_id], references: [id])
-    transactions transactions[]
-    files        import_files[]
+    user         User          @relation(fields: [userId], references: [id])
+    bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id])
+    transactions Transaction[]
+    files        ImportFile[]
 
-    @@index([user_id])
+    @@index([userId])
     @@index([status])
 }
 
-model import_files {
-    id         String   @id @default(uuid())
-    import_id  String
-    filename   String
-    filetype   FileType
-    path       String
-    created_at DateTime @default(now())
+model ImportFile {
+    id        String   @id @default(uuid())
+    importId  String
+    filename  String
+    filetype  FileType
+    path      String
+    createdAt DateTime @default(now())
 
-    imports imports @relation(fields: [import_id], references: [id])
+    import Import @relation(fields: [importId], references: [id])
 
-    @@index([import_id])
+    @@index([importId])
 }
 
-model transactions {
-    id             String            @id @default(uuid())
-    user_id        String
-    title          String
-    date           DateTime
-    icon           String?
-    type           TransactionType   @default(EXPENSES)
-    category_id    String?
-    subcategory_id String?
-    import_id      String?
-    note           String?
-    status         TransactionStatus @default(APPROVED)
-    ignore         Boolean           @default(false)
-    created_at     DateTime          @default(now())
+model Transaction {
+    id            String            @id @default(uuid())
+    userId        String
+    title         String
+    date          DateTime
+    icon          String?
+    type          TransactionType   @default(EXPENSES)
+    categoryId    String?
+    subcategoryId String?
+    importId      String?
+    note          String?
+    status        TransactionStatus @default(APPROVED)
+    ignore        Boolean           @default(false)
+    createdAt     DateTime          @default(now())
 
-    user        users          @relation(fields: [user_id], references: [id])
-    category    categories?    @relation(fields: [category_id], references: [id])
-    subcategory subcategories? @relation(fields: [subcategory_id], references: [id])
+    user        User         @relation(fields: [userId], references: [id])
+    category    Category?    @relation(fields: [categoryId], references: [id])
+    subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
 
-    media   transactions_media[]
-    amounts amounts[]
-    imports imports?             @relation(fields: [import_id], references: [id])
+    media   TransactionMedia[]
+    amounts Amount[]
+    import  Import?            @relation(fields: [importId], references: [id])
 
-    @@index([user_id])
-    @@index([category_id])
-    @@index([subcategory_id])
+    @@index([userId])
+    @@index([categoryId])
+    @@index([subcategoryId])
     @@index([date])
-    @@index([user_id, date])
+    @@index([userId, date])
 }
 
-model subscriptions {
-    id                   String         @id @default(uuid())
-    user_id              String
-    title                String
-    description          String?
-    amount               Float
-    currency             Currency
-    appearance_mode      AppearanceMode
-    appearance_logo_icon String
-    first_payment        DateTime
-    cycle_number         String
-    cycle_period         String
-    remember_period      RememberPeriod
-    bank_account_id      String
-    is_enabled           Boolean
-    created_at           DateTime       @default(now())
+model Subscription {
+    id                 String         @id @default(uuid())
+    userId             String
+    title              String
+    description        String?
+    amount             Float
+    currency           Currency
+    appearanceMode     AppearanceMode
+    appearanceLogoIcon String
+    firstPayment       DateTime
+    cycleNumber        String
+    cyclePeriod        String
+    rememberPeriod     RememberPeriod
+    bankAccountId      String
+    isEnabled          Boolean
+    createdAt          DateTime       @default(now())
 
-    user         users         @relation(fields: [user_id], references: [id])
-    bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
+    user        User        @relation(fields: [userId], references: [id])
+    bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
 
-    @@index([user_id])
-    @@index([bank_account_id])
-    @@index([is_enabled])
+    @@index([userId])
+    @@index([bankAccountId])
+    @@index([isEnabled])
 }
 
-model transactions_media {
-    id             String   @id @default(uuid())
-    transaction_id String
-    filename       String
-    filetype       String
-    path           String
-    created_at     DateTime @default(now())
+model TransactionMedia {
+    id            String   @id @default(uuid())
+    transactionId String
+    filename      String
+    filetype      String
+    path          String
+    createdAt     DateTime @default(now())
 
-    transaction transactions @relation(fields: [transaction_id], references: [id])
+    transaction Transaction @relation(fields: [transactionId], references: [id])
 
-    @@index([transaction_id])
+    @@index([transactionId])
 }
 
-model bank_accounts {
+model BankAccount {
     id          String          @id @default(uuid())
-    user_id     String
+    userId      String
     title       String
     description String
     type        BankAccountType @default(BANK_ACCOUNT)
-    logo_icon   String?
-    created_at  DateTime        @default(now())
+    logoIcon    String?
+    createdAt   DateTime        @default(now())
 
-    subscriptions subscriptions[]
-    amounts       amounts[]
-    user          users           @relation(fields: [user_id], references: [id])
-    imports       imports[]
+    subscriptions Subscription[]
+    amounts       Amount[]
+    user          User           @relation(fields: [userId], references: [id])
+    imports       Import[]
 
-    @@index([user_id])
+    @@index([userId])
 }
 
-model categories {
+model Category {
     id          String          @id @default(uuid())
-    user_id     String
+    userId      String
     title       String
     description String?
     for         TransactionType
-    logo_icon   String
-    created_at  DateTime        @default(now())
+    logoIcon    String
+    createdAt   DateTime        @default(now())
 
-    transactions  transactions[]
-    subcategories subcategories[]
+    transactions  Transaction[]
+    subcategories Subcategory[]
 
-    user users @relation(fields: [user_id], references: [id])
+    user User @relation(fields: [userId], references: [id])
 
-    @@index([user_id])
+    @@index([userId])
     @@index([for])
 }
 
-model subcategories {
+model Subcategory {
     id          String   @id @default(uuid())
-    category_id String
+    categoryId  String
     title       String
     description String?
-    logo_icon   String
-    created_at  DateTime @default(now())
+    logoIcon    String
+    createdAt   DateTime @default(now())
 
-    transactions transactions[]
+    transactions Transaction[]
 
-    category categories @relation(fields: [category_id], references: [id])
+    category Category @relation(fields: [categoryId], references: [id])
 
-    @@index([category_id])
+    @@index([categoryId])
 }
 
-model amounts {
-    id              String          @id @default(uuid())
-    transaction_id  String
-    amount          Float
-    currency        Currency
-    action          TransactionType @default(EXPENSES)
-    bank_account_id String
-    created_at      DateTime        @default(now())
+model Amount {
+    id            String          @id @default(uuid())
+    transactionId String
+    amount        Float
+    currency      Currency
+    action        TransactionType @default(EXPENSES)
+    bankAccountId String
+    createdAt     DateTime        @default(now())
 
-    bank_account bank_accounts @relation(fields: [bank_account_id], references: [id])
-    transaction  transactions  @relation(fields: [transaction_id], references: [id])
+    bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+    transaction Transaction @relation(fields: [transactionId], references: [id])
 
-    @@index([transaction_id])
-    @@index([bank_account_id])
+    @@index([transactionId])
+    @@index([bankAccountId])
     @@index([action])
 }
 

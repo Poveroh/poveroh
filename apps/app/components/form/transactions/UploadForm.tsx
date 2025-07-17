@@ -2,16 +2,16 @@
 
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
-import { FormRef, IImports, ITransaction } from '@poveroh/types'
+import { FormRef, IImport, ITransaction } from '@poveroh/types'
 
 import { TransactionsApprovalList } from '@/components/other/TransactionsApprovalList'
 import { BankAccountAndFileForm } from './BankAccountAndFileForm'
 import { cloneDeep } from 'lodash'
-import { useImports } from '@/hooks/useImports'
+import { useImport } from '@/hooks/useImports'
 
 type FormProps = {
-    initialData?: IImports
-    dataCallback: (data: IImports) => Promise<void>
+    initialData?: IImport
+    dataCallback: (data: IImport) => Promise<void>
     showSaveButton: (enable?: boolean) => void
     closeDialog: () => void
 }
@@ -19,9 +19,9 @@ type FormProps = {
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>(props.initialData?.transactions || [])
 
-    const [localImports, setLocalImports] = useState<IImports | undefined>(props.initialData)
+    const [localImports, setLocalImports] = useState<IImport | undefined>(props.initialData)
 
-    const { appendImports } = useImports()
+    const { appendImport } = useImport()
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -34,11 +34,11 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         }
     }))
 
-    const handleCallback = async (importedFiles: IImports) => {
+    const handleCallback = async (importedFiles: IImport) => {
         const readedTransactions = cloneDeep(parsedTransaction)
         readedTransactions.push(...importedFiles.transactions)
         setParsedTransaction(readedTransactions)
-        appendImports([importedFiles])
+        appendImport([importedFiles])
         setLocalImports(importedFiles)
         props.showSaveButton(true)
     }

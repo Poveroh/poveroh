@@ -18,10 +18,10 @@ export class SubcategoryController {
                     req.file,
                     `${req.user.id}/subcategory/${readedSubcategory.title}`
                 )
-                readedSubcategory.logo_icon = filePath
+                readedSubcategory.logoIcon = filePath
             }
 
-            const subcategory = await prisma.subcategories.create({
+            const subcategory = await prisma.subcategory.create({
                 data: readedSubcategory
             })
 
@@ -50,10 +50,10 @@ export class SubcategoryController {
                     req.file,
                     `${req.user.id}/subcategory/${readedSubcategory.title}`
                 )
-                readedSubcategory.logo_icon = filePath
+                readedSubcategory.logoIcon = filePath
             }
 
-            const subcategory = await prisma.subcategories.update({
+            const subcategory = await prisma.subcategory.update({
                 where: { id },
                 data: readedSubcategory
             })
@@ -75,7 +75,7 @@ export class SubcategoryController {
                 return
             }
 
-            await prisma.subcategories.delete({ where: { id } })
+            await prisma.subcategory.delete({ where: { id } })
 
             res.status(200).json(true)
         } catch (error) {
@@ -93,9 +93,9 @@ export class SubcategoryController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.subcategories.findMany({
+            const data = await prisma.subcategory.findMany({
                 where,
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 skip,
                 take
             })

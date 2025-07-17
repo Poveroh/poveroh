@@ -23,11 +23,5 @@ function SkeletonItemContent() {
 }
 
 export default function SkeletonItem({ repeat = 1 }: SkeletonItemProps) {
-    return (
-        <>
-            {Array.from({ length: repeat }).map((_, index) => (
-                <SkeletonItemContent key={index} />
-            ))}
-        </>
-    )
+    return Array.from({ length: repeat }).map((_, index) => <SkeletonItemContent key={index} />)
 }

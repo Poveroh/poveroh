@@ -6,9 +6,9 @@ type BankAccountStore = {
     bankAccountCacheList: IBankAccount[]
     addBankAccount: (bankAccount: IBankAccount) => void
     editBankAccount: (bankAccount: IBankAccount) => void
-    setBankAccount: (bankAccounts: IBankAccount[]) => void
-    removeBankAccount: (bankAccount_id: string) => void
-    getBankAccount: (bankAccount_id: string) => IBankAccount | null
+    setBankAccounts: (bankAccounts: IBankAccount[]) => void
+    removeBankAccount: (bankAccountId: string) => void
+    getBankAccount: (bankAccountId: string) => IBankAccount | null
 }
 
 export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
@@ -17,7 +17,7 @@ export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
         set(state => {
             const list = [...state.bankAccountCacheList, bankAccount]
             return {
-                bankAccountCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                bankAccountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
@@ -28,25 +28,25 @@ export const useBankAccountStore = create<BankAccountStore>((set, get) => ({
                 const list = cloneDeep(state.bankAccountCacheList)
                 list[index] = bankAccount
                 return {
-                    bankAccountCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                    bankAccountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             }
             return state
         })
     },
-    setBankAccount: bankAccounts => {
+    setBankAccounts: bankAccounts => {
         set(() => ({
             bankAccountCacheList: bankAccounts
         }))
     },
-    removeBankAccount: bankAccount_id => {
+    removeBankAccount: bankAccountId => {
         set(state => ({
-            bankAccountCacheList: state.bankAccountCacheList.filter(item => item.id !== bankAccount_id)
+            bankAccountCacheList: state.bankAccountCacheList.filter(item => item.id !== bankAccountId)
         }))
     },
-    getBankAccount: bankAccount_id => {
+    getBankAccount: bankAccountId => {
         const bankAccountCacheList = get().bankAccountCacheList
-        const index = bankAccountCacheList.findIndex(item => item.id === bankAccount_id)
+        const index = bankAccountCacheList.findIndex(item => item.id === bankAccountId)
         if (index !== -1) {
             return bankAccountCacheList[index] || null
         }

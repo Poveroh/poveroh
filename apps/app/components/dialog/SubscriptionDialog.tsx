@@ -3,7 +3,7 @@ import { Modal } from '../modal/dialog'
 import { useRef, useState } from 'react'
 import { AppearanceMode, Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
-import { useSubscriptions } from '@/hooks/useSubscriptions'
+import { useSubscription } from '@/hooks/useSubscriptions'
 import { SubscriptionForm } from '../form/SubscriptionsForm'
 import { SubscriptionsSelector } from '../form/SubscriptionsSelector'
 import { Button } from '@poveroh/ui/components/button'
@@ -19,7 +19,7 @@ type DialogProps = {
 
 export function SubscriptionDialog(props: DialogProps) {
     const t = useTranslations()
-    const { addSubscription, editSubscription } = useSubscriptions()
+    const { addSubscription, editSubscription } = useSubscription()
 
     const [fromTemplate, setFromTemplate] = useState(true)
     const [mode, setMode] = useState<'template' | 'editor'>(props.inEditingMode ? 'editor' : 'template')
@@ -72,20 +72,20 @@ export function SubscriptionDialog(props: DialogProps) {
     const onTemplateSelected = (brand: IBrand) => {
         setLocalSubscription({
             id: '',
-            user_id: '',
-            created_at: new Date().toISOString(),
+            userId: '',
+            createdAt: new Date().toISOString(),
             title: brand.name,
             description: '',
             amount: 0,
             currency: Currencies.USD,
-            appearance_mode: AppearanceMode.LOGO,
-            appearance_logo_icon: brand.logo,
-            first_payment: new Date().toISOString(),
-            cycle_number: '1',
-            cycle_period: CyclePeriod.MONTH,
-            remember_period: RememberPeriod.SAME_DAY,
-            bank_account_id: '',
-            is_enabled: true
+            appearanceMode: AppearanceMode.LOGO,
+            appearanceLogoIcon: brand.logo,
+            firstPayment: new Date().toISOString(),
+            cycleNumber: '1',
+            cyclePeriod: CyclePeriod.MONTH,
+            rememberPeriod: RememberPeriod.SAME_DAY,
+            bankAccountId: '',
+            isEnabled: true
         })
         setFromTemplate(true)
         setTitle(brand.name)
@@ -96,8 +96,8 @@ export function SubscriptionDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={localSubscription?.appearance_logo_icon}
-            iconMode={localSubscription?.appearance_mode}
+            icon={localSubscription?.appearanceLogoIcon}
+            iconMode={localSubscription?.appearanceMode}
             iconCircled={true}
             handleOpenChange={props.closeDialog}
             loading={loading}

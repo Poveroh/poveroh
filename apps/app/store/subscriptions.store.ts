@@ -6,19 +6,19 @@ type SubscriptionStore = {
     subscriptionCacheList: ISubscription[]
     addSubscription: (subscription: ISubscription) => void
     editSubscription: (subscription: ISubscription) => void
-    setSubscription: (subscription: ISubscription[]) => void
-    removeSubscription: (subscription_id: string) => void
-    getSubscription: (subscription_id: string) => ISubscription | null
+    setSubscriptions: (subscriptions: ISubscription[]) => void
+    removeSubscription: (subscriptionId: string) => void
+    getSubscription: (subscriptionId: string) => ISubscription | null
 }
 
-export const useSubscriptionsStore = create<SubscriptionStore>((set, get) => ({
+export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
     subscriptionCacheList: [],
 
     addSubscription: subscription => {
         set(state => {
             const list = [...state.subscriptionCacheList, subscription]
             return {
-                subscriptionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                subscriptionCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
@@ -30,27 +30,27 @@ export const useSubscriptionsStore = create<SubscriptionStore>((set, get) => ({
                 const list = cloneDeep(state.subscriptionCacheList)
                 list[index] = subscription
                 return {
-                    subscriptionCacheList: list.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+                    subscriptionCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             }
             return state
         })
     },
 
-    setSubscription: subscriptions => {
+    setSubscriptions: subscriptions => {
         set(() => ({
-            subscriptionCacheList: subscriptions.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+            subscriptionCacheList: subscriptions.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
         }))
     },
 
-    removeSubscription: subscription_id => {
+    removeSubscription: subscriptionId => {
         set(state => ({
-            subscriptionCacheList: state.subscriptionCacheList.filter(item => item.id !== subscription_id)
+            subscriptionCacheList: state.subscriptionCacheList.filter(item => item.id !== subscriptionId)
         }))
     },
 
-    getSubscription: subscription_id => {
+    getSubscription: subscriptionId => {
         const subscriptionCacheList = get().subscriptionCacheList
-        return subscriptionCacheList.find(item => item.id === subscription_id) || null
+        return subscriptionCacheList.find(item => item.id === subscriptionId) || null
     }
 }))

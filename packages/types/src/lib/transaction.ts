@@ -1,23 +1,23 @@
 import { Currencies } from './currency.js'
 
 export interface IAmountBase {
-    transaction_id: string
+    transactionId: string
     amount: number
     currency: Currencies
     action: TransactionAction
-    bank_account_id: string
+    bankAccountId: string
 }
 
 export interface IAmount extends IAmountBase {
     id: string
-    created_at: string
+    createdAt: string
 }
 
 export interface ITransactionBase {
     title: string
     type: TransactionAction
-    category_id?: string
-    subcategory_id?: string
+    categoryId?: string
+    subcategoryId?: string
     icon?: string
     date: string
     note?: string
@@ -26,10 +26,10 @@ export interface ITransactionBase {
 
 export interface ITransaction extends ITransactionBase {
     id: string
-    user_id: string
-    created_at: Date
+    userId: string
+    createdAt: Date
     status: TransactionStatus
-    import_id?: string
+    importId?: string
     amounts: IAmount[]
 }
 

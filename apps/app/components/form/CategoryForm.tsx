@@ -40,14 +40,14 @@ export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     const defaultValues = {
         title: '',
         description: '',
-        logo_icon: iconList[0] as string,
+        logoIcon: iconList[0] as string,
         for: initialData?.for || 'EXPENSES'
     }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         description: z.string(),
-        logo_icon: z.string().nonempty(t('messages.errors.required')),
+        logoIcon: z.string().nonempty(t('messages.errors.required')),
         for: z.string()
     })
 
@@ -59,7 +59,7 @@ export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     useEffect(() => {
         if (initialData) {
             form.reset(initialData)
-            setIcon(initialData.logo_icon)
+            setIcon(initialData.logoIcon)
         }
     }, [initialData, form])
 
@@ -154,7 +154,7 @@ export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                                                 className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
                                                                     ${icon === x ? 'bg-white text-black border border-hr' : ''}`}
                                                                 onClick={() => {
-                                                                    form.setValue('logo_icon', x)
+                                                                    form.setValue('logoIcon', x)
                                                                     setIcon(x)
                                                                 }}
                                                             >

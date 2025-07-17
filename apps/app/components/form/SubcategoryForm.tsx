@@ -48,15 +48,15 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
     const defaultValues = {
         title: '',
         description: '',
-        logo_icon: iconList[0] as string,
-        category_id: initialData?.category_id || ''
+        logoIcon: iconList[0] as string,
+        categoryId: initialData?.categoryId || ''
     }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         description: z.string(),
-        logo_icon: z.string().nonempty(t('messages.errors.required')),
-        category_id: z.string()
+        logoIcon: z.string().nonempty(t('messages.errors.required')),
+        categoryId: z.string()
     })
 
     const form = useForm({
@@ -67,7 +67,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
     useEffect(() => {
         if (initialData) {
             form.reset(initialData)
-            setIcon(initialData.logo_icon)
+            setIcon(initialData.logoIcon)
         }
     }, [initialData, form])
 
@@ -123,7 +123,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
 
                     <FormField
                         control={form.control}
-                        name='category_id'
+                        name='categoryId'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel mandatory>{t('form.category.label')}</FormLabel>
@@ -148,7 +148,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                                     <div className='flex items-center space-x-3'>
                                                         <DynamicIcon
                                                             className='h-4 w-4'
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>
                                                     </div>
@@ -163,7 +163,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                                     <div className='flex items-center space-x-3'>
                                                         <DynamicIcon
                                                             className='h-4 w-4'
-                                                            name={item.logo_icon}
+                                                            name={item.logoIcon}
                                                         ></DynamicIcon>
                                                         <span>{item.title}</span>
                                                     </div>
@@ -192,7 +192,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                                                 className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
                                                                     ${icon === x ? 'bg-white text-black border border-hr' : ''}`}
                                                                 onClick={() => {
-                                                                    form.setValue('logo_icon', x)
+                                                                    form.setValue('logoIcon', x)
                                                                     setIcon(x)
                                                                 }}
                                                             >

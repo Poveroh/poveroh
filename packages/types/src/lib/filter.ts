@@ -1,5 +1,4 @@
 import { BankAccountType } from './bankaccount.js'
-import { CyclePeriod } from './subscription.js'
 import { TransactionAction } from './transaction.js'
 
 export type StringFilter = { equals?: string; contains?: string }
@@ -21,9 +20,9 @@ export interface ITransactionFilters {
     title?: StringFilter
     note?: StringFilter
     type?: TransactionAction
-    category_id?: string
-    subcategory_id?: string
-    bank_account_id?: string
+    categoryId?: string
+    subcategoryId?: string
+    bankAccountId?: string
     date?: DateFilter
     fromDate?: string
 }
@@ -39,7 +38,7 @@ export interface ISubcategoryFilters {
     id?: string
     title?: StringFilter
     description?: StringFilter
-    category_id?: string
+    categoryId?: string
 }
 
 export interface IBankAccountFilters {
@@ -53,7 +52,7 @@ export interface ISubscriptionFilters {
     id?: string
     title?: StringFilter
     description?: StringFilter
-    bank_account_id?: string
+    bankAccountId?: string
 }
 
 export type FilterField =
