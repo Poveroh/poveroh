@@ -1,76 +1,165 @@
 'use client'
 
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
+import { z } from 'zod'
 
-import {
-    Currencies,
-    currencyCatalog,
-    FormProps,
-    FormRef,
-    IBankAccount,
-    ICategory,
-    IItem,
-    ISubcategory,
-    TransactionAction
-} from '@poveroh/types'
-
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Input } from '@poveroh/ui/components/input'
-import { Badge } from '@poveroh/ui/components/badge'
-import { Checkbox } from '@poveroh/ui/components/checkbox'
-import { FileInput } from '@poveroh/ui/components/file'
-
-import { X } from 'lucide-react'
-import icons from 'currency-icons'
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import DynamicIcon from '@/components/icon/DynamicIcon'
-import { BrandIcon } from '@/components/icon/BrandIcon'
-import { Textarea } from '@poveroh/ui/components/textarea'
-import { useError } from '@/hooks/useError'
-import { useCategory } from '@/hooks/useCategory'
-import { useBankAccount } from '@/hooks/useBankAccount'
-import logger from '@/lib/logger'
+import { FormProps, FormRef, TransactionAction, Currencies } from '@poveroh/types'
+import { Form } from '@poveroh/ui/components/form'
+import { useTransactionForm } from '@/hooks/form/useTransactionForm'
 import { amountSchema } from '@/types/form'
+import {
+    TextField,
+    DateField,
+    AmountField,
+    CurrencyField,
+    BankAccountField,
+    CategoryField,
+    SubcategoryField,
+    NoteField,
+    FileUploadField,
+    IgnoreField
+} from '@/components/fields'
 
 export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
+    const { initialData, inputStyle, dataCallback } = props
 
-    const { initialData, inEditingMode, inputStyle, dataCallback } = props
-
-    const { handleError } = useError()
-    const { categoryCacheList } = useCategory()
-    const { bankAccountCacheList } = useBankAccount()
-
-    const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
-
-    const [file, setFile] = useState<FileList | null>(null)
-    const [fileError, setFileError] = useState(false)
-
-    const defaultValues = {
-        title: '',
-        date: new Date().toISOString().split('T')[0],
-        amount: 0,
-        currency: Currencies.EUR,
-        bankAccountId: '',
-        categoryId: '',
-        subcategoryId: '',
-        note: '',
-        ignore: false
-    }
-
-    const formSchema = z.object({
+    // Custom schema for income transactions
+    const incomeSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         date: z.string({
             required_error: t('messages.errors.required')
         }),
         amount: amountSchema({
-            required_error: t('messages.errors.required'),
-            invalid_type_error: t('messages.errors.pattern')
+            requiredError: t('messages.errors.required'),
+            invalidTypeError: t('messages.errors.pattern')
+        }),
+        currency: z.string().nonempty(t('messages.errors.required')),
+        bankAccountId: z.string().nonempty(t('messages.errors.required')),
+        categoryId: z.string().nonempty(t('messages.errors.required')),
+        subcategoryId: z.string().nonempty(t('messages.errors.required')),
+        note: z.string(),
+        ignore: z.boolean()
+    })
+
+    const {
+        form,
+        subcategoryList,
+        parseSubcategoryList,
+        file,
+        setFile,
+        fileError,
+        setFileError,
+        handleSubmit,
+        categoryCacheList,
+        bankAccountCacheList
+    } = useTransactionForm({
+        initialData,
+        action: TransactionAction.INCOME,
+        onSubmit: dataCallback,
+        customSchema: incomeSchema
+    })
+
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            form.handleSubmit(handleSubmit)()
+        }
+    }))
+
+    return (
+        <Form {...form}>
+            <form>
+                <div className='flex flex-col space-y-6'>
+                    <TextField
+                        control={form.control}
+                        label={t('form.title.label')}
+                        variant={inputStyle}
+                    />
+
+                    <DateField
+                        control={form.control}
+                        label={t('form.date.label')}
+                        variant={inputStyle}
+                    />
+
+                    <div className='flex flex-row space-x-2'>
+                        <AmountField
+                            control={form.control}
+                            label={t('form.amount.label')}
+                            placeholder={t('form.amount.placeholder')}
+                            variant={inputStyle}
+                        />
+
+                        <CurrencyField
+                            control={form.control}
+                            label={t('form.currency.label')}
+                            placeholder={t('form.currency.placeholder')}
+                            variant={inputStyle}
+                        />
+                    </div>
+
+                    <BankAccountField
+                        control={form.control}
+                        label={t('form.bankaccount.label')}
+                        placeholder={t('form.bankaccount.placeholder')}
+                        variant={inputStyle}
+                        bankAccounts={bankAccountCacheList}
+                    />
+
+                    <div className='flex flex-row space-x-2'>
+                        <CategoryField
+                            control={form.control}
+                            label={t('form.category.label')}
+                            placeholder={t('form.category.placeholder')}
+                            variant={inputStyle}
+                            categories={categoryCacheList}
+                            onCategoryChange={parseSubcategoryList}
+                        />
+
+                        <SubcategoryField
+                            control={form.control}
+                            label={t('form.subcategory.label')}
+                            placeholder={t('form.subcategory.placeholder')}
+                            variant={inputStyle}
+                            subcategories={subcategoryList}
+                        />
+                    </div>
+
+                    <NoteField
+                        control={form.control}
+                        label={t('form.note.label')}
+                        placeholder={t('form.note.placeholder')}
+                        variant={inputStyle}
+                    />
+
+                    <FileUploadField
+                        label={t('form.file.label')}
+                        file={file}
+                        onFileChange={(files) => {
+                            setFile(files)
+                            setFileError(false)
+                        }}
+                        fileError={fileError}
+                        errorMessage={t('messages.errors.required')}
+                        toUploadMessage={t('messages.toUpload')}
+                    />
+
+                    <IgnoreField
+                        control={form.control}
+                        label={t('form.ignore.label')}
+                    />
+                </div>
+            </form>
+        </Form>
+    )
+})
+
+IncomeForm.displayName = 'IncomeForm'
+        }),
+        amount: amountSchema({
+            requiredError: t('messages.errors.required'),
+            invalidTypeError: t('messages.errors.pattern')
         }),
         currency: z.string().nonempty(t('messages.errors.required')),
         bankAccountId: z.string().nonempty(t('messages.errors.required')),

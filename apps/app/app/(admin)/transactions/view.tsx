@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
@@ -25,82 +25,82 @@ import { TransactionItem } from '@/components/item/TransactionItem'
 import { useTransaction } from '@/hooks/useTransaction'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import { useTransactionSearch } from '@/hooks/useTransactionSearch'
+import { useTransactionFilters } from '@/hooks/useTransactionFilters'
+import { useTransactionModals } from '@/hooks/useTransactionModals'
 
-import { IFilterOptions, ITransaction } from '@poveroh/types'
-
-import { isEmpty } from 'lodash'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import Divider from '@/components/other/Divider'
 import { ImportDialog } from '@/components/dialog/ImportDialog'
 
 export default function TransactionsView() {
     const t = useTranslations()
+
+    // Core hooks
     const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate } = useTransaction()
     const { categoryCacheList, fetchCategory } = useCategory()
     const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
 
-    const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
-    const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [dialogUploadOpen, setDialogUploadOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
-
-    const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
-
-    const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
-        skip: 0,
-        take: 20
+    // Custom hooks for optimized functionality
+    const { filteredTransactions, handleSearch } = useTransactionSearch({
+        transactions: transactionCacheList
     })
 
-    useEffect(() => {
-        fetchCategory()
-        fetchBankAccount()
-        fetchTransaction({}, transactionFilterSetting)
-    }, [])
+    const { filters, isLoading: isFilterLoading, loadMore, refresh } = useTransactionFilters({
+        initialSkip: 0,
+        initialTake: 20,
+        onFilterChange: async (newFilters, append = false) => {
+            await fetchTransaction({}, newFilters, append)
+        }
+    })
+
+    const {
+        itemToDelete,
+        itemToEdit,
+        isNewDialogOpen,
+        isUploadDialogOpen,
+        isDeleteLoading,
+        openDeleteModal,
+        closeDeleteModal,
+        openEditModal,
+        closeEditModal,
+        openNewDialog,
+        closeNewDialog,
+        openUploadDialog,
+        closeUploadDialog,
+        handleDelete
+    } = useTransactionModals()
+
+    // Memoize grouped transactions for performance
+    const groupedTransactions = useMemo(() => {
+        return Object.entries(groupTransactionsByDate(filteredTransactions))
+            .sort(([a], [b]) => b.localeCompare(a))
+    }, [filteredTransactions, groupTransactionsByDate])
+
+    // Memoize empty state condition
+    const hasRequiredData = useMemo(() => {
+        return bankAccountCacheList.length > 0 && categoryCacheList.length > 0
+    }, [bankAccountCacheList.length, categoryCacheList.length])
 
     useEffect(() => {
-        setLocalTransactionList(transactionCacheList)
-    }, [transactionCacheList])
-
-    const loadMore = async () => {
-        const currentSkip = transactionFilterSetting.skip ?? 0
-        const currentTake = transactionFilterSetting.take ?? 20
-
-        const newOptions = {
-            skip: currentSkip + currentTake,
-            take: currentTake
+        const initializeData = async () => {
+            await Promise.all([
+                fetchCategory(),
+                fetchBankAccount(),
+                fetchTransaction({}, filters)
+            ])
         }
 
-        await fetchTransaction({}, newOptions, true)
-
-        setTransactionFilterSetting(newOptions)
-    }
-
-    const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
-
-        if (isEmpty(textToSearch)) {
-            setLocalTransactionList(transactionCacheList)
-            return
-        }
-
-        const filteredList = transactionCacheList.filter(x => x.title.toLowerCase().includes(textToSearch))
-
-        setLocalTransactionList(filteredList)
-    }
+        initializeData()
+    }, [fetchCategory, fetchBankAccount, fetchTransaction, filters])
 
     const onDelete = async () => {
-        if (!itemToDelete) return
-
-        setLoading(true)
-
-        const res = await removeTransaction(itemToDelete.id)
-
-        setLoading(false)
-
-        if (res) {
-            setItemToDelete(null)
+        const wrappedRemoveTransaction = async (id: string): Promise<boolean> => {
+            const result = await removeTransaction(id)
+            return result === true
         }
+
+        await handleDelete(wrappedRemoveTransaction)
     }
 
     return (
@@ -128,7 +128,7 @@ export default function TransactionsView() {
                     <div className='flex flex-row items-center space-x-8'>
                         <RotateCcw
                             className='cursor-pointer'
-                            onClick={() => fetchTransaction({}, transactionFilterSetting)}
+                            onClick={refresh}
                         />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
@@ -143,25 +143,23 @@ export default function TransactionsView() {
                                 </PopoverTrigger>
                                 <PopoverContent align='end'>
                                     <div className='flex flex-col space-y-5'>
-                                        <a
-                                            className='flex items-center space-x-2 w-full'
-                                            onClick={() => {
-                                                setDialogUploadOpen(true)
-                                            }}
+                                        <button
+                                            type='button'
+                                            className='flex items-center space-x-2 w-full text-left hover:opacity-75'
+                                            onClick={openUploadDialog}
                                         >
                                             <Upload />
                                             <p>{t('buttons.add.import')}</p>
-                                        </a>
+                                        </button>
                                         <Divider />
-                                        <a
-                                            className='flex items-center space-x-2 w-full'
-                                            onClick={() => {
-                                                setDialogNewOpen(true)
-                                            }}
+                                        <button
+                                            type='button'
+                                            className='flex items-center space-x-2 w-full text-left hover:opacity-75'
+                                            onClick={openNewDialog}
                                         >
                                             <Plus />
                                             <p>{t('buttons.add.base')}</p>
-                                        </a>
+                                        </button>
                                     </div>
                                 </PopoverContent>
                             </Popover>
@@ -173,45 +171,43 @@ export default function TransactionsView() {
                         startIcon={Search}
                         placeholder={t('messages.search')}
                         className='w-1/3'
-                        onChange={onSearch}
+                        onChange={handleSearch}
                     />
                 </div>
-                {localTransactionList.length > 0 ? (
+                {filteredTransactions.length > 0 ? (
                     <>
-                        {Object.entries(groupTransactionsByDate(localTransactionList))
-                            .sort(([a], [b]) => b.localeCompare(a))
-                            .map(([date, transactions]) => (
-                                <div key={date} className='flex flex-col space-y-2'>
-                                    <h4>
-                                        {(() => {
-                                            const currentYear = new Date().getFullYear()
-                                            const dateObj = new Date(date)
-                                            const isCurrentYear = dateObj.getFullYear() === currentYear
+                        {groupedTransactions.map(([date, transactions]) => (
+                            <div key={date} className='flex flex-col space-y-2'>
+                                <h4>
+                                    {(() => {
+                                        const currentYear = new Date().getFullYear()
+                                        const dateObj = new Date(date)
+                                        const isCurrentYear = dateObj.getFullYear() === currentYear
 
-                                            const options: Intl.DateTimeFormatOptions = isCurrentYear
-                                                ? { day: 'numeric', month: 'long' }
-                                                : { day: 'numeric', month: 'long', year: 'numeric' }
+                                        const options: Intl.DateTimeFormatOptions = isCurrentYear
+                                            ? { day: 'numeric', month: 'long' }
+                                            : { day: 'numeric', month: 'long', year: 'numeric' }
 
-                                            return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
-                                        })()}
-                                    </h4>
-                                    <Box>
-                                        <>
-                                            {transactions.map(transaction => (
-                                                <TransactionItem
-                                                    key={transaction.id}
-                                                    transaction={transaction}
-                                                    openEdit={setItemToEdit}
-                                                    openDelete={setItemToDelete}
-                                                />
-                                            ))}
-                                        </>
-                                    </Box>
-                                </div>
-                            ))}
+                                        return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
+                                    })()}
+                                </h4>
+                                <Box>
+                                    <>
+                                        {transactions.map(transaction => (
+                                            <TransactionItem
+                                                key={transaction.id}
+                                                transaction={transaction}
+                                                openEdit={openEditModal}
+                                                openDelete={openDeleteModal}
+                                            />
+                                        ))}
+                                    </>
+                                </Box>
+                            </div>
+                        ))}
                         <div className='flex flex-col flex-y-2 justify-center items-center w-full'>
-                            <Button variant='outline' onClick={loadMore}>
-                                {t('buttons.loadMore')}
+                            <Button variant='outline' onClick={loadMore} disabled={isFilterLoading}>
+                                {isFilterLoading ? t('buttons.loading') : t('buttons.loadMore')}
                             </Button>
                         </div>
                     </>
@@ -226,7 +222,7 @@ export default function TransactionsView() {
                                         <p>{t('transactions.empty.subtitle')}</p>
                                     </div>
                                 </div>
-                                {(bankAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                {!hasRequiredData && (
                                     <>
                                         <Divider />
                                         <div className='flex flex-col items-center space-y-8 justify-center'>
@@ -262,17 +258,17 @@ export default function TransactionsView() {
                     title={itemToDelete.title}
                     description={t('transactions.modal.deleteDescription')}
                     open={true}
-                    closeDialog={() => setItemToDelete(null)}
-                    loading={loading}
+                    closeDialog={closeDeleteModal}
+                    loading={isDeleteLoading}
                     onConfirm={onDelete}
                 ></DeleteModal>
             )}
 
-            {dialogNewOpen && (
+            {isNewDialogOpen && (
                 <TransactionDialog
-                    open={dialogNewOpen}
+                    open={isNewDialogOpen}
                     dialogHeight={'h-[80vh]'}
-                    closeDialog={() => setDialogNewOpen(false)}
+                    closeDialog={closeNewDialog}
                 ></TransactionDialog>
             )}
 
@@ -282,12 +278,12 @@ export default function TransactionsView() {
                     open={itemToEdit !== null}
                     dialogHeight='h-[80vh]'
                     inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
+                    closeDialog={closeEditModal}
                 />
             )}
 
-            {dialogUploadOpen && (
-                <ImportDialog open={true} inEditingMode={true} closeDialog={() => setItemToEdit(null)} />
+            {isUploadDialogOpen && (
+                <ImportDialog open={true} inEditingMode={true} closeDialog={closeUploadDialog} />
             )}
         </>
     )

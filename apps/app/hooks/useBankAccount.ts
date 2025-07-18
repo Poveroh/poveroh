@@ -77,23 +77,21 @@ export const useBankAccount = () => {
         }
     }
 
-    const getTypeList = (): IItem[] => {
-        return [
-            { value: BankAccountType.ONLINE_BANK, label: t('bankAccounts.types.online') },
-            { value: BankAccountType.BANK_ACCOUNT, label: t('bankAccounts.types.bank') },
-            { value: BankAccountType.CIRCUIT, label: t('bankAccounts.types.circuit') },
-            { value: BankAccountType.DEPOSIT_BANK, label: t('bankAccounts.types.deposit') },
-            { value: BankAccountType.BROKER, label: t('bankAccounts.types.broker') }
-        ]
-    }
+    const typeList = [
+        { value: BankAccountType.ONLINE_BANK, label: t('bankAccounts.types.online') },
+        { value: BankAccountType.BANK_ACCOUNT, label: t('bankAccounts.types.bank') },
+        { value: BankAccountType.CIRCUIT, label: t('bankAccounts.types.circuit') },
+        { value: BankAccountType.DEPOSIT_BANK, label: t('bankAccounts.types.deposit') },
+        { value: BankAccountType.BROKER, label: t('bankAccounts.types.broker') }
+    ]
 
     return {
+        typeList,
         bankAccountCacheList: bankAccountStore.bankAccountCacheList,
         addBankAccount,
         editBankAccount,
         removeBankAccount,
         getBankAccount,
-        fetchBankAccount,
-        getTypeList
+        fetchBankAccount
     }
 }

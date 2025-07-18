@@ -6,7 +6,7 @@ type DividerProps = {
     className?: string
 }
 
-function Divider({ orientation = 'horizontal', className = '' }: DividerProps) {
+export function Divider({ orientation = 'horizontal', className = '' }: DividerProps) {
     const baseStyle = 'bg-divider'
     const horizontalStyle = 'w-full h-px my-2'
     const verticalStyle = 'h-full w-px mx-2'
@@ -15,5 +15,3 @@ function Divider({ orientation = 'horizontal', className = '' }: DividerProps) {
         <div className={clsx(baseStyle, orientation === 'horizontal' ? horizontalStyle : verticalStyle, className)} />
     )
 }
-
-export default Divider
