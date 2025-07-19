@@ -1,4 +1,6 @@
-import { Control, FieldValues, Path } from 'react-hook-form'
+import { ArrayPath, Control, FieldValues, Path } from 'react-hook-form'
+import { IBankAccount } from './bankaccount.js'
+import { ICategory, ISubcategory } from './category.js'
 
 export type InputVariantStyle = 'outlined' | 'contained'
 
@@ -9,8 +11,10 @@ export type BaseFieldProps<T extends FieldValues = FieldValues> = {
     control: Control<T>
     name?: Path<T>
     label?: string
+    value?: T[Path<T>]
     disabled?: boolean
     mandatory?: boolean
+    onChange?: (value: HTMLInputElement) => void
 }
 
 /**
@@ -24,15 +28,13 @@ export type StandardFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
 /**
  * Props for input fields that support text input
  */
-export type TextInputFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
-    // Additional text input specific props can be added here
-}
+export type TextInputFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {}
 
 /**
  * Props for select/dropdown fields
  */
 export type SelectFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
-    // Additional select specific props can be added here
+    onOpenChange?: (open: boolean) => void
 }
 
 /**
@@ -61,15 +63,13 @@ export type AutoCompleteFieldProps<T extends FieldValues = FieldValues> = Standa
 /**
  * Props for fields that accept data arrays and callbacks
  */
-export type DataFieldProps<T extends FieldValues = FieldValues> = SelectFieldProps<T> & {
-    // Base for fields that work with data arrays
-}
+export type DataFieldProps<T extends FieldValues = FieldValues> = SelectFieldProps<T> & {}
 
 /**
  * Props for category fields
  */
 export type CategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    categories: any[]
+    categories: ICategory[]
     onCategoryChange?: (categoryId: string) => void
 }
 
@@ -77,14 +77,14 @@ export type CategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldP
  * Props for bank account fields
  */
 export type BankAccountFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    bankAccounts: any[]
+    bankAccounts: IBankAccount[]
 }
 
 /**
  * Props for subcategory fields
  */
 export type SubcategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    subcategories: any[]
+    subcategories: ISubcategory[]
 }
 
 /**
@@ -95,7 +95,7 @@ export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
     toName?: Path<T>
     placeholder?: string
     variant?: InputVariantStyle
-    bankAccounts: any[]
+    bankAccounts: IBankAccount[]
     onSwitch: () => void
 }
 
@@ -119,7 +119,7 @@ export type FileUploadFieldProps = {
  */
 export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = BaseFieldProps<T> & {
     totalAmountName?: Path<T>
-    amountsName?: Path<T>
+    amountsName?: ArrayPath<T>
     multipleAmountName?: Path<T>
     totalAmountLabel?: string
     amountLabel?: string
@@ -127,7 +127,7 @@ export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = Base
     multipleAmountLabel?: string
     placeholder?: string
     variant?: InputVariantStyle
-    bankAccounts: any[]
+    bankAccounts: IBankAccount[]
     multipleAmount: boolean
     onMultipleAmountChange: (checked: boolean) => void
     onAddField: () => void

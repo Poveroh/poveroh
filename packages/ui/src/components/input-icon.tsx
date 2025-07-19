@@ -1,7 +1,13 @@
 import { Input } from '@poveroh/ui/components/input'
 import { Button } from '@poveroh/ui/components/button'
+import { ReactNode, MouseEventHandler } from 'react'
+import { InputProps } from '@poveroh/types'
 
-function InputWithIcon(props: any) {
+type InputWithIconProps = InputProps & {
+    icon: ReactNode
+    onClick?: MouseEventHandler<HTMLButtonElement>
+}
+const InputWithIcon = ({ icon, onClick, ...props }: InputWithIconProps) => {
     return (
         <div className='relative w-full'>
             <Input {...props} />
@@ -9,10 +15,10 @@ function InputWithIcon(props: any) {
                 type='button'
                 variant='ghost'
                 size='icon'
-                onClick={props.onClick}
+                onClick={onClick}
                 className='absolute right-2 top-1/2 -translate-y-1/2'
             >
-                {props.icon}
+                {icon}
             </Button>
         </div>
     )

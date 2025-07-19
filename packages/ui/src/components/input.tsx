@@ -1,14 +1,7 @@
 import * as React from 'react'
 
 import { cn } from '@poveroh/ui/lib/utils'
-import { InputVariantStyle } from '@poveroh/types'
-import { LucideIcon } from 'lucide-react'
-
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    startIcon?: LucideIcon
-    variant?: InputVariantStyle
-    endIcon?: LucideIcon
-}
+import { InputProps } from '@poveroh/types'
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, type, variant = 'contained', startIcon, endIcon, ...props }, ref) => {

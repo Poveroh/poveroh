@@ -2,10 +2,11 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
 import logger from '../../../utils/logger'
+import { IUserToSave } from '@poveroh/types'
 
 export class UserController {
-    // GET /me
-    static async me(req: Request, res: Response) {
+    // GET /read
+    static async read(req: Request, res: Response) {
         try {
             const user = await prisma.user.findUnique({
                 where: { email: req.user.email },
@@ -73,6 +74,11 @@ export class UserController {
     static async save(req: Request, res: Response) {
         try {
             const { id } = req.params
+            const { data } = req.body
+
+            if (!data) throw new Error('Data not provided')
+
+            const parsedUser: IUserToSave = JSON.parse(data)
 
             const user = await prisma.user.findUnique({
                 where: { id }
@@ -86,8 +92,8 @@ export class UserController {
             const updatedUser = await prisma.user.update({
                 where: { id },
                 data: {
-                    name: req.body.name,
-                    surname: req.body.surname
+                    name: parsedUser.name,
+                    surname: parsedUser.surname
                 },
                 select: {
                     id: true,
@@ -98,10 +104,35 @@ export class UserController {
                 }
             })
 
-            res.status(200).json(updatedUser)
+            res.status(200)
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'Failed to update user', error })
+        }
+    }
+
+    // DELETE /:id
+    static async delete(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+
+            const user = await prisma.user.findUnique({
+                where: { id }
+            })
+
+            if (!user) {
+                res.status(404).json({ message: 'User not found' })
+                return
+            }
+
+            await prisma.user.delete({
+                where: { id }
+            })
+
+            res.status(204).send()
+        } catch (error) {
+            logger.error(error)
+            res.status(500).json({ message: 'Failed to delete user', error })
         }
     }
 
