@@ -142,12 +142,23 @@ export class UserController {
             const { id } = req.params
             const { oldPassword, newPassword } = req.body
 
+            if (!oldPassword || !newPassword) {
+                res.status(400).json({ message: 'Old and new passwords are required' })
+                return
+            }
+
             const user = await prisma.user.findUnique({
                 where: { id }
             })
 
             if (!user) {
                 res.status(404).json({ message: 'User not found' })
+                return
+            }
+
+            const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.password)
+            if (!isOldPasswordCorrect) {
+                res.status(401).json({ message: 'Old password is incorrect' })
                 return
             }
 
