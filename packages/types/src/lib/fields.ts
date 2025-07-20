@@ -86,6 +86,18 @@ export type FileUploadFieldProps = {
     onFileChange: (files: FileList | null) => void
 }
 
+/* Props for icon selection fields */
+export type IconFieldProps = {
+    label?: string
+    iconList: string[]
+    selectedIcon?: string
+    onIconChange: (iconName: string) => void
+    disabled?: boolean
+    mandatory?: boolean
+    showError?: boolean
+    errorMessage?: string
+}
+
 /* Props for multiple amount fields */
 export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = BaseFieldProps<T> & {
     totalAmountName?: Path<T>

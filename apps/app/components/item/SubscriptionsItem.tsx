@@ -29,7 +29,10 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
     }, [subscription])
 
     return (
-        <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
+        <div
+            className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+            onClick={() => openEdit(subscription)}
+        >
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
                     {(() => {

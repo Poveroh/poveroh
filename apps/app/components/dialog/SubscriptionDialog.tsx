@@ -106,6 +106,7 @@ export function SubscriptionDialog(props: DialogProps) {
             setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
             showFooter={mode == 'editor'}
+            showSaveButton={true}
             contentHeight='h-[60vh]'
             customFooter={
                 mode === 'template' ? (
