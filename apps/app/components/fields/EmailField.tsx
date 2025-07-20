@@ -1,16 +1,17 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { TextInputFieldProps } from '@poveroh/types'
+import { DescriptiveFieldProps } from '@poveroh/types'
 
 export function EmailField<T extends FieldValues = FieldValues>({
     control,
     name = 'email' as Path<T>,
     label = 'E-mail',
+    description,
     placeholder = 'example@mail.com',
     mandatory = false,
     disabled = false
-}: TextInputFieldProps<T>) {
+}: DescriptiveFieldProps<T>) {
     return (
         <FormField
             control={control}
@@ -28,6 +29,13 @@ export function EmailField<T extends FieldValues = FieldValues>({
                         />
                     </FormControl>
                     <FormMessage />
+                    {description && (
+                        <FormDescription
+                            dangerouslySetInnerHTML={{
+                                __html: description
+                            }}
+                        />
+                    )}
                 </FormItem>
             )}
         />

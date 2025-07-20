@@ -20,7 +20,12 @@ export const useUser = () => {
             let user: IUser | null
 
             if (readFromServer) {
-                user = await userService.me()
+                user = await userService.read()
+
+                if (!user) {
+                    throw new Error('User not found')
+                }
+
                 userStore.setUser(user)
             } else {
                 user = userStore.user
@@ -38,7 +43,10 @@ export const useUser = () => {
 
     const saveUser = async (userToSave: IUserToSave) => {
         try {
-            const res = await userService.save(userToSave)
+            const formData = new FormData()
+            formData.append('data', JSON.stringify(userToSave))
+
+            const res = await userService.save(userStore.user.id, formData)
 
             if (res) {
                 const currEmail = userStore.user.email
@@ -60,8 +68,7 @@ export const useUser = () => {
             oldPassword = await encryptString(oldPassword)
             newPassword = await encryptString(newPassword)
 
-            await userService.updatePassword({ oldPassword, newPassword })
-            return true
+            return await userService.updatePassword(userStore.user.id, { oldPassword, newPassword })
         } catch (error) {
             handleError(error, 'Error updating password')
             return false

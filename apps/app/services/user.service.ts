@@ -1,16 +1,13 @@
 import { server } from '@/lib/server'
-import { IPasswordToChange, IUser, IUserToSave } from '@poveroh/types'
+import { IPasswordToChange, IUser } from '@poveroh/types'
+import { BaseService } from './base.service'
 
-export class UserService {
-    async me(): Promise<IUser> {
-        return await server.get<IUser>('/user/me', true)
+export class UserService extends BaseService<IUser> {
+    constructor() {
+        super('/user')
     }
 
-    async save(userToSave: IUserToSave): Promise<boolean> {
-        return await server.put<boolean>('/user/save', userToSave)
-    }
-
-    async updatePassword(passwords: IPasswordToChange): Promise<boolean> {
-        return await server.put<boolean>('/user/set-password', passwords)
+    async updatePassword(id: string, passwords: IPasswordToChange): Promise<boolean> {
+        return await server.put<boolean>(`/user/${id}/set-password`, passwords)
     }
 }
