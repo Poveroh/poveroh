@@ -23,6 +23,10 @@ export interface IPasswordToChange {
     newPassword: string
 }
 
+export interface IPassword extends IPasswordToChange {
+    confirmPassword: string
+}
+
 export const defaultUser: IUser = {
     id: '',
     name: '',
