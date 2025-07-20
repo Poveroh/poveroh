@@ -1,8 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { ISubcategory, SubcategoryFieldProps } from '@poveroh/types'
-import DynamicIcon from '@/components/icon/DynamicIcon'
+import { SelectField } from './SelectField'
+import { useFieldIcon } from '../../hooks/useFieldIcon'
 
 interface SubcategoryFieldComponentProps<T extends FieldValues = FieldValues> extends SubcategoryFieldProps<T> {
     subcategories: ISubcategory[]
@@ -18,33 +17,25 @@ export function SubcategoryField<T extends FieldValues = FieldValues>({
     mandatory = false,
     subcategories
 }: SubcategoryFieldComponentProps<T>) {
+    const { createIconContent } = useFieldIcon()
+
+    if (!label) return null
+
     return (
-        <FormField
+        <SelectField
             control={control}
             name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
-                        <FormControl>
-                            <SelectTrigger variant={variant}>
-                                <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {subcategories.map((item: ISubcategory) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                    <div className='flex items-center flex-row space-x-4'>
-                                        <DynamicIcon name={item.logoIcon} className='h-4 w-4' />
-                                        <span>{item.title}</span>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-            )}
+            label={label}
+            placeholder={placeholder}
+            variant={variant}
+            disabled={disabled}
+            mandatory={mandatory}
+            options={subcategories}
+            getOptionLabel={(item: ISubcategory) => item.title}
+            getOptionValue={(item: ISubcategory) => item.id}
+            renderOptionContent={(item: ISubcategory) =>
+                createIconContent(item.logoIcon, item.title, { type: 'dynamic' })
+            }
         />
     )
 }

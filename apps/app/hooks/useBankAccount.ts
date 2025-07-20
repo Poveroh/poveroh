@@ -2,9 +2,10 @@
 
 import { BankAccountService } from '@/services/bankaccount.service'
 import { useBankAccountStore } from '@/store/bankaccount.store'
-import { BankAccountType, IBankAccount, IBankAccountFilters, IItem } from '@poveroh/types'
+import { BankAccountType, IBankAccount, IBankAccountFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useError } from './useError'
+import { useState } from 'react'
 
 export const useBankAccount = () => {
     const t = useTranslations()
@@ -12,6 +13,8 @@ export const useBankAccount = () => {
 
     const bankAccountService = new BankAccountService()
     const bankAccountStore = useBankAccountStore()
+
+    const [loading, setLoading] = useState(false)
 
     const addBankAccount = async (data: FormData) => {
         try {
@@ -77,15 +80,13 @@ export const useBankAccount = () => {
         }
     }
 
-    const getTypeList = (): IItem[] => {
-        return [
-            { value: BankAccountType.ONLINE_BANK, label: t('bankAccounts.types.online') },
-            { value: BankAccountType.BANK_ACCOUNT, label: t('bankAccounts.types.bank') },
-            { value: BankAccountType.CIRCUIT, label: t('bankAccounts.types.circuit') },
-            { value: BankAccountType.DEPOSIT_BANK, label: t('bankAccounts.types.deposit') },
-            { value: BankAccountType.BROKER, label: t('bankAccounts.types.broker') }
-        ]
-    }
+    const typeList = [
+        { value: BankAccountType.ONLINE_BANK, label: t('bankAccounts.types.online') },
+        { value: BankAccountType.BANK_ACCOUNT, label: t('bankAccounts.types.bank') },
+        { value: BankAccountType.CIRCUIT, label: t('bankAccounts.types.circuit') },
+        { value: BankAccountType.DEPOSIT_BANK, label: t('bankAccounts.types.deposit') },
+        { value: BankAccountType.BROKER, label: t('bankAccounts.types.broker') }
+    ]
 
     return {
         bankAccountCacheList: bankAccountStore.bankAccountCacheList,
@@ -94,6 +95,6 @@ export const useBankAccount = () => {
         removeBankAccount,
         getBankAccount,
         fetchBankAccount,
-        getTypeList
+        typeList
     }
 }

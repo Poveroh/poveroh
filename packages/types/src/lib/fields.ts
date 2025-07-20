@@ -78,9 +78,7 @@ export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
 /* Props for file upload fields (not React Hook Form based) */
 export type FileUploadFieldProps = {
     label?: string
-    file: FileList | null
-    fileError?: boolean
-    errorMessage?: string
+    file?: FileList | null
     toUploadMessage?: string
     accept?: string
     multiple?: boolean

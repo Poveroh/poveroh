@@ -18,7 +18,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { ArrowLeftRight, Download, Plus, RotateCcw, Search, Upload } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 import { TransactionDialog } from '@/components/dialog/TransactionDialog'
 import { TransactionItem } from '@/components/item/TransactionItem'
 

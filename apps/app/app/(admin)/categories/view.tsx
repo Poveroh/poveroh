@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'

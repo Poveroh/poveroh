@@ -1,8 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { currencyCatalog, IItem, SelectFieldProps } from '@poveroh/types'
-import icons from 'currency-icons'
+import { SelectField } from './SelectField'
+import { useFieldIcon } from '../../hooks/useFieldIcon'
 
 export function CurrencyField<T extends FieldValues = FieldValues>({
     control,
@@ -13,33 +12,23 @@ export function CurrencyField<T extends FieldValues = FieldValues>({
     disabled = false,
     mandatory = false
 }: SelectFieldProps<T>) {
+    const { createIconContent } = useFieldIcon()
+
+    if (!label) return null
+
     return (
-        <FormField
+        <SelectField
             control={control}
             name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
-                        <FormControl>
-                            <SelectTrigger variant={variant}>
-                                <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {currencyCatalog.map((item: IItem) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                    <div className='flex items-center flex-row space-x-4'>
-                                        <span>{icons[item.value]?.symbol || ''}</span>
-                                        <span>{item.label}</span>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-            )}
+            label={label}
+            placeholder={placeholder}
+            variant={variant}
+            disabled={disabled}
+            mandatory={mandatory}
+            options={currencyCatalog}
+            getOptionLabel={(item: IItem) => item.label}
+            getOptionValue={(item: IItem) => item.value}
+            renderOptionContent={(item: IItem) => createIconContent(item.value, item.label, { type: 'currency' })}
         />
     )
 }

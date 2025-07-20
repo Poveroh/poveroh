@@ -1,8 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { IBankAccount, BankAccountFieldProps } from '@poveroh/types'
-import { BrandIcon } from '@/components/icon/BrandIcon'
+import { SelectField } from './SelectField'
+import { useFieldIcon } from '../../hooks/useFieldIcon'
 
 export function BankAccountField<T extends FieldValues = FieldValues>({
     control,
@@ -15,38 +14,26 @@ export function BankAccountField<T extends FieldValues = FieldValues>({
     bankAccounts,
     onOpenChange
 }: BankAccountFieldProps<T>) {
+    const { createIconContent } = useFieldIcon()
+
+    if (!label) return null
+
     return (
-        <FormField
+        <SelectField
             control={control}
             name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
-                    <Select
-                        onValueChange={field.onChange}
-                        onOpenChange={onOpenChange}
-                        defaultValue={field.value}
-                        disabled={disabled}
-                    >
-                        <FormControl>
-                            <SelectTrigger variant={variant}>
-                                <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {bankAccounts.map((item: IBankAccount) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                    <div className='flex items-center flex-row space-x-4'>
-                                        <BrandIcon icon={item.logoIcon} size='sm' />
-                                        <span>{item.title}</span>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-            )}
+            label={label}
+            placeholder={placeholder}
+            variant={variant}
+            disabled={disabled}
+            mandatory={mandatory}
+            options={bankAccounts}
+            getOptionLabel={(item: IBankAccount) => item.title}
+            getOptionValue={(item: IBankAccount) => item.id}
+            onOpenChange={onOpenChange}
+            renderOptionContent={(item: IBankAccount) =>
+                createIconContent(item.logoIcon, item.title, { type: 'brand' })
+            }
         />
     )
 }
