@@ -12,7 +12,10 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
     return (
         <>
             <div className='border-border'>
-                <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
+                <div
+                    className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+                    onClick={() => openEdit('category', category)}
+                >
                     <div className='flex flex-row items-center space-x-5'>
                         <DynamicIcon name={category.logoIcon} />
                         <div>
@@ -29,7 +32,8 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                 {category.subcategories?.map((subcategory: ISubcategory) => (
                     <div
                         key={subcategory.id}
-                        className='flex flex-row justify-between items-center w-full pl-20 p-5 border-border'
+                        className='flex flex-row justify-between items-center w-full pl-20 p-5 border-border cursor-pointer'
+                        onClick={() => openEdit('subcategory', subcategory)}
                     >
                         <div className='flex flex-row items-center space-x-5'>
                             <DynamicIcon name={subcategory.logoIcon} />

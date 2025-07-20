@@ -5,6 +5,7 @@ import { AppearanceMode, ICategory } from '@poveroh/types'
 import { Modal } from '../modal/Dialog'
 import { CategoryForm } from '../form/CategoryForm'
 import { useCategory } from '@/hooks/useCategory'
+import { useCategoryForm } from '@/hooks/form/useCategoryForm'
 
 type DialogProps = {
     open: boolean
@@ -17,10 +18,10 @@ type DialogProps = {
 export function CategoryDialog(props: DialogProps) {
     const t = useTranslations()
     const { editCategory, addCategory } = useCategory()
+    const { loading, setLoading } = useCategoryForm(props.initialData, props.inEditingMode)
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [loading, setLoading] = useState(false)
     const [keepAdding, setKeepAdding] = useState(false)
 
     const title =
@@ -73,8 +74,9 @@ export function CategoryDialog(props: DialogProps) {
             loading={loading}
             inEditingMode={props.inEditingMode}
             keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
+            setKeepAdding={() => setKeepAdding((x: boolean) => !x)}
             dialogHeight={props.dialogHeight}
+            showSaveButton
             onClick={() => formRef.current?.submit()}
         >
             <div className='flex flex-col space-y-6 w-full'>

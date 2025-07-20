@@ -74,6 +74,7 @@ export function SubcategoryDialog(props: DialogProps) {
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
+            showSaveButton
             onClick={() => formRef.current?.submit()}
         >
             <div className='flex flex-col space-y-6 w-full'>

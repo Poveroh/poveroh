@@ -22,7 +22,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
-import { Download, List, ListTree, Plus, RotateCcw, Search, Shapes } from 'lucide-react'
+import { List, ListTree, Plus, RotateCcw, Search, Shapes } from 'lucide-react'
 import { CategoryDialog } from '@/components/dialog/CategoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
@@ -147,9 +147,6 @@ export default function CategoryView() {
                     <div className='flex flex-row items-center space-x-8'>
                         <RotateCcw className='cursor-pointer' onClick={fetchCategory} />
                         <div className='flex flex-row items-center space-x-3'>
-                            <Button variant='outline'>
-                                <Download></Download>
-                            </Button>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button>
@@ -249,39 +246,31 @@ export default function CategoryView() {
                 onConfirm={onDelete}
             ></DeleteModal>
 
-            {dialogModel == 'category' && dialogNewOpen && (
-                <CategoryDialog
-                    open={dialogNewOpen}
-                    inEditingMode={false}
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></CategoryDialog>
-            )}
+            <CategoryDialog
+                open={dialogModel == 'category' && dialogNewOpen}
+                inEditingMode={false}
+                closeDialog={() => setDialogNewOpen(false)}
+            ></CategoryDialog>
 
-            {dialogModel == 'category' && itemToEdit && (
-                <CategoryDialog
-                    initialData={itemToEdit as ICategory}
-                    open={itemToEdit !== null}
-                    inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
-                ></CategoryDialog>
-            )}
+            <CategoryDialog
+                initialData={itemToEdit as ICategory}
+                open={dialogModel == 'category' && itemToEdit !== null}
+                inEditingMode={true}
+                closeDialog={() => setItemToEdit(null)}
+            ></CategoryDialog>
 
-            {dialogModel == 'subcategory' && dialogNewOpen && (
-                <SubcategoryDialog
-                    open={dialogNewOpen}
-                    inEditingMode={false}
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></SubcategoryDialog>
-            )}
+            <SubcategoryDialog
+                open={dialogModel == 'subcategory' && dialogNewOpen}
+                inEditingMode={false}
+                closeDialog={() => setDialogNewOpen(false)}
+            ></SubcategoryDialog>
 
-            {dialogModel == 'subcategory' && itemToEdit && (
-                <SubcategoryDialog
-                    initialData={itemToEdit as ISubcategory}
-                    open={itemToEdit !== null}
-                    inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
-                ></SubcategoryDialog>
-            )}
+            <SubcategoryDialog
+                initialData={itemToEdit as ISubcategory}
+                open={dialogModel == 'subcategory' && itemToEdit !== null}
+                inEditingMode={true}
+                closeDialog={() => setItemToEdit(null)}
+            ></SubcategoryDialog>
         </>
     )
 }
