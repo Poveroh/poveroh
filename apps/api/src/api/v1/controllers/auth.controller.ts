@@ -37,7 +37,9 @@ export class AuthController {
             const token = AuthHelper.generateToken(user)
             res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 })
 
-            res.status(200).json({ success: true })
+            const { password: _, ...withoutPassword } = user
+
+            res.status(200).json(withoutPassword)
         } catch (error: any) {
             logger.error(error)
             res.status(500).json({
