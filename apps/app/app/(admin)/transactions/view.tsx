@@ -18,7 +18,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { ArrowLeftRight, Download, Plus, RotateCcw, Search, Upload } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 import { TransactionDialog } from '@/components/dialog/TransactionDialog'
 import { TransactionItem } from '@/components/item/TransactionItem'
 
@@ -30,7 +30,7 @@ import { useTransactionFilters } from '@/hooks/useTransactionFilters'
 import { useTransactionModals } from '@/hooks/useTransactionModals'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
-import Divider from '@/components/other/Divider'
+import { Divider } from '@/components/other/Divider'
 import { ImportDialog } from '@/components/dialog/ImportDialog'
 
 export default function TransactionsView() {
@@ -46,7 +46,12 @@ export default function TransactionsView() {
         transactions: transactionCacheList
     })
 
-    const { filters, isLoading: isFilterLoading, loadMore, refresh } = useTransactionFilters({
+    const {
+        filters,
+        isLoading: isFilterLoading,
+        loadMore,
+        refresh
+    } = useTransactionFilters({
         initialSkip: 0,
         initialTake: 20,
         onFilterChange: async (newFilters, append = false) => {
@@ -73,8 +78,7 @@ export default function TransactionsView() {
 
     // Memoize grouped transactions for performance
     const groupedTransactions = useMemo(() => {
-        return Object.entries(groupTransactionsByDate(filteredTransactions))
-            .sort(([a], [b]) => b.localeCompare(a))
+        return Object.entries(groupTransactionsByDate(filteredTransactions)).sort(([a], [b]) => b.localeCompare(a))
     }, [filteredTransactions, groupTransactionsByDate])
 
     // Memoize empty state condition
@@ -84,11 +88,7 @@ export default function TransactionsView() {
 
     useEffect(() => {
         const initializeData = async () => {
-            await Promise.all([
-                fetchCategory(),
-                fetchBankAccount(),
-                fetchTransaction({}, filters)
-            ])
+            await Promise.all([fetchCategory(), fetchBankAccount(), fetchTransaction({}, filters)])
         }
 
         initializeData()
@@ -126,10 +126,7 @@ export default function TransactionsView() {
                         </Breadcrumb>
                     </div>
                     <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw
-                            className='cursor-pointer'
-                            onClick={refresh}
-                        />
+                        <RotateCcw className='cursor-pointer' onClick={refresh} />
                         <div className='flex flex-row items-center space-x-3'>
                             <Button variant='outline'>
                                 <Download></Download>
@@ -282,9 +279,7 @@ export default function TransactionsView() {
                 />
             )}
 
-            {isUploadDialogOpen && (
-                <ImportDialog open={true} inEditingMode={true} closeDialog={closeUploadDialog} />
-            )}
+            {isUploadDialogOpen && <ImportDialog open={true} inEditingMode={true} closeDialog={closeUploadDialog} />}
         </>
     )
 }

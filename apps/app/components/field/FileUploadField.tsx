@@ -15,20 +15,12 @@ export function FileUploadField({
     multiple = false,
     mandatory = false
 }: FileUploadFieldProps) {
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onFileChange(e.target.files)
-    }
-
-    const removeFile = () => {
-        onFileChange(null)
-    }
-
     return (
         <div className='flex flex-col space-y-4'>
             <FormItem>
                 <FormLabel mandatory={mandatory}>{label}</FormLabel>
                 <FormControl>
-                    <FileInput onChange={handleFileChange} accept={accept} multiple={multiple} />
+                    <FileInput onChange={e => onFileChange(e.target.files)} accept={accept} multiple={multiple} />
                 </FormControl>
                 {fileError && errorMessage && <p className='danger'>{errorMessage}</p>}
             </FormItem>
@@ -39,7 +31,7 @@ export function FileUploadField({
                     <Badge className='flex items-center gap-1 w-fit'>
                         {file.item(0)?.name}
                         <button
-                            onClick={removeFile}
+                            onClick={() => onFileChange(null)}
                             className='ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5 transition-colors'
                             aria-label='Remove'
                             type='button'

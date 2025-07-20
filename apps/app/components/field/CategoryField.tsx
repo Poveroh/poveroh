@@ -1,23 +1,20 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { IBankAccount, BankAccountFieldProps } from '@poveroh/types'
-import { BrandIcon } from '@/components/icon/BrandIcon'
+import { ICategory, CategoryFieldProps } from '@poveroh/types'
+import DynamicIcon from '@/components/icon/DynamicIcon'
 
-interface BankAccountFieldComponentProps<T extends FieldValues = FieldValues> extends BankAccountFieldProps<T> {
-    bankAccounts: IBankAccount[]
-}
-
-export function BankAccountField<T extends FieldValues = FieldValues>({
+export function CategoryField<T extends FieldValues = FieldValues>({
     control,
-    name = 'bankAccountId' as Path<T>,
+    name = 'categoryId' as Path<T>,
     label,
     placeholder,
     variant = 'contained',
     disabled = false,
     mandatory = false,
-    bankAccounts
-}: BankAccountFieldComponentProps<T>) {
+    categories,
+    onCategoryChange
+}: CategoryFieldProps<T>) {
     return (
         <FormField
             control={control}
@@ -25,17 +22,24 @@ export function BankAccountField<T extends FieldValues = FieldValues>({
             render={({ field }) => (
                 <FormItem>
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+                    <Select
+                        onValueChange={x => {
+                            onCategoryChange?.(x)
+                            field.onChange(x)
+                        }}
+                        defaultValue={field.value}
+                        disabled={disabled}
+                    >
                         <FormControl>
                             <SelectTrigger variant={variant}>
                                 <SelectValue placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            {bankAccounts.map((item: IBankAccount) => (
+                            {categories.map((item: ICategory) => (
                                 <SelectItem key={item.id} value={item.id}>
                                     <div className='flex items-center flex-row space-x-4'>
-                                        <BrandIcon icon={item.logoIcon} size='sm' />
+                                        <DynamicIcon name={item.logoIcon} className='h-4 w-4' />
                                         <span>{item.title}</span>
                                     </div>
                                 </SelectItem>

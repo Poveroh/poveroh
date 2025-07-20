@@ -8,7 +8,7 @@ export function TextField<T extends FieldValues = FieldValues>({
     name = 'title' as Path<T>,
     label,
     placeholder,
-    variant = 'outlined',
+    variant = 'contained',
     disabled = false,
     mandatory = true
 }: TextInputFieldProps<T>) {

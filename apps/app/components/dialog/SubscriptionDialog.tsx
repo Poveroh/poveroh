@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Modal'
 import { useRef, useState } from 'react'
 import { AppearanceMode, Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -96,34 +96,40 @@ export function SubscriptionDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={localSubscription?.appearanceLogoIcon}
-            iconMode={localSubscription?.appearanceMode}
-            iconCircled={true}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}
-            keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
-            showFooter={mode == 'editor'}
             contentHeight='h-[60vh]'
-            customFooter={
-                mode === 'template' ? (
-                    <DialogFooter>
-                        <Button
-                            type='button'
-                            onClick={() => {
-                                setFromTemplate(false)
-                                setMode('editor')
-                            }}
-                            className='w-full'
-                        >
-                            {t('subscriptions.buttons.addCustom')}
-                        </Button>
-                    </DialogFooter>
-                ) : undefined
-            }
             onClick={() => formRef.current?.submit()}
+            icon={{
+                icon: localSubscription?.appearanceLogoIcon,
+                iconMode: localSubscription?.appearanceMode,
+                iconCircled: true
+            }}
+            keepAdding={{
+                checked: keepAdding,
+                hide: false,
+                setKeepAdding: () => setKeepAdding(x => !x)
+            }}
+            footer={{
+                show: mode == 'editor',
+                elements:
+                    mode === 'template' ? (
+                        <DialogFooter>
+                            <Button
+                                type='button'
+                                onClick={() => {
+                                    setFromTemplate(false)
+                                    setMode('editor')
+                                }}
+                                className='w-full'
+                            >
+                                {t('subscriptions.buttons.addCustom')}
+                            </Button>
+                        </DialogFooter>
+                    ) : undefined
+            }}
         >
             {mode == 'template' ? (
                 <SubscriptionsSelector dataCallback={onTemplateSelected} closeDialog={props.closeDialog} />

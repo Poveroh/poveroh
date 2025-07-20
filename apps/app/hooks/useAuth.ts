@@ -26,7 +26,14 @@ export const useAuth = () => {
 
             userToLogin.password = await encryptString(userToLogin.password)
 
-            return await authService.signIn(userToLogin)
+            const res = await authService.signIn(userToLogin)
+
+            if (res) {
+                userStore.setUser(res)
+                return true
+            }
+
+            return false
         } catch (error) {
             return handleError(error, 'Login failed')
         }

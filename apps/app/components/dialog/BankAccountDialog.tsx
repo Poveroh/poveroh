@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Modal'
 import { useRef, useState } from 'react'
 import { AppearanceMode, IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -66,15 +66,22 @@ export function BankAccountDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={props.initialData?.logoIcon}
-            iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}
-            keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
+            showSaveButton={true}
             onClick={() => formRef.current?.submit()}
+            icon={{
+                icon: props.initialData?.logoIcon,
+                iconMode: AppearanceMode.ICON,
+                iconCircled: true
+            }}
+            keepAdding={{
+                checked: keepAdding,
+                hide: false,
+                setKeepAdding: () => setKeepAdding(x => !x)
+            }}
         >
             <div className='flex flex-col space-y-6 w-full'>
                 <BankAccountForm

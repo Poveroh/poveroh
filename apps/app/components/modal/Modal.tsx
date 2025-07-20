@@ -7,7 +7,7 @@ import { ModalFooter, ModalFooterProps } from './FormFooter'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 import { cn } from '@poveroh/ui/lib/utils'
-import { ReactElement, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppearanceMode } from '@poveroh/types'
 import {
     AlertDialog,
@@ -25,12 +25,16 @@ type ModalProps = {
     open: boolean
     title: string
     description?: string
-    icon?: string
-    iconMode?: AppearanceMode
-    iconCircled?: boolean
+    icon?: {
+        icon?: string
+        iconMode?: AppearanceMode
+        iconCircled?: boolean
+    }
     children: React.ReactNode
-    showFooter?: boolean
-    customFooter?: ReactElement
+    footer?: {
+        show?: boolean
+        elements?: React.ReactNode
+    }
     dialogHeight?: string
     contentHeight?: string
     askForConfirmation?: boolean
@@ -38,7 +42,7 @@ type ModalProps = {
     handleOpenChange: (open: boolean) => void
 } & ModalFooterProps
 
-export function Modal({ showFooter = true, ...props }: ModalProps) {
+export function Modal({ footer = {}, ...props }: ModalProps) {
     const t = useTranslations()
 
     const [showConfirmationDialog, setConfirmationDialog] = useState(props.askForConfirmation || false)
@@ -67,6 +71,8 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
         }
     }
 
+    const showFooter = footer.show !== undefined ? footer.show : true
+
     return (
         <>
             <Dialog defaultOpen={true} open={props.open} onOpenChange={handleOpenChange}>
@@ -74,10 +80,16 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                     <DialogHeader>
                         <div className='flex flex-row items-center space-x-3'>
                             {props.icon &&
-                                (props.iconMode === AppearanceMode.LOGO ? (
-                                    <BrandIcon circled={props.iconCircled} icon={props.icon} size='xl'></BrandIcon>
+                                (props.icon.iconMode === AppearanceMode.LOGO ? (
+                                    props.icon.icon ? (
+                                        <BrandIcon
+                                            circled={props.icon.iconCircled}
+                                            icon={props.icon.icon}
+                                            size='xl'
+                                        ></BrandIcon>
+                                    ) : null
                                 ) : (
-                                    <DynamicIcon key={props.icon} name={props.icon} />
+                                    <DynamicIcon key={props.icon.icon ?? ''} name={props.icon.icon ?? ''} />
                                 ))}
                             <div className='flex flex-col space-y-1'>
                                 <DialogTitle>{props.title}</DialogTitle>
@@ -93,15 +105,13 @@ export function Modal({ showFooter = true, ...props }: ModalProps) {
                             loading={props.loading}
                             inEditingMode={props.inEditingMode}
                             keepAdding={props.keepAdding}
-                            hideKeepAdding={props.hideKeepAdding}
                             buttonDisabled={props.buttonDisabled}
                             showSaveButton={props.showSaveButton}
                             confirmButtonText={props.confirmButtonText}
-                            setKeepAdding={props.setKeepAdding}
                             onClick={props.onClick}
                         />
                     )}
-                    {props.customFooter}
+                    {footer?.elements}
                 </DialogContent>
             </Dialog>
 

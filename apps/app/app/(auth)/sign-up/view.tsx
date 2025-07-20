@@ -5,7 +5,7 @@ import { Form } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
 
-import { TextField, EmailField, PasswordField } from '@/components/fields'
+import { TextField, EmailField, PasswordField } from '@/components/field'
 import { useSignUpForm } from '@/hooks/form/useSignUpForm'
 
 export default function SignupView() {

@@ -14,7 +14,7 @@ import {
     TransferBankAccountField,
     NoteField,
     IgnoreField
-} from '@/components/fields'
+} from '@/components/field'
 
 export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()

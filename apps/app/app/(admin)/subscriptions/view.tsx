@@ -21,7 +21,7 @@ import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
 import { ISubscription } from '@poveroh/types'
 
 import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useSubscription } from '@/hooks/useSubscriptions'

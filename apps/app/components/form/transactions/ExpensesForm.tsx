@@ -16,7 +16,7 @@ import {
     FileUploadField,
     MultipleAmountField,
     BankAccountField
-} from '@/components/fields'
+} from '@/components/field'
 import { useExpensesForm } from '@/hooks/form/useExpensesForm'
 
 export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
@@ -65,7 +65,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     <MultipleAmountField
                         control={form.control}
                         variant={variant}
-                        multipleAmount={multipleAmount as boolean}
+                        multipleAmount={multipleAmount}
                         bankAccounts={bankAccountCacheList}
                         onMultipleAmountChange={toggleMultipleAmount}
                         onAddField={addAmountField}

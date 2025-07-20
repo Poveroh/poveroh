@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 import { AppearanceMode, ISubcategory } from '@poveroh/types'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Modal'
 import { SubcategoryForm } from '../form/SubcategoryForm'
 import { useCategory } from '@/hooks/useCategory'
 
@@ -66,15 +66,21 @@ export function SubcategoryDialog(props: DialogProps) {
         <Modal
             open={props.open}
             title={title}
-            icon={props.initialData?.logoIcon}
-            iconMode={AppearanceMode.ICON}
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode}
-            keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
             onClick={() => formRef.current?.submit()}
+            icon={{
+                icon: props.initialData?.logoIcon,
+                iconMode: AppearanceMode.ICON,
+                iconCircled: true
+            }}
+            keepAdding={{
+                checked: keepAdding,
+                hide: false,
+                setKeepAdding: () => setKeepAdding(x => !x)
+            }}
         >
             <div className='flex flex-col space-y-6 w-full'>
                 <SubcategoryForm

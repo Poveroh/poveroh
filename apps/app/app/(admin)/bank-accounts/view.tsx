@@ -14,10 +14,10 @@ import {
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
 
-import { Download, Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
+import { Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 import { BankAccountDialog } from '@/components/dialog/BankAccountDialog'
 
 import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
@@ -29,9 +29,7 @@ import { FilterButton } from '@/components/filter/FilterButton'
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, getTypeList } = useBankAccount()
-
-    const [typeList] = useState(getTypeList())
+    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, typeList } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
@@ -133,10 +131,13 @@ export default function BankAccountView() {
                     <div className='flex flex-row items-center space-x-8'>
                         <RotateCcw className='cursor-pointer' onClick={fetchBankAccount} />
                         <div className='flex flex-row items-center space-x-3'>
-                            <Button variant='outline'>
-                                <Download></Download>
-                                {t('buttons.export.base')}
-                            </Button>
+                            {
+                                // TODO: implement export functionality
+                                /* <Button variant='secondary'>
+                                    <Download />
+                                    {t('buttons.export.base')}
+                                </Button> */
+                            }
                             <Button onClick={() => setDialogNewOpen(true)}>
                                 <Plus />
                                 {t('buttons.add.base')}
@@ -145,11 +146,11 @@ export default function BankAccountView() {
                     </div>
                 </div>
                 <div className='flex flex-row space-x-6 w-full'>
-                    <div className='flex flex-row space-x-3 w-full'>
+                    <div className='flex flex-row space-x-3'>
                         <Input
                             startIcon={Search}
                             placeholder={t('messages.search')}
-                            className='w-1/3'
+                            className='w-[300px]'
                             onChange={onSearch}
                         />
 
@@ -213,33 +214,27 @@ export default function BankAccountView() {
                 )}
             </div>
 
-            {itemToDelete && (
-                <DeleteModal
-                    title={itemToDelete.title}
-                    description={t('bankAccounts.modal.deleteDescription')}
-                    open={true}
-                    closeDialog={() => setItemToDelete(null)}
-                    loading={loading}
-                    onConfirm={onDelete}
-                ></DeleteModal>
-            )}
+            <DeleteModal
+                title={itemToDelete ? itemToDelete.title : ''}
+                description={t('bankAccounts.modal.deleteDescription')}
+                open={itemToDelete ? true : false}
+                closeDialog={() => setItemToDelete(null)}
+                loading={loading}
+                onConfirm={onDelete}
+            ></DeleteModal>
 
-            {dialogNewOpen && (
-                <BankAccountDialog
-                    open={dialogNewOpen}
-                    inEditingMode={false}
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></BankAccountDialog>
-            )}
+            <BankAccountDialog
+                open={dialogNewOpen}
+                inEditingMode={false}
+                closeDialog={() => setDialogNewOpen(false)}
+            ></BankAccountDialog>
 
-            {itemToEdit && (
-                <BankAccountDialog
-                    initialData={itemToEdit}
-                    open={itemToEdit !== null}
-                    inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
-                ></BankAccountDialog>
-            )}
+            <BankAccountDialog
+                initialData={itemToEdit}
+                open={itemToEdit !== null}
+                inEditingMode={true}
+                closeDialog={() => setItemToEdit(null)}
+            ></BankAccountDialog>
         </>
     )
 }

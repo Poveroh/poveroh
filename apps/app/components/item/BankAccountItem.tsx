@@ -15,7 +15,10 @@ export function BankAccountItem({ account, openDelete, openEdit }: BankAccountIt
     const type = typeList.find(tp => tp.value == account.type)
 
     return (
-        <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
+        <div
+            className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+            onClick={() => openEdit(account)}
+        >
             <div className='flex flex-row items-center space-x-5'>
                 <BrandIcon icon={account.logoIcon}></BrandIcon>
                 <div>

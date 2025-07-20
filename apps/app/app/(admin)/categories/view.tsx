@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
@@ -27,7 +27,7 @@ import { CategoryDialog } from '@/components/dialog/CategoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
 import { CategoryItem } from '@/components/item/CategoryItem'
-import Divider from '@/components/other/Divider'
+import { Divider } from '@/components/other/Divider'
 
 export default function CategoryView() {
     const t = useTranslations()

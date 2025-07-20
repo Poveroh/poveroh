@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Modal'
 import { useRef, useState } from 'react'
 import { ITransaction } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -80,13 +80,15 @@ export function TransactionDialog(props: DialogProps) {
             handleOpenChange={props.closeDialog}
             loading={loading}
             inEditingMode={props.inEditingMode || false}
-            keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
-            hideKeepAdding={true}
             dialogHeight={props.dialogHeight}
             showSaveButton={true}
             askForConfirmation={false}
             onClick={() => formRef.current?.submit()}
+            keepAdding={{
+                checked: keepAdding,
+                hide: false,
+                setKeepAdding: () => setKeepAdding(x => !x)
+            }}
         >
             <TransactionForm
                 ref={formRef}

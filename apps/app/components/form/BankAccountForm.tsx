@@ -31,7 +31,7 @@ export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps,
 
     const { initialData, inEditingMode, dataCallback } = props
 
-    const { getTypeList } = useBankAccount()
+    const { typeList } = useBankAccount()
     const { handleError } = useError()
 
     const [file, setFile] = useState<FileList | null>(null)
@@ -130,7 +130,7 @@ export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {getTypeList().map((item: IItem) => (
+                                        {typeList.map((item: IItem) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 {item.label}
                                             </SelectItem>

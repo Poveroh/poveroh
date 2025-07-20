@@ -12,7 +12,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator
 } from '@poveroh/ui/components/breadcrumb'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 
 import { Download, Plus, RotateCcw, Upload } from 'lucide-react'
 

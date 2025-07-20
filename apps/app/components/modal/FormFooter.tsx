@@ -9,33 +9,39 @@ import { useTranslations } from 'next-intl'
 export type ModalFooterProps = {
     loading: boolean
     inEditingMode: boolean
-    keepAdding: boolean
-    hideKeepAdding?: boolean
+    keepAdding: {
+        checked: boolean
+        hide: boolean
+        setKeepAdding: () => void
+    }
     buttonDisabled?: boolean
     showSaveButton?: boolean
     confirmButtonText?: string
-    setKeepAdding: () => void
     onClick: () => void
 }
 
 export function ModalFooter(props: ModalFooterProps) {
     const t = useTranslations()
-    const { loading, inEditingMode, hideKeepAdding, keepAdding, setKeepAdding, onClick } = props
+    const { loading, inEditingMode, keepAdding, onClick } = props
 
     return (
         <DialogFooter>
             <div
-                className={'flex ' + (inEditingMode || hideKeepAdding ? 'justify-end' : 'justify-between') + ' w-full'}
+                className={'flex ' + (inEditingMode || keepAdding.hide ? 'justify-end' : 'justify-between') + ' w-full'}
             >
                 {!inEditingMode ||
-                    (!hideKeepAdding && (
+                    (!keepAdding.hide && (
                         <div className='items-top flex space-x-2'>
-                            <Checkbox id='keepAdding' checked={keepAdding} onChange={() => setKeepAdding()} />
+                            <Checkbox
+                                id='keepAdding'
+                                checked={keepAdding.checked}
+                                onChange={() => keepAdding.setKeepAdding()}
+                            />
                             <div className='grid gap-1.5 leading-none cursor-pointer'>
                                 <label
                                     htmlFor='keepAdding'
                                     className='text-sm font-medium leading-none'
-                                    onClick={setKeepAdding}
+                                    onClick={keepAdding.setKeepAdding}
                                 >
                                     {t('modal.continueInsert.label')}
                                 </label>

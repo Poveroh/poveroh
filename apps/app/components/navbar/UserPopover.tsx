@@ -9,7 +9,7 @@ import { IUser } from '@poveroh/types'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { useUser } from '@/hooks/useUser'
-import Divider from '../other/Divider'
+import { Divider } from '@/components/other/Divider'
 
 type UserPopoverContentProps = {
     user: IUser

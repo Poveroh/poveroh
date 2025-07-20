@@ -7,7 +7,7 @@ import { FileInput } from '@poveroh/ui/components/file'
 import { Loader2, X, Upload } from 'lucide-react'
 
 import { useBankAccountAndFileForm } from '@/hooks/form/useBankAccountAndFileForm'
-import { BankAccountField } from '@/components/fields'
+import { BankAccountField } from '@/components/field'
 
 type BankAccountAndFileFormProps = {
     initialData?: IImport

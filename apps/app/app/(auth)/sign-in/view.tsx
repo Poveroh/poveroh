@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react'
 
 import { useTranslations } from 'next-intl'
 import { useSignInForm } from '@/hooks/form/useSignInForm'
-import { EmailField, PasswordField } from '@/components/fields'
+import { EmailField, PasswordField } from '@/components/field'
 
 export default function LoginView() {
     const t = useTranslations()

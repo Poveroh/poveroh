@@ -1,3 +1,4 @@
+import logger from '@/lib/logger'
 import { toast } from '@poveroh/ui/components/sonner'
 
 export const useError = () => {
@@ -5,7 +6,7 @@ export const useError = () => {
         const msg = error instanceof Error ? error.message : fallbackMessage
 
         toast.error(msg)
-        console.error(msg)
+        logger.error(msg)
 
         return null
     }

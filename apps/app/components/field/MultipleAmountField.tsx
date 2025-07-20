@@ -1,4 +1,4 @@
-import { FieldValues, Path, useFieldArray } from 'react-hook-form'
+import { ArrayPath, FieldValues, Path, useFieldArray } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
@@ -6,16 +6,14 @@ import { Button } from '@poveroh/ui/components/button'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { IBankAccount, MultipleAmountFieldProps } from '@poveroh/types'
 import { BrandIcon } from '@/components/icon/BrandIcon'
-import { Plus, Trash2, Split, Merge } from 'lucide-react'
-
-interface MultipleAmountFieldComponentProps<T extends FieldValues = FieldValues> extends MultipleAmountFieldProps<T> {
-    bankAccounts: IBankAccount[]
-}
+import { Plus, Trash2, Split, Merge, Ban } from 'lucide-react'
+import { BankAccountField } from './BankAccountField'
+import { AmountField } from './AmountField'
 
 export function MultipleAmountField<T extends FieldValues = FieldValues>({
     control,
     totalAmountName = 'totalAmount' as Path<T>,
-    amountsName = 'amounts' as Path<T>,
+    amountsName = 'amounts' as ArrayPath<T>,
     multipleAmountName = 'multipleAmount' as Path<T>,
     totalAmountLabel,
     amountLabel,
@@ -33,7 +31,7 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
     onSplit,
     onMerge,
     onCalculateTotal
-}: MultipleAmountFieldComponentProps<T>) {
+}: MultipleAmountFieldProps<T>) {
     const { fields } = useFieldArray({
         control,
         name: amountsName
@@ -116,6 +114,14 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
 
                     {fields.map((field, index) => (
                         <div key={field.id} className='flex flex-row space-x-2 items-end'>
+                            <AmountField
+                                control={control}
+                                name={`${amountsName}.${index}.amount` as Path<T>}
+                                label={amountLabel}
+                                placeholder={placeholder}
+                                variant={variant}
+                                disabled={disabled}
+                            />
                             <FormField
                                 control={control}
                                 name={`${amountsName}.${index}.amount` as Path<T>}
@@ -146,35 +152,14 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
                                 )}
                             />
 
-                            <FormField
+                            <BankAccountField<T>
                                 control={control}
                                 name={`${amountsName}.${index}.bankAccountId` as Path<T>}
-                                render={({ field }) => (
-                                    <FormItem className='flex-1'>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            disabled={disabled}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger variant={variant}>
-                                                    <SelectValue placeholder={bankAccountLabel} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {bankAccounts.map((item: IBankAccount) => (
-                                                    <SelectItem key={item.id} value={item.id}>
-                                                        <div className='flex items-center flex-row space-x-4'>
-                                                            <BrandIcon icon={item.logoIcon} size='sm' />
-                                                            <span>{item.title}</span>
-                                                        </div>
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label={bankAccountLabel}
+                                placeholder={bankAccountLabel}
+                                variant={variant}
+                                disabled={disabled}
+                                bankAccounts={bankAccounts}
                             />
 
                             {fields.length > 1 && (

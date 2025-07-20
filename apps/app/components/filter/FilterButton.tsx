@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ListFilter } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { FilterField } from '@poveroh/types'
-import Divider from '../other/Divider'
+import { Divider } from '@/components/other/Divider'
 
 type FilterButtonProps<T extends Record<string, any>> = {
     fields: FilterField[]

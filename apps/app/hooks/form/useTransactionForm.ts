@@ -6,18 +6,18 @@ import { z } from 'zod'
 import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
-import { ISubcategory, ITransaction, TransactionAction } from '@poveroh/types'
+import { ISubcategory, TransactionAction } from '@poveroh/types'
 import logger from '@/lib/logger'
 import { amountSchema } from '@/types/form'
 
-type UseTransactionFormProps = {
-    initialData?: ITransaction
+type UseTransactionFormProps<T> = {
+    initialData?: T
     action: TransactionAction
     onSubmit: (formData: FormData) => Promise<void>
-    customSchema?: z.ZodSchema<ITransaction>
+    customSchema?: z.ZodType<T>
 }
 
-export function useTransactionForm({ initialData, action, onSubmit, customSchema }: UseTransactionFormProps) {
+export function useTransactionForm<T>({ initialData, action, onSubmit, customSchema }: UseTransactionFormProps<T>) {
     const t = useTranslations()
     const { handleError } = useError()
     const { categoryCacheList } = useCategory()
@@ -71,7 +71,7 @@ export function useTransactionForm({ initialData, action, onSubmit, customSchema
 
     // Handle form submission
     const handleSubmit = useCallback(
-        async (values: TransactionFormData) => {
+        async (values: T) => {
             try {
                 const formData = new FormData()
 
@@ -96,8 +96,8 @@ export function useTransactionForm({ initialData, action, onSubmit, customSchema
     useEffect(() => {
         if (initialData) {
             const resetData = {
-                ...initialData,
-                amount: initialData.amounts?.[0]?.amount || initialData.amount || 0
+                ...initialData
+                // amount: initialData.amounts?.[0]?.amount || 0 //TODO
             }
             form.reset(resetData)
         }

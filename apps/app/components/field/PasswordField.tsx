@@ -3,11 +3,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescripti
 import PasswordInput from '@poveroh/ui/components/password'
 import { DescriptiveFieldProps, AutoCompleteFieldProps } from '@poveroh/types'
 
-interface PasswordFormFieldProps<T extends FieldValues = FieldValues>
-    extends DescriptiveFieldProps<T>,
-        AutoCompleteFieldProps<T> {
-    // PasswordField-specific props can be added here if needed
-}
+type PasswordFormFieldProps<T extends FieldValues = FieldValues> = DescriptiveFieldProps<T> & AutoCompleteFieldProps<T>
 
 export function PasswordField<T extends FieldValues = FieldValues>({
     control,

@@ -2,7 +2,7 @@
 
 import { BankAccountService } from '@/services/bankaccount.service'
 import { useBankAccountStore } from '@/store/bankaccount.store'
-import { BankAccountType, IBankAccount, IBankAccountFilters, IItem } from '@poveroh/types'
+import { BankAccountType, IBankAccount, IBankAccountFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useError } from './useError'
 
