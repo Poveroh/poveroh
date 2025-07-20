@@ -104,7 +104,7 @@ html {
     overflow-x: hidden;
 }
 
-body[data-scroll-locked] {
+html body[data-scroll-locked] {
     margin-right: 0 !important;
 }
 
