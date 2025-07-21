@@ -9,30 +9,21 @@ import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@
 import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/DeleteModal'
 
-import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
-import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 
-import { List, ListTree, Plus, RotateCcw, Search, Shapes } from 'lucide-react'
+import { Search, Shapes } from 'lucide-react'
 import { CategoryDialog } from '@/components/dialog/CategoryDialog'
 import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
 import { CategoryItem } from '@/components/item/CategoryItem'
-import Divider from '@/components/other/Divider'
+import { Header } from '@/components/other/HeaderPage'
+import SkeletonItem from '@/components/skeleton/SkeletonItem'
 
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, removeSubcategory, removeCategory, fetchCategory } = useCategory()
+    const { categoryCacheList, categoryLoading, removeSubcategory, removeCategory, fetchCategory } = useCategory()
 
     const [itemToDelete, setItemToDelete] = useState<ICategory | ISubcategory | null>(null)
     const [itemToEdit, setItemToEdit] = useState<ICategory | ISubcategory | null>(null)
@@ -47,7 +38,7 @@ export default function CategoryView() {
     const [activeTab, setActiveTab] = useState('expenses')
 
     useEffect(() => {
-        fetchCategory()
+        fetchCategory(true)
     }, [])
 
     useEffect(() => {
@@ -125,62 +116,23 @@ export default function CategoryView() {
     return (
         <>
             <div className='space-y-12'>
-                <div className='flex flex-row items-end justify-between'>
-                    <div className='flex flex-col space-y-3'>
-                        <h2>{t('categories.title')}</h2>
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.manage.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('categories.title')}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </div>
-                    <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchCategory} />
-                        <div className='flex flex-row items-center space-x-3'>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button>
-                                        <Plus />
-                                        {t('buttons.add.base')}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent align='end'>
-                                    <div className='flex flex-col space-y-5'>
-                                        <a
-                                            className='flex items-center space-x-2 w-full'
-                                            onClick={() => openNew('category')}
-                                        >
-                                            <List />
-                                            <p>{t('categories.modal.newTitle')}</p>
-                                        </a>
-                                        {localCategoryList.length > 0 && (
-                                            <>
-                                                <Divider></Divider>
-                                                <a
-                                                    className='flex items-center space-x-2 w-full'
-                                                    onClick={() => openNew('subcategory')}
-                                                >
-                                                    <ListTree />
-                                                    <p>{t('subcategories.modal.newTitle')}</p>
-                                                </a>
-                                            </>
-                                        )}
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
-                </div>
+                <Header
+                    title={t('categories.title')}
+                    breadcrumbs={[
+                        { label: t('settings.title'), href: '/settings' },
+                        { label: t('settings.manage.title'), href: '/settings' },
+                        { label: t('categories.title') }
+                    ]}
+                    fetchAction={{
+                        onClick: () => fetchCategory(true),
+                        loading: categoryLoading.fetchCategory
+                    }}
+                    addAction={{
+                        onClick: () => openNew('category'),
+                        loading: categoryLoading.addCategory
+                    }}
+                />
+
                 <div className='flex flex-row justify-between'>
                     <Input
                         startIcon={Search}
@@ -195,7 +147,7 @@ export default function CategoryView() {
                         </TabsList>
                     </Tabs>
                 </div>
-                {localCategoryList.length > 0 ? (
+                {!categoryLoading.fetchCategory && localCategoryList.length > 0 ? (
                     <Tabs defaultValue={activeTab} value={activeTab} className='p-0'>
                         {['expenses', 'income'].map(tab => (
                             <TabsContent key={tab} value={tab} className='m-0'>
@@ -223,13 +175,19 @@ export default function CategoryView() {
                         ))}
                     </Tabs>
                 ) : (
-                    <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                        <Shapes />
-                        <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('categories.empty.title')}</h4>
-                            <p>{t('categories.empty.subtitle')}</p>
-                        </div>
-                    </div>
+                    <>
+                        {categoryLoading.fetchCategory ? (
+                            <SkeletonItem repeat={5} />
+                        ) : (
+                            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                                <Shapes />
+                                <div className='flex flex-col items-center space-y-2 justify-center'>
+                                    <h4>{t('categories.empty.title')}</h4>
+                                    <p>{t('categories.empty.subtitle')}</p>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
