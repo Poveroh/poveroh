@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Dialog'
 import { useRef, useState } from 'react'
 import { ITransaction } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'

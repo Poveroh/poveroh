@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Dialog'
 import { useRef, useState } from 'react'
 import { AppearanceMode, IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -73,6 +73,7 @@ export function BankAccountDialog(props: DialogProps) {
             inEditingMode={props.inEditingMode}
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
+            showSaveButton={true}
             dialogHeight={props.dialogHeight}
             onClick={() => formRef.current?.submit()}
         >

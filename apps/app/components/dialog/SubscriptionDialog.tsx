@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Dialog'
 import { useRef, useState } from 'react'
 import { AppearanceMode, Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
@@ -106,6 +106,7 @@ export function SubscriptionDialog(props: DialogProps) {
             setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
             showFooter={mode == 'editor'}
+            showSaveButton={true}
             contentHeight='h-[60vh]'
             customFooter={
                 mode === 'template' ? (

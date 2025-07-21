@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 import { AppearanceMode, ISubcategory } from '@poveroh/types'
-import { Modal } from '../modal/dialog'
+import { Modal } from '../modal/Dialog'
 import { SubcategoryForm } from '../form/SubcategoryForm'
 import { useCategory } from '@/hooks/useCategory'
 
@@ -74,6 +74,7 @@ export function SubcategoryDialog(props: DialogProps) {
             keepAdding={keepAdding}
             setKeepAdding={() => setKeepAdding(x => !x)}
             dialogHeight={props.dialogHeight}
+            showSaveButton
             onClick={() => formRef.current?.submit()}
         >
             <div className='flex flex-col space-y-6 w-full'>

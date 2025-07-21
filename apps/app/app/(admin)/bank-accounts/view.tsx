@@ -5,19 +5,11 @@ import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
 
-import { Download, Landmark, Plus, RotateCcw, Search, X } from 'lucide-react'
+import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/delete'
+import { DeleteModal } from '@/components/modal/DeleteModal'
 import { BankAccountDialog } from '@/components/dialog/BankAccountDialog'
 
 import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
@@ -25,18 +17,18 @@ import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { BankAccountItem } from '@/components/item/BankAccountItem'
 import { FilterButton } from '@/components/filter/FilterButton'
+import { Header } from '@/components/other/HeaderPage'
+import SkeletonItem from '@/components/skeleton/SkeletonItem'
 
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, getTypeList } = useBankAccount()
-
-    const [typeList] = useState(getTypeList())
+    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, typeList, accountLoading } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
     const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
     const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [deleteLoading, setDeleteLoading] = useState(false)
 
     const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
 
@@ -97,11 +89,11 @@ export default function BankAccountView() {
     const onDelete = async () => {
         if (!itemToDelete) return
 
-        setLoading(true)
+        setDeleteLoading(true)
 
         const res = await removeBankAccount(itemToDelete.id)
 
-        setLoading(false)
+        setDeleteLoading(false)
 
         if (res) {
             setItemToDelete(null)
@@ -111,45 +103,33 @@ export default function BankAccountView() {
     return (
         <>
             <div className='space-y-12'>
-                <div className='flex flex-row items-end justify-between'>
-                    <div className='flex flex-col space-y-3'>
-                        <h2>{t('settings.manage.bankAccount.title')}</h2>
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.manage.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('settings.manage.bankAccount.title')}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </div>
-                    <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchBankAccount} />
-                        <div className='flex flex-row items-center space-x-3'>
-                            <Button variant='outline'>
-                                <Download></Download>
-                                {t('buttons.export.base')}
-                            </Button>
-                            <Button onClick={() => setDialogNewOpen(true)}>
-                                <Plus />
-                                {t('buttons.add.base')}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <Header
+                    title={t('settings.manage.bankAccount.title')}
+                    breadcrumbs={[
+                        { label: t('settings.title'), href: '/settings' },
+                        { label: t('settings.manage.title'), href: '/settings/manage' },
+                        { label: t('settings.manage.bankAccount.title') }
+                    ]}
+                    fetchAction={{
+                        onClick: () => fetchBankAccount(true),
+                        loading: accountLoading.fetch
+                    }}
+                    addAction={{
+                        onClick: () => setDialogNewOpen(true),
+                        loading: accountLoading.add
+                    }}
+                    onDeleteAll={{
+                        onClick: () => {},
+                        loading: accountLoading.remove
+                    }}
+                />
+
                 <div className='flex flex-row space-x-6 w-full'>
-                    <div className='flex flex-row space-x-3 w-full'>
+                    <div className='flex flex-row space-x-3'>
                         <Input
                             startIcon={Search}
                             placeholder={t('messages.search')}
-                            className='w-1/3'
+                            className='w-[300px]'
                             onChange={onSearch}
                         />
 
@@ -189,7 +169,7 @@ export default function BankAccountView() {
                         onFilterChange={onFilter}
                     />
                 </div>
-                {localBankAccountList.length > 0 ? (
+                {!accountLoading.fetch && localBankAccountList.length > 0 ? (
                     <Box>
                         <>
                             {localBankAccountList.map(account => (
@@ -203,43 +183,43 @@ export default function BankAccountView() {
                         </>
                     </Box>
                 ) : (
-                    <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                        <Landmark />
-                        <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('bankAccounts.empty.title')}</h4>
-                            <p>{t('bankAccounts.empty.subtitle')}</p>
-                        </div>
-                    </div>
+                    <>
+                        {accountLoading.fetch ? (
+                            <SkeletonItem repeat={5} />
+                        ) : (
+                            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                                <Landmark />
+                                <div className='flex flex-col items-center space-y-2 justify-center'>
+                                    <h4>{t('bankAccounts.empty.title')}</h4>
+                                    <p>{t('bankAccounts.empty.subtitle')}</p>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
-            {itemToDelete && (
-                <DeleteModal
-                    title={itemToDelete.title}
-                    description={t('bankAccounts.modal.deleteDescription')}
-                    open={true}
-                    closeDialog={() => setItemToDelete(null)}
-                    loading={loading}
-                    onConfirm={onDelete}
-                ></DeleteModal>
-            )}
+            <DeleteModal
+                title={itemToDelete ? itemToDelete.title : ''}
+                description={t('bankAccounts.modal.deleteDescription')}
+                open={itemToDelete ? true : false}
+                closeDialog={() => setItemToDelete(null)}
+                loading={deleteLoading}
+                onConfirm={onDelete}
+            ></DeleteModal>
 
-            {dialogNewOpen && (
-                <BankAccountDialog
-                    open={dialogNewOpen}
-                    inEditingMode={false}
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></BankAccountDialog>
-            )}
+            <BankAccountDialog
+                open={dialogNewOpen}
+                inEditingMode={false}
+                closeDialog={() => setDialogNewOpen(false)}
+            ></BankAccountDialog>
 
-            {itemToEdit && (
-                <BankAccountDialog
-                    initialData={itemToEdit}
-                    open={itemToEdit !== null}
-                    inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
-                ></BankAccountDialog>
-            )}
+            <BankAccountDialog
+                initialData={itemToEdit}
+                open={itemToEdit !== null}
+                inEditingMode={true}
+                closeDialog={() => setItemToEdit(null)}
+            ></BankAccountDialog>
         </>
     )
 }

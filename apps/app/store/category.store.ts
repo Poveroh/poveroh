@@ -35,7 +35,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
             }
 
             const list = cloneDeep(state.categoryCacheList)
-            list[index] = category
+            list[index] = { ...list[index], ...category }
 
             return {
                 categoryCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))

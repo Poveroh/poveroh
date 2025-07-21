@@ -92,7 +92,10 @@ export class BankAccountController {
             const where = buildWhere(filters)
 
             const data = await prisma.bankAccount.findMany({
-                where,
+                where: {
+                    ...where,
+                    userId: req.user.id
+                },
                 orderBy: { createdAt: 'desc' },
                 skip,
                 take
