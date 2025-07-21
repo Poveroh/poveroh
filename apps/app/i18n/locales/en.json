@@ -17,6 +17,12 @@
             "cancel": "Stay and Continue Editing",
             "confirm": "Leave Without Saving",
             "complete": "Complete"
+        },
+        "confirmationDeleteAll": {
+            "title": "all?",
+            "description": "This action cannot be undone. This will permanently delete all items and related data.",
+            "cancel": "Cancel",
+            "confirm": "Delete All"
         }
     },
     "format": {
@@ -44,6 +50,7 @@
         "uploaded": "uploaded",
         "saved": "saved",
         "successfully": "{a} {b} successfully",
+        "availableNextVersion": "This feature will be available in the next version.",
         "noCategoriesAndAccountTitle": "It looks like you don’t have any bank accounts or categories yet.",
         "noCategoriesAndAccountSub": "Please create them before adding a transaction.",
         "copied": "Copied to clipboard",
@@ -68,8 +75,10 @@
         "upload": "Upload",
         "editItem": "Edit item",
         "deleteItem": "Delete item",
+        "deleteAll": "Delete all",
         "returnHome": "Return home",
         "loadMore": "Load more",
+        "refresh": "Refresh",
         "add": {
             "base": "Add",
             "import": "Import",

@@ -101,6 +101,9 @@ export class BankAccountController {
                 take
             })
 
+            // Add a timeout to the response
+            await new Promise(resolve => setTimeout(resolve, 10000))
+
             res.status(200).json(data)
         } catch (error) {
             logger.error(error)
