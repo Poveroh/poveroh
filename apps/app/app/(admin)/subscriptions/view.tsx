@@ -5,18 +5,9 @@ import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { isEmpty } from 'lodash'
 
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
-import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
 
-import { Download, Landmark, Plus, RotateCcw, Search } from 'lucide-react'
+import { Landmark, Search } from 'lucide-react'
 
 import { ISubscription } from '@poveroh/types'
 
@@ -28,11 +19,12 @@ import { useSubscription } from '@/hooks/useSubscriptions'
 import SkeletonItem from '@/components/skeleton/SkeletonItem'
 import Box from '@/components/box/BoxWrapper'
 import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
+import { Header } from '@/components/other/HeaderPage'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const { subscriptionCacheList, removeSubscription, fetchSubscriptions } = useSubscription()
+    const { subscriptionCacheList, removeSubscription, fetchSubscriptions, subscriptionLoading } = useSubscription()
     const { fetchBankAccount } = useBankAccount()
 
     const [itemToDelete, setItemToDelete] = useState<ISubscription | null>(null)
@@ -90,35 +82,27 @@ export default function SubscriptionsView() {
     return (
         <>
             <div className='space-y-12'>
-                <div className='flex flex-row items-end justify-between'>
-                    <div className='flex flex-col space-y-3'>
-                        <h2>{t('subscriptions.title')}</h2>
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.manage.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('subscriptions.title')}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </div>
-                    <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw className='cursor-pointer' onClick={fetchData} />
-                        <div className='flex flex-row items-center space-x-3'>
-                            <Button onClick={() => setDialogNewOpen(true)}>
-                                <Plus />
-                                {t('buttons.add.base')}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <Header
+                    title={t('subscriptions.title')}
+                    breadcrumbs={[
+                        { label: t('settings.title'), href: '/settings' },
+                        { label: t('settings.manage.title'), href: '/settings' },
+                        { label: t('subscriptions.title') }
+                    ]}
+                    fetchAction={{
+                        onClick: fetchData,
+                        loading: subscriptionLoading.fetch
+                    }}
+                    addAction={{
+                        onClick: () => setDialogNewOpen(true),
+                        loading: subscriptionLoading.add
+                    }}
+                    onDeleteAll={{
+                        onClick: () => {},
+                        loading: subscriptionLoading.remove
+                    }}
+                />
+
                 <div className='flex flex-row items-center justify-between'>
                     <div className='flex flex-row space-x-3'>
                         <Input

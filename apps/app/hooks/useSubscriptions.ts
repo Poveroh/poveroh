@@ -5,6 +5,15 @@ import { SubscriptionService } from '@/services/subscriptions.service'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
 import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
+
+type SubscriptionLoadingState = {
+    add: boolean
+    edit: boolean
+    remove: boolean
+    get: boolean
+    fetch: boolean
+}
 
 export const useSubscription = () => {
     const t = useTranslations()
@@ -13,27 +22,46 @@ export const useSubscription = () => {
     const subscriptionService = new SubscriptionService()
     const subscriptionStore = useSubscriptionStore()
 
+    const [subscriptionLoading, setSubscriptionLoading] = useState<SubscriptionLoadingState>({
+        add: false,
+        edit: false,
+        remove: false,
+        get: false,
+        fetch: false
+    })
+
+    const setLoadingFor = (key: keyof typeof subscriptionLoading, value: boolean) => {
+        setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
+    }
+
     const addSubscription = async (data: FormData) => {
+        setLoadingFor('add', true)
         try {
             const res = await subscriptionService.add(data)
             subscriptionStore.addSubscription(res)
             return res
         } catch (error) {
             return handleError(error, 'Error adding subscription')
+        } finally {
+            setLoadingFor('add', false)
         }
     }
 
     const editSubscription = async (id: string, data: FormData) => {
+        setLoadingFor('edit', true)
         try {
             const res = await subscriptionService.save(id, data)
             subscriptionStore.editSubscription(res)
             return res
         } catch (error) {
             return handleError(error, 'Error editing subscription')
+        } finally {
+            setLoadingFor('edit', false)
         }
     }
 
     const removeSubscription = async (subscriptionId: string) => {
+        setLoadingFor('remove', true)
         try {
             const res = await subscriptionService.delete(subscriptionId)
             if (!res) throw new Error('No response from server')
@@ -41,26 +69,34 @@ export const useSubscription = () => {
             return res
         } catch (error) {
             return handleError(error, 'Error deleting subscription')
+        } finally {
+            setLoadingFor('remove', false)
         }
     }
 
     const getSubscription = async (subscriptionId: string, fetchFromServer?: boolean) => {
+        setLoadingFor('get', true)
         try {
             return fetchFromServer
                 ? await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({ id: subscriptionId })
                 : subscriptionStore.getSubscription(subscriptionId)
         } catch (error) {
             return handleError(error, 'Error fetching subscription')
+        } finally {
+            setLoadingFor('get', false)
         }
     }
 
     const fetchSubscriptions = async () => {
+        setLoadingFor('fetch', true)
         try {
             const res = await subscriptionService.read<ISubscription[], ISubscriptionFilters>()
             subscriptionStore.setSubscriptions(res)
             return res
         } catch (error) {
             return handleError(error, 'Error fetching subscriptions')
+        } finally {
+            setLoadingFor('fetch', false)
         }
     }
 
@@ -123,6 +159,7 @@ export const useSubscription = () => {
 
     return {
         subscriptionCacheList: subscriptionStore.subscriptionCacheList,
+        subscriptionLoading,
         addSubscription,
         editSubscription,
         removeSubscription,
