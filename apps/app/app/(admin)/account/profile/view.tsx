@@ -18,6 +18,7 @@ import { Form } from '@poveroh/ui/components/form'
 import Box from '@/components/box/BoxWrapper'
 import { CopyableField, EmailField, TextField } from '@/components/fields'
 import { useProfileForm } from '@/hooks/form/useProfileForm'
+import { Header } from '@/components/other/HeaderPage'
 
 export default function ProfileView() {
     const t = useTranslations()
@@ -26,24 +27,14 @@ export default function ProfileView() {
 
     return (
         <div className='space-y-12'>
-            <div className='flex flex-col space-y-3'>
-                <h2>{t('settings.account.personalInfo.title')}</h2>
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href='/settings'>{t('settings.title')}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href='/settings'>{t('settings.account.title')}</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>{t('settings.account.personalInfo.title')}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-            </div>
+            <Header
+                title={t('settings.account.personalInfo.title')}
+                breadcrumbs={[
+                    { label: t('settings.title'), href: '/settings' },
+                    { label: t('settings.account.title'), href: '/settings' },
+                    { label: t('settings.account.personalInfo.title') }
+                ]}
+            />
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.personalInfo.title')}</h4>
                 <Box>
