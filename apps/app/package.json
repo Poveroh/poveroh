@@ -36,9 +36,6 @@
     "devDependencies": {
         "@poveroh/eslint-config": "*",
         "@poveroh/tsconfig": "*",
-        "@poveroh/types": "*",
-        "@poveroh/ui": "*",
-        "@poveroh/utils": "*",
         "@types/js-cookie": "^3.0.6",
         "@types/lodash": "^4.17.15",
         "@types/next": "^8.0.7",
