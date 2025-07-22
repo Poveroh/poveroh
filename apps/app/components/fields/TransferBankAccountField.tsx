@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormLabel } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
-import { TransferFieldProps } from '@poveroh/types'
+import { TransferFieldProps } from '@/types'
 import DynamicIcon from '@/components/icon/DynamicIcon'
 import { BankAccountField } from './BankAccountField'
 

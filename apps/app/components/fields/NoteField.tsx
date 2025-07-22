@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Textarea } from '@poveroh/ui/components/textarea'
-import { StandardFieldProps } from '@poveroh/types'
+import { StandardFieldProps } from '@/types'
 
 export function NoteField<T extends FieldValues = FieldValues>({
     control,

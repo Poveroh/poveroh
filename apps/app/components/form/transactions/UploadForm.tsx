@@ -2,12 +2,13 @@
 
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
-import { FormRef, IImport, ITransaction } from '@poveroh/types'
+import { IImport, ITransaction } from '@poveroh/types'
 
 import { TransactionsApprovalList } from '@/components/other/TransactionsApprovalList'
 import { BankAccountAndFileForm } from './BankAccountAndFileForm'
 import { cloneDeep } from 'lodash'
 import { useImport } from '@/hooks/useImports'
+import { FormRef } from '@/types'
 
 type FormProps = {
     initialData?: IImport

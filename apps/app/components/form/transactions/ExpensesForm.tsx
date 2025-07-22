@@ -10,8 +10,6 @@ import Image from 'next/image'
 import {
     Currencies,
     currencyCatalog,
-    FormProps,
-    FormRef,
     IBankAccount,
     ICategory,
     IItem,
@@ -37,7 +35,7 @@ import { useError } from '@/hooks/useError'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import logger from '@/lib/logger'
-import { amountSchema } from '@/types/form'
+import { amountSchema, FormProps, FormRef } from '@/types/form'
 import { cloneDeep } from 'lodash'
 
 export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {

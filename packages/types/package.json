@@ -8,5 +8,10 @@
     "scripts": {
         "build": "tsc",
         "lint": "eslint . --max-warnings 0"
+    },
+    "peerDependencies": {
+        "react": "^19.0.0",
+        "react-hook-form": "^7.54.2",
+        "lucide-react": "^0.456.0"
     }
 }

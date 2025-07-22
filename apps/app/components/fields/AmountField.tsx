@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { NumberInputFieldProps } from '@poveroh/types'
+import { NumberInputFieldProps } from '@/types'
 
 export function AmountField<T extends FieldValues = FieldValues>({
     control,

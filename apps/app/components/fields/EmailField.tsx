@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { DescriptiveFieldProps } from '@poveroh/types'
+import { DescriptiveFieldProps } from '@/types'
 
 export function EmailField<T extends FieldValues = FieldValues>({
     control,

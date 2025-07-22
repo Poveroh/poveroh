@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { TextInputFieldProps } from '@poveroh/types'
+import { TextInputFieldProps } from '@/types'
 
 export function TextField<T extends FieldValues = FieldValues>({
     control,

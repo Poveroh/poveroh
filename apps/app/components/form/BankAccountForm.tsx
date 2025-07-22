@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { FormRef, IBankAccount, IItem } from '@poveroh/types'
+import { IBankAccount, IItem } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 
@@ -11,6 +11,7 @@ import { useBankAccount } from '@/hooks/useBankAccount'
 import { useBankAccountForm } from '@/hooks/form/useBankAccountForm'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/SelectField'
+import { FormRef } from '@/types'
 
 type FormProps = {
     initialData?: IBankAccount | null

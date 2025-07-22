@@ -2,7 +2,7 @@ import { FormItem, FormLabel, FormControl } from '@poveroh/ui/components/form'
 import { FileInput } from '@poveroh/ui/components/file'
 import { Badge } from '@poveroh/ui/components/badge'
 import { X } from 'lucide-react'
-import { FileUploadFieldProps } from '@poveroh/types'
+import { FileUploadFieldProps } from '@/types'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 

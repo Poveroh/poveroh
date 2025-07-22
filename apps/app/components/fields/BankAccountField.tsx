@@ -1,7 +1,8 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { IBankAccount, BankAccountFieldProps } from '@poveroh/types'
+import { BankAccountFieldProps } from '@/types'
 import { SelectField } from './SelectField'
 import { useFieldIcon } from '../../hooks/useFieldIcon'
+import { IBankAccount } from '@poveroh/types'
 
 export function BankAccountField<T extends FieldValues = FieldValues>({
     control,

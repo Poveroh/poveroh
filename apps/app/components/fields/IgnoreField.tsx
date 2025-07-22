@@ -1,7 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
-import { BaseFieldProps } from '@poveroh/types'
+import { BaseFieldProps } from '@/types'
 
 export function IgnoreField<T extends FieldValues = FieldValues>({
     control,

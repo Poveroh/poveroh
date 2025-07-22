@@ -1,6 +1,6 @@
 import { FormControl, FormItem, FormLabel } from '@poveroh/ui/components/form'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
-import { IconFieldProps } from '@poveroh/types'
+import { IconFieldProps } from '@/types'
 import DynamicIcon from '../icon/DynamicIcon'
 
 export function IconField({

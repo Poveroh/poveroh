@@ -1,7 +1,8 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { ISubcategory, SubcategoryFieldProps } from '@poveroh/types'
+import { SubcategoryFieldProps } from '@/types'
 import { SelectField } from './SelectField'
 import { useFieldIcon } from '../../hooks/useFieldIcon'
+import { ISubcategory } from '@poveroh/types'
 
 interface SubcategoryFieldComponentProps<T extends FieldValues = FieldValues> extends SubcategoryFieldProps<T> {
     subcategories: ISubcategory[]
