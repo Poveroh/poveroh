@@ -1,7 +1,8 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { currencyCatalog, IItem, SelectFieldProps } from '@poveroh/types'
+import { currencyCatalog, IItem } from '@poveroh/types'
 import { SelectField } from './SelectField'
 import { useFieldIcon } from '../../hooks/useFieldIcon'
+import { SelectFieldProps } from '@/types'
 
 export function CurrencyField<T extends FieldValues = FieldValues>({
     control,

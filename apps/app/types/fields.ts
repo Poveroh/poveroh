@@ -1,8 +1,6 @@
 import { ArrayPath, Control, FieldValues, Path } from 'react-hook-form'
-import { IBankAccount } from './bankaccount.js'
-import { ICategory, ISubcategory } from './category.js'
-
-export type InputVariantStyle = 'outlined' | 'contained'
+import { IBankAccount, InputVariantStyle } from '@poveroh/types'
+import { ICategory, ISubcategory } from '@poveroh/types'
 
 /* Base props that are common to all form field components */
 export type BaseFieldProps<T extends FieldValues = FieldValues> = {

@@ -1,7 +1,8 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { ICategory, CategoryFieldProps } from '@poveroh/types'
+import { CategoryFieldProps } from '@/types'
 import { SelectField } from './SelectField'
 import { useFieldIcon } from '../../hooks/useFieldIcon'
+import { ICategory } from '@poveroh/types'
 
 export function CategoryField<T extends FieldValues = FieldValues>({
     control,

@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { FormRef, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import {
@@ -25,6 +25,7 @@ import { iconList } from '../icon'
 import DynamicIcon from '../icon/DynamicIcon'
 import { useCategory } from '@/hooks/useCategory'
 import { useError } from '@/hooks/useError'
+import { FormRef } from '@/types'
 
 type FormProps = {
     initialData?: ISubcategory | null

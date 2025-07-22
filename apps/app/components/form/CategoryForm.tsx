@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { FormRef, ICategory, IItem } from '@poveroh/types'
+import { ICategory, IItem } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 import { TextField } from '@/components/fields/TextField'
@@ -11,6 +11,7 @@ import { NoteField } from '@/components/fields/NoteField'
 import { SelectField } from '@/components/fields/SelectField'
 import { IconField } from '@/components/fields/IconField'
 import { useCategoryForm } from '@/hooks/form/useCategoryForm'
+import { FormRef } from '@/types'
 
 type FormProps = {
     initialData?: ICategory | null

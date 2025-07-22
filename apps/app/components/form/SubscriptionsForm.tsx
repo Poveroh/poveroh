@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { AppearanceMode, CyclePeriod, FormRef, ISubscription, RememberPeriod } from '@poveroh/types'
+import { AppearanceMode, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { useSubscriptionForm } from '@/hooks/form/useSubscriptionForm'
@@ -19,6 +19,7 @@ import {
     IconField
 } from '../fields'
 import { Form } from '@poveroh/ui/components/form'
+import { FormRef } from '@/types'
 
 type FormProps = {
     fromTemplate: boolean

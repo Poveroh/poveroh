@@ -2,13 +2,14 @@ import { useTranslations } from 'next-intl'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { IncomeForm } from '../form/transactions/IncomeForm'
 import { useEffect, useRef, useState } from 'react'
-import { FormRef, IItem, InputVariantStyle, ITransaction } from '@poveroh/types'
+import { IItem, ITransaction, InputVariantStyle } from '@poveroh/types'
 import { TransferForm } from '../form/transactions/TransferForm'
 import { useTransaction } from '@/hooks/useTransaction'
 import { ExpensesForm } from '../form/transactions/ExpensesForm'
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
+import { FormRef } from '@/types'
 
 type TransactionFormProps = {
     initialData?: ITransaction
