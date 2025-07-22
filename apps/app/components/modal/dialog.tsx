@@ -38,7 +38,7 @@ type ModalProps = {
     handleOpenChange: (open: boolean) => void
 } & ModalFooterProps
 
-export function Modal({ showFooter = true, ...props }: ModalProps) {
+export default function Modal({ showFooter = true, ...props }: ModalProps) {
     const t = useTranslations()
 
     const [showConfirmationDialog, setConfirmationDialog] = useState(props.askForConfirmation || false)
