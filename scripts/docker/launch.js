@@ -36,7 +36,7 @@ try {
         console.log(`🟡 DATABASE_HOST è '${DATABASE_HOST}' -> il servizio 'db' non verrà avviato.`)
         console.log('🟢 Avvio degli altri servizi...')
 
-        const services = ['studio', 'api', 'app', 'redis']
+        const services = ['api', 'app', 'redis']
         if (isLocalFileStorage) {
             services.push('cdn')
         }

@@ -31,18 +31,6 @@ services:
         networks:
             - poveroh_network
 
-    studio:
-        image: ghcr.io/poveroh/poveroh-studio:latest
-        container_name: studio
-        restart: always
-        env_file: .env
-        environment:
-            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
-        ports:
-            - 5555:5555
-        networks:
-            - poveroh_network
-
     api:
         image: ghcr.io/poveroh/poveroh-api:latest
         container_name: api
