@@ -41,7 +41,7 @@
         "docker-dev:redis": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build redis",
         "docker-dev:studio": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build studio",
         "docker-dev:cdn": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build cdn",
-        "docker-dev": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build",
+        "docker-dev": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build db api app redis cdn",
         "docker": "npm run docker:create-network && node ./scripts/docker/launch.js",
         "prepare": "husky",
         "chromatic": "cd apps/storybook && npm run chromatic"

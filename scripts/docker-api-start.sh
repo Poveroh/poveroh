@@ -21,4 +21,8 @@ cd /app
 export CDN_LOCAL_DATA_PATH=/usr/share/cdn-data
 echo $CDN_LOCAL_DATA_PATH
 
-exec node apps/api/dist/index.js
+exec node apps/api/dist/src/index.js
+
+# Uncomment the following line if you want to keep the container running without starting the application
+# echo "Keeping container running without starting the application..."
+# tail -f /dev/null
