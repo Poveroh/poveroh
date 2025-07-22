@@ -30,11 +30,11 @@ try {
     const baseCommand = `docker compose -f ${composeFile}`
 
     if (isLocalDb) {
-        console.log("🟢 Avvio di tutti i servizi incluso 'db'...")
+        console.log("🟢 Starting all services including 'db'...")
         execSync(`${baseCommand} up -d`, { stdio: 'inherit' })
     } else {
-        console.log(`🟡 DATABASE_HOST è '${DATABASE_HOST}' -> il servizio 'db' non verrà avviato.`)
-        console.log('🟢 Avvio degli altri servizi...')
+        console.log(`🟡 DATABASE_HOST is '${DATABASE_HOST}' -> the 'db' service will not be started.`)
+        console.log('🟢 Starting other services...')
 
         const services = ['api', 'app', 'redis']
         if (isLocalFileStorage) {
@@ -44,6 +44,6 @@ try {
         execSync(`${baseCommand} up -d ${services.join(' ')}`, { stdio: 'inherit' })
     }
 } catch (error) {
-    console.error("❌ Errore durante l'avvio dei servizi Docker:", error.message)
+    console.error('❌ Error while starting Docker services:', error.message)
     process.exit(1)
 }
