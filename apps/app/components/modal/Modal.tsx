@@ -1,14 +1,11 @@
 'use client'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@poveroh/ui/components/dialog'
-import DynamicIcon from '../icon/DynamicIcon'
-import { BrandIcon } from '../icon/BrandIcon'
-import { ModalFooter, ModalFooterProps } from './FormFooter'
+import { Dialog, DialogContent } from '@poveroh/ui/components/dialog'
+import { ModalFooter } from './ModalFooter'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 import { cn } from '@poveroh/ui/lib/utils'
-import { ReactElement, useEffect, useState } from 'react'
-import { AppearanceMode } from '@poveroh/types'
+import { useEffect, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,26 +17,14 @@ import {
     AlertDialogTitle
 } from '@poveroh/ui/components/alert-dialog'
 import { useTranslations } from 'next-intl'
+import { useModal } from '@/hooks/useModal'
+import { ModalHeader } from './ModalHeader'
+import { ModalProps } from '@/types/modal'
 
-type ModalProps = {
-    open: boolean
-    title: string
-    description?: string
-    icon?: string
-    iconMode?: AppearanceMode
-    iconCircled?: boolean
-    children: React.ReactNode
-    showFooter?: boolean
-    customFooter?: ReactElement
-    dialogHeight?: string
-    contentHeight?: string
-    askForConfirmation?: boolean
-    confirmationExit?: () => void
-    handleOpenChange: (open: boolean) => void
-} & ModalFooterProps
-
-export default function Modal({ showFooter = true, ...props }: ModalProps) {
+export default function Modal<T>(props: ModalProps) {
     const t = useTranslations()
+
+    const { closeModal } = useModal<T>()
 
     const [showConfirmationDialog, setConfirmationDialog] = useState(props.askForConfirmation || false)
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
@@ -59,49 +44,23 @@ export default function Modal({ showFooter = true, ...props }: ModalProps) {
         setConfirmationDialog(false)
     }
 
-    const handleOpenChange = (open: boolean) => {
+    const handleOpenChange = () => {
         if (showConfirmationDialog) {
             setOpenConfirmationDialog(true)
         } else {
-            props.handleOpenChange(open)
+            closeModal()
         }
     }
 
     return (
         <>
             <Dialog defaultOpen={true} open={props.open} onOpenChange={handleOpenChange}>
-                <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh]', props.dialogHeight)}>
-                    <DialogHeader>
-                        <div className='flex flex-row items-center space-x-3'>
-                            {props.icon &&
-                                (props.iconMode === AppearanceMode.LOGO ? (
-                                    <BrandIcon circled={props.iconCircled} icon={props.icon} size='xl'></BrandIcon>
-                                ) : (
-                                    <DynamicIcon key={props.icon} name={props.icon} />
-                                ))}
-                            <div className='flex flex-col space-y-1'>
-                                <DialogTitle>{props.title}</DialogTitle>
-                                {props.description && <DialogDescription>{props.description}</DialogDescription>}
-                            </div>
-                        </div>
-                    </DialogHeader>
-                    <div className={cn('flex flex-grow items-start overflow-y-auto', props.contentHeight)}>
+                <DialogContent className={cn('sm:max-w-[40vw] max-h-[90vh]', props.decoration?.dialogHeight)}>
+                    <ModalHeader {...props} />
+                    <div className={cn('flex flex-grow items-start overflow-y-auto', props.decoration?.contentHeight)}>
                         <SimpleBar className='w-full h-full'>{props.children}</SimpleBar>
                     </div>
-                    {showFooter && (
-                        <ModalFooter
-                            loading={props.loading}
-                            inEditingMode={props.inEditingMode}
-                            keepAdding={props.keepAdding}
-                            hideKeepAdding={props.hideKeepAdding}
-                            buttonDisabled={props.buttonDisabled}
-                            showSaveButton={props.showSaveButton}
-                            confirmButtonText={props.confirmButtonText}
-                            setKeepAdding={props.setKeepAdding}
-                            onClick={props.onClick}
-                        />
-                    )}
-                    {props.customFooter}
+                    {props.footer?.show && (props.footer.customFooter || <ModalFooter<T> {...props} />)}
                 </DialogContent>
             </Dialog>
 

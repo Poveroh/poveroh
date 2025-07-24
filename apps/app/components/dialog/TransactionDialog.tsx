@@ -8,7 +8,7 @@ import { TransactionForm } from '../form/TransactionForm'
 
 type DialogProps = {
     open: boolean
-    initialData?: ITransaction
+    initialData?: ITransaction | null
     inEditingMode?: boolean
     dialogHeight?: string
     closeDialog: () => void
@@ -90,7 +90,7 @@ export function TransactionDialog(props: DialogProps) {
         >
             <TransactionForm
                 ref={formRef}
-                initialData={props.initialData}
+                initialData={props.initialData ?? undefined}
                 action={currentAction}
                 inputStyle='contained'
                 inEditingMode={props.inEditingMode || false}

@@ -2,20 +2,20 @@
 
 import { useEffect, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
 import { isEmpty } from 'lodash'
+import { useTranslations } from 'next-intl'
 
 import { Input } from '@poveroh/ui/components/input'
-
 import { Landmark, Search } from 'lucide-react'
 
 import { ISubscription } from '@poveroh/types'
 
-import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
-import { DeleteModal } from '@/components/modal/DeleteModal'
-
-import { useBankAccount } from '@/hooks/useBankAccount'
 import { useSubscription } from '@/hooks/useSubscriptions'
+import { useBankAccount } from '@/hooks/useBankAccount'
+import { useModal } from '@/hooks/useModal'
+import { useDeleteModal } from '@/hooks/useDeleteModal'
+
+import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
 import SkeletonItem from '@/components/skeleton/SkeletonItem'
 import Box from '@/components/box/BoxWrapper'
 import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
@@ -24,29 +24,19 @@ import { Header } from '@/components/other/HeaderPage'
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const { subscriptionCacheList, removeSubscription, fetchSubscriptions, subscriptionLoading } = useSubscription()
+    const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
     const { fetchBankAccount } = useBankAccount()
 
-    const [itemToDelete, setItemToDelete] = useState<ISubscription | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<ISubscription | null>(null)
-    const [dialogNewOpen, setDialogNewOpen] = useState(false)
-
-    const [loading, setLoading] = useState(false)
-    const [loadingData, setLoadingData] = useState(true)
+    const { openModal } = useModal<ISubscription>()
+    const { openModal: openDeleteModal } = useDeleteModal<ISubscription>()
 
     const [localSubscriptionList, setLocalSubscriptionList] = useState<ISubscription[]>(subscriptionCacheList)
     const subscriptionsTotal = parseFloat(localSubscriptionList.reduce((sum, sub) => sum + sub.amount, 0).toFixed(2))
 
     useEffect(() => {
-        fetchData()
+        fetchSubscriptions()
         fetchBankAccount()
     }, [])
-
-    const fetchData = () => {
-        setLoadingData(true)
-        fetchSubscriptions()
-        setLoadingData(false)
-    }
 
     useEffect(() => {
         setLocalSubscriptionList(subscriptionCacheList)
@@ -65,20 +55,6 @@ export default function SubscriptionsView() {
         setLocalSubscriptionList(filteredList)
     }
 
-    const onDelete = async () => {
-        if (!itemToDelete) return
-
-        setLoading(true)
-
-        const res = await removeSubscription(itemToDelete.id)
-
-        setLoading(false)
-
-        if (res) {
-            setItemToDelete(null)
-        }
-    }
-
     return (
         <>
             <div className='space-y-12'>
@@ -90,11 +66,11 @@ export default function SubscriptionsView() {
                         { label: t('subscriptions.title') }
                     ]}
                     fetchAction={{
-                        onClick: fetchData,
+                        onClick: fetchSubscriptions,
                         loading: subscriptionLoading.fetch
                     }}
                     addAction={{
-                        onClick: () => setDialogNewOpen(true),
+                        onClick: () => openModal('create'),
                         loading: subscriptionLoading.add
                     }}
                     onDeleteAll={{
@@ -118,7 +94,7 @@ export default function SubscriptionsView() {
                         })}
                     </p>
                 </div>
-                {loadingData ? (
+                {subscriptionLoading.fetch ? (
                     <SkeletonItem repeat={5} />
                 ) : localSubscriptionList.length > 0 ? (
                     <Box>
@@ -127,8 +103,10 @@ export default function SubscriptionsView() {
                                 <SubscriptionItem
                                     key={item.id}
                                     subscription={item}
-                                    openEdit={setItemToEdit}
-                                    openDelete={setItemToDelete}
+                                    openEdit={(item: ISubscription) => {
+                                        openModal('edit', item)
+                                    }}
+                                    openDelete={openDeleteModal}
                                 />
                             ))}
                         </>
@@ -144,35 +122,7 @@ export default function SubscriptionsView() {
                 )}
             </div>
 
-            {itemToDelete && (
-                <DeleteModal
-                    title={itemToDelete.title}
-                    description={t('subscriptions.modal.deleteDescription')}
-                    open={true}
-                    closeDialog={() => setItemToDelete(null)}
-                    loading={loading}
-                    onConfirm={onDelete}
-                ></DeleteModal>
-            )}
-
-            {dialogNewOpen && (
-                <SubscriptionDialog
-                    open={dialogNewOpen}
-                    inEditingMode={false}
-                    dialogHeight='h-[80vh]'
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></SubscriptionDialog>
-            )}
-
-            {itemToEdit && (
-                <SubscriptionDialog
-                    initialData={itemToEdit}
-                    open={itemToEdit !== null}
-                    inEditingMode={true}
-                    dialogHeight='h-[80vh]'
-                    closeDialog={() => setItemToEdit(null)}
-                ></SubscriptionDialog>
-            )}
+            <SubscriptionDialog></SubscriptionDialog>
         </>
     )
 }

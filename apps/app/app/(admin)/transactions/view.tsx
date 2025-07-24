@@ -5,17 +5,9 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
 import { Input } from '@poveroh/ui/components/input'
 
-import { ArrowLeftRight, Download, Plus, RotateCcw, Search, Upload } from 'lucide-react'
+import { ArrowLeftRight, Plus, Search } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
 import { DeleteModal } from '@/components/modal/DeleteModal'
@@ -29,9 +21,9 @@ import { useBankAccount } from '@/hooks/useBankAccount'
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
 import { isEmpty } from 'lodash'
-import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import Divider from '@/components/other/Divider'
 import { ImportDialog } from '@/components/dialog/ImportDialog'
+import { Header } from '@/components/other/HeaderPage'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -106,68 +98,22 @@ export default function TransactionsView() {
     return (
         <>
             <div className='space-y-12'>
-                <div className='flex flex-row items-end justify-between'>
-                    <div className='flex flex-col space-y-3'>
-                        <h2>{t('transactions.title')}</h2>
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href='/settings'>{t('settings.manage.title')}</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{t('transactions.title')}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </div>
-                    <div className='flex flex-row items-center space-x-8'>
-                        <RotateCcw
-                            className='cursor-pointer'
-                            onClick={() => fetchTransaction({}, transactionFilterSetting)}
-                        />
-                        <div className='flex flex-row items-center space-x-3'>
-                            <Button variant='outline'>
-                                <Download></Download>
-                            </Button>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button>
-                                        <Plus />
-                                        {t('buttons.add.base')}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent align='end'>
-                                    <div className='flex flex-col space-y-5'>
-                                        <a
-                                            className='flex items-center space-x-2 w-full'
-                                            onClick={() => {
-                                                setDialogUploadOpen(true)
-                                            }}
-                                        >
-                                            <Upload />
-                                            <p>{t('buttons.add.import')}</p>
-                                        </a>
-                                        <Divider />
-                                        <a
-                                            className='flex items-center space-x-2 w-full'
-                                            onClick={() => {
-                                                setDialogNewOpen(true)
-                                            }}
-                                        >
-                                            <Plus />
-                                            <p>{t('buttons.add.base')}</p>
-                                        </a>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
-                </div>
+                <Header
+                    title={t('transactions.title')}
+                    breadcrumbs={[
+                        { label: t('settings.title'), href: '/settings' },
+                        { label: t('transactions.title') }
+                    ]}
+                    fetchAction={{
+                        onClick: () => fetchTransaction({}, transactionFilterSetting),
+                        loading: false
+                    }}
+                    addAction={{
+                        onClick: () => setDialogNewOpen(true),
+                        loading: false
+                    }}
+                />
+
                 <div className='flex flex-col'>
                     <Input
                         startIcon={Search}
@@ -257,34 +203,24 @@ export default function TransactionsView() {
                 )}
             </div>
 
-            {itemToDelete && (
-                <DeleteModal
-                    title={itemToDelete.title}
-                    description={t('transactions.modal.deleteDescription')}
-                    open={true}
-                    closeDialog={() => setItemToDelete(null)}
-                    loading={loading}
-                    onConfirm={onDelete}
-                ></DeleteModal>
-            )}
+            <DeleteModal
+                title={itemToDelete ? itemToDelete.title : ''}
+                description={t('transactions.modal.deleteDescription')}
+                open={itemToDelete !== null}
+                closeDialog={() => setItemToDelete(null)}
+                loading={loading}
+                onConfirm={onDelete}
+            ></DeleteModal>
 
-            {dialogNewOpen && (
-                <TransactionDialog
-                    open={dialogNewOpen}
-                    dialogHeight={'h-[80vh]'}
-                    closeDialog={() => setDialogNewOpen(false)}
-                ></TransactionDialog>
-            )}
+            <TransactionDialog open={dialogNewOpen} closeDialog={() => setDialogNewOpen(false)}></TransactionDialog>
 
-            {itemToEdit && (
-                <TransactionDialog
-                    initialData={itemToEdit}
-                    open={itemToEdit !== null}
-                    dialogHeight='h-[80vh]'
-                    inEditingMode={true}
-                    closeDialog={() => setItemToEdit(null)}
-                />
-            )}
+            <TransactionDialog
+                initialData={itemToEdit}
+                open={itemToEdit !== null}
+                dialogHeight='h-[80vh]'
+                inEditingMode={true}
+                closeDialog={() => setItemToEdit(null)}
+            />
 
             {dialogUploadOpen && (
                 <ImportDialog open={true} inEditingMode={true} closeDialog={() => setItemToEdit(null)} />

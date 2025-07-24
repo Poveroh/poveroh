@@ -1,91 +1,119 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/Modal'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { AppearanceMode, IBankAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { BankAccountForm } from '../form/BankAccountForm'
+import { useModal } from '@/hooks/useModal'
+import { DeleteModal } from '../modal/DeleteModal'
+import { useDeleteModal } from '@/hooks/useDeleteModal'
 
-type DialogProps = {
-    open: boolean
-    initialData?: IBankAccount | null
-    inEditingMode: boolean
-    dialogHeight?: string
-    closeDialog: () => void
-}
-
-export function BankAccountDialog(props: DialogProps) {
+export function BankAccountDialog() {
     const t = useTranslations()
-    const { addBankAccount, editBankAccount } = useBankAccount()
+    const { addBankAccount, editBankAccount, removeBankAccount } = useBankAccount()
+
+    const modalManager = useModal<IBankAccount>()
+    const deleteModalManager = useDeleteModal<IBankAccount>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [loading, setLoading] = useState(false)
-    const [keepAdding, setKeepAdding] = useState(false)
-    const title =
-        props.inEditingMode && props.initialData
-            ? t('bankAccounts.modal.editTitle', { a: props.initialData?.title })
-            : t('bankAccounts.modal.newTitle')
-
     const handleFormSubmit = async (data: FormData) => {
-        setLoading(true)
+        modalManager.setLoading(true)
 
         let res: IBankAccount | null
 
         // edit dialog
-        if (props.inEditingMode && props.initialData) {
-            res = await editBankAccount(props.initialData.id, data)
+        if (modalManager.inEditingMode && modalManager.item) {
+            res = await editBankAccount(modalManager.item.id, data)
 
             if (!res) return
 
-            props.closeDialog()
+            modalManager.closeModal()
         } else {
             // new dialog
             res = await addBankAccount(data)
 
             if (!res) return
 
-            if (keepAdding) {
+            if (modalManager.keepAdding.checked) {
                 formRef.current?.reset()
             } else {
-                props.closeDialog()
+                modalManager.closeModal()
             }
         }
 
         toast.success(
             t('messages.successfully', {
                 a: res.title,
-                b: t(props.inEditingMode ? 'messages.saved' : 'messages.uploaded')
+                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )
 
-        setLoading(false)
+        modalManager.setLoading(false)
+    }
+
+    const onDelete = async () => {
+        if (!deleteModalManager.item) return
+
+        deleteModalManager.setLoading(true)
+
+        const res = await removeBankAccount(deleteModalManager.item.id)
+
+        deleteModalManager.setLoading(false)
+
+        if (res) {
+            deleteModalManager.closeModal()
+
+            if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
+                modalManager.closeModal()
+            }
+        }
     }
 
     return (
-        <Modal
-            open={props.open}
-            title={title}
-            icon={props.initialData?.logoIcon}
-            iconMode={AppearanceMode.ICON}
-            handleOpenChange={props.closeDialog}
-            loading={loading}
-            inEditingMode={props.inEditingMode}
-            keepAdding={keepAdding}
-            setKeepAdding={() => setKeepAdding(x => !x)}
-            showSaveButton={true}
-            dialogHeight={props.dialogHeight}
-            onClick={() => formRef.current?.submit()}
-        >
-            <div className='flex flex-col space-y-6 w-full'>
-                <BankAccountForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    inEditingMode={props.inEditingMode}
-                    dataCallback={handleFormSubmit}
-                    closeDialog={props.closeDialog}
-                />
-            </div>
-        </Modal>
+        <>
+            <Modal<IBankAccount>
+                open={modalManager.isOpen}
+                title={
+                    modalManager.inEditingMode && modalManager.item
+                        ? modalManager.item.title
+                        : t('bankAccounts.modal.newTitle')
+                }
+                decoration={{
+                    iconLogo: {
+                        name: modalManager.item?.logoIcon ?? '',
+                        mode: AppearanceMode.LOGO,
+                        circled: false
+                    }
+                }}
+                footer={{
+                    show: true
+                }}
+                onClick={() => formRef.current?.submit()}
+                onDeleteClick={() => {
+                    deleteModalManager.openModal(modalManager.item)
+                }}
+            >
+                <div className='flex flex-col space-y-6 w-full'>
+                    <BankAccountForm
+                        ref={formRef}
+                        initialData={modalManager.item}
+                        inEditingMode={modalManager.inEditingMode}
+                        dataCallback={handleFormSubmit}
+                        closeDialog={modalManager.closeModal}
+                    />
+                </div>
+            </Modal>
+
+            <DeleteModal
+                title={deleteModalManager.item ? deleteModalManager.item.title : ''}
+                description={t('bankAccounts.modal.deleteDescription')}
+                loading={deleteModalManager.loading}
+                open={deleteModalManager.isOpen}
+                closeDialog={deleteModalManager.closeModal}
+                onConfirm={onDelete}
+            />
+        </>
     )
 }

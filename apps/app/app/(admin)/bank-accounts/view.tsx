@@ -3,32 +3,31 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
+import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
+
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
 
 import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/DeleteModal'
 import { BankAccountDialog } from '@/components/dialog/BankAccountDialog'
-
-import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
-
-import { useBankAccount } from '@/hooks/useBankAccount'
 import { BankAccountItem } from '@/components/item/BankAccountItem'
 import { FilterButton } from '@/components/filter/FilterButton'
 import { Header } from '@/components/other/HeaderPage'
 import SkeletonItem from '@/components/skeleton/SkeletonItem'
 
+import { useBankAccount } from '@/hooks/useBankAccount'
+import { useModal } from '@/hooks/useModal'
+import { useDeleteModal } from '@/hooks/useDeleteModal'
+
 export default function BankAccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, removeBankAccount, fetchBankAccount, typeList, accountLoading } = useBankAccount()
+    const { bankAccountCacheList, fetchBankAccount, typeList, accountLoading } = useBankAccount()
 
-    const [itemToDelete, setItemToDelete] = useState<IBankAccount | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<IBankAccount | null>(null)
-    const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [deleteLoading, setDeleteLoading] = useState(false)
+    const { openModal } = useModal<IBankAccount>()
+    const { openModal: openDeleteModal } = useDeleteModal<IBankAccount>()
 
     const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
 
@@ -86,20 +85,6 @@ export default function BankAccountView() {
         onFilter(newFilters)
     }
 
-    const onDelete = async () => {
-        if (!itemToDelete) return
-
-        setDeleteLoading(true)
-
-        const res = await removeBankAccount(itemToDelete.id)
-
-        setDeleteLoading(false)
-
-        if (res) {
-            setItemToDelete(null)
-        }
-    }
-
     return (
         <>
             <div className='space-y-12'>
@@ -115,7 +100,9 @@ export default function BankAccountView() {
                         loading: accountLoading.fetch
                     }}
                     addAction={{
-                        onClick: () => setDialogNewOpen(true),
+                        onClick: () => {
+                            openModal('create')
+                        },
                         loading: accountLoading.add
                     }}
                     onDeleteAll={{
@@ -176,8 +163,10 @@ export default function BankAccountView() {
                                 <BankAccountItem
                                     key={account.id}
                                     account={account}
-                                    openEdit={setItemToEdit}
-                                    openDelete={setItemToDelete}
+                                    openEdit={(item: IBankAccount) => {
+                                        openModal('edit', item)
+                                    }}
+                                    openDelete={openDeleteModal}
                                 />
                             ))}
                         </>
@@ -199,27 +188,7 @@ export default function BankAccountView() {
                 )}
             </div>
 
-            <DeleteModal
-                title={itemToDelete ? itemToDelete.title : ''}
-                description={t('bankAccounts.modal.deleteDescription')}
-                open={itemToDelete ? true : false}
-                closeDialog={() => setItemToDelete(null)}
-                loading={deleteLoading}
-                onConfirm={onDelete}
-            ></DeleteModal>
-
-            <BankAccountDialog
-                open={dialogNewOpen}
-                inEditingMode={false}
-                closeDialog={() => setDialogNewOpen(false)}
-            ></BankAccountDialog>
-
-            <BankAccountDialog
-                initialData={itemToEdit}
-                open={itemToEdit !== null}
-                inEditingMode={true}
-                closeDialog={() => setItemToEdit(null)}
-            ></BankAccountDialog>
+            <BankAccountDialog></BankAccountDialog>
         </>
     )
 }
