@@ -5,15 +5,15 @@ import { useTranslations } from 'next-intl'
 
 import { Upload } from 'lucide-react'
 
-import { IImport, ITransaction } from '@poveroh/types'
+import { IImport } from '@poveroh/types'
 
-import { useImport } from '@/hooks/useImports'
-import Box from '@/components/box/BoxWrapper'
-import { ImportsItem } from '@/components/item/ImportsItem'
-import { ImportDrawer } from '@/components/drawer/ImportDrawer'
-import { Header } from '@/components/other/HeaderPage'
-import { useDrawer } from '@/hooks/useDrawer'
-import { useDeleteModal } from '@/hooks/useDeleteModal'
+import { useImport } from '@/hooks/use-imports'
+import Box from '@/components/box/box-wrapper'
+import { ImportsItem } from '@/components/item/imports-item'
+import { ImportDrawer } from '@/components/drawer/import-drawer'
+import { Header } from '@/components/other/header-page'
+import { useDrawer } from '@/hooks/use-drawer'
+import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export default function ImportsView() {
     const t = useTranslations()

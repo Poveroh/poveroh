@@ -10,16 +10,16 @@ import { Landmark, Search } from 'lucide-react'
 
 import { ISubscription } from '@poveroh/types'
 
-import { useSubscription } from '@/hooks/useSubscriptions'
-import { useBankAccount } from '@/hooks/useBankAccount'
-import { useModal } from '@/hooks/useModal'
-import { useDeleteModal } from '@/hooks/useDeleteModal'
+import { useSubscription } from '@/hooks/use-subscriptions'
+import { useBankAccount } from '@/hooks/use-bank-account'
+import { useModal } from '@/hooks/use-modal'
+import { useDeleteModal } from '@/hooks/use-delete-modal'
 
-import { SubscriptionDialog } from '@/components/dialog/SubscriptionDialog'
-import SkeletonItem from '@/components/skeleton/SkeletonItem'
-import Box from '@/components/box/BoxWrapper'
-import { SubscriptionItem } from '@/components/item/SubscriptionsItem'
-import { Header } from '@/components/other/HeaderPage'
+import { SubscriptionDialog } from '@/components/dialog/subscription-dialog'
+import SkeletonItem from '@/components/skeleton/skeleton-item'
+import Box from '@/components/box/box-wrapper'
+import { SubscriptionItem } from '@/components/item/subscriptions-item'
+import { Header } from '@/components/other/header-page'
 
 export default function SubscriptionsView() {
     const t = useTranslations()

@@ -9,26 +9,25 @@ import { Input } from '@poveroh/ui/components/input'
 
 import { ArrowLeftRight, Plus, Search } from 'lucide-react'
 
-import Box from '@/components/box/BoxWrapper'
-import { TransactionDialog } from '@/components/dialog/TransactionDialog'
-import { TransactionItem } from '@/components/item/TransactionItem'
+import Box from '@/components/box/box-wrapper'
+import { TransactionDialog } from '@/components/dialog/transaction-dialog'
+import { TransactionItem } from '@/components/item/transaction-item'
 
-import { useTransaction } from '@/hooks/useTransaction'
-import { useCategory } from '@/hooks/useCategory'
-import { useBankAccount } from '@/hooks/useBankAccount'
+import { useTransaction } from '@/hooks/use-transaction'
+import { useCategory } from '@/hooks/use-category'
+import { useBankAccount } from '@/hooks/use-bank-account'
 
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
 import { isEmpty } from 'lodash'
-import Divider from '@/components/other/Divider'
-import { Header } from '@/components/other/HeaderPage'
-import { useModal } from '@/hooks/useModal'
-import { useDeleteModal } from '@/hooks/useDeleteModal'
+import Divider from '@/components/other/divider'
+import { Header } from '@/components/other/header-page'
+import { useModal } from '@/hooks/use-modal'
+import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export default function TransactionsView() {
     const t = useTranslations()
-    const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate, transactionLoading } =
-        useTransaction()
+    const { transactionCacheList, fetchTransaction, groupTransactionsByDate, transactionLoading } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
     const { bankAccountCacheList, fetchBankAccount, accountLoading } = useBankAccount()
 

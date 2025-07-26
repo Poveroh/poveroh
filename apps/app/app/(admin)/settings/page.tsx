@@ -1,4 +1,4 @@
-import { Card } from '@/components/card/Card'
+import { Card } from '@/components/card/card'
 import appConfig from '@/config'
 import { FolderUp, Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'

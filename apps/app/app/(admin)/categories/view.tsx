@@ -6,19 +6,19 @@ import { useTranslations } from 'next-intl'
 
 import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
-import Box from '@/components/box/BoxWrapper'
+import Box from '@/components/box/box-wrapper'
 
 import { Input } from '@poveroh/ui/components/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
 import { Search, Shapes } from 'lucide-react'
-import { CategorySubcategoryDialog } from '@/components/dialog/CategorySubcategoryDialog'
-import { useCategory } from '@/hooks/useCategory'
-import { CategoryItem } from '@/components/item/CategoryItem'
-import { Header } from '@/components/other/HeaderPage'
-import SkeletonItem from '@/components/skeleton/SkeletonItem'
-import { useModal } from '@/hooks/useModal'
-import { useDeleteModal } from '@/hooks/useDeleteModal'
+import { CategorySubcategoryDialog } from '@/components/dialog/category-subcategory-dialog'
+import { useCategory } from '@/hooks/use-category'
+import { CategoryItem } from '@/components/item/category-item'
+import { Header } from '@/components/other/header-page'
+import SkeletonItem from '@/components/skeleton/skeleton-item'
+import { useModal } from '@/hooks/use-modal'
+import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export default function CategoryView() {
     const t = useTranslations()

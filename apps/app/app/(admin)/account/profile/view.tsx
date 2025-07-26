@@ -5,20 +5,12 @@ import { useTranslations } from 'next-intl'
 import { Loader2 } from 'lucide-react'
 
 import { Button } from '@poveroh/ui/components/button'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
 import { Form } from '@poveroh/ui/components/form'
 
-import Box from '@/components/box/BoxWrapper'
+import Box from '@/components/box/box-wrapper'
 import { CopyableField, EmailField, TextField } from '@/components/fields'
-import { useProfileForm } from '@/hooks/form/useProfileForm'
-import { Header } from '@/components/other/HeaderPage'
+import { useProfileForm } from '@/hooks/form/use-profile-form'
+import { Header } from '@/components/other/header-page'
 
 export default function ProfileView() {
     const t = useTranslations()
