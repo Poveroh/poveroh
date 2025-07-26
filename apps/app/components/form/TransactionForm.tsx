@@ -10,6 +10,7 @@ import React, { forwardRef, useImperativeHandle } from 'react'
 import { useCategory } from '@/hooks/useCategory'
 import { useBankAccount } from '@/hooks/useBankAccount'
 import { FormRef } from '@/types'
+import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
 type TransactionFormProps = {
     initialData?: ITransaction
@@ -21,8 +22,6 @@ type TransactionFormProps = {
 }
 
 export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props: TransactionFormProps, ref) => {
-    const t = useTranslations()
-
     const { getActionList } = useTransaction()
 
     const { fetchCategory } = useCategory()
@@ -53,18 +52,15 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
 
     return (
         <div className='flex flex-col space-y-6 w-full'>
-            <Select onValueChange={setLocalCurrentAction} defaultValue={localCurrentAction}>
-                <SelectTrigger variant={props.inputStyle || 'contained'}>
-                    <SelectValue placeholder={t('form.type.placeholder')} />
-                </SelectTrigger>
-                <SelectContent>
+            <Tabs defaultValue={localCurrentAction} value={localCurrentAction} onValueChange={setLocalCurrentAction}>
+                <TabsList className='grid w-full grid-cols-3'>
                     {getActionList().map((item: IItem) => (
-                        <SelectItem key={item.value} value={item.value.toString()}>
+                        <TabsTrigger key={item.value} value={item.value.toString()}>
                             {item.label}
-                        </SelectItem>
+                        </TabsTrigger>
                     ))}
-                </SelectContent>
-            </Select>
+                </TabsList>
+            </Tabs>
 
             {localCurrentAction == 'INCOME' && (
                 <IncomeForm

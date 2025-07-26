@@ -6,14 +6,7 @@ import { BankAccountType, IBankAccount, IBankAccountFilters } from '@poveroh/typ
 import { useTranslations } from 'next-intl'
 import { useError } from './useError'
 import { useState } from 'react'
-
-type AccountLoadingState = {
-    add: boolean
-    edit: boolean
-    remove: boolean
-    get: boolean
-    fetch: boolean
-}
+import { LoadingState } from '@/types/general'
 
 export const useBankAccount = () => {
     const t = useTranslations()
@@ -22,7 +15,7 @@ export const useBankAccount = () => {
     const bankAccountService = new BankAccountService()
     const bankAccountStore = useBankAccountStore()
 
-    const [accountLoading, setAccountLoading] = useState<AccountLoadingState>({
+    const [accountLoading, setAccountLoading] = useState<LoadingState>({
         add: false,
         edit: false,
         remove: false,
@@ -30,7 +23,7 @@ export const useBankAccount = () => {
         fetch: false
     })
 
-    const setAccountLoadingFor = (key: keyof AccountLoadingState, value: boolean) => {
+    const setAccountLoadingFor = (key: keyof LoadingState, value: boolean) => {
         setAccountLoading(prev => ({ ...prev, [key]: value }))
     }
 

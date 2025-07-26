@@ -247,6 +247,7 @@
         }
     },
     "dashboard": {
+        "title": "Dashboard",
         "totalBalance": "Total balance",
         "expenses": "Expenses",
         "income": "Income"
@@ -305,7 +306,7 @@
             "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },
         "types": {
-            "internalTransfer": "Internal transfer",
+            "internalTransfer": "Transfer",
             "income": "Income",
             "expenses": "Expenses"
         },

@@ -12,6 +12,8 @@ import {
 } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useError } from './useError'
+import { useState } from 'react'
+import { LoadingState } from '@/types/general'
 
 export const useTransaction = () => {
     const t = useTranslations()
@@ -20,7 +22,20 @@ export const useTransaction = () => {
     const transactionService = new TransactionService()
     const transactionStore = useTransactionStore()
 
+    const [transactionLoading, setTransactionLoading] = useState<LoadingState>({
+        add: false,
+        edit: false,
+        remove: false,
+        get: false,
+        fetch: false
+    })
+
+    const setLoadingFor = (key: keyof LoadingState, value: boolean) => {
+        setTransactionLoading(prev => ({ ...prev, [key]: value }))
+    }
+
     const addTransaction = async (data: FormData) => {
+        setLoadingFor('add', true)
         try {
             const res = await transactionService.add(data)
             transactionStore.addTransaction(res)
@@ -28,10 +43,13 @@ export const useTransaction = () => {
             return res
         } catch (error) {
             return handleError(error, 'Error adding transaction')
+        } finally {
+            setLoadingFor('add', false)
         }
     }
 
     const editTransaction = async (id: string, data: FormData) => {
+        setLoadingFor('edit', true)
         try {
             const res = await transactionService.save(id, data)
             transactionStore.editTransaction(res)
@@ -39,10 +57,13 @@ export const useTransaction = () => {
             return res
         } catch (error) {
             return handleError(error, 'Error editing transaction')
+        } finally {
+            setLoadingFor('edit', false)
         }
     }
 
     const removeTransaction = async (transactionId: string) => {
+        setLoadingFor('remove', true)
         try {
             const res = await transactionService.delete(transactionId)
 
@@ -55,6 +76,8 @@ export const useTransaction = () => {
             return res
         } catch (error) {
             return handleError(error, 'Error deleting transaction')
+        } finally {
+            setLoadingFor('remove', false)
         }
     }
 
@@ -65,19 +88,29 @@ export const useTransaction = () => {
     }
 
     const fetchTransaction = async (filters?: ITransactionFilters, options?: IFilterOptions, append?: boolean) => {
-        const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
+        setLoadingFor('fetch', true)
+        try {
+            if (transactionStore.transactionCacheList.length > 0) {
+                return transactionStore.transactionCacheList
+            }
+            const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
 
-        if (append) transactionStore.appendTransactions(res)
-        else transactionStore.setTransactions(res)
+            if (append) transactionStore.appendTransactions(res)
+            else transactionStore.setTransactions(res)
 
-        return res
+            return res
+        } catch (error) {
+            return handleError(error, 'Error fetching transactions')
+        } finally {
+            setLoadingFor('fetch', false)
+        }
     }
 
     const getActionList = (excludeInternal?: boolean): IItem[] => {
         const actionList = [
-            { value: TransactionAction.INTERNAL, label: t('transactions.types.internalTransfer') },
             { value: TransactionAction.INCOME, label: t('transactions.types.income') },
-            { value: TransactionAction.EXPENSES, label: t('transactions.types.expenses') }
+            { value: TransactionAction.EXPENSES, label: t('transactions.types.expenses') },
+            { value: TransactionAction.INTERNAL, label: t('transactions.types.internalTransfer') }
         ]
         return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.INTERNAL) : actionList
     }
@@ -95,6 +128,7 @@ export const useTransaction = () => {
 
     return {
         transactionCacheList: transactionStore.transactionCacheList,
+        transactionLoading,
         addTransaction,
         editTransaction,
         removeTransaction,

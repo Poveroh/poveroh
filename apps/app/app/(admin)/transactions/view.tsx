@@ -10,7 +10,6 @@ import { Input } from '@poveroh/ui/components/input'
 import { ArrowLeftRight, Plus, Search } from 'lucide-react'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/DeleteModal'
 import { TransactionDialog } from '@/components/dialog/TransactionDialog'
 import { TransactionItem } from '@/components/item/TransactionItem'
 
@@ -22,20 +21,19 @@ import { IFilterOptions, ITransaction } from '@poveroh/types'
 
 import { isEmpty } from 'lodash'
 import Divider from '@/components/other/Divider'
-import { ImportDialog } from '@/components/dialog/ImportDialog'
 import { Header } from '@/components/other/HeaderPage'
+import { useModal } from '@/hooks/useModal'
+import { useDeleteModal } from '@/hooks/useDeleteModal'
 
 export default function TransactionsView() {
     const t = useTranslations()
-    const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate } = useTransaction()
-    const { categoryCacheList, fetchCategory } = useCategory()
-    const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
+    const { transactionCacheList, removeTransaction, fetchTransaction, groupTransactionsByDate, transactionLoading } =
+        useTransaction()
+    const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
+    const { bankAccountCacheList, fetchBankAccount, accountLoading } = useBankAccount()
 
-    const [itemToDelete, setItemToDelete] = useState<ITransaction | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<ITransaction | null>(null)
-    const [dialogNewOpen, setDialogNewOpen] = useState(false)
-    const [dialogUploadOpen, setDialogUploadOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const { openModal } = useModal<ITransaction>()
+    const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
 
@@ -81,36 +79,19 @@ export default function TransactionsView() {
         setLocalTransactionList(filteredList)
     }
 
-    const onDelete = async () => {
-        if (!itemToDelete) return
-
-        setLoading(true)
-
-        const res = await removeTransaction(itemToDelete.id)
-
-        setLoading(false)
-
-        if (res) {
-            setItemToDelete(null)
-        }
-    }
-
     return (
         <>
             <div className='space-y-12'>
                 <Header
                     title={t('transactions.title')}
-                    breadcrumbs={[
-                        { label: t('settings.title'), href: '/settings' },
-                        { label: t('transactions.title') }
-                    ]}
+                    breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('transactions.title') }]}
                     fetchAction={{
                         onClick: () => fetchTransaction({}, transactionFilterSetting),
-                        loading: false
+                        loading: transactionLoading.fetch || categoryLoading.fetchCategory || accountLoading.fetch
                     }}
                     addAction={{
-                        onClick: () => setDialogNewOpen(true),
-                        loading: false
+                        onClick: () => openModal('create'),
+                        loading: transactionLoading.add
                     }}
                 />
 
@@ -147,8 +128,10 @@ export default function TransactionsView() {
                                                 <TransactionItem
                                                     key={transaction.id}
                                                     transaction={transaction}
-                                                    openEdit={setItemToEdit}
-                                                    openDelete={setItemToDelete}
+                                                    openEdit={(item: ITransaction) => {
+                                                        openModal('edit', item)
+                                                    }}
+                                                    openDelete={openDeleteModal}
                                                 />
                                             ))}
                                         </>
@@ -203,28 +186,11 @@ export default function TransactionsView() {
                 )}
             </div>
 
-            <DeleteModal
-                title={itemToDelete ? itemToDelete.title : ''}
-                description={t('transactions.modal.deleteDescription')}
-                open={itemToDelete !== null}
-                closeDialog={() => setItemToDelete(null)}
-                loading={loading}
-                onConfirm={onDelete}
-            ></DeleteModal>
+            <TransactionDialog></TransactionDialog>
 
-            <TransactionDialog open={dialogNewOpen} closeDialog={() => setDialogNewOpen(false)}></TransactionDialog>
-
-            <TransactionDialog
-                initialData={itemToEdit}
-                open={itemToEdit !== null}
-                dialogHeight='h-[80vh]'
-                inEditingMode={true}
-                closeDialog={() => setItemToEdit(null)}
-            />
-
-            {dialogUploadOpen && (
+            {/* {dialogUploadOpen && (
                 <ImportDialog open={true} inEditingMode={true} closeDialog={() => setItemToEdit(null)} />
-            )}
+            )} */}
         </>
     )
 }
