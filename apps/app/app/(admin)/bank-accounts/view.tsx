@@ -10,16 +10,16 @@ import { Input } from '@poveroh/ui/components/input'
 
 import { Landmark, Search, X } from 'lucide-react'
 
-import Box from '@/components/box/BoxWrapper'
-import { BankAccountDialog } from '@/components/dialog/BankAccountDialog'
-import { BankAccountItem } from '@/components/item/BankAccountItem'
-import { FilterButton } from '@/components/filter/FilterButton'
-import { Header } from '@/components/other/HeaderPage'
-import SkeletonItem from '@/components/skeleton/SkeletonItem'
+import Box from '@/components/box/box-wrapper'
+import { BankAccountDialog } from '@/components/dialog/bank-account-dialog'
+import { BankAccountItem } from '@/components/item/bank-account-item'
+import { FilterButton } from '@/components/filter/filter-button'
+import { Header } from '@/components/other/header-page'
+import SkeletonItem from '@/components/skeleton/skeleton-item'
 
-import { useBankAccount } from '@/hooks/useBankAccount'
-import { useModal } from '@/hooks/useModal'
-import { useDeleteModal } from '@/hooks/useDeleteModal'
+import { useBankAccount } from '@/hooks/use-bank-account'
+import { useModal } from '@/hooks/use-modal'
+import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export default function BankAccountView() {
     const t = useTranslations()

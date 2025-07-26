@@ -1,7 +1,7 @@
 'use client'
 
-import { useAuth } from '@/hooks/userAuth'
-import { useUser } from '@/hooks/useUser'
+import { useAuth } from '@/hooks/use-auth'
+import { useUser } from '@/hooks/use-user'
 import { createContext, useEffect } from 'react'
 
 const AppContext = createContext({})

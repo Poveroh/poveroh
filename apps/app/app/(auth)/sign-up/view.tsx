@@ -6,7 +6,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
 
 import { TextField, EmailField, PasswordField } from '@/components/fields'
-import { useSignUpForm } from '@/hooks/form/useSignUpForm'
+import { useSignUpForm } from '@/hooks/form/use-sign-up-form'
 
 export default function SignupView() {
     const t = useTranslations()

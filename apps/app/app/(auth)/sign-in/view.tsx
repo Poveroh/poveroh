@@ -6,7 +6,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
 
 import { useTranslations } from 'next-intl'
-import { useSignInForm } from '@/hooks/form/useSignInForm'
+import { useSignInForm } from '@/hooks/form/use-sign-in-form'
 import { EmailField, PasswordField } from '@/components/fields'
 
 export default function LoginView() {

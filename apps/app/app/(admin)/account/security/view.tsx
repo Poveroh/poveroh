@@ -1,21 +1,13 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import Box from '@/components/box/BoxWrapper'
+import Box from '@/components/box/box-wrapper'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@poveroh/ui/components/button'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@poveroh/ui/components/breadcrumb'
 import { Form } from '@poveroh/ui/components/form'
-import { useProfileSecurityForm } from '@/hooks/form/useProfileSecurityForm'
+import { useProfileSecurityForm } from '@/hooks/form/use-profile-security-form'
 import { PasswordField } from '@/components/fields'
-import { Header } from '@/components/other/HeaderPage'
+import { Header } from '@/components/other/header-page'
 
 export default function SecurityView() {
     const t = useTranslations()
