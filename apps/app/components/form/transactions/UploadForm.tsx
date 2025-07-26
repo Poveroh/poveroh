@@ -35,7 +35,9 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         }
     }))
 
-    const handleCallback = async (importedFiles: IImport) => {
+    const handleCallback = async (importedFiles: IImport | null) => {
+        if (!importedFiles || !importedFiles.transactions) return
+
         const readedTransactions = cloneDeep(parsedTransaction)
         readedTransactions.push(...importedFiles.transactions)
         setParsedTransaction(readedTransactions)

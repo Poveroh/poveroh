@@ -1,5 +1,6 @@
 import { AppContextProvider } from '@/context/AppContext'
 import { DeleteModalContextProvider } from '@/context/DeleteModalContext'
+import { DrawerContextProvider } from '@/context/DrawerContext'
 import { ModalContextProvider } from '@/context/ModalContext'
 import { ThemeProviders } from '@/providers/themeProvider'
 import { Toaster } from '@poveroh/ui/components/sonner'
@@ -15,12 +16,14 @@ export async function Providers({ children }: { children: React.ReactNode }) {
             <ThemeProviders>
                 <AppContextProvider>
                     <ModalContextProvider>
-                        <DeleteModalContextProvider>
-                            <TooltipProvider>
-                                <Toaster richColors />
-                                {children}
-                            </TooltipProvider>
-                        </DeleteModalContextProvider>
+                        <DrawerContextProvider>
+                            <DeleteModalContextProvider>
+                                <TooltipProvider>
+                                    <Toaster richColors />
+                                    {children}
+                                </TooltipProvider>
+                            </DeleteModalContextProvider>
+                        </DrawerContextProvider>
                     </ModalContextProvider>
                 </AppContextProvider>
             </ThemeProviders>
