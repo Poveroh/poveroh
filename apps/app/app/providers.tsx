@@ -1,4 +1,4 @@
-import { AppContextProvider } from '@/context/AppContext'
+import { AppContextProvider } from '@/context/app-context'
 import { DeleteModalContextProvider } from '@/context/delete-modal-context'
 import { DrawerContextProvider } from '@/context/drawer-context'
 import { ModalContextProvider } from '@/context/modal-context'
