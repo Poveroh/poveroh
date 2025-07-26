@@ -31,7 +31,7 @@ import { useImport } from '@/hooks/useImports'
 
 type BankAccountAndFileFormProps = {
     initialData?: IImport
-    dataCallback: (importedFiles: IImport) => void
+    dataCallback: (importedFiles: IImport | null) => void
 }
 
 export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccountAndFileFormProps) {

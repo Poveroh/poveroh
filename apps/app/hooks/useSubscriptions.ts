@@ -3,17 +3,10 @@
 import { useError } from './useError'
 import { SubscriptionService } from '@/services/subscriptions.service'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
+import { LoadingState } from '@/types'
 import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
-
-type SubscriptionLoadingState = {
-    add: boolean
-    edit: boolean
-    remove: boolean
-    get: boolean
-    fetch: boolean
-}
 
 export const useSubscription = () => {
     const t = useTranslations()
@@ -22,7 +15,7 @@ export const useSubscription = () => {
     const subscriptionService = new SubscriptionService()
     const subscriptionStore = useSubscriptionStore()
 
-    const [subscriptionLoading, setSubscriptionLoading] = useState<SubscriptionLoadingState>({
+    const [subscriptionLoading, setSubscriptionLoading] = useState<LoadingState>({
         add: false,
         edit: false,
         remove: false,
@@ -30,7 +23,7 @@ export const useSubscription = () => {
         fetch: false
     })
 
-    const setLoadingFor = (key: keyof typeof subscriptionLoading, value: boolean) => {
+    const setLoadingFor = (key: keyof LoadingState, value: boolean) => {
         setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
     }
 

@@ -1,40 +1,35 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { isEmpty, isNil } from 'lodash'
+import { isEmpty } from 'lodash'
 import { useTranslations } from 'next-intl'
 
 import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
 
 import Box from '@/components/box/BoxWrapper'
-import { DeleteModal } from '@/components/modal/DeleteModal'
 
 import { Input } from '@poveroh/ui/components/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
 import { Search, Shapes } from 'lucide-react'
-import { CategoryDialog } from '@/components/dialog/CategoryDialog'
-import { SubcategoryDialog } from '@/components/dialog/SubcategoryDialog'
+import { CategorySubcategoryDialog } from '@/components/dialog/CategorySubcategoryDialog'
 import { useCategory } from '@/hooks/useCategory'
 import { CategoryItem } from '@/components/item/CategoryItem'
 import { Header } from '@/components/other/HeaderPage'
 import SkeletonItem from '@/components/skeleton/SkeletonItem'
+import { useModal } from '@/hooks/useModal'
+import { useDeleteModal } from '@/hooks/useDeleteModal'
 
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryLoading, removeSubcategory, removeCategory, fetchCategory } = useCategory()
+    const { categoryCacheList, categoryLoading, fetchCategory } = useCategory()
 
-    const [itemToDelete, setItemToDelete] = useState<ICategory | ISubcategory | null>(null)
-    const [itemToEdit, setItemToEdit] = useState<ICategory | ISubcategory | null>(null)
+    const { openModal } = useModal<ICategory | ISubcategory>()
+    const { openModal: openDeleteModal } = useDeleteModal<ICategory | ISubcategory>()
 
-    const [dialogNewOpen, setDialogNewOpen] = useState(false)
     const [dialogModel, setDialogModel] = useState<CategoryModelMode>('category')
-
-    const [loading, setLoading] = useState(false)
-
     const [localCategoryList, setLocalCategoryList] = useState<ICategory[]>(categoryCacheList)
-
     const [activeTab, setActiveTab] = useState('expenses')
 
     useEffect(() => {
@@ -79,38 +74,9 @@ export default function CategoryView() {
         setLocalCategoryList(filteredList)
     }
 
-    const openDelete = (mode: CategoryModelMode, item: ICategory | ISubcategory) => {
-        setDialogModel(mode)
-        setItemToDelete(item)
-    }
-
-    const closeDelete = () => {
-        setItemToDelete(null)
-    }
-
-    const openEdit = (mode: CategoryModelMode, item: ICategory | ISubcategory) => {
-        setDialogModel(mode)
-        setItemToEdit(item)
-    }
-
     const openNew = (mode: CategoryModelMode) => {
         setDialogModel(mode)
-        setDialogNewOpen(true)
-    }
-
-    const onDelete = async () => {
-        if (!itemToDelete) return
-
-        setLoading(true)
-
-        const res =
-            dialogModel === 'category'
-                ? await removeCategory(itemToDelete.id)
-                : await removeSubcategory(itemToDelete.id)
-
-        setLoading(false)
-
-        if (res) setItemToDelete(null)
+        openModal('create')
     }
 
     return (
@@ -165,8 +131,20 @@ export default function CategoryView() {
                                                 <CategoryItem
                                                     key={category.id}
                                                     category={category}
-                                                    openEdit={openEdit}
-                                                    openDelete={openDelete}
+                                                    openEdit={(
+                                                        mode: CategoryModelMode,
+                                                        item: ICategory | ISubcategory
+                                                    ) => {
+                                                        setDialogModel(mode)
+                                                        openModal('edit', item)
+                                                    }}
+                                                    openDelete={(
+                                                        mode: CategoryModelMode,
+                                                        item: ICategory | ISubcategory
+                                                    ) => {
+                                                        setDialogModel(mode)
+                                                        openDeleteModal(item)
+                                                    }}
                                                 />
                                             ))}
                                     </>
@@ -191,44 +169,7 @@ export default function CategoryView() {
                 )}
             </div>
 
-            <DeleteModal
-                title={itemToDelete?.title || ''}
-                description={t(
-                    dialogModel == 'category'
-                        ? 'categories.modal.deleteDescription'
-                        : 'subcategories.modal.deleteDescription'
-                )}
-                open={!isNil(itemToDelete)}
-                closeDialog={closeDelete}
-                loading={loading}
-                onConfirm={onDelete}
-            ></DeleteModal>
-
-            <CategoryDialog
-                open={dialogModel == 'category' && dialogNewOpen}
-                inEditingMode={false}
-                closeDialog={() => setDialogNewOpen(false)}
-            ></CategoryDialog>
-
-            <CategoryDialog
-                initialData={itemToEdit as ICategory}
-                open={dialogModel == 'category' && itemToEdit !== null}
-                inEditingMode={true}
-                closeDialog={() => setItemToEdit(null)}
-            ></CategoryDialog>
-
-            <SubcategoryDialog
-                open={dialogModel == 'subcategory' && dialogNewOpen}
-                inEditingMode={false}
-                closeDialog={() => setDialogNewOpen(false)}
-            ></SubcategoryDialog>
-
-            <SubcategoryDialog
-                initialData={itemToEdit as ISubcategory}
-                open={dialogModel == 'subcategory' && itemToEdit !== null}
-                inEditingMode={true}
-                closeDialog={() => setItemToEdit(null)}
-            ></SubcategoryDialog>
+            <CategorySubcategoryDialog mode={dialogModel}></CategorySubcategoryDialog>
         </>
     )
 }

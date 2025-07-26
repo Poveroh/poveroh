@@ -131,7 +131,7 @@ export const useCategory = () => {
             if (!res) {
                 throw new Error('No response from server')
             }
-            categoryStore.removeCategory(subcategoryId)
+            categoryStore.removeSubcategory(subcategoryId)
             return res
         } catch (error) {
             return handleError(error, 'Error deleting subcategory')

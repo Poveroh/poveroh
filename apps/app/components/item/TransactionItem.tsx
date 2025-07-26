@@ -27,24 +27,20 @@ export function TransactionItem({ transaction, openDelete, openEdit }: Transacti
 
     useEffect(() => {
         async function fetchData() {
-            if (transaction.amounts && transaction.amounts.length > 0) {
-                const firstAmount = transaction.amounts[0]
-
-                if (!firstAmount) return
-
-                setAmount(firstAmount.amount)
-                setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
-                setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
-                setFromAccount(await getBankAccount(firstAmount.bankAccountId))
-
-                if (transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]) {
-                    setToAccount(await getBankAccount(transaction.amounts[1].bankAccountId))
-                }
-            }
-
-            if (transaction.categoryId) {
-                setCategory(await getCategory(transaction.categoryId))
-            }
+            // if (transaction.amounts && transaction.amounts.length > 0) {
+            //     const firstAmount = transaction.amounts[0]
+            //     if (!firstAmount) return
+            //     setAmount(firstAmount.amount)
+            //     setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
+            //     setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
+            //     setFromAccount(await getBankAccount(firstAmount.bankAccountId))
+            //     if (transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]) {
+            //         setToAccount(await getBankAccount(transaction.amounts[1].bankAccountId))
+            //     }
+            // }
+            // if (transaction.categoryId) {
+            //     setCategory(await getCategory(transaction.categoryId))
+            // }
         }
 
         fetchData()

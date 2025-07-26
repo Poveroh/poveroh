@@ -9,7 +9,7 @@ import {
 } from '@poveroh/ui/components/breadcrumb'
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import { Button } from '@poveroh/ui/components/button'
-import { Download, Ellipsis, Loader2, Plus, RotateCcw, Trash } from 'lucide-react'
+import { Download, Ellipsis, Loader2, Plus, RotateCcw, Trash, Upload } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@poveroh/ui/components/tooltip'
@@ -127,12 +127,16 @@ export function Header(props: HeaderProps) {
                             </PopoverContent>
                         </Popover>
 
-                        <div className='flex flex-row items-center space-x-3'>
-                            <Button onClick={addAction?.onClick} disabled={addAction?.loading}>
-                                {addAction?.loading ? <Loader2 className='animate-spin mr-2' /> : <Plus />}
-                                {t('buttons.add.base')}
+                        {uploadAction && (
+                            <Button onClick={uploadAction?.onClick} variant='ghost' disabled={uploadAction?.loading}>
+                                {uploadAction?.loading ? <Loader2 className='animate-spin mr-2' /> : <Upload />}
                             </Button>
-                        </div>
+                        )}
+
+                        <Button onClick={addAction?.onClick} disabled={addAction?.loading}>
+                            {addAction?.loading ? <Loader2 className='animate-spin mr-2' /> : <Plus />}
+                            {t('buttons.add.base')}
+                        </Button>
                     </div>
                 ) : null}
             </header>

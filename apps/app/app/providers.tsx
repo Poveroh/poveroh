@@ -1,4 +1,7 @@
-import { AppContextProvider } from '@/context/appContext'
+import { AppContextProvider } from '@/context/AppContext'
+import { DeleteModalContextProvider } from '@/context/DeleteModalContext'
+import { DrawerContextProvider } from '@/context/DrawerContext'
+import { ModalContextProvider } from '@/context/ModalContext'
 import { ThemeProviders } from '@/providers/themeProvider'
 import { Toaster } from '@poveroh/ui/components/sonner'
 import { TooltipProvider } from '@poveroh/ui/components/tooltip'
@@ -12,10 +15,16 @@ export async function Providers({ children }: { children: React.ReactNode }) {
         <NextIntlClientProvider messages={messages}>
             <ThemeProviders>
                 <AppContextProvider>
-                    <TooltipProvider>
-                        <Toaster richColors />
-                        {children}
-                    </TooltipProvider>
+                    <ModalContextProvider>
+                        <DrawerContextProvider>
+                            <DeleteModalContextProvider>
+                                <TooltipProvider>
+                                    <Toaster richColors />
+                                    {children}
+                                </TooltipProvider>
+                            </DeleteModalContextProvider>
+                        </DrawerContextProvider>
+                    </ModalContextProvider>
                 </AppContextProvider>
             </ThemeProviders>
         </NextIntlClientProvider>
