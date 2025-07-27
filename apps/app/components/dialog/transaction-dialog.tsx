@@ -98,7 +98,6 @@ export function TransactionDialog() {
                     show: true
                 }}
                 onClick={() => formRef.current?.submit()}
-                onCancel={() => modalManager.closeModal()}
                 onDeleteClick={() => {
                     deleteModalManager.openModal(modalManager.item)
                 }}

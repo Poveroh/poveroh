@@ -9,14 +9,15 @@ export function ModalHeader({ title, description, decoration }: ModalHeaderProps
         <DialogHeader>
             <div className='flex flex-row items-center space-x-3'>
                 {decoration?.iconLogo &&
-                    (decoration?.iconLogo.mode === AppearanceMode.LOGO ? (
+                    decoration.iconLogo.name !== '' &&
+                    (decoration.iconLogo.mode === AppearanceMode.LOGO ? (
                         <BrandIcon
-                            circled={decoration?.iconLogo.circled}
-                            icon={decoration?.iconLogo.name}
+                            circled={decoration.iconLogo.circled}
+                            icon={decoration.iconLogo.name}
                             size='xl'
                         ></BrandIcon>
                     ) : (
-                        <DynamicIcon key={decoration?.iconLogo.name} name={decoration?.iconLogo.name} />
+                        <DynamicIcon key={decoration.iconLogo.name} name={decoration.iconLogo.name ?? ''} />
                     ))}
                 <div className='flex flex-col space-y-1'>
                     <DialogTitle>{title}</DialogTitle>

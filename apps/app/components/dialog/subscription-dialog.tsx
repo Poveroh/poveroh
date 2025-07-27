@@ -7,7 +7,6 @@ import { useSubscription } from '@/hooks/use-subscriptions'
 import { SubscriptionForm } from '../form/subscriptions-form'
 import { SubscriptionsSelector } from '../form/subscriptions-selector'
 import { Button } from '@poveroh/ui/components/button'
-import { DialogFooter } from '@poveroh/ui/components/dialog'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useModal } from '@/hooks/use-modal'
@@ -19,9 +18,10 @@ export function SubscriptionDialog() {
     const modalManager = useModal<ISubscription>()
     const deleteModalManager = useDeleteModal<ISubscription>()
 
-    const [fromTemplate, setFromTemplate] = useState(true)
     const [mode, setMode] = useState<'template' | 'editor'>(modalManager.inEditingMode ? 'editor' : 'template')
     const [localSubscription, setLocalSubscription] = useState(modalManager.item)
+
+    const fromTemplate = mode === 'template'
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -36,6 +36,18 @@ export function SubscriptionDialog() {
             setMode('editor')
         }
     }, [modalManager.inEditingMode, modalManager.item])
+
+    useEffect(() => {
+        if (!modalManager.isOpen) {
+            clearUp()
+        }
+    }, [modalManager.isOpen])
+
+    const clearUp = () => {
+        setMode('template')
+        setLocalSubscription(undefined)
+        setTitle(t('subscriptions.modal.newTitle'))
+    }
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)
@@ -90,7 +102,6 @@ export function SubscriptionDialog() {
             accountId: '',
             isEnabled: true
         })
-        setFromTemplate(true)
         setTitle(brand.name)
         setMode('editor')
     }
@@ -99,9 +110,7 @@ export function SubscriptionDialog() {
         if (!deleteModalManager.item) return
 
         deleteModalManager.setLoading(true)
-
         const res = await removeSubscription(deleteModalManager.item.id)
-
         deleteModalManager.setLoading(false)
 
         if (res) {
@@ -120,32 +129,27 @@ export function SubscriptionDialog() {
                 title={title}
                 decoration={{
                     iconLogo: {
-                        name: modalManager.item?.appearanceLogoIcon ?? '',
-                        mode: modalManager.item?.appearanceMode ?? AppearanceMode.LOGO,
+                        name: localSubscription?.appearanceLogoIcon || '',
+                        mode: localSubscription?.appearanceMode || AppearanceMode.LOGO,
                         circled: true
                     },
                     contentHeight: 'h-[60vh]'
                 }}
                 footer={{
-                    show: mode == 'editor',
-                    customFooter:
-                        mode === 'template' ? (
-                            <DialogFooter>
-                                <Button
-                                    type='button'
-                                    onClick={() => {
-                                        setFromTemplate(false)
-                                        setMode('editor')
-                                    }}
-                                    className='w-full'
-                                >
-                                    {t('subscriptions.buttons.addCustom')}
-                                </Button>
-                            </DialogFooter>
-                        ) : undefined
+                    show: true,
+                    customFooter: fromTemplate ? (
+                        <Button
+                            type='button'
+                            onClick={() => {
+                                setMode('editor')
+                            }}
+                            className='w-full'
+                        >
+                            {t('subscriptions.buttons.addCustom')}
+                        </Button>
+                    ) : undefined
                 }}
                 onClick={() => formRef.current?.submit()}
-                onCancel={() => modalManager.closeModal()}
                 onDeleteClick={() => {
                     deleteModalManager.openModal(modalManager.item)
                 }}
