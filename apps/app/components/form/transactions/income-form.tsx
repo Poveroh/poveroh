@@ -132,7 +132,11 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
     return (
         <Form {...form}>
-            <form>
+            <form
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}

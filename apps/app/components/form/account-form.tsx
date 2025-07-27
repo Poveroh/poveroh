@@ -40,7 +40,12 @@ export const AccountForm = forwardRef<FormRef, FormProps>((props: FormProps, ref
 
     return (
         <Form {...form}>
-            <form className='flex flex-col space-y-10'>
+            <form
+                className='flex flex-col space-y-10'
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
                 <div className='flex flex-col space-y-6'>
                     <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
 

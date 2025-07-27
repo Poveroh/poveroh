@@ -50,7 +50,11 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
     return (
         <Form {...form}>
-            <form>
+            <form
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
                 <div className='flex flex-col space-y-6'>
                     {!fromTemplate && (
                         <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />

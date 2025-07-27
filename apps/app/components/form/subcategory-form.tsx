@@ -92,7 +92,12 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
 
     return (
         <Form {...form}>
-            <form className='flex flex-col space-y-10'>
+            <form
+                className='flex flex-col space-y-10'
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}

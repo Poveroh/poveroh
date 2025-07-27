@@ -52,6 +52,19 @@ export default function Modal<T>(props: ModalProps) {
         }
     }
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Enter' && props.onClick) {
+                props.onClick()
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [props, props.onClick])
+
     return (
         <>
             <Dialog defaultOpen={true} open={props.open} onOpenChange={handleOpenChange}>
