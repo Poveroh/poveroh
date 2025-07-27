@@ -51,7 +51,7 @@ export function FilterButton<T extends Record<string, any>>({ fields, filters, o
                                     onValueChange={val => handleChange(field.name as keyof T, val)}
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder='Seleziona...' />
+                                        <SelectValue placeholder={t('messages.selectValue')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {field.options.map(opt => (
