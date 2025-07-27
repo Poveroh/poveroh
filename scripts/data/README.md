@@ -49,8 +49,6 @@ It provides flexible options for specifying the data source and handles data val
 
 You can configure the script using either **VS Code's `launch.json`** or a **`.env` file**.
 
----
-
 ### Option 1: Using `launch.json` (VS Code)
 
 Set arguments in the `args` array:
@@ -64,8 +62,6 @@ Supported flags:
 - `--folder=...` → Data folder (e.g. `import` or `sample`)
 - `--file=...` → Specific file to import (optional)
 - `--user=...` → User ID to associate data with (optional)
-
----
 
 ### Option 2: Using `.env` File
 
