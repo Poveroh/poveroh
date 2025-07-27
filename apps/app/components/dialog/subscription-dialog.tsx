@@ -38,7 +38,7 @@ export function SubscriptionDialog() {
     }, [modalManager.inEditingMode, modalManager.item])
 
     useEffect(() => {
-        if (!modalManager.isOpen) {
+        if (modalManager.isOpen && !modalManager.inEditingMode) {
             clearUp()
         }
     }, [modalManager.isOpen])
@@ -69,6 +69,7 @@ export function SubscriptionDialog() {
 
             if (modalManager.keepAdding.checked) {
                 formRef.current?.reset()
+                clearUp()
             } else {
                 modalManager.closeModal()
             }
