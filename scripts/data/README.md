@@ -75,8 +75,6 @@ FILL_CONFIG_USER=           # optional user ID
 
 These environment variables will be used **if CLI arguments are not provided**.
 
----
-
 > 💡 Tip: CLI args override `.env` values, which override internal defaults.
 
 ### Options
