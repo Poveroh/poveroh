@@ -18,10 +18,9 @@ export function SubscriptionDialog() {
     const modalManager = useModal<ISubscription>()
     const deleteModalManager = useDeleteModal<ISubscription>()
 
-    const [mode, setMode] = useState<'template' | 'editor'>(modalManager.inEditingMode ? 'editor' : 'template')
+    const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
+    const [fromTemplate, setFromTemplate] = useState<boolean>(modalManager.inEditingMode ? false : true)
     const [localSubscription, setLocalSubscription] = useState(modalManager.item)
-
-    const fromTemplate = mode === 'template'
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -45,6 +44,7 @@ export function SubscriptionDialog() {
 
     const clearUp = () => {
         setMode('template')
+        setFromTemplate(true)
         setLocalSubscription(undefined)
         setTitle(t('subscriptions.modal.newTitle'))
     }
@@ -104,6 +104,7 @@ export function SubscriptionDialog() {
             isEnabled: true
         })
         setTitle(brand.name)
+        setFromTemplate(true)
         setMode('editor')
     }
 
@@ -138,24 +139,25 @@ export function SubscriptionDialog() {
                 }}
                 footer={{
                     show: true,
-                    customFooter: fromTemplate ? (
-                        <Button
-                            type='button'
-                            onClick={() => {
-                                setMode('editor')
-                            }}
-                            className='w-full'
-                        >
-                            {t('subscriptions.buttons.addCustom')}
-                        </Button>
-                    ) : undefined
+                    customFooter:
+                        mode === 'template' ? (
+                            <Button
+                                type='button'
+                                onClick={() => {
+                                    setMode('editor')
+                                }}
+                                className='w-full'
+                            >
+                                {t('subscriptions.buttons.addCustom')}
+                            </Button>
+                        ) : undefined
                 }}
                 onClick={() => formRef.current?.submit()}
                 onDeleteClick={() => {
                     deleteModalManager.openModal(modalManager.item)
                 }}
             >
-                {mode == 'template' ? (
+                {mode === 'template' ? (
                     <SubscriptionsSelector dataCallback={onTemplateSelected} closeDialog={modalManager.closeModal} />
                 ) : (
                     <div className='flex flex-col space-y-6 w-full'>

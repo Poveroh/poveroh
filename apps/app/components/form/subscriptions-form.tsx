@@ -56,9 +56,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                 }}
             >
                 <div className='flex flex-col space-y-6'>
-                    {!fromTemplate && (
-                        <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
-                    )}
+                    <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
 
                     <div className='flex flex-row space-x-2'>
                         <AmountField
