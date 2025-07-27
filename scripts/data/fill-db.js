@@ -34,6 +34,7 @@ const { PrismaClient } = require('@prisma/client')
 const fs = require('fs')
 const path = require('path')
 const csv = require('csv-parser')
+const minimist = require('minimist')
 require('dotenv').config()
 
 const prisma = new PrismaClient()
@@ -42,9 +43,11 @@ const DEFAULT_FOLDER = 'sample'
 const IMPORT_ORDER = ['User', 'Account', 'Category', 'Subcategory', 'Transaction', 'Amount', 'Subscription']
 
 function parseArgs() {
-    const folderName = process.env.npm_config_folder || DEFAULT_FOLDER
-    const fileName = process.env.npm_config_file || null
-    const userId = process.env.npm_config_user || null
+    const args = minimist(process.argv.slice(2))
+
+    const folderName = args.folder || process.env.npm_config_folder || process.env.FILL_CONFIG_FOLDER || DEFAULT_FOLDER
+    const fileName = args.file || process.env.npm_config_file || process.env.FILL_CONFIG_FILE || null
+    const userId = args.user || process.env.npm_config_user || process.env.FILL_CONFIG_USER || null
 
     console.log('Folder:', folderName)
     console.log('File:', fileName || 'not provided')

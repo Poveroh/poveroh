@@ -45,6 +45,44 @@ It provides flexible options for specifying the data source and handles data val
     npm run setup:data --folder=folderName --file=fileName --user=userId
     ```
 
+## Debugging the Import Script
+
+You can configure the script using either **VS Code's `launch.json`** or a **`.env` file**.
+
+---
+
+### Option 1: Using `launch.json` (VS Code)
+
+Set arguments in the `args` array:
+
+```json
+"args": ["--folder=import", "--file=yourFile.json", "--user=yourUserId"]
+```
+
+Supported flags:
+
+- `--folder=...` → Data folder (e.g. `import` or `sample`)
+- `--file=...` → Specific file to import (optional)
+- `--user=...` → User ID to associate data with (optional)
+
+---
+
+### Option 2: Using `.env` File
+
+You can also define default values in a `.env` file:
+
+```env
+FILL_CONFIG_FOLDER=sample   # or "import"
+FILL_CONFIG_FILE=           # optional, leave empty to import all files
+FILL_CONFIG_USER=           # optional user ID
+```
+
+These environment variables will be used **if CLI arguments are not provided**.
+
+---
+
+> 💡 Tip: CLI args override `.env` values, which override internal defaults.
+
 ### Options
 
 Use this options to customize the script. You can omit them and script will load data from "sample" folder.
