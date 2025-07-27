@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AppearanceMode, Currencies, CyclePeriod, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscription } from '@/hooks/use-subscriptions'
@@ -28,6 +28,14 @@ export function SubscriptionDialog() {
     const [title, setTitle] = useState(
         modalManager.inEditingMode && modalManager.item ? modalManager.item.title : t('subscriptions.modal.newTitle')
     )
+
+    useEffect(() => {
+        if (modalManager.inEditingMode && modalManager.item) {
+            setLocalSubscription(modalManager.item)
+            setTitle(modalManager.item.title)
+            setMode('editor')
+        }
+    }, [modalManager.inEditingMode, modalManager.item])
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)
@@ -114,7 +122,7 @@ export function SubscriptionDialog() {
                     iconLogo: {
                         name: modalManager.item?.appearanceLogoIcon ?? '',
                         mode: modalManager.item?.appearanceMode ?? AppearanceMode.LOGO,
-                        circled: false
+                        circled: true
                     },
                     contentHeight: 'h-[60vh]'
                 }}
@@ -138,6 +146,9 @@ export function SubscriptionDialog() {
                 }}
                 onClick={() => formRef.current?.submit()}
                 onCancel={() => modalManager.closeModal()}
+                onDeleteClick={() => {
+                    deleteModalManager.openModal(modalManager.item)
+                }}
             >
                 {mode == 'template' ? (
                     <SubscriptionsSelector dataCallback={onTemplateSelected} closeDialog={modalManager.closeModal} />
