@@ -1,16 +1,16 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { IBankAccount } from '@poveroh/types'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { IAccount } from '@poveroh/types'
+import { useAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 
-type BankAccountItemProps = {
-    account: IBankAccount
-    openDelete: (item: IBankAccount) => void
-    openEdit: (item: IBankAccount) => void
+type AccountItemProps = {
+    account: IAccount
+    openDelete: (item: IAccount) => void
+    openEdit: (item: IAccount) => void
 }
 
-export function BankAccountItem({ account, openDelete, openEdit }: BankAccountItemProps) {
-    const { typeList } = useBankAccount()
+export function AccountItem({ account, openDelete, openEdit }: AccountItemProps) {
+    const { typeList } = useAccount()
 
     const type = typeList.find(tp => tp.value == account.type)
 
@@ -26,7 +26,7 @@ export function BankAccountItem({ account, openDelete, openEdit }: BankAccountIt
                     <p className='sub'>{type?.label}</p>
                 </div>
             </div>
-            <OptionsPopover<IBankAccount> data={account} openDelete={openDelete} openEdit={openEdit}></OptionsPopover>
+            <OptionsPopover<IAccount> data={account} openDelete={openDelete} openEdit={openEdit}></OptionsPopover>
         </div>
     )
 }

@@ -35,7 +35,7 @@ export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }
         cycleNumber: '1',
         cyclePeriod: CyclePeriod.MONTH,
         rememberPeriod: RememberPeriod.THREE_DAYS,
-        bankAccountId: ''
+        accountId: ''
     }
 
     const formSchema = z
@@ -50,7 +50,7 @@ export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }
             cycleNumber: z.string(),
             cyclePeriod: z.nativeEnum(CyclePeriod),
             rememberPeriod: z.nativeEnum(RememberPeriod).optional(),
-            bankAccountId: z.string().nonempty(t('messages.errors.required'))
+            accountId: z.string().nonempty(t('messages.errors.required'))
         })
         .refine(
             data => {

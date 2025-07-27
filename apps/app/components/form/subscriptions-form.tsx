@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import { AppearanceMode, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
 import { iconList } from '../icon'
 import {
@@ -13,7 +13,7 @@ import {
     AmountField,
     CurrencyField,
     DateField,
-    BankAccountField,
+    AccountField,
     SelectField,
     NoteField,
     IconField
@@ -34,7 +34,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
 
     const { initialData, inEditingMode, fromTemplate, dataCallback } = props
 
-    const { bankAccountCacheList } = useBankAccount()
+    const { accountCacheList } = useAccount()
 
     const { form, icon, iconError, submitForm, handleIconChange } = useSubscriptionForm({
         initialData,
@@ -111,13 +111,13 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                         />
                     </div>
 
-                    <BankAccountField
+                    <AccountField
                         control={form.control}
-                        name='bankAccountId'
-                        label={t('form.bankaccount.label')}
-                        placeholder={t('form.bankaccount.placeholder')}
+                        name='accountId'
+                        label={t('form.account.label')}
+                        placeholder={t('form.account.placeholder')}
                         mandatory={true}
-                        bankAccounts={Object.values(bankAccountCacheList)}
+                        accounts={Object.values(accountCacheList)}
                     />
 
                     {(!fromTemplate || initialData?.appearanceMode == AppearanceMode.ICON) && (

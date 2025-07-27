@@ -1,28 +1,28 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { IBankAccount, IBankAccountBase, IBankAccountFilters } from '@poveroh/types'
+import { IAccount, IAccountBase, IAccountFilters } from '@poveroh/types'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import logger from '../../../utils/logger'
 
-export class BankAccountController {
+export class AccountController {
     //POST /
     static async add(req: Request, res: Response) {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let readedBankAccount: IBankAccountBase = JSON.parse(req.body.data)
+            let readedAccount: IAccountBase = JSON.parse(req.body.data)
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
-                    `${req.user.id}/bankaccount/${readedBankAccount.title}`
+                    `${req.user.id}/account/${readedAccount.title}`
                 )
-                readedBankAccount.logoIcon = filePath
+                readedAccount.logoIcon = filePath
             }
 
-            let account = await prisma.bankAccount.create({
-                data: { ...readedBankAccount, userId: req.user.id }
+            let account = await prisma.account.create({
+                data: { ...readedAccount, userId: req.user.id }
             })
 
             res.status(200).json(account)
@@ -37,25 +37,25 @@ export class BankAccountController {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let readedBankAccount: IBankAccount = JSON.parse(req.body.data)
+            let readedAccount: IAccount = JSON.parse(req.body.data)
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
-                    `${req.user.id}/bankaccount/${readedBankAccount.title}`
+                    `${req.user.id}/account/${readedAccount.title}`
                 )
-                readedBankAccount.logoIcon = filePath
+                readedAccount.logoIcon = filePath
             }
 
-            const account = await prisma.bankAccount.update({
+            const account = await prisma.account.update({
                 where: {
-                    id: readedBankAccount.id
+                    id: readedAccount.id
                 },
                 data: {
-                    title: readedBankAccount.title,
-                    description: readedBankAccount.description,
-                    type: readedBankAccount.type,
-                    logoIcon: readedBankAccount.logoIcon
+                    title: readedAccount.title,
+                    description: readedAccount.description,
+                    type: readedAccount.type,
+                    logoIcon: readedAccount.logoIcon
                 }
             })
 
@@ -71,7 +71,7 @@ export class BankAccountController {
         try {
             const { id } = req.params
 
-            await prisma.bankAccount.delete({
+            await prisma.account.delete({
                 where: { id: id }
             })
 
@@ -85,13 +85,13 @@ export class BankAccountController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as IBankAccountFilters
+            const filters = req.query as unknown as IAccountFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
             const where = buildWhere(filters)
 
-            const data = await prisma.bankAccount.findMany({
+            const data = await prisma.account.findMany({
                 where: {
                     ...where,
                     userId: req.user.id

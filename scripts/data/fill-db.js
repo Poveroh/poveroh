@@ -39,7 +39,7 @@ require('dotenv').config()
 const prisma = new PrismaClient()
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
-const IMPORT_ORDER = ['User', 'BankAccount', 'Category', 'Subcategory', 'Transaction', 'Amount', 'Subscription']
+const IMPORT_ORDER = ['User', 'Account', 'Category', 'Subcategory', 'Transaction', 'Amount', 'Subscription']
 
 function parseArgs() {
     const folderName = process.env.npm_config_folder || DEFAULT_FOLDER

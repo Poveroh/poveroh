@@ -1,6 +1,6 @@
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
-import { IBankAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types'
+import { IAccount, ICategory, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useEffect, useState } from 'react'
 import icons from 'currency-icons'
@@ -16,10 +16,10 @@ type TransactionItemProps = {
 
 export function TransactionItem({ transaction, openDelete, openEdit }: TransactionItemProps) {
     const { getCategory } = useCategory()
-    const { getBankAccount } = useBankAccount()
+    const { getAccount } = useAccount()
 
-    const [fromAccount, setFromAccount] = useState<IBankAccount | null>(null)
-    const [toAccount, setToAccount] = useState<IBankAccount | null>(null)
+    const [fromAccount, setFromAccount] = useState<IAccount | null>(null)
+    const [toAccount, setToAccount] = useState<IAccount | null>(null)
     const [category, setCategory] = useState<ICategory | null>(null)
     const [amount, setAmount] = useState<number>(0)
     const [currencySymbol, setCurrencySymbol] = useState('')
@@ -33,9 +33,9 @@ export function TransactionItem({ transaction, openDelete, openEdit }: Transacti
             //     setAmount(firstAmount.amount)
             //     setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
             //     setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
-            //     setFromAccount(await getBankAccount(firstAmount.bankAccountId))
+            //     setFromAccount(await getAccount(firstAmount.accountId))
             //     if (transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]) {
-            //         setToAccount(await getBankAccount(transaction.amounts[1].bankAccountId))
+            //         setToAccount(await getAccount(transaction.amounts[1].accountId))
             //     }
             // }
             // if (transaction.categoryId) {
@@ -44,7 +44,7 @@ export function TransactionItem({ transaction, openDelete, openEdit }: Transacti
         }
 
         fetchData()
-    }, [transaction, getBankAccount, getCategory])
+    }, [transaction, getAccount, getCategory])
 
     return (
         <div className='flex flex-row justify-between items-center w-full p-5 border-border'>

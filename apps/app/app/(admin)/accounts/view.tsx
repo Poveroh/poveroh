@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IBankAccount, IBankAccountFilters } from '@poveroh/types'
+import { IAccount, IAccountFilters } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
@@ -11,40 +11,40 @@ import { Input } from '@poveroh/ui/components/input'
 import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
-import { BankAccountDialog } from '@/components/dialog/bank-account-dialog'
-import { BankAccountItem } from '@/components/item/bank-account-item'
+import { AccountDialog } from '@/components/dialog/account-dialog'
+import { AccountItem } from '@/components/item/account-item'
 import { FilterButton } from '@/components/filter/filter-button'
 import { Header } from '@/components/other/header-page'
 import SkeletonItem from '@/components/skeleton/skeleton-item'
 
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
-export default function BankAccountView() {
+export default function AccountView() {
     const t = useTranslations()
 
-    const { bankAccountCacheList, fetchBankAccount, typeList, accountLoading } = useBankAccount()
+    const { accountCacheList, fetchAccount, typeList, accountLoading } = useAccount()
 
-    const { openModal } = useModal<IBankAccount>()
-    const { openModal: openDeleteModal } = useDeleteModal<IBankAccount>()
+    const { openModal } = useModal<IAccount>()
+    const { openModal: openDeleteModal } = useDeleteModal<IAccount>()
 
-    const [localBankAccountList, setLocalBankAccountList] = useState<IBankAccount[]>(bankAccountCacheList)
+    const [localAccountList, setLocalAccountList] = useState<IAccount[]>(accountCacheList)
 
-    const [filters, setFilters] = useState<IBankAccountFilters>({})
+    const [filters, setFilters] = useState<IAccountFilters>({})
 
     useEffect(() => {
-        fetchBankAccount()
+        fetchAccount()
     }, [])
 
     useEffect(() => {
-        setLocalBankAccountList(bankAccountCacheList)
-    }, [bankAccountCacheList])
+        setLocalAccountList(accountCacheList)
+    }, [accountCacheList])
 
-    const onFilter = (filter: IBankAccountFilters = {}) => {
+    const onFilter = (filter: IAccountFilters = {}) => {
         const updatedFilter = { ...filter }
 
-        const filteredList = bankAccountCacheList.filter(account => {
+        const filteredList = accountCacheList.filter(account => {
             const titleMatch = updatedFilter.title?.contains
                 ? account.title?.toLowerCase().includes(updatedFilter.title.contains.toLowerCase())
                 : true
@@ -59,11 +59,11 @@ export default function BankAccountView() {
         })
 
         setFilters(updatedFilter)
-        setLocalBankAccountList(filteredList)
+        setLocalAccountList(filteredList)
     }
 
-    const removeFilter = (key: keyof IBankAccountFilters) => {
-        const newFilters: IBankAccountFilters = { ...filters }
+    const removeFilter = (key: keyof IAccountFilters) => {
+        const newFilters: IAccountFilters = { ...filters }
         delete newFilters[key]
 
         if (key === 'title' || key === 'description') {
@@ -76,7 +76,7 @@ export default function BankAccountView() {
     const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        const newFilters: IBankAccountFilters = {
+        const newFilters: IAccountFilters = {
             ...filters,
             title: textToSearch ? { contains: textToSearch } : undefined,
             description: textToSearch ? { contains: textToSearch } : undefined
@@ -89,14 +89,14 @@ export default function BankAccountView() {
         <>
             <div className='space-y-12'>
                 <Header
-                    title={t('settings.manage.bankAccount.title')}
+                    title={t('settings.manage.account.title')}
                     breadcrumbs={[
                         { label: t('settings.title'), href: '/settings' },
                         { label: t('settings.manage.title'), href: '/settings/manage' },
-                        { label: t('settings.manage.bankAccount.title') }
+                        { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchBankAccount(true),
+                        onClick: () => fetchAccount(true),
                         loading: accountLoading.fetch
                     }}
                     addAction={{
@@ -134,7 +134,7 @@ export default function BankAccountView() {
                                         key={key}
                                         variant='secondary'
                                         className='flex items-center gap-1'
-                                        onClick={() => removeFilter(key as keyof IBankAccountFilters)}
+                                        onClick={() => removeFilter(key as keyof IAccountFilters)}
                                     >
                                         {item.label}
                                         <X />
@@ -156,14 +156,14 @@ export default function BankAccountView() {
                         onFilterChange={onFilter}
                     />
                 </div>
-                {!accountLoading.fetch && localBankAccountList.length > 0 ? (
+                {!accountLoading.fetch && localAccountList.length > 0 ? (
                     <Box>
                         <>
-                            {localBankAccountList.map(account => (
-                                <BankAccountItem
+                            {localAccountList.map(account => (
+                                <AccountItem
                                     key={account.id}
                                     account={account}
-                                    openEdit={(item: IBankAccount) => {
+                                    openEdit={(item: IAccount) => {
                                         openModal('edit', item)
                                     }}
                                     openDelete={openDeleteModal}
@@ -179,8 +179,8 @@ export default function BankAccountView() {
                             <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
                                 <Landmark />
                                 <div className='flex flex-col items-center space-y-2 justify-center'>
-                                    <h4>{t('bankAccounts.empty.title')}</h4>
-                                    <p>{t('bankAccounts.empty.subtitle')}</p>
+                                    <h4>{t('accounts.empty.title')}</h4>
+                                    <p>{t('accounts.empty.subtitle')}</p>
                                 </div>
                             </div>
                         )}
@@ -188,7 +188,7 @@ export default function BankAccountView() {
                 )}
             </div>
 
-            <BankAccountDialog></BankAccountDialog>
+            <AccountDialog></AccountDialog>
         </>
     )
 }

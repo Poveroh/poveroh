@@ -1,38 +1,38 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { AppearanceMode, IBankAccount } from '@poveroh/types'
+import { AppearanceMode, IAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
-import { useBankAccount } from '@/hooks/use-bank-account'
-import { BankAccountForm } from '../form/bank-account-form'
+import { useAccount } from '@/hooks/use-account'
+import { AccountForm } from '../form/account-form'
 import { useModal } from '@/hooks/use-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
-export function BankAccountDialog() {
+export function AccountDialog() {
     const t = useTranslations()
-    const { addBankAccount, editBankAccount, removeBankAccount } = useBankAccount()
+    const { addAccount, editAccount, removeAccount } = useAccount()
 
-    const modalManager = useModal<IBankAccount>()
-    const deleteModalManager = useDeleteModal<IBankAccount>()
+    const modalManager = useModal<IAccount>()
+    const deleteModalManager = useDeleteModal<IAccount>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)
 
-        let res: IBankAccount | null
+        let res: IAccount | null
 
         // edit dialog
         if (modalManager.inEditingMode && modalManager.item) {
-            res = await editBankAccount(modalManager.item.id, data)
+            res = await editAccount(modalManager.item.id, data)
 
             if (!res) return
 
             modalManager.closeModal()
         } else {
             // new dialog
-            res = await addBankAccount(data)
+            res = await addAccount(data)
 
             if (!res) return
 
@@ -58,7 +58,7 @@ export function BankAccountDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await removeBankAccount(deleteModalManager.item.id)
+        const res = await removeAccount(deleteModalManager.item.id)
 
         deleteModalManager.setLoading(false)
 
@@ -73,12 +73,12 @@ export function BankAccountDialog() {
 
     return (
         <>
-            <Modal<IBankAccount>
+            <Modal<IAccount>
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
                         ? modalManager.item.title
-                        : t('bankAccounts.modal.newTitle')
+                        : t('accounts.modal.newTitle')
                 }
                 decoration={{
                     iconLogo: {
@@ -96,7 +96,7 @@ export function BankAccountDialog() {
                 }}
             >
                 <div className='flex flex-col space-y-6 w-full'>
-                    <BankAccountForm
+                    <AccountForm
                         ref={formRef}
                         initialData={modalManager.item}
                         inEditingMode={modalManager.inEditingMode}
@@ -108,7 +108,7 @@ export function BankAccountDialog() {
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('bankAccounts.modal.deleteDescription')}
+                description={t('accounts.modal.deleteDescription')}
                 loading={deleteModalManager.loading}
                 open={deleteModalManager.isOpen}
                 closeDialog={deleteModalManager.closeModal}

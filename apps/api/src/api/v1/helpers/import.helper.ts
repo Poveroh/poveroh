@@ -12,13 +12,13 @@ export const ImportHelper = {
      * It queries the database directly for matching transactions and subscriptions.
      *
      * @param idUser User ID
-     * @param bankAccountId Bank Account ID
+     * @param accountId Bank Account ID
      * @param rawTransactions Array of raw transactions
      * @returns Promise of normalized transactions
      */
     async normalizeTransaction(
         userId: string,
-        bankAccountId: string,
+        accountId: string,
         rawTransactions: IReadedTransaction[]
     ): Promise<ITransaction[]> {
         const transactions: ITransaction[] = []
@@ -65,7 +65,7 @@ export const ImportHelper = {
                         amount: rawTransaction.amount,
                         currency: rawTransaction.currency,
                         action: rawTransaction.type,
-                        bankAccountId: bankAccountId
+                        accountId: accountId
                     }
                 ],
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,

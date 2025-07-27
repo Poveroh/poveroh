@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl'
 import {
     Currencies,
     currencyCatalog,
-    IBankAccount,
+    IAccount,
     ICategory,
     IItem,
     ISubcategory,
@@ -31,7 +31,7 @@ import { BrandIcon } from '@/components/icon/brand-icon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/use-error'
 import { useCategory } from '@/hooks/use-category'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import logger from '@/lib/logger'
 import { amountSchema, FormProps, FormRef } from '@/types/form'
 
@@ -42,7 +42,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
     const { handleError } = useError()
     const { categoryCacheList } = useCategory()
-    const { bankAccountCacheList } = useBankAccount()
+    const { accountCacheList } = useAccount()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
@@ -54,7 +54,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         date: new Date().toISOString().split('T')[0],
         amount: 0,
         currency: Currencies.EUR,
-        bankAccountId: '',
+        accountId: '',
         categoryId: '',
         subcategoryId: '',
         note: '',
@@ -71,7 +71,7 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
             invalid_type_error: t('messages.errors.pattern')
         }),
         currency: z.string().nonempty(t('messages.errors.required')),
-        bankAccountId: z.string().nonempty(t('messages.errors.required')),
+        accountId: z.string().nonempty(t('messages.errors.required')),
         categoryId: z.string().nonempty(t('messages.errors.required')),
         subcategoryId: z.string().nonempty(t('messages.errors.required')),
         note: z.string(),
@@ -226,18 +226,18 @@ export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
                     <FormField
                         control={form.control}
-                        name='bankAccountId'
+                        name='accountId'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.account.label')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger variant={inputStyle}>
-                                            <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                            <SelectValue placeholder={t('form.account.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccountCacheList.map((item: IBankAccount) => (
+                                        {accountCacheList.map((item: IAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={item.logoIcon} size='sm' />

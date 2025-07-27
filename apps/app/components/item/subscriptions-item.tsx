@@ -1,10 +1,10 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { AppearanceMode, IBankAccount, ISubscription } from '@poveroh/types'
+import { AppearanceMode, IAccount, ISubscription } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import DynamicIcon from '../icon/dynamic-icon'
 import icons from 'currency-icons'
 import { useSubscription } from '@/hooks/use-subscriptions'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 
 type SubscriptionItemProps = {
@@ -15,15 +15,15 @@ type SubscriptionItemProps = {
 
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
     const { getNextExecutionText } = useSubscription()
-    const { getBankAccount } = useBankAccount()
+    const { getAccount } = useAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
-    const [bankAccount, setBankAccount] = useState<IBankAccount | null>(null)
+    const [account, setAccount] = useState<IAccount | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getBankAccount(subscription.bankAccountId)
-            setBankAccount(account)
+            const account = await getAccount(subscription.accountId)
+            setAccount(account)
         }
         fetchData()
     }, [subscription])
@@ -52,7 +52,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                 <div className='flex flex-col space-y-1'>
                     <p>{subscription.title}</p>
                     <div className='flex flex-row space-x-2'>
-                        <p className='sub'>{bankAccount?.title}</p>
+                        <p className='sub'>{account?.title}</p>
                     </div>
                 </div>
             </div>

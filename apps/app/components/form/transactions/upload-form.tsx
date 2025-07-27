@@ -5,7 +5,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 import { IImport, ITransaction } from '@poveroh/types'
 
 import { TransactionsApprovalList } from '@/components/other/transactions-approval-list'
-import { BankAccountAndFileForm } from './bank-account-and-file-form'
+import { AccountAndFileForm } from './account-and-file-form'
 import { cloneDeep } from 'lodash'
 import { useImport } from '@/hooks/use-imports'
 import { FormRef } from '@/types'
@@ -48,7 +48,7 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
 
     return (
         <div className='flex flex-col space-y-6'>
-            <BankAccountAndFileForm dataCallback={handleCallback} />
+            <AccountAndFileForm dataCallback={handleCallback} />
 
             {parsedTransaction.length > 0 && <TransactionsApprovalList transactions={parsedTransaction} />}
         </div>

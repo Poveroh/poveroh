@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { currencyCatalog, IBankAccount, IItem, TransactionAction } from '@poveroh/types'
+import { currencyCatalog, IAccount, IItem, TransactionAction } from '@poveroh/types'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -17,7 +17,7 @@ import { BrandIcon } from '@/components/icon/brand-icon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { useError } from '@/hooks/use-error'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { Button } from '@poveroh/ui/components/button'
 import logger from '@/lib/logger'
 import { amountSchema, FormProps, FormRef } from '@/types/form'
@@ -28,7 +28,7 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     const { initialData, inEditingMode, inputStyle, dataCallback } = props
 
     const { handleError } = useError()
-    const { bankAccountCacheList } = useBankAccount()
+    const { accountCacheList } = useAccount()
 
     const defaultValues = {
         title: '',
@@ -58,7 +58,7 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
             ignore: z.boolean()
         })
         .refine(data => data.from !== data.to, {
-            message: t('messages.errors.bankAccountMismatch'),
+            message: t('messages.errors.accountMismatch'),
             path: ['from']
         })
 
@@ -79,12 +79,12 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
         }
     }, [form.formState.errors])
 
-    const switchBankAccount = () => {
-        const fromBankAccount = form.getValues('from')
-        const toBankAccount = form.getValues('to')
+    const switchAccount = () => {
+        const fromAccount = form.getValues('from')
+        const toAccount = form.getValues('to')
 
-        form.setValue('from', toBankAccount, { shouldValidate: false })
-        form.setValue('to', fromBankAccount, { shouldValidate: false })
+        form.setValue('from', toAccount, { shouldValidate: false })
+        form.setValue('to', fromAccount, { shouldValidate: false })
     }
 
     const handleLocalSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -197,7 +197,7 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     </div>
 
                     <div className='flex flex-col space-y-2'>
-                        <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
+                        <FormLabel mandatory>{t('form.account.label')}</FormLabel>
                         <div className='flex flex-row space-x-2'>
                             <FormField
                                 control={form.control}
@@ -211,11 +211,11 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                         >
                                             <FormControl>
                                                 <SelectTrigger variant={inputStyle}>
-                                                    <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                                    <SelectValue placeholder={t('form.account.placeholder')} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {bankAccountCacheList.map((item: IBankAccount) => (
+                                                {accountCacheList.map((item: IAccount) => (
                                                     <SelectItem key={item.id} value={item.id}>
                                                         <div className='flex items-center flex-row space-x-4'>
                                                             <BrandIcon icon={item.logoIcon} size='sm' />
@@ -233,7 +233,7 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                 type='button'
                                 variant='ghost'
                                 className='h-[40px] w-[40px] cursor-pointer'
-                                onClick={switchBankAccount}
+                                onClick={switchAccount}
                             >
                                 <DynamicIcon name='move-right' />
                             </Button>
@@ -249,11 +249,11 @@ export const TransferForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                         >
                                             <FormControl>
                                                 <SelectTrigger variant={inputStyle}>
-                                                    <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                                    <SelectValue placeholder={t('form.account.placeholder')} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {bankAccountCacheList.map((item: IBankAccount) => (
+                                                {accountCacheList.map((item: IAccount) => (
                                                     <SelectItem key={item.id} value={item.id}>
                                                         <div className='flex items-center flex-row space-x-4'>
                                                             <BrandIcon icon={item.logoIcon} size='sm' />

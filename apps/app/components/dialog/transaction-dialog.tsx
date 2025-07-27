@@ -117,7 +117,7 @@ export function TransactionDialog() {
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('bankAccounts.modal.deleteDescription')}
+                description={t('accounts.modal.deleteDescription')}
                 loading={deleteModalManager.loading}
                 open={deleteModalManager.isOpen}
                 closeDialog={deleteModalManager.closeModal}
