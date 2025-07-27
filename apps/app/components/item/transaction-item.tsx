@@ -73,7 +73,10 @@ export const TransactionItem = memo(function TransactionItem({
     const { fromAccount, toAccount, category, amount, currencySymbol, isExpense } = transactionData
 
     return (
-        <div className='flex flex-row justify-between items-center w-full p-5 border-border'>
+        <div
+            className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+            onClick={() => openEdit(transaction)}
+        >
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
                     {transaction.type === TransactionAction.INTERNAL ? (
