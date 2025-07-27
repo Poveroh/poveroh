@@ -2,8 +2,8 @@
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import { useTranslations } from 'next-intl'
-import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react'
-import Divider from '@/components/other/divider'
+import { Ellipsis, Pencil, Trash2 } from 'lucide-react'
+import { Button } from '@poveroh/ui/components/button'
 
 type OptionsPopoverContentProps<T> = {
     data: T
@@ -15,28 +15,29 @@ function OptionsContent<T>({ data, openDelete, openEdit }: OptionsPopoverContent
     const t = useTranslations()
 
     return (
-        <div className='flex flex-col space-y-5'>
-            <a
-                className='flex items-center space-x-2 w-full cursor-pointer'
+        <div className='flex flex-col'>
+            <Button
+                variant='ghost'
+                className='justify-start w-full'
                 onClick={e => {
                     e.stopPropagation()
                     openEdit(data)
                 }}
             >
-                <Pencil size={20} />
+                <Pencil className='mr-2' />
                 <p>{t('buttons.editItem')}</p>
-            </a>
-            <Divider />
-            <a
-                className='flex items-center space-x-2 w-full cursor-pointer'
+            </Button>
+            <Button
+                variant='ghost'
+                className='justify-start w-full'
                 onClick={e => {
-                    openDelete(data)
                     e.stopPropagation()
+                    openDelete(data)
                 }}
             >
-                <Trash2 className='danger' size={20} />
+                <Trash2 className='mr-2 danger' />
                 <p className='danger'>{t('buttons.deleteItem')}</p>
-            </a>
+            </Button>
         </div>
     )
 }
@@ -45,7 +46,9 @@ export function OptionsPopover<T>({ data, openDelete, openEdit }: OptionsPopover
     return (
         <Popover>
             <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
-                <EllipsisVertical className='cursor-pointer' />
+                <Button size='icon' variant='ghost'>
+                    <Ellipsis />
+                </Button>
             </PopoverTrigger>
             <PopoverContent align='end' className='w-52'>
                 <OptionsContent data={data} openDelete={openDelete} openEdit={openEdit} />

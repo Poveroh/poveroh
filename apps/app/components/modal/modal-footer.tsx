@@ -6,7 +6,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { DialogFooter } from '@poveroh/ui/components/dialog'
 import { cn } from '@poveroh/ui/lib/utils'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 export function ModalFooter<T>(props: ModalFooterProps) {
@@ -25,6 +25,7 @@ export function ModalFooter<T>(props: ModalFooterProps) {
             >
                 {inEditingMode && (
                     <Button type='button' variant='danger' onClick={props.onDeleteClick}>
+                        <Trash />
                         {t('buttons.delete')}
                     </Button>
                 )}
@@ -48,10 +49,15 @@ export function ModalFooter<T>(props: ModalFooterProps) {
                     </div>
                 )}
                 {showSaveButton && (
-                    <Button type='submit' disabled={loading || buttonDisabled} onClick={props.onClick}>
-                        {loading && <Loader2 className='animate-spin mr-2' />}
-                        {t(props.confirmButtonText || 'buttons.save')}
-                    </Button>
+                    <div className='flex flex-row items-center space-x-2'>
+                        <Button type='button' variant='outline' onClick={props.onCancel} className='w-full sm:w-auto'>
+                            {t('buttons.cancel')}
+                        </Button>
+                        <Button type='submit' disabled={loading || buttonDisabled} onClick={props.onClick}>
+                            {loading && <Loader2 className='animate-spin mr-2' />}
+                            {t(props.confirmButtonText || 'buttons.save')}
+                        </Button>
+                    </div>
                 )}
             </div>
         </DialogFooter>

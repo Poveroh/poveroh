@@ -26,7 +26,7 @@ export const TransactionHelper = {
         })
 
         const baseAmount = {
-            amount: data.amounts,
+            amount: data.amount,
             currency: data.currency,
             transactionId: transaction.id
         }

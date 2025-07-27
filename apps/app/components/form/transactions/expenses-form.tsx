@@ -395,7 +395,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             >
                                                 <FormControl>
                                                     <SelectTrigger variant={inputStyle}>
-                                                        <SelectValue placeholder={t('form.aaccount.placeholder')} />
+                                                        <SelectValue placeholder={t('form.account.placeholder')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>

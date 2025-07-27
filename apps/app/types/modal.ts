@@ -20,6 +20,7 @@ export type ModalFooterProps = {
         customFooter?: React.ReactElement
     }
     confirmButtonText?: string
+    onCancel?: () => void
     onClick: () => void
     onDeleteClick?: () => void
 }
