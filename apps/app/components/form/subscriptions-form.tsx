@@ -122,7 +122,7 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                         accounts={Object.values(accountCacheList)}
                     />
 
-                    {(!fromTemplate || initialData?.appearanceMode == AppearanceMode.ICON) && (
+                    {!fromTemplate && (
                         <IconField
                             label={t('form.icon.label')}
                             iconList={iconList}

@@ -144,6 +144,7 @@ export function SubscriptionDialog() {
                             <Button
                                 type='button'
                                 onClick={() => {
+                                    setFromTemplate(false)
                                     setMode('editor')
                                 }}
                                 className='w-full'
