@@ -18,7 +18,7 @@ export const TransactionHelper = {
     async handleInternalTransaction(data: any, userId: string) {
         const transaction = await this.createTransaction({
             title: data.title,
-            type: TransactionAction.INTERNAL,
+            action: TransactionAction.INTERNAL,
             date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,
@@ -43,7 +43,7 @@ export const TransactionHelper = {
     async handleIncomeTransaction(data: any, userId: string) {
         const transaction = await this.createTransaction({
             title: data.title,
-            type: TransactionAction.INCOME,
+            action: TransactionAction.INCOME,
             categoryId: data.categoryId,
             subcategoryId: data.subcategoryId,
             date: new Date(data.date).toISOString(),
@@ -67,7 +67,7 @@ export const TransactionHelper = {
     async handleExpensesTransaction(data: any, userId: string) {
         const transaction = await this.createTransaction({
             title: data.title,
-            type: TransactionAction.EXPENSES,
+            action: TransactionAction.EXPENSES,
             categoryId: data.categoryId,
             subcategoryId: data.subcategoryId,
             date: new Date(data.date).toISOString(),

@@ -15,7 +15,7 @@ export interface IAmount extends IAmountBase {
 
 export interface ITransactionBase {
     title: string
-    type: TransactionAction
+    action: TransactionAction
     categoryId?: string
     subcategoryId?: string
     icon?: string

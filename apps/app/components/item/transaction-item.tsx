@@ -51,7 +51,7 @@ export const TransactionItem = memo(function TransactionItem({
         // Get accounts from cache instead of async calls
         const fromAccount = accountCacheList.find(acc => acc.id === firstAmount.accountId) || null
         const toAccount =
-            transaction.type === TransactionAction.INTERNAL && transaction.amounts[1]
+            transaction.action === TransactionAction.INTERNAL && transaction.amounts[1]
                 ? accountCacheList.find(acc => acc.id === transaction.amounts[1]!.accountId) || null
                 : null
 
@@ -79,7 +79,7 @@ export const TransactionItem = memo(function TransactionItem({
         >
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
-                    {transaction.type === TransactionAction.INTERNAL ? (
+                    {transaction.action === TransactionAction.INTERNAL ? (
                         <ArrowRightLeft />
                     ) : transaction.icon ? (
                         <BrandIcon icon={transaction.icon} />
@@ -105,7 +105,7 @@ export const TransactionItem = memo(function TransactionItem({
             <div className='flex flex-row items-center space-x-6'>
                 <div className='flex flex-col space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
-                        {transaction.type !== TransactionAction.INTERNAL && (
+                        {transaction.action !== TransactionAction.INTERNAL && (
                             <>
                                 {isExpense ? (
                                     <p className='danger font-bold'>-</p>

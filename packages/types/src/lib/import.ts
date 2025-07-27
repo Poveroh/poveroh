@@ -28,7 +28,7 @@ export interface IValueReturned {
 export interface IReadedTransaction {
     date: Date
     amount: number
-    type: TransactionAction
+    action: TransactionAction
     currency: Currencies
     title: string
     originalRow?: Record<string, any>

@@ -108,9 +108,9 @@ export const useTransaction = () => {
 
     const getActionList = (excludeInternal?: boolean): IItem[] => {
         const actionList = [
-            { value: TransactionAction.INCOME, label: t('transactions.types.income') },
-            { value: TransactionAction.EXPENSES, label: t('transactions.types.expenses') },
-            { value: TransactionAction.INTERNAL, label: t('transactions.types.internalTransfer') }
+            { value: TransactionAction.INCOME, label: t('transactions.action.income') },
+            { value: TransactionAction.EXPENSES, label: t('transactions.action.expenses') },
+            { value: TransactionAction.INTERNAL, label: t('transactions.action.internalTransfer') }
         ]
         return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.INTERNAL) : actionList
     }

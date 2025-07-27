@@ -108,8 +108,8 @@ export default function CategoryView() {
                     />
                     <Tabs defaultValue={activeTab} value={activeTab} className='w-[200px]' onValueChange={setActiveTab}>
                         <TabsList className='grid w-full grid-cols-2'>
-                            <TabsTrigger value='expenses'>{t('transactions.types.expenses')}</TabsTrigger>
-                            <TabsTrigger value='income'>{t('transactions.types.income')}</TabsTrigger>
+                            <TabsTrigger value='expenses'>{t('transactions.action.expenses')}</TabsTrigger>
+                            <TabsTrigger value='income'>{t('transactions.action.income')}</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>

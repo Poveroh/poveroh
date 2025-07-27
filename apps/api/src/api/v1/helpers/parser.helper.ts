@@ -789,7 +789,7 @@ class HowIParsedYourDataAlgorithm {
                                 transactions.push({
                                     date: this.parseDate(dateValue),
                                     amount: Math.abs(amount),
-                                    type: amount >= 0 ? TransactionAction.INCOME : TransactionAction.EXPENSES,
+                                    action: amount >= 0 ? TransactionAction.INCOME : TransactionAction.EXPENSES,
                                     currency,
                                     title,
                                     originalRow: row
@@ -828,10 +828,10 @@ class HowIParsedYourDataAlgorithm {
         const summary = {
             totalTransactions: result.transactions.length,
             totalIncome: result.transactions
-                .filter(t => t.type === TransactionAction.INCOME)
+                .filter(t => t.action === TransactionAction.INCOME)
                 .reduce((sum, t) => sum + t.amount, 0),
             totalExpenses: result.transactions
-                .filter(t => t.type === TransactionAction.EXPENSES)
+                .filter(t => t.action === TransactionAction.EXPENSES)
                 .reduce((sum, t) => sum + t.amount, 0)
         }
 

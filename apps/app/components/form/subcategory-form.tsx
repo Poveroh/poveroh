@@ -146,7 +146,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <p className='p-2'>{t('transactions.types.expenses')}</p>
+                                        <p className='p-2'>{t('transactions.action.expenses')}</p>
                                         {categoryCacheList
                                             .filter(x => x.for == TransactionAction.EXPENSES)
                                             .map((item: ICategory) => (
@@ -161,7 +161,7 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps>((props: FormProps,
                                                 </SelectItem>
                                             ))}
                                         <SelectSeparator />
-                                        <p className='p-2'>{t('transactions.types.income')}</p>
+                                        <p className='p-2'>{t('transactions.action.income')}</p>
                                         {categoryCacheList
                                             .filter(x => x.for == TransactionAction.INCOME)
                                             .map((item: ICategory) => (

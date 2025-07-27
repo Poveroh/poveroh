@@ -97,7 +97,6 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                         initialData={transaction}
                         inEditingMode={true}
                         inputStyle='outlined'
-                        action={transaction.type}
                         handleSubmit={handleEditTransaction}
                     ></TransactionForm>
                     <Divider></Divider>
@@ -173,7 +172,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                         <div className='flex flex-col items-center'>
                             <div className='flex flex-col space-y-1 items-end'>
                                 <div className='flex flex-row space-x-1'>
-                                    {transaction.type !== TransactionAction.INTERNAL && (
+                                    {transaction.action !== TransactionAction.INTERNAL && (
                                         <>
                                             {isExpense ? (
                                                 <p className='danger font-bold'>-</p>

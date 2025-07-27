@@ -305,7 +305,7 @@
             "editTitle": "Edit {a}",
             "deleteDescription": "This action cannot be undone. This will permanently delete the bank account and related transactions."
         },
-        "types": {
+        "action": {
             "internalTransfer": "Transfer",
             "income": "Income",
             "expenses": "Expenses"

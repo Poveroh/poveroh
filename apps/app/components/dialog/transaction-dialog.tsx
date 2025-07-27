@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { AppearanceMode, ITransaction } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useTransaction } from '@/hooks/use-transaction'
@@ -18,8 +18,6 @@ export function TransactionDialog() {
     const deleteModalManager = useDeleteModal<ITransaction>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
-
-    const [currentAction, setCurrentAction] = useState<string>('EXPENSES')
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)
@@ -108,10 +106,8 @@ export function TransactionDialog() {
                 <TransactionForm
                     ref={formRef}
                     initialData={modalManager.item ?? undefined}
-                    action={currentAction}
                     inputStyle='contained'
                     inEditingMode={modalManager.inEditingMode || false}
-                    setAction={setCurrentAction}
                     handleSubmit={handleFormSubmit}
                 ></TransactionForm>
             </Modal>

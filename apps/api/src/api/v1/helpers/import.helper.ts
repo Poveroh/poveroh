@@ -1,6 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { TransactionStatus, ITransaction } from '@poveroh/types'
-import { IReadedTransaction } from '@poveroh/types'
+import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
 import { v4 as uuidv4 } from 'uuid'
 
 export const ImportHelper = {
@@ -64,12 +63,12 @@ export const ImportHelper = {
                         transactionId: transactionId,
                         amount: rawTransaction.amount,
                         currency: rawTransaction.currency,
-                        action: rawTransaction.type,
+                        action: rawTransaction.action,
                         accountId: accountId
                     }
                 ],
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,
-                type: rawTransaction.type,
+                action: rawTransaction.action,
                 date: rawTransaction.date.toISOString(),
                 status: TransactionStatus.IMPORT_PENDING,
                 note: similarTransaction?.note || '',
