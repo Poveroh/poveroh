@@ -137,6 +137,7 @@ export function SubscriptionDialog() {
                         ) : undefined
                 }}
                 onClick={() => formRef.current?.submit()}
+                onCancel={() => modalManager.closeModal()}
             >
                 {mode == 'template' ? (
                     <SubscriptionsSelector dataCallback={onTemplateSelected} closeDialog={modalManager.closeModal} />
