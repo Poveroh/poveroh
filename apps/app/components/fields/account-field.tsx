@@ -1,20 +1,20 @@
 import { FieldValues, Path } from 'react-hook-form'
-import { BankAccountFieldProps } from '@/types'
+import { AccountFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { IBankAccount } from '@poveroh/types'
+import { IAccount } from '@poveroh/types'
 
-export function BankAccountField<T extends FieldValues = FieldValues>({
+export function AccountField<T extends FieldValues = FieldValues>({
     control,
-    name = 'bankAccountId' as Path<T>,
+    name = 'accountId' as Path<T>,
     label,
     placeholder,
     variant = 'contained',
     disabled = false,
     mandatory = false,
-    bankAccounts,
+    accounts,
     onOpenChange
-}: BankAccountFieldProps<T>) {
+}: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
 
     if (!label) return null
@@ -28,13 +28,11 @@ export function BankAccountField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={bankAccounts}
-            getOptionLabel={(item: IBankAccount) => item.title}
-            getOptionValue={(item: IBankAccount) => item.id}
+            options={accounts}
+            getOptionLabel={(item: IAccount) => item.title}
+            getOptionValue={(item: IAccount) => item.id}
             onOpenChange={onOpenChange}
-            renderOptionContent={(item: IBankAccount) =>
-                createIconContent(item.logoIcon, item.title, { type: 'brand' })
-            }
+            renderOptionContent={(item: IAccount) => createIconContent(item.logoIcon, item.title, { type: 'brand' })}
         />
     )
 }

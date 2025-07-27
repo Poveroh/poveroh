@@ -3,30 +3,30 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IBankAccount, IItem } from '@poveroh/types'
+import { IAccount, IItem } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 
-import { useBankAccount } from '@/hooks/use-bank-account'
-import { useBankAccountForm } from '@/hooks/form/use-bank-account-form'
+import { useAccount } from '@/hooks/use-account'
+import { useAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { FormRef } from '@/types'
 
 type FormProps = {
-    initialData?: IBankAccount | null
+    initialData?: IAccount | null
     inEditingMode: boolean
     dataCallback: (formData: FormData) => Promise<void>
     closeDialog: () => void
 }
 
-export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
+export const AccountForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
     const t = useTranslations()
 
     const { initialData, inEditingMode, dataCallback } = props
 
-    const { typeList } = useBankAccount()
-    const { form, setFile, submitForm } = useBankAccountForm({
+    const { typeList } = useAccount()
+    const { form, setFile, submitForm } = useAccountForm({
         initialData,
         inEditingMode,
         dataCallback
@@ -69,4 +69,4 @@ export const BankAccountForm = forwardRef<FormRef, FormProps>((props: FormProps,
     )
 })
 
-BankAccountForm.displayName = 'BankAccountForm'
+AccountForm.displayName = 'AccountForm'

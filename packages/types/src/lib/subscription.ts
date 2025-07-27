@@ -12,7 +12,7 @@ export interface ISubscriptionBase {
     cycleNumber: string
     cyclePeriod: CyclePeriod
     rememberPeriod: RememberPeriod
-    bankAccountId: string
+    accountId: string
     isEnabled: boolean
 }
 

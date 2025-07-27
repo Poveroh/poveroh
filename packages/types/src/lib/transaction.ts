@@ -5,7 +5,7 @@ export interface IAmountBase {
     amount: number
     currency: Currencies
     action: TransactionAction
-    bankAccountId: string
+    accountId: string
 }
 
 export interface IAmount extends IAmountBase {

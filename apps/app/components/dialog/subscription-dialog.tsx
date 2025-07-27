@@ -79,7 +79,7 @@ export function SubscriptionDialog() {
             cycleNumber: '1',
             cyclePeriod: CyclePeriod.MONTH,
             rememberPeriod: RememberPeriod.SAME_DAY,
-            bankAccountId: '',
+            accountId: '',
             isEnabled: true
         })
         setFromTemplate(true)
@@ -156,7 +156,7 @@ export function SubscriptionDialog() {
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('bankAccounts.modal.deleteDescription')}
+                description={t('accounts.modal.deleteDescription')}
                 loading={deleteModalManager.loading}
                 open={deleteModalManager.isOpen}
                 closeDialog={deleteModalManager.closeModal}

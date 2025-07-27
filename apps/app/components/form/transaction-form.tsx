@@ -6,7 +6,7 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { ExpensesForm } from '../form/transactions/expenses-form'
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { useCategory } from '@/hooks/use-category'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { FormRef } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
@@ -23,7 +23,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     const { getActionList } = useTransaction()
 
     const { fetchCategory } = useCategory()
-    const { fetchBankAccount } = useBankAccount()
+    const { fetchAccount } = useAccount()
 
     const [localCurrentAction, setLocalCurrentAction] = useState<string>(props.action || 'EXPENSES')
     const formRef = useRef<FormRef | null>(null)
@@ -37,7 +37,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     useEffect(() => {
         const fetchData = async () => {
             await fetchCategory()
-            await fetchBankAccount()
+            await fetchAccount()
         }
         fetchData()
     }, [])

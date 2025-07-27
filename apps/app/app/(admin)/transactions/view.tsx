@@ -15,7 +15,7 @@ import { TransactionItem } from '@/components/item/transaction-item'
 
 import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
@@ -29,7 +29,7 @@ export default function TransactionsView() {
     const t = useTranslations()
     const { transactionCacheList, fetchTransaction, groupTransactionsByDate, transactionLoading } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
-    const { bankAccountCacheList, fetchBankAccount, accountLoading } = useBankAccount()
+    const { accountCacheList, fetchAccount, accountLoading } = useAccount()
 
     const { openModal } = useModal<ITransaction>()
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
@@ -43,7 +43,7 @@ export default function TransactionsView() {
 
     useEffect(() => {
         fetchCategory()
-        fetchBankAccount()
+        fetchAccount()
         fetchTransaction({}, transactionFilterSetting)
     }, [])
 
@@ -154,7 +154,7 @@ export default function TransactionsView() {
                                         <p>{t('transactions.empty.subtitle')}</p>
                                     </div>
                                 </div>
-                                {(bankAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                {(accountCacheList.length == 0 || categoryCacheList.length == 0) && (
                                     <>
                                         <Divider />
                                         <div className='flex flex-col items-center space-y-8 justify-center'>
@@ -163,10 +163,10 @@ export default function TransactionsView() {
                                                 <p className='warning'>{t('messages.noCategoriesAndAccountSub')}</p>
                                             </div>
                                             <div className='flex flex-row space-x-4'>
-                                                <Link href='/bank-accounts'>
+                                                <Link href='/accounts'>
                                                     <Button variant='outline'>
                                                         <Plus />
-                                                        {t('bankAccounts.title')}
+                                                        {t('accounts.title')}
                                                     </Button>
                                                 </Link>
                                                 <Link href='/categories'>

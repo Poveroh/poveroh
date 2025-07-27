@@ -5,10 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@poveroh/ui/components/button'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { MultipleAmountFieldProps } from '@/types'
-import { IBankAccount } from '@poveroh/types'
+import { IAccount } from '@poveroh/types'
 import { BrandIcon } from '@/components/icon/brand-icon'
 import { Plus, Trash2, Split, Merge } from 'lucide-react'
-import { BankAccountField } from './bank-account-field'
+import { AccountField } from './account-field'
 import { AmountField } from './amount-field'
 
 export function MultipleAmountField<T extends FieldValues = FieldValues>({
@@ -18,13 +18,13 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
     multipleAmountName = 'multipleAmount' as Path<T>,
     totalAmountLabel,
     amountLabel,
-    bankAccountLabel,
+    accountLabel,
     multipleAmountLabel,
     placeholder,
     variant = 'contained',
     disabled = false,
     mandatory = false,
-    bankAccounts,
+    accounts,
     multipleAmount,
     onMultipleAmountChange,
     onAddField,
@@ -153,14 +153,14 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
                                 )}
                             />
 
-                            <BankAccountField<T>
+                            <AccountField<T>
                                 control={control}
-                                name={`${amountsName}.${index}.bankAccountId` as Path<T>}
-                                label={bankAccountLabel}
-                                placeholder={bankAccountLabel}
+                                name={`${amountsName}.${index}.accountId` as Path<T>}
+                                label={accountLabel}
+                                placeholder={accountLabel}
                                 variant={variant}
                                 disabled={disabled}
-                                bankAccounts={bankAccounts}
+                                accounts={accounts}
                             />
 
                             {fields.length > 1 && (
@@ -210,18 +210,18 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
 
                     <FormField
                         control={control}
-                        name={`${amountsName}.0.bankAccountId` as Path<T>}
+                        name={`${amountsName}.0.accountId` as Path<T>}
                         render={({ field }) => (
                             <FormItem className='flex-1'>
-                                <FormLabel mandatory>{bankAccountLabel}</FormLabel>
+                                <FormLabel mandatory>{accountLabel}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
                                     <FormControl>
                                         <SelectTrigger variant={variant}>
-                                            <SelectValue placeholder={bankAccountLabel} />
+                                            <SelectValue placeholder={accountLabel} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccounts.map((item: IBankAccount) => (
+                                        {accounts.map((item: IAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={item.logoIcon} size='sm' />

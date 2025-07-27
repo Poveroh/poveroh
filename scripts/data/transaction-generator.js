@@ -16,7 +16,7 @@ function formatDate(date) {
 // Data ------------------------------------------------------------------------------------------
 const userId = '6a750a26-301c-48c7-ab72-ac6e0e409762'
 
-const bankAccounts = [
+const accounts = [
     'b1e9e6d4-7c2d-4b5e-a21f-9f6f8b7cb7b4', // Revolut
     'a3c9f1d6-83b9-4018-9b75-bff12caa2d8a', // Citibank
     'd5b8d6f7-62a4-490a-8f7e-b5e8a1c4c7a2', // N26
@@ -32,7 +32,7 @@ const bankAccounts = [
 const transactions = []
 const amounts = []
 
-function generateTransaction(title, amount, categoryId, subcategoryId, date, bankAccountId, icon) {
+function generateTransaction(title, amount, categoryId, subcategoryId, date, accountId, icon) {
     const transId = generateUUID()
     const amtId = generateUUID()
     const createdAt = formatDate(date)
@@ -55,12 +55,12 @@ function generateTransaction(title, amount, categoryId, subcategoryId, date, ban
         amount: amount,
         currency: 'EUR',
         action: 'EXPENSES',
-        bankAccountId: bankAccountId,
+        accountId: accountId,
         createdAt: createdAt
     })
 }
 
-function generateIncome(title, amount, date, bankAccountId, icon) {
+function generateIncome(title, amount, date, accountId, icon) {
     const transId = generateUUID()
     const amtId = generateUUID()
     const createdAt = formatDate(date)
@@ -81,7 +81,7 @@ function generateIncome(title, amount, date, bankAccountId, icon) {
         amount: amount,
         currency: 'EUR',
         action: 'INCOME',
-        bankAccountId: bankAccountId,
+        accountId: accountId,
         createdAt: createdAt
     })
 }
@@ -106,7 +106,7 @@ function generateInternalTransfer(fromId, toId, amount, date) {
             amount: amount,
             currency: 'EUR',
             action: 'EXPENSES',
-            bankAccountId: fromId,
+            accountId: fromId,
             createdAt: createdAt
         },
         {
@@ -115,7 +115,7 @@ function generateInternalTransfer(fromId, toId, amount, date) {
             amount: amount,
             currency: 'EUR',
             action: 'INCOME',
-            bankAccountId: toId,
+            accountId: toId,
             createdAt: createdAt
         }
     )
@@ -172,7 +172,7 @@ const subscriptionStartDate = new Date(2023, 0, 1)
 const numberOfMonths = 36
 
 for (const [title, amt, cat, subcat, icon] of subscriptions) {
-    const acc = bankAccounts[Math.floor(Math.random() * bankAccounts.length)]
+    const acc = accounts[Math.floor(Math.random() * accounts.length)]
     for (let i = 0; i < numberOfMonths; i++) {
         const date = new Date(subscriptionStartDate)
         date.setMonth(date.getMonth() + i)
@@ -216,7 +216,7 @@ for (const [title, amt, acc] of incomeEntries) {
 }
 
 for (let i = 0; i < 3; i++) {
-    const [fromId, toId] = bankAccounts
+    const [fromId, toId] = accounts
         .slice()
         .sort(() => 0.5 - Math.random())
         .slice(0, 2)
@@ -239,7 +239,7 @@ const additionalExpenses = [
 ]
 
 for (const [title, amount, categoryId, subcategoryId] of additionalExpenses) {
-    const acc = bankAccounts[Math.floor(Math.random() * bankAccounts.length)]
+    const acc = accounts[Math.floor(Math.random() * accounts.length)]
     for (let i = 0; i < 24; i++) {
         const date = new Date(subscriptionStartDate)
         date.setMonth(date.getMonth() + i)
@@ -259,7 +259,7 @@ const occasionalExpenses = [
 for (let i = 0; i < 20; i++) {
     const [title, amount, categoryId, subcategoryId] =
         occasionalExpenses[Math.floor(Math.random() * occasionalExpenses.length)]
-    const acc = bankAccounts[Math.floor(Math.random() * bankAccounts.length)]
+    const acc = accounts[Math.floor(Math.random() * accounts.length)]
     const daysToAdd = Math.floor(Math.random() * 731)
     const date = new Date(subscriptionStartDate)
     date.setDate(subscriptionStartDate.getDate() + daysToAdd)
@@ -287,7 +287,7 @@ for (let i = 0; i < daysRange; i++) {
     for (let j = 0; j < numTransactions; j++) {
         const [title, amount, categoryId, subcategoryId] =
             dailyExpenses[Math.floor(Math.random() * dailyExpenses.length)]
-        const acc = bankAccounts[Math.floor(Math.random() * bankAccounts.length)]
+        const acc = accounts[Math.floor(Math.random() * accounts.length)]
         generateTransaction(title, amount, categoryId, subcategoryId, currentDate, acc)
     }
 }
@@ -297,7 +297,7 @@ for (let i = 0; i < 10; i++) {
     const daysToAdd = Math.floor(Math.random() * 731)
     const date = new Date(subscriptionStartDate)
     date.setDate(subscriptionStartDate.getDate() + daysToAdd)
-    const acc = bankAccounts[Math.floor(Math.random() * bankAccounts.length)]
+    const acc = accounts[Math.floor(Math.random() * accounts.length)]
     generateTransaction(title, amt, cat, subcat, date, acc, icon)
 }
 

@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
-import { IBankAccount, IImport } from '@poveroh/types'
+import { IAccount, IImport } from '@poveroh/types'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
@@ -19,7 +19,7 @@ import {
 import { Loader2, X, Upload } from 'lucide-react'
 
 import { BrandIcon } from '@/components/icon/brand-icon'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 import { Button } from '@poveroh/ui/components/button'
 
@@ -29,17 +29,17 @@ import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
 import { useImport } from '@/hooks/use-imports'
 
-type BankAccountAndFileFormProps = {
+type AccountAndFileFormProps = {
     initialData?: IImport
     dataCallback: (importedFiles: IImport | null) => void
 }
 
-export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccountAndFileFormProps) {
+export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFileFormProps) {
     const t = useTranslations()
 
     const { handleError } = useError()
     const { parseTransactionFromFile } = useImport()
-    const { bankAccountCacheList, fetchBankAccount } = useBankAccount()
+    const { accountCacheList, fetchAccount } = useAccount()
 
     const [loading, setLoading] = useState(false)
     const [showButton, setShowButton] = useState(false)
@@ -48,13 +48,13 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
     const [fileError, setFileError] = useState(false)
 
     const formSchema = z.object({
-        bankAccountId: z.string().nonempty(t('messages.errors.required'))
+        accountId: z.string().nonempty(t('messages.errors.required'))
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            bankAccountId: initialData?.bankAccountId || ''
+            accountId: initialData?.accountId || ''
         }
     })
 
@@ -70,7 +70,7 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
 
             const formData = new FormData()
 
-            formData.append('bankAccountId', values.bankAccountId)
+            formData.append('accountId', values.accountId)
 
             files?.forEach(file => {
                 formData.append('files', file)
@@ -93,30 +93,27 @@ export function BankAccountAndFileForm({ initialData, dataCallback }: BankAccoun
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
-                        name='bankAccountId'
+                        name='accountId'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t('form.bankaccount.label')}</FormLabel>
+                                <FormLabel>{t('form.account.label')}</FormLabel>
                                 <Select
                                     onValueChange={field.onChange}
                                     value={field.value}
                                     onOpenChange={async open => {
                                         if (open) {
-                                            await fetchBankAccount()
-                                            form.setValue(
-                                                'bankAccountId',
-                                                initialData?.bankAccountId || field.value || ''
-                                            )
+                                            await fetchAccount()
+                                            form.setValue('accountId', initialData?.accountId || field.value || '')
                                         }
                                     }}
                                 >
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                            <SelectValue placeholder={t('form.account.placeholder')} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {bankAccountCacheList.map((item: IBankAccount) => (
+                                        {accountCacheList.map((item: IAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={item.logoIcon} size='sm' />

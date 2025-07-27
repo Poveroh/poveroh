@@ -36,13 +36,13 @@ export default function SettingsPage() {
                 <h4>{t('settings.account.title')}</h4>
                 <SettingsRow>
                     <SettingsCard
-                        link='/account/profile'
+                        link='/settings/account/profile'
                         title={t('settings.account.personalInfo.title')}
                         subtitle={t('settings.account.personalInfo.subtitle')}
                         icon={<User />}
                     ></SettingsCard>
                     <SettingsCard
-                        link='/account/security'
+                        link='/settings/account/security'
                         title={t('settings.account.security.title')}
                         subtitle={t('settings.account.security.subtitle')}
                         icon={<Shield />}
@@ -53,9 +53,9 @@ export default function SettingsPage() {
                 <h4>{t('settings.manage.title')}</h4>
                 <SettingsRow>
                     <SettingsCard
-                        link='/bank-accounts'
-                        title={t('settings.manage.bankAccount.title')}
-                        subtitle={t('settings.manage.bankAccount.subtitle')}
+                        link='/accounts'
+                        title={t('settings.manage.account.title')}
+                        subtitle={t('settings.manage.account.subtitle')}
                         icon={<Landmark />}
                     ></SettingsCard>
                     <SettingsCard

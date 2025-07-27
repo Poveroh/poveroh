@@ -1,5 +1,5 @@
 import { ArrayPath, Control, FieldValues, Path } from 'react-hook-form'
-import { IBankAccount, InputVariantStyle } from '@poveroh/types'
+import { IAccount, InputVariantStyle } from '@poveroh/types'
 import { ICategory, ISubcategory } from '@poveroh/types'
 
 /* Base props that are common to all form field components */
@@ -53,9 +53,9 @@ export type CategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldP
     onCategoryChange?: (categoryId: string) => void
 }
 
-/* Props for bank account fields */
-export type BankAccountFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    bankAccounts: IBankAccount[]
+/* Props for account fields */
+export type AccountFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
+    accounts: IAccount[]
 }
 
 /* Props for subcategory fields */
@@ -69,7 +69,7 @@ export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
     toName?: Path<T>
     placeholder?: string
     variant?: InputVariantStyle
-    bankAccounts: IBankAccount[]
+    accounts: IAccount[]
     onSwitch: () => void
 }
 
@@ -103,11 +103,11 @@ export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = Base
     multipleAmountName?: Path<T>
     totalAmountLabel?: string
     amountLabel?: string
-    bankAccountLabel?: string
+    accountLabel?: string
     multipleAmountLabel?: string
     placeholder?: string
     variant?: InputVariantStyle
-    bankAccounts: IBankAccount[]
+    accounts: IAccount[]
     multipleAmount: boolean
     onMultipleAmountChange: (checked: boolean) => void
     onAddField: () => void

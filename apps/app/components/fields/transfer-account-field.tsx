@@ -3,9 +3,9 @@ import { FormLabel } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
 import { TransferFieldProps } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
-import { BankAccountField } from './bank-account-field'
+import { AccountField } from './account-field'
 
-export function TransferBankAccountField<T extends FieldValues = FieldValues>({
+export function TransferAccountField<T extends FieldValues = FieldValues>({
     control,
     fromName = 'from' as Path<T>,
     toName = 'to' as Path<T>,
@@ -14,21 +14,21 @@ export function TransferBankAccountField<T extends FieldValues = FieldValues>({
     variant = 'contained',
     disabled = false,
     mandatory = false,
-    bankAccounts,
+    accounts,
     onSwitch
 }: TransferFieldProps<T>) {
     return (
         <div className='flex flex-col space-y-2'>
             <FormLabel mandatory={mandatory}>{label}</FormLabel>
             <div className='flex flex-row space-x-2'>
-                <BankAccountField
+                <AccountField
                     control={control}
                     name={fromName}
                     placeholder={placeholder}
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
-                    bankAccounts={bankAccounts}
+                    accounts={accounts}
                 />
                 <Button
                     type='button'
@@ -39,14 +39,14 @@ export function TransferBankAccountField<T extends FieldValues = FieldValues>({
                 >
                     <DynamicIcon name='move-right' />
                 </Button>
-                <BankAccountField
+                <AccountField
                     control={control}
                     name={toName}
                     placeholder={placeholder}
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
-                    bankAccounts={bankAccounts}
+                    accounts={accounts}
                 />
             </div>
         </div>

@@ -10,7 +10,7 @@ import Image from 'next/image'
 import {
     Currencies,
     currencyCatalog,
-    IBankAccount,
+    IAccount,
     ICategory,
     IItem,
     ISubcategory,
@@ -33,7 +33,7 @@ import { BrandIcon } from '@/components/icon/brand-icon'
 import { Textarea } from '@poveroh/ui/components/textarea'
 import { useError } from '@/hooks/use-error'
 import { useCategory } from '@/hooks/use-category'
-import { useBankAccount } from '@/hooks/use-bank-account'
+import { useAccount } from '@/hooks/use-account'
 import logger from '@/lib/logger'
 import { amountSchema, FormProps, FormRef } from '@/types/form'
 import { cloneDeep } from 'lodash'
@@ -45,7 +45,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
     const { initialData, inEditingMode, inputStyle, dataCallback } = props
 
     const { categoryCacheList } = useCategory()
-    const { bankAccountCacheList } = useBankAccount()
+    const { accountCacheList } = useAccount()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
@@ -54,7 +54,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
     const defaultAmounts = {
         amount: 0,
-        bankAccountId: ''
+        accountId: ''
     }
 
     const defaultValues = {
@@ -96,18 +96,18 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                         required_error: t('messages.errors.required'),
                         invalid_type_error: t('messages.errors.pattern')
                     }),
-                    bankAccountId: z.string().nonempty(t('messages.errors.required'))
+                    accountId: z.string().nonempty(t('messages.errors.required'))
                 })
             )
             .min(1, 'At least one entry is required')
     })
 
-    const bankAccountSchema = baseSchema.extend({
+    const accountSchema = baseSchema.extend({
         multipleAmount: z.literal(false),
-        totalBankAccountId: z.string().nonempty(t('messages.errors.required'))
+        totalAccountId: z.string().nonempty(t('messages.errors.required'))
     })
 
-    const formSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, bankAccountSchema]).refine(
+    const formSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, accountSchema]).refine(
         data => {
             if (data.multipleAmount && 'amounts' in data) {
                 const sum = data.amounts.reduce((acc, curr) => acc + curr.amount, 0)
@@ -157,8 +157,8 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                 dataInitialToShow = {
                     ...initialData,
                     multipleAmount: true,
-                    // Remove totalBankAccountId if present
-                    totalBankAccountId: undefined
+                    // Remove totalAccountId if present
+                    totalAccountId: undefined
                 }
             } else {
                 // Otherwise, use the multipleAmount: false schema
@@ -166,7 +166,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     ...initialData,
                     multipleAmount: false,
                     totalAmount: initialData.amounts?.[0]?.amount || 0,
-                    totalBankAccountId: initialData.amounts?.[0]?.bankAccountId || '',
+                    totalAccountId: initialData.amounts?.[0]?.accountId || '',
                     currency: initialData.amounts?.[0]?.currency || Currencies.EUR,
                     amounts: undefined
                 }
@@ -203,13 +203,13 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
             const formData = new FormData()
 
             if (!multipleAmount) {
-                const { totalAmount, totalBankAccountId, ...rest } = localTransaction
+                const { totalAmount, totalAccountId, ...rest } = localTransaction
                 localTransaction = {
                     ...rest,
                     amounts: [
                         {
                             amount: totalAmount,
-                            bankAccountId: totalBankAccountId
+                            accountId: totalAccountId
                         }
                     ]
                 }
@@ -385,7 +385,7 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
                                 <FormField
                                     control={form.control}
-                                    name={`amounts.${index}.bankAccountId`}
+                                    name={`amounts.${index}.accountId`}
                                     render={({ field }) => (
                                         <FormItem>
                                             <Select
@@ -395,11 +395,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                             >
                                                 <FormControl>
                                                     <SelectTrigger variant={inputStyle}>
-                                                        <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                                        <SelectValue placeholder={t('form.aaccount.placeholder')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {bankAccountCacheList.map((item: IBankAccount) => (
+                                                    {accountCacheList.map((item: IAccount) => (
                                                         <SelectItem key={item.id} value={item.id}>
                                                             <div className='flex items-center flex-row space-x-4'>
                                                                 <BrandIcon icon={item.logoIcon} size='sm' />
@@ -432,10 +432,10 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                     {!multipleAmount && (
                         <FormField
                             control={form.control}
-                            name='totalBankAccountId'
+                            name='totalAccountId'
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel mandatory>{t('form.bankaccount.label')}</FormLabel>
+                                    <FormLabel mandatory>{t('form.account.label')}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -443,11 +443,11 @@ export const ExpensesForm = forwardRef<FormRef, FormProps>((props: FormProps, re
                                     >
                                         <FormControl>
                                             <SelectTrigger variant={inputStyle}>
-                                                <SelectValue placeholder={t('form.bankaccount.placeholder')} />
+                                                <SelectValue placeholder={t('form.account.placeholder')} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {bankAccountCacheList.map((item: IBankAccount) => (
+                                            {accountCacheList.map((item: IAccount) => (
                                                 <SelectItem key={item.id} value={item.id}>
                                                     <div className='flex items-center flex-row space-x-4'>
                                                         <BrandIcon icon={item.logoIcon} size='sm' />

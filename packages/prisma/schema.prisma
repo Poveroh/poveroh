@@ -19,7 +19,7 @@ model User {
     subscriptions Subscription[]
     categories    Category[]
     logins        UserLogin[]
-    bankAccounts  BankAccount[]
+    accounts      Account[]
     imports       Import[]
 
     @@index([surname])
@@ -42,15 +42,15 @@ model UserLogin {
 }
 
 model Import {
-    id            String            @id @default(uuid())
-    userId        String
-    title         String
-    bankAccountId String
-    status        TransactionStatus @default(IMPORT_PENDING)
-    createdAt     DateTime          @default(now())
+    id        String            @id @default(uuid())
+    userId    String
+    title     String
+    accountId String
+    status    TransactionStatus @default(IMPORT_PENDING)
+    createdAt DateTime          @default(now())
 
     user         User          @relation(fields: [userId], references: [id])
-    bankAccount  BankAccount   @relation(fields: [bankAccountId], references: [id])
+    account      Account       @relation(fields: [accountId], references: [id])
     transactions Transaction[]
     files        ImportFile[]
 
@@ -114,15 +114,15 @@ model Subscription {
     cycleNumber        String
     cyclePeriod        String
     rememberPeriod     RememberPeriod
-    bankAccountId      String
+    accountId          String
     isEnabled          Boolean
     createdAt          DateTime       @default(now())
 
-    user        User        @relation(fields: [userId], references: [id])
-    bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+    user    User    @relation(fields: [userId], references: [id])
+    account Account @relation(fields: [accountId], references: [id])
 
     @@index([userId])
-    @@index([bankAccountId])
+    @@index([accountId])
     @@index([isEnabled])
 }
 
@@ -139,14 +139,14 @@ model TransactionMedia {
     @@index([transactionId])
 }
 
-model BankAccount {
-    id          String          @id @default(uuid())
+model Account {
+    id          String      @id @default(uuid())
     userId      String
     title       String
     description String
-    type        BankAccountType @default(BANK_ACCOUNT)
+    type        AccountType @default(BANK_ACCOUNT)
     logoIcon    String?
-    createdAt   DateTime        @default(now())
+    createdAt   DateTime    @default(now())
 
     subscriptions Subscription[]
     amounts       Amount[]
@@ -195,14 +195,14 @@ model Amount {
     amount        Float
     currency      Currency
     action        TransactionType @default(EXPENSES)
-    bankAccountId String
+    accountId     String
     createdAt     DateTime        @default(now())
 
-    bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+    account     Account     @relation(fields: [accountId], references: [id])
     transaction Transaction @relation(fields: [transactionId], references: [id])
 
     @@index([transactionId])
-    @@index([bankAccountId])
+    @@index([accountId])
     @@index([action])
 }
 
@@ -220,7 +220,7 @@ enum TransactionStatus {
     IMPORT_APPROVED
 }
 
-enum BankAccountType {
+enum AccountType {
     ONLINE_BANK
     BANK_ACCOUNT
     CIRCUIT
