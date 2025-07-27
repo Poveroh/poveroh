@@ -9,7 +9,7 @@ export function PasswordField<T extends FieldValues = FieldValues>({
     control,
     name = 'password' as Path<T>,
     label = 'Password',
-    placeholder = '&bull;&bull;&bull;&bull;',
+    placeholder,
     description,
     mandatory = false,
     disabled = false,
@@ -24,7 +24,7 @@ export function PasswordField<T extends FieldValues = FieldValues>({
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
                     <FormControl>
                         <PasswordInput
-                            placeholder={placeholder}
+                            placeholder={placeholder || '•••••'}
                             autoComplete={autoComplete}
                             disabled={disabled}
                             {...field}
