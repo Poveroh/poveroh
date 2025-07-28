@@ -4,7 +4,7 @@ import { TransactionAction } from '@poveroh/types'
 export const TransactionHelper = {
     async handleTransaction(action: string, data: any, userId: string) {
         switch (action) {
-            case TransactionAction.INTERNAL:
+            case TransactionAction.TRANSFER:
                 return this.handleInternalTransaction(data, userId)
             case TransactionAction.INCOME:
                 return this.handleIncomeTransaction(data, userId)
@@ -18,7 +18,7 @@ export const TransactionHelper = {
     async handleInternalTransaction(data: any, userId: string) {
         const transaction = await this.createTransaction({
             title: data.title,
-            action: TransactionAction.INTERNAL,
+            action: TransactionAction.TRANSFER,
             date: new Date(data.date).toISOString(),
             note: data.note,
             ignore: data.ignore,

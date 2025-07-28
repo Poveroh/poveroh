@@ -94,7 +94,7 @@ export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props: Tr
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-            formData.append('action', TransactionAction.INTERNAL)
+            formData.append('action', TransactionAction.TRANSFER)
 
             await dataCallback(formData)
         } catch (error) {

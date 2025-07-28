@@ -110,9 +110,9 @@ export const useTransaction = () => {
         const actionList = [
             { value: TransactionAction.INCOME, label: t('transactions.action.income') },
             { value: TransactionAction.EXPENSES, label: t('transactions.action.expenses') },
-            { value: TransactionAction.INTERNAL, label: t('transactions.action.internalTransfer') }
+            { value: TransactionAction.TRANSFER, label: t('transactions.action.internalTransfer') }
         ]
-        return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.INTERNAL) : actionList
+        return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.TRANSFER) : actionList
     }
 
     const groupTransactionsByDate = (transactions: ITransaction[]): GroupedTransactions => {

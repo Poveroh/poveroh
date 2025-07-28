@@ -172,7 +172,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                         <div className='flex flex-col items-center'>
                             <div className='flex flex-col space-y-1 items-end'>
                                 <div className='flex flex-row space-x-1'>
-                                    {transaction.action !== TransactionAction.INTERNAL && (
+                                    {transaction.action !== TransactionAction.TRANSFER && (
                                         <>
                                             {isExpense ? (
                                                 <p className='danger font-bold'>-</p>

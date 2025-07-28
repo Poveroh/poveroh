@@ -34,9 +34,9 @@ export interface ITransaction extends ITransactionBase {
 }
 
 export enum TransactionAction {
-    INTERNAL = 'INTERNAL',
     INCOME = 'INCOME',
-    EXPENSES = 'EXPENSES'
+    EXPENSES = 'EXPENSES',
+    TRANSFER = 'TRANSFER'
 }
 
 export enum TransactionStatus {
@@ -47,5 +47,5 @@ export enum TransactionStatus {
     IMPORT_APPROVED = 'IMPORT_APPROVED'
 }
 
-export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.INTERNAL>
+export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.TRANSFER>
 export type GroupedTransactions = Record<string, ITransaction[]>
