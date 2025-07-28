@@ -51,7 +51,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 />
             )}
 
-            {currentAction == 'INTERNAL' && (
+            {currentAction == 'TRANSFER' && (
                 <TransferForm
                     ref={formRef}
                     initialData={props.initialData}

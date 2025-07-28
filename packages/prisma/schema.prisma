@@ -207,7 +207,7 @@ model Amount {
 }
 
 enum TransactionAction {
-    INTERNAL
+    TRANSFER
     EXPENSES
     INCOME
 }
