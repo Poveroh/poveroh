@@ -4,10 +4,6 @@ import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { ISubcategory } from '@poveroh/types'
 
-interface SubcategoryFieldComponentProps<T extends FieldValues = FieldValues> extends SubcategoryFieldProps<T> {
-    subcategories: ISubcategory[]
-}
-
 export function SubcategoryField<T extends FieldValues = FieldValues>({
     control,
     name = 'subcategoryId' as Path<T>,
@@ -17,7 +13,7 @@ export function SubcategoryField<T extends FieldValues = FieldValues>({
     disabled = false,
     mandatory = false,
     subcategories
-}: SubcategoryFieldComponentProps<T>) {
+}: SubcategoryFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
 
     if (!label) return null

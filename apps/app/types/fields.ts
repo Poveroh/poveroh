@@ -1,6 +1,7 @@
-import { ArrayPath, Control, FieldValues, Path } from 'react-hook-form'
+import { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
 import { IAccount, InputVariantStyle } from '@poveroh/types'
 import { ICategory, ISubcategory } from '@poveroh/types'
+import { FormMode } from './form'
 
 /* Base props that are common to all form field components */
 export type BaseFieldProps<T extends FieldValues = FieldValues> = {
@@ -49,13 +50,13 @@ export type DataFieldProps<T extends FieldValues = FieldValues> = SelectFieldPro
 
 /* Props for category fields */
 export type CategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    categories: ICategory[]
+    categories?: ICategory[]
     onCategoryChange?: (categoryId: string) => void
 }
 
 /* Props for account fields */
 export type AccountFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    accounts: IAccount[]
+    accounts?: IAccount[]
 }
 
 /* Props for subcategory fields */
@@ -63,14 +64,21 @@ export type SubcategoryFieldProps<T extends FieldValues = FieldValues> = DataFie
     subcategories: ISubcategory[]
 }
 
+export type CategorySubcategoryFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+    subcategoryName: Path<T>
+    onCategoryChange?: (categoryId: string) => void
+    onSubcategoryChange?: (subcategoryId: string) => void
+}
+
 /* Props for transfer fields */
 export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldProps<T> & {
+    form: UseFormReturn<FormMode, any, FormMode>
     fromName?: Path<T>
     toName?: Path<T>
     placeholder?: string
     variant?: InputVariantStyle
-    accounts: IAccount[]
-    onSwitch: () => void
+    accounts?: IAccount[]
+    onSwitch?: () => void
 }
 
 /* Props for file upload fields (not React Hook Form based) */

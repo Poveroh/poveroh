@@ -15,8 +15,16 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
     disabled = false,
     mandatory = false,
     accounts,
-    onSwitch
+    form
 }: TransferFieldProps<T>) {
+    const switchAccount = () => {
+        const fromAccount = form.getValues('from')
+        const toAccount = form.getValues('to')
+
+        form.setValue('from', toAccount, { shouldValidate: false })
+        form.setValue('to', fromAccount, { shouldValidate: false })
+    }
+
     return (
         <div className='flex flex-col space-y-2'>
             <FormLabel mandatory={mandatory}>{label}</FormLabel>
@@ -34,7 +42,7 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     type='button'
                     variant='ghost'
                     className='h-[40px] w-[40px] cursor-pointer'
-                    onClick={onSwitch}
+                    onClick={switchAccount}
                     disabled={disabled}
                 >
                     <DynamicIcon name='move-right' />

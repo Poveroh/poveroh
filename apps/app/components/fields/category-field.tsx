@@ -3,6 +3,7 @@ import { CategoryFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { ICategory } from '@poveroh/types'
+import { useCategory } from '@/hooks/use-category'
 
 export function CategoryField<T extends FieldValues = FieldValues>({
     control,
@@ -15,6 +16,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
     categories,
     onCategoryChange
 }: CategoryFieldProps<T>) {
+    const { categoryCacheList } = useCategory()
     const { createIconContent } = useFieldIcon()
 
     if (!label) return null
@@ -28,7 +30,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={categories}
+            options={categories || categoryCacheList}
             getOptionLabel={(item: ICategory) => item.title}
             getOptionValue={(item: ICategory) => item.id}
             onValueChange={onCategoryChange}
