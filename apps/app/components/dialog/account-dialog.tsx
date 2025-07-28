@@ -101,7 +101,6 @@ export function AccountDialog() {
                         initialData={modalManager.item}
                         inEditingMode={modalManager.inEditingMode}
                         dataCallback={handleFormSubmit}
-                        closeDialog={modalManager.closeModal}
                     />
                 </div>
             </Modal>

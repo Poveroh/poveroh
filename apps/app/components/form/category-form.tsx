@@ -11,24 +11,13 @@ import { NoteField } from '@/components/fields/note-field'
 import { SelectField } from '@/components/fields/select-field'
 import { IconField } from '@/components/fields/icon-field'
 import { useCategoryForm } from '@/hooks/form/use-category-form'
-import { FormRef } from '@/types'
+import { FormProps, FormRef } from '@/types'
 
-type FormProps = {
-    initialData?: ICategory | null
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-    closeDialog: () => void
-}
-
-export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const t = useTranslations()
-
+export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: FormProps<ICategory>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
-    const { form, icon, handleSubmit, handleIconChange, actionList, iconList } = useCategoryForm(
-        initialData,
-        inEditingMode
-    )
+    const t = useTranslations()
+    const { form, icon, handleSubmit, handleIconChange, actionList } = useCategoryForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -68,7 +57,6 @@ export const CategoryForm = forwardRef<FormRef, FormProps>((props: FormProps, re
 
                     <IconField
                         label={t('form.icon.label')}
-                        iconList={iconList}
                         selectedIcon={icon}
                         onIconChange={handleIconChange}
                         mandatory={!inEditingMode}

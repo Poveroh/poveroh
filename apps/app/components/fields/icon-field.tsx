@@ -2,10 +2,11 @@ import { FormControl, FormItem, FormLabel } from '@poveroh/ui/components/form'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { IconFieldProps } from '@/types'
 import DynamicIcon from '../icon/dynamic-icon'
+import { iconList as defaultIconList } from '../icon'
 
 export function IconField({
     label,
-    iconList = [],
+    iconList = defaultIconList,
     selectedIcon,
     onIconChange,
     disabled = false,

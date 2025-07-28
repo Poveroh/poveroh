@@ -11,18 +11,12 @@ import { AppearanceMode, Currencies, CyclePeriod, ISubscription, RememberPeriod 
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
 
-type UseSubscriptionFormProps = {
-    initialData?: ISubscription | null
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-}
-
-export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }: UseSubscriptionFormProps) => {
+export const useSubscriptionForm = (initialData: ISubscription | null | undefined, inEditingMode: boolean) => {
     const t = useTranslations()
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
-    const [iconError] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const defaultValues = initialData || {
         title: '',
@@ -76,8 +70,12 @@ export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }
         }
     }, [form.formState.errors])
 
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    const handleSubmit = async (
+        values: z.infer<typeof formSchema>,
+        dataCallback: (formData: FormData) => Promise<void>
+    ) => {
         try {
+            setLoading(true)
             const formData = new FormData()
 
             values.firstPayment = new Date(values.firstPayment).toISOString()
@@ -87,11 +85,9 @@ export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }
             await dataCallback(formData)
         } catch (error) {
             handleError(error, 'Form error')
+        } finally {
+            setLoading(false)
         }
-    }
-
-    const submitForm = () => {
-        form.handleSubmit(handleSubmit)()
     }
 
     const handleIconChange = (newIcon: string) => {
@@ -102,10 +98,8 @@ export const useSubscriptionForm = ({ initialData, inEditingMode, dataCallback }
     return {
         form,
         icon,
-        iconError,
+        loading,
         handleSubmit,
-        submitForm,
-        handleIconChange,
-        formSchema
+        handleIconChange
     }
 }

@@ -107,7 +107,7 @@ export function TransactionDialog() {
                     initialData={modalManager.item ?? undefined}
                     inputStyle='contained'
                     inEditingMode={modalManager.inEditingMode || false}
-                    handleSubmit={handleFormSubmit}
+                    dataCallback={handleFormSubmit}
                 ></TransactionForm>
             </Modal>
 

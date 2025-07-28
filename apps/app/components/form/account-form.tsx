@@ -11,30 +11,18 @@ import { useAccount } from '@/hooks/use-account'
 import { useAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
-import { FormRef } from '@/types'
+import { FormProps, FormRef } from '@/types'
 
-type FormProps = {
-    initialData?: IAccount | null
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-    closeDialog: () => void
-}
-
-export const AccountForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const t = useTranslations()
-
+export const AccountForm = forwardRef<FormRef, FormProps<IAccount>>((props: FormProps<IAccount>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
+    const t = useTranslations()
     const { typeList } = useAccount()
-    const { form, setFile, submitForm } = useAccountForm({
-        initialData,
-        inEditingMode,
-        dataCallback
-    })
+    const { form, setFile, handleSubmit } = useAccountForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
-            submitForm()
+            form.handleSubmit(values => handleSubmit(values, dataCallback))()
         }
     }))
 

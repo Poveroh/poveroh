@@ -97,7 +97,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                         initialData={transaction}
                         inEditingMode={true}
                         inputStyle='outlined'
-                        handleSubmit={handleEditTransaction}
+                        dataCallback={handleEditTransaction}
                     ></TransactionForm>
                     <Divider></Divider>
                     <div className='flex flex-row items-center justify-between w-full'>

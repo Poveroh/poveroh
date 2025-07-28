@@ -76,7 +76,6 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
         setLoading,
         handleSubmit,
         handleIconChange,
-        actionList: getActionList(true),
-        iconList
+        actionList: getActionList(true)
     }
 }

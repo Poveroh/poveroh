@@ -110,7 +110,6 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                             initialData={modalManager.item as ICategory}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
-                            closeDialog={modalManager.closeModal}
                         />
                     )}
                     {mode == 'subcategory' && (
@@ -119,7 +118,6 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                             initialData={modalManager.item as ISubcategory}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
-                            closeDialog={modalManager.closeModal}
                         />
                     )}
                 </div>

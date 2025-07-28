@@ -1,19 +1,12 @@
 import { IncomeForm } from '../form/transactions/income-form'
 import { useRef, useState } from 'react'
-import { IItem, ITransaction, InputVariantStyle } from '@poveroh/types'
+import { IItem } from '@poveroh/types'
 import { TransferForm } from '../form/transactions/transfer-form'
 import { useTransaction } from '@/hooks/use-transaction'
 import { ExpensesForm } from '../form/transactions/expenses-form'
 import React, { forwardRef, useImperativeHandle } from 'react'
-import { FormRef } from '@/types'
+import { FormRef, TransactionFormProps } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
-
-type TransactionFormProps = {
-    initialData?: ITransaction
-    inputStyle?: InputVariantStyle
-    inEditingMode?: boolean
-    handleSubmit: (data: FormData) => Promise<void>
-}
 
 export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props: TransactionFormProps, ref) => {
     const { getActionList } = useTransaction()
@@ -44,7 +37,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                     ref={formRef}
                     initialData={props.initialData}
                     inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.handleSubmit}
+                    dataCallback={props.dataCallback}
                     inputStyle={props.inputStyle}
                 />
             )}
@@ -53,7 +46,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                     ref={formRef}
                     initialData={props.initialData}
                     inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.handleSubmit}
+                    dataCallback={props.dataCallback}
                     inputStyle={props.inputStyle}
                 />
             )}
@@ -63,7 +56,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                     ref={formRef}
                     initialData={props.initialData}
                     inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.handleSubmit}
+                    dataCallback={props.dataCallback}
                     inputStyle={props.inputStyle}
                 />
             )}

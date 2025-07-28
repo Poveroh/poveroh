@@ -15,6 +15,7 @@ import {
     ISubcategory,
     TransactionAction
 } from '@poveroh/types'
+import { amountSchema, FormRef, TransactionFormProps } from '@/types/form'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -33,9 +34,8 @@ import { useError } from '@/hooks/use-error'
 import { useCategory } from '@/hooks/use-category'
 import { useAccount } from '@/hooks/use-account'
 import logger from '@/lib/logger'
-import { amountSchema, FormProps, FormRef } from '@/types/form'
 
-export const IncomeForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
+export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props: TransactionFormProps, ref) => {
     const t = useTranslations()
 
     const { initialData, inEditingMode, inputStyle, dataCallback } = props

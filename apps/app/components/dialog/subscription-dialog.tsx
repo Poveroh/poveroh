@@ -168,7 +168,6 @@ export function SubscriptionDialog() {
                             initialData={localSubscription}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
-                            closeDialog={modalManager.closeModal}
                         />
                     </div>
                 )}

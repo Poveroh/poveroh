@@ -17,11 +17,14 @@ export const amountSchema = (errors: AmountSchemaErrors) => {
         .positive()
 }
 
-export type FormProps = {
-    initialData?: ITransaction
+export type FormProps<T> = {
+    initialData?: T | null
     inEditingMode: boolean
-    inputStyle?: InputVariantStyle
     dataCallback: (formData: FormData) => Promise<void>
+}
+
+export type TransactionFormProps = FormProps<ITransaction> & {
+    inputStyle?: InputVariantStyle
 }
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {

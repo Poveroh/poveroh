@@ -87,7 +87,7 @@ export type FileUploadFieldProps = {
 /* Props for icon selection fields */
 export type IconFieldProps = {
     label?: string
-    iconList: string[]
+    iconList?: string[]
     selectedIcon?: string
     onIconChange: (iconName: string) => void
     disabled?: boolean

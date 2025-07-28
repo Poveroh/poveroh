@@ -3,11 +3,10 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { AppearanceMode, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
+import { CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
 import { useAccount } from '@/hooks/use-account'
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
-import { iconList } from '../icon'
 import {
     TextField,
     AmountField,
@@ -19,32 +18,22 @@ import {
     IconField
 } from '../fields'
 import { Form } from '@poveroh/ui/components/form'
-import { FormRef } from '@/types'
+import { FormProps, FormRef } from '@/types'
 
-type FormProps = {
-    fromTemplate: boolean
-    initialData?: ISubscription | null
-    inEditingMode: boolean
-    dataCallback: (formData: FormData) => Promise<void>
-    closeDialog: () => void
+type SubscriptionFormProps = FormProps<ISubscription> & {
+    fromTemplate?: boolean
 }
 
-export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const t = useTranslations()
-
+export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((props: SubscriptionFormProps, ref) => {
     const { initialData, inEditingMode, fromTemplate, dataCallback } = props
 
+    const t = useTranslations()
     const { accountCacheList } = useAccount()
-
-    const { form, icon, iconError, submitForm, handleIconChange } = useSubscriptionForm({
-        initialData,
-        inEditingMode,
-        dataCallback
-    })
+    const { form, icon, handleIconChange, handleSubmit } = useSubscriptionForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
-            submitForm()
+            form.handleSubmit(values => handleSubmit(values, dataCallback))()
         }
     }))
 
@@ -125,12 +114,9 @@ export const SubscriptionForm = forwardRef<FormRef, FormProps>((props: FormProps
                     {!fromTemplate && (
                         <IconField
                             label={t('form.icon.label')}
-                            iconList={iconList}
                             selectedIcon={icon}
                             onIconChange={handleIconChange}
                             mandatory={!inEditingMode}
-                            showError={iconError}
-                            errorMessage={t('messages.errors.required')}
                         />
                     )}
 

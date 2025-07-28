@@ -1,45 +1,45 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { AccountType, IAccount } from '@poveroh/types'
-
+import { ISubcategory } from '@poveroh/types'
 import { useError } from '@/hooks/use-error'
+import { iconList } from '@/components/icon'
 
-export const useAccountForm = (initialData: IAccount | null | undefined, inEditingMode: boolean) => {
+export function useSubcategoryForm(initialData?: ISubcategory | null, inEditingMode: boolean = false) {
     const t = useTranslations()
-
     const { handleError } = useError()
 
-    const [file, setFile] = useState<FileList | null>(null)
+    const [icon, setIcon] = useState(iconList[0])
     const [loading, setLoading] = useState(false)
 
-    const defaultValues = initialData || {
+    const defaultValues = {
         title: '',
         description: '',
-        type: AccountType.BANK_ACCOUNT
+        logoIcon: iconList[0] as string,
+        categoryId: initialData?.categoryId || ''
     }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         description: z.string(),
-        type: z.enum(Object.values(AccountType) as [AccountType, ...AccountType[]])
+        logoIcon: z.string().nonempty(t('messages.errors.required')),
+        categoryId: z.string()
     })
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: defaultValues
     })
 
     useEffect(() => {
-        if (Object.keys(form.formState.errors).length > 0) {
-            console.debug('Form errors:', form.formState.errors)
+        if (initialData) {
+            form.reset(initialData)
+            setIcon(initialData.logoIcon)
         }
-    }, [form.formState.errors])
+    }, [initialData, form])
 
     const handleSubmit = async (
         values: z.infer<typeof formSchema>,
@@ -47,14 +47,9 @@ export const useAccountForm = (initialData: IAccount | null | undefined, inEditi
     ) => {
         try {
             setLoading(true)
+
             const formData = new FormData()
-
             formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            if (file && file[0]) {
-                formData.append('file', file[0])
-            }
-
             await dataCallback(formData)
         } catch (error) {
             handleError(error, 'Form error')
@@ -63,11 +58,16 @@ export const useAccountForm = (initialData: IAccount | null | undefined, inEditi
         }
     }
 
+    const handleIconChange = (iconName: string) => {
+        form.setValue('logoIcon', iconName)
+        setIcon(iconName)
+    }
+
     return {
         form,
-        file,
+        icon,
         loading,
-        setFile,
-        handleSubmit
+        handleSubmit,
+        handleIconChange
     }
 }
