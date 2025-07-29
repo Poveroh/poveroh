@@ -1,10 +1,9 @@
-import { FieldValues, Path, Control } from 'react-hook-form'
+import { FieldValues, Path } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { InputVariantStyle } from '@poveroh/types'
 import { SelectFieldProps } from '@/types'
 
-export function SelectField<T extends FieldValues, OptionType>({
+export function SelectField<OptionType, T extends FieldValues = FieldValues>({
     control,
     name,
     label,
@@ -18,18 +17,20 @@ export function SelectField<T extends FieldValues, OptionType>({
     onValueChange,
     onOpenChange,
     renderOptionContent
-}: SelectFieldProps<T, OptionType>) {
+}: SelectFieldProps<OptionType, T>) {
     return (
         <FormField
             control={control}
-            name={name}
+            name={name!}
             render={({ field }) => (
                 <FormItem>
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
                     <Select
                         onValueChange={value => {
                             field.onChange(value)
-                            onValueChange?.(value)
+                            if (onValueChange) {
+                                onValueChange(value as T[Path<T>])
+                            }
                         }}
                         onOpenChange={onOpenChange}
                         defaultValue={field.value}
