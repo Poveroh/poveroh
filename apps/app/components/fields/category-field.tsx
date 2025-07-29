@@ -12,7 +12,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = false,
+    mandatory = true,
     categories,
     onCategoryChange
 }: CategoryFieldProps<T>) {
