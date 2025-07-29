@@ -2,22 +2,7 @@ import { FieldValues, Path, Control } from 'react-hook-form'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { InputVariantStyle } from '@poveroh/types'
-
-interface SelectFieldProps<T extends FieldValues, OptionType> {
-    control: Control<T>
-    name: Path<T>
-    label: string
-    placeholder?: string
-    mandatory?: boolean
-    disabled?: boolean
-    variant?: InputVariantStyle
-    options: OptionType[]
-    getOptionLabel: (option: OptionType) => string
-    getOptionValue: (option: OptionType) => string
-    onValueChange?: (value: string) => void
-    onOpenChange?: (open: boolean) => void
-    renderOptionContent?: (option: OptionType) => React.ReactNode
-}
+import { SelectFieldProps } from '@/types'
 
 export function SelectField<T extends FieldValues, OptionType>({
     control,
@@ -56,7 +41,7 @@ export function SelectField<T extends FieldValues, OptionType>({
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            {options.map(item => (
+                            {options.map((item: OptionType) => (
                                 <SelectItem key={getOptionValue(item)} value={getOptionValue(item)}>
                                     {renderOptionContent ? renderOptionContent(item) : getOptionLabel(item)}
                                 </SelectItem>

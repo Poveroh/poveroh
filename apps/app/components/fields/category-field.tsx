@@ -13,8 +13,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
     variant = 'contained',
     disabled = false,
     mandatory = true,
-    categories,
-    onCategoryChange
+    onValueChange
 }: CategoryFieldProps<T>) {
     const { categoryCacheList } = useCategory()
     const { createIconContent } = useFieldIcon()
@@ -30,10 +29,10 @@ export function CategoryField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={categories || categoryCacheList}
+            options={categoryCacheList}
             getOptionLabel={(item: ICategory) => item.title}
             getOptionValue={(item: ICategory) => item.id}
-            onValueChange={onCategoryChange}
+            onValueChange={onValueChange}
             renderOptionContent={(item: ICategory) => createIconContent(item.logoIcon, item.title, { type: 'dynamic' })}
         />
     )

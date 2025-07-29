@@ -27,7 +27,7 @@ export function SubcategoryField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={subcategories}
+            options={subcategories || []}
             getOptionLabel={(item: ISubcategory) => item.title}
             getOptionValue={(item: ISubcategory) => item.id}
             renderOptionContent={(item: ISubcategory) =>

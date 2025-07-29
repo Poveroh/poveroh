@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
+import { CyclePeriod, IAccount, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
 
 import { useAccount } from '@/hooks/use-account'
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
@@ -108,7 +108,6 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}
-                        accounts={Object.values(accountCacheList)}
                     />
 
                     {!fromTemplate && (

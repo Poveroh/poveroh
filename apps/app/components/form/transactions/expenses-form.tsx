@@ -237,7 +237,6 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                             placeholder={t('form.account.placeholder')}
                             mandatory={true}
                             variant={inputStyle}
-                            accounts={accountCacheList}
                         />
                     )}
 

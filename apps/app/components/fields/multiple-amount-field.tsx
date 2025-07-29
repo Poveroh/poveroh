@@ -153,14 +153,12 @@ export function MultipleAmountField<T extends FieldValues = FieldValues>({
                                 )}
                             />
 
-                            <AccountField<T>
+                            <AccountField
                                 control={control}
                                 name={`${amountsName}.${index}.accountId` as Path<T>}
                                 label={accountLabel}
                                 placeholder={accountLabel}
                                 variant={variant}
-                                disabled={disabled}
-                                accounts={accounts}
                             />
 
                             {fields.length > 1 && (

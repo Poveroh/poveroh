@@ -2,7 +2,7 @@ import { FieldValues, Path } from 'react-hook-form'
 import { currencyCatalog, IItem } from '@poveroh/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { SelectFieldProps } from '@/types'
+import { StandardFieldProps } from '@/types'
 
 export function CurrencyField<T extends FieldValues = FieldValues>({
     control,
@@ -11,11 +11,9 @@ export function CurrencyField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = false
-}: SelectFieldProps<T>) {
+    mandatory = true
+}: StandardFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
-
-    if (!label) return null
 
     return (
         <SelectField

@@ -12,9 +12,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = false,
-    accounts,
-    onOpenChange
+    mandatory = false
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
     const { accountCacheList } = useAccount()
@@ -30,10 +28,10 @@ export function AccountField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={accounts || accountCacheList}
+            options={accountCacheList}
             getOptionLabel={(item: IAccount) => item.title}
             getOptionValue={(item: IAccount) => item.id}
-            onOpenChange={onOpenChange}
+            onOpenChange={() => {}}
             renderOptionContent={(item: IAccount) => createIconContent(item.logoIcon, item.title, { type: 'brand' })}
         />
     )
