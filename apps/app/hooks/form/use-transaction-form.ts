@@ -257,11 +257,28 @@ export function useTransactionForm(type: TransactionAction, props: TransactionFo
         }
     }, [props.initialData, type, form])
 
+    const calculateTotal = () => {
+        const values = form.getValues()
+        if ('amounts' in values && Array.isArray(values.amounts)) {
+            return values.amounts.reduce((acc: number, curr: { amount: number }) => acc + (curr.amount || 0), 0)
+        }
+        return 0
+    }
+
+    const multipleAmount = form.watch('multipleAmount')
+
+    const toggleMultipleAmount = () => {
+        form.setValue('multipleAmount', !multipleAmount)
+    }
+
     return {
         form,
         fieldArray,
         loading,
         file,
+        multipleAmount,
+        calculateTotal,
+        toggleMultipleAmount,
         setFile,
         handleSubmit
     }

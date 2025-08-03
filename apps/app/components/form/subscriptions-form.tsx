@@ -3,9 +3,8 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { CyclePeriod, IAccount, IBrand, ISubscription, RememberPeriod } from '@poveroh/types'
+import { CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
 
-import { useAccount } from '@/hooks/use-account'
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
 import {
     TextField,
@@ -28,7 +27,6 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
     const { initialData, inEditingMode, fromTemplate, dataCallback } = props
 
     const t = useTranslations()
-    const { accountCacheList } = useAccount()
     const { form, icon, handleIconChange, handleSubmit } = useSubscriptionForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({

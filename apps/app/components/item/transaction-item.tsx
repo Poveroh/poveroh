@@ -3,7 +3,6 @@ import { useCategory } from '@/hooks/use-category'
 import { ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useMemo, memo } from 'react'
-import icons from 'currency-icons'
 import { ArrowRightLeft } from 'lucide-react'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
@@ -25,31 +24,27 @@ export const TransactionItem = memo(function TransactionItem({
 
     // Memoized computations for transaction data
     const transactionData = useMemo(() => {
-        if (!transaction.amounts || transaction.amounts.length === 0) {
-            return {
-                fromAccount: null,
-                toAccount: null,
-                category: null,
-                amount: 0,
-                currencySymbol: '',
-                isExpense: false
-            }
+        const defaultValues = {
+            fromAccount: null,
+            toAccount: null,
+            category: null,
+            amount: 0,
+            currencySymbol: '',
+            isExpense: false
         }
 
-        const firstAmount = transaction.amounts[0]
-        if (!firstAmount) {
-            return {
-                fromAccount: null,
-                toAccount: null,
-                category: null,
-                amount: 0,
-                currencySymbol: '',
-                isExpense: false
-            }
+        if (!transaction.amounts || transaction.amounts.length === 0) return defaultValues
+
+        let amount = { ...transaction.amounts[0] }
+
+        if (transaction.action === TransactionAction.EXPENSES) {
+            amount = { ...amount, amount: transaction.amounts.reduce((acc, curr) => acc + (curr.amount || 0), 0) }
+        } else {
+            if (!amount) return defaultValues
         }
 
         // Get accounts from cache instead of async calls
-        const fromAccount = accountCacheList.find(acc => acc.id === firstAmount.accountId) || null
+        const fromAccount = accountCacheList.find(acc => acc.id === amount.accountId) || null
         const toAccount =
             transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]
                 ? accountCacheList.find(acc => acc.id === transaction.amounts[1]!.accountId) || null
@@ -64,13 +59,13 @@ export const TransactionItem = memo(function TransactionItem({
             fromAccount,
             toAccount,
             category,
-            amount: firstAmount.amount,
-            currencySymbol: icons[firstAmount.currency]?.symbol || '',
-            isExpense: firstAmount.action === TransactionAction.EXPENSES
+            amount: amount.amount || 0,
+            // currencySymbol: icons[amount.currency]?.symbol || '',
+            isExpense: transaction.action === TransactionAction.EXPENSES
         }
     }, [transaction, accountCacheList, categoryCacheList])
 
-    const { fromAccount, toAccount, category, amount, currencySymbol, isExpense } = transactionData
+    const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 
     return (
         <div
@@ -115,7 +110,7 @@ export const TransactionItem = memo(function TransactionItem({
                             </>
                         )}
                         <h5 className='font-bold'>{amount}</h5>
-                        <span>{currencySymbol}</span>
+                        {/* <span>{currencySymbol}</span> */}
                     </div>
                     <p className='sub'>{category?.title || 'Internal transfer'}</p>
                 </div>
