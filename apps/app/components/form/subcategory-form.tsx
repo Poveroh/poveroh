@@ -7,13 +7,11 @@ import { TextField, IconField, CategoryField } from '../fields'
 import { useSubcategoryForm } from '@/hooks/form/use-subcategory-form'
 import { ISubcategory } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
-import { useCategory } from '@/hooks/use-category'
 
 export const SubcategoryForm = forwardRef<FormRef, FormProps<ISubcategory>>((props: FormProps<ISubcategory>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
-    const { categoryCacheList } = useCategory()
     const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({
@@ -40,7 +38,6 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps<ISubcategory>>((pro
                         label={t('form.category.label')}
                         placeholder={t('form.category.placeholder')}
                         mandatory={true}
-                        categories={categoryCacheList}
                     />
 
                     <IconField

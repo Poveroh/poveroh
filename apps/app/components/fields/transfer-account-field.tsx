@@ -6,6 +6,7 @@ import DynamicIcon from '@/components/icon/dynamic-icon'
 import { AccountField } from './account-field'
 
 export function TransferAccountField<T extends FieldValues = FieldValues>({
+    form,
     control,
     fromName = 'from' as Path<T>,
     toName = 'to' as Path<T>,
@@ -13,16 +14,14 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = false,
-    accounts,
-    form
+    mandatory = false
 }: TransferFieldProps<T>) {
     const switchAccount = () => {
-        const fromAccount = form.getValues('from')
-        const toAccount = form.getValues('to')
+        const fromAccount = form?.getValues('from')
+        const toAccount = form?.getValues('to')
 
-        form.setValue('from', toAccount, { shouldValidate: false })
-        form.setValue('to', fromAccount, { shouldValidate: false })
+        form?.setValue('from', toAccount || '', { shouldValidate: false })
+        form?.setValue('to', fromAccount || '', { shouldValidate: false })
     }
 
     return (
@@ -36,7 +35,6 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
-                    accounts={accounts}
                 />
                 <Button
                     type='button'
@@ -54,7 +52,6 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
-                    accounts={accounts}
                 />
             </div>
         </div>

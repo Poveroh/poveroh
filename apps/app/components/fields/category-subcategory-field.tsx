@@ -16,6 +16,7 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryCacheList.find(item => item.id === categoryId)
         const res = category ? category.subcategories : []
+        props.form?.setValue('subcategoryId', res[0]?.id || '')
         setSubcategoryList(res)
     }
 
@@ -26,7 +27,7 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
                 name={'categoryId' as Path<T>}
                 label={t('form.category.label')}
                 placeholder={t('form.category.placeholder')}
-                onCategoryChange={categoryId => {
+                onValueChange={categoryId => {
                     parseSubcategoryList(categoryId)
                 }}
             />

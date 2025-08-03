@@ -1,10 +1,10 @@
 import { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import { IAccount, InputVariantStyle } from '@poveroh/types'
-import { ICategory, ISubcategory } from '@poveroh/types'
+import { IAccount, InputVariantStyle, ISubcategory } from '@poveroh/types'
 import { FormMode } from './form'
 
 /* Base props that are common to all form field components */
 export type BaseFieldProps<T extends FieldValues = FieldValues> = {
+    form?: UseFormReturn<FormMode, unknown, FormMode>
     control: Control<T>
     name?: Path<T>
     label?: string
@@ -12,6 +12,7 @@ export type BaseFieldProps<T extends FieldValues = FieldValues> = {
     disabled?: boolean
     mandatory?: boolean
     onChange?: (value: HTMLInputElement) => void
+    onValueChange?: (value: T[Path<T>]) => void
 }
 
 /* Extended base props for fields that support UI variants and placeholders */
@@ -24,8 +25,12 @@ export type StandardFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
 export type TextInputFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {}
 
 /* Props for select/dropdown fields */
-export type SelectFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+export type SelectFieldProps<OptionType, T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+    options: OptionType[]
     onOpenChange?: (open: boolean) => void
+    getOptionLabel: (option: OptionType) => string
+    getOptionValue: (option: OptionType) => string
+    renderOptionContent?: (option: OptionType) => React.ReactNode
 }
 
 /* Props for number input fields */
@@ -45,34 +50,23 @@ export type AutoCompleteFieldProps<T extends FieldValues = FieldValues> = Standa
     autoComplete?: string
 }
 
-/* Props for fields that accept data arrays and callbacks */
-export type DataFieldProps<T extends FieldValues = FieldValues> = SelectFieldProps<T> & {}
-
 /* Props for category fields */
-export type CategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    categories?: ICategory[]
-    onCategoryChange?: (categoryId: string) => void
-}
+export type CategoryFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T>
 
 /* Props for account fields */
-export type AccountFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    accounts?: IAccount[]
-}
+export type AccountFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T>
 
 /* Props for subcategory fields */
-export type SubcategoryFieldProps<T extends FieldValues = FieldValues> = DataFieldProps<T> & {
-    subcategories: ISubcategory[]
+export type SubcategoryFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+    subcategories?: ISubcategory[]
 }
 
 export type CategorySubcategoryFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
     subcategoryName: Path<T>
-    onCategoryChange?: (categoryId: string) => void
-    onSubcategoryChange?: (subcategoryId: string) => void
 }
 
 /* Props for transfer fields */
 export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldProps<T> & {
-    form: UseFormReturn<FormMode, any, FormMode>
     fromName?: Path<T>
     toName?: Path<T>
     placeholder?: string

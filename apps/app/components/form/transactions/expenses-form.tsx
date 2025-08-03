@@ -28,9 +28,9 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { form, file, setFile, handleSubmit, fieldArray } = useTransactionForm(TransactionAction.EXPENSES, props)
-
     const { accountCacheList } = useAccountStore()
+    const { form, file, multipleAmount, fieldArray, setFile, handleSubmit, calculateTotal, toggleMultipleAmount } =
+        useTransactionForm(TransactionAction.EXPENSES, props)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -38,31 +38,13 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
         }
     }))
 
-    // Helper for toggling multiple amounts
-    const multipleAmount = form.watch('multipleAmount')
-    const toggleMultipleAmount = () => {
-        form.setValue('multipleAmount', !multipleAmount)
-    }
-
-    // Type the fieldArray properly
-    const defaultFieldArrayMethods = {
+    const { fields, append, remove } = fieldArray || {
         fields: [] as unknown[],
         append: () => {},
         remove: () => {}
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { fields, append, remove } = (fieldArray as any) || defaultFieldArrayMethods
 
     const inputStyle = props.inputStyle
-
-    // Helper for calculating total
-    const calculateTotal = () => {
-        const values = form.getValues()
-        if ('amounts' in values && Array.isArray(values.amounts)) {
-            return values.amounts.reduce((acc: number, curr: { amount: number }) => acc + (curr.amount || 0), 0)
-        }
-        return 0
-    }
 
     return (
         <Form {...form}>
@@ -126,6 +108,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                         )}
                                     </div>
                                 </div>
+
                                 <FormControl>
                                     <Input
                                         type='number'
@@ -172,7 +155,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                     }
                                                     variant={inputStyle}
                                                     onChange={e => {
-                                                        field.onChange(e.target.value)
+                                                        field.onChange(parseFloat(e.target.value))
                                                         form.setValue('totalAmount', calculateTotal())
                                                     }}
                                                     placeholder={t('form.amount.placeholder')}
@@ -237,7 +220,6 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                             placeholder={t('form.account.placeholder')}
                             mandatory={true}
                             variant={inputStyle}
-                            accounts={accountCacheList}
                         />
                     )}
 

@@ -1,9 +1,9 @@
 'use client'
 
-import { forwardRef, useState, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
 import { useTransactionForm } from '@/hooks/form/use-transaction-form'
-import { TransactionAction, ISubcategory, ICategory } from '@poveroh/types'
+import { TransactionAction } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 
@@ -14,27 +14,17 @@ import {
     NoteField,
     TextField,
     AccountField,
-    CategoryField,
-    SubcategoryField,
     IgnoreField,
     FileUploadField,
     AmountField
 } from '@/components/fields'
-import { useCategoryStore } from '@/store/category.store'
-import { useAccountStore } from '@/store/account.store'
+import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 
 export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
 
     const t = useTranslations()
     const { form, file, setFile, handleSubmit } = useTransactionForm(TransactionAction.INCOME, props)
-
-    // Store hooks
-    const { categoryCacheList } = useCategoryStore()
-    const { accountCacheList } = useAccountStore()
-
-    // Local state
-    const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -43,12 +33,6 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
     }))
 
     const inputStyle = props.inputStyle
-
-    const parseSubcategoryList = async (categoryId: string) => {
-        const category = categoryCacheList.find((item: ICategory) => item.id === categoryId)
-        const res = category ? category.subcategories : []
-        setSubcategoryList(res)
-    }
 
     return (
         <Form {...form}>
@@ -88,7 +72,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                             name='currency'
                             label={t('form.currency.label')}
                             placeholder={t('form.currency.placeholder')}
-                            mandatory={true}
+                            mandatory
                             variant={inputStyle}
                         />
                     </div>
@@ -100,32 +84,17 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}
                         variant={inputStyle}
-                        accounts={accountCacheList}
                     />
 
-                    <div className='flex flex-row space-x-2'>
-                        <CategoryField
-                            control={form.control}
-                            name='categoryId'
-                            label={t('form.category.label')}
-                            placeholder={t('form.category.placeholder')}
-                            mandatory={true}
-                            variant={inputStyle}
-                            categories={categoryCacheList}
-                            onCategoryChange={categoryId => {
-                                parseSubcategoryList(categoryId)
-                            }}
-                        />
-                        <SubcategoryField
-                            control={form.control}
-                            name='subcategoryId'
-                            label={t('form.subcategory.label')}
-                            placeholder={t('form.subcategory.placeholder')}
-                            mandatory={true}
-                            variant={inputStyle}
-                            subcategories={subcategoryList}
-                        />
-                    </div>
+                    <CategorySubcategoryField
+                        form={form}
+                        control={form.control}
+                        name='categoryId'
+                        subcategoryName='subcategoryId'
+                        label={t('form.category.label')}
+                        placeholder={t('form.category.placeholder')}
+                        mandatory={true}
+                    />
 
                     <NoteField
                         control={form.control}

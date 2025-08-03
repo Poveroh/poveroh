@@ -11,8 +11,8 @@ export function AmountField<T extends FieldValues = FieldValues>({
     variant = 'contained',
     disabled = false,
     mandatory = false,
-    min = '0',
-    step = '0.01'
+    min,
+    step
 }: NumberInputFieldProps<T>) {
     return (
         <FormField
@@ -24,8 +24,8 @@ export function AmountField<T extends FieldValues = FieldValues>({
                     <FormControl>
                         <Input
                             type='number'
-                            step={step}
-                            min={min}
+                            step={step || '0.01'}
+                            min={min || '0'}
                             {...field}
                             value={Number.isNaN(field.value) || field.value === undefined ? '' : field.value}
                             variant={variant}

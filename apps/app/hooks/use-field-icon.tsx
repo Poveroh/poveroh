@@ -3,7 +3,7 @@ import DynamicIcon from '@/components/icon/dynamic-icon'
 import { BrandIcon } from '@/components/icon/brand-icon'
 import icons from 'currency-icons'
 
-export interface IconRenderOptions {
+type IconRenderOptions = {
     type: 'dynamic' | 'brand' | 'currency'
     size?: 'sm' | 'xl'
     className?: string
