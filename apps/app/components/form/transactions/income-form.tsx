@@ -78,6 +78,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     </div>
 
                     <AccountField
+                        form={form}
                         control={form.control}
                         name='accountId'
                         label={t('form.account.label')}
@@ -91,6 +92,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                         control={form.control}
                         name='categoryId'
                         subcategoryName='subcategoryId'
+                        categoryId={props.initialData?.categoryId}
                         label={t('form.category.label')}
                         placeholder={t('form.category.placeholder')}
                         mandatory={true}

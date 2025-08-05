@@ -63,6 +63,7 @@ export type SubcategoryFieldProps<T extends FieldValues = FieldValues> = Standar
 
 export type CategorySubcategoryFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
     subcategoryName: Path<T>
+    categoryId?: string
 }
 
 /* Props for transfer fields */

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CategoryField } from './category-field'
 import { SubcategoryField } from './subcategory-field'
 import { ISubcategory } from '@poveroh/types'
@@ -12,6 +12,13 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
     const { categoryCacheList } = useCategoryStore()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
+
+    useEffect(() => {
+        const initialCategoryId = props.categoryId || props.form?.getValues('categoryId') || ''
+        if (initialCategoryId) {
+            parseSubcategoryList(initialCategoryId)
+        }
+    }, [categoryCacheList])
 
     const parseSubcategoryList = async (categoryId: string) => {
         const category = categoryCacheList.find(item => item.id === categoryId)
