@@ -4,9 +4,12 @@ import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { IAccount } from '@poveroh/types'
 import { useAccount } from '@/hooks/use-account'
+import { useEffect, useState } from 'react'
 
 export function AccountField<T extends FieldValues = FieldValues>({
+    form,
     control,
+    value,
     name = 'accountId' as Path<T>,
     label,
     placeholder,
@@ -16,6 +19,13 @@ export function AccountField<T extends FieldValues = FieldValues>({
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
     const { accountCacheList } = useAccount()
+
+    const [localAccountCacheList, setLocalAccountCacheList] = useState(accountCacheList)
+
+    useEffect(() => {
+        setLocalAccountCacheList(accountCacheList)
+        form?.setValue(name as any, value || '')
+    }, [accountCacheList, form, name, value])
 
     if (!label) return null
 
@@ -28,7 +38,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={accountCacheList}
+            options={localAccountCacheList}
             getOptionLabel={(item: IAccount) => item.title}
             getOptionValue={(item: IAccount) => item.id}
             onOpenChange={() => {}}
