@@ -26,6 +26,7 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
                 <FormItem>
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
                     <Select
+                        value={field.value ?? ''}
                         onValueChange={value => {
                             field.onChange(value)
                             if (onValueChange) {
@@ -33,7 +34,6 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
                             }
                         }}
                         onOpenChange={onOpenChange}
-                        defaultValue={field.value}
                         disabled={disabled}
                     >
                         <FormControl>
