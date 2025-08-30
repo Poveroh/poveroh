@@ -24,7 +24,10 @@ export function AccountField<T extends FieldValues = FieldValues>({
 
     useEffect(() => {
         setLocalAccountCacheList(accountCacheList)
-        form?.setValue(name as any, value || '')
+
+        if (value && accountCacheList.some(acc => acc.id === value)) {
+            form?.setValue(name as any, value)
+        }
     }, [accountCacheList, form, name, value])
 
     if (!label) return null

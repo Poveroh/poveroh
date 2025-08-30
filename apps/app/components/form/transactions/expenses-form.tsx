@@ -71,6 +71,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                     />
 
                     <CurrencyField
+                        form={form}
                         control={form.control}
                         name='currency'
                         label={t('form.currency.label')}
