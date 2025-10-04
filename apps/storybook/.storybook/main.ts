@@ -1,8 +1,8 @@
-import type { StorybookConfig } from '@storybook/nextjs'
+import type { StorybookConfig } from '@storybook/react-vite'
 import { join, dirname } from 'path'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url) // Use `createRequire` for CommonJS module resolution
+const require = createRequire(import.meta.url)
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -19,14 +19,19 @@ const config: StorybookConfig = {
         getAbsolutePath('@storybook/addon-essentials'),
         getAbsolutePath('@chromatic-com/storybook'),
         getAbsolutePath('@storybook/addon-interactions')
+        // Temporarily disabled the experimental Next.js preset because it depends on
+        // internal Next.js files that our current Next version doesn't provide.
+        // getAbsolutePath('@storybook/experimental-nextjs-vite')
     ],
     framework: {
-        name: getAbsolutePath('@storybook/nextjs'),
+        name: '@storybook/react-vite',
         options: {}
     },
     staticDirs: ['../public'],
-    docs: {
-        autodocs: true
+    docs: { autodocs: true },
+    viteFinal: async config => {
+        config.optimizeDeps = { ...(config.optimizeDeps ?? {}), exclude: ['next'] }
+        return config
     }
 }
 
