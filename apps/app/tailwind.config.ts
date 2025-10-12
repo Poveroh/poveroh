@@ -1,1 +1,1 @@
-export * from '@poveroh/ui/tailwind.config'
+export { default } from '@poveroh/ui/tailwind.config'
