@@ -254,8 +254,63 @@ export function useTransactionForm(type: TransactionAction, props: TransactionFo
                 accountId: props.initialData.amounts?.[0]?.accountId || ''
             }
             form.reset(incomeData as FormMode)
+        } else if (props.initialData && type === TransactionAction.TRANSFER) {
+            const transferData: Partial<TransferFormData> = {
+                ...props.initialData,
+                amount: props.initialData.amounts?.[0]?.amount || 0,
+                currency: props.initialData.amounts?.[0]?.currency || Currencies.EUR,
+                from: props.initialData.amounts?.[0]?.accountId || '',
+                to: props.initialData.amounts?.[1]?.accountId || ''
+            }
+            form.reset(transferData as FormMode)
         }
     }, [props.initialData, type, form])
+
+    // Additional effect to ensure form values are properly set after accounts are loaded
+    // This handles timing issues where accounts might not be available during initial form reset
+    useEffect(() => {
+        if (props.initialData && props.inEditingMode && props.initialData.amounts) {
+            // Small delay to ensure form has been reset first
+            const timeoutId = setTimeout(() => {
+                const initialData = props.initialData!
+                if (type === TransactionAction.EXPENSES && initialData.amounts?.[0]) {
+                    const amount = initialData.amounts[0]
+                    if (amount.currency) {
+                        form.setValue('currency', amount.currency, { shouldValidate: true })
+                    }
+                    if (amount.accountId) {
+                        if (initialData.amounts.length === 1) {
+                            form.setValue('totalAccountId', amount.accountId, { shouldValidate: true })
+                        }
+                    }
+                } else if (type === TransactionAction.INCOME && initialData.amounts?.[0]) {
+                    const amount = initialData.amounts[0]
+                    if (amount.currency) {
+                        form.setValue('currency', amount.currency, { shouldValidate: true })
+                    }
+                    if (amount.accountId) {
+                        form.setValue('accountId', amount.accountId, { shouldValidate: true })
+                    }
+                } else if (type === TransactionAction.TRANSFER && initialData.amounts?.[0]) {
+                    const amount = initialData.amounts[0]
+                    if (amount.currency) {
+                        form.setValue('currency', amount.currency, { shouldValidate: true })
+                    }
+                    if (amount.accountId) {
+                        form.setValue('from', amount.accountId, { shouldValidate: true })
+                    }
+                    if (initialData.amounts[1]?.accountId) {
+                        form.setValue('to', initialData.amounts[1].accountId, { shouldValidate: true })
+                    }
+                }
+
+                // Trigger form validation to clear any "required" errors
+                form.trigger()
+            }, 100)
+
+            return () => clearTimeout(timeoutId)
+        }
+    }, [props.initialData, props.inEditingMode, type, form])
 
     const calculateTotal = () => {
         const values = form.getValues()

@@ -14,6 +14,17 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     const [currentAction, setCurrentAction] = useState<string>(props.initialData?.action || 'EXPENSES')
     const formRef = useRef<FormRef | null>(null)
 
+    // Keep the current action in sync with incoming initialData.
+    // When opening the dialog for editing, initialData.action should select the proper tab.
+    // When switching to create mode (no initialData) reset to default EXPENSES.
+    React.useEffect(() => {
+        if (props.initialData && props.initialData.action) {
+            setCurrentAction(props.initialData.action)
+        } else if (!props.initialData) {
+            setCurrentAction('EXPENSES')
+        }
+    }, [props.initialData])
+
     useImperativeHandle(ref, () => ({
         submit: () => {
             formRef.current?.submit()
