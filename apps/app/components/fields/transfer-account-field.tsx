@@ -17,11 +17,11 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
     mandatory = false
 }: TransferFieldProps<T>) {
     const switchAccount = () => {
-        const fromAccount = form?.getValues('from')
-        const toAccount = form?.getValues('to')
+        const fromAccount = form?.getValues(fromName)
+        const toAccount = form?.getValues(toName)
 
-        form?.setValue('from', toAccount || '', { shouldValidate: false })
-        form?.setValue('to', fromAccount || '', { shouldValidate: false })
+        form?.setValue(fromName, (toAccount || '') as T[Path<T>], { shouldValidate: false })
+        form?.setValue(toName, (fromAccount || '') as T[Path<T>], { shouldValidate: false })
     }
 
     return (

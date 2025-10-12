@@ -2,8 +2,7 @@
 
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { useTransactionForm } from '@/hooks/form/use-transaction-form'
-import { TransactionAction, IAccount } from '@poveroh/types'
+import { IAccount } from '@poveroh/types'
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -23,6 +22,7 @@ import {
 } from '@/components/fields'
 import { useAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
+import { useExpensesForm } from '@/hooks/form/use-expenses-form'
 
 export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
@@ -30,7 +30,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
     const t = useTranslations()
     const { accountCacheList } = useAccountStore()
     const { form, file, multipleAmount, fieldArray, setFile, handleSubmit, calculateTotal, toggleMultipleAmount } =
-        useTransactionForm(TransactionAction.EXPENSES, props)
+        useExpensesForm(props)
 
     useImperativeHandle(ref, () => ({
         submit: () => {

@@ -2,8 +2,6 @@
 
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { useTransactionForm } from '@/hooks/form/use-transaction-form'
-import { TransactionAction } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 
@@ -17,12 +15,13 @@ import {
     AmountField,
     TransferAccountField
 } from '@/components/fields'
+import { useTransferForm } from '@/hooks/form/use-transfer-form'
 
 export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { form, handleSubmit } = useTransactionForm(TransactionAction.TRANSFER, props)
+    const { form, handleSubmit } = useTransferForm(props)
 
     useImperativeHandle(ref, () => ({
         submit: () => {

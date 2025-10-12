@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { CategoryField } from './category-field'
 import { SubcategoryField } from './subcategory-field'
 import { ISubcategory } from '@poveroh/types'
@@ -13,19 +13,22 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
+    const parseSubcategoryList = useCallback(
+        async (categoryId: string) => {
+            const category = categoryCacheList.find(item => item.id === categoryId)
+            const res = category ? category.subcategories : []
+            props.form?.setValue(props.subcategoryName, (res[0]?.id || '') as T[Path<T>])
+            setSubcategoryList(res)
+        },
+        [categoryCacheList, props.form, props.subcategoryName]
+    )
+
     useEffect(() => {
-        const initialCategoryId = props.categoryId || props.form?.getValues('categoryId') || ''
+        const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''
         if (initialCategoryId) {
             parseSubcategoryList(initialCategoryId)
         }
-    }, [categoryCacheList])
-
-    const parseSubcategoryList = async (categoryId: string) => {
-        const category = categoryCacheList.find(item => item.id === categoryId)
-        const res = category ? category.subcategories : []
-        props.form?.setValue('subcategoryId', res[0]?.id || '')
-        setSubcategoryList(res)
-    }
+    }, [categoryCacheList, props.categoryId, props.form, props.name, parseSubcategoryList])
 
     return (
         <div className='flex flex-row space-x-2'>

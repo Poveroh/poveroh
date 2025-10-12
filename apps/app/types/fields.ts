@@ -1,10 +1,9 @@
 import { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
 import { IAccount, InputVariantStyle, ISubcategory } from '@poveroh/types'
-import { FormMode } from './form'
 
 /* Base props that are common to all form field components */
 export type BaseFieldProps<T extends FieldValues = FieldValues> = {
-    form?: UseFormReturn<FormMode, unknown, FormMode>
+    form?: UseFormReturn<T, unknown, T>
     control: Control<T>
     name?: Path<T>
     label?: string

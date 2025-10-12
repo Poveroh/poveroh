@@ -2,8 +2,6 @@
 
 import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { useTransactionForm } from '@/hooks/form/use-transaction-form'
-import { TransactionAction } from '@poveroh/types'
 import { useAccount } from '@/hooks/use-account'
 
 import { Form } from '@poveroh/ui/components/form'
@@ -20,12 +18,13 @@ import {
     AmountField
 } from '@/components/fields'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
+import { useIncomeForm } from '@/hooks/form/use-income-form'
 
 export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { form, file, setFile, handleSubmit } = useTransactionForm(TransactionAction.INCOME, props)
+    const { form, file, setFile, handleSubmit } = useIncomeForm(props)
     const { accountCacheList } = useAccount()
 
     useImperativeHandle(ref, () => ({
