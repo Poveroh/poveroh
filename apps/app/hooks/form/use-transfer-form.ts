@@ -74,13 +74,13 @@ export function useTransferForm(props: TransactionFormProps) {
             const toAccountId = amounts[1]?.accountId
 
             if (fromAccountId && accountCacheList.some((acc: IAccount) => acc.id === fromAccountId)) {
-                baseForm.setFieldValue('from', fromAccountId)
+                baseForm.form.setValue('from', fromAccountId, { shouldValidate: true })
             }
             if (toAccountId && accountCacheList.some((acc: IAccount) => acc.id === toAccountId)) {
-                baseForm.setFieldValue('to', toAccountId)
+                baseForm.form.setValue('to', toAccountId, { shouldValidate: true })
             }
         }
-    }, [accountCacheList, baseForm, props.initialData])
+    }, [accountCacheList, props.initialData, baseForm.form])
 
     return baseForm
 }

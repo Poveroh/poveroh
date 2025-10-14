@@ -2,7 +2,7 @@ import { useAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
 import { ITransaction, TransactionAction } from '@poveroh/types'
 
-import { useMemo, memo } from 'react'
+import { useMemo, memo, useRef } from 'react'
 import { ArrowRightLeft } from 'lucide-react'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
@@ -21,6 +21,8 @@ export const TransactionItem = memo(function TransactionItem({
 }: TransactionItemProps) {
     const { accountCacheList } = useAccount()
     const { categoryCacheList } = useCategory()
+
+    const isClickingRef = useRef(false)
 
     // Memoized computations for transaction data
     const transactionData = useMemo(() => {
@@ -67,10 +69,19 @@ export const TransactionItem = memo(function TransactionItem({
 
     const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 
+    const handleClick = () => {
+        if (isClickingRef.current) return
+        isClickingRef.current = true
+        openEdit(transaction)
+        setTimeout(() => {
+            isClickingRef.current = false
+        }, 300)
+    }
+
     return (
         <div
             className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
-            onClick={() => openEdit(transaction)}
+            onClick={handleClick}
         >
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
@@ -114,11 +125,9 @@ export const TransactionItem = memo(function TransactionItem({
                     </div>
                     <p className='sub'>{category?.title || 'Internal transfer'}</p>
                 </div>
-                <OptionsPopover<ITransaction>
-                    data={transaction}
-                    openDelete={openDelete}
-                    openEdit={openEdit}
-                ></OptionsPopover>
+                <div onClick={e => e.stopPropagation()}>
+                    <OptionsPopover<ITransaction> data={transaction} openDelete={openDelete} openEdit={openEdit} />
+                </div>
             </div>
         </div>
     )

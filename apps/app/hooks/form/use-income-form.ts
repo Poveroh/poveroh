@@ -67,10 +67,14 @@ export function useIncomeForm(props: TransactionFormProps) {
     // Set account field value only after account cache is loaded
     useEffect(() => {
         const accountId = props.initialData?.amounts?.[0]?.accountId
-        if (accountId && accountCacheList?.some((acc: IAccount) => acc.id === accountId)) {
-            baseForm.setFieldValue('accountId', accountId)
+        if (
+            accountId &&
+            accountCacheList?.length > 0 &&
+            accountCacheList.some((acc: IAccount) => acc.id === accountId)
+        ) {
+            baseForm.form.setValue('accountId', accountId, { shouldValidate: true })
         }
-    }, [accountCacheList, baseForm, props.initialData])
+    }, [accountCacheList, props.initialData, baseForm.form])
 
     return baseForm
 }

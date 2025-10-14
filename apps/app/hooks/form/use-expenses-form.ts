@@ -23,15 +23,23 @@ const transformExpensesData = (data: unknown): Partial<ExpensesFormData> => {
 
     const transaction = data as Record<string, unknown>
 
+    // Handle amounts array if present
+    const amounts = transaction.amounts as Array<{ amount: number; accountId: string; currency?: string }> | undefined
+    const hasMultipleAmounts = amounts && amounts.length > 1
+
     return {
         title: (transaction.title as string) || (transaction.description as string) || '',
         date: transaction.date
             ? new Date(transaction.date as string).toISOString().split('T')[0]!
             : new Date().toISOString().split('T')[0]!,
-        currency: (transaction.currencyId as string) || '',
-        totalAmount: Math.abs(Number(transaction.amount) || 0), // Ensure positive for expenses
-        multipleAmount: false,
-        totalAccountId: (transaction.accountId as string) || '',
+        currency:
+            (transaction.currencyId as string) || (transaction.currency as string) || amounts?.[0]?.currency || '',
+        totalAmount: Math.abs(Number(transaction.amount) || amounts?.[0]?.amount || 0), // Ensure positive for expenses
+        multipleAmount: hasMultipleAmounts || false,
+        amounts: hasMultipleAmounts
+            ? amounts?.map(amt => ({ amount: Math.abs(amt.amount), accountId: amt.accountId }))
+            : [],
+        totalAccountId: hasMultipleAmounts ? '' : (transaction.accountId as string) || amounts?.[0]?.accountId || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',

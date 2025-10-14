@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useForm, FieldValues, Path } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -26,8 +26,12 @@ export function useBaseTransactionForm<T extends FieldValues>(
 
     const getInitialValues = () => {
         if (props.initialData && config.transformInitialData) {
-            return { ...config.defaultValues, ...config.transformInitialData(props.initialData) }
+            const transformed = config.transformInitialData(props.initialData)
+            const merged = { ...config.defaultValues, ...transformed }
+            console.log('Initial values for', config.type, ':', merged)
+            return merged
         }
+        console.log('Using default values for', config.type, ':', config.defaultValues)
         return config.defaultValues
     }
 
@@ -35,7 +39,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
         resolver: zodResolver(config.schema),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         defaultValues: getInitialValues() as any,
-        mode: 'onChange'
+        mode: 'onBlur'
     })
 
     const handleSubmit = async (values: T, dataCallback: (formData: FormData) => Promise<void>) => {
@@ -65,6 +69,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
     // Enhanced form reset with proper validation
     const resetFormWithData = useCallback(
         (data: Partial<T>) => {
+            console.log('Resetting form with data:', data)
             form.reset(data as T)
             // Small delay to ensure form fields are rendered
             setTimeout(() => {
@@ -82,50 +87,26 @@ export function useBaseTransactionForm<T extends FieldValues>(
         [form]
     )
 
-    // Handle initial data changes
+    // Handle initial data changes - use a ref to track if we've already processed this data
+    const processedDataRef = useRef<string>('')
+
     useEffect(() => {
-        if (props.initialData && config.transformInitialData) {
+        // Create a stable key for the current data state
+        const dataKey = `${JSON.stringify(props.initialData)}-${props.inEditingMode}`
+
+        // Only process if this exact data combination hasn't been processed before
+        if (props.initialData && config.transformInitialData && processedDataRef.current !== dataKey) {
+            processedDataRef.current = dataKey
             const transformedData = config.transformInitialData(props.initialData)
-            resetFormWithData(transformedData)
-        }
-    }, [props.initialData, config, form, resetFormWithData])
 
-    // Additional effect to ensure form values are properly set after accounts/currencies are loaded
-    // This handles timing issues where accounts might not be available during initial form reset
-    useEffect(() => {
-        if (props.initialData && props.inEditingMode && props.initialData.amounts) {
-            // Small delay to ensure form has been reset first
-            const timeoutId = setTimeout(() => {
-                const initialData = props.initialData!
-                if (initialData.amounts?.[0]) {
-                    const amount = initialData.amounts[0]
-                    if (amount.currency) {
-                        setFieldValue('currency', amount.currency)
-                    }
-                    if (amount.accountId) {
-                        // Handle different account field names based on transaction type
-                        if (config.type === TransactionAction.EXPENSES) {
-                            if (initialData.amounts.length === 1) {
-                                setFieldValue('totalAccountId', amount.accountId)
-                            }
-                        } else if (config.type === TransactionAction.INCOME) {
-                            setFieldValue('accountId', amount.accountId)
-                        } else if (config.type === TransactionAction.TRANSFER) {
-                            setFieldValue('from', amount.accountId)
-                            if (initialData.amounts[1]?.accountId) {
-                                setFieldValue('to', initialData.amounts[1].accountId)
-                            }
-                        }
-                    }
-                }
-
-                // Trigger form validation to clear any "required" errors
+            // Reset form with transformed data
+            form.reset({ ...config.defaultValues, ...transformedData } as T)
+            setTimeout(() => {
                 form.trigger()
             }, 100)
-
-            return () => clearTimeout(timeoutId)
         }
-    }, [props.initialData, props.inEditingMode, config.type, form, setFieldValue])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.initialData, props.inEditingMode])
 
     // Bulk field setter for initial data timing issues
     const setFieldValues = (values: Partial<T>) => {

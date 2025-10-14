@@ -14,11 +14,17 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
     const [currentAction, setCurrentAction] = useState<string>(props.initialData?.action || 'EXPENSES')
     const formRef = useRef<FormRef | null>(null)
 
-    useImperativeHandle(ref, () => ({
-        submit: () => {
-            formRef.current?.submit()
-        }
-    }))
+    useImperativeHandle(
+        ref,
+        () => ({
+            submit: () => {
+                if (formRef.current) {
+                    formRef.current.submit()
+                }
+            }
+        }),
+        []
+    )
 
     return (
         <div className='flex flex-col space-y-6 w-full'>
@@ -32,34 +38,9 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 </TabsList>
             </Tabs>
 
-            {currentAction == 'INCOME' && (
-                <IncomeForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.dataCallback}
-                    inputStyle={props.inputStyle}
-                />
-            )}
-            {currentAction == 'EXPENSES' && (
-                <ExpensesForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.dataCallback}
-                    inputStyle={props.inputStyle}
-                />
-            )}
-
-            {currentAction == 'TRANSFER' && (
-                <TransferForm
-                    ref={formRef}
-                    initialData={props.initialData}
-                    inEditingMode={props.inEditingMode || false}
-                    dataCallback={props.dataCallback}
-                    inputStyle={props.inputStyle}
-                />
-            )}
+            {currentAction == 'INCOME' && <IncomeForm ref={formRef} {...props} />}
+            {currentAction == 'EXPENSES' && <ExpensesForm ref={formRef} {...props} />}
+            {currentAction == 'TRANSFER' && <TransferForm ref={formRef} {...props} />}
         </div>
     )
 })
