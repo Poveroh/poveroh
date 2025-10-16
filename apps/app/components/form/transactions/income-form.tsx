@@ -1,8 +1,7 @@
 'use client'
 
-import { forwardRef, useEffect, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { useAccount } from '@/hooks/use-account'
 
 import { Form } from '@poveroh/ui/components/form'
 
@@ -25,21 +24,12 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
 
     const t = useTranslations()
     const { form, file, setFile, handleSubmit } = useIncomeForm(props)
-    const { accountCacheList } = useAccount()
 
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
         }
     }))
-
-    // Set account field value only after options are loaded
-    useEffect(() => {
-        const accountId = props.initialData?.amounts[0]?.accountId
-        if (accountId && accountCacheList.some(acc => acc.id === accountId)) {
-            form.setValue('accountId', accountId)
-        }
-    }, [accountCacheList, form, props.initialData])
 
     const inputStyle = props.inputStyle
 
