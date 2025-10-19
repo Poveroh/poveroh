@@ -1,19 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useForm, FieldValues, Path } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { TransactionAction } from '@poveroh/types'
-import { TransactionFormProps } from '@/types/form'
+import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
 import { cloneDeep } from 'lodash'
 import logger from '@/lib/logger'
-
-export interface BaseTransactionFormConfig<T extends FieldValues> {
-    type: TransactionAction
-    defaultValues: T
-    schema: z.ZodTypeAny
-    transformInitialData?: (data: unknown) => Partial<T>
-}
 
 export function useBaseTransactionForm<T extends FieldValues>(
     config: BaseTransactionFormConfig<T>,

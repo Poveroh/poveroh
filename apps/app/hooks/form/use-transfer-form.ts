@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { useEffect } from 'react'
 import { TransactionAction, IAccount } from '@poveroh/types'
-import { useBaseTransactionForm, BaseTransactionFormConfig } from './use-base-transaction-form'
-import { TransferFormData, TransactionFormProps, amountSchema } from '@/types/form'
+import { useBaseTransactionForm } from './use-base-transaction-form'
+import { TransferFormData, TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
 import { useAccount } from '@/hooks/use-account'
 
 const defaultTransferValues: TransferFormData = {

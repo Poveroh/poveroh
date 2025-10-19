@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
 import { TransactionAction } from '@poveroh/types'
-import { useBaseTransactionForm, BaseTransactionFormConfig } from './use-base-transaction-form'
-import { ExpensesFormData, TransactionFormProps, amountSchema } from '@/types/form'
+import { useBaseTransactionForm } from './use-base-transaction-form'
+import { BaseTransactionFormConfig, ExpensesFormData, TransactionFormProps, amountSchema } from '@/types/form'
 
 const defaultExpensesValues: ExpensesFormData = {
     title: '',

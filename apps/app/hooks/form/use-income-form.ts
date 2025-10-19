@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { useEffect } from 'react'
 import { TransactionAction, IAccount } from '@poveroh/types'
-import { useBaseTransactionForm, BaseTransactionFormConfig } from './use-base-transaction-form'
-import { IncomeFormData, TransactionFormProps, amountSchema } from '@/types/form'
+import { useBaseTransactionForm } from './use-base-transaction-form'
+import { BaseTransactionFormConfig, IncomeFormData, TransactionFormProps, amountSchema } from '@/types/form'
 import { useAccount } from '@/hooks/use-account'
 
 const defaultIncomeValues: IncomeFormData = {

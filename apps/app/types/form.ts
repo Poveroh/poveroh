@@ -1,11 +1,19 @@
 import { z } from 'zod'
-import { ITransaction, InputVariantStyle } from '@poveroh/types'
+import { ITransaction, InputVariantStyle, TransactionAction } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
+import { FieldValues } from 'react-hook-form'
 
 type AmountSchemaErrors = {
     required_error: string
     invalid_type_error: string
+}
+
+export interface BaseTransactionFormConfig<T extends FieldValues> {
+    type: TransactionAction
+    defaultValues: T
+    schema: z.ZodTypeAny
+    transformInitialData?: (data: ITransaction) => Partial<T>
 }
 
 export type ExpensesFormData = {
