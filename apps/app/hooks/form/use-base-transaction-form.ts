@@ -87,16 +87,20 @@ export function useBaseTransactionForm<T extends FieldValues>(
 
         // Only process if this exact data combination hasn't been processed before
         if (props.initialData && config.transformInitialData && processedDataRef.current !== dataKey) {
+            console.log('🔄 Processing initial data for', config.type, ':', props.initialData)
             processedDataRef.current = dataKey
             const transformedData = config.transformInitialData(props.initialData)
+            console.log('🔄 Transformed data for', config.type, ':', transformedData)
 
             // Reset form with transformed data
-            form.reset({ ...config.defaultValues, ...transformedData } as T)
+            const finalData = { ...config.defaultValues, ...transformedData } as T
+            console.log('🔄 Final data for form reset:', finalData)
+            form.reset(finalData)
             setTimeout(() => {
                 form.trigger()
             }, 100)
         }
-    }, [props.initialData, props.inEditingMode])
+    }, [props.initialData, props.inEditingMode, config, form])
 
     // Bulk field setter for initial data timing issues
     const setFieldValues = (values: Partial<T>) => {

@@ -1,9 +1,7 @@
 import { z } from 'zod'
-import { useEffect } from 'react'
-import { TransactionAction, IAccount } from '@poveroh/types'
+import { TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, IncomeFormData, TransactionFormProps, amountSchema } from '@/types/form'
-import { useAccount } from '@/hooks/use-account'
 
 const defaultIncomeValues: IncomeFormData = {
     title: '',
@@ -22,19 +20,28 @@ const transformIncomeData = (data: unknown): Partial<IncomeFormData> => {
 
     const transaction = data as Record<string, unknown>
 
-    return {
+    console.log('🔍 transformIncomeData - Raw data:', data)
+
+    // Handle amounts array - Income data comes with amounts structure like Expenses
+    const amounts = transaction.amounts as Array<{ amount: number; accountId: string; currency: string }> | undefined
+    const firstAmount = amounts?.[0]
+
+    const transformed = {
         title: (transaction.title as string) || '',
         date: transaction.date
             ? new Date(transaction.date as string).toISOString().split('T')[0]
             : new Date().toISOString().split('T')[0],
-        amount: Math.abs(Number(transaction.amount) || 0), // Ensure positive for income
-        currency: (transaction.currencyId as string) || '',
-        accountId: (transaction.accountId as string) || '',
+        amount: Math.abs(Number(firstAmount?.amount || transaction.amount) || 0), // Get from amounts array
+        currency: firstAmount?.currency || (transaction.currencyId as string) || '',
+        accountId: firstAmount?.accountId || (transaction.accountId as string) || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',
         ignore: (transaction.ignore as boolean) || false
     }
+
+    console.log('🔍 transformIncomeData - Transformed data:', transformed)
+    return transformed
 }
 
 // Create the income schema

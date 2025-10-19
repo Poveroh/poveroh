@@ -80,7 +80,6 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     <AccountField
                         form={form}
                         control={form.control}
-                        value={props.initialData?.amounts[0]?.accountId}
                         name='accountId'
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
