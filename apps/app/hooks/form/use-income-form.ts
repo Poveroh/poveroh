@@ -23,10 +23,10 @@ const transformIncomeData = (data: unknown): Partial<IncomeFormData> => {
     const transaction = data as Record<string, unknown>
 
     return {
-        title: (transaction.title as string) || (transaction.description as string) || '',
+        title: (transaction.title as string) || '',
         date: transaction.date
-            ? new Date(transaction.date as string).toISOString().split('T')[0]!
-            : new Date().toISOString().split('T')[0]!,
+            ? new Date(transaction.date as string).toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0],
         amount: Math.abs(Number(transaction.amount) || 0), // Ensure positive for income
         currency: (transaction.currencyId as string) || '',
         accountId: (transaction.accountId as string) || '',
@@ -62,19 +62,6 @@ const incomeConfig: BaseTransactionFormConfig<IncomeFormData> = {
 
 export function useIncomeForm(props: TransactionFormProps) {
     const baseForm = useBaseTransactionForm<IncomeFormData>(incomeConfig, props)
-    const { accountCacheList } = useAccount()
-
-    // Set account field value only after account cache is loaded
-    useEffect(() => {
-        const accountId = props.initialData?.amounts?.[0]?.accountId
-        if (
-            accountId &&
-            accountCacheList?.length > 0 &&
-            accountCacheList.some((acc: IAccount) => acc.id === accountId)
-        ) {
-            baseForm.form.setValue('accountId', accountId, { shouldValidate: true })
-        }
-    }, [accountCacheList, props.initialData, baseForm.form])
 
     return baseForm
 }

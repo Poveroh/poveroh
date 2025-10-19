@@ -96,7 +96,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
                 form.trigger()
             }, 100)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.initialData, props.inEditingMode])
 
     // Bulk field setter for initial data timing issues

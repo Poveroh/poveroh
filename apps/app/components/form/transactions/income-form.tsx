@@ -67,6 +67,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                             variant={inputStyle}
                         />
                         <CurrencyField
+                            form={form}
                             control={form.control}
                             name='currency'
                             label={t('form.currency.label')}
