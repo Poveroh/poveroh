@@ -48,6 +48,7 @@
         "search": "Search",
         "toUpload": "To upload",
         "uploaded": "uploaded",
+        "deleted": "deleted",
         "saved": "saved",
         "successfully": "{a} {b} successfully",
         "availableNextVersion": "This feature will be available in the next version.",
