@@ -24,7 +24,7 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
             name={name!}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
+                    {label && <FormLabel mandatory={mandatory}>{label}</FormLabel>}
                     <Select
                         value={field.value ?? ''}
                         onValueChange={value => {

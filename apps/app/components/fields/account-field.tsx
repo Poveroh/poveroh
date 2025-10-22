@@ -26,11 +26,9 @@ export function AccountField<T extends FieldValues = FieldValues>({
         setLocalAccountCacheList(accountCacheList)
 
         if (value && accountCacheList.some(acc => acc.id === value)) {
-            form?.setValue(name as any, value)
+            form?.setValue(name, value as T[Path<T>])
         }
     }, [accountCacheList, form, name, value])
-
-    if (!label) return null
 
     return (
         <SelectField
