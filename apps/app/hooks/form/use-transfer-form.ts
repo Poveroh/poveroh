@@ -1,9 +1,7 @@
 import { z } from 'zod'
-import { useEffect } from 'react'
-import { TransactionAction, IAccount } from '@poveroh/types'
+import { TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { TransferFormData, TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
-import { useAccount } from '@/hooks/use-account'
 
 const defaultTransferValues: TransferFormData = {
     title: '',
@@ -21,18 +19,33 @@ const transformTransferData = (data: unknown): Partial<TransferFormData> => {
 
     const transaction = data as Record<string, unknown>
 
-    return {
+    console.log('🔍 transformTransferData - Raw data:', data)
+
+    // Handle amounts array - Transfer data comes with amounts structure
+    const amounts = transaction.amounts as
+        | Array<{ amount: number; accountId: string; currency: string; action: string }>
+        | undefined
+
+    // Find the from (EXPENSES) and to (INCOME) accounts from amounts
+    const fromAmount = amounts?.find(amt => amt.action === 'EXPENSES')
+    const toAmount = amounts?.find(amt => amt.action === 'INCOME')
+    const firstAmount = amounts?.[0] // For amount and currency fallback
+
+    const transformed = {
         title: (transaction.title as string) || (transaction.description as string) || '',
         date: transaction.date
             ? new Date(transaction.date as string).toISOString().split('T')[0]!
             : new Date().toISOString().split('T')[0]!,
-        amount: Math.abs(Number(transaction.amount) || 0), // Ensure positive
-        currency: (transaction.currencyId as string) || '',
-        from: (transaction.fromAccountId as string) || '',
-        to: (transaction.toAccountId as string) || '',
+        amount: Math.abs(Number(firstAmount?.amount || transaction.amount) || 0), // Ensure positive
+        currency: firstAmount?.currency || (transaction.currencyId as string) || '',
+        from: fromAmount?.accountId || '',
+        to: toAmount?.accountId || '',
         note: (transaction.note as string) || '',
         ignore: (transaction.ignore as boolean) || false
     }
+
+    console.log('🔍 transformTransferData - Transformed data:', transformed)
+    return transformed
 }
 
 // Create the transfer schema
@@ -64,23 +77,6 @@ const transferConfig: BaseTransactionFormConfig<TransferFormData> = {
 
 export function useTransferForm(props: TransactionFormProps) {
     const baseForm = useBaseTransactionForm<TransferFormData>(transferConfig, props)
-    const { accountCacheList } = useAccount()
-
-    // Set account field values only after account cache is loaded
-    useEffect(() => {
-        const amounts = props.initialData?.amounts
-        if (amounts && amounts.length >= 1 && accountCacheList?.length > 0) {
-            const fromAccountId = amounts[0]?.accountId
-            const toAccountId = amounts[1]?.accountId
-
-            if (fromAccountId && accountCacheList.some((acc: IAccount) => acc.id === fromAccountId)) {
-                baseForm.form.setValue('from', fromAccountId, { shouldValidate: true })
-            }
-            if (toAccountId && accountCacheList.some((acc: IAccount) => acc.id === toAccountId)) {
-                baseForm.form.setValue('to', toAccountId, { shouldValidate: true })
-            }
-        }
-    }, [accountCacheList, props.initialData, baseForm.form])
 
     return baseForm
 }
