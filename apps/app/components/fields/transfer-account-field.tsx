@@ -1,6 +1,7 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { FormLabel } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { TransferFieldProps } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { AccountField } from './account-field'
@@ -36,15 +37,20 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     disabled={disabled}
                     mandatory={mandatory}
                 />
-                <Button
-                    type='button'
-                    variant='ghost'
-                    className='h-[40px] w-[40px] cursor-pointer'
-                    onClick={switchAccount}
-                    disabled={disabled}
-                >
-                    <DynamicIcon name='move-right' />
-                </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            type='button'
+                            variant='ghost'
+                            className='h-[40px] w-[40px] cursor-pointer'
+                            onClick={switchAccount}
+                            disabled={disabled}
+                        >
+                            <DynamicIcon name='move-right' />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Swap</TooltipContent>
+                </Tooltip>
                 <AccountField
                     control={control}
                     name={toName}
