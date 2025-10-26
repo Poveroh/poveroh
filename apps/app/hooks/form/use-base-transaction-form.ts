@@ -12,6 +12,10 @@ export function useBaseTransactionForm<T extends FieldValues>(
 ) {
     const { handleError } = useError()
 
+    // Handle initial data changes -
+    // use a ref to track if we've already processed this data
+    const processedDataRef = useRef<string>('')
+
     const [file, setFile] = useState<FileList | null>(null)
     const [loading, setLoading] = useState(false)
 
@@ -77,9 +81,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
         },
         [form]
     )
-
-    // Handle initial data changes - use a ref to track if we've already processed this data
-    const processedDataRef = useRef<string>('')
 
     useEffect(() => {
         // Create a stable key for the current data state
