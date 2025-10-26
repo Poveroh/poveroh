@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
-import { TransactionAction } from '@poveroh/types'
+import { ITransaction, TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, ExpensesFormData, TransactionFormProps, amountSchema } from '@/types/form'
 
@@ -18,28 +18,27 @@ const defaultExpensesValues: ExpensesFormData = {
     ignore: false
 }
 
-const transformExpensesData = (data: unknown): Partial<ExpensesFormData> => {
-    if (!data || typeof data !== 'object') return {}
+const transformExpensesData = (data: ITransaction): ExpensesFormData => {
+    if (!data || typeof data !== 'object') return defaultExpensesValues
 
-    const transaction = data as Record<string, unknown>
+    const transaction = data as ITransaction
 
     // Handle amounts array if present
     const amounts = transaction.amounts as Array<{ amount: number; accountId: string; currency?: string }> | undefined
     const hasMultipleAmounts = amounts && amounts.length > 1
 
     return {
-        title: (transaction.title as string) || (transaction.description as string) || '',
+        title: (transaction.title as string) || '',
         date: transaction.date
             ? new Date(transaction.date as string).toISOString().split('T')[0]!
             : new Date().toISOString().split('T')[0]!,
-        currency:
-            (transaction.currencyId as string) || (transaction.currency as string) || amounts?.[0]?.currency || '',
-        totalAmount: Math.abs(Number(transaction.amount) || amounts?.[0]?.amount || 0), // Ensure positive for expenses
+        currency: amounts?.[0]?.currency || '',
+        totalAmount: Math.abs(Number(amounts?.[0]?.amount || 0)), // Ensure positive for expenses
         multipleAmount: hasMultipleAmounts || false,
         amounts: hasMultipleAmounts
             ? amounts?.map(amt => ({ amount: Math.abs(amt.amount), accountId: amt.accountId }))
             : [],
-        totalAccountId: hasMultipleAmounts ? '' : (transaction.accountId as string) || amounts?.[0]?.accountId || '',
+        totalAccountId: hasMultipleAmounts ? '' : amounts?.[0]?.accountId || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',

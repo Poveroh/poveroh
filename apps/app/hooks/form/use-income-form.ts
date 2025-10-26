@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TransactionAction } from '@poveroh/types'
+import { ITransaction, TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, IncomeFormData, TransactionFormProps, amountSchema } from '@/types/form'
 
@@ -15,10 +15,10 @@ const defaultIncomeValues: IncomeFormData = {
     ignore: false
 }
 
-const transformIncomeData = (data: unknown): Partial<IncomeFormData> => {
-    if (!data || typeof data !== 'object') return {}
+const transformIncomeData = (data: ITransaction): IncomeFormData => {
+    if (!data || typeof data !== 'object') return defaultIncomeValues
 
-    const transaction = data as Record<string, unknown>
+    const transaction = data as ITransaction
 
     console.log('🔍 transformIncomeData - Raw data:', data)
 
@@ -29,11 +29,11 @@ const transformIncomeData = (data: unknown): Partial<IncomeFormData> => {
     const transformed = {
         title: (transaction.title as string) || '',
         date: transaction.date
-            ? new Date(transaction.date as string).toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0],
-        amount: Math.abs(Number(firstAmount?.amount || transaction.amount) || 0), // Get from amounts array
-        currency: firstAmount?.currency || (transaction.currencyId as string) || '',
-        accountId: firstAmount?.accountId || (transaction.accountId as string) || '',
+            ? new Date(transaction.date as string).toISOString().split('T')[0]!
+            : new Date().toISOString().split('T')[0]!,
+        amount: Math.abs(Number(firstAmount?.amount || 0)), // Get from amounts array
+        currency: firstAmount?.currency || '',
+        accountId: firstAmount?.accountId || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',
@@ -41,6 +41,7 @@ const transformIncomeData = (data: unknown): Partial<IncomeFormData> => {
     }
 
     console.log('🔍 transformIncomeData - Transformed data:', transformed)
+
     return transformed
 }
 
@@ -68,7 +69,5 @@ const incomeConfig: BaseTransactionFormConfig<IncomeFormData> = {
 }
 
 export function useIncomeForm(props: TransactionFormProps) {
-    const baseForm = useBaseTransactionForm<IncomeFormData>(incomeConfig, props)
-
-    return baseForm
+    return useBaseTransactionForm<IncomeFormData>(incomeConfig, props)
 }

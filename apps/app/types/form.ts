@@ -9,12 +9,14 @@ type AmountSchemaErrors = {
     invalid_type_error: string
 }
 
-export interface BaseTransactionFormConfig<T extends FieldValues> {
+export type BaseTransactionFormConfig<T extends FieldValues> = {
     type: TransactionAction
     defaultValues: T
     schema: z.ZodTypeAny
-    transformInitialData?: (data: ITransaction) => Partial<T>
+    transformInitialData?: (data: ITransaction) => T
 }
+
+type ExpensesAmounts = Array<{ amount: number; accountId: string }>
 
 export type ExpensesFormData = {
     title: string
@@ -22,7 +24,7 @@ export type ExpensesFormData = {
     currency: string
     totalAmount: number
     multipleAmount: boolean
-    amounts?: Array<{ amount: number; accountId: string }>
+    amounts?: ExpensesAmounts
     totalAccountId?: string
     categoryId: string
     subcategoryId: string

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { TransactionAction } from '@poveroh/types'
+import { ITransaction, TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { TransferFormData, TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
 
@@ -14,10 +14,10 @@ const defaultTransferValues: TransferFormData = {
     ignore: false
 }
 
-const transformTransferData = (data: unknown): Partial<TransferFormData> => {
-    if (!data || typeof data !== 'object') return {}
+const transformTransferData = (data: ITransaction): TransferFormData => {
+    if (!data || typeof data !== 'object') return defaultTransferValues
 
-    const transaction = data as Record<string, unknown>
+    const transaction = data as ITransaction
 
     console.log('🔍 transformTransferData - Raw data:', data)
 
@@ -32,12 +32,12 @@ const transformTransferData = (data: unknown): Partial<TransferFormData> => {
     const firstAmount = amounts?.[0] // For amount and currency fallback
 
     const transformed = {
-        title: (transaction.title as string) || (transaction.description as string) || '',
+        title: (transaction.title as string) || '',
         date: transaction.date
             ? new Date(transaction.date as string).toISOString().split('T')[0]!
             : new Date().toISOString().split('T')[0]!,
-        amount: Math.abs(Number(firstAmount?.amount || transaction.amount) || 0), // Ensure positive
-        currency: firstAmount?.currency || (transaction.currencyId as string) || '',
+        amount: Math.abs(Number(firstAmount?.amount || 0)), // Ensure positive
+        currency: firstAmount?.currency || '',
         from: fromAmount?.accountId || '',
         to: toAmount?.accountId || '',
         note: (transaction.note as string) || '',
@@ -76,7 +76,5 @@ const transferConfig: BaseTransactionFormConfig<TransferFormData> = {
 }
 
 export function useTransferForm(props: TransactionFormProps) {
-    const baseForm = useBaseTransactionForm<TransferFormData>(transferConfig, props)
-
-    return baseForm
+    return useBaseTransactionForm<TransferFormData>(transferConfig, props)
 }
