@@ -32,21 +32,22 @@ export class TransactionController {
     static async save(req: Request, res: Response) {
         try {
             const { id } = req.params
-            const { data } = req.body
+            const { data, action } = req.body
 
             if (!id || !data) {
                 res.status(400).json({ message: 'Missing transaction ID or data' })
                 return
             }
+            if (!action) {
+                res.status(400).json({ message: 'Missing transaction action for update' })
+                return
+            }
 
             const parsedData = JSON.parse(data)
 
-            const transaction = await prisma.transaction.update({
-                where: { id },
-                data: parsedData
-            })
+            const result = await TransactionHelper.handleTransaction(action, parsedData, req.user.id, id)
 
-            res.status(200).json(transaction)
+            res.status(200).json(result)
         } catch (error) {
             logger.error(error)
             res.status(500).json({

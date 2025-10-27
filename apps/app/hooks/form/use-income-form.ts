@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { ITransaction, TransactionAction } from '@poveroh/types'
+import { IncomeFormData, ITransaction, TransactionAction } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
-import { BaseTransactionFormConfig, IncomeFormData, TransactionFormProps, amountSchema } from '@/types/form'
+import { BaseTransactionFormConfig, TransactionFormProps, amountSchema } from '@/types/form'
 
 const defaultIncomeValues: IncomeFormData = {
     title: '',

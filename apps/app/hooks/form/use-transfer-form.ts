@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { ITransaction, TransactionAction } from '@poveroh/types'
+import { ITransaction, TransactionAction, TransferFormData } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
-import { TransferFormData, TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
+import { TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
 
 const defaultTransferValues: TransferFormData = {
     title: '',

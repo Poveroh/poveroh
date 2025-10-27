@@ -33,6 +33,47 @@ export interface ITransaction extends ITransactionBase {
     amounts: IAmount[]
 }
 
+type ExpensesAmounts = Array<{ amount: number; accountId: string }>
+
+export type ExpensesFormData = {
+    title: string
+    date: string
+    currency: string
+    totalAmount: number
+    multipleAmount: boolean
+    amounts?: ExpensesAmounts
+    totalAccountId?: string
+    categoryId: string
+    subcategoryId: string
+    note: string
+    ignore: boolean
+}
+
+export type IncomeFormData = {
+    title: string
+    date: string
+    amount: number
+    currency: string
+    accountId: string
+    categoryId: string
+    subcategoryId: string
+    note: string
+    ignore: boolean
+}
+
+export type TransferFormData = {
+    title: string
+    date: string
+    amount: number
+    currency: string
+    from: string
+    to: string
+    note: string
+    ignore: boolean
+}
+
+export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
+
 export enum TransactionAction {
     INCOME = 'INCOME',
     EXPENSES = 'EXPENSES',
