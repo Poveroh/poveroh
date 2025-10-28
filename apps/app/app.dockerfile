@@ -34,11 +34,24 @@ COPY --from=installer /app/apps/app/.next/standalone ./
 COPY --from=installer /app/apps/app/.next/static ./apps/app/.next/static
 COPY --from=installer /app/apps/app/public ./apps/app/public
 
+# Copy the entrypoint script
+COPY ./scripts/docker-app-setup.sh /app/
+# Fix for Windows line endings if needed
+RUN sed -i 's/\r$//' /app/docker-app-setup.sh
+RUN chmod +x /app/docker-app-setup.sh
+
 # Set up non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Create public directory and set proper permissions for runtime env injection
+RUN mkdir -p /app/apps/app/public && \
+    chown -R nextjs:nodejs /app/apps/app/public
+
 USER nextjs
 
 EXPOSE 3000
+
+ENTRYPOINT ["/app/docker-app-setup.sh"]
 
 CMD ["node", "apps/app/server.js"]
