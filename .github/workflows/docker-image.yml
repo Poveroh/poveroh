@@ -34,10 +34,9 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Create neutral .env for build
+            - name: Copy and patch .env
               run: |
-                  echo "# Build-time env - runtime values will be injected via docker-app-setup.sh" > .env
-                  echo "NODE_ENV=production" >> .env
+                  cp .env.example .env
 
             - name: Build Docker images using local compose file
               run: cd ./docker && docker compose -f docker-compose.local.yml build
