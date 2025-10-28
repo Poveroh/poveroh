@@ -4,12 +4,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
-import appConfig from '@/config'
 import { IUser } from '@poveroh/types'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { useUser } from '@/hooks/use-user'
 import Divider from '../other/divider'
+import { CompanyInfoBar } from './company-info-bar'
 
 type UserPopoverContentProps = {
     user: IUser
@@ -18,7 +18,6 @@ type UserPopoverContentProps = {
 
 export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
     const t = useTranslations()
-    const year = new Date().getFullYear()
     return (
         <>
             <div className='flex flex-col space-y-5'>
@@ -46,13 +45,7 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
                     </a>
                 </div>
                 <Divider />
-                <div className='flex space-x-2'>
-                    <p className='sub small'>
-                        {appConfig.name} &#64; {year}
-                    </p>
-                    <p className='sub small'>&bull;</p>
-                    <p className='sub small'>v{appConfig.version}</p>
-                </div>
+                <CompanyInfoBar small />
             </div>
         </>
     )

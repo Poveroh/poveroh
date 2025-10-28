@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import appConfig from '@/config'
+import { CompanyInfoBar } from '@/components/navbar/company-info-bar'
 
 type DefaultAuthLayout = Readonly<{
     children: React.ReactNode
@@ -54,6 +55,8 @@ export default function AuthLayout({ children }: DefaultAuthLayout) {
                     </div>
 
                     <div className='flex items-center flex-1'>{children}</div>
+
+                    <CompanyInfoBar />
                 </div>
             </div>
             <div className='hidden lg:flex justify-center items-center h-full w-1/2 bg-special-pattern box-rounded-just-left'></div>
