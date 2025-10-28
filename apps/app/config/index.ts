@@ -9,15 +9,45 @@ declare global {
     }
 }
 
-const runtime: WindowEnv | null = typeof window !== 'undefined' && window.__ENV ? window.__ENV : null
-
-const appConfig: IAppConfig = {
-    name: (runtime?.NEXT_PUBLIC_APP_NAME as string) || process.env.NEXT_PUBLIC_APP_NAME || 'Poveroh',
-    version: (runtime?.NEXT_PUBLIC_APP_VERSION as string) || process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0',
-    apiUrl: ((runtime?.NEXT_PUBLIC_API_URL as string) || process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, ''),
-    mode: process.env.NODE_ENV,
-    isProduction: process.env.NODE_ENV === 'production',
-    logLevel: ((runtime?.LOG_LEVEL as string) || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
+// Dynamic getter function that checks runtime values each time it's called
+const getRuntimeConfig = (): WindowEnv | null => {
+    if (typeof window !== 'undefined' && window.__ENV) {
+        return window.__ENV
+    }
+    return null
 }
+
+// Create a reactive config object with getters
+const createAppConfig = (): IAppConfig => {
+    return {
+        get name(): string {
+            const runtime = getRuntimeConfig()
+            return (runtime?.NEXT_PUBLIC_APP_NAME as string) || process.env.NEXT_PUBLIC_APP_NAME || 'Poveroh'
+        },
+        get version(): string {
+            const runtime = getRuntimeConfig()
+            return (runtime?.NEXT_PUBLIC_APP_VERSION as string) || process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0'
+        },
+        get apiUrl(): string {
+            const runtime = getRuntimeConfig()
+            return ((runtime?.NEXT_PUBLIC_API_URL as string) || process.env.NEXT_PUBLIC_API_URL || '').replace(
+                /\/$/,
+                ''
+            )
+        },
+        get mode(): 'production' | 'development' | 'test' {
+            return (process.env.NODE_ENV as 'production' | 'development' | 'test') || 'development'
+        },
+        get isProduction(): boolean {
+            return process.env.NODE_ENV === 'production'
+        },
+        get logLevel(): LogLevel {
+            const runtime = getRuntimeConfig()
+            return ((runtime?.LOG_LEVEL as string) || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
+        }
+    }
+}
+
+const appConfig = createAppConfig()
 
 export default appConfig
