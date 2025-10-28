@@ -5,6 +5,8 @@ import { Logo } from '@poveroh/ui/components/logo'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useEffect } from 'react'
+import appConfig from '@/config'
 
 type DefaultAuthLayout = Readonly<{
     children: React.ReactNode
@@ -13,6 +15,10 @@ type DefaultAuthLayout = Readonly<{
 export default function AuthLayout({ children }: DefaultAuthLayout) {
     const t = useTranslations()
     const location = usePathname()
+
+    useEffect(() => {
+        console.log(appConfig.name, ' - ', appConfig.version, ' | api alive: ', appConfig.apiUrl)
+    }, [])
 
     const isSignUpPage = location === '/sign-up'
     const isSignInPage = location === '/sign-in'
