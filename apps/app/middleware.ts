@@ -3,6 +3,10 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
+    // Allow API routes and static assets to pass through without auth redirects
+    if (path.startsWith('/api') || path.startsWith('/_next') || path.startsWith('/public')) {
+        return NextResponse.next()
+    }
     const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout']
     const token = request.cookies.get('token')?.value || ''
 
