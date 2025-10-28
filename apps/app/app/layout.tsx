@@ -23,6 +23,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
     return (
         <html lang={locale} dir={direction} suppressHydrationWarning>
+            <head>
+                {/* Load runtime environment before React hydration */}
+                <script src='/env.js' async></script>
+            </head>
             <body className='antialiased'>
                 <Providers>{children}</Providers>
             </body>
