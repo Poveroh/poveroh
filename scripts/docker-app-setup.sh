@@ -20,6 +20,8 @@ window.__ENV = {
 };
 EOF
     echo "✅ Runtime environment file created at /app/apps/app/public/env.js"
+    echo "Environment variables written:"
+    cat /app/apps/app/public/env.js
 else
     echo "ℹ️  No NEXT_PUBLIC_* environment variables found, using build-time values"
 fi
