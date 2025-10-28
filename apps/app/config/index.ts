@@ -9,7 +9,6 @@ declare global {
     }
 }
 
-// Dynamic getter function that checks runtime values each time it's called
 const getRuntimeConfig = (): WindowEnv | null => {
     if (typeof window !== 'undefined' && window.__ENV) {
         return window.__ENV
@@ -17,7 +16,6 @@ const getRuntimeConfig = (): WindowEnv | null => {
     return null
 }
 
-// Create a reactive config object with getters
 const createAppConfig = (): IAppConfig => {
     return {
         get name(): string {
