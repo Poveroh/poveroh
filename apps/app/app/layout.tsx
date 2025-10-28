@@ -1,5 +1,6 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
+import Script from 'next/script'
 import appConfig from '@/config'
 
 const getFallbackProps = () => ({
@@ -25,7 +26,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <html lang={locale} dir={direction} suppressHydrationWarning>
             <head>
                 {/* Load runtime environment before React hydration */}
-                <script src='/env.js' async></script>
+                {/* Load env.js before React hydrates so window.__ENV is available */}
+                <Script src='/api/env' strategy='beforeInteractive' />
             </head>
             <body className='antialiased'>
                 <Providers>{children}</Providers>
