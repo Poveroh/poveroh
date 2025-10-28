@@ -1,17 +1,19 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
 import Script from 'next/script'
-import appConfig from '@/config'
 
 const getFallbackProps = () => ({
     locale: 'en',
     direction: 'ltr'
 })
 
+// Use server-side env vars for metadata (server-side only)
+const getAppName = () => process.env.NEXT_PUBLIC_APP_NAME || 'Poveroh'
+
 export const metadata = {
     title: {
-        template: `%s | ${appConfig.name}`,
-        default: appConfig.name
+        template: `%s | ${getAppName()}`,
+        default: getAppName()
     }
 }
 

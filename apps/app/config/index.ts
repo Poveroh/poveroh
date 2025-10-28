@@ -10,8 +10,13 @@ declare global {
 }
 
 const getRuntimeConfig = (): WindowEnv | null => {
-    if (typeof window !== 'undefined' && window.__ENV) {
-        return window.__ENV
+    if (typeof window !== 'undefined') {
+        if (window.__ENV) {
+            console.log('🔧 Using runtime config from window.__ENV:', window.__ENV)
+            return window.__ENV
+        } else {
+            console.log('⚠️ window.__ENV not available, using process.env fallback')
+        }
     }
     return null
 }
