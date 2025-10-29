@@ -1,88 +1,131 @@
 'use client'
 
-import { cookie, storage } from '@/lib/storage'
-import { AuthService } from '@/services/auth.service'
+import { authClient } from '@/lib/auth'
+import { storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
 import { IUserLogin, IUserToSave } from '@poveroh/types'
-import { encryptString, isValidEmail } from '@poveroh/utils'
+import { isValidEmail } from '@poveroh/utils'
 import { isEmpty } from 'lodash'
 import { redirect } from 'next/navigation'
+import { useCallback } from 'react'
 import { useError } from './use-error'
 
 export const useAuth = () => {
     const { handleError } = useError()
-
-    const authService = new AuthService()
     const userStore = useUserStore()
 
-    const signIn = async (userToLogin: IUserLogin) => {
-        try {
-            if (!isValidEmail(userToLogin.email)) {
-                throw new Error('E-mail not valid')
-            }
-            if (isEmpty(userToLogin.password)) {
-                throw new Error('Password not valid')
-            }
+    const { data: session, isPending } = authClient.useSession()
 
-            userToLogin.password = await encryptString(userToLogin.password)
+    // // Sync session with user store
+    // useEffect(() => {
+    //     if (session?.user) {
+    //         const user = {
+    //             id: session.user.id,
+    //             name: session.user.name || '',
+    //             surname: (session.user as any).surname || '',
+    //             email: session.user.email,
+    //             createdAt: session.user.createdAt || new Date().toISOString()
+    //         }
+    //         userStore.setUser(user)
+    //         userStore.setLogged(true)
+    //     } else if (!isPending) {
+    //         // Only reset if not loading
+    //         userStore.resetAll()
+    //     }
+    // }, [session, isPending, userStore])
 
-            const res = await authService.signIn(userToLogin)
+    const signIn = useCallback(
+        async (userToLogin: IUserLogin) => {
+            try {
+                if (!isValidEmail(userToLogin.email)) {
+                    throw new Error('E-mail not valid')
+                }
+                if (isEmpty(userToLogin.password)) {
+                    throw new Error('Password not valid')
+                }
 
-            if (res) {
-                userStore.setUser(res)
+                // Use better-auth signIn - no need to encrypt password as better-auth handles it
+                const result = await authClient.signIn.email({
+                    email: userToLogin.email,
+                    password: userToLogin.password
+                })
+
+                if (result.error) {
+                    throw new Error(result.error.message || 'Login failed')
+                }
+
                 return true
+            } catch (error) {
+                return handleError(error, 'Login failed')
             }
+        },
+        [handleError]
+    )
 
-            return false
-        } catch (error) {
-            return handleError(error, 'Login failed')
-        }
-    }
+    const signUp = useCallback(
+        async (userToSave: IUserToSave) => {
+            try {
+                if (!isValidEmail(userToSave.email)) {
+                    throw new Error('E-mail not valid')
+                }
+                if (!userToSave.password || isEmpty(userToSave.password)) {
+                    throw new Error('Password not valid')
+                }
 
-    const signUp = async (userToSave: IUserToSave) => {
-        try {
-            if (!isValidEmail(userToSave.email)) {
-                throw new Error('E-mail not valid')
-            }
-            if (!userToSave.password || isEmpty(userToSave.password)) {
-                throw new Error('Password not valid')
-            }
+                const result = await authClient.signUp.email({
+                    email: userToSave.email,
+                    password: userToSave.password,
+                    name: userToSave.name
+                })
 
-            userToSave.password = await encryptString(userToSave.password)
+                if (result.error) {
+                    throw new Error(result.error.message || 'Sign up failed')
+                }
 
-            const resUser = await authService.signUp(userToSave)
-
-            if (resUser) {
-                userStore.setUser(resUser)
                 return true
+            } catch (error) {
+                handleError(error, 'Sign up failed')
+                return false
             }
+        },
+        [handleError]
+    )
 
-            return false
-        } catch (error) {
-            handleError(error, 'Sign up failed')
-            return false
-        }
-    }
+    const logout = useCallback(
+        async (redirectToLogin?: boolean) => {
+            try {
+                await authClient.signOut()
+                // Clear local storage and user store
+                storage.clear()
+                userStore.resetAll()
 
-    const logout = (redirectToLogin?: boolean) => {
-        storage.clear()
-        cookie.remove('token')
-        userStore.resetAll()
+                if (redirectToLogin) {
+                    redirect('/sign-in')
+                }
+            } catch (error) {
+                console.error('Logout error:', error)
+                // Force logout even if there's an error
+                storage.clear()
+                userStore.resetAll()
+                if (redirectToLogin) {
+                    redirect('/sign-in')
+                }
+            }
+        },
+        [userStore]
+    )
 
-        if (redirectToLogin) {
-            redirect('/sign-in')
-        }
-    }
-
-    const isAuthenticate = () => {
-        return cookie.has('token')
-    }
+    const isAuthenticate = useCallback(() => {
+        return !!session?.user && !isPending
+    }, [session, isPending])
 
     return {
-        logged: userStore.logged,
+        logged: !!session?.user,
+        loading: isPending,
         logout,
         signIn,
         signUp,
-        isAuthenticate
+        isAuthenticate,
+        session
     }
 }

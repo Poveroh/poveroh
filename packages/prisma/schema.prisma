@@ -1,3 +1,4 @@
+// ---------- Base ----------
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
@@ -7,23 +8,34 @@ generator client {
     provider = "prisma-client-js"
 }
 
+// ---------- User & App Domain ----------
 model User {
-    id        String   @id @default(uuid())
-    name      String
-    surname   String
-    email     String   @unique
-    password  String
-    createdAt DateTime @default(now())
+    id            String   @id @default(uuid())
+    name          String
+    surname       String
+    email         String   @unique
+    password      String? // opzionale per social login
+    emailVerified Boolean  @default(false)
+    image         String?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 
+    // dominio app
     transactions  Transaction[]
     subscriptions Subscription[]
     categories    Category[]
     logins        UserLogin[]
-    accounts      Account[]
+    bankAccounts  BankAccount[]
     imports       Import[]
+
+    // better-auth
+    sessions      Session[]
+    accounts      Account[] // Better-Auth accounts
+    verifications Verification[]
 
     @@index([surname])
     @@index([createdAt])
+    @@index([email])
 }
 
 model UserLogin {
@@ -34,11 +46,30 @@ model UserLogin {
     location  String
     createdAt DateTime @default(now())
 
-    user   User   @relation(fields: [userId], references: [id])
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
 
     @@index([userId])
     @@index([createdAt])
+}
+
+model BankAccount {
+    id          String      @id @default(uuid())
+    userId      String
+    title       String
+    description String
+    type        AccountType @default(BANK_ACCOUNT)
+    logoIcon    String?
+    createdAt   DateTime    @default(now())
+
+    subscriptions Subscription[]
+    amounts       Amount[]
+    user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    imports       Import[]
+    // Se stai rinominando la vecchia tabella "Account" dell'app, usa eventualmente:
+    // @@map("bank_account")
+
+    @@index([userId])
 }
 
 model Import {
@@ -49,8 +80,9 @@ model Import {
     status    TransactionStatus @default(IMPORT_PENDING)
     createdAt DateTime          @default(now())
 
-    user         User          @relation(fields: [userId], references: [id])
-    account      Account       @relation(fields: [accountId], references: [id])
+    user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    account BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
     transactions Transaction[]
     files        ImportFile[]
 
@@ -66,7 +98,7 @@ model ImportFile {
     path      String
     createdAt DateTime @default(now())
 
-    import Import @relation(fields: [importId], references: [id])
+    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
 
     @@index([importId])
 }
@@ -86,13 +118,13 @@ model Transaction {
     ignore        Boolean           @default(false)
     createdAt     DateTime          @default(now())
 
-    user        User         @relation(fields: [userId], references: [id])
-    category    Category?    @relation(fields: [categoryId], references: [id])
-    subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
+    user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+    import      Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
 
     media   TransactionMedia[]
     amounts Amount[]
-    import  Import?            @relation(fields: [importId], references: [id])
 
     @@index([userId])
     @@index([categoryId])
@@ -118,8 +150,8 @@ model Subscription {
     isEnabled          Boolean
     createdAt          DateTime       @default(now())
 
-    user    User    @relation(fields: [userId], references: [id])
-    account Account @relation(fields: [accountId], references: [id])
+    user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    account BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([accountId])
@@ -134,26 +166,9 @@ model TransactionMedia {
     path          String
     createdAt     DateTime @default(now())
 
-    transaction Transaction @relation(fields: [transactionId], references: [id])
+    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
-}
-
-model Account {
-    id          String      @id @default(uuid())
-    userId      String
-    title       String
-    description String
-    type        AccountType @default(BANK_ACCOUNT)
-    logoIcon    String?
-    createdAt   DateTime    @default(now())
-
-    subscriptions Subscription[]
-    amounts       Amount[]
-    user          User           @relation(fields: [userId], references: [id])
-    imports       Import[]
-
-    @@index([userId])
 }
 
 model Category {
@@ -168,7 +183,7 @@ model Category {
     transactions  Transaction[]
     subcategories Subcategory[]
 
-    user User @relation(fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([for])
@@ -184,7 +199,7 @@ model Subcategory {
 
     transactions Transaction[]
 
-    category Category @relation(fields: [categoryId], references: [id])
+    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     @@index([categoryId])
 }
@@ -198,14 +213,73 @@ model Amount {
     accountId     String
     createdAt     DateTime          @default(now())
 
-    account     Account     @relation(fields: [accountId], references: [id])
-    transaction Transaction @relation(fields: [transactionId], references: [id])
+    account     BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
     @@index([accountId])
     @@index([action])
 }
 
+// ---------- Better-Auth ----------
+model Session {
+    id        String   @id @default(uuid())
+    token     String   @unique
+    userId    String
+    expiresAt DateTime
+    ipAddress String?
+    userAgent String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // @@map("session") // opzionale: mappa a un nome tabella custom
+
+    @@index([userId])
+    @@index([token])
+}
+
+model Account {
+    // ATTENZIONE: questa è la tabella Better-Auth "Account"
+    id                    String    @id @default(uuid())
+    accountId             String    @unique
+    providerId            String
+    userId                String
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // NESSUNA @@map qui, così la tabella si chiama "Account" per Better-Auth
+
+    @@index([userId])
+}
+
+model Verification {
+    id         String   @id @default(uuid())
+    identifier String // email o telefono
+    value      String // codice/token
+    expiresAt  DateTime
+    userId     String?
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // @@map("verification") // opzionale
+
+    @@unique([identifier, value])
+    @@index([identifier])
+    @@index([expiresAt])
+    @@index([userId])
+}
+
+// ---------- Enum ----------
 enum TransactionAction {
     TRANSFER
     EXPENSES

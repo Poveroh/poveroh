@@ -8,13 +8,22 @@ export function middleware(request: NextRequest) {
         return NextResponse.next()
     }
     const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout']
-    const token = request.cookies.get('token')?.value || ''
 
-    if (!token && !authPaths.includes(path)) {
+    // Check for both old and new authentication tokens during migration
+    const legacyToken = request.cookies.get('token')?.value || ''
+    const sessionCookie =
+        request.cookies.get('better-auth.session_token') ||
+        request.cookies.get('session') ||
+        request.cookies.get('auth-token')
+
+    // User is authenticated if they have either token type
+    const isAuthenticated = !!legacyToken || !!sessionCookie?.value
+
+    if (!isAuthenticated && !authPaths.includes(path)) {
         return NextResponse.redirect(new URL('/logout', request.url))
     }
 
-    if (token && authPaths.includes(path) && path !== '/logout') {
+    if (isAuthenticated && authPaths.includes(path) && path !== '/logout') {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 

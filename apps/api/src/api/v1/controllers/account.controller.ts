@@ -21,7 +21,7 @@ export class AccountController {
                 readedAccount.logoIcon = filePath
             }
 
-            let account = await prisma.account.create({
+            let account = await prisma.bankAccount.create({
                 data: { ...readedAccount, userId: req.user.id }
             })
 
@@ -47,7 +47,7 @@ export class AccountController {
                 readedAccount.logoIcon = filePath
             }
 
-            const account = await prisma.account.update({
+            const account = await prisma.bankAccount.update({
                 where: {
                     id: readedAccount.id
                 },
