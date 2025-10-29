@@ -16,7 +16,9 @@ app.use(cookieParser())
 app.set('query parser', (str: string) => qs.parse(str))
 app.use(
     cors({
-        origin: true,
+        origin: (origin, callback) => {
+            callback(null, origin || '*')
+        },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })
