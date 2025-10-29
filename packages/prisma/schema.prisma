@@ -24,7 +24,6 @@ model User {
     transactions  Transaction[]
     subscriptions Subscription[]
     categories    Category[]
-    logins        UserLogin[]
     bankAccounts  BankAccount[]
     imports       Import[]
 
@@ -36,21 +35,6 @@ model User {
     @@index([surname])
     @@index([createdAt])
     @@index([email])
-}
-
-model UserLogin {
-    id        String   @id @default(uuid())
-    device    String
-    browser   String
-    ip        String
-    location  String
-    createdAt DateTime @default(now())
-
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String
-
-    @@index([userId])
-    @@index([createdAt])
 }
 
 model BankAccount {

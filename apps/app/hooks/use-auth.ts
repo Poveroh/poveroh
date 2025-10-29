@@ -1,7 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth'
-import { storage } from '@/lib/storage'
+import { cookie, storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
 import { IUserLogin, IUserToSave } from '@poveroh/types'
 import { isValidEmail } from '@poveroh/utils'
@@ -44,11 +44,7 @@ export const useAuth = () => {
                     throw new Error('Password not valid')
                 }
 
-                // Use better-auth signIn - no need to encrypt password as better-auth handles it
-                const result = await authClient.signIn.email({
-                    email: userToLogin.email,
-                    password: userToLogin.password
-                })
+                const result = await authClient.signIn.email(userToLogin)
 
                 if (result.error) {
                     throw new Error(result.error.message || 'Login failed')
@@ -75,7 +71,7 @@ export const useAuth = () => {
                 const result = await authClient.signUp.email({
                     email: userToSave.email,
                     password: userToSave.password,
-                    name: userToSave.name
+                    name: userToSave.name + ' ' + userToSave.surname
                 })
 
                 if (result.error) {
@@ -95,7 +91,8 @@ export const useAuth = () => {
         async (redirectToLogin?: boolean) => {
             try {
                 await authClient.signOut()
-                // Clear local storage and user store
+
+                cookie.remove('token')
                 storage.clear()
                 userStore.resetAll()
 
@@ -104,7 +101,8 @@ export const useAuth = () => {
                 }
             } catch (error) {
                 console.error('Logout error:', error)
-                // Force logout even if there's an error
+
+                cookie.remove('token')
                 storage.clear()
                 userStore.resetAll()
                 if (redirectToLogin) {

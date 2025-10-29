@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { auth } from '../../../lib/auth'
 import logger from '../../../utils/logger'
 import { fromNodeHeaders } from 'better-auth/node'
+import { success } from 'better-auth/*'
 
 export class AuthController {
     // GET /session
@@ -17,12 +18,12 @@ export class AuthController {
         }
     }
 
-    // POST /sign-up
+    // POST /sign-up/email
     static async signUp(req: Request, res: Response) {
         try {
             const result = await auth.api.signUpEmail({
                 body: req.body,
-                headers: req.headers as any
+                headers: fromNodeHeaders(req.headers)
             })
             res.json(result)
         } catch (error) {
@@ -31,12 +32,12 @@ export class AuthController {
         }
     }
 
-    // POST /sign-in
+    // POST /sign-in/email
     static async signIn(req: Request, res: Response) {
         try {
             const result = await auth.api.signInEmail({
                 body: req.body,
-                headers: req.headers as any
+                headers: fromNodeHeaders(req.headers)
             })
             res.json(result)
         } catch (error) {
@@ -49,17 +50,12 @@ export class AuthController {
     static async signOut(req: Request, res: Response) {
         try {
             const result = await auth.api.signOut({
-                headers: req.headers as any
+                headers: fromNodeHeaders(req.headers)
             })
             res.json(result)
         } catch (error) {
             logger.error('Sign out error:', error)
             res.status(400).json({ error: 'Sign out failed' })
         }
-    }
-
-    // GET /test - endpoint per verificare che le route auth funzionino
-    static async test(req: Request, res: Response) {
-        res.json({ message: 'Auth controller is working' })
     }
 }
