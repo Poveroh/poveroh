@@ -32,9 +32,15 @@ export function middleware(request: NextRequest) {
     // User is authenticated if they have either legacy token or better-auth session
     const isAuthenticated = !!legacyToken || hasBetterAuthSession
 
-    // Temporarily log authentication status for debugging
+    // Debug: check for specific cookies with our prefix
+    const poverahAuthSession = request.cookies.get('poveroh_auth_session')?.value
+    const poverahAuthToken = request.cookies.get('poveroh_auth_session_token')?.value
+
+    console.log(`[Middleware] Path: ${path}`)
+    console.log(`[Middleware] Poveroh session cookie:`, !!poverahAuthSession)
+    console.log(`[Middleware] Poveroh token cookie:`, !!poverahAuthToken)
     console.log(
-        `[Middleware] Path: ${path}, Legacy: ${!!legacyToken}, BetterAuth: ${hasBetterAuthSession}, Authenticated: ${isAuthenticated}`
+        `[Middleware] Legacy: ${!!legacyToken}, BetterAuth: ${hasBetterAuthSession}, Authenticated: ${isAuthenticated}`
     )
 
     if (!isAuthenticated && !authPaths.includes(path)) {
