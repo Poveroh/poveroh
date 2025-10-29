@@ -3,21 +3,39 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
+
     // Allow API routes and static assets to pass through without auth redirects
     if (path.startsWith('/api') || path.startsWith('/_next') || path.startsWith('/public')) {
         return NextResponse.next()
     }
+
     const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout']
 
-    // Check for both old and new authentication tokens during migration
+    // Check for legacy token
     const legacyToken = request.cookies.get('token')?.value || ''
-    const sessionCookie =
-        request.cookies.get('better-auth.session_token') ||
-        request.cookies.get('session') ||
-        request.cookies.get('auth-token')
 
-    // User is authenticated if they have either token type
-    const isAuthenticated = !!legacyToken || !!sessionCookie?.value
+    // Check for better-auth session cookies with our custom prefix
+    const betterAuthCookies = [
+        'poveroh_auth_session',
+        'poveroh_auth_session_token',
+        'better-auth.session_token',
+        'session_token',
+        'auth-token',
+        'session',
+        'auth.session-token',
+        'better_auth_session',
+        '__Secure-better-auth.session_token'
+    ]
+
+    const hasBetterAuthSession = betterAuthCookies.some(cookieName => request.cookies.get(cookieName)?.value)
+
+    // User is authenticated if they have either legacy token or better-auth session
+    const isAuthenticated = !!legacyToken || hasBetterAuthSession
+
+    // Temporarily log authentication status for debugging
+    console.log(
+        `[Middleware] Path: ${path}, Legacy: ${!!legacyToken}, BetterAuth: ${hasBetterAuthSession}, Authenticated: ${isAuthenticated}`
+    )
 
     if (!isAuthenticated && !authPaths.includes(path)) {
         return NextResponse.redirect(new URL('/logout', request.url))

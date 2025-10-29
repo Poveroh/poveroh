@@ -4,6 +4,8 @@ import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
 
 export const auth = betterAuth({
+    basePath: '/v1/auth',
+    trustedOrigins: ['http://localhost:3000', 'http://localhost:3001'],
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
     }),
@@ -43,6 +45,7 @@ export const auth = betterAuth({
                 return crypto.randomUUID()
             }
         },
+        cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
             enabled: false
         }
