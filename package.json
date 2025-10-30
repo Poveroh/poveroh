@@ -26,6 +26,7 @@
         "setup:generate-transactions": "cd ./scripts/data && node ./transaction-generator.js",
         "prisma:generate": "cd ./packages/prisma && npx prisma generate",
         "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
+        "prisma:deploy": "cd ./packages/prisma && npx prisma migrate deploy",
         "prisma:studio": "cd ./packages/prisma && npx prisma studio",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
         "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name 'storybook-static' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
