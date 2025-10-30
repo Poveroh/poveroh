@@ -156,6 +156,11 @@ export class UserController {
                 return
             }
 
+            if (!user.password) {
+                res.status(400).json({ message: 'User does not have a password set' })
+                return
+            }
+
             const isOldPasswordCorrect = await bcrypt.compare(oldPassword, user.password)
             if (!isOldPasswordCorrect) {
                 res.status(401).json({ message: 'Old password is incorrect' })

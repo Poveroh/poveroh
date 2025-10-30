@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { AuthController } from '../controllers/auth.controller'
+import { auth } from '../../../lib/auth'
+import { toNodeHandler } from 'better-auth/node'
 
 const router: Router = Router()
 
-router.post('/sign-in', AuthController.signIn)
-router.post('/sign-up', AuthController.signUp)
+router.all('*', toNodeHandler(auth))
 
 export default router

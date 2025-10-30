@@ -7,10 +7,11 @@ import { encryptString } from '@poveroh/utils'
 import { isEqual } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useError } from './use-error'
+import { useAuth } from './use-auth'
 
 export const useUser = () => {
     const { handleError } = useError()
-
+    const { session } = useAuth()
     const userService = new UserService()
     const userStore = useUserStore()
     const router = useRouter()
@@ -19,7 +20,8 @@ export const useUser = () => {
         try {
             let user: IUser | null
 
-            if (readFromServer) {
+            if (readFromServer && session?.user) {
+                // Read from server using existing API
                 user = await userService.read()
 
                 if (!user) {
@@ -27,11 +29,21 @@ export const useUser = () => {
                 }
 
                 userStore.setUser(user)
+            } else if (session?.user) {
+                // Use session data from better-auth
+                user = {
+                    id: session.user.id,
+                    name: session.user.name || '',
+                    surname: (session.user as any).surname || '',
+                    email: session.user.email,
+                    createdAt: session.user.createdAt?.toISOString() || new Date().toISOString()
+                }
+                userStore.setUser(user)
             } else {
                 user = userStore.user
             }
 
-            if (!user) {
+            if (!user || !user.id) {
                 throw new Error('User not found')
             }
 
@@ -77,6 +89,8 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
+        sessionUser: session?.user || null,
+        session,
         me,
         saveUser,
         updatePassword
