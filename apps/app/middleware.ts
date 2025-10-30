@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getSessionCookie } from 'better-auth/cookies'
 
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
@@ -9,39 +10,15 @@ export function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
+    console.log('Middleware check start')
+
     const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout']
 
-    // Check for legacy token
-    const legacyToken = request.cookies.get('token')?.value || ''
+    const isAuthenticated = getSessionCookie(request, {
+        cookiePrefix: 'poveroh_auth_'
+    })
 
-    // Check for better-auth session cookies with our custom prefix
-    const betterAuthCookies = [
-        'poveroh_auth_session',
-        'poveroh_auth_session_token',
-        'better-auth.session_token',
-        'session_token',
-        'auth-token',
-        'session',
-        'auth.session-token',
-        'better_auth_session',
-        '__Secure-better-auth.session_token'
-    ]
-
-    const hasBetterAuthSession = betterAuthCookies.some(cookieName => request.cookies.get(cookieName)?.value)
-
-    // User is authenticated if they have either legacy token or better-auth session
-    const isAuthenticated = !!legacyToken || hasBetterAuthSession
-
-    // Debug: check for specific cookies with our prefix
-    const poverahAuthSession = request.cookies.get('poveroh_auth_session')?.value
-    const poverahAuthToken = request.cookies.get('poveroh_auth_session_token')?.value
-
-    console.log(`[Middleware] Path: ${path}`)
-    console.log(`[Middleware] Poveroh session cookie:`, !!poverahAuthSession)
-    console.log(`[Middleware] Poveroh token cookie:`, !!poverahAuthToken)
-    console.log(
-        `[Middleware] Legacy: ${!!legacyToken}, BetterAuth: ${hasBetterAuthSession}, Authenticated: ${isAuthenticated}`
-    )
+    console.log('Middleware check:', { path, isAuthenticated })
 
     if (!isAuthenticated && !authPaths.includes(path)) {
         return NextResponse.redirect(new URL('/logout', request.url))
