@@ -21,7 +21,7 @@ RUN turbo prune app --docker
 
 FROM base AS installer
 RUN apk update
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat bash
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY turbo.json turbo.json
@@ -35,6 +35,7 @@ RUN npx turbo build --filter=@poveroh/utils
 RUN npx turbo build
 
 FROM base AS runner
+RUN apk add --no-cache bash
 WORKDIR /app
 
 # Only copy the necessary files for production
