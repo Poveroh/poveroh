@@ -1,6 +1,6 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
-import Script from 'next/script'
+import appConfig from '../config'
 
 const getFallbackProps = () => ({
     locale: 'en',
@@ -8,7 +8,7 @@ const getFallbackProps = () => ({
 })
 
 // Use server-side env vars for metadata (server-side only)
-const getAppName = () => process.env.NEXT_PUBLIC_APP_NAME || 'Poveroh'
+const getAppName = () => appConfig.name || 'Poveroh'
 
 export const metadata = {
     title: {
@@ -26,11 +26,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
     return (
         <html lang={locale} dir={direction} suppressHydrationWarning>
-            <head>
-                {/* Load runtime environment before React hydration */}
-                {/* Load env.js before React hydrates so window.__ENV is available */}
-                <Script src='/api/env' strategy='beforeInteractive' />
-            </head>
             <body className='antialiased'>
                 <Providers>{children}</Providers>
             </body>

@@ -1,7 +1,15 @@
 FROM node:23-alpine AS base
 
-ARG NEXT_PUBLIC_API_URL
+# Set placeholder environment variables for build-time
+ARG NEXT_PUBLIC_API_URL=BAKED_NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_APP_VERSION=BAKED_NEXT_PUBLIC_APP_VERSION
+ARG NEXT_PUBLIC_APP_NAME=BAKED_NEXT_PUBLIC_APP_NAME
+ARG NEXT_PUBLIC_LOG_LEVEL=BAKED_NEXT_PUBLIC_LOG_LEVEL
+
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_APP_VERSION=$NEXT_PUBLIC_APP_VERSION
+ENV NEXT_PUBLIC_APP_NAME=$NEXT_PUBLIC_APP_NAME
+ENV NEXT_PUBLIC_LOG_LEVEL=$NEXT_PUBLIC_LOG_LEVEL
 
 FROM base AS builder
 RUN apk update
@@ -34,11 +42,14 @@ COPY --from=installer /app/apps/app/.next/standalone ./
 COPY --from=installer /app/apps/app/.next/static ./apps/app/.next/static
 COPY --from=installer /app/apps/app/public ./apps/app/public
 
-# Copy the entrypoint script
+# Copy the entrypoint scripts
 COPY ./scripts/docker-app-setup.sh /app/
+COPY ./scripts/replace-variables.sh /app/
 # Fix for Windows line endings if needed
 RUN sed -i 's/\r$//' /app/docker-app-setup.sh
+RUN sed -i 's/\r$//' /app/replace-variables.sh
 RUN chmod +x /app/docker-app-setup.sh
+RUN chmod +x /app/replace-variables.sh
 
 # Set up non-root user
 RUN addgroup --system --gid 1001 nodejs
