@@ -13,20 +13,14 @@ find /app -type f -name "*.js" 2>/dev/null | while read file; do
     if grep -q "BAKED_" "$file" 2>/dev/null; then
         echo "📝 Processing: $file"
 
-        # Build sed command for all replacements in one pass
-        SED_CMD=""
+        # Apply replacements one by one (safer than eval)
         for VAR in "${ENV_VARS[@]}"; do
             if [ ! -z "${!VAR}" ]; then
                 # Escape special characters for sed
                 ESCAPED_VALUE=$(echo "${!VAR}" | sed 's/[\/&]/\\&/g')
-                SED_CMD="$SED_CMD -e s|BAKED_$VAR|$ESCAPED_VALUE|g"
+                sed -i "s|BAKED_$VAR|$ESCAPED_VALUE|g" "$file"
             fi
         done
-
-        # Execute all replacements if any variables are set
-        if [ ! -z "$SED_CMD" ]; then
-            eval "sed -i $SED_CMD \"$file\""
-        fi
     fi
 done
 
