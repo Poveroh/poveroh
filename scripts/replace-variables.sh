@@ -22,27 +22,68 @@ done
 # Combine mandatory and optional variables for replacement
 ALL_VARS=("${MANDATORY_VARS[@]}" "${OPTIONAL_VARS[@]}")
 
-echo "🔍 Searching for files to update in /app/public and /app/.next..."
+echo "🔍 Searching for files to update in /app/public, /app/.next and /app/apps/app/.next..."
+
+# Count total files found in multiple locations
+TOTAL_FILES=$(find /app/public /app/.next /app/apps/app/.next -type f -name "*.js" 2>/dev/null | wc -l)
+echo "📊 Found $TOTAL_FILES JavaScript files to process"
+
+# Also search for any BAKED_ occurrences in the entire app directory to understand the layout
+echo "🔍 Searching for BAKED_ patterns in entire /app directory..."
+BAKED_FILES=$(find /app -type f -name "*.js" -exec grep -l "BAKED_" {} \; 2>/dev/null | wc -l)
+if [ "$BAKED_FILES" -gt 0 ]; then
+    echo "🎯 Found $BAKED_FILES files containing BAKED_ patterns:"
+    find /app -type f -name "*.js" -exec grep -l "BAKED_" {} \; 2>/dev/null | head -5
+fi
 
 # Find and replace BAKED values with real values
-find /app/public /app/.next -type f -name "*.js" 2>/dev/null | while read file; do
+find /app/public /app/.next /app/apps/app/.next -type f -name "*.js" 2>/dev/null | while read file; do
     echo "📝 Processing file: $file"
 
-    for VAR in "${ALL_VARS[@]}"; do
-        if [ ! -z "${!VAR}" ]; then
-            # Use a more specific pattern to avoid accidental replacements
-            BAKED_VAR="BAKED_$VAR"
-            ACTUAL_VALUE="${!VAR}"
+    # Check if file contains any BAKED_ placeholders
+    BAKED_COUNT=$(grep -c "BAKED_" "$file" 2>/dev/null || echo "0")
+    if [ "$BAKED_COUNT" -gt 0 ]; then
+        echo "  🎯 File contains $BAKED_COUNT BAKED_ placeholders"
 
-            # Count occurrences before replacement
-            COUNT=$(grep -c "$BAKED_VAR" "$file" 2>/dev/null || echo "0")
+        for VAR in "${ALL_VARS[@]}"; do
+            if [ ! -z "${!VAR}" ]; then
+                # Use a more specific pattern to avoid accidental replacements
+                BAKED_VAR="BAKED_$VAR"
+                ACTUAL_VALUE="${!VAR}"
 
-            if [ "$COUNT" -gt 0 ]; then
-                echo "  🔄 Replacing $COUNT occurrences of $BAKED_VAR with $ACTUAL_VALUE"
-                sed -i "s|$BAKED_VAR|$ACTUAL_VALUE|g" "$file"
+                # Count occurrences before replacement
+                COUNT=$(grep -c "$BAKED_VAR" "$file" 2>/dev/null || echo "0")
+
+                if [ "$COUNT" -gt 0 ]; then
+                    echo "  🔄 Replacing $COUNT occurrences of $BAKED_VAR with $ACTUAL_VALUE"
+                    sed -i "s|$BAKED_VAR|$ACTUAL_VALUE|g" "$file"
+
+                    # Verify replacement worked
+                    REMAINING=$(grep -c "$BAKED_VAR" "$file" 2>/dev/null || echo "0")
+                    if [ "$REMAINING" -eq 0 ]; then
+                        echo "  ✅ Successfully replaced all occurrences"
+                    else
+                        echo "  ❌ Warning: $REMAINING occurrences still remain"
+                    fi
+                fi
             fi
-        fi
-    done
+        done
+    else
+        echo "  ℹ️  No BAKED_ placeholders found in this file"
+    fi
 done
 
-echo "✅ Environment variable replacement completed successfully!"
+# Final verification - count remaining BAKED_ placeholders across all files
+echo "🔍 Final verification..."
+REMAINING_TOTAL=$(find /app/public /app/.next /app/apps/app/.next -type f -name "*.js" -exec grep -l "BAKED_" {} \; 2>/dev/null | wc -l)
+if [ "$REMAINING_TOTAL" -gt 0 ]; then
+    echo "⚠️  Warning: $REMAINING_TOTAL files still contain BAKED_ placeholders"
+    find /app/public /app/.next /app/apps/app/.next -type f -name "*.js" -exec grep -l "BAKED_" {} \; 2>/dev/null | head -5 | while read remaining_file; do
+        echo "  📄 $remaining_file still has:"
+        grep -o "BAKED_[A-Z_]*" "$remaining_file" 2>/dev/null | sort | uniq | head -3 | while read placeholder; do
+            echo "    - $placeholder"
+        done
+    done
+else
+    echo "🎉 No BAKED_ placeholders remaining!"
+fiecho "✅ Environment variable replacement completed successfully!"
