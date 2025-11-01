@@ -13,11 +13,11 @@
         "generate-schemas": "prisma generate"
     },
     "dependencies": {
-        "@prisma/client": "^6.3.0"
+        "@prisma/client": "^6.18.0"
     },
     "keywords": [],
     "description": "",
     "devDependencies": {
-        "prisma": "^6.3.0"
+        "prisma": "^6.18.0"
     }
 }
