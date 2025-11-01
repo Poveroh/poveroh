@@ -10,7 +10,7 @@ const createAppConfig = (): IAppConfig => {
             return process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0'
         },
         get apiUrl(): string {
-            return (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
+            return process.env.NEXT_PUBLIC_API_URL || ''
         },
         get mode(): 'production' | 'development' | 'test' {
             // For client-side code, we can't access NODE_ENV at runtime,
@@ -21,15 +21,10 @@ const createAppConfig = (): IAppConfig => {
             return (process.env.NODE_ENV as 'production' | 'development' | 'test') || 'development'
         },
         get isProduction(): boolean {
-            // For client-side code, we can't access NODE_ENV at runtime,
-            // so we default to true in client builds
-            if (typeof window !== 'undefined') {
-                return true
-            }
-            return process.env.NODE_ENV === 'production'
+            return this.mode === 'production'
         },
         get logLevel(): LogLevel {
-            return (process.env.NEXT_PUBLIC_LOG_LEVEL || LogLevel.INFO) as LogLevel
+            return (process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
         }
     }
 }
