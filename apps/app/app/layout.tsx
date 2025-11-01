@@ -7,13 +7,10 @@ const getFallbackProps = () => ({
     direction: 'ltr'
 })
 
-// Use server-side env vars for metadata (server-side only)
-const getAppName = () => appConfig.name || 'Poveroh'
-
 export const metadata = {
     title: {
-        template: `%s | ${getAppName()}`,
-        default: getAppName()
+        template: `%s | ${appConfig.name || 'Poveroh'}`,
+        default: appConfig.name || 'Poveroh'
     }
 }
 
