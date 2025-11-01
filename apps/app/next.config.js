@@ -1,9 +1,9 @@
 import nextIntlPlugin from 'next-intl/plugin'
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
 
 const withNextIntl = nextIntlPlugin()
 
-dotenv.config({ path: '.env' })
+// dotenv.config({ path: '.env' })
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
