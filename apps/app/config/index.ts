@@ -1,10 +1,9 @@
 import { IAppConfig } from '@/types/config'
 import { LogLevel } from '@poveroh/types'
 
-// Unique placeholder used for post-build replacements in client assets.
-// The scripts/replace-variables.sh will search for this literal and swap it
-// with the desired runtime value in .next/static and public assets.
-const PUBLIC_API_URL_PLACEHOLDER = '__PUBLIC_API_URL__'
+// Placeholder aligned with Docker replacement script
+// See scripts/docker-app-setup.sh and scripts/replace-variables.sh
+const PUBLIC_API_URL_PLACEHOLDER = 'BAKED_NEXT_PUBLIC_API_URL'
 
 const createAppConfig = (): IAppConfig => {
     return {

@@ -79,13 +79,10 @@ services:
         build:
             context: ..
             dockerfile: ./apps/app/app.dockerfile
-            args:
-                NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
         restart: always
         env_file: .env
         environment:
             - NODE_ENV=production
-            - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
         ports:
             - 3000:3000
         networks:
