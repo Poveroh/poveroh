@@ -51,9 +51,9 @@ RUN chmod +x /app/replace-variables.sh
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Create public directory and set proper permissions for runtime env injection
+# Ensure runtime user can modify built assets for env injection at startup
 RUN mkdir -p /app/apps/app/public && \
-    chown -R nextjs:nodejs /app/apps/app/public
+    chown -R nextjs:nodejs /app/apps/app/.next /app/apps/app/public || true
 
 USER nextjs
 
