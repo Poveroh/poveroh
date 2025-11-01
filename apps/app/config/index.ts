@@ -1,10 +1,6 @@
 import { IAppConfig } from '@/types/config'
 import { LogLevel } from '@poveroh/types'
 
-// Placeholder aligned with Docker replacement script
-// See scripts/docker-app-setup.sh and scripts/replace-variables.sh
-const PUBLIC_API_URL_PLACEHOLDER = 'BAKED_NEXT_PUBLIC_API_URL'
-
 const createAppConfig = (): IAppConfig => {
     return {
         get name(): string {
@@ -17,7 +13,7 @@ const createAppConfig = (): IAppConfig => {
             // For client bundles, NEXT_PUBLIC_* vars are inlined at build time.
             // If it's not set during build, we keep a unique placeholder so
             // scripts/replace-variables.sh can replace it at deploy/runtime.
-            return process.env.NEXT_PUBLIC_API_URL || PUBLIC_API_URL_PLACEHOLDER
+            return process.env.NEXT_PUBLIC_API_URL || ''
         },
         get mode(): 'production' | 'development' | 'test' {
             // For client-side code, we can't access NODE_ENV at runtime,

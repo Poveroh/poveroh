@@ -19,9 +19,9 @@ if [ -f "/app/replace-variables.sh" ]; then
         [ -d "$d" ] && chmod -R u+w "$d" 2>/dev/null || true
     done
     # Replace placeholders with runtime values; fall back to BAKED_ names if BUILT_ vars are empty
-    /app/replace-variables.sh "${BUILT_NEXT_PUBLIC_API_URL:-BAKED_NEXT_PUBLIC_API_URL}" "${NEXT_PUBLIC_API_URL}"
-    /app/replace-variables.sh "${BUILT_NEXT_PUBLIC_APP_VERSION:-BAKED_NEXT_PUBLIC_APP_VERSION}" "${NEXT_PUBLIC_APP_VERSION}"
-    /app/replace-variables.sh "${BUILT_NEXT_PUBLIC_APP_NAME:-BAKED_NEXT_PUBLIC_APP_NAME}" "${NEXT_PUBLIC_APP_NAME}"
+    /app/replace-variables.sh "${BAKED_NEXT_PUBLIC_API_URL:-BAKED_NEXT_PUBLIC_API_URL}" "${NEXT_PUBLIC_API_URL}"
+    /app/replace-variables.sh "${BAKED_NEXT_PUBLIC_APP_VERSION:-BAKED_NEXT_PUBLIC_APP_VERSION}" "${NEXT_PUBLIC_APP_VERSION}"
+    /app/replace-variables.sh "${BAKED_NEXT_PUBLIC_APP_NAME:-BAKED_NEXT_PUBLIC_APP_NAME}" "${NEXT_PUBLIC_APP_NAME}"
 else
     echo "⚠️  replace-variables.sh not found, skipping variable replacement"
 fi
