@@ -1,9 +1,15 @@
+/* eslint-env node */
 import nextIntlPlugin from 'next-intl/plugin'
-// import dotenv from 'dotenv'
+import nextEnv from '@next/env'
+import path from 'node:path'
 
 const withNextIntl = nextIntlPlugin()
 
-// dotenv.config({ path: '.env' })
+// Load environment variables using Next's env loader so both server and build-time
+// have access to values from .env, .env.local, etc.
+const projectDir = path.dirname(new URL(import.meta.url).pathname)
+const { loadEnvConfig } = nextEnv
+loadEnvConfig(projectDir)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
