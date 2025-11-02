@@ -12,6 +12,7 @@ import { Router } from 'express'
 
 const router: Router = Router()
 
+router.use('/', statusRoutes)
 router.use('/status', statusRoutes)
 router.use('/auth', authRoutes)
 router.use('/user', userRoutes)
