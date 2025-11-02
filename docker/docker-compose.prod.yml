@@ -27,7 +27,7 @@ services:
         ports:
             - 5432:5432
         volumes:
-            - database-data:/var/lib/postgresql/data
+            - database-data:/var/lib/postgresql
         networks:
             - poveroh_network
 
@@ -69,7 +69,7 @@ services:
         restart: always
         env_file: .env
         ports:
-            - '3002:3002'
+            - "3002:3002"
         volumes:
             - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
         networks:
