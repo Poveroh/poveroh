@@ -5,17 +5,37 @@ import config from '../utils/environment'
 
 export const auth = betterAuth({
     basePath: '/v1/auth',
-    trustedOrigins: ['http://localhost:3000', 'http://localhost:3001'],
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
     }),
     secret: config.JWT_SECRET,
+    trustedOrigins: ['*'],
+    cors: {
+        enabled: true,
+        allowedOrigins: ['*'],
+        allowCredentials: true
+    },
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: false,
         autoSignIn: true,
         minPasswordLength: 6,
         maxPasswordLength: 128
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user, ctx) => {
+                    return {
+                        data: {
+                            ...user,
+                            name: user.name.split(' ')[0],
+                            surname: user.name.split(' ')[1]
+                        }
+                    }
+                }
+            }
+        }
     },
     session: {
         expiresIn: 60 * 60 * 24, // 24 hours (same as current JWT)
@@ -35,7 +55,7 @@ export const auth = betterAuth({
         }
     },
     rateLimit: {
-        enabled: true,
+        enabled: false,
         window: 60 * 1000, // 1 minute
         max: 10 // 10 requests per minute per IP
     },
