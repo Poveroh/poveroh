@@ -3,8 +3,11 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
 
+const isProduction = config.NODE_ENV === 'production'
+
 export const auth = betterAuth({
     basePath: '/v1/auth',
+    baseURL: isProduction && config.BASE_URL ? config.BASE_URL : undefined,
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
     }),
@@ -67,7 +70,8 @@ export const auth = betterAuth({
         },
         cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
-            enabled: true
+            enabled: isProduction,
+            domain: isProduction && config.BASE_URL ? new URL(config.BASE_URL).hostname : undefined
         }
     }
 })

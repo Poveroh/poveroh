@@ -69,6 +69,11 @@ AZURE_CONTAINER=
 NEXT_PUBLIC_API_URL=http://localhost:${API_PORT}
 NEXT_PUBLIC_APP_VERSION=1.0.0
 NEXT_PUBLIC_APP_NAME=Poveroh
+
+# Base URL for the application (required for production when using cross-subdomain cookies)
+# For development, this can be left empty
+# For production, set to your domain (e.g., https://yourdomain.com)
+BASE_URL=
 ```
 
 ## Docker
