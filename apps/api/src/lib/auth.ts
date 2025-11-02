@@ -7,7 +7,6 @@ const isProduction = config.NODE_ENV === 'production'
 
 export const auth = betterAuth({
     basePath: '/v1/auth',
-    baseURL: isProduction && config.BASE_URL ? config.BASE_URL : undefined,
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
     }),
