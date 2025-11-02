@@ -9,7 +9,7 @@ const envPaths = {
 }
 const composeFile = path.resolve(projectRoot, 'docker/docker-compose.prod.yml')
 
-// Funzione per chiedere input all'utente
+// Function to ask user input
 function askQuestion(question) {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -24,7 +24,7 @@ function askQuestion(question) {
     })
 }
 
-// Funzione per controllare se esistono container Docker
+// Function to check if Docker containers exist
 function checkExistingContainers(baseCommand) {
     try {
         const result = execSync(`${baseCommand} ps -q`, { encoding: 'utf-8', stdio: 'pipe' })
@@ -34,7 +34,7 @@ function checkExistingContainers(baseCommand) {
     }
 }
 
-// Funzione per avviare i servizi
+// Function to start services
 function startServices(baseCommand, isLocalDb, isLocalFileStorage) {
     if (isLocalDb) {
         console.log("🟢 Starting all services including 'db'...")
@@ -74,97 +74,97 @@ async function main() {
 
         const baseCommand = `docker compose -f ${composeFile}`
 
-        // Controlla se esistono già container Docker
+        // Check if Docker containers already exist
         const hasExistingContainers = checkExistingContainers(baseCommand)
 
         if (hasExistingContainers) {
-            console.log('🔍 Trovati container Docker esistenti.')
-            console.log('\nOpzioni disponibili:')
-            console.log('1. Aggiorna i container esistenti (pull delle nuove immagini)')
-            console.log('2. Pulisci tutto e ricrea i container da zero')
-            console.log('3. Avvia semplicemente i container esistenti')
-            console.log('4. Rimuovi solo i container (mantieni immagini e volumi)')
-            console.log('5. Pulizia completa Docker (rimuovi tutto: container, immagini, volumi)')
-            console.log('6. Esci senza fare nulla')
+            console.log('🔍 Found existing Docker containers.')
+            console.log('\nAvailable options:')
+            console.log('1. Update existing containers (pull new images)')
+            console.log('2. Clean everything and recreate containers from scratch')
+            console.log('3. Simply start existing containers')
+            console.log('4. Remove only containers (keep images and volumes)')
+            console.log('5. Complete Docker cleanup (remove everything: containers, images, volumes)')
+            console.log('6. Exit without doing anything')
 
-            const choice = await askQuestion('\nCosa vuoi fare? [1/2/3/4/5/6]: ')
+            const choice = await askQuestion('\nWhat do you want to do? [1/2/3/4/5/6]: ')
 
             switch (choice) {
                 case '1':
-                    console.log('🔄 Aggiornamento dei container...')
-                    console.log('📥 Scaricando le nuove immagini...')
+                    console.log('🔄 Updating containers...')
+                    console.log('📥 Downloading new images...')
                     execSync(`${baseCommand} pull`, { stdio: 'inherit' })
-                    console.log('� Riavviando i servizi con le nuove immagini...')
+                    console.log('🔄 Restarting services with new images...')
                     execSync(`${baseCommand} up -d --force-recreate`, { stdio: 'inherit' })
-                    console.log('✅ Aggiornamento completato!')
+                    console.log('✅ Update completed!')
                     break
 
                 case '2':
-                    console.log('🧹 Pulizia completa in corso...')
-                    console.log('⏹️  Fermando tutti i container...')
+                    console.log('🧹 Complete cleanup in progress...')
+                    console.log('⏹️  Stopping all containers...')
                     execSync(`${baseCommand} down`, { stdio: 'inherit' })
-                    console.log('🗑️  Rimuovendo volumi e immagini...')
+                    console.log('🗑️  Removing volumes and images...')
                     execSync(`${baseCommand} down -v --rmi all`, { stdio: 'inherit' })
-                    console.log('� Scaricando nuove immagini...')
+                    console.log('📥 Downloading new images...')
                     execSync(`${baseCommand} pull`, { stdio: 'inherit' })
-                    console.log('🚀 Avviando i servizi...')
+                    console.log('🚀 Starting services...')
                     startServices(baseCommand, isLocalDb, isLocalFileStorage)
-                    console.log('✅ Pulizia e riavvio completati!')
+                    console.log('✅ Cleanup and restart completed!')
                     break
 
                 case '3':
-                    console.log('🚀 Avviando i container esistenti...')
+                    console.log('🚀 Starting existing containers...')
                     startServices(baseCommand, isLocalDb, isLocalFileStorage)
-                    console.log('✅ Servizi avviati!')
+                    console.log('✅ Services started!')
                     break
 
                 case '4':
-                    console.log('�️  Rimozione container in corso...')
-                    console.log('⏹️  Fermando tutti i container...')
+                    console.log('🗑️  Container removal in progress...')
+                    console.log('⏹️  Stopping all containers...')
                     execSync(`${baseCommand} down`, { stdio: 'inherit' })
-                    console.log('🧹 Container rimossi con successo!')
-                    console.log('ℹ️  Immagini e volumi sono stati mantenuti per un eventuale riavvio futuro.')
+                    console.log('🧹 Containers removed successfully!')
+                    console.log('ℹ️  Images and volumes have been kept for potential future restart.')
                     break
 
                 case '5':
-                    console.log('🧨 ATTENZIONE: Pulizia completa del sistema Docker!')
-                    console.log('⚠️  Questa operazione rimuoverà TUTTO: container, immagini, volumi e reti.')
-                    const confirm = await askQuestion('Sei sicuro di voler continuare? [y/N]: ')
+                    console.log('🧨 WARNING: Complete Docker system cleanup!')
+                    console.log('⚠️  This operation will remove EVERYTHING: containers, images, volumes and networks.')
+                    const confirm = await askQuestion('Are you sure you want to continue? [y/N]: ')
                     if (confirm === 'y' || confirm === 'yes') {
-                        console.log('🧹 Pulizia completa del sistema Docker...')
-                        console.log('⏹️  Fermando tutti i container...')
+                        console.log('🧹 Complete Docker system cleanup...')
+                        console.log('⏹️  Stopping all containers...')
                         execSync(`${baseCommand} down`, { stdio: 'inherit' })
-                        console.log('🗑️  Rimuovendo volumi e immagini del progetto...')
+                        console.log('🗑️  Removing project volumes and images...')
                         execSync(`${baseCommand} down -v --rmi all`, { stdio: 'inherit' })
-                        console.log('🧽 Pulizia completa del sistema Docker...')
+                        console.log('🧽 Complete Docker system cleanup...')
                         execSync(`docker system prune -af --volumes`, { stdio: 'inherit' })
-                        console.log('✅ Sistema Docker completamente pulito!')
+                        console.log('✅ Docker system completely cleaned!')
                     } else {
-                        console.log('❌ Operazione annullata.')
+                        console.log('❌ Operation cancelled.')
                     }
                     break
 
                 case '6':
-                    console.log('�👋 Uscita senza modifiche.')
+                    console.log('👋 Exiting without changes.')
                     process.exit(0)
                     break
 
                 default:
-                    console.log('❌ Opzione non valida. Uscita.')
+                    console.log('❌ Invalid option. Exiting.')
                     process.exit(1)
             }
         } else {
-            console.log('🆕 Nessun container Docker trovato.')
-            console.log('📥 Scaricando e avviando i servizi...')
+            console.log('🆕 No Docker containers found.')
+            console.log('📥 Downloading and starting services...')
             execSync(`${baseCommand} pull`, { stdio: 'inherit' })
             startServices(baseCommand, isLocalDb, isLocalFileStorage)
-            console.log('✅ Servizi avviati con successo!')
+            console.log('✅ Services started successfully!')
         }
     } catch (error) {
-        console.error("❌ Errore durante l'avvio dei servizi Docker:", error.message)
+        console.error('❌ Error starting Docker services:', error.message)
         process.exit(1)
     }
 }
 
-// Avvia la funzione principale
+// Start the main function
 main()
