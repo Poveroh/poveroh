@@ -8,7 +8,7 @@ export default function LogoutPage() {
 
     useEffect(() => {
         logout(true)
-    }, [])
+    }, [logout])
 
     return <></>
 }

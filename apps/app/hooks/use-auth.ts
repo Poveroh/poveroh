@@ -6,13 +6,14 @@ import { useUserStore } from '@/store/auth.store'
 import { IUserLogin, IUserToSave } from '@poveroh/types'
 import { isValidEmail } from '@poveroh/utils'
 import { isEmpty } from 'lodash'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useError } from './use-error'
 
 export const useAuth = () => {
     const { handleError } = useError()
     const userStore = useUserStore()
+    const router = useRouter()
 
     const { data: session, isPending } = authClient.useSession()
 
@@ -97,7 +98,7 @@ export const useAuth = () => {
                 userStore.resetAll()
 
                 if (redirectToLogin) {
-                    redirect('/sign-in')
+                    router.push('/sign-in')
                 }
             } catch (error) {
                 console.error('Logout error:', error)
@@ -106,11 +107,11 @@ export const useAuth = () => {
                 storage.clear()
                 userStore.resetAll()
                 if (redirectToLogin) {
-                    redirect('/sign-in')
+                    router.push('/sign-in')
                 }
             }
         },
-        [userStore]
+        [userStore, router]
     )
 
     const isAuthenticate = useCallback(() => {
