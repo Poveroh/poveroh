@@ -193,6 +193,10 @@ This project uses:
     >
     > If you want to build and run from scratch, run `npm run docker-dev`
 
+### Railway
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/UxenGr?referralCode=NfYCdO&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
 ## :handshake: Contribuite
 
 This repository follows the [GitHub](https://docs.github.com/en/get-started/using-github/github-flow) approach.
