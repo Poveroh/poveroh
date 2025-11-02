@@ -83,9 +83,11 @@ async function main() {
             console.log('1. Aggiorna i container esistenti (pull delle nuove immagini)')
             console.log('2. Pulisci tutto e ricrea i container da zero')
             console.log('3. Avvia semplicemente i container esistenti')
-            console.log('4. Esci senza fare nulla')
+            console.log('4. Rimuovi solo i container (mantieni immagini e volumi)')
+            console.log('5. Pulizia completa Docker (rimuovi tutto: container, immagini, volumi)')
+            console.log('6. Esci senza fare nulla')
 
-            const choice = await askQuestion('\nCosa vuoi fare? [1/2/3/4]: ')
+            const choice = await askQuestion('\nCosa vuoi fare? [1/2/3/4/5/6]: ')
 
             switch (choice) {
                 case '1':
@@ -117,7 +119,33 @@ async function main() {
                     break
 
                 case '4':
-                    console.log('👋 Uscita senza modifiche.')
+                    console.log('�️  Rimozione container in corso...')
+                    console.log('⏹️  Fermando tutti i container...')
+                    execSync(`${baseCommand} down`, { stdio: 'inherit' })
+                    console.log('🧹 Container rimossi con successo!')
+                    console.log('ℹ️  Immagini e volumi sono stati mantenuti per un eventuale riavvio futuro.')
+                    break
+
+                case '5':
+                    console.log('🧨 ATTENZIONE: Pulizia completa del sistema Docker!')
+                    console.log('⚠️  Questa operazione rimuoverà TUTTO: container, immagini, volumi e reti.')
+                    const confirm = await askQuestion('Sei sicuro di voler continuare? [y/N]: ')
+                    if (confirm === 'y' || confirm === 'yes') {
+                        console.log('🧹 Pulizia completa del sistema Docker...')
+                        console.log('⏹️  Fermando tutti i container...')
+                        execSync(`${baseCommand} down`, { stdio: 'inherit' })
+                        console.log('🗑️  Rimuovendo volumi e immagini del progetto...')
+                        execSync(`${baseCommand} down -v --rmi all`, { stdio: 'inherit' })
+                        console.log('🧽 Pulizia completa del sistema Docker...')
+                        execSync(`docker system prune -af --volumes`, { stdio: 'inherit' })
+                        console.log('✅ Sistema Docker completamente pulito!')
+                    } else {
+                        console.log('❌ Operazione annullata.')
+                    }
+                    break
+
+                case '6':
+                    console.log('�👋 Uscita senza modifiche.')
                     process.exit(0)
                     break
 
