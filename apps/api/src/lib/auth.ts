@@ -70,7 +70,7 @@ export const auth = betterAuth({
         cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
             enabled: isProduction,
-            domain: isProduction && config.BASE_URL ? new URL(config.BASE_URL).hostname : undefined
+            domain: isProduction && config.BASE_URL ? config.BASE_URL : undefined
         }
     }
 })
