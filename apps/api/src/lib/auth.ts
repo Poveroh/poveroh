@@ -67,7 +67,7 @@ export const auth = betterAuth({
         },
         cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
-            enabled: false
+            enabled: true
         }
     }
 })
