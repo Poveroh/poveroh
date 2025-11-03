@@ -36,15 +36,28 @@ export function middleware(request: NextRequest) {
     const isAuthenticated = !!sessionCookie
 
     // Debug cookies
-    const allCookies = request.cookies.getAll()
+    const cookieHeader = request.headers.get('cookie') || ''
+    const hostHeader = request.headers.get('host') || ''
+    const originHeader = request.headers.get('origin') || ''
+
+    // Use the request cookie helper and also a raw fallback for more debugging
+    const allCookies = request.cookies?.getAll ? request.cookies.getAll() : []
     const authCookies = allCookies.filter(cookie => cookie.name.startsWith('poveroh_auth_'))
+
+    // Fallback: try getSessionCookie without prefix to see if names differ in production
+    const sessionCookieNoPrefix = getSessionCookie(request)
 
     console.log('Middleware check:', {
         path,
         isAuthenticated,
         sessionCookie: !!sessionCookie,
+        sessionCookieNoPrefix: !!sessionCookieNoPrefix,
         authCookies: authCookies.map(c => ({ name: c.name, hasValue: !!c.value })),
-        allCookiesCount: allCookies.length
+        allCookiesCount: allCookies.length,
+        cookieHeader: cookieHeader || null,
+        hostHeader: hostHeader || null,
+        originHeader: originHeader || null,
+        parsedCookieParts: cookieHeader ? cookieHeader.split(';').map(p => p.trim()).length : 0
     })
 
     // If not authenticated and trying to access protected route, redirect to sign-in
