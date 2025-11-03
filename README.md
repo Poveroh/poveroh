@@ -234,7 +234,7 @@ To give it an extra boost:
 
 ## :warning: License
 
-Poveroh is released under the [GNU Affero General Public License v3.0](https://github.com/Poveroh/poveroh/blob/main/LICENSE).
+Poveroh is released under the [GNU Affero General Public License v3.0 (AGPL-3.0)](https://github.com/Poveroh/poveroh/blob/main/LICENSE).
 
 See LICENSE.txt for more information.
 
