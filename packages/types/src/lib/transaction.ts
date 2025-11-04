@@ -5,7 +5,7 @@ export interface IAmountBase {
     amount: number
     currency: Currencies
     action: TransactionAction
-    accountId: string
+    financialAccountId: string
 }
 
 export interface IAmount extends IAmountBase {
@@ -33,7 +33,7 @@ export interface ITransaction extends ITransactionBase {
     amounts: IAmount[]
 }
 
-type ExpensesAmounts = Array<{ amount: number; accountId: string }>
+type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
 export type ExpensesFormData = {
     title: string
@@ -42,7 +42,7 @@ export type ExpensesFormData = {
     totalAmount: number
     multipleAmount: boolean
     amounts?: ExpensesAmounts
-    totalAccountId?: string
+    totalFinancialAccountId?: string
     categoryId: string
     subcategoryId: string
     note: string
@@ -54,7 +54,7 @@ export type IncomeFormData = {
     date: string
     amount: number
     currency: string
-    accountId: string
+    financialAccountId: string
     categoryId: string
     subcategoryId: string
     note: string

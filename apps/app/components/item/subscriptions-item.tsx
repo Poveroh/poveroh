@@ -1,5 +1,5 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { AppearanceMode, IAccount, ISubscription } from '@poveroh/types'
+import { AppearanceMode, IFinancialAccount, ISubscription } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import DynamicIcon from '../icon/dynamic-icon'
 import icons from 'currency-icons'
@@ -18,11 +18,11 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
     const { getAccount } = useAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
-    const [account, setAccount] = useState<IAccount | null>(null)
+    const [account, setAccount] = useState<IFinancialAccount | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getAccount(subscription.accountId)
+            const account = await getAccount(subscription.financialAccountId)
             setAccount(account)
         }
         fetchData()

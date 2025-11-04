@@ -11,7 +11,7 @@ const defaultExpensesValues: ExpensesFormData = {
     totalAmount: 0,
     multipleAmount: false,
     amounts: [],
-    totalAccountId: '',
+    totalFinancialAccountId: '',
     categoryId: '',
     subcategoryId: '',
     note: '',
@@ -24,7 +24,9 @@ const transformExpensesData = (data: ITransaction): ExpensesFormData => {
     const transaction = data as ITransaction
 
     // Handle amounts array if present
-    const amounts = transaction.amounts as Array<{ amount: number; accountId: string; currency?: string }> | undefined
+    const amounts = transaction.amounts as
+        | Array<{ amount: number; financialAccountId: string; currency?: string }>
+        | undefined
     const hasMultipleAmounts = amounts && amounts.length > 1
 
     return {
@@ -36,9 +38,9 @@ const transformExpensesData = (data: ITransaction): ExpensesFormData => {
         totalAmount: Math.abs(Number(amounts?.[0]?.amount || 0)), // Ensure positive for expenses
         multipleAmount: hasMultipleAmounts || false,
         amounts: hasMultipleAmounts
-            ? amounts?.map(amt => ({ amount: Math.abs(amt.amount), accountId: amt.accountId }))
+            ? amounts?.map(amt => ({ amount: Math.abs(amt.amount), financialAccountId: amt.financialAccountId }))
             : [],
-        totalAccountId: hasMultipleAmounts ? '' : amounts?.[0]?.accountId || '',
+        totalFinancialAccountId: hasMultipleAmounts ? '' : amounts?.[0]?.financialAccountId || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',
@@ -70,7 +72,7 @@ const amountsSchema = baseSchema.extend({
                     required_error: 'Amount is required',
                     invalid_type_error: 'Amount must be a number'
                 }),
-                accountId: z.string().min(1, 'Account is required')
+                financialAccountId: z.string().min(1, 'Account is required')
             })
         )
         .min(1, 'At least one amount is required')

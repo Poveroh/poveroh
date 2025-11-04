@@ -1,17 +1,17 @@
-export interface IAccountBase {
+export interface IFinancialAccountBase {
     title: string
     description: string
-    type: AccountType
+    type: FinancialAccountType
     logoIcon: string
 }
 
-export interface IAccount extends IAccountBase {
+export interface IFinancialAccount extends IFinancialAccountBase {
     id: string
     userId: string
     createdAt: string
 }
 
-export enum AccountType {
+export enum FinancialAccountType {
     ONLINE_BANK = 'ONLINE_BANK',
     BANK_ACCOUNT = 'BANK_ACCOUNT',
     DEPOSIT_BANK = 'DEPOSIT_BANK',

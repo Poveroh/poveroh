@@ -32,7 +32,7 @@ const accounts = [
 const transactions = []
 const amounts = []
 
-function generateTransaction(title, amount, categoryId, subcategoryId, date, accountId, icon) {
+function generateTransaction(title, amount, categoryId, subcategoryId, date, financialAccountId, icon) {
     const transId = generateUUID()
     const amtId = generateUUID()
     const createdAt = formatDate(date)
@@ -55,12 +55,12 @@ function generateTransaction(title, amount, categoryId, subcategoryId, date, acc
         amount: amount,
         currency: 'EUR',
         action: 'EXPENSES',
-        accountId: accountId,
+        financialAccountId: financialAccountId,
         createdAt: createdAt
     })
 }
 
-function generateIncome(title, amount, date, accountId, icon) {
+function generateIncome(title, amount, date, financialAccountId, icon) {
     const transId = generateUUID()
     const amtId = generateUUID()
     const createdAt = formatDate(date)
@@ -81,7 +81,7 @@ function generateIncome(title, amount, date, accountId, icon) {
         amount: amount,
         currency: 'EUR',
         action: 'INCOME',
-        accountId: accountId,
+        financialAccountId: financialAccountId,
         createdAt: createdAt
     })
 }
@@ -106,7 +106,7 @@ function generateInternalTransfer(fromId, toId, amount, date) {
             amount: amount,
             currency: 'EUR',
             action: 'EXPENSES',
-            accountId: fromId,
+            financialAccountId: fromId,
             createdAt: createdAt
         },
         {
@@ -115,7 +115,7 @@ function generateInternalTransfer(fromId, toId, amount, date) {
             amount: amount,
             currency: 'EUR',
             action: 'INCOME',
-            accountId: toId,
+            financialAccountId: toId,
             createdAt: createdAt
         }
     )

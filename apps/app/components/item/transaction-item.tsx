@@ -46,10 +46,10 @@ export const TransactionItem = memo(function TransactionItem({
         }
 
         // Get accounts from cache instead of async calls
-        const fromAccount = accountCacheList.find(acc => acc.id === amount.accountId) || null
+        const fromAccount = accountCacheList.find(acc => acc.id === amount.financialAccountId) || null
         const toAccount =
             transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]
-                ? accountCacheList.find(acc => acc.id === transaction.amounts[1]!.accountId) || null
+                ? accountCacheList.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
                 : null
 
         // Get category from cache instead of async calls

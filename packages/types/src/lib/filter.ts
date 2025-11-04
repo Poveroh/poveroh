@@ -1,4 +1,4 @@
-import { AccountType } from './account.js'
+import { FinancialAccountType } from './account.js'
 import { TransactionAction } from './transaction.js'
 
 export type StringFilter = { equals?: string; contains?: string }
@@ -22,7 +22,7 @@ export interface ITransactionFilters {
     type?: TransactionAction
     categoryId?: string
     subcategoryId?: string
-    accountId?: string
+    financialAccountId?: string
     date?: DateFilter
     fromDate?: string
 }
@@ -41,18 +41,18 @@ export interface ISubcategoryFilters {
     categoryId?: string
 }
 
-export interface IAccountFilters {
+export interface IFinancialAccountFilters {
     id?: string
     title?: StringFilter
     description?: StringFilter
-    type?: AccountType
+    type?: FinancialAccountType
 }
 
 export interface ISubscriptionFilters {
     id?: string
     title?: StringFilter
     description?: StringFilter
-    accountId?: string
+    financialAccountId?: string
 }
 
 export type FilterField =

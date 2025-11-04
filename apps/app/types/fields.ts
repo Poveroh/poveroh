@@ -1,5 +1,5 @@
 import type { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import type { IAccount, InputVariantStyle, ISubcategory } from '@poveroh/types'
+import type { IFinancialAccount, InputVariantStyle, ISubcategory } from '@poveroh/types'
 import type { ReactNode } from 'react'
 
 // =============================================================================
@@ -159,7 +159,7 @@ export type TransferFieldProps<T extends FieldValues = FieldValues> = BaseFieldP
     /** Input variant style */
     variant?: InputVariantStyle
     /** Available accounts for selection */
-    accounts?: readonly IAccount[]
+    accounts?: readonly IFinancialAccount[]
     /** Callback to switch from/to accounts */
     onSwitch?: () => void
 }
@@ -188,7 +188,7 @@ export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = Base
     /** Input variant style */
     variant?: InputVariantStyle
     /** Available accounts */
-    accounts: readonly IAccount[]
+    accounts: readonly IFinancialAccount[]
     /** Whether multiple amounts mode is enabled */
     multipleAmount: boolean
     /** Callback when multiple amount toggle changes */

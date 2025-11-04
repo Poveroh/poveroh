@@ -38,8 +38,8 @@ export const TransactionHelper = {
 
             await prisma.amount.createMany({
                 data: [
-                    { ...baseAmount, action: TransactionAction.EXPENSES, accountId: data.from },
-                    { ...baseAmount, action: TransactionAction.INCOME, accountId: data.to }
+                    { ...baseAmount, action: TransactionAction.EXPENSES, financialAccountId: data.from },
+                    { ...baseAmount, action: TransactionAction.INCOME, financialAccountId: data.to }
                 ]
             })
         } else {
@@ -60,8 +60,8 @@ export const TransactionHelper = {
 
             await prisma.amount.createMany({
                 data: [
-                    { ...baseAmount, action: TransactionAction.EXPENSES, accountId: data.from },
-                    { ...baseAmount, action: TransactionAction.INCOME, accountId: data.to }
+                    { ...baseAmount, action: TransactionAction.EXPENSES, financialAccountId: data.from },
+                    { ...baseAmount, action: TransactionAction.INCOME, financialAccountId: data.to }
                 ]
             })
 
@@ -117,7 +117,7 @@ export const TransactionHelper = {
                     action: TransactionAction.INCOME,
                     amount: data.amount,
                     currency: data.currency as Currencies,
-                    accountId: data.accountId
+                    financialAccountId: data.financialAccountId
                 }
             })
 
@@ -144,17 +144,17 @@ export const TransactionHelper = {
                 amount: element.amount,
                 currency: data.currency,
                 action: TransactionAction.EXPENSES,
-                accountId: element.accountId
+                financialAccountId: element.financialAccountId
             }))
 
-            // If the client sent a single totalAccountId (non-multiple split), create one amount
-            if (!data.multipleAmount && data.totalAccountId) {
+            // If the client sent a single totalfinancialAccountId (non-multiple split), create one amount
+            if (!data.multipleAmount && data.totalfinancialAccountId) {
                 amountsData.push({
                     transactionId: transaction.id,
                     amount: data.totalAmount,
                     currency: data.currency,
                     action: TransactionAction.EXPENSES,
-                    accountId: data.totalAccountId
+                    financialAccountId: data.totalfinancialAccountId
                 })
             }
 
@@ -181,7 +181,7 @@ export const TransactionHelper = {
             amount: element.amount,
             currency: data.currency,
             action: TransactionAction.EXPENSES,
-            accountId: element.accountId
+            financialAccountId: element.financialAccountId
         }))
 
         await prisma.amount.createMany({

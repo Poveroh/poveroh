@@ -6,11 +6,11 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { AccountType, IAccount } from '@poveroh/types'
+import { FinancialAccountType, IFinancialAccount } from '@poveroh/types'
 
 import { useError } from '@/hooks/use-error'
 
-export const useAccountForm = (initialData: IAccount | null | undefined, inEditingMode: boolean) => {
+export const useAccountForm = (initialData: IFinancialAccount | null | undefined, inEditingMode: boolean) => {
     const t = useTranslations()
 
     const { handleError } = useError()
@@ -21,13 +21,13 @@ export const useAccountForm = (initialData: IAccount | null | undefined, inEditi
     const defaultValues = initialData || {
         title: '',
         description: '',
-        type: AccountType.BANK_ACCOUNT
+        type: FinancialAccountType.BANK_ACCOUNT
     }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
         description: z.string(),
-        type: z.enum(Object.values(AccountType) as [AccountType, ...AccountType[]])
+        type: z.enum(Object.values(FinancialAccountType) as [FinancialAccountType, ...FinancialAccountType[]])
     })
 
     const form = useForm<z.infer<typeof formSchema>>({

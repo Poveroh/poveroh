@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IAccount, IAccountFilters } from '@poveroh/types'
+import { IFinancialAccount, IFinancialAccountFilters } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
@@ -26,12 +26,12 @@ export default function AccountView() {
 
     const { accountCacheList, fetchAccount, typeList, accountLoading } = useAccount()
 
-    const { openModal } = useModal<IAccount>()
-    const { openModal: openDeleteModal } = useDeleteModal<IAccount>()
+    const { openModal } = useModal<IFinancialAccount>()
+    const { openModal: openDeleteModal } = useDeleteModal<IFinancialAccount>()
 
-    const [localAccountList, setLocalAccountList] = useState<IAccount[]>(accountCacheList)
+    const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(accountCacheList)
 
-    const [filters, setFilters] = useState<IAccountFilters>({})
+    const [filters, setFilters] = useState<IFinancialAccountFilters>({})
 
     useEffect(() => {
         fetchAccount()
@@ -41,7 +41,7 @@ export default function AccountView() {
         setLocalAccountList(accountCacheList)
     }, [accountCacheList])
 
-    const onFilter = (filter: IAccountFilters = {}) => {
+    const onFilter = (filter: IFinancialAccountFilters = {}) => {
         const updatedFilter = { ...filter }
 
         const filteredList = accountCacheList.filter(account => {
@@ -62,8 +62,8 @@ export default function AccountView() {
         setLocalAccountList(filteredList)
     }
 
-    const removeFilter = (key: keyof IAccountFilters) => {
-        const newFilters: IAccountFilters = { ...filters }
+    const removeFilter = (key: keyof IFinancialAccountFilters) => {
+        const newFilters: IFinancialAccountFilters = { ...filters }
         delete newFilters[key]
 
         if (key === 'title' || key === 'description') {
@@ -76,7 +76,7 @@ export default function AccountView() {
     const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        const newFilters: IAccountFilters = {
+        const newFilters: IFinancialAccountFilters = {
             ...filters,
             title: textToSearch ? { contains: textToSearch } : undefined,
             description: textToSearch ? { contains: textToSearch } : undefined
@@ -134,7 +134,7 @@ export default function AccountView() {
                                         key={key}
                                         variant='secondary'
                                         className='flex items-center gap-1'
-                                        onClick={() => removeFilter(key as keyof IAccountFilters)}
+                                        onClick={() => removeFilter(key as keyof IFinancialAccountFilters)}
                                     >
                                         {item.label}
                                         <X />
@@ -163,7 +163,7 @@ export default function AccountView() {
                                 <AccountItem
                                     key={account.id}
                                     account={account}
-                                    openEdit={(item: IAccount) => {
+                                    openEdit={(item: IFinancialAccount) => {
                                         openModal('edit', item)
                                     }}
                                     openDelete={openDeleteModal}

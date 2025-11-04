@@ -80,7 +80,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     <AccountField
                         form={form}
                         control={form.control}
-                        name='accountId'
+                        name='financialAccountId'
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}

@@ -2,7 +2,7 @@ import { FieldValues, Path } from 'react-hook-form'
 import { AccountFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { IAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@poveroh/types'
 import { useAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 
@@ -10,7 +10,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
     form,
     control,
     value,
-    name = 'accountId' as Path<T>,
+    name = 'financialAccountId' as Path<T>,
     label,
     placeholder,
     variant = 'contained',
@@ -40,10 +40,12 @@ export function AccountField<T extends FieldValues = FieldValues>({
             disabled={disabled}
             mandatory={mandatory}
             options={localAccountCacheList}
-            getOptionLabel={(item: IAccount) => item.title}
-            getOptionValue={(item: IAccount) => item.id}
+            getOptionLabel={(item: IFinancialAccount) => item.title}
+            getOptionValue={(item: IFinancialAccount) => item.id}
             onOpenChange={() => {}}
-            renderOptionContent={(item: IAccount) => createIconContent(item.logoIcon, item.title, { type: 'brand' })}
+            renderOptionContent={(item: IFinancialAccount) =>
+                createIconContent(item.logoIcon, item.title, { type: 'brand' })
+            }
         />
     )
 }

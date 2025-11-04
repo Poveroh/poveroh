@@ -254,7 +254,7 @@ export class ImportController {
             }
 
             const files = req.files as Express.Multer.File[]
-            const accountId: string = req.body.account_id
+            const financialAccountId: string = req.body.financial_account_id
             const userId = req.user.id
             const importId = uuidv4()
             const now = new Date()
@@ -286,7 +286,11 @@ export class ImportController {
              * Normalize transactions to match the expected format for the database.
              * The algorithm check back existing transactions and subscription to fill new transactions with the correct data.
              */
-            const parsedTransactions = await ImportHelper.normalizeTransaction(userId, accountId, allTransactions)
+            const parsedTransactions = await ImportHelper.normalizeTransaction(
+                userId,
+                financialAccountId,
+                allTransactions
+            )
 
             const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
                 id: uuidv4(),
@@ -301,7 +305,7 @@ export class ImportController {
                 data: {
                     id: importId,
                     userId: userId,
-                    accountId,
+                    financialAccountId: financialAccountId,
                     title: 'Import at ' + now.toISOString(),
                     status: TransactionStatus.IMPORT_PENDING,
                     createdAt: now

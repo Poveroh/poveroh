@@ -100,7 +100,7 @@ export function SubscriptionDialog() {
             cycleNumber: '1',
             cyclePeriod: CyclePeriod.MONTH,
             rememberPeriod: RememberPeriod.SAME_DAY,
-            accountId: '',
+            financialAccountId: '',
             isEnabled: true
         })
         setTitle(brand.name)

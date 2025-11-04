@@ -102,7 +102,7 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
 
                     <AccountField
                         control={form.control}
-                        name='accountId'
+                        name='financialAccountId'
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}

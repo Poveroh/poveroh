@@ -1,12 +1,12 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { IAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@poveroh/types'
 import { useAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 
 type AccountItemProps = {
-    account: IAccount
-    openDelete: (item: IAccount) => void
-    openEdit: (item: IAccount) => void
+    account: IFinancialAccount
+    openDelete: (item: IFinancialAccount) => void
+    openEdit: (item: IFinancialAccount) => void
 }
 
 export function AccountItem({ account, openDelete, openEdit }: AccountItemProps) {
@@ -26,7 +26,11 @@ export function AccountItem({ account, openDelete, openEdit }: AccountItemProps)
                     <p className='sub'>{type?.label}</p>
                 </div>
             </div>
-            <OptionsPopover<IAccount> data={account} openDelete={openDelete} openEdit={openEdit}></OptionsPopover>
+            <OptionsPopover<IFinancialAccount>
+                data={account}
+                openDelete={openDelete}
+                openEdit={openEdit}
+            ></OptionsPopover>
         </div>
     )
 }

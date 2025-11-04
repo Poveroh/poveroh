@@ -2,7 +2,7 @@
 
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { IAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@poveroh/types'
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -102,7 +102,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                 type='button'
                                                 size='sm'
                                                 variant='ghost'
-                                                onClick={() => append({ amount: 0, accountId: '' })}
+                                                onClick={() => append({ amount: 0, financialAccountId: '' })}
                                             >
                                                 <Plus />
                                             </Button>
@@ -169,7 +169,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
 
                                 <FormField
                                     control={form.control}
-                                    name={`amounts.${index}.accountId`}
+                                    name={`amounts.${index}.financialAccountId`}
                                     render={({ field }) => (
                                         <FormItem>
                                             <Select
@@ -183,7 +183,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {accountCacheList.map((item: IAccount) => (
+                                                    {accountCacheList.map((item: IFinancialAccount) => (
                                                         <SelectItem key={item.id} value={item.id}>
                                                             <div className='flex items-center flex-row space-x-4'>
                                                                 <BrandIcon icon={item.logoIcon} size='sm' />
@@ -216,7 +216,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                     {!multipleAmount && (
                         <AccountField
                             control={form.control}
-                            name='totalAccountId'
+                            name='totalFinancialAccountId'
                             label={t('form.account.label')}
                             placeholder={t('form.account.placeholder')}
                             mandatory={true}

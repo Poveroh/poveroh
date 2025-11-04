@@ -1,14 +1,14 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { IAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@poveroh/types'
 
 type AccountStore = {
-    accountCacheList: IAccount[]
-    addAccount: (account: IAccount) => void
-    editAccount: (account: IAccount) => void
-    setAccounts: (accounts: IAccount[]) => void
-    removeAccount: (accountId: string) => void
-    getAccount: (accountId: string) => IAccount | null
+    accountCacheList: IFinancialAccount[]
+    addAccount: (account: IFinancialAccount) => void
+    editAccount: (account: IFinancialAccount) => void
+    setAccounts: (accounts: IFinancialAccount[]) => void
+    removeAccount: (financialAccountId: string) => void
+    getAccount: (financialAccountId: string) => IFinancialAccount | null
 }
 
 export const useAccountStore = create<AccountStore>((set, get) => ({
@@ -39,14 +39,14 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
             accountCacheList: accounts
         }))
     },
-    removeAccount: accountId => {
+    removeAccount: financialAccountId => {
         set(state => ({
-            accountCacheList: state.accountCacheList.filter(item => item.id !== accountId)
+            accountCacheList: state.accountCacheList.filter(item => item.id !== financialAccountId)
         }))
     },
-    getAccount: accountId => {
+    getAccount: financialAccountId => {
         const accountCacheList = get().accountCacheList
-        const index = accountCacheList.findIndex(item => item.id === accountId)
+        const index = accountCacheList.findIndex(item => item.id === financialAccountId)
         if (index !== -1) {
             return accountCacheList[index] || null
         }

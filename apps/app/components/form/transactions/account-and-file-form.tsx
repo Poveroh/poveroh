@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
-import { IAccount, IImport } from '@poveroh/types'
+import { IFinancialAccount, IImport } from '@poveroh/types'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { FileInput } from '@poveroh/ui/components/file'
@@ -48,13 +48,13 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
     const [fileError, setFileError] = useState(false)
 
     const formSchema = z.object({
-        accountId: z.string().nonempty(t('messages.errors.required'))
+        financialAccountId: z.string().nonempty(t('messages.errors.required'))
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            accountId: initialData?.accountId || ''
+            financialAccountId: initialData?.financialAccountId || ''
         }
     })
 
@@ -70,7 +70,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
 
             const formData = new FormData()
 
-            formData.append('accountId', values.accountId)
+            formData.append('financialAccountId', values.financialAccountId)
 
             files?.forEach(file => {
                 formData.append('files', file)
@@ -93,7 +93,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
                 <div className='flex flex-col space-y-6'>
                     <FormField
                         control={form.control}
-                        name='accountId'
+                        name='financialAccountId'
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t('form.account.label')}</FormLabel>
@@ -103,7 +103,10 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
                                     onOpenChange={async open => {
                                         if (open) {
                                             await fetchAccount()
-                                            form.setValue('accountId', initialData?.accountId || field.value || '')
+                                            form.setValue(
+                                                'financialAccountId',
+                                                initialData?.financialAccountId || field.value || ''
+                                            )
                                         }
                                     }}
                                 >
@@ -113,7 +116,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {accountCacheList.map((item: IAccount) => (
+                                        {accountCacheList.map((item: IFinancialAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={item.logoIcon} size='sm' />

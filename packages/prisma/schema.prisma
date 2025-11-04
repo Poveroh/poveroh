@@ -18,11 +18,11 @@ model User {
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 
-    transactions  Transaction[]
-    subscriptions Subscription[]
-    categories    Category[]
-    bankAccounts  BankAccount[]
-    imports       Import[]
+    transactions      Transaction[]
+    subscriptions     Subscription[]
+    categories        Category[]
+    financialAccounts FinancialAccount[]
+    imports           Import[]
 
     sessions      Session[]
     accounts      Account[]
@@ -33,14 +33,14 @@ model User {
     @@index([email])
 }
 
-model BankAccount {
-    id          String      @id @default(uuid())
+model FinancialAccount {
+    id          String               @id @default(uuid())
     userId      String
     title       String
     description String
-    type        AccountType @default(BANK_ACCOUNT)
+    type        FinancialAccountType @default(BANK_ACCOUNT)
     logoIcon    String?
-    createdAt   DateTime    @default(now())
+    createdAt   DateTime             @default(now())
 
     subscriptions Subscription[]
     amounts       Amount[]
@@ -48,18 +48,19 @@ model BankAccount {
     imports       Import[]
 
     @@index([userId])
+    @@map("FinancialAccounts")
 }
 
 model Import {
-    id        String            @id @default(uuid())
-    userId    String
-    title     String
-    accountId String
-    status    TransactionStatus @default(IMPORT_PENDING)
-    createdAt DateTime          @default(now())
+    id                 String            @id @default(uuid())
+    userId             String
+    title              String
+    financialAccountId String
+    status             TransactionStatus @default(IMPORT_PENDING)
+    createdAt          DateTime          @default(now())
 
-    user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    account BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     transactions Transaction[]
     files        ImportFile[]
@@ -124,15 +125,15 @@ model Subscription {
     cycleNumber        String
     cyclePeriod        String
     rememberPeriod     RememberPeriod
-    accountId          String
+    financialAccountId String
     isEnabled          Boolean
     createdAt          DateTime       @default(now())
 
-    user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    account BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
-    @@index([accountId])
+    @@index([financialAccountId])
     @@index([isEnabled])
 }
 
@@ -183,19 +184,19 @@ model Subcategory {
 }
 
 model Amount {
-    id            String            @id @default(uuid())
-    transactionId String
-    amount        Float
-    currency      Currency
-    action        TransactionAction @default(EXPENSES)
-    accountId     String
-    createdAt     DateTime          @default(now())
+    id                 String            @id @default(uuid())
+    transactionId      String
+    amount             Float
+    currency           Currency
+    action             TransactionAction @default(EXPENSES)
+    financialAccountId String
+    createdAt          DateTime          @default(now())
 
-    account     BankAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
-    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
-    @@index([accountId])
+    @@index([financialAccountId])
     @@index([action])
 }
 
@@ -266,7 +267,7 @@ enum TransactionStatus {
     IMPORT_APPROVED
 }
 
-enum AccountType {
+enum FinancialAccountType {
     ONLINE_BANK
     BANK_ACCOUNT
     CIRCUIT

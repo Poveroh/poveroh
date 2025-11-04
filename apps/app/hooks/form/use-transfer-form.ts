@@ -23,7 +23,7 @@ const transformTransferData = (data: ITransaction): TransferFormData => {
 
     // Handle amounts array - Transfer data comes with amounts structure
     const amounts = transaction.amounts as
-        | Array<{ amount: number; accountId: string; currency: string; action: string }>
+        | Array<{ amount: number; financialAccountId: string; currency: string; action: string }>
         | undefined
 
     // Find the from (EXPENSES) and to (INCOME) accounts from amounts
@@ -38,8 +38,8 @@ const transformTransferData = (data: ITransaction): TransferFormData => {
             : new Date().toISOString().split('T')[0]!,
         amount: Math.abs(Number(firstAmount?.amount || 0)), // Ensure positive
         currency: firstAmount?.currency || '',
-        from: fromAmount?.accountId || '',
-        to: toAmount?.accountId || '',
+        from: fromAmount?.financialAccountId || '',
+        to: toAmount?.financialAccountId || '',
         note: (transaction.note as string) || '',
         ignore: (transaction.ignore as boolean) || false
     }

@@ -8,7 +8,7 @@ const defaultIncomeValues: IncomeFormData = {
     date: new Date().toISOString().split('T')[0]!, // Format as YYYY-MM-DD
     amount: 0,
     currency: '',
-    accountId: '',
+    financialAccountId: '',
     categoryId: '',
     subcategoryId: '',
     note: '',
@@ -23,7 +23,9 @@ const transformIncomeData = (data: ITransaction): IncomeFormData => {
     console.log('🔍 transformIncomeData - Raw data:', data)
 
     // Handle amounts array - Income data comes with amounts structure like Expenses
-    const amounts = transaction.amounts as Array<{ amount: number; accountId: string; currency: string }> | undefined
+    const amounts = transaction.amounts as
+        | Array<{ amount: number; financialAccountId: string; currency: string }>
+        | undefined
     const firstAmount = amounts?.[0]
 
     const transformed = {
@@ -33,7 +35,7 @@ const transformIncomeData = (data: ITransaction): IncomeFormData => {
             : new Date().toISOString().split('T')[0]!,
         amount: Math.abs(Number(firstAmount?.amount || 0)), // Get from amounts array
         currency: firstAmount?.currency || '',
-        accountId: firstAmount?.accountId || '',
+        financialAccountId: firstAmount?.financialAccountId || '',
         categoryId: (transaction.categoryId as string) || '',
         subcategoryId: (transaction.subcategoryId as string) || '',
         note: (transaction.note as string) || '',
@@ -54,7 +56,7 @@ const incomeSchema = z.object({
         invalid_type_error: 'Amount must be a number'
     }),
     currency: z.string().min(1, 'Currency is required'),
-    accountId: z.string().min(1, 'Account is required'),
+    financialAccountId: z.string().min(1, 'Account is required'),
     categoryId: z.string().min(1, 'Category is required'),
     subcategoryId: z.string().min(1, 'Subcategory is required'),
     note: z.string().optional(),

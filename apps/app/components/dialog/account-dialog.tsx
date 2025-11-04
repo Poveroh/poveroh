@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { AppearanceMode, IAccount } from '@poveroh/types'
+import { AppearanceMode, IFinancialAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'
@@ -13,15 +13,15 @@ export function AccountDialog() {
     const t = useTranslations()
     const { addAccount, editAccount, removeAccount } = useAccount()
 
-    const modalManager = useModal<IAccount>()
-    const deleteModalManager = useDeleteModal<IAccount>()
+    const modalManager = useModal<IFinancialAccount>()
+    const deleteModalManager = useDeleteModal<IFinancialAccount>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)
 
-        let res: IAccount | null
+        let res: IFinancialAccount | null
 
         // edit dialog
         if (modalManager.inEditingMode && modalManager.item) {
@@ -73,7 +73,7 @@ export function AccountDialog() {
 
     return (
         <>
-            <Modal<IAccount>
+            <Modal<IFinancialAccount>
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
