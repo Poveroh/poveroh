@@ -2,53 +2,53 @@ import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
 import { IFinancialAccount } from '@poveroh/types'
 
-type AccountStore = {
-    accountCacheList: IFinancialAccount[]
-    addAccount: (account: IFinancialAccount) => void
-    editAccount: (account: IFinancialAccount) => void
-    setAccounts: (accounts: IFinancialAccount[]) => void
-    removeAccount: (financialAccountId: string) => void
-    getAccount: (financialAccountId: string) => IFinancialAccount | null
+type FinancialAccountStore = {
+    financialAccountCacheList: IFinancialAccount[]
+    addFinancialAccount: (account: IFinancialAccount) => void
+    editFinancialAccount: (account: IFinancialAccount) => void
+    setFinancialAccounts: (accounts: IFinancialAccount[]) => void
+    removeFinancialAccount: (financialAccountId: string) => void
+    getFinancialAccount: (financialAccountId: string) => IFinancialAccount | null
 }
 
-export const useAccountStore = create<AccountStore>((set, get) => ({
-    accountCacheList: [],
-    addAccount: account => {
+export const useFinancialAccountStore = create<FinancialAccountStore>((set, get) => ({
+    financialAccountCacheList: [],
+    addFinancialAccount: account => {
         set(state => {
-            const list = [...state.accountCacheList, account]
+            const list = [...state.financialAccountCacheList, account]
             return {
-                accountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+                financialAccountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
             }
         })
     },
-    editAccount: account => {
+    editFinancialAccount: account => {
         set(state => {
-            const index = state.accountCacheList.findIndex(item => item.id === account.id)
+            const index = state.financialAccountCacheList.findIndex(item => item.id === account.id)
             if (index !== -1) {
-                const list = cloneDeep(state.accountCacheList)
+                const list = cloneDeep(state.financialAccountCacheList)
                 list[index] = account
                 return {
-                    accountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+                    financialAccountCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             }
             return state
         })
     },
-    setAccounts: accounts => {
+    setFinancialAccounts: accounts => {
         set(() => ({
-            accountCacheList: accounts
+            financialAccountCacheList: accounts
         }))
     },
-    removeAccount: financialAccountId => {
+    removeFinancialAccount: financialAccountId => {
         set(state => ({
-            accountCacheList: state.accountCacheList.filter(item => item.id !== financialAccountId)
+            financialAccountCacheList: state.financialAccountCacheList.filter(item => item.id !== financialAccountId)
         }))
     },
-    getAccount: financialAccountId => {
-        const accountCacheList = get().accountCacheList
-        const index = accountCacheList.findIndex(item => item.id === financialAccountId)
+    getFinancialAccount: financialAccountId => {
+        const financialAccountCacheList = get().financialAccountCacheList
+        const index = financialAccountCacheList.findIndex(item => item.id === financialAccountId)
         if (index !== -1) {
-            return accountCacheList[index] || null
+            return financialAccountCacheList[index] || null
         }
         return null
     }

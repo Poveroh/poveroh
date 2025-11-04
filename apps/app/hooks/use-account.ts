@@ -1,21 +1,21 @@
 'use client'
 
-import { AccountService } from '@/services/account.service'
-import { useAccountStore } from '@/store/account.store'
+import { FinancialAccountService } from '@/services/account.service'
+import { useFinancialAccountStore } from '@/store/account.store'
 import { FinancialAccountType, IFinancialAccount, IFinancialAccountFilters } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
 import { useState } from 'react'
 import { LoadingState } from '@/types/general'
 
-export const useAccount = () => {
+export const useFinancialAccount = () => {
     const t = useTranslations()
     const { handleError } = useError()
 
-    const accountService = new AccountService()
-    const accountStore = useAccountStore()
+    const financialAccountService = new FinancialAccountService()
+    const financialAccountStore = useFinancialAccountStore()
 
-    const [accountLoading, setAccountLoading] = useState<LoadingState>({
+    const [financialAccountLoading, setFinancialAccountLoading] = useState<LoadingState>({
         add: false,
         edit: false,
         remove: false,
@@ -23,82 +23,82 @@ export const useAccount = () => {
         fetch: false
     })
 
-    const setAccountLoadingFor = (key: keyof LoadingState, value: boolean) => {
-        setAccountLoading(prev => ({ ...prev, [key]: value }))
+    const setFinancialAccountLoadingFor = (key: keyof LoadingState, value: boolean) => {
+        setFinancialAccountLoading(prev => ({ ...prev, [key]: value }))
     }
 
-    const addAccount = async (data: FormData) => {
-        setAccountLoadingFor('add', true)
+    const addFinancialAccount = async (data: FormData) => {
+        setFinancialAccountLoadingFor('add', true)
         try {
-            const res = await accountService.add(data)
-            accountStore.addAccount(res)
+            const res = await financialAccountService.add(data)
+            financialAccountStore.addFinancialAccount(res)
             return res
         } catch (error) {
             return handleError(error, 'Error adding ')
         } finally {
-            setAccountLoadingFor('add', false)
+            setFinancialAccountLoadingFor('add', false)
         }
     }
 
-    const editAccount = async (id: string, data: FormData) => {
-        setAccountLoadingFor('edit', true)
+    const editFinancialAccount = async (id: string, data: FormData) => {
+        setFinancialAccountLoadingFor('edit', true)
         try {
-            const res = await accountService.save(id, data)
-            accountStore.editAccount(res)
+            const res = await financialAccountService.save(id, data)
+            financialAccountStore.editFinancialAccount(res)
             return res
         } catch (error) {
             return handleError(error, 'Error editing ')
         } finally {
-            setAccountLoadingFor('edit', false)
+            setFinancialAccountLoadingFor('edit', false)
         }
     }
 
-    const removeAccount = async (financialAccountId: string) => {
-        setAccountLoadingFor('remove', true)
+    const removeFinancialAccount = async (financialAccountId: string) => {
+        setFinancialAccountLoadingFor('remove', true)
         try {
-            const res = await accountService.delete(financialAccountId)
+            const res = await financialAccountService.delete(financialAccountId)
             if (!res) throw new Error('No response from server')
-            accountStore.removeAccount(financialAccountId)
+            financialAccountStore.removeFinancialAccount(financialAccountId)
             return res
         } catch (error) {
             return handleError(error, 'Error deleting ')
         } finally {
-            setAccountLoadingFor('remove', false)
+            setFinancialAccountLoadingFor('remove', false)
         }
     }
 
-    const getAccount = async (financialAccountId: string, fetchFromServer?: boolean) => {
-        setAccountLoadingFor('get', true)
+    const getFinancialAccount = async (financialAccountId: string, fetchFromServer?: boolean) => {
+        setFinancialAccountLoadingFor('get', true)
         try {
             return fetchFromServer
-                ? await accountService.read<IFinancialAccount | null, IFinancialAccountFilters>({
+                ? await financialAccountService.read<IFinancialAccount | null, IFinancialAccountFilters>({
                       id: financialAccountId
                   })
-                : accountStore.getAccount(financialAccountId)
+                : financialAccountStore.getFinancialAccount(financialAccountId)
         } catch (error) {
             return handleError(error, 'Error fetching ')
         } finally {
-            setAccountLoadingFor('get', false)
+            setFinancialAccountLoadingFor('get', false)
         }
     }
 
-    const fetchAccount = async (forceRefresh = false) => {
-        setAccountLoadingFor('fetch', true)
+    const fetchFinancialAccount = async (forceRefresh = false) => {
+        setFinancialAccountLoadingFor('fetch', true)
         try {
-            if (accountStore.accountCacheList.length > 0 && !forceRefresh) {
-                return accountStore.accountCacheList
+            if (financialAccountStore.financialAccountCacheList.length > 0 && !forceRefresh) {
+                return financialAccountStore.financialAccountCacheList
             }
-            const res = await accountService.read<IFinancialAccount[], IFinancialAccountFilters>()
-            accountStore.setAccounts(res)
+            const res = await financialAccountService.read<IFinancialAccount[], IFinancialAccountFilters>()
+            financialAccountStore.setFinancialAccounts(res)
             return res
         } catch (error) {
             return handleError(error, 'Error fetching s')
         } finally {
-            setAccountLoadingFor('fetch', false)
+            setFinancialAccountLoadingFor('fetch', false)
         }
     }
 
-    const typeList = [
+    const TYPE_LIST = [
         { value: FinancialAccountType.ONLINE_BANK, label: t('accounts.types.online') },
         { value: FinancialAccountType.BANK_ACCOUNT, label: t('accounts.types.bank') },
         { value: FinancialAccountType.CIRCUIT, label: t('accounts.types.circuit') },
@@ -107,13 +107,13 @@ export const useAccount = () => {
     ]
 
     return {
-        accountCacheList: accountStore.accountCacheList,
-        accountLoading,
-        addAccount,
-        editAccount,
-        removeAccount,
-        getAccount,
-        fetchAccount,
-        typeList
+        financialAccountCacheList: financialAccountStore.financialAccountCacheList,
+        financialAccountLoading,
+        addFinancialAccount,
+        editFinancialAccount,
+        removeFinancialAccount,
+        getFinancialAccount,
+        fetchFinancialAccount,
+        TYPE_LIST
     }
 }

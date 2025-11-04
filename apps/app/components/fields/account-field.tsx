@@ -3,7 +3,7 @@ import { AccountFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { IFinancialAccount } from '@poveroh/types'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 
 export function AccountField<T extends FieldValues = FieldValues>({
@@ -18,17 +18,17 @@ export function AccountField<T extends FieldValues = FieldValues>({
     mandatory = false
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
-    const { accountCacheList } = useAccount()
+    const { financialAccountCacheList } = useFinancialAccount()
 
-    const [localAccountCacheList, setLocalAccountCacheList] = useState(accountCacheList)
+    const [localAccountCacheList, setLocalAccountCacheList] = useState(financialAccountCacheList)
 
     useEffect(() => {
-        setLocalAccountCacheList(accountCacheList)
+        setLocalAccountCacheList(financialAccountCacheList)
 
-        if (value && accountCacheList.some(acc => acc.id === value)) {
+        if (value && financialAccountCacheList.some(acc => acc.id === value)) {
             form?.setValue(name, value as T[Path<T>])
         }
-    }, [accountCacheList, form, name, value])
+    }, [financialAccountCacheList, form, name, value])
 
     return (
         <SelectField

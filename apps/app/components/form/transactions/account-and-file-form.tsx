@@ -19,7 +19,7 @@ import {
 import { Loader2, X, Upload } from 'lucide-react'
 
 import { BrandIcon } from '@/components/icon/brand-icon'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 import { Button } from '@poveroh/ui/components/button'
 
@@ -39,7 +39,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
 
     const { handleError } = useError()
     const { parseTransactionFromFile } = useImport()
-    const { accountCacheList, fetchAccount } = useAccount()
+    const { financialAccountCacheList, fetchFinancialAccount } = useFinancialAccount()
 
     const [loading, setLoading] = useState(false)
     const [showButton, setShowButton] = useState(false)
@@ -102,7 +102,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
                                     value={field.value}
                                     onOpenChange={async open => {
                                         if (open) {
-                                            await fetchAccount()
+                                            await fetchFinancialAccount()
                                             form.setValue(
                                                 'financialAccountId',
                                                 initialData?.financialAccountId || field.value || ''
@@ -116,7 +116,7 @@ export function AccountAndFileForm({ initialData, dataCallback }: AccountAndFile
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {accountCacheList.map((item: IFinancialAccount) => (
+                                        {financialAccountCacheList.map((item: IFinancialAccount) => (
                                             <SelectItem key={item.id} value={item.id}>
                                                 <div className='flex items-center flex-row space-x-4'>
                                                     <BrandIcon icon={item.logoIcon} size='sm' />

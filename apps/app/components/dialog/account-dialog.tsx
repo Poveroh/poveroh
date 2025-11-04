@@ -3,7 +3,7 @@ import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
 import { AppearanceMode, IFinancialAccount } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'
 import { useModal } from '@/hooks/use-modal'
 import { DeleteModal } from '../modal/delete-modal'
@@ -11,7 +11,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export function AccountDialog() {
     const t = useTranslations()
-    const { addAccount, editAccount, removeAccount } = useAccount()
+    const { addFinancialAccount, editFinancialAccount, removeFinancialAccount } = useFinancialAccount()
 
     const modalManager = useModal<IFinancialAccount>()
     const deleteModalManager = useDeleteModal<IFinancialAccount>()
@@ -25,14 +25,14 @@ export function AccountDialog() {
 
         // edit dialog
         if (modalManager.inEditingMode && modalManager.item) {
-            res = await editAccount(modalManager.item.id, data)
+            res = await editFinancialAccount(modalManager.item.id, data)
 
             if (!res) return
 
             modalManager.closeModal()
         } else {
             // new dialog
-            res = await addAccount(data)
+            res = await addFinancialAccount(data)
 
             if (!res) return
 
@@ -58,7 +58,7 @@ export function AccountDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await removeAccount(deleteModalManager.item.id)
+        const res = await removeFinancialAccount(deleteModalManager.item.id)
 
         deleteModalManager.setLoading(false)
 

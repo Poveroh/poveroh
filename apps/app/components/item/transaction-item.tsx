@@ -1,4 +1,4 @@
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
 import { ITransaction, TransactionAction } from '@poveroh/types'
 
@@ -19,7 +19,7 @@ export const TransactionItem = memo(function TransactionItem({
     openDelete,
     openEdit
 }: TransactionItemProps) {
-    const { accountCacheList } = useAccount()
+    const { financialAccountCacheList } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
 
     const isClickingRef = useRef(false)
@@ -46,10 +46,10 @@ export const TransactionItem = memo(function TransactionItem({
         }
 
         // Get accounts from cache instead of async calls
-        const fromAccount = accountCacheList.find(acc => acc.id === amount.financialAccountId) || null
+        const fromAccount = financialAccountCacheList.find(acc => acc.id === amount.financialAccountId) || null
         const toAccount =
             transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]
-                ? accountCacheList.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
+                ? financialAccountCacheList.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
                 : null
 
         // Get category from cache instead of async calls
@@ -65,7 +65,7 @@ export const TransactionItem = memo(function TransactionItem({
             // currencySymbol: icons[amount.currency]?.symbol || '',
             isExpense: transaction.action === TransactionAction.EXPENSES
         }
-    }, [transaction, accountCacheList, categoryCacheList])
+    }, [transaction, financialAccountCacheList, categoryCacheList])
 
     const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 

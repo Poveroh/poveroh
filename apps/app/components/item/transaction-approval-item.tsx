@@ -1,4 +1,4 @@
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
 import { ICategory, TransactionStatus, ITransaction, TransactionAction } from '@poveroh/types'
 
@@ -37,7 +37,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
     const t = useTranslations()
 
     const { getCategory } = useCategory()
-    const { getAccount } = useAccount()
+    const { getFinancialAccount } = useFinancialAccount()
     const { editPendingTransaction, removePendingTransaction } = useImport()
 
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -70,7 +70,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         }
 
         fetchData()
-    }, [transaction, getAccount, getCategory])
+    }, [transaction, getFinancialAccount, getCategory])
 
     const handleEditTransaction = async (formData: FormData) => {
         const editedTransaction = await editPendingTransaction(transaction.id, formData)

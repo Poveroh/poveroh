@@ -10,7 +10,7 @@ import { FinancialAccountType, IFinancialAccount } from '@poveroh/types'
 
 import { useError } from '@/hooks/use-error'
 
-export const useAccountForm = (initialData: IFinancialAccount | null | undefined, inEditingMode: boolean) => {
+export const useFinancialAccountForm = (initialData: IFinancialAccount | null | undefined, inEditingMode: boolean) => {
     const t = useTranslations()
 
     const { handleError } = useError()

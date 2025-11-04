@@ -7,8 +7,8 @@ import { IFinancialAccount, IItem } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 
-import { useAccount } from '@/hooks/use-account'
-import { useAccountForm } from '@/hooks/form/use-account-form'
+import { useFinancialAccount } from '@/hooks/use-account'
+import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { FormProps, FormRef } from '@/types'
@@ -18,8 +18,8 @@ export const AccountForm = forwardRef<FormRef, FormProps<IFinancialAccount>>(
         const { initialData, inEditingMode, dataCallback } = props
 
         const t = useTranslations()
-        const { typeList } = useAccount()
-        const { form, setFile, handleSubmit } = useAccountForm(initialData, inEditingMode)
+        const { TYPE_LIST } = useFinancialAccount()
+        const { form, setFile, handleSubmit } = useFinancialAccountForm(initialData, inEditingMode)
 
         useImperativeHandle(ref, () => ({
             submit: () => {
@@ -44,7 +44,7 @@ export const AccountForm = forwardRef<FormRef, FormProps<IFinancialAccount>>(
                             control={form.control}
                             name='type'
                             label={t('form.type.label')}
-                            options={typeList}
+                            options={TYPE_LIST}
                             placeholder={t('form.type.placeholder')}
                             getOptionLabel={(item: IItem) => item.label}
                             getOptionValue={(item: IItem) => item.value}

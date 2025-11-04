@@ -15,7 +15,7 @@ import { TransactionItem } from '@/components/item/transaction-item'
 
 import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
@@ -29,7 +29,7 @@ export default function TransactionsView() {
     const t = useTranslations()
     const { transactionCacheList, fetchTransaction, groupTransactionsByDate, transactionLoading } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
-    const { accountCacheList, fetchAccount, accountLoading } = useAccount()
+    const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
 
     const { openModal } = useModal<ITransaction>()
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
@@ -43,7 +43,7 @@ export default function TransactionsView() {
 
     useEffect(() => {
         fetchCategory()
-        fetchAccount()
+        fetchFinancialAccount()
         fetchTransaction({}, transactionFilterSetting)
     }, [])
 
@@ -86,7 +86,8 @@ export default function TransactionsView() {
                     breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('transactions.title') }]}
                     fetchAction={{
                         onClick: () => fetchTransaction({}, transactionFilterSetting),
-                        loading: transactionLoading.fetch || categoryLoading.fetchCategory || accountLoading.fetch
+                        loading:
+                            transactionLoading.fetch || categoryLoading.fetchCategory || financialAccountLoading.fetch
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
@@ -154,7 +155,7 @@ export default function TransactionsView() {
                                         <p>{t('transactions.empty.subtitle')}</p>
                                     </div>
                                 </div>
-                                {(accountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                {(financialAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
                                     <>
                                         <Divider />
                                         <div className='flex flex-col items-center space-y-8 justify-center'>

@@ -20,7 +20,7 @@ import {
     IgnoreField,
     FileUploadField
 } from '@/components/fields'
-import { useAccountStore } from '@/store/account.store'
+import { useFinancialAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 import { useExpensesForm } from '@/hooks/form/use-expenses-form'
 
@@ -28,7 +28,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { accountCacheList } = useAccountStore()
+    const { financialAccountCacheList } = useFinancialAccountStore()
     const { form, file, multipleAmount, fieldArray, setFile, handleSubmit, calculateTotal, toggleMultipleAmount } =
         useExpensesForm(props)
 
@@ -183,7 +183,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {accountCacheList.map((item: IFinancialAccount) => (
+                                                    {financialAccountCacheList.map((item: IFinancialAccount) => (
                                                         <SelectItem key={item.id} value={item.id}>
                                                             <div className='flex items-center flex-row space-x-4'>
                                                                 <BrandIcon icon={item.logoIcon} size='sm' />

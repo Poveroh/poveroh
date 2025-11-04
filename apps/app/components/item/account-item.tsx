@@ -1,6 +1,6 @@
 import { BrandIcon } from '../icon/brand-icon'
 import { IFinancialAccount } from '@poveroh/types'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 
 type AccountItemProps = {
@@ -10,9 +10,9 @@ type AccountItemProps = {
 }
 
 export function AccountItem({ account, openDelete, openEdit }: AccountItemProps) {
-    const { typeList } = useAccount()
+    const { TYPE_LIST } = useFinancialAccount()
 
-    const type = typeList.find(tp => tp.value == account.type)
+    const type = TYPE_LIST.find(tp => tp.value == account.type)
 
     return (
         <div

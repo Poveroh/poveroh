@@ -11,7 +11,7 @@ import { Landmark, Search } from 'lucide-react'
 import { ISubscription } from '@poveroh/types'
 
 import { useSubscription } from '@/hooks/use-subscriptions'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
@@ -25,7 +25,7 @@ export default function SubscriptionsView() {
     const t = useTranslations()
 
     const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
-    const { fetchAccount } = useAccount()
+    const { fetchFinancialAccount } = useFinancialAccount()
 
     const { openModal } = useModal<ISubscription>()
     const { openModal: openDeleteModal } = useDeleteModal<ISubscription>()
@@ -35,7 +35,7 @@ export default function SubscriptionsView() {
 
     useEffect(() => {
         fetchSubscriptions()
-        fetchAccount()
+        fetchFinancialAccount()
     }, [])
 
     useEffect(() => {

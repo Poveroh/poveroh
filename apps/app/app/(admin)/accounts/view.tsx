@@ -17,34 +17,35 @@ import { FilterButton } from '@/components/filter/filter-button'
 import { Header } from '@/components/other/header-page'
 import SkeletonItem from '@/components/skeleton/skeleton-item'
 
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export default function AccountView() {
     const t = useTranslations()
 
-    const { accountCacheList, fetchAccount, typeList, accountLoading } = useAccount()
+    const { financialAccountCacheList, fetchFinancialAccount, TYPE_LIST, financialAccountLoading } =
+        useFinancialAccount()
 
     const { openModal } = useModal<IFinancialAccount>()
     const { openModal: openDeleteModal } = useDeleteModal<IFinancialAccount>()
 
-    const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(accountCacheList)
+    const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(financialAccountCacheList)
 
     const [filters, setFilters] = useState<IFinancialAccountFilters>({})
 
     useEffect(() => {
-        fetchAccount()
+        fetchFinancialAccount()
     }, [])
 
     useEffect(() => {
-        setLocalAccountList(accountCacheList)
-    }, [accountCacheList])
+        setLocalAccountList(financialAccountCacheList)
+    }, [financialAccountCacheList])
 
     const onFilter = (filter: IFinancialAccountFilters = {}) => {
         const updatedFilter = { ...filter }
 
-        const filteredList = accountCacheList.filter(account => {
+        const filteredList = financialAccountCacheList.filter(account => {
             const titleMatch = updatedFilter.title?.contains
                 ? account.title?.toLowerCase().includes(updatedFilter.title.contains.toLowerCase())
                 : true
@@ -96,18 +97,18 @@ export default function AccountView() {
                         { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchAccount(true),
-                        loading: accountLoading.fetch
+                        onClick: () => fetchFinancialAccount(true),
+                        loading: financialAccountLoading.fetch
                     }}
                     addAction={{
                         onClick: () => {
                             openModal('create')
                         },
-                        loading: accountLoading.add
+                        loading: financialAccountLoading.add
                     }}
                     onDeleteAll={{
                         onClick: () => {},
-                        loading: accountLoading.remove
+                        loading: financialAccountLoading.remove
                     }}
                 />
 
@@ -125,7 +126,7 @@ export default function AccountView() {
                             .map(([key, value]) => {
                                 if (!value) return null
 
-                                const item = typeList.find(x => x.value == value)
+                                const item = TYPE_LIST.find(x => x.value == value)
 
                                 if (!item) return
 
@@ -149,14 +150,14 @@ export default function AccountView() {
                                 name: 'type',
                                 label: 'form.type.label',
                                 type: 'select',
-                                options: typeList
+                                options: TYPE_LIST
                             }
                         ]}
                         filters={filters}
                         onFilterChange={onFilter}
                     />
                 </div>
-                {!accountLoading.fetch && localAccountList.length > 0 ? (
+                {!financialAccountLoading.fetch && localAccountList.length > 0 ? (
                     <Box>
                         <>
                             {localAccountList.map(account => (
@@ -173,7 +174,7 @@ export default function AccountView() {
                     </Box>
                 ) : (
                     <>
-                        {accountLoading.fetch ? (
+                        {financialAccountLoading.fetch ? (
                             <SkeletonItem repeat={5} />
                         ) : (
                             <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>

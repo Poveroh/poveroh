@@ -4,7 +4,7 @@ import { OptionsPopover } from '../navbar/options-popover'
 import DynamicIcon from '../icon/dynamic-icon'
 import icons from 'currency-icons'
 import { useSubscription } from '@/hooks/use-subscriptions'
-import { useAccount } from '@/hooks/use-account'
+import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 
 type SubscriptionItemProps = {
@@ -15,14 +15,14 @@ type SubscriptionItemProps = {
 
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
     const { getNextExecutionText } = useSubscription()
-    const { getAccount } = useAccount()
+    const { getFinancialAccount } = useFinancialAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
     const [account, setAccount] = useState<IFinancialAccount | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getAccount(subscription.financialAccountId)
+            const account = await getFinancialAccount(subscription.financialAccountId)
             setAccount(account)
         }
         fetchData()
