@@ -4,15 +4,15 @@ import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
 import { IUserToSave } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
-import { isEqual } from 'lodash'
-import { useRouter } from 'next/navigation'
 import { useError } from './use-error'
 import { authClient } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
 
 export const useUser = () => {
     const { handleError } = useError()
     const userService = new UserService()
     const userStore = useUserStore()
+
     const router = useRouter()
 
     const me = async () => {
@@ -35,15 +35,19 @@ export const useUser = () => {
 
     const saveUser = async (userToSave: IUserToSave) => {
         try {
-            const formData = new FormData()
-            formData.append('data', JSON.stringify(userToSave))
-
             await authClient.updateUser({
                 name: userToSave.name + ' ' + userToSave.surname
             })
 
-            if (!isEqual('', userToSave.email)) {
-                router.push('/logout')
+            if (userStore.user.email != userToSave.email) {
+                const res = await authClient.changeEmail({
+                    newEmail: userToSave.email,
+                    callbackURL: '/logout'
+                })
+
+                if (res.data?.status as boolean) {
+                    router.push('/logout')
+                }
             }
 
             return true

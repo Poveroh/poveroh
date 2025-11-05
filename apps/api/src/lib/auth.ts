@@ -69,6 +69,9 @@ export const auth = betterAuth({
                 required: true,
                 defaultValue: ''
             }
+        },
+        changeEmail: {
+            enabled: true
         }
     },
     rateLimit: {

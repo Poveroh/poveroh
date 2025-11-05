@@ -22,12 +22,17 @@ export const useProfileForm = (initialData?: IUser) => {
         email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email'))
     })
 
-    const defaultValues = initialData ||
-        user || {
-            name: '',
-            surname: '',
-            email: ''
-        }
+    const defaultValues = initialData
+        ? {
+              name: initialData.name ?? '',
+              surname: initialData.surname ?? '',
+              email: initialData.email ?? ''
+          }
+        : {
+              name: user?.name ?? '',
+              surname: user?.surname ?? '',
+              email: user?.email ?? ''
+          }
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -35,7 +40,11 @@ export const useProfileForm = (initialData?: IUser) => {
     })
 
     useEffect(() => {
-        form.reset(user)
+        form.reset({
+            name: user?.name ?? '',
+            surname: user?.surname ?? '',
+            email: user?.email ?? ''
+        })
     }, [user, form])
 
     const handleSubmit = async (userToSave: IUserToSave) => {
