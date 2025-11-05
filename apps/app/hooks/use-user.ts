@@ -35,9 +35,15 @@ export const useUser = () => {
 
     const saveUser = async (userToSave: IUserToSave) => {
         try {
-            await authClient.updateUser({
+            const resUpdate = await authClient.updateUser({
                 name: userToSave.name + ' ' + userToSave.surname
             })
+
+            if (resUpdate.error) {
+                throw new Error(resUpdate.error.message || 'User update failed')
+            }
+
+            await userStore.updateUser(userToSave)
 
             if (userStore.user.email != userToSave.email) {
                 const res = await authClient.changeEmail({
