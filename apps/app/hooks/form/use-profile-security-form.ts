@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl'
 import { IPasswordToChange } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
+import { authClient } from '@/lib/auth'
 
 export const useProfileSecurityForm = () => {
     const t = useTranslations()
@@ -55,12 +56,17 @@ export const useProfileSecurityForm = () => {
     const handleSubmit = async (passwordToSave: IPasswordToChange) => {
         setLoading(true)
 
-        const res = await updatePassword(passwordToSave.oldPassword, passwordToSave.newPassword)
+        const { data, error } = await authClient.changePassword({
+            newPassword: passwordToSave.newPassword,
+            currentPassword: passwordToSave.oldPassword,
+            revokeOtherSessions: true
+        })
 
-        if (res) {
+        if (data && !error) {
             toast.success(t('form.messages.passwordSuccess'))
             form.reset()
         }
+
         setLoading(false)
     }
 
