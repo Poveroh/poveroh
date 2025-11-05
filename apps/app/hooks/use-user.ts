@@ -2,52 +2,32 @@
 
 import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUser, IUserToSave } from '@poveroh/types'
+import { IUserToSave } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { isEqual } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useError } from './use-error'
-import { useAuth } from './use-auth'
+import { authClient } from '@/lib/auth'
 
 export const useUser = () => {
     const { handleError } = useError()
-    const { session } = useAuth()
     const userService = new UserService()
     const userStore = useUserStore()
     const router = useRouter()
 
-    const me = async (readFromServer?: boolean) => {
+    const me = async () => {
         try {
-            let user: IUser | null
+            const result = await authClient.getSession()
 
-            if (readFromServer && session?.user) {
-                // Read from server using existing API
-                user = await userService.read()
-
-                if (!user) {
-                    throw new Error('User not found')
-                }
-
-                userStore.setUser(user)
-            } else if (session?.user) {
-                // Use session data from better-auth
-                user = {
-                    id: session.user.id,
-                    name: session.user.name || '',
-                    surname: (session.user as any).surname || '',
-                    email: session.user.email,
-                    createdAt: session.user.createdAt?.toISOString() || new Date().toISOString()
-                }
-                userStore.setUser(user)
-            } else {
-                user = userStore.user
+            if (result.error) {
+                throw new Error(result.error.message || 'Login failed')
             }
 
-            if (!user || !user.id) {
-                throw new Error('User not found')
+            if (result.data) {
+                userStore.setUser(result.data.user)
             }
 
-            return user
+            return userStore.user
         } catch (error) {
             return handleError(error, 'Error fetching user')
         }
@@ -58,18 +38,15 @@ export const useUser = () => {
             const formData = new FormData()
             formData.append('data', JSON.stringify(userToSave))
 
-            const res = await userService.save(userStore.user.id, formData)
+            await authClient.updateUser({
+                name: userToSave.name + ' ' + userToSave.surname
+            })
 
-            if (res) {
-                const currEmail = userStore.user.email
-                userStore.setUser({ ...userStore.user, ...userToSave })
-
-                if (!isEqual(currEmail, userToSave.email)) {
-                    router.push('/logout')
-                }
+            if (!isEqual('', userToSave.email)) {
+                router.push('/logout')
             }
 
-            return res
+            return true
         } catch (error) {
             return handleError(error, 'Error saving user data')
         }
@@ -89,8 +66,6 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
-        sessionUser: session?.user || null,
-        session,
         me,
         saveUser,
         updatePassword

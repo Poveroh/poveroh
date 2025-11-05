@@ -4,18 +4,22 @@ export interface IUserLogin {
 }
 
 export interface IUserBase {
-    name: string
-    surname: string
     email: string
+    name: string
+    surname?: string
 }
 
 export interface IUserToSave extends IUserBase {
     password?: string
+    emailVerified?: boolean
 }
 
 export interface IUser extends IUserBase {
     id: string
-    createdAt: string
+    image?: string | null
+    emailVerified: boolean
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface IPasswordToChange {
@@ -30,7 +34,9 @@ export interface IPassword extends IPasswordToChange {
 export const defaultUser: IUser = {
     id: '',
     name: '',
-    surname: '',
     email: '',
-    createdAt: ''
+    image: null,
+    emailVerified: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
 }

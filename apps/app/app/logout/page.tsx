@@ -7,8 +7,11 @@ export default function LogoutPage() {
     const { logout } = useAuth()
 
     useEffect(() => {
-        logout(true)
-    }, [logout])
+        const performLogout = async () => {
+            await logout()
+        }
+        performLogout()
+    }, [])
 
     return <></>
 }

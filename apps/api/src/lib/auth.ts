@@ -36,6 +36,21 @@ export const auth = betterAuth({
                         }
                     }
                 }
+            },
+            update: {
+                before: async (user, ctx) => {
+                    if (user.name) {
+                        return {
+                            data: {
+                                ...user,
+                                name: user.name.split(' ')[0],
+                                surname: user.name.split(' ')[1]
+                            }
+                        }
+                    }
+
+                    return { data: user }
+                }
             }
         }
     },

@@ -9,55 +9,38 @@ import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useError } from './use-error'
+import { useUser } from './use-user'
 
 export const useAuth = () => {
     const { handleError } = useError()
+    const { me } = useUser()
     const userStore = useUserStore()
     const router = useRouter()
 
-    const { data: session, isPending } = authClient.useSession()
+    const authSession = authClient.useSession()
 
-    // // Sync session with user store
-    // useEffect(() => {
-    //     if (session?.user) {
-    //         const user = {
-    //             id: session.user.id,
-    //             name: session.user.name || '',
-    //             surname: (session.user as any).surname || '',
-    //             email: session.user.email,
-    //             createdAt: session.user.createdAt || new Date().toISOString()
-    //         }
-    //         userStore.setUser(user)
-    //         userStore.setLogged(true)
-    //     } else if (!isPending) {
-    //         // Only reset if not loading
-    //         userStore.resetAll()
-    //     }
-    // }, [session, isPending, userStore])
-
-    const signIn = useCallback(
-        async (userToLogin: IUserLogin) => {
-            try {
-                if (!isValidEmail(userToLogin.email)) {
-                    throw new Error('E-mail not valid')
-                }
-                if (isEmpty(userToLogin.password)) {
-                    throw new Error('Password not valid')
-                }
-
-                const result = await authClient.signIn.email(userToLogin)
-
-                if (result.error) {
-                    throw new Error(result.error.message || 'Login failed')
-                }
-
-                return true
-            } catch (error) {
-                return handleError(error, 'Login failed')
+    const signIn = useCallback(async (userToLogin: IUserLogin) => {
+        try {
+            if (!isValidEmail(userToLogin.email)) {
+                throw new Error('E-mail not valid')
             }
-        },
-        [handleError]
-    )
+            if (isEmpty(userToLogin.password)) {
+                throw new Error('Password not valid')
+            }
+
+            const result = await authClient.signIn.email(userToLogin)
+
+            if (result.error) {
+                throw new Error(result.error.message || 'Login failed')
+            }
+
+            await me()
+
+            return true
+        } catch (error) {
+            return handleError(error, 'Login failed')
+        }
+    }, [])
 
     const signUp = useCallback(
         async (userToSave: IUserToSave) => {
@@ -88,43 +71,38 @@ export const useAuth = () => {
         [handleError]
     )
 
-    const logout = useCallback(
-        async (redirectToLogin?: boolean) => {
-            try {
-                await authClient.signOut()
+    const logout = async () => {
+        try {
+            await authClient.signOut({
+                fetchOptions: {
+                    onSuccess: () => {
+                        cookie.remove('token')
+                        storage.clear()
+                        userStore.resetAll()
 
-                cookie.remove('token')
-                storage.clear()
-                userStore.resetAll()
-
-                if (redirectToLogin) {
-                    router.push('/sign-in')
+                        router.push('/sign-in')
+                    }
                 }
-            } catch (error) {
-                console.error('Logout error:', error)
+            })
+        } catch (error) {
+            console.error('Logout error:', error)
 
-                cookie.remove('token')
-                storage.clear()
-                userStore.resetAll()
-                if (redirectToLogin) {
-                    router.push('/sign-in')
-                }
-            }
-        },
-        [userStore, router]
-    )
+            cookie.remove('token')
+            storage.clear()
+            userStore.resetAll()
+
+            router.push('/sign-in')
+        }
+    }
 
     const isAuthenticate = useCallback(() => {
-        return !!session?.user && !isPending
-    }, [session, isPending])
+        return !!authSession.data?.session
+    }, [authSession])
 
     return {
-        logged: !!session?.user,
-        loading: isPending,
         logout,
         signIn,
         signUp,
-        isAuthenticate,
-        session
+        isAuthenticate
     }
 }
