@@ -41,7 +41,7 @@ console.log('Better Auth config:', {
     sharedDomain,
     cookieConfig: {
         secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
+        sameSite: isProduction ? 'None' : 'Lax',
         httpOnly: true,
         domain: sharedDomain
     }
@@ -108,7 +108,7 @@ export const auth = betterAuth({
         // are included. Keep Lax for non-production to ease local dev.
         cookieAttributes: {
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             httpOnly: true,
             domain: sharedDomain,
             path: '/'
@@ -146,7 +146,7 @@ export const auth = betterAuth({
         // so that sameSite/secure/domain/path are applied when cookies are set.
         cookieOptions: {
             secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            sameSite: isProduction ? 'None' : 'Lax',
             httpOnly: true,
             domain: sharedDomain,
             path: '/'
