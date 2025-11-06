@@ -15,11 +15,16 @@ const getSharedDomain = (): string | undefined => {
         const url = new URL(firstOrigin)
         const hostname = url.hostname
 
+        console.log('Allowed origin:', firstOrigin)
+        console.log('Extracting shared domain from hostname:', hostname)
+
         // Extract domain (remove first subdomain)
         // e.g., "app.mydomain.com" → ".mydomain.com"
         const parts = hostname.split('.')
         if (parts.length >= 2) {
-            return `.${parts.slice(-2).join('.')}`
+            const sharedDomain = `.${parts.slice(-2).join('.')}`
+            console.log('Extracted shared domain:', sharedDomain)
+            return sharedDomain
         }
     } catch (e) {
         console.warn('Could not extract shared domain from allowed origins')
@@ -29,6 +34,18 @@ const getSharedDomain = (): string | undefined => {
 }
 
 const sharedDomain = getSharedDomain()
+
+console.log('Better Auth config:', {
+    isProduction,
+    allowedOrigins,
+    sharedDomain,
+    cookieConfig: {
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        httpOnly: true,
+        domain: sharedDomain
+    }
+})
 
 export const auth = betterAuth({
     basePath: '/v1/auth',

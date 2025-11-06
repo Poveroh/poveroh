@@ -28,32 +28,63 @@ export function middleware(request: NextRequest) {
 
     const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout', '/change-password']
 
-    const sessionCookie = getSessionCookie(request, {
+    // Get all cookies first for manual checks
+    const allCookies = request.cookies?.getAll ? request.cookies.getAll() : []
+
+    // Try multiple approaches to get session cookie
+    const sessionCookieWithPrefix = getSessionCookie(request, {
         cookiePrefix: 'poveroh_auth_'
     })
 
-    // Check if user has a valid session
-    const isAuthenticated = !!sessionCookie
+    // Try without prefix (Better Auth default)
+    const sessionCookieDefault = getSessionCookie(request)
+
+    // Try with different prefix just in case
+    const sessionCookieAlt = getSessionCookie(request, {
+        cookiePrefix: 'better-auth'
+    })
+
+    // Manual fallback: check for any session-like cookies
+    const manualSessionCheck = allCookies.some(
+        cookie =>
+            (cookie.name.includes('session') ||
+                cookie.name.includes('auth') ||
+                cookie.name.startsWith('poveroh_auth_')) &&
+            cookie.value &&
+            cookie.value.length > 10
+    )
+
+    // Check if user has a valid session (try all approaches)
+    const isAuthenticated = !!(
+        sessionCookieWithPrefix ||
+        sessionCookieDefault ||
+        sessionCookieAlt ||
+        manualSessionCheck
+    )
 
     // Debug cookies
     const cookieHeader = request.headers.get('cookie') || ''
     const hostHeader = request.headers.get('host') || ''
     const originHeader = request.headers.get('origin') || ''
 
-    // Use the request cookie helper and also a raw fallback for more debugging
-    const allCookies = request.cookies?.getAll ? request.cookies.getAll() : []
-    const authCookies = allCookies.filter(cookie => cookie.name.startsWith('poveroh_auth_'))
-
-    // Fallback: try getSessionCookie without prefix to see if names differ in production
-    const sessionCookieNoPrefix = getSessionCookie(request)
+    // Filter auth-related cookies
+    const authCookies = allCookies.filter(
+        cookie =>
+            cookie.name.startsWith('poveroh_auth_') ||
+            cookie.name.startsWith('better-auth') ||
+            cookie.name.includes('session')
+    )
 
     console.log('Middleware check:', {
         path,
         isAuthenticated,
-        sessionCookie: !!sessionCookie,
-        sessionCookieNoPrefix: !!sessionCookieNoPrefix,
+        sessionCookieWithPrefix: !!sessionCookieWithPrefix,
+        sessionCookieDefault: !!sessionCookieDefault,
+        sessionCookieAlt: !!sessionCookieAlt,
+        manualSessionCheck,
         authCookies: authCookies.map(c => ({ name: c.name, hasValue: !!c.value })),
         allCookiesCount: allCookies.length,
+        allCookieNames: allCookies.map(c => c.name),
         cookieHeader: cookieHeader || null,
         hostHeader: hostHeader || null,
         originHeader: originHeader || null,
