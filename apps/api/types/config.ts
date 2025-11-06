@@ -7,4 +7,5 @@ export interface IApiConfig {
     LOG_LEVEL: LogLevel
     BASE_URL?: string
     NODE_ENV: string
+    ALLOWED_ORIGINS: string[]
 }

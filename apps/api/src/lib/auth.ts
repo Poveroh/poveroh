@@ -4,6 +4,7 @@ import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
 
 const isProduction = config.NODE_ENV === 'production'
+const allowedOrigins = config.ALLOWED_ORIGINS
 
 export const auth = betterAuth({
     basePath: '/v1/auth',
@@ -11,10 +12,10 @@ export const auth = betterAuth({
         provider: 'postgresql'
     }),
     secret: config.JWT_SECRET,
-    trustedOrigins: ['*'],
+    trustedOrigins: allowedOrigins,
     cors: {
         enabled: true,
-        allowedOrigins: ['*'],
+        allowedOrigins: allowedOrigins,
         allowCredentials: true
     },
     emailAndPassword: {
