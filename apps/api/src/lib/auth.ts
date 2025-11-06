@@ -6,6 +6,30 @@ import config from '../utils/environment'
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
 
+// Extract shared domain from allowed origins for cross-subdomain cookies
+const getSharedDomain = (): string | undefined => {
+    if (!isProduction || !allowedOrigins.length) return undefined
+
+    try {
+        const firstOrigin = allowedOrigins[0]
+        const url = new URL(firstOrigin)
+        const hostname = url.hostname
+
+        // Extract domain (remove first subdomain)
+        // e.g., "app.mydomain.com" → ".mydomain.com"
+        const parts = hostname.split('.')
+        if (parts.length >= 2) {
+            return `.${parts.slice(-2).join('.')}`
+        }
+    } catch (e) {
+        console.warn('Could not extract shared domain from allowed origins')
+    }
+
+    return undefined
+}
+
+const sharedDomain = getSharedDomain()
+
 export const auth = betterAuth({
     basePath: '/v1/auth',
     database: prismaAdapter(prisma, {
@@ -66,7 +90,7 @@ export const auth = betterAuth({
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
             httpOnly: true,
-            domain: config.BASE_URL && isProduction ? `.${config.BASE_URL}` : undefined
+            domain: sharedDomain
         }
     },
     user: {
@@ -94,8 +118,8 @@ export const auth = betterAuth({
         },
         cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
-            enabled: isProduction && !!config.BASE_URL,
-            domain: config.BASE_URL || undefined
+            enabled: !!sharedDomain,
+            domain: sharedDomain
         }
     }
 })
