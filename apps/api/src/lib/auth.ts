@@ -60,6 +60,12 @@ export const auth = betterAuth({
         cookieCache: {
             enabled: true,
             maxAge: 60 * 60 * 24 // 24 hours
+        },
+        cookieAttributes: {
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            httpOnly: true,
+            domain: config.BASE_URL && isProduction ? `.${config.BASE_URL}` : undefined
         }
     },
     user: {
@@ -87,8 +93,8 @@ export const auth = betterAuth({
         },
         cookiePrefix: 'poveroh_auth_',
         crossSubDomainCookies: {
-            enabled: isProduction,
-            domain: isProduction && config.BASE_URL ? config.BASE_URL : undefined
+            enabled: isProduction && !!config.BASE_URL,
+            domain: config.BASE_URL || undefined
         }
     }
 })
