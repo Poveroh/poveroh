@@ -103,11 +103,15 @@ export const auth = betterAuth({
             enabled: true,
             maxAge: 60 * 60 * 24 // 24 hours
         },
+        // Force SameSite=None for cross-site session cookies in production so
+        // the browser will send them on cross-origin requests when credentials
+        // are included. Keep Lax for non-production to ease local dev.
         cookieAttributes: {
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
             httpOnly: true,
-            domain: sharedDomain
+            domain: sharedDomain,
+            path: '/'
         }
     },
     user: {
@@ -137,6 +141,15 @@ export const auth = betterAuth({
         crossSubDomainCookies: {
             enabled: !!sharedDomain,
             domain: sharedDomain
+        },
+        // Explicitly provide cookieOptions as a stronger hint to the library
+        // so that sameSite/secure/domain/path are applied when cookies are set.
+        cookieOptions: {
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            httpOnly: true,
+            domain: sharedDomain,
+            path: '/'
         }
     }
 })
