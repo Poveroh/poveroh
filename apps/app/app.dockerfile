@@ -15,7 +15,6 @@ WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY turbo.json turbo.json
 RUN npm ci
-RUN npm update
 COPY --from=builder /app/out/full/ .
 WORKDIR /app
 RUN corepack enable
