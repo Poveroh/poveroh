@@ -1,5 +1,6 @@
 /* eslint-env node */
 import nextIntlPlugin from 'next-intl/plugin'
+import { env } from 'next-runtime-env'
 import nextEnv from '@next/env'
 import path from 'node:path'
 
@@ -16,21 +17,18 @@ const nextConfig = {
     transpilePackages: ['@poveroh/ui'],
     reactStrictMode: true,
     output: 'standalone',
-    // For production client bundles, bake placeholders that our Docker startup
-    // script will replace at runtime. Keep server/SSR using the real env so
-    // prerender/build steps don't fail.
-    webpack: (config, { isServer, dev, webpack }) => {
-        if (!isServer && !dev) {
-            config.plugins.push(
-                new webpack.DefinePlugin({
-                    'process.env.NEXT_PUBLIC_API_URL': JSON.stringify('BAKED_NEXT_PUBLIC_API_URL'),
-                    'process.env.NEXT_PUBLIC_APP_VERSION': JSON.stringify('BAKED_NEXT_PUBLIC_APP_VERSION'),
-                    'process.env.NEXT_PUBLIC_APP_NAME': JSON.stringify('BAKED_NEXT_PUBLIC_APP_NAME'),
-                    'process.env.NEXT_PUBLIC_LOG_LEVEL': JSON.stringify('BAKED_NEXT_PUBLIC_LOG_LEVEL')
-                })
-            )
-        }
-        return config
+    // Proxy/rewrites so that client requests to /api/v1/* are forwarded to the
+    // backend API (default localhost:3001). This keeps the client-side code
+    // calling a same-origin path while the server actually serves the API.
+    async rewrites() {
+        const apiBase = env('NEXT_PUBLIC_API_URL') || ``
+        return [
+            {
+                // Accept requests at /api/v1/* and forward them to the API's /v1/*
+                source: '/api/v1/:path*',
+                destination: `${apiBase}/v1/:path*`
+            }
+        ]
     }
 }
 

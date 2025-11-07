@@ -15,9 +15,6 @@ const getSharedDomain = (): string | undefined => {
         const url = new URL(firstOrigin)
         const hostname = url.hostname
 
-        console.log('Allowed origin:', firstOrigin)
-        console.log('Extracting shared domain from hostname:', hostname)
-
         // Extract domain (remove first subdomain)
         // e.g., "app.mydomain.com" → ".mydomain.com"
         const parts = hostname.split('.')
@@ -34,18 +31,6 @@ const getSharedDomain = (): string | undefined => {
 }
 
 const sharedDomain = getSharedDomain()
-
-console.log('Better Auth config:', {
-    isProduction,
-    allowedOrigins,
-    sharedDomain,
-    cookieConfig: {
-        secure: isProduction,
-        sameSite: isProduction ? 'None' : 'Lax',
-        httpOnly: true,
-        domain: sharedDomain
-    }
-})
 
 export const auth = betterAuth({
     basePath: '/v1/auth',
@@ -128,8 +113,8 @@ export const auth = betterAuth({
     },
     rateLimit: {
         enabled: false,
-        window: 60 * 1000, // 1 minute
-        max: 10 // 10 requests per minute per IP
+        window: 60 * 1000,
+        max: 10
     },
     advanced: {
         database: {
@@ -137,20 +122,7 @@ export const auth = betterAuth({
                 return crypto.randomUUID()
             }
         },
-        cookiePrefix: 'poveroh_auth_',
-        crossSubDomainCookies: {
-            enabled: !!sharedDomain,
-            domain: sharedDomain
-        },
-        // Explicitly provide cookieOptions as a stronger hint to the library
-        // so that sameSite/secure/domain/path are applied when cookies are set.
-        cookieOptions: {
-            secure: isProduction,
-            sameSite: isProduction ? 'None' : 'Lax',
-            httpOnly: true,
-            domain: sharedDomain,
-            path: '/'
-        }
+        cookiePrefix: 'poveroh_auth_'
     }
 })
 

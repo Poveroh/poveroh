@@ -3,127 +3,46 @@ import type { NextRequest } from 'next/server'
 import { getSessionCookie } from 'better-auth/cookies'
 
 export function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname
+    const pathname = request.nextUrl.pathname
 
-    // Allow static assets and favicons to pass through
+    console.log('Middleware checking path:', pathname)
+
+    // Allow static, API, auth and proxied API paths through
     if (
-        path.startsWith('/api') ||
-        path.startsWith('/_next') ||
-        path.startsWith('/public') ||
-        path.includes('.png') ||
-        path.includes('.jpg') ||
-        path.includes('.jpeg') ||
-        path.includes('.gif') ||
-        path.includes('.svg') ||
-        path.includes('.ico') ||
-        path.includes('.webp') ||
-        path === '/favicon.ico' ||
-        path === '/apple-touch-icon.png' ||
-        path === '/apple-touch-icon-precomposed.png'
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/_next') ||
+        pathname.startsWith('/public') ||
+        pathname === '/favicon.ico' ||
+        // Any path that looks like a file (has an extension) should be allowed
+        /\.[a-zA-Z0-9]+$/.test(pathname)
     ) {
         return NextResponse.next()
     }
 
-    console.log('Middleware check start')
+    const authPages = new Set(['/sign-in', '/sign-up', '/forgot-password', '/logout', '/change-password'])
 
-    const authPaths = ['/sign-in', '/sign-up', '/forgot-password', '/logout', '/change-password']
+    const sessionCookie = getSessionCookie(request)
 
-    // Get all cookies first for manual checks
-    const allCookies = request.cookies?.getAll ? request.cookies.getAll() : []
+    console.log('Session cookie found:', sessionCookie)
 
-    // Try multiple approaches to get session cookie
-    const sessionCookieWithPrefix = getSessionCookie(request, {
-        cookiePrefix: 'poveroh_auth_'
-    })
-
-    // Try without prefix (Better Auth default)
-    const sessionCookieDefault = getSessionCookie(request)
-
-    // Try with different prefix just in case
-    const sessionCookieAlt = getSessionCookie(request, {
-        cookiePrefix: 'better-auth'
-    })
-
-    // Manual fallback: check for any session-like cookies
-    const manualSessionCheck = allCookies.some(
-        cookie =>
-            (cookie.name.includes('session') ||
-                cookie.name.includes('auth') ||
-                cookie.name.startsWith('poveroh_auth_')) &&
-            cookie.value &&
-            cookie.value.length > 10
-    )
-
-    // Check if user has a valid session (try all approaches)
-    const isAuthenticated = !!(
-        sessionCookieWithPrefix ||
-        sessionCookieDefault ||
-        sessionCookieAlt ||
-        manualSessionCheck
-    )
-
-    // Debug cookies
-    const cookieHeader = request.headers.get('cookie') || ''
-    const hostHeader = request.headers.get('host') || ''
-    const originHeader = request.headers.get('origin') || ''
-
-    // Filter auth-related cookies
-    const authCookies = allCookies.filter(
-        cookie =>
-            cookie.name.startsWith('poveroh_auth_') ||
-            cookie.name.startsWith('better-auth') ||
-            cookie.name.includes('session')
-    )
-
-    console.log('Middleware check:', {
-        path,
-        isAuthenticated,
-        sessionCookieWithPrefix: !!sessionCookieWithPrefix,
-        sessionCookieDefault: !!sessionCookieDefault,
-        sessionCookieAlt: !!sessionCookieAlt,
-        manualSessionCheck,
-        authCookies: authCookies.map(c => ({ name: c.name, hasValue: !!c.value })),
-        allCookiesCount: allCookies.length,
-        allCookieNames: allCookies.map(c => c.name),
-        cookieHeader: cookieHeader || null,
-        hostHeader: hostHeader || null,
-        originHeader: originHeader || null,
-        parsedCookieParts: cookieHeader ? cookieHeader.split(';').map(p => p.trim()).length : 0
-    })
-
-    // If not authenticated and trying to access protected route, redirect to sign-in
-    if (!isAuthenticated && !authPaths.includes(path) && path !== '/') {
-        console.log('Redirecting to sign-in: not authenticated')
+    // Unauthenticated users: redirect to sign-in for protected pages
+    if (!sessionCookie && !authPages.has(pathname) && pathname !== '/') {
         return NextResponse.redirect(new URL('/sign-in', request.url))
     }
 
-    // If authenticated and trying to access auth pages (except logout), redirect to dashboard
-    if (isAuthenticated && authPaths.includes(path) && path !== '/logout') {
-        console.log('Redirecting to dashboard: already authenticated')
+    // Authenticated users shouldn't visit auth pages
+    if (sessionCookie && authPages.has(pathname) && pathname !== '/logout') {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
-    // Handle root path redirect
-    if (path === '/') {
-        const redirectUrl = isAuthenticated ? '/dashboard' : '/sign-in'
-        console.log(`Redirecting root to: ${redirectUrl}`)
-        return NextResponse.redirect(new URL(redirectUrl, request.url))
+    // Root redirect
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL(sessionCookie ? '/dashboard' : '/sign-in', request.url))
     }
 
     return NextResponse.next()
 }
 
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - api (API routes)
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public (public files)
-         * - files with extensions (images, etc.)
-         */
-        '/((?!api|_next/static|_next/image|favicon.ico|public|.*\\..*).*)'
-    ]
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|public|.*\\..*).*)']
 }

@@ -14,7 +14,7 @@ export const server = {
             }
 
             try {
-                const urlToSend = urlJoiner(appConfig.apiUrl, url)
+                const urlToSend = urlJoiner('/api/v1', url)
 
                 switch (type) {
                     case ServerRequest.GET:
