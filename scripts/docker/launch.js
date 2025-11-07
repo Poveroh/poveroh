@@ -1,4 +1,5 @@
 const { execSync } = require('child_process')
+const fs = require('fs')
 const readline = require('readline')
 const { getProjectRoot, ensureEnvFile, getEnvContent, path } = require('../utils')
 
@@ -43,7 +44,7 @@ function startServices(baseCommand, isLocalDb, isLocalFileStorage) {
         console.log(`🟡 DATABASE_HOST -> the 'db' service will not be started.`)
         console.log('🟢 Starting other services...')
 
-        const services = ['api', 'app', 'redis']
+        const services = ['api', 'app', 'redis', 'proxy']
         if (isLocalFileStorage) {
             services.push('cdn')
         }
@@ -64,6 +65,95 @@ async function main() {
 
         const DATABASE_HOST = getEnvValue('DATABASE_HOST')
         const FILE_STORAGE_MODE = getEnvValue('FILE_STORAGE_MODE')
+
+        // Offer to add local hosts entries for convenience
+        async function ensureHostsEntries() {
+            const hostsEntry = '127.0.0.1 app.poveroh.local\n127.0.0.1 api.poveroh.local\n'
+            const isWin = process.platform === 'win32'
+            try {
+                const hostsPath = isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
+
+                // Read current hosts file (may throw if unreadable)
+                const current = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
+                if (current.includes('app.poveroh.local') || current.includes('api.poveroh.local')) {
+                    console.log(`ℹ️  ${hostsPath} already contains poveroh.local entries (skipping).`)
+                    return
+                }
+
+                const ans = await askQuestion(
+                    `Do you want me to add 'app.poveroh.local' and 'api.poveroh.local' to ${hostsPath} now? [y/N]: `
+                )
+
+                if (ans === 'y' || ans === 'yes') {
+                    if (!isWin) {
+                        console.log('🔐 Adding entries to /etc/hosts (sudo may prompt for your password)...')
+                        // Use sh -c with sudo so the redirection happens as root
+                        execSync(`sudo -- sh -c 'printf "${hostsEntry}" >> /etc/hosts'`, { stdio: 'inherit' })
+                        console.log('✅ /etc/hosts updated.')
+                    } else {
+                        // On Windows open the hosts file in notepad elevated so the user can edit & save
+                        try {
+                            console.log(
+                                '🔐 Opening hosts file in Notepad as administrator. Please paste the following lines and save:'
+                            )
+                            console.log(hostsEntry)
+                            execSync(
+                                `powershell -Command "Start-Process notepad -Verb RunAs -ArgumentList '${hostsPath}'"`,
+                                { stdio: 'inherit' }
+                            )
+                            console.log('ℹ️  After saving the file in Notepad, press Enter here to continue.')
+                            await askQuestion('Press Enter once you saved the file... ')
+                            // Re-check
+                            const updated = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
+                            if (updated.includes('app.poveroh.local') || updated.includes('api.poveroh.local')) {
+                                console.log('✅ hosts file updated.')
+                            } else {
+                                console.log(
+                                    '⚠️  The hosts file does not contain the expected entries. You can add them manually using an elevated PowerShell:'
+                                )
+                                console.log(
+                                    "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
+                                )
+                            }
+                        } catch (err) {
+                            console.warn('⚠️  Could not open Notepad elevated:', err.message)
+                            console.log(
+                                'You can add the entries manually by running PowerShell as Administrator and executing:'
+                            )
+                            console.log(
+                                "Add-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
+                            )
+                        }
+                    }
+                } else {
+                    console.log(`ℹ️  Skipped modifying ${hostsPath}. You can run the appropriate command yourself:`)
+                    if (!isWin) {
+                        console.log(
+                            'sudo -- sh -c \'printf "127.0.0.1 app.poveroh.local\\n127.0.0.1 api.poveroh.local\\n" >> /etc/hosts\''
+                        )
+                    } else {
+                        console.log(
+                            "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\Windows\\System32\\drivers\\etc\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
+                        )
+                    }
+                }
+            } catch (err) {
+                console.warn('⚠️  Could not check or write hosts file:', err.message)
+                console.log('You can add the entries manually with:')
+                if (process.platform === 'win32') {
+                    console.log(
+                        "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\Windows\\System32\\drivers\\etc\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
+                    )
+                } else {
+                    console.log(
+                        'sudo -- sh -c \'printf "127.0.0.1 app.poveroh.local\\n127.0.0.1 api.poveroh.local\\n" >> /etc/hosts\''
+                    )
+                }
+            }
+        }
+
+        // ask once at startup
+        await ensureHostsEntries()
 
         if (!DATABASE_HOST) {
             throw new Error('DATABASE_HOST is not set in .env')

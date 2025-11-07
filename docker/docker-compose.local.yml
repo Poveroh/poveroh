@@ -106,3 +106,18 @@ services:
             - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
         networks:
             - poveroh_network
+
+    proxy:
+        container_name: proxy
+        build:
+            context: ..
+            dockerfile: ./infra/proxy/proxy.dockerfile
+        restart: always
+        env_file: .env
+        ports:
+            - 80:80
+        networks:
+            - poveroh_network
+        depends_on:
+            - app
+            - api
