@@ -12,6 +12,9 @@ const projectDir = path.dirname(new URL(import.meta.url).pathname)
 const { loadEnvConfig } = nextEnv
 loadEnvConfig(projectDir)
 
+const apiBase = env('NEXT_PUBLIC_API_URL') || ``
+console.log(`Rewriting /api/v1/* to ${apiBase}/v1/*`)
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     transpilePackages: ['@poveroh/ui'],
@@ -21,8 +24,6 @@ const nextConfig = {
     // backend API (default localhost:3001). This keeps the client-side code
     // calling a same-origin path while the server actually serves the API.
     async rewrites() {
-        const apiBase = env('NEXT_PUBLIC_API_URL') || ``
-        console.log(`Rewriting /api/v1/* to ${apiBase}/v1/*`)
         return [
             {
                 // Accept requests at /api/v1/* and forward them to the API's /v1/*
