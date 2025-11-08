@@ -3,13 +3,13 @@ import appConfig from '@/config'
 import { FolderUp, Landmark, Settings, Shapes, Shield, User, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import { ReactNode } from 'react'
+import React, { ReactNode, ReactElement } from 'react'
 
 type SettingsCardType = {
     link: string
     title: string
     subtitle: string
-    icon: JSX.Element
+    icon: ReactElement
 }
 
 function SettingsCard(props: SettingsCardType) {

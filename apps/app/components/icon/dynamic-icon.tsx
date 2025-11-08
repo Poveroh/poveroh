@@ -18,16 +18,18 @@ for (const name of icons) {
     icons_components[name] = NewIcon
 }
 
-type DynamicIconProps = {
+export type DynamicIconProps = {
     name: string
     className?: string
 }
 
-const DynamicIcon = memo(({ name, ...props }: DynamicIconProps) => {
+const DynamicIconComponent: FC<DynamicIconProps> = ({ name, ...props }: DynamicIconProps) => {
     const Icon = icons_components[name as IconName]
     if (!Icon) return null
     return <Icon {...props} />
-})
+}
+
+const DynamicIcon = memo(DynamicIconComponent)
 DynamicIcon.displayName = 'DynamicIcon'
 
 export default DynamicIcon

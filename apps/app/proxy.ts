@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getSessionCookie } from 'better-auth/cookies'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
     console.log('Middleware checking path:', pathname)

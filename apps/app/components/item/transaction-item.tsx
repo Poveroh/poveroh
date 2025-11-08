@@ -2,7 +2,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
 import { ITransaction, TransactionAction } from '@poveroh/types'
 
-import { useMemo, memo, useRef } from 'react'
+import { useMemo, memo, useRef, type FC } from 'react'
 import { ArrowRightLeft } from 'lucide-react'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
@@ -14,11 +14,7 @@ type TransactionItemProps = {
     openEdit: (item: ITransaction) => void
 }
 
-export const TransactionItem = memo(function TransactionItem({
-    transaction,
-    openDelete,
-    openEdit
-}: TransactionItemProps) {
+const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openDelete, openEdit }) => {
     const { financialAccountCacheList } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
 
@@ -131,4 +127,6 @@ export const TransactionItem = memo(function TransactionItem({
             </div>
         </div>
     )
-})
+}
+
+export const TransactionItem = memo(TransactionItemComponent)

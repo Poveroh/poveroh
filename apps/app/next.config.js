@@ -4,7 +4,7 @@ import { env } from 'next-runtime-env'
 import nextEnv from '@next/env'
 import path from 'node:path'
 
-const withNextIntl = nextIntlPlugin()
+const withNextIntl = nextIntlPlugin('./i18n/request.ts')
 
 // Load environment variables using Next's env loader so both server and build-time
 // have access to values from .env, .env.local, etc.
