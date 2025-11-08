@@ -117,6 +117,15 @@ export const auth = betterAuth({
         max: 10
     },
     advanced: {
+        // Enable cross-subdomain cookies when a shared domain is available.
+        // This ensures cookies are set for the parent domain so they are shared
+        // between subdomains like app.example.com and api.example.com.
+        // If no shared domain is available (e.g., in non-production), we keep it disabled
+        // to avoid BetterAuth throwing an error that baseURL is required.
+        crossSubDomainCookies: {
+            enabled: !!sharedDomain,
+            domain: sharedDomain
+        },
         database: {
             generateId: () => {
                 return crypto.randomUUID()

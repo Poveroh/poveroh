@@ -22,6 +22,7 @@ const nextConfig = {
     // calling a same-origin path while the server actually serves the API.
     async rewrites() {
         const apiBase = env('NEXT_PUBLIC_API_URL') || ``
+        console.log(`Rewriting /api/v1/* to ${apiBase}/v1/*`)
         return [
             {
                 // Accept requests at /api/v1/* and forward them to the API's /v1/*
