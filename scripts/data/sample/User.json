@@ -1,10 +1,13 @@
 [
     {
-        "id": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "id": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "name": "Paperon",
         "surname": "De paperoni",
         "email": "p@poveroh.com",
-        "password": "$2a$12$W3rqzfsv3vFnMMe5k.ukQuXVDzTxw74jLShE2nohPZlP6MuPpSf22",
-        "createdAt": "2025-03-15 14:35:54.689"
+        "password": null,
+        "emailVerified": false,
+        "image": null,
+        "createdAt": "2025-11-08 23:13:59.709",
+        "updatedAt": "2025-11-08 23:13:59.709"
     }
 ]

@@ -40,7 +40,22 @@ require('dotenv').config()
 const prisma = new PrismaClient()
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
-const IMPORT_ORDER = ['User', 'Account', 'Category', 'Subcategory', 'Transaction', 'Amount', 'Subscription']
+
+// Mapping from file names to Prisma model names
+const TABLE_NAME_MAP = {
+    FinancialAccounts: 'financialAccount'
+}
+
+const IMPORT_ORDER = [
+    'User',
+    'Account',
+    'FinancialAccounts',
+    'Category',
+    'Subcategory',
+    'Transaction',
+    'Amount',
+    'Subscription'
+]
 
 function parseArgs() {
     const args = minimist(process.argv.slice(2))
@@ -105,6 +120,7 @@ async function processFile(basePath, filename, userId) {
     console.log(`\n➡️  Processing file: ${filename}`)
 
     const tableName = path.basename(filename, path.extname(filename))
+    const modelName = TABLE_NAME_MAP[tableName] || tableName.toLowerCase()
     const filePath = path.join(basePath, filename)
     const fileExtension = path.extname(filename).toLowerCase()
 
@@ -137,7 +153,7 @@ async function processFile(basePath, filename, userId) {
             return
         }
 
-        const existingIdsRaw = await prisma[tableName].findMany({ select: { id: true } })
+        const existingIdsRaw = await prisma[modelName].findMany({ select: { id: true } })
         const existingIds = new Set(existingIdsRaw.map(e => e.id))
 
         const toInsert = []
@@ -159,7 +175,7 @@ async function processFile(basePath, filename, userId) {
         }
 
         if (toInsert.length > 0) {
-            await prisma[tableName].createMany({
+            await prisma[modelName].createMany({
                 data: toInsert,
                 skipDuplicates: true
             })

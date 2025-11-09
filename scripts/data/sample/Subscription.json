@@ -1,7 +1,7 @@
 [
     {
         "id": "01e7e3e3-b905-40b9-b63a-32e5a3f79e59",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Netflix",
         "description": "Streaming service",
         "amount": 15.99,
@@ -18,7 +18,7 @@
     },
     {
         "id": "12c1e2d1-2c57-4d30-8417-f05b96a9f3cb",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Spotify",
         "description": "Music streaming",
         "amount": 9.99,
@@ -35,7 +35,7 @@
     },
     {
         "id": "30b30c17-cf56-4f95-9384-e4dceeb4d25b",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Adobe Creative Cloud",
         "description": "Design tools subscription",
         "amount": 52.99,
@@ -52,7 +52,7 @@
     },
     {
         "id": "6f43713b-39e6-4c29-87c0-20f36f84a0b6",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Amazon Prime",
         "description": "Shipping & streaming",
         "amount": 139.0,
@@ -69,7 +69,7 @@
     },
     {
         "id": "72a05549-6ae0-4c39-9084-fba3b40839ec",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Dropbox Plus",
         "description": "Cloud storage service",
         "amount": 11.99,
@@ -86,7 +86,7 @@
     },
     {
         "id": "7b6a17ea-98d1-44b3-97e0-e60d67dd033c",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Notion",
         "description": "Productivity and notes",
         "amount": 4.0,
@@ -103,7 +103,7 @@
     },
     {
         "id": "1f3b7cd7-3cc9-4cd2-8574-fdab5c6eaa1e",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "HBO Max",
         "description": "TV shows and movies",
         "amount": 14.99,
@@ -120,7 +120,7 @@
     },
     {
         "id": "55c65f77-243f-4efb-9dc6-984b28f2bc96",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "LinkedIn Premium",
         "description": "Career and networking tools",
         "amount": 29.99,
@@ -137,7 +137,7 @@
     },
     {
         "id": "cc5a18e2-fc20-4ae6-9245-3168ae5b719b",
-        "userId": "6a750a26-301c-48c7-ab72-ac6e0e409762",
+        "userId": "9cbec4d0-8ae5-4c83-bc78-60d84f882059",
         "title": "Duolingo Plus",
         "description": "Language learning app",
         "amount": 83.99,
