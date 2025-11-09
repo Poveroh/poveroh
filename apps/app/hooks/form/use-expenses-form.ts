@@ -80,7 +80,7 @@ const amountsSchema = baseSchema.extend({
 
 const accountSchema = baseSchema.extend({
     multipleAmount: z.literal(false),
-    totalAccountId: z.string().min(1, 'Account is required')
+    totalFinancialAccountId: z.string().min(1, 'Account is required')
 })
 
 const expensesSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, accountSchema])

@@ -1,4 +1,4 @@
-import { AppearanceMode } from '@poveroh/types/dist'
+import { AppearanceMode } from '@poveroh/types'
 import { DialogDescription, DialogHeader, DialogTitle } from '@poveroh/ui/components/dialog'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'

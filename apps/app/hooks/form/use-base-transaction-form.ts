@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useForm, FieldValues, Path, DefaultValues } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
-import { ITransaction } from '@poveroh/types/dist'
+import { ITransaction } from '@poveroh/types'
 
 /**
  * Custom hook for managing base transaction form state and operations.
@@ -47,6 +47,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
     })
 
     const handleSubmit = async (values: T, dataCallback: (formData: FormData) => Promise<void>) => {
+        console.log('🚀 handleSubmit called with values:', values)
         setLoading(true)
         try {
             let localTransaction: T = { ...values }
@@ -64,6 +65,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
                 formData.append('file', file[0])
             }
 
+            console.log('🚀 Calling dataCallback with formData')
             await dataCallback(formData)
         } catch (error) {
             handleError(error, 'Form error')
@@ -109,7 +111,12 @@ export function useBaseTransactionForm<T extends FieldValues>(
         }
     }, [form.formState.errors])
 
-    const onSubmit = form.handleSubmit(values => handleSubmit(values, props.dataCallback))
+    const onSubmit = form.handleSubmit(
+        values => handleSubmit(values, props.dataCallback),
+        errors => {
+            logger.debug('Form validation errors on submit:', errors)
+        }
+    )
 
     return {
         form,
