@@ -9,7 +9,6 @@ export function proxy(request: NextRequest) {
 
     // Allow static, API, auth and proxied API paths through
     if (
-        pathname.startsWith('/api') ||
         pathname.startsWith('/_next') ||
         pathname.startsWith('/public') ||
         pathname === '/favicon.ico' ||
@@ -21,7 +20,9 @@ export function proxy(request: NextRequest) {
 
     const authPages = new Set(['/sign-in', '/sign-up', '/forgot-password', '/logout', '/change-password'])
 
-    const sessionCookie = getSessionCookie(request)
+    const sessionCookie = getSessionCookie(request, {
+        cookiePrefix: 'poveroh_auth_'
+    })
 
     console.log('Session cookie found:', sessionCookie)
 
