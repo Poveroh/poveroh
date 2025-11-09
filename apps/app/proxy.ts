@@ -5,8 +5,6 @@ import { getSessionCookie } from 'better-auth/cookies'
 export function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
 
-    console.log('Middleware checking path:', pathname)
-
     // Allow static, API, auth and proxied API paths through
     if (
         pathname.startsWith('/_next') ||
@@ -23,8 +21,6 @@ export function proxy(request: NextRequest) {
     const sessionCookie = getSessionCookie(request, {
         cookiePrefix: 'poveroh_auth_'
     })
-
-    console.log('Session cookie found:', sessionCookie)
 
     // Unauthenticated users: redirect to sign-in for protected pages
     if (!sessionCookie && !authPages.has(pathname) && pathname !== '/') {
