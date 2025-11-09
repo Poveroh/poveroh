@@ -12,7 +12,7 @@ const createAppConfig = (): IAppConfig => {
         },
         get apiUrl(): string {
             // Use next-runtime-env to resolve at runtime (both server and client)
-            return env('NEXT_PUBLIC_API_URL') || ''
+            return env('NEXT_PUBLIC_API_URL') || 'http://localhost:3001' || 'http://api.poveroh.local'
         },
         get mode(): 'production' | 'development' | 'test' {
             // For client-side code, we can't access NODE_ENV at runtime,

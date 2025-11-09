@@ -1,7 +1,8 @@
+import appConfig from '@/config'
 import { createAuthClient } from 'better-auth/react'
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient({
-    basePath: '/api/v1/auth',
+    baseURL: appConfig.apiUrl + '/auth',
     fetchOptions: {
         credentials: 'include'
     }
