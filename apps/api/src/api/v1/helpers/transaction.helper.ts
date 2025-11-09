@@ -1,5 +1,13 @@
 import prisma from '@poveroh/prisma'
-import { Currencies, IncomeFormData, ITransaction, TransactionAction } from '@poveroh/types'
+import {
+    Currencies,
+    ExpensesFormData,
+    FormMode,
+    IncomeFormData,
+    ITransaction,
+    ITransactionBase,
+    TransactionAction
+} from '@poveroh/types'
 
 export const TransactionHelper = {
     async handleTransaction(action: string, data: any, userId: string, transactionId?: string) {
@@ -43,12 +51,10 @@ export const TransactionHelper = {
                 ]
             })
         } else {
+            const normalizedData = this.normalizeTransaction(TransactionAction.TRANSFER, data)
             const transaction = await this.createTransaction({
-                title: data.title,
+                ...normalizedData,
                 action: TransactionAction.TRANSFER,
-                date: new Date(data.date).toISOString(),
-                note: data.note,
-                ignore: data.ignore,
                 userId: userId
             })
 
@@ -105,10 +111,11 @@ export const TransactionHelper = {
                 }
             })
         } else {
+            const normalizedData = this.normalizeTransaction(TransactionAction.INCOME, data)
             const transaction = await this.createTransaction({
+                ...normalizedData,
                 action: TransactionAction.INCOME,
-                userId: userId,
-                ...data
+                userId: userId
             })
 
             await prisma.amount.create({
@@ -165,14 +172,10 @@ export const TransactionHelper = {
             return await this.fetchTransactionWithAmounts(transaction.id)
         }
 
+        const normalizedData = this.normalizeTransaction(TransactionAction.EXPENSES, data)
         const transaction = await this.createTransaction({
-            title: data.title,
+            ...normalizedData,
             action: TransactionAction.EXPENSES,
-            categoryId: data.categoryId,
-            subcategoryId: data.subcategoryId,
-            date: new Date(data.date).toISOString(),
-            note: data.note,
-            ignore: data.ignore,
             userId: userId
         })
 
@@ -190,7 +193,7 @@ export const TransactionHelper = {
 
         return await this.fetchTransactionWithAmounts(transaction.id)
     },
-    async createTransaction(transactionData: any) {
+    async createTransaction(transactionData: ITransactionBase & { userId: string }) {
         return await prisma.transaction.create({
             data: transactionData
         })
@@ -200,5 +203,31 @@ export const TransactionHelper = {
             where: { id: transactionId },
             include: { amounts: true }
         })
+    },
+    normalizeTransaction(action: TransactionAction, transaction: FormMode): ITransactionBase {
+        const baseData: ITransactionBase = {
+            title: transaction.title,
+            action,
+            date: new Date(transaction.date).toISOString(),
+            note: transaction.note,
+            ignore: transaction.ignore || false,
+            categoryId: undefined,
+            subcategoryId: undefined
+        }
+
+        switch (action) {
+            case TransactionAction.TRANSFER:
+                return baseData
+            case TransactionAction.INCOME:
+            case TransactionAction.EXPENSES:
+                const categoryData = transaction as IncomeFormData | ExpensesFormData
+                return {
+                    ...baseData,
+                    categoryId: categoryData.categoryId,
+                    subcategoryId: categoryData.subcategoryId
+                }
+            default:
+                throw new Error(`Invalid transaction action: ${action}`)
+        }
     }
 }

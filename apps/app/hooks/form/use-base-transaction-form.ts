@@ -37,7 +37,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
             console.log('Initial values for', config.type, ':', transformed)
             return transformed
         }
-        console.log('Using default values for', config.type, ':', config.defaultValues)
         return config.defaultValues
     }
 
