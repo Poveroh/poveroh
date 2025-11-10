@@ -131,6 +131,12 @@ This project uses:
     >
     > **Warning**: Since these are default values, security is not guaranteed.
 
+    **Environment Files**: The project uses a dual environment system:
+    - `.env` - For local development (DATABASE_HOST=localhost:5432)
+    - `.env.production` - For Docker deployments (DATABASE_HOST=db:5432)
+
+    Running `npm run setup` will automatically create both files from `.env.example`.
+
 ### Setup Database and CDN
 
 > Docker and Docker Compose must be installed, up, and running on the machine.

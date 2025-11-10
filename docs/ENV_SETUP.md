@@ -1,17 +1,56 @@
 # Environment Variables
 
-Environment variables are stored in a single file but are divided by application.
+Environment variables are stored in files but are divided by application and deployment target.
+
+## Environment Files Structure
+
+The project uses a dual environment file system to support both development and production deployments:
+
+- **`.env`**: Used for local development (DATABASE_HOST=localhost:5432)
+- **`.env.production`**: Used for Docker/production deployments (DATABASE_HOST=db:5432)
+- **`.env.example`**: Template file with all available variables
+
+### File Priority System
+
+When running Docker deployment scripts, the system loads environment variables with the following priority:
+
+1. **`.env.production`** (if exists) - Takes precedence for Docker deployments
+2. **`.env`** (fallback) - Used if .env.production doesn't exist
+
+### Automatic File Creation
 
 For development and local deployment, either copy the `.env.example` file to `.env` manually or run `npm run setup:env`.
-This will copy the file and populate it with default values. However, for improved application security, it is recommended to replace these defaults with your own custom values.
+This will automatically create both files:
 
-All applications retrieve the necessary variables from this file.
+- **`.env`** with `DATABASE_HOST=localhost:5432` (for local development)
+- **`.env.production`** with `DATABASE_HOST=db:5432` (for Docker deployments)
 
-There are also `.env` files inside `packages/prisma`, `apps/app`, `apps/api` and `docker` folder that directly link to `.env` file in project root. Do not touch them.
+The setup script will populate both files with default values. However, for improved application security, it is recommended to replace these defaults with your own custom values.
+
+All applications retrieve the necessary variables from these files.
+
+There are also `.env` files inside `packages/prisma`, `apps/app`, `apps/api` and `docker` folder that directly link to the `.env` file in project root. Do not touch them.
+
+## Docker Deployment
+
+When using Docker deployment via `npm run docker`, the system automatically:
+
+1. **Checks for environment files** and creates them if missing
+2. **Loads the appropriate environment file** with priority to `.env.production`
+3. **Passes the environment file to Docker Compose** using the `--env-file` flag
+4. **Ensures all containers receive the correct environment variables**
+
+### Environment File Selection for Docker
+
+- If `.env.production` exists → Uses `.env.production` (recommended for Docker deployments)
+- If only `.env` exists → Falls back to `.env`
+- If neither exists → Automatically creates both from `.env.example`
+
+This ensures that Docker containers always receive the correct database host (`db:5432` instead of `localhost:5432`) and other production-specific configurations.
 
 ## Database
 
-```
+```env
 POSTGRES_USER=poveroh
 POSTGRES_PASSWORD=poveroh
 POSTGRES_DB=poveroh
@@ -27,7 +66,7 @@ DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}
 
 ## Api
 
-```
+```env
 #API port; default is 3001
 API_PORT=3001
 
@@ -64,7 +103,7 @@ AZURE_CONTAINER=
 
 ## App
 
-```
+```env
 #API url; default is localhost:3001 - get the port from the API_PORT variable
 NEXT_PUBLIC_API_URL=http://localhost:${API_PORT}
 NEXT_PUBLIC_APP_VERSION=1.0.0
@@ -78,7 +117,7 @@ BASE_URL=
 
 ## Docker
 
-```
+```env
 # Set the base name for Docker containers created by Docker Compose
 COMPOSE_PROJECT_NAME=poveroh
 ```

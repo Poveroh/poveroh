@@ -1,11 +1,12 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 const readline = require('readline')
-const { getProjectRoot, ensureEnvFile, getEnvContent, path } = require('../utils')
+const { getProjectRoot, loadEnvWithPriority, path } = require('../utils')
 
 const projectRoot = getProjectRoot()
 const envPaths = {
     root: path.resolve(projectRoot, '.env'),
+    prod: path.resolve(projectRoot, '.env.production'),
     example: path.resolve(projectRoot, '.env.example')
 }
 const composeFile = path.resolve(projectRoot, 'docker/docker-compose.prod.yml')
@@ -36,10 +37,12 @@ function checkExistingContainers(baseCommand) {
 }
 
 // Function to start services
-function startServices(baseCommand, isLocalDb, isLocalFileStorage) {
+function startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath) {
+    const envFlag = envPath ? `--env-file ${envPath}` : ''
+
     if (isLocalDb) {
         console.log("🟢 Starting all services including 'db'...")
-        execSync(`${baseCommand} up -d`, { stdio: 'inherit' })
+        execSync(`${baseCommand} ${envFlag} up -d`, { stdio: 'inherit' })
     } else {
         console.log(`🟡 DATABASE_HOST -> the 'db' service will not be started.`)
         console.log('🟢 Starting other services...')
@@ -49,15 +52,15 @@ function startServices(baseCommand, isLocalDb, isLocalFileStorage) {
             services.push('cdn')
         }
 
-        execSync(`${baseCommand} up -d ${services.join(' ')}`, { stdio: 'inherit' })
+        execSync(`${baseCommand} ${envFlag} up -d ${services.join(' ')}`, { stdio: 'inherit' })
     }
 }
 
 async function main() {
     try {
-        ensureEnvFile(envPaths)
+        // Carica l'ambiente con priorità: .env.production > .env
+        const { envPath, envContent } = loadEnvWithPriority(envPaths)
 
-        let envContent = getEnvContent(envPaths.root)
         const getEnvValue = key => {
             const match = envContent.match(new RegExp(`^${key}=(.*)$`, 'm'))
             return match ? match[1] : null
@@ -91,37 +94,29 @@ async function main() {
                         execSync(`sudo -- sh -c 'printf "${hostsEntry}" >> /etc/hosts'`, { stdio: 'inherit' })
                         console.log('✅ /etc/hosts updated.')
                     } else {
-                        // On Windows open the hosts file in notepad elevated so the user can edit & save
+                        // On Windows inject entries directly using PowerShell with elevated privileges
                         try {
-                            console.log(
-                                '🔐 Opening hosts file in Notepad as administrator. Please paste the following lines and save:'
-                            )
-                            console.log(hostsEntry)
+                            console.log('🔐 Adding entries to hosts file (requires administrator privileges)...')
+                            const psCommand = `Add-Content -Path '${hostsPath}' -Value '127.0.0.1 app.poveroh.local','127.0.0.1 api.poveroh.local'`
                             execSync(
-                                `powershell -Command "Start-Process notepad -Verb RunAs -ArgumentList '${hostsPath}'"`,
+                                `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile','-Command','${psCommand.replace(/'/g, "''")}'\" -Wait`,
                                 { stdio: 'inherit' }
                             )
-                            console.log('ℹ️  After saving the file in Notepad, press Enter here to continue.')
-                            await askQuestion('Press Enter once you saved the file... ')
+
                             // Re-check
                             const updated = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
                             if (updated.includes('app.poveroh.local') || updated.includes('api.poveroh.local')) {
                                 console.log('✅ hosts file updated.')
                             } else {
-                                console.log(
-                                    '⚠️  The hosts file does not contain the expected entries. You can add them manually using an elevated PowerShell:'
-                                )
-                                console.log(
-                                    "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
-                                )
+                                console.log('⚠️  Could not verify the update. Please check the hosts file manually.')
                             }
                         } catch (err) {
-                            console.warn('⚠️  Could not open Notepad elevated:', err.message)
+                            console.warn('⚠️  Could not update hosts file:', err.message)
                             console.log(
                                 'You can add the entries manually by running PowerShell as Administrator and executing:'
                             )
                             console.log(
-                                "Add-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
+                                "Add-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local','127.0.0.1 api.poveroh.local'"
                             )
                         }
                     }
@@ -156,7 +151,7 @@ async function main() {
         await ensureHostsEntries()
 
         if (!DATABASE_HOST) {
-            throw new Error('DATABASE_HOST is not set in .env')
+            throw new Error(`DATABASE_HOST is not set in ${path.basename(envPath)}`)
         }
 
         const isLocalDb = DATABASE_HOST.includes('localhost') || DATABASE_HOST.includes('db')
@@ -185,7 +180,8 @@ async function main() {
                     console.log('📥 Downloading new images...')
                     execSync(`${baseCommand} pull`, { stdio: 'inherit' })
                     console.log('🔄 Restarting services with new images...')
-                    execSync(`${baseCommand} up -d --force-recreate`, { stdio: 'inherit' })
+                    const envFlag1 = envPath ? `--env-file ${envPath}` : ''
+                    execSync(`${baseCommand} ${envFlag1} up -d --force-recreate`, { stdio: 'inherit' })
                     console.log('✅ Update completed!')
                     break
 
@@ -198,13 +194,13 @@ async function main() {
                     console.log('📥 Downloading new images...')
                     execSync(`${baseCommand} pull`, { stdio: 'inherit' })
                     console.log('🚀 Starting services...')
-                    startServices(baseCommand, isLocalDb, isLocalFileStorage)
+                    startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
                     console.log('✅ Cleanup and restart completed!')
                     break
 
                 case '3':
                     console.log('🚀 Starting existing containers...')
-                    startServices(baseCommand, isLocalDb, isLocalFileStorage)
+                    startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
                     console.log('✅ Services started!')
                     break
 
@@ -247,7 +243,7 @@ async function main() {
             console.log('🆕 No Docker containers found.')
             console.log('📥 Downloading and starting services...')
             execSync(`${baseCommand} pull`, { stdio: 'inherit' })
-            startServices(baseCommand, isLocalDb, isLocalFileStorage)
+            startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
             console.log('✅ Services started successfully!')
         }
     } catch (error) {
