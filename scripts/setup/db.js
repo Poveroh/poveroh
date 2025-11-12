@@ -34,7 +34,8 @@ try {
         throw new Error('DATABASE_HOST is not set in .env')
     }
 
-    const isLocalDb = databaseHost === 'localhost:5432' || databaseHost === 'db:5432'
+    const isLocalDb =
+        databaseHost === 'localhost:5432' || databaseHost === 'db:5432' || databaseHost === 'db.poveroh.local:5432'
 
     if (isLocalDb) {
         console.log(`🟢 DATABASE_HOST is '${databaseHost}', starting local DB container...`)

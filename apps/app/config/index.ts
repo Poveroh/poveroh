@@ -5,7 +5,7 @@ import { env } from 'next-runtime-env'
 const createAppConfig = (): IAppConfig => {
     return {
         get name(): string {
-            return env('NEXT_PUBLIC_APP_NAME') || 'Poveroh'
+            return 'Poveroh'
         },
         get version(): string {
             return env('NEXT_PUBLIC_APP_VERSION') || '0.0.0'

@@ -93,20 +93,6 @@ services:
         depends_on:
             - api
 
-    cdn:
-        container_name: cdn
-        build:
-            context: ..
-            dockerfile: ./infra/cdn/cdn.dockerfile
-        restart: always
-        env_file: .env
-        ports:
-            - 3002:3002
-        volumes:
-            - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
-        networks:
-            - poveroh_network
-
     proxy:
         container_name: proxy
         build:
@@ -116,8 +102,7 @@ services:
         env_file: .env
         ports:
             - 80:80
+        volumes:
+            - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
         networks:
             - poveroh_network
-        depends_on:
-            - app
-            - api
