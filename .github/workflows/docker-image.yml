@@ -43,7 +43,7 @@ jobs:
 
             - name: Tag and push images
               run: |
-                  for service in db api app cdn redis proxy; do
+                  for service in db api app redis proxy; do
                     docker tag ${{ steps.vars.outputs.repo_lower }}-$service ghcr.io/${{ steps.vars.outputs.owner_lower }}/${{ steps.vars.outputs.repo_lower }}-$service:latest
                     docker push ghcr.io/${{ steps.vars.outputs.owner_lower }}/${{ steps.vars.outputs.repo_lower }}-$service:latest
                   done
