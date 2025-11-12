@@ -48,6 +48,44 @@ When using Docker deployment via `npm run docker`, the system automatically:
 
 This ensures that Docker containers always receive the correct database host (`db:5432` instead of `localhost:5432`) and other production-specific configurations.
 
+## Local hostnames and proxy
+
+For local development we use a small nginx `proxy` service that routes traffic to the different internal services (app, api, cdn, studio). To make testing simple we recommend adding the following host entries to your machine's hosts file (the project contains a helper script that can add them for you):
+
+```text
+127.0.0.1 app.poveroh.local
+127.0.0.1 api.poveroh.local
+127.0.0.1 studio.poveroh.local
+127.0.0.1 db.poveroh.local
+127.0.0.1 redis.poveroh.local
+127.0.0.1 cdn.poveroh.local
+::1 app.poveroh.local
+::1 api.poveroh.local
+::1 studio.poveroh.local
+::1 db.poveroh.local
+::1 redis.poveroh.local
+```
+
+The repository exposes a small helper script `scripts/setup/proxy.js` which will attempt to append these lines to your `/etc/hosts` (on Unix) or the Windows hosts file using an elevated PowerShell command. The setup flow will then start the `proxy` container. You can run it with:
+
+```bash
+node scripts/setup/proxy.js
+```
+
+Important notes:
+
+- The `db` (Postgres) and `redis` services are internal TCP services. They are not HTTP endpoints — use other containers (or a proper TCP proxy) to connect to them by service name (e.g. `db:5432`, `redis:6379`). The `proxy` service provides HTTP routing for `app`, `api` and the CDN; for TCP proxying (Postgres/Redis) you must enable nginx `stream` module or expose ports on the host.
+- By default the `docker-compose.local.yml` configuration keeps `db`, `redis` and `studio` internal-only (no host port bindings). They are reachable from your app/api containers over the Docker network and from the host via the `proxy` where appropriate.
+
+## CDN URL
+
+If you use local file storage mode (`FILE_STORAGE_MODE=local`), the API generates static file URLs that point to a CDN host. For local development the project expects the CDN to be available at `http://cdn.poveroh.local`. You can also configure the URL using an environment variable (if present):
+
+```env
+# optional override for the CDN base URL used by the API when FILE_STORAGE_MODE=local
+CDN_URL=http://cdn.poveroh.local
+```
+
 ## Database
 
 ```env

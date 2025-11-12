@@ -147,6 +147,8 @@ This project uses:
     npm run setup
     ```
 
+    Note: the setup flow may create a small local `proxy` service and to make local subdomains work you may need to add host entries (the repository includes `scripts/setup/proxy.js` which can add them for you).
+
     The command will execute the following steps:
     - Create and run database docker image.
     - Navigate to the `packages/prisma` directory.
