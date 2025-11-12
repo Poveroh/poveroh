@@ -8,6 +8,7 @@ const config: IApiConfig = {
     JWT_SECRET: process.env.JWT_KEY || '',
     LOG_LEVEL: (process.env.LOG_LEVEL as LogLevel) || LogLevel.INFO,
     BASE_URL: process.env.BASE_URL,
+    APP_URL: process.env.APP_URL,
     NODE_ENV: process.env.NODE_ENV || 'development',
     ALLOWED_ORIGINS: (() => {
         // Read comma-separated allowed origins; trim and filter empties

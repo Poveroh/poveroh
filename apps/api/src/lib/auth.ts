@@ -11,20 +11,20 @@ const getSharedDomain = (): string | undefined => {
     if (!isProduction || !allowedOrigins.length) return undefined
 
     try {
-        const firstOrigin = allowedOrigins[0]
-        const url = new URL(firstOrigin)
+        const url = new URL(config.APP_URL || allowedOrigins[0] || 'http://localhost')
+
+        console.log('Shared domain extraction from URL:', url)
+
         const hostname = url.hostname
 
         // Extract domain (remove first subdomain)
-        // e.g., "app.mydomain.com" → ".mydomain.com"
         const parts = hostname.split('.')
         if (parts.length >= 2) {
-            const sharedDomain = `.${parts.slice(-2).join('.')}`
-            console.log('Extracted shared domain:', sharedDomain)
-            return sharedDomain
+            return `.${parts.slice(-2).join('.')}`
         }
+        return '.localhost'
     } catch (e) {
-        console.warn('Could not extract shared domain from allowed origins')
+        console.warn('Could not extract shared domain from allowed origins:', e)
     }
 
     return undefined

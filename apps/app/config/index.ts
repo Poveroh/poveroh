@@ -12,7 +12,7 @@ const createAppConfig = (): IAppConfig => {
         },
         get apiUrl(): string {
             // Use next-runtime-env to resolve at runtime (both server and client)
-            return env('NEXT_PUBLIC_API_URL') || 'http://localhost:3001' || 'http://api.poveroh.local'
+            return env('NEXT_PUBLIC_API_URL') || 'http://localhost:3001'
         },
         get mode(): 'production' | 'development' | 'test' {
             // For client-side code, we can't access NODE_ENV at runtime,
@@ -27,8 +27,7 @@ const createAppConfig = (): IAppConfig => {
         },
         get logLevel(): LogLevel {
             // Prefer public runtime value if provided, fallback to server env
-            const level = (env('NEXT_PUBLIC_LOG_LEVEL') || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
-            return level
+            return (env('NEXT_PUBLIC_LOG_LEVEL') || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
         }
     }
 }
