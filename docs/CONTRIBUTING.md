@@ -59,7 +59,11 @@ The development branch is `main`.
     > **⚠️ Warning:**  
     > If you encounter any difficulties or something doesn't go as planned, read [this file](scripts/README.md) to execute it manually.
 
-2. Create a user; open a browser to [localhost:3000/sign-up](http://localhost:3000/sign-up) and sign up.
+2. Create a user; open a browser to the frontend signup page and sign up. If you're using the local proxy the URL is:
+    - [http://app.poveroh.local/sign-up](http://app.poveroh.local/sign-up)
+
+    You can also use the direct localhost URL (when not using the proxy):
+    - [http://localhost:3000/sign-up](http://localhost:3000/sign-up)
 
 3. _Optionally_, you can run the following exactly script to generate and fill database with fake data:
 
@@ -67,7 +71,7 @@ The development branch is `main`.
     npm run setup:data --user=<user_id_created_before>
     ```
 
-    > You can find user ID on the [personal information page](http://localhost:3000/account/profile)
+    > You can find user ID on the [personal information page](http://app.poveroh.local/account/profile) (or [http://localhost:3000/account/profile](http://localhost:3000/account/profile))
 
 ## Build and run
 
@@ -83,7 +87,7 @@ The development branch is `main`.
     npm run dev
     ```
 
-# Project Commands
+## Project Commands
 
 ## Build Commands
 
@@ -130,14 +134,17 @@ npm run ui:add
 ## Setup Commands
 
 ```bash
-# Run all setup tasks (DB and CDN)
+# Run all setup tasks (proxy, DB, and Redis)
 npm run setup
 
 # Set up database
 npm run setup:db
 
-# Set up CDN
-npm run setup:cdn
+# Set up Redis
+npm run setup:redis
+
+# Set up proxy and local hostnames
+npm run setup:proxy
 
 # Set up environment files
 npm run setup:env
@@ -166,6 +173,9 @@ npm run clean:env
 
 # Clean seeded database data
 npm run clean:data
+
+# Clean Docker cache and unused images
+npm run clean:docker-cache
 ```
 
 ## Formatting & Linting
@@ -184,11 +194,13 @@ npm run lint
 # Create Docker network if not exists
 npm run docker:create-network
 
-npm run docker-dev:db       # Avvia solo il container DB
-npm run docker-dev:api      # Avvia solo il container API
-npm run docker-dev:app      # Avvia solo il container frontend app
-npm run docker-dev:studio   # Avvia Prisma Studio
-npm run docker-dev:cdn      # Avvia il container CDN
+# Start individual Docker services for development
+npm run docker-dev:db       # Start only the DB container
+npm run docker-dev:api      # Start only the API container
+npm run docker-dev:app      # Start only the frontend app container
+npm run docker-dev:redis    # Start only the Redis container
+npm run docker-dev:studio   # Start Prisma Studio container
+npm run docker-dev:proxy    # Start the proxy container
 
 # Start all dev Docker services
 npm run docker-dev
@@ -203,8 +215,11 @@ npm run docker
 # Generate Prisma client
 npm run prisma:generate
 
-# Run DB migrations
+# Run DB migrations in development
 npm run prisma:migrate
+
+# Deploy migrations in production
+npm run prisma:deploy
 
 # Open Prisma Studio
 npm run prisma:studio
