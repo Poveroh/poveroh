@@ -9,7 +9,7 @@ export const MediaHelper = {
         await uploadClient.uploadFile(filePath, file.buffer)
 
         if (isLocalStorageMode) {
-            const baseCdnUrl = 'http://cdn.poveroh.local'
+            const baseCdnUrl = config.CDN_URL || 'http://cdn.poveroh.local'
             return new URL(filePath, baseCdnUrl).toString()
         }
 

@@ -5,6 +5,7 @@ const config: IApiConfig = {
     PORT: process.env.API_PORT || '3001',
     JWT_SECRET: process.env.JWT_KEY || '',
     LOG_LEVEL: (process.env.LOG_LEVEL as LogLevel) || LogLevel.INFO,
+    CDN_URL: process.env.CDN_URL || 'http://cdn.poveroh.local',
     BASE_URL: process.env.BASE_URL,
     APP_URL: process.env.APP_URL,
     NODE_ENV: process.env.NODE_ENV || 'development',
