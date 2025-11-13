@@ -56,7 +56,7 @@
         "prettier": "^3.2.5",
         "prisma": "^6.18.0",
         "storybook": "^8.6.14",
-        "turbo": "^2.6.0",
+        "turbo": "^2.6.1",
         "typescript": "5.5.4",
         "vite": "^5",
         "webpack": "^5.101.2"
