@@ -37,7 +37,7 @@ function checkExistingContainers(baseCommand) {
 }
 
 // Function to start services
-function startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath) {
+function startServices(baseCommand, isLocalDb, envPath) {
     const envFlag = envPath ? `--env-file ${envPath}` : ''
 
     if (isLocalDb) {
@@ -48,11 +48,91 @@ function startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath) {
         console.log('🟢 Starting other services...')
 
         const services = ['api', 'app', 'redis', 'proxy']
-        if (isLocalFileStorage) {
-            services.push('cdn')
-        }
 
         execSync(`${baseCommand} ${envFlag} up -d ${services.join(' ')}`, { stdio: 'inherit' })
+    }
+}
+
+function ensureHostsEntries(force = true) {
+    const hostsEntry =
+        [
+            '127.0.0.1 app.poveroh.local',
+            '127.0.0.1 api.poveroh.local',
+            '127.0.0.1 studio.poveroh.local',
+            '127.0.0.1 db.poveroh.local',
+            '127.0.0.1 redis.poveroh.local',
+            '127.0.0.1 cdn.poveroh.local',
+            '127.0.0.1 poveroh.local',
+            '::1 app.poveroh.local',
+            '::1 api.poveroh.local',
+            '::1 studio.poveroh.local',
+            '::1 db.poveroh.local',
+            '::1 cdn.poveroh.local',
+            '::1 redis.poveroh.local'
+        ].join('\n') + '\n'
+    const hostsPath = process.platform === 'win32' ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
+
+    let current = ''
+    try {
+        current = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
+    } catch (err) {
+        console.warn(`⚠️  Could not read ${hostsPath}: ${err.message}`)
+    }
+
+    const requiredHosts = [
+        'app.poveroh.local',
+        'api.poveroh.local',
+        'studio.poveroh.local',
+        'db.poveroh.local',
+        'redis.poveroh.local',
+        'cdn.poveroh.local',
+        'poveroh.local'
+    ]
+
+    const already = current && requiredHosts.every(h => current.includes(h))
+    if (already) {
+        console.log(`ℹ️  ${hostsPath} already contains all poveroh.local entries (skipping).`)
+        return
+    }
+
+    if (!force) {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+        rl.question(`Add local host entries to ${hostsPath}? [y/N]: `, ans => {
+            rl.close()
+            if (ans.toLowerCase().trim() === 'y') {
+                writeHosts(hostsPath, hostsEntry)
+            } else {
+                console.log('ℹ️  Skipped modifying hosts file. You can add the following entries manually:')
+                console.log(hostsEntry)
+            }
+        })
+        return
+    }
+
+    writeHosts(hostsPath, hostsEntry)
+}
+
+function writeHosts(hostsPath, hostsEntry) {
+    try {
+        if (process.platform === 'win32') {
+            // Try PowerShell elevated write
+            const escapedEntry = hostsEntry.replace(/'/g, "''").replace(/\r?\n/g, '`n')
+            const psCommand = `Add-Content -Path '${hostsPath}' -Value '${escapedEntry}'`
+            const escapedPsCommand = psCommand.replace(/'/g, "''").replace(/"/g, '`"')
+            execSync(
+                `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile','-Command','${escapedPsCommand}' -Wait"`,
+                { stdio: 'inherit' }
+            )
+            console.log('✅ hosts file updated.')
+        } else {
+            console.log('🔐 Adding entries to /etc/hosts (sudo may prompt for your password)...')
+            execSync(`sudo -- sh -c 'printf "${hostsEntry}" >> ${hostsPath}'`, { stdio: 'inherit' })
+            console.log('✅ /etc/hosts updated.')
+        }
+    } catch (err) {
+        console.warn('⚠️  Could not update hosts file:', err.message)
+        console.log('Please add the following lines to your hosts file manually:')
+        console.log(hostsEntry)
     }
 }
 
@@ -67,95 +147,18 @@ async function main() {
         }
 
         const DATABASE_HOST = getEnvValue('DATABASE_HOST')
-        const FILE_STORAGE_MODE = getEnvValue('FILE_STORAGE_MODE')
-
-        // Offer to add local hosts entries for convenience
-        async function ensureHostsEntries() {
-            const hostsEntry = '127.0.0.1 app.poveroh.local\n127.0.0.1 api.poveroh.local\n'
-            const isWin = process.platform === 'win32'
-            try {
-                const hostsPath = isWin ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
-
-                // Read current hosts file (may throw if unreadable)
-                const current = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
-                if (current.includes('app.poveroh.local') || current.includes('api.poveroh.local')) {
-                    console.log(`ℹ️  ${hostsPath} already contains poveroh.local entries (skipping).`)
-                    return
-                }
-
-                const ans = await askQuestion(
-                    `Do you want me to add 'app.poveroh.local' and 'api.poveroh.local' to ${hostsPath} now? [y/N]: `
-                )
-
-                if (ans === 'y' || ans === 'yes') {
-                    if (!isWin) {
-                        console.log('🔐 Adding entries to /etc/hosts (sudo may prompt for your password)...')
-                        // Use sh -c with sudo so the redirection happens as root
-                        execSync(`sudo -- sh -c 'printf "${hostsEntry}" >> /etc/hosts'`, { stdio: 'inherit' })
-                        console.log('✅ /etc/hosts updated.')
-                    } else {
-                        // On Windows inject entries directly using PowerShell with elevated privileges
-                        try {
-                            console.log('🔐 Adding entries to hosts file (requires administrator privileges)...')
-                            const psCommand = `Add-Content -Path '${hostsPath}' -Value '127.0.0.1 app.poveroh.local','127.0.0.1 api.poveroh.local'`
-                            execSync(
-                                `powershell -Command "Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile','-Command','${psCommand.replace(/'/g, "''")}'\" -Wait`,
-                                { stdio: 'inherit' }
-                            )
-
-                            // Re-check
-                            const updated = fs.readFileSync(hostsPath, { encoding: 'utf-8' })
-                            if (updated.includes('app.poveroh.local') || updated.includes('api.poveroh.local')) {
-                                console.log('✅ hosts file updated.')
-                            } else {
-                                console.log('⚠️  Could not verify the update. Please check the hosts file manually.')
-                            }
-                        } catch (err) {
-                            console.warn('⚠️  Could not update hosts file:', err.message)
-                            console.log(
-                                'You can add the entries manually by running PowerShell as Administrator and executing:'
-                            )
-                            console.log(
-                                "Add-Content -Path 'C:\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts' -Value '127.0.0.1 app.poveroh.local','127.0.0.1 api.poveroh.local'"
-                            )
-                        }
-                    }
-                } else {
-                    console.log(`ℹ️  Skipped modifying ${hostsPath}. You can run the appropriate command yourself:`)
-                    if (!isWin) {
-                        console.log(
-                            'sudo -- sh -c \'printf "127.0.0.1 app.poveroh.local\\n127.0.0.1 api.poveroh.local\\n" >> /etc/hosts\''
-                        )
-                    } else {
-                        console.log(
-                            "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\Windows\\System32\\drivers\\etc\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
-                        )
-                    }
-                }
-            } catch (err) {
-                console.warn('⚠️  Could not check or write hosts file:', err.message)
-                console.log('You can add the entries manually with:')
-                if (process.platform === 'win32') {
-                    console.log(
-                        "Run PowerShell as Administrator and execute:\nAdd-Content -Path 'C:\\Windows\\System32\\drivers\\etc\\hosts' -Value '127.0.0.1 app.poveroh.local`n127.0.0.1 api.poveroh.local'"
-                    )
-                } else {
-                    console.log(
-                        'sudo -- sh -c \'printf "127.0.0.1 app.poveroh.local\\n127.0.0.1 api.poveroh.local\\n" >> /etc/hosts\''
-                    )
-                }
-            }
-        }
 
         // ask once at startup
-        await ensureHostsEntries()
+        await ensureHostsEntries(true)
 
         if (!DATABASE_HOST) {
             throw new Error(`DATABASE_HOST is not set in ${path.basename(envPath)}`)
         }
 
-        const isLocalDb = DATABASE_HOST.includes('localhost') || DATABASE_HOST.includes('db')
-        const isLocalFileStorage = FILE_STORAGE_MODE === 'local'
+        const isLocalDb =
+            DATABASE_HOST === 'localhost:5432' ||
+            DATABASE_HOST === 'db:5432' ||
+            DATABASE_HOST === 'db.poveroh.local:5432'
 
         const baseCommand = `docker compose -f ${composeFile}`
 
@@ -194,13 +197,13 @@ async function main() {
                     console.log('📥 Downloading new images...')
                     execSync(`${baseCommand} pull`, { stdio: 'inherit' })
                     console.log('🚀 Starting services...')
-                    startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
+                    startServices(baseCommand, isLocalDb, envPath)
                     console.log('✅ Cleanup and restart completed!')
                     break
 
                 case '3':
                     console.log('🚀 Starting existing containers...')
-                    startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
+                    startServices(baseCommand, isLocalDb, envPath)
                     console.log('✅ Services started!')
                     break
 
@@ -243,7 +246,7 @@ async function main() {
             console.log('🆕 No Docker containers found.')
             console.log('📥 Downloading and starting services...')
             execSync(`${baseCommand} pull`, { stdio: 'inherit' })
-            startServices(baseCommand, isLocalDb, isLocalFileStorage, envPath)
+            startServices(baseCommand, isLocalDb, envPath)
             console.log('✅ Services started successfully!')
         }
     } catch (error) {

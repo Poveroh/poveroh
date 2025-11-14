@@ -63,18 +63,6 @@ services:
         depends_on:
             - api
 
-    cdn:
-        image: ghcr.io/poveroh/poveroh-cdn:latest
-        container_name: cdn
-        restart: always
-        env_file: .env
-        ports:
-            - "3002:3002"
-        volumes:
-            - ${CDN_LOCAL_DATA_PATH}:/usr/share/cdn-data
-        networks:
-            - poveroh_network
-
     proxy:
         image: ghcr.io/poveroh/poveroh-proxy:latest
         container_name: proxy
@@ -85,6 +73,3 @@ services:
             - "443:443"
         networks:
             - poveroh_network
-        depends_on:
-            - app
-            - api
