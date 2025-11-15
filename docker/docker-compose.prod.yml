@@ -11,6 +11,7 @@ services:
         image: ghcr.io/poveroh/poveroh-redis:latest
         container_name: redis
         restart: always
+        env_file: .env
         ports:
             - 6379:6379
         volumes:
@@ -22,6 +23,7 @@ services:
         image: ghcr.io/poveroh/poveroh-db:latest
         container_name: db
         restart: always
+        env_file: .env
         ports:
             - 5432:5432
         volumes:
@@ -33,6 +35,7 @@ services:
         image: ghcr.io/poveroh/poveroh-api:latest
         container_name: api
         restart: always
+        env_file: .env
         environment:
             - API_PORT=${API_PORT}
             - JWT_KEY=${JWT_KEY}
@@ -49,6 +52,7 @@ services:
         image: ghcr.io/poveroh/poveroh-app:latest
         container_name: app
         restart: always
+        env_file: .env
         environment:
             - NODE_ENV=production
             - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -63,6 +67,7 @@ services:
         image: ghcr.io/poveroh/poveroh-proxy:latest
         container_name: proxy
         restart: always
+        env_file: .env
         ports:
             - "80:80"
             - "443:443"
