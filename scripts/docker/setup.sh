@@ -25,6 +25,31 @@ fetch_file_from_github() {
     fi
 }
 
+# Function to detect architecture and set image configuration
+detect_architecture_and_configure() {
+    echo "Detecting system architecture..."
+
+    local arch
+    arch=$(uname -m)
+
+    case "$arch" in
+        x86_64)
+            echo "Architecture detected: amd64"
+            export IMAGE_ARCH="amd64"
+            ;;
+        arm64|aarch64)
+            echo "Architecture detected: arm64"
+            export IMAGE_ARCH="arm64"
+            ;;
+        *)
+            echo "Unsupported architecture: $arch"
+            exit 1
+            ;;
+    esac
+
+    echo "Using image configuration for $IMAGE_ARCH."
+}
+
 # Function to download necessary files
 download_files() {
     echo "Downloading necessary files..."
@@ -36,13 +61,17 @@ download_files() {
 
     if [[ ! -f "$ENV_FILE" ]]; then
         echo "Downloading poveroh.sample file..."
-        fetch_file_from_github ".env.example" "$ENV_FILE"
+        fetch_file_from_github ".env.prod.example" "$ENV_FILE"
     fi
 
-    echo "Downloading Docker images..."
-    docker compose -f "$COMPOSE_FILE" pull
-
     echo "Files downloaded successfully."
+}
+
+# Function to download Docker images
+download_images() {
+    echo "Downloading Docker images for $IMAGE_ARCH..."
+    docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
+    echo "Docker images downloaded successfully."
 }
 
 #Function to configure environment file
@@ -80,12 +109,28 @@ configure_env_file() {
     # Create the cdn-data folder if it doesn't exist
     if [[ ! -d "$PROJECT_ROOT/cdn-data" ]]; then
         mkdir -p "$PROJECT_ROOT/cdn-data"
-        echo "Created folder $PROJECT_ROOT/cdn-data."
+        echo "Created folder $PROJECT_ROOT/cdn-data"
     else
         echo "Folder $PROJECT_ROOT/cdn-data already exists."
     fi
 
     echo "Environment file configured successfully."
+
+    # Add IMAGE_ARCH to the environment file
+    if ! grep -q '^IMAGE_ARCH=' "$ENV_FILE"; then
+        echo "IMAGE_ARCH=$IMAGE_ARCH" >> "$ENV_FILE"
+        echo "Added IMAGE_ARCH=$IMAGE_ARCH to $ENV_FILE."
+    else
+        sed -i '' "s|^IMAGE_ARCH=.*|IMAGE_ARCH=$IMAGE_ARCH|" "$ENV_FILE"
+        echo "Updated IMAGE_ARCH to $IMAGE_ARCH in $ENV_FILE."
+    fi
+
+    copy_env_file
+}
+
+# Function to copy environment file
+copy_env_file() {
+    cp "$ENV_FILE" "$PROJECT_ROOT/.env"
 }
 
 # Function to start or update images
@@ -139,6 +184,19 @@ stop_images() {
     echo "Images stopped successfully."
 }
 
+# Function to inject platform configuration into docker-compose.prod.yml
+inject_platform_into_compose() {
+    echo "Injecting platform configuration into $COMPOSE_FILE..."
+
+    if [[ "$IMAGE_ARCH" == "amd64" ]]; then
+        # Add `platform: linux/amd64` to each service image in the docker-compose file
+        awk '/image:/ { print $0 ORS "    platform: linux/amd64"; next }1' "$COMPOSE_FILE" > "$COMPOSE_FILE.tmp" && mv "$COMPOSE_FILE.tmp" "$COMPOSE_FILE"
+        echo "Injected platform: linux/amd64 into $COMPOSE_FILE."
+    else
+        echo "No platform injection needed for architecture: $IMAGE_ARCH."
+    fi
+}
+
 # Function to display the main menu
 main_menu() {
     echo "What do you want to do?"
@@ -155,9 +213,12 @@ main_menu() {
     1)
         download_files
         configure_env_file
+        inject_platform_into_compose
+        download_images
         exit 0
         ;;
     2)
+        copy_env_file
         start_images
         exit 0
         ;;
@@ -181,4 +242,5 @@ main_menu() {
 }
 
 # Start the script
+detect_architecture_and_configure
 main_menu

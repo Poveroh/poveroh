@@ -43,7 +43,7 @@
         "docker-dev:studio": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build studio",
         "docker-dev:proxy": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build proxy",
         "docker-dev": "npm run docker:create-network && cd ./docker && docker compose -f docker-compose.local.yml up -d --build db api app redis proxy",
-        "docker": "npm run docker:create-network && node ./scripts/docker/launch.js",
+        "docker": "chmod +x ./scripts/docker/setup.sh && ./scripts/docker/setup.sh",
         "prepare": "husky",
         "chromatic": "cd apps/storybook && npm run chromatic"
     },
