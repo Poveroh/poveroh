@@ -195,19 +195,25 @@ This project uses:
     mkdir poveroh-selfhost
     ```
 
-2. Download setup file
+2. Navigate to this folder using the cd command.
+
+    ```bash
+    cd poveroh-selfhost
+    ```
+
+3. Download setup file
 
     ```bash
     curl -fsSL -o setup.sh https://raw.githubusercontent.com/Poveroh/poveroh/refs/heads/main/scripts/docker/setup.sh
     ```
 
-3. Make it executable
+4. Make it executable
 
     ```bash
     chmod +x setup.sh
     ```
 
-4. Then run it
+5. Then run it
 
     ```bash
     ./setup.sh
