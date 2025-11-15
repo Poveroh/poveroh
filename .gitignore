@@ -16,6 +16,7 @@ node_modules
 !apps/app/.env
 !apps/api/.env
 !docker/.env
+!.env.prod.example
 
 # Testing
 coverage
