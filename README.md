@@ -189,17 +189,33 @@ This project uses:
 
 ### Docker
 
-1. First of all, run only [Get start](#get-start) steps to download and setup.
-
-2. Then, run:
+1. First of all, create a folder
 
     ```bash
-    npm run docker
+    mkdir poveroh-selfhost
     ```
 
-    > This command will download Poveroh's packages from cloud and will run them.
+2. Download setup file
+
+    ```bash
+    curl -fsSL -o setup.sh https://raw.githubusercontent.com/Poveroh/poveroh/refs/heads/main/scripts/docker/setup.sh
+    ```
+
+3. Make it executable
+
+    ```bash
+    chmod +x setup.sh
+    ```
+
+4. Then run it
+
+    ```bash
+    ./setup.sh
+    ```
+
+    > The script will create `.env` file. If you do not modify it, the default values are sufficient to run the project.
     >
-    > If you want to build and run from scratch, run `npm run docker-dev`
+    > If you want to build and run from scratch, download the repo (run only [Get start](#get-start) steps to download and setup), then run `npm run docker-dev`
 
 ### Railway
 

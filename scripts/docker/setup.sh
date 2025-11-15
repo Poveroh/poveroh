@@ -157,28 +157,32 @@ start_images() {
     echo "Images started or updated successfully."
 }
 
-# Function to stop images
+# Ensure proper function call syntax
 stop_images() {
-    echo "Do you want to stop all images or only some?"
-    echo "1) Stop all images"
-    echo "2) Stop specific images"
+    local stop_choice="$1"
 
-    read -rp "Enter your choice [1-2]: " stop_choice
+    if [[ -z "$stop_choice" ]]; then
+        echo "Do you want to stop all images or only some?"
+        echo "1) Stop all images"
+        echo "2) Stop specific images"
+
+        read -rp "Enter your choice [1-2]: " stop_choice
+    fi
 
     case "$stop_choice" in
-    1)
-        echo "Stopping all images..."
-        docker compose -f "$COMPOSE_FILE" down
-        ;;
-    2)
-        echo "Enter the names of the services to stop (separated by space):"
-        read -r services_to_stop
-        echo "Stopping services: $services_to_stop..."
-        docker compose -f "$COMPOSE_FILE" stop $services_to_stop
-        ;;
-    *)
-        echo "Invalid option."
-        ;;
+        1)
+            echo "Stopping all images..."
+            docker compose -f "$COMPOSE_FILE" down
+            ;;
+        2)
+            echo "Enter the names of the services to stop (separated by space):"
+            read -r services_to_stop
+            echo "Stopping services: $services_to_stop..."
+            docker compose -f "$COMPOSE_FILE" stop $services_to_stop
+            ;;
+        *)
+            echo "Invalid option."
+            ;;
     esac
 
     echo "Images stopped successfully."
@@ -227,7 +231,9 @@ main_menu() {
         exit 0
         ;;
     4)
-        update_images
+        stop_images 1
+        download_images
+        start_images
         exit 0
         ;;
     5)
