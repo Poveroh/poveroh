@@ -245,8 +245,8 @@ In running order:
 - [x] Categories & subcategories
 - [x] Bank accounts
 - [x] Subscriptions
-- [ ] Transaction
-    - [ ] Manual insert
+- [x] Transaction
+    - [x] Manual insert
     - [ ] Upload from CSV or PDF
 - [ ] Month's snapshot
 - [ ] Reports
