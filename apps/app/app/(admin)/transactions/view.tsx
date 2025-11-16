@@ -138,11 +138,14 @@ export default function TransactionsView() {
                                     </Box>
                                 </div>
                             ))}
-                        <div className='flex flex-col flex-y-2 justify-center items-center w-full'>
+                        {
+                            //TODO: pagination
+                            /* <div className='flex flex-col flex-y-2 justify-center items-center w-full'>
                             <Button variant='outline' onClick={loadMore}>
                                 {t('buttons.loadMore')}
                             </Button>
-                        </div>
+                        </div> */
+                        }
                     </>
                 ) : (
                     <>
