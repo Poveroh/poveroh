@@ -238,6 +238,7 @@ ensure_hosts_entries() {
 
     local hosts_path="/etc/hosts"
     local entries=(
+        ""
         "127.0.0.1 app.poveroh.local"
         "127.0.0.1 api.poveroh.local"
         "127.0.0.1 studio.poveroh.local"
