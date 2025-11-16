@@ -237,6 +237,21 @@ ensure_hosts_entries() {
     echo "Ensuring hosts entries in /etc/hosts..."
 
     local hosts_path="/etc/hosts"
+    local entries=(
+        "127.0.0.1 app.poveroh.local"
+        "127.0.0.1 api.poveroh.local"
+        "127.0.0.1 studio.poveroh.local"
+        "127.0.0.1 db.poveroh.local"
+        "127.0.0.1 redis.poveroh.local"
+        "127.0.0.1 cdn.poveroh.local"
+        "127.0.0.1 poveroh.local"
+        "::1 app.poveroh.local"
+        "::1 api.poveroh.local"
+        "::1 studio.poveroh.local"
+        "::1 db.poveroh.local"
+        "::1 cdn.poveroh.local"
+        "::1 redis.poveroh.local"
+    )
 
     if grep -q "app.poveroh.local" "$hosts_path"; then
         echo "Hosts entries already exist. Skipping update."
@@ -244,40 +259,17 @@ ensure_hosts_entries() {
     fi
 
     echo "Adding entries to /etc/hosts (sudo may prompt for your password)..."
-    {
-        echo ""
-        echo "127.0.0.1 app.poveroh.local"
-        echo "127.0.0.1 api.poveroh.local"
-        echo "127.0.0.1 studio.poveroh.local"
-        echo "127.0.0.1 db.poveroh.local"
-        echo "127.0.0.1 redis.poveroh.local"
-        echo "127.0.0.1 cdn.poveroh.local"
-        echo "127.0.0.1 poveroh.local"
-        echo "::1 app.poveroh.local"
-        echo "::1 api.poveroh.local"
-        echo "::1 studio.poveroh.local"
-        echo "::1 db.poveroh.local"
-        echo "::1 cdn.poveroh.local"
-        echo "::1 redis.poveroh.local"
-    } | sudo tee -a "$hosts_path" > /dev/null
+    for entry in "${entries[@]}"; do
+        echo "$entry" | sudo tee -a "$hosts_path" > /dev/null
+    done
 
     if [[ $? -eq 0 ]]; then
         echo "✅ Hosts entries added successfully."
     else
         echo "⚠️  Failed to update /etc/hosts. Please add the following entries manually:"
-        echo "127.0.0.1 app.poveroh.local"
-        echo "127.0.0.1 api.poveroh.local"
-        echo "127.0.0.1 studio.poveroh.local"
-        echo "127.0.0.1 db.poveroh.local"
-        echo "127.0.0.1 redis.poveroh.local"
-        echo "127.0.0.1 cdn.poveroh.local"
-        echo "127.0.0.1 poveroh.local"
-        echo "::1 app.poveroh.local"
-        echo "::1 api.poveroh.local"
-        echo "::1 studio.poveroh.local"
-        echo "::1 db.poveroh.local"
-        echo "::1 cdn.poveroh.local"
-        echo "::1 redis.poveroh.local"
+        for entry in "${entries[@]}"; do
+            echo "$entry"
+        done
     fi
 }
 
