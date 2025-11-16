@@ -232,6 +232,55 @@ inject_platform_into_compose() {
     fi
 }
 
+# Function to ensure hosts entries
+ensure_hosts_entries() {
+    echo "Ensuring hosts entries in /etc/hosts..."
+
+    local hosts_path="/etc/hosts"
+
+    if grep -q "app.poveroh.local" "$hosts_path"; then
+        echo "Hosts entries already exist. Skipping update."
+        return
+    fi
+
+    echo "Adding entries to /etc/hosts (sudo may prompt for your password)..."
+    {
+        echo ""
+        echo "127.0.0.1 app.poveroh.local"
+        echo "127.0.0.1 api.poveroh.local"
+        echo "127.0.0.1 studio.poveroh.local"
+        echo "127.0.0.1 db.poveroh.local"
+        echo "127.0.0.1 redis.poveroh.local"
+        echo "127.0.0.1 cdn.poveroh.local"
+        echo "127.0.0.1 poveroh.local"
+        echo "::1 app.poveroh.local"
+        echo "::1 api.poveroh.local"
+        echo "::1 studio.poveroh.local"
+        echo "::1 db.poveroh.local"
+        echo "::1 cdn.poveroh.local"
+        echo "::1 redis.poveroh.local"
+    } | sudo tee -a "$hosts_path" > /dev/null
+
+    if [[ $? -eq 0 ]]; then
+        echo "✅ Hosts entries added successfully."
+    else
+        echo "⚠️  Failed to update /etc/hosts. Please add the following entries manually:"
+        echo "127.0.0.1 app.poveroh.local"
+        echo "127.0.0.1 api.poveroh.local"
+        echo "127.0.0.1 studio.poveroh.local"
+        echo "127.0.0.1 db.poveroh.local"
+        echo "127.0.0.1 redis.poveroh.local"
+        echo "127.0.0.1 cdn.poveroh.local"
+        echo "127.0.0.1 poveroh.local"
+        echo "::1 app.poveroh.local"
+        echo "::1 api.poveroh.local"
+        echo "::1 studio.poveroh.local"
+        echo "::1 db.poveroh.local"
+        echo "::1 cdn.poveroh.local"
+        echo "::1 redis.poveroh.local"
+    fi
+}
+
 # Function to display the main menu
 main_menu() {
     echo "What do you want to do?"
@@ -246,6 +295,7 @@ main_menu() {
 
     case "$choice" in
     1)
+        ensure_hosts_entries
         download_files
         configure_env_file
         inject_platform_into_compose
