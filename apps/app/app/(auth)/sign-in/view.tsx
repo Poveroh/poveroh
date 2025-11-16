@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Form } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
+import { Alert, AlertTitle, AlertDescription } from '@poveroh/ui/components/alert'
 
 import { useTranslations } from 'next-intl'
 import { useSignInForm } from '@/hooks/form/use-sign-in-form'
@@ -26,6 +27,11 @@ export default function LoginView() {
                         <EmailField control={form.control} disabled={loading} />
                         <PasswordField control={form.control} disabled={loading} />
                     </fieldset>
+
+                    <Alert variant='danger'>
+                        <AlertTitle>User not found</AlertTitle>
+                        {/* <AlertDescription>{t('signin.alert.description')}</AlertDescription> */}
+                    </Alert>
 
                     <footer className='flex flex-col space-y-6'>
                         <Button type='submit' className='w-full' disabled={loading}>

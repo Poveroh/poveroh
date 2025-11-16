@@ -17,13 +17,22 @@
 
     --warning-color: #f89406;
     --warning-color-dark: #f89406;
+    --warning-bg: hsl(64, 100%, 6%);
+    --warning-border: hsl(60, 100%, 12%);
+    --warning-text: hsl(46, 87%, 65%);
 
     --danger-color: #eb3232;
     --danger-color-dark: #c62b2b;
     --danger-color-light: #ff5f5f;
+    --danger-bg: hsl(358, 76%, 10%);
+    --danger-border: hsl(357, 89%, 16%);
+    --danger-text: hsl(358, 100%, 81%);
 
     --success-color: #2dd181;
     --success-color-dark: #198754;
+    --success-bg: hsl(150, 100%, 6%);
+    --success-border: hsl(147, 100%, 12%);
+    --success-text: hsl(150, 86%, 65%);
 
     --black-color: #0d0d0d;
     --white-color: #fafafa;
