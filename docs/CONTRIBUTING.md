@@ -7,29 +7,18 @@ The development branch is `main`.
 ## Get start develop
 
 1. [Fork](https://github.com/Poveroh/poveroh/fork/) this repository and then [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) it to your local device.
+
 2. Create a new branch:
     ```bash
     git checkout -b <feature_or_fix_or_else>/BRANCH_NAME
     ```
-3. Clone the project
-
-    ```bash
-    git clone https://github.com/<user>/poveroh.git
-    ```
-
-4. Go to the project folder
-
-    ```bash
-    cd poveroh
-    ```
-
-5. Install dependencies
+3. Install dependencies
 
     ```bash
     npm install
     ```
 
-6. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
+4. Copy `.env.example` file to `.env`, then edit it with the necessary values. For more details, read [docs](ENV_SETUP.md).
 
     > If you don't modify them, the default values are sufficient to run the project.
     >
