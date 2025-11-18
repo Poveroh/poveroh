@@ -7,197 +7,39 @@ generator client {
     provider = "prisma-client-js"
 }
 
+// ===========================================================================
+// USER & AUTHENTICATION
+// ===========================================================================
 model User {
-    id            String   @id @default(uuid())
+    id            String  @id @default(uuid())
     name          String
     surname       String
-    email         String   @unique
+    email         String  @unique
     password      String?
-    emailVerified Boolean  @default(false)
+    emailVerified Boolean @default(false)
     image         String?
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+
+    snapshotFrequency SnapshotFrequency @default(MONTHLY)
+    baseCurrency      Currency          @default(EUR)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     transactions      Transaction[]
     subscriptions     Subscription[]
     categories        Category[]
     financialAccounts FinancialAccount[]
     imports           Import[]
+    sessions          Session[]
+    accounts          Account[]
+    verifications     Verification[]
 
-    sessions      Session[]
-    accounts      Account[]
-    verifications Verification[]
+    assets    Asset[]
+    snapshots Snapshot[]
 
     @@index([surname])
     @@index([createdAt])
     @@index([email])
-}
-
-model FinancialAccount {
-    id          String               @id @default(uuid())
-    userId      String
-    title       String
-    description String
-    type        FinancialAccountType @default(BANK_ACCOUNT)
-    logoIcon    String?
-    createdAt   DateTime             @default(now())
-
-    subscriptions Subscription[]
-    amounts       Amount[]
-    user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    imports       Import[]
-
-    @@index([userId])
-    @@map("FinancialAccounts")
-}
-
-model Import {
-    id                 String            @id @default(uuid())
-    userId             String
-    title              String
-    financialAccountId String
-    status             TransactionStatus @default(IMPORT_PENDING)
-    createdAt          DateTime          @default(now())
-
-    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-
-    transactions Transaction[]
-    files        ImportFile[]
-
-    @@index([userId])
-    @@index([status])
-}
-
-model ImportFile {
-    id        String   @id @default(uuid())
-    importId  String
-    filename  String
-    filetype  FileType
-    path      String
-    createdAt DateTime @default(now())
-
-    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
-
-    @@index([importId])
-}
-
-model Transaction {
-    id            String            @id @default(uuid())
-    userId        String
-    title         String
-    date          DateTime
-    icon          String?
-    action        TransactionAction @default(EXPENSES)
-    categoryId    String?
-    subcategoryId String?
-    importId      String?
-    note          String?
-    status        TransactionStatus @default(APPROVED)
-    ignore        Boolean           @default(false)
-    createdAt     DateTime          @default(now())
-
-    user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-    subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
-    import      Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
-
-    media   TransactionMedia[]
-    amounts Amount[]
-
-    @@index([userId])
-    @@index([categoryId])
-    @@index([subcategoryId])
-    @@index([date])
-    @@index([userId, date])
-}
-
-model Subscription {
-    id                 String         @id @default(uuid())
-    userId             String
-    title              String
-    description        String?
-    amount             Float
-    currency           Currency
-    appearanceMode     AppearanceMode
-    appearanceLogoIcon String
-    firstPayment       DateTime
-    cycleNumber        String
-    cyclePeriod        String
-    rememberPeriod     RememberPeriod
-    financialAccountId String
-    isEnabled          Boolean
-    createdAt          DateTime       @default(now())
-
-    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-
-    @@index([userId])
-    @@index([financialAccountId])
-    @@index([isEnabled])
-}
-
-model TransactionMedia {
-    id            String   @id @default(uuid())
-    transactionId String
-    filename      String
-    filetype      String
-    path          String
-    createdAt     DateTime @default(now())
-
-    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-
-    @@index([transactionId])
-}
-
-model Category {
-    id          String            @id @default(uuid())
-    userId      String
-    title       String
-    description String?
-    for         TransactionAction
-    logoIcon    String
-    createdAt   DateTime          @default(now())
-
-    transactions  Transaction[]
-    subcategories Subcategory[]
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@index([userId])
-    @@index([for])
-}
-
-model Subcategory {
-    id          String   @id @default(uuid())
-    categoryId  String
-    title       String
-    description String?
-    logoIcon    String
-    createdAt   DateTime @default(now())
-
-    transactions Transaction[]
-
-    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-    @@index([categoryId])
-}
-
-model Amount {
-    id                 String            @id @default(uuid())
-    transactionId      String
-    amount             Float
-    currency           Currency
-    action             TransactionAction @default(EXPENSES)
-    financialAccountId String
-    createdAt          DateTime          @default(now())
-
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-
-    @@index([transactionId])
-    @@index([financialAccountId])
-    @@index([action])
 }
 
 model Session {
@@ -253,6 +95,370 @@ model Verification {
     @@index([userId])
 }
 
+// ===========================================================================
+// FINANCIAL ACCOUNTS
+// ===========================================================================
+model FinancialAccount {
+    id          String               @id @default(uuid())
+    userId      String
+    title       String
+    description String
+    type        FinancialAccountType @default(BANK_ACCOUNT)
+    logoIcon    String?
+    createdAt   DateTime             @default(now())
+
+    subscriptions Subscription[]
+    amounts       Amount[]
+    user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    imports       Import[]
+
+    snapshotBalances SnapshotAccountBalance[]
+
+    @@index([userId])
+    @@map("FinancialAccounts")
+}
+
+// ===========================================================================
+// ASSET SYSTEM
+// ===========================================================================
+model Asset {
+    id          String    @id @default(uuid())
+    userId      String
+    title       String
+    description String?
+    type        AssetType
+    currency    Currency  @default(EUR)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    marketable  MarketableAsset?
+    realEstate  RealEstateAsset?
+    collectible CollectibleAsset?
+    privateDeal PrivateDealAsset?
+    insurance   InsuranceAsset?
+
+    transactions   AssetTransaction[]
+    snapshotValues SnapshotAssetValue[]
+
+    @@index([userId])
+    @@index([userId, type])
+}
+
+model MarketableAsset {
+    id      String  @id @default(uuid())
+    assetId String  @unique
+    symbol  String?
+    isin    String?
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model RealEstateAsset {
+    id            String    @id @default(uuid())
+    assetId       String    @unique
+    address       String?
+    purchasePrice Decimal?  @db.Decimal(20, 2)
+    purchaseDate  DateTime?
+    currentValue  Decimal?  @db.Decimal(20, 2)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model CollectibleAsset {
+    id              String    @id @default(uuid())
+    assetId         String    @unique
+    acquisitionCost Decimal?  @db.Decimal(20, 2)
+    acquisitionDate DateTime?
+    appraisalValue  Decimal?  @db.Decimal(20, 2)
+    appraisalDate   DateTime?
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model PrivateDealAsset {
+    id              String    @id @default(uuid())
+    assetId         String    @unique
+    committedAmount Decimal?  @db.Decimal(20, 2)
+    calledAmount    Decimal?  @db.Decimal(20, 2)
+    latestNav       Decimal?  @db.Decimal(20, 2)
+    navDate         DateTime?
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model InsuranceAsset {
+    id             String   @id @default(uuid())
+    assetId        String   @unique
+    policyNumber   String?
+    premiumPaid    Decimal? @db.Decimal(20, 2)
+    surrenderValue Decimal? @db.Decimal(20, 2)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model AssetTransaction {
+    id             String   @id @default(uuid())
+    assetId        String
+    date           DateTime
+    quantityChange Decimal  @db.Decimal(20, 10)
+    unitPrice      Decimal? @db.Decimal(20, 8)
+    totalAmount    Decimal? @db.Decimal(20, 2)
+    fees           Decimal? @db.Decimal(10, 2)
+    note           String?
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    @@index([assetId])
+    @@index([assetId, date])
+}
+
+// ===========================================================================
+// SNAPSHOT (historical wealth)
+// ===========================================================================
+model Snapshot {
+    id           String   @id @default(uuid())
+    userId       String
+    snapshotDate DateTime @db.Timestamptz
+    note         String?
+
+    totalCash        Decimal @db.Decimal(20, 2)
+    totalInvestments Decimal @db.Decimal(20, 2)
+    totalNetWorth    Decimal @db.Decimal(20, 2)
+
+    user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accountBalances SnapshotAccountBalance[]
+    assetValues     SnapshotAssetValue[]
+
+    @@unique([userId, snapshotDate])
+    @@index([userId, snapshotDate(sort: Desc)])
+}
+
+model SnapshotAccountBalance {
+    id         String  @id @default(uuid())
+    snapshotId String
+    accountId  String
+    balance    Decimal @db.Decimal(20, 2)
+
+    snapshot Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    account  FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+    @@unique([snapshotId, accountId])
+}
+
+model SnapshotAssetValue {
+    id         String   @id @default(uuid())
+    snapshotId String
+    assetId    String
+    quantity   Decimal? @db.Decimal(20, 10)
+    unitPrice  Decimal? @db.Decimal(20, 8)
+    totalValue Decimal  @db.Decimal(20, 2)
+
+    snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    asset    Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    @@unique([snapshotId, assetId])
+}
+
+// ===========================================================================
+// IMPORT & TRANSACTIONS
+// ===========================================================================
+model Import {
+    id                 String            @id @default(uuid())
+    userId             String
+    title              String
+    financialAccountId String
+    status             TransactionStatus @default(IMPORT_PENDING)
+    createdAt          DateTime          @default(now())
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    transactions     Transaction[]
+    files            ImportFile[]
+
+    @@index([userId])
+    @@index([status])
+}
+
+model ImportFile {
+    id        String   @id @default(uuid())
+    importId  String
+    filename  String
+    filetype  FileType
+    path      String
+    createdAt DateTime @default(now())
+
+    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
+
+    @@index([importId])
+}
+
+model Transaction {
+    id            String            @id @default(uuid())
+    userId        String
+    title         String
+    date          DateTime
+    icon          String?
+    action        TransactionAction @default(EXPENSES)
+    categoryId    String?
+    subcategoryId String?
+    importId      String?
+    note          String?
+    status        TransactionStatus @default(APPROVED)
+    ignore        Boolean           @default(false)
+    createdAt     DateTime          @default(now())
+
+    user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+    subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+    import      Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
+
+    media   TransactionMedia[]
+    amounts Amount[]
+
+    @@index([userId])
+    @@index([categoryId])
+    @@index([subcategoryId])
+    @@index([date])
+    @@index([userId, date])
+}
+
+model TransactionMedia {
+    id            String   @id @default(uuid())
+    transactionId String
+    filename      String
+    filetype      String
+    path          String
+    createdAt     DateTime @default(now())
+
+    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+    @@index([transactionId])
+}
+
+model Amount {
+    id                 String            @id @default(uuid())
+    transactionId      String
+    amount             Float
+    currency           Currency
+    action             TransactionAction @default(EXPENSES)
+    financialAccountId String
+    createdAt          DateTime          @default(now())
+
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+    @@index([transactionId])
+    @@index([financialAccountId])
+    @@index([action])
+}
+
+// ===========================================================================
+// SUBSCRIPTIONS
+// ===========================================================================
+model Subscription {
+    id                 String         @id @default(uuid())
+    userId             String
+    title              String
+    description        String?
+    amount             Float
+    currency           Currency
+    appearanceMode     AppearanceMode
+    appearanceLogoIcon String
+    firstPayment       DateTime
+    cycleNumber        String
+    cyclePeriod        String
+    rememberPeriod     RememberPeriod
+    financialAccountId String
+    isEnabled          Boolean
+    createdAt          DateTime       @default(now())
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([financialAccountId])
+    @@index([isEnabled])
+}
+
+// ===========================================================================
+// CATEGORIES & SUBCATEGORIES
+// ===========================================================================
+model Category {
+    id          String            @id @default(uuid())
+    userId      String
+    title       String
+    description String?
+    for         TransactionAction
+    logoIcon    String
+    createdAt   DateTime          @default(now())
+
+    transactions  Transaction[]
+    subcategories Subcategory[]
+    user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([for])
+}
+
+model Subcategory {
+    id          String   @id @default(uuid())
+    categoryId  String
+    title       String
+    description String?
+    logoIcon    String
+    createdAt   DateTime @default(now())
+
+    transactions Transaction[]
+    category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([categoryId])
+}
+
+// ===========================================================================
+// ENUMS
+// ===========================================================================
+
+enum SnapshotFrequency {
+    NONE
+    DAILY
+    WEEKLY
+    MONTHLY
+    QUARTERLY
+    SEMIANNUAL
+    ANNUAL
+}
+
+enum AssetType {
+    STOCK
+    BOND
+    ETF
+    MUTUAL_FUND
+    CRYPTOCURRENCY
+    REAL_ESTATE
+    COLLECTIBLE
+    PRIVATE_EQUITY
+    VENTURE_CAPITAL
+    PRIVATE_DEBT
+    P2P_LENDING
+    INSURANCE_POLICY
+    AGRICULTURAL_LAND
+    OTHER
+}
+
+enum FinancialAccountType {
+    ONLINE_BANK
+    BANK_ACCOUNT
+    CIRCUIT
+    DEPOSIT_BANK
+    BROKER
+    WALLET // added for crypto/exchange
+    CASH
+    CREDIT_CARD
+    OTHER
+}
+
 enum TransactionAction {
     TRANSFER
     EXPENSES
@@ -265,14 +471,6 @@ enum TransactionStatus {
     IMPORT_PENDING
     IMPORT_REJECTED
     IMPORT_APPROVED
-}
-
-enum FinancialAccountType {
-    ONLINE_BANK
-    BANK_ACCOUNT
-    CIRCUIT
-    DEPOSIT_BANK
-    BROKER
 }
 
 enum Currency {
