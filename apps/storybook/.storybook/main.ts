@@ -1,3 +1,4 @@
+// This file has been automatically migrated to valid ESM format by Storybook.
 import type { StorybookConfig } from '@storybook/react-vite'
 import { join, dirname } from 'path'
 import { createRequire } from 'module'
@@ -13,24 +14,53 @@ function getAbsolutePath(value: string): string {
 }
 
 const config: StorybookConfig = {
-    stories: ['../src/stories/**/*.mdx', '../src/stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+    stories: ['../src/stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+
     addons: [
         getAbsolutePath('@storybook/addon-onboarding'),
-        getAbsolutePath('@storybook/addon-essentials'),
         getAbsolutePath('@chromatic-com/storybook'),
-        getAbsolutePath('@storybook/addon-interactions')
-        // Temporarily disabled the experimental Next.js preset because it depends on
-        // internal Next.js files that our current Next version doesn't provide.
-        // getAbsolutePath('@storybook/experimental-nextjs-vite')
+        getAbsolutePath('@storybook/addon-docs')
     ],
+
     framework: {
-        name: '@storybook/react-vite',
+        name: getAbsolutePath('@storybook/react-vite'),
         options: {}
     },
+
     staticDirs: ['../public'],
-    docs: { autodocs: true },
+
     viteFinal: async config => {
-        config.optimizeDeps = { ...(config.optimizeDeps ?? {}), exclude: ['next'] }
+        // Handle Next.js optimizations
+        config.optimizeDeps = {
+            ...(config.optimizeDeps ?? {}),
+            exclude: ['next']
+        }
+
+        // Handle client directives in build
+        if (config.build) {
+            config.build.rollupOptions = {
+                ...config.build.rollupOptions,
+                external: id => {
+                    if (id.includes('@storybook/addon-docs/dist/mdx-react-shim.js')) {
+                        return false
+                    }
+                    return false
+                },
+                onwarn: (warning, warn) => {
+                    // Suppress "use client" directive warnings
+                    if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+                        return
+                    }
+                    warn(warning)
+                }
+            }
+        }
+
+        // Handle esbuild to ignore "use client" directives
+        if (config.esbuild) {
+            config.esbuild.legalComments = 'none'
+        }
+
         return config
     }
 }

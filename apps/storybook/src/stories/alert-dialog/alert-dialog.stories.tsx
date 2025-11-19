@@ -1,5 +1,5 @@
 import { AlertDialog } from '@poveroh/ui/components/alert-dialog'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const meta: Meta<typeof AlertDialog> = {
     title: 'Components/AlertDialog',

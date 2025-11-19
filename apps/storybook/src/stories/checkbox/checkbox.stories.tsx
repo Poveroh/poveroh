@@ -1,5 +1,5 @@
 import { Checkbox } from '@poveroh/ui/components/checkbox'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const meta: Meta<typeof Checkbox> = {
     title: 'Components/Checkbox',

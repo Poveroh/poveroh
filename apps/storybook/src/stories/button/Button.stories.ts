@@ -1,5 +1,5 @@
 import { Button } from '@poveroh/ui/components/button'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const meta: Meta<typeof Button> = {
     title: 'Components/Button',
@@ -20,11 +20,13 @@ const storyBackground = {
 
 export const Primary: Story = {
     ...storyBackground,
+
     args: {
         children: 'Primary',
         size: 'default',
         asChild: false
     },
+
     argTypes: {
         children: {
             description: 'The content inside the button'
@@ -36,14 +38,18 @@ export const Primary: Story = {
             description: 'Determines whether the button behaves as a child component'
         }
     },
+
     parameters: {
-        backgrounds: {
-            default: 'dark'
-        },
         docs: {
             description: {
                 story: 'This is the primary button with default size and background color set to dark.'
             }
+        }
+    },
+
+    globals: {
+        backgrounds: {
+            value: "dark"
         }
     }
 }

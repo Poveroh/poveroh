@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { Input } from '@poveroh/ui/components/input'
 import { Search, Eye } from 'lucide-react'
 

@@ -1,5 +1,5 @@
 import { Card } from '@poveroh/ui/components/card'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const meta: Meta<typeof Card> = {
     title: 'Components/Card',
