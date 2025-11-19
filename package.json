@@ -48,13 +48,13 @@
         "chromatic": "cd apps/storybook && npm run chromatic"
     },
     "devDependencies": {
-        "@prisma/client": "^6.18.0",
+        "@prisma/client": "^6.19.0",
         "@storybook/react-vite": "^8.6.14",
         "husky": "^9.1.7",
         "minimist": "^1.2.8",
         "npm": "^11.6.1",
         "prettier": "^3.2.5",
-        "prisma": "^6.18.0",
+        "prisma": "^6.19.0",
         "storybook": "^8.6.14",
         "turbo": "^2.6.1",
         "typescript": "5.5.4",
@@ -62,7 +62,7 @@
         "webpack": "^5.101.2"
     },
     "engines": {
-        "node": ">=18"
+        "node": ">=22"
     },
     "packageManager": "npm@10.8.1",
     "workspaces": [

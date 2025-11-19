@@ -7,17 +7,18 @@
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "build": "tsc && npm run generate-schemas",
+        "build": "tsc",
         "clean": "rm -rf .turbo && rm -rf node_modules",
         "db-migrate": "npm prisma migrate dev",
-        "generate-schemas": "prisma generate"
+        "generate-schemas": "prisma generate",
+        "postinstall": "prisma generate"
     },
     "dependencies": {
-        "@prisma/client": "^6.18.0"
+        "@prisma/client": "^6.19.0"
     },
     "keywords": [],
     "description": "",
     "devDependencies": {
-        "prisma": "^6.18.0"
+        "prisma": "^6.19.0"
     }
 }
