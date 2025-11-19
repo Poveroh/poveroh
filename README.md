@@ -67,6 +67,7 @@ In addition to individual transactions and bank account aggregation, the goal is
 - <a href="https://www.typescriptlang.org/">Typescript</a>
 - <a href="https://nextjs.org/">Next.js</a>
 - <a href="https://tailwindcss.com/">TailwindCSS</a>
+- <a href="https://better-auth.com/">Better-auth</a>
 
 - <a href="https://nodejs.org/en">Node.js</a>
 - <a href="https://expressjs.com/">Express.js</a>
@@ -97,7 +98,7 @@ To get a local copy up and running, please follow these simple steps.
 
 This project uses:
 
-- [Node.js](https://nodejs.org/en/download/package-manager) (>= 18.x)
+- [Node.js](https://nodejs.org/en/download/package-manager) (>= 22)
 - [Docker](https://docs.docker.com/get-started/get-docker/) - to run PostgreSQL and NGIX CDN
 - NPM
 
