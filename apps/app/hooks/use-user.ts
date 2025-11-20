@@ -2,7 +2,7 @@
 
 import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUserToSave } from '@poveroh/types'
+import { IUser, IUserToSave } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient } from '@/lib/auth'
@@ -24,7 +24,8 @@ export const useUser = () => {
             }
 
             if (result.data) {
-                userStore.setUser(result.data.user)
+                const userData = await userService.read<IUser>()
+                userStore.setUser(userData)
             }
 
             return userStore.user

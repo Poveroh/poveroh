@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react'
 import { TextField, EmailField, PasswordField } from '@/components/fields'
 import { useSignUpForm } from '@/hooks/form/use-sign-up-form'
 
-export default function SignupView() {
+export default function OnBoardingView() {
     const t = useTranslations()
     const { form, loading, handleSubmit } = useSignUpForm()
 
@@ -22,7 +22,25 @@ export default function SignupView() {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-14'>
                     <div className='flex flex-col space-y-6'>
-                        <EmailField
+                        <div className='flex flex-row space-x-2 w-full'>
+                            <TextField
+                                control={form.control}
+                                name='name'
+                                label={t('form.name.label')}
+                                placeholder={t('form.name.placeholder')}
+                                mandatory
+                            />
+
+                            <TextField
+                                control={form.control}
+                                name='surname'
+                                label={t('form.surname.label')}
+                                placeholder={t('form.surname.placeholder')}
+                                mandatory
+                            />
+                        </div>
+
+                        {/* <EmailField
                             control={form.control}
                             name='email'
                             label={t('form.email.label')}
@@ -37,7 +55,7 @@ export default function SignupView() {
                             placeholder='&bull;&bull;&bull;&bull;'
                             description={t('form.newpassword.description')}
                             mandatory
-                        />
+                        /> */}
                     </div>
 
                     <div className='flex flex-col space-y-6'>

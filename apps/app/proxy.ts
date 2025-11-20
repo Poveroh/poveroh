@@ -16,7 +16,14 @@ export function proxy(request: NextRequest) {
         return NextResponse.next()
     }
 
-    const authPages = new Set(['/sign-in', '/sign-up', '/forgot-password', '/logout', '/change-password'])
+    const authPages = new Set([
+        '/sign-in',
+        '/onboarding',
+        '/sign-up',
+        '/forgot-password',
+        '/logout',
+        '/change-password'
+    ])
 
     const sessionCookie = getSessionCookie(request, {
         cookiePrefix: 'poveroh_auth_'

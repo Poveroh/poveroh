@@ -12,8 +12,8 @@ export function useSignUpForm() {
     const [loading, setLoading] = useState(false)
 
     const formSchema = z.object({
-        name: z.string().nonempty(t('messages.errors.required')),
-        surname: z.string().nonempty(t('messages.errors.required')),
+        // name: z.string().nonempty(t('messages.errors.required')),
+        // surname: z.string().nonempty(t('messages.errors.required')),
         email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
         password: z
             .string()
@@ -29,8 +29,6 @@ export function useSignUpForm() {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
-            surname: '',
             email: '',
             password: ''
         }
