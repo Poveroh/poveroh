@@ -3,18 +3,25 @@ export interface IFinancialAccountBase {
     description: string
     type: FinancialAccountType
     logoIcon: string
+    balance: number
 }
 
 export interface IFinancialAccount extends IFinancialAccountBase {
     id: string
     userId: string
+    balance: number
     createdAt: string
+    updatedAt: string
 }
 
 export enum FinancialAccountType {
     ONLINE_BANK = 'ONLINE_BANK',
     BANK_ACCOUNT = 'BANK_ACCOUNT',
-    DEPOSIT_BANK = 'DEPOSIT_BANK',
     CIRCUIT = 'CIRCUIT',
-    BROKER = 'BROKER'
+    DEPOSIT_BANK = 'DEPOSIT_BANK',
+    BROKER = 'BROKER',
+    WALLET = 'WALLET',
+    CASH = 'CASH',
+    CREDIT_CARD = 'CREDIT_CARD',
+    OTHER = 'OTHER'
 }

@@ -13,6 +13,18 @@ export interface IAmount extends IAmountBase {
     createdAt: string
 }
 
+export interface ITransactionMediaBase {
+    filename: string
+    filetype: string
+    path: string
+}
+
+export interface ITransactionMedia extends ITransactionMediaBase {
+    id: string
+    transactionId: string
+    createdAt: Date
+}
+
 export interface ITransactionBase {
     title: string
     action: TransactionAction
