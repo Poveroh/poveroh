@@ -1,7 +1,9 @@
 import { betterAuth } from 'better-auth'
+import { customSession } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
+import { UserHelper } from '../api/v1/helpers/user.helper'
 
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
@@ -37,6 +39,16 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: 'postgresql'
     }),
+    plugins: [
+        customSession(async ({ user, session }) => {
+            const readedUser = await UserHelper.getUser(user.email)
+
+            return {
+                user: readedUser,
+                session
+            }
+        })
+    ],
     secret: config.JWT_SECRET,
     trustedOrigins: allowedOrigins,
     cors: {
@@ -58,8 +70,8 @@ export const auth = betterAuth({
                     return {
                         data: {
                             ...user,
-                            name: user.name.split(' ')[0],
-                            surname: user.name.split(' ')[1]
+                            name: user.name == '' ? '' : user.name.split(' ')[0],
+                            surname: user.name == '' ? '' : user.name.split(' ')[1]
                         }
                     }
                 }

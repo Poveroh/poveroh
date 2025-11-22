@@ -2,22 +2,14 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import bcrypt from 'bcryptjs'
 import logger from '../../../utils/logger'
-import { IUserToSave } from '@poveroh/types'
+import { IUser, IUserToSave } from '@poveroh/types'
+import { UserHelper } from '../helpers/user.helper'
 
 export class UserController {
     // GET /
     static async read(req: Request, res: Response) {
         try {
-            const user = await prisma.user.findUnique({
-                where: { email: req.user.email },
-                select: {
-                    id: true,
-                    name: true,
-                    surname: true,
-                    email: true,
-                    createdAt: true
-                }
-            })
+            const user = await UserHelper.getUser(req.params.email)
 
             if (!user) {
                 res.status(404).json({ message: 'User not found' })
@@ -39,7 +31,7 @@ export class UserController {
 
             if (!data) throw new Error('Data not provided')
 
-            const parsedUser: IUserToSave = JSON.parse(data)
+            const parsedUser: IUser = JSON.parse(data)
 
             const user = await prisma.user.findUnique({
                 where: { id }
@@ -52,17 +44,7 @@ export class UserController {
 
             const updatedUser = await prisma.user.update({
                 where: { id },
-                data: {
-                    name: parsedUser.name,
-                    surname: parsedUser.surname
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    surname: true,
-                    email: true,
-                    createdAt: true
-                }
+                data: parsedUser
             })
 
             res.status(200).json(updatedUser)

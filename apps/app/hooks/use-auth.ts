@@ -3,7 +3,7 @@
 import { authClient } from '@/lib/auth'
 import { cookie, storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
-import { IUserLogin, IUserToSave } from '@poveroh/types'
+import { IUserLogin } from '@poveroh/types'
 import { isValidEmail } from '@poveroh/utils'
 import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
@@ -34,6 +34,8 @@ export const useAuth = () => {
                 throw new Error(result.error.message || 'Login failed')
             }
 
+            userStore.setLogged(true)
+
             await me()
 
             return true
@@ -43,7 +45,7 @@ export const useAuth = () => {
     }, [])
 
     const signUp = useCallback(
-        async (userToSave: IUserToSave) => {
+        async (userToSave: IUserLogin) => {
             try {
                 if (!isValidEmail(userToSave.email)) {
                     throw new Error('E-mail not valid')
@@ -55,12 +57,14 @@ export const useAuth = () => {
                 const result = await authClient.signUp.email({
                     email: userToSave.email,
                     password: userToSave.password,
-                    name: userToSave.name + ' ' + userToSave.surname
+                    name: ''
                 })
 
                 if (result.error) {
                     throw new Error(result.error.message || 'Sign up failed')
                 }
+
+                userStore.setLogged(true)
 
                 return true
             } catch (error) {

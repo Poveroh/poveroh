@@ -5,8 +5,10 @@ import { Form } from '@poveroh/ui/components/form'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
 
-import { TextField, EmailField, PasswordField } from '@/components/fields'
+import { EmailField, PasswordField } from '@/components/fields'
 import { useSignUpForm } from '@/hooks/form/use-sign-up-form'
+import { StepProgress } from '@/components/other/step-progress'
+import { OnBoardingStep } from '@poveroh/types'
 
 export default function SignupView() {
     const t = useTranslations()
@@ -18,6 +20,8 @@ export default function SignupView() {
                 <h3>{t('signup.title')}</h3>
                 <p className='sub'>{t('signup.subtitle')}</p>
             </div>
+
+            <StepProgress current={OnBoardingStep.EMAIL} />
 
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className='flex flex-col space-y-14'>

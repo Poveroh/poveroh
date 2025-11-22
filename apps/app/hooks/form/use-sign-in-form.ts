@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import * as z from 'zod'
 
-import { IUserLogin } from '@poveroh/types'
+import { IUserLogin, OnBoardingStep } from '@poveroh/types'
 import { useAuth } from '@/hooks/use-auth'
+import { useUserStore } from '@/store/auth.store'
 
 export function useSignInForm() {
     const t = useTranslations()
     const router = useRouter()
     const { signIn } = useAuth()
+    const userStore = useUserStore()
 
     const [loading, setLoading] = useState(false)
 
@@ -48,7 +50,11 @@ export function useSignInForm() {
                 const res = await signIn(user)
 
                 if (res) {
-                    router.push('/dashboard')
+                    if (userStore.user.onBoardingStep >= OnBoardingStep.PREFERENCES) {
+                        router.push('/dashboard')
+                    } else {
+                        router.push('/onboarding')
+                    }
                 }
             } catch (error) {
                 console.error('Sign in error:', error)
@@ -56,7 +62,7 @@ export function useSignInForm() {
                 setLoading(false)
             }
         },
-        [router, signIn]
+        [router, signIn, userStore.user]
     )
 
     return {

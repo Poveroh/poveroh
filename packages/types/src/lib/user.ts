@@ -1,7 +1,13 @@
 import { Currencies } from './currency.js'
 import { Language } from './language.js'
 import { DateFormat } from './date-format.js'
-import { Country } from './country.js'
+
+export enum OnBoardingStep {
+    EMAIL = 1,
+    GENERALITIES = 2,
+    PREFERENCES = 3,
+    COMPLETED = 4
+}
 
 export enum SnapshotFrequency {
     NONE = 'NONE',
@@ -29,16 +35,15 @@ export interface IUserToSave extends IUserBase {
 
 export interface IUser extends IUserBase {
     id: string
-    onBoardingStep: number
+    onBoardingStep: OnBoardingStep
     onBoardingAt?: string | null
     image?: string | null
     emailVerified: boolean
     snapshotFrequency: SnapshotFrequency
-    baseCurrency: Currencies
     preferredCurrency: Currencies
     preferredLanguage: Language
     dateFormat: DateFormat
-    country: Country
+    country: string
     timezone: string
     createdAt: Date
     updatedAt: Date
@@ -100,11 +105,10 @@ export const defaultUser: IUser = {
     onBoardingStep: 1,
     onBoardingAt: null,
     snapshotFrequency: SnapshotFrequency.MONTHLY,
-    baseCurrency: Currencies.EUR,
     preferredCurrency: Currencies.EUR,
     preferredLanguage: Language.EN,
     dateFormat: DateFormat.DD_MM_YYYY,
-    country: Country.UNITED_STATES,
+    country: 'italy',
     timezone: 'UTC',
     createdAt: new Date(),
     updatedAt: new Date()

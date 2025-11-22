@@ -40,19 +40,37 @@ export const useProfileForm = (initialData?: IUser) => {
     })
 
     useEffect(() => {
-        form.reset({
-            name: user?.name ?? '',
-            surname: user?.surname ?? '',
-            email: user?.email ?? ''
-        })
-    }, [user, form])
+        if (user && !form.formState.isDirty) {
+            form.reset({
+                name: user?.name ?? '',
+                surname: user?.surname ?? '',
+                email: user?.email ?? ''
+            })
+            console.log('Form reset with user data')
+        }
+    }, [user])
 
-    const handleSubmit = async (userToSave: IUserToSave) => {
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true)
 
-        const res = await saveUser(userToSave)
-        if (res) {
-            toast.success(t('form.messages.userSavedSuccess'))
+        try {
+            const userToSave: IUserToSave = {
+                name: values.name,
+                surname: values.surname,
+                email: values.email
+            }
+
+            const res = await saveUser({
+                ...user,
+                ...userToSave
+            })
+
+            if (res) {
+                toast.success(t('form.messages.userSavedSuccess'))
+                console.log('User profile updated successfully')
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error)
         }
 
         setLoading(false)

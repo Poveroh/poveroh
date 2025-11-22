@@ -1,3 +1,5 @@
+import { IItem } from './item.js'
+
 export enum DateFormat {
     DD_MM_YYYY = 'DD_MM_YYYY',
     MM_DD_YYYY = 'MM_DD_YYYY',
@@ -9,3 +11,8 @@ export enum DateFormat {
     MMMM_DD_YYYY = 'MMMM_DD_YYYY',
     YYYY_MMMM_DD = 'YYYY_MMMM_DD'
 }
+
+export const dateFormatCatalog: IItem[] = Object.values(DateFormat).map(dateFormat => ({
+    label: dateFormat,
+    value: dateFormat
+}))

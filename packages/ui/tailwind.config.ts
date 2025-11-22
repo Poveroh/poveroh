@@ -18,6 +18,8 @@ const config = {
                 border: {
                     DEFAULT: 'var(--border-color)'
                 },
+                brand: 'var(--brand-color)',
+                'brand-color-2': 'var(--brand-color-2)',
                 input: 'var(--input-color)',
                 hr: 'var(--hr-color)',
                 ring: 'var(--ring-color)',
