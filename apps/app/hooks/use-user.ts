@@ -2,7 +2,7 @@
 
 import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUserToSave } from '@poveroh/types'
+import { IUser } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient } from '@/lib/auth'
@@ -24,28 +24,28 @@ export const useUser = () => {
             }
 
             if (result.data) {
-                userStore.setUser(result.data.user)
+                userStore.setUser(result.data.user as IUser)
+                userStore.setLogged(true)
+            } else {
+                userStore.setLogged(false)
             }
 
             return userStore.user
         } catch (error) {
+            userStore.setLogged(false)
             return handleError(error, 'Error fetching user')
         }
     }
 
-    const saveUser = async (userToSave: IUserToSave) => {
+    const saveUser = async (userToSave: IUser) => {
         try {
-            const resUpdate = await authClient.updateUser({
-                name: userToSave.name + ' ' + userToSave.surname
-            })
+            const formData = new FormData()
+            formData.append('data', JSON.stringify(userToSave))
 
-            if (resUpdate.error) {
-                throw new Error(resUpdate.error.message || 'User update failed')
-            }
-
+            await userService.save(userStore.user.id, formData)
             await userStore.updateUser(userToSave)
 
-            if (userStore.user.email != userToSave.email) {
+            if (userToSave.email && userStore.user.email != userToSave.email) {
                 const res = await authClient.changeEmail({
                     newEmail: userToSave.email,
                     callbackURL: '/logout'

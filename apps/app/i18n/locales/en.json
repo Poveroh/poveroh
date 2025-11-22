@@ -43,6 +43,7 @@
         "ninety_days": "90 days"
     },
     "messages": {
+        "loading": "Loading...",
         "mandatory": "Mandatory",
         "selectValue": "Select a value",
         "search": "Search",
@@ -74,6 +75,8 @@
         "delete": "Delete",
         "edit": "Edit",
         "upload": "Upload",
+        "next": "Next",
+        "complete": "Complete",
         "editItem": "Edit item",
         "deleteItem": "Delete item",
         "deleteAll": "Delete all",
@@ -128,6 +131,18 @@
         "messages": {
             "userSavedSuccess": "User is saved successfully.",
             "passwordSuccess": "Password is updated successfully"
+        },
+        "country": {
+            "label": "Country",
+            "placeholder": "Select your country"
+        },
+        "language": {
+            "label": "Language",
+            "placeholder": "Select your language"
+        },
+        "dateFormat": {
+            "label": "Date format",
+            "placeholder": "Select a date format"
         },
         "title": {
             "label": "Title"
@@ -245,6 +260,23 @@
         "subtitle": "Enter credentials you will use to access the system",
         "buttons": {
             "sign_up": "Sign up"
+        },
+        "steps": {
+            "1": {
+                "title": "Create your account",
+                "subtitle": "Enter your email and set a password to create your account",
+                "tooltip": "Your email will be used for account verification and communication."
+            },
+            "2": {
+                "title": "Tell us about yourself",
+                "subtitle": "Provide some basic information to personalize your experience",
+                "tooltip": "This information helps us tailor your experience."
+            },
+            "3": {
+                "title": "Set your preferences",
+                "subtitle": "Choose your preferred currency, time zone, and date format",
+                "tooltip": "Set your preferences to customize your experience."
+            }
         }
     },
     "dashboard": {

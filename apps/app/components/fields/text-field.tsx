@@ -20,7 +20,7 @@ export function TextField<T extends FieldValues = FieldValues>({
                 <FormItem>
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
                     <FormControl>
-                        <Input {...field} variant={variant} placeholder={placeholder} disabled={disabled} />
+                        <Input {...field} variant={variant} placeholder={placeholder} disabled={disabled} name={name} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

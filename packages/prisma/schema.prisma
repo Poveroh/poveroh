@@ -11,16 +11,23 @@ generator client {
 // USER & AUTHENTICATION
 // ===========================================================================
 model User {
-    id            String  @id @default(uuid())
-    name          String
-    surname       String
-    email         String  @unique
-    password      String?
-    emailVerified Boolean @default(false)
-    image         String?
+    id             String    @id @default(uuid())
+    name           String
+    surname        String
+    email          String    @unique
+    emailVerified  Boolean   @default(false)
+    onBoardingStep Int       @default(2)
+    onBoardingAt   DateTime?
+    image          String?
 
     snapshotFrequency SnapshotFrequency @default(MONTHLY)
-    baseCurrency      Currency          @default(EUR)
+
+    // User Configuration Settings
+    preferredCurrency Currency   @default(EUR)
+    preferredLanguage Language   @default(EN)
+    dateFormat        DateFormat @default(DD_MM_YYYY)
+    country           String     @default("italy")
+    timezone          String     @default("UTC")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -103,9 +110,11 @@ model FinancialAccount {
     userId      String
     title       String
     description String
+    balance     Decimal              @default(0) @db.Decimal(20, 2)
     type        FinancialAccountType @default(BANK_ACCOUNT)
     logoIcon    String?
     createdAt   DateTime             @default(now())
+    updatedAt   DateTime             @updatedAt
 
     subscriptions Subscription[]
     amounts       Amount[]
@@ -453,7 +462,7 @@ enum FinancialAccountType {
     CIRCUIT
     DEPOSIT_BANK
     BROKER
-    WALLET // added for crypto/exchange
+    WALLET
     CASH
     CREDIT_CARD
     OTHER
@@ -511,4 +520,92 @@ enum AppearanceMode {
 enum FileType {
     CSV
     PDF
+}
+
+enum Language {
+    EN
+    ES
+    FR
+    DE
+    IT
+    PT
+    NL
+    RU
+    ZH
+    JA
+    KO
+    AR
+    HI
+    TH
+    VI
+    TR
+    PL
+    CS
+    HU
+    RO
+    BG
+    HR
+    SK
+    SL
+    ET
+    LV
+    LT
+    MT
+    FI
+    SV
+    DA
+    NO
+    IS
+    EL
+    HE
+    FA
+    UR
+    BN
+    TA
+    TE
+    ML
+    KN
+    GU
+    MR
+    PA
+    OR
+    AS
+    NE
+    SI
+    MY
+    KH
+    LO
+    KA
+    AM
+    TI
+    SW
+    ZU
+    AF
+    XH
+    ST
+    TN
+    SS
+    VE
+    TS
+    NR
+    IG
+    YO
+    HA
+    FF
+    WO
+    BM
+    DY
+    SN
+}
+
+enum DateFormat {
+    DD_MM_YYYY
+    MM_DD_YYYY
+    YYYY_MM_DD
+    DD_MM_YY
+    MM_DD_YY
+    YY_MM_DD
+    DD_MMMM_YYYY
+    MMMM_DD_YYYY
+    YYYY_MMMM_DD
 }

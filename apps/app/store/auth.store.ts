@@ -1,10 +1,11 @@
 import { storage } from '@/lib/storage'
-import { defaultUser, IUser } from '@poveroh/types'
+import { defaultUser, IUser, OnBoardingStep } from '@poveroh/types'
 import { create } from 'zustand'
 
 type UserStore = {
     user: IUser
     logged: boolean
+    setOnBoardingStep: (newStep: OnBoardingStep) => void
     updateUser: (newUserData: Partial<IUser>) => void
     setUser: (newUser: IUser) => void
     setLogged: (newLoggedState: boolean) => void
@@ -13,6 +14,11 @@ type UserStore = {
 
 export const useUserStore = create<UserStore>(set => ({
     user: defaultUser,
+    setOnBoardingStep: (newStep: OnBoardingStep) => {
+        set(state => ({
+            user: { ...state.user, onBoardingStep: newStep }
+        }))
+    },
     logged: false,
     updateUser: (newUserData: Partial<IUser>) => {
         set(state => ({
