@@ -49,7 +49,7 @@ export const Primary: Story = {
 
     globals: {
         backgrounds: {
-            value: "dark"
+            value: 'dark'
         }
     }
 }
