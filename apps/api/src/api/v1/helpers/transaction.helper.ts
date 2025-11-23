@@ -321,6 +321,20 @@ export const TransactionHelper = {
             let resultTransactionId: string
 
             if (transactionId) {
+                // Edit flow: update transaction and replace the single amount
+                const existingTransaction = await prisma.transaction.findUnique({
+                    where: { id: transactionId },
+                    include: { amounts: true }
+                })
+
+                if (!existingTransaction) {
+                    throw new Error(`Transaction with id ${transactionId} not found`)
+                }
+
+                if (!existingTransaction.amounts || existingTransaction.amounts.length === 0) {
+                    throw new Error(`No amounts found for transaction with id ${transactionId}`)
+                }
+
                 // Edit flow: update transaction and replace amounts
                 const transaction = await prisma.transaction.update({
                     where: { id: transactionId },
@@ -340,6 +354,11 @@ export const TransactionHelper = {
                     })
                 }
 
+                // If multiple amounts, update balances for each
+                for (let i = 1; i < amountsData.length; i++) {
+                    await BalanceHelper.updateAccountBalances(amountsData[i], existingTransaction.amounts[i].amount)
+                }
+
                 resultTransactionId = transaction.id
             } else {
                 // Create flow: create new transaction and amounts
@@ -357,6 +376,11 @@ export const TransactionHelper = {
                     await prisma.amount.createMany({
                         data: amountsData
                     })
+                }
+
+                // If multiple amounts, update balances for each
+                for (let i = 1; i < amountsData.length; i++) {
+                    await BalanceHelper.updateAccountBalances(amountsData[i])
                 }
 
                 resultTransactionId = transaction.id
