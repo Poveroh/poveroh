@@ -29,9 +29,6 @@ export interface IUserBase {
     name: string
     surname?: string
 }
-export interface IUserToSave extends IUserBase {
-    password?: string
-}
 
 export interface IUser extends IUserBase {
     id: string

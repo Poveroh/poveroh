@@ -11,6 +11,7 @@ import Box from '@/components/box/box-wrapper'
 import { CopyableField, EmailField, TextField } from '@/components/fields'
 import { useProfileForm } from '@/hooks/form/use-profile-form'
 import { Header } from '@/components/other/header-page'
+import { CountryField } from '@/components/fields/country-field'
 
 export default function ProfileView() {
     const t = useTranslations()
@@ -57,6 +58,14 @@ export default function ProfileView() {
                                     label={t('form.email.label')}
                                     description={t('form.email.subTitle')}
                                     placeholder={t('form.email.placeholder')}
+                                    mandatory
+                                />
+
+                                <CountryField
+                                    control={form.control}
+                                    name='country'
+                                    label={t('form.country.label')}
+                                    placeholder={t('form.country.placeholder')}
                                     mandatory
                                 />
                             </div>

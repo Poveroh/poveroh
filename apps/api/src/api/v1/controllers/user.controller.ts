@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import bcrypt from 'bcryptjs'
 import logger from '../../../utils/logger'
-import { IUser, IUserToSave } from '@poveroh/types'
+import { IUser } from '@poveroh/types'
 import { UserHelper } from '../helpers/user.helper'
 
 export class UserController {

@@ -6,49 +6,37 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { IUser } from '@poveroh/types'
+import { Currencies, DateFormat, IUser, Language } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 
-export const useProfileForm = (initialData?: IUser) => {
+export const usePreferencesForm = () => {
     const t = useTranslations()
 
     const { user, saveUser } = useUser()
     const [loading, setLoading] = useState(false)
 
     const formSchema = z.object({
-        name: z.string().nonempty(t('messages.errors.required')),
-        surname: z.string().nonempty(t('messages.errors.required')),
-        email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
-        country: z.string().nonempty(t('messages.errors.required'))
+        preferredCurrency: z.string().nonempty(t('messages.errors.required')),
+        preferredLanguage: z.string().nonempty(t('messages.errors.required')),
+        dateFormat: z.string().nonempty(t('messages.errors.required'))
     })
-
-    const defaultValues = initialData
-        ? {
-              name: initialData.name ?? '',
-              surname: initialData.surname ?? '',
-              email: initialData.email ?? '',
-              country: initialData.country ?? ''
-          }
-        : {
-              name: user?.name ?? '',
-              surname: user?.surname ?? '',
-              email: user?.email ?? '',
-              country: user?.country ?? ''
-          }
 
     const form = useForm({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: {
+            preferredCurrency: user?.preferredCurrency || 'EUR',
+            preferredLanguage: user?.preferredLanguage || 'en',
+            dateFormat: user?.dateFormat || 'DD_MM_YYYY'
+        }
     })
 
     useEffect(() => {
         if (user && !form.formState.isDirty) {
             form.reset({
-                name: user?.name ?? '',
-                surname: user?.surname ?? '',
-                email: user?.email ?? '',
-                country: user?.country ?? ''
+                preferredCurrency: user?.preferredCurrency || 'EUR',
+                preferredLanguage: user?.preferredLanguage || 'en',
+                dateFormat: user?.dateFormat || 'DD_MM_YYYY'
             })
             console.log('Form reset with user data')
         }
@@ -59,10 +47,9 @@ export const useProfileForm = (initialData?: IUser) => {
 
         try {
             const userToSave: Partial<IUser> = {
-                name: values.name,
-                surname: values.surname,
-                email: values.email,
-                country: values.country
+                preferredCurrency: values.preferredCurrency as Currencies,
+                preferredLanguage: values.preferredLanguage as Language,
+                dateFormat: values.dateFormat as DateFormat
             }
 
             const res = await saveUser({

@@ -82,7 +82,7 @@ export default function SettingsPage() {
                 <h4>{t('settings.system.title')}</h4>
                 <SettingsRow>
                     <SettingsCard
-                        link='#'
+                        link='/settings/system/preferences'
                         title={t('settings.system.globalPreferences.title')}
                         subtitle={t('settings.system.globalPreferences.subtitle')}
                         icon={<Settings />}
