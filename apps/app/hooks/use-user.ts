@@ -37,7 +37,7 @@ export const useUser = () => {
         }
     }
 
-    const saveUser = async (userToSave: IUser) => {
+    const saveUser = async (userToSave: Partial<IUser>) => {
         try {
             const formData = new FormData()
             formData.append('data', JSON.stringify(userToSave))

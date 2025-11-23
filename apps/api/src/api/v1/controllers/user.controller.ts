@@ -30,7 +30,7 @@ export class UserController {
 
             if (!data) throw new Error('Data not provided')
 
-            const parsedUser: IUser = JSON.parse(data)
+            const parsedUser: Partial<IUser> = JSON.parse(data)
 
             const user = await prisma.user.findUnique({
                 where: { id }

@@ -46,16 +46,7 @@ export const usePreferencesForm = () => {
         setLoading(true)
 
         try {
-            const userToSave: Partial<IUser> = {
-                preferredCurrency: values.preferredCurrency as Currencies,
-                preferredLanguage: values.preferredLanguage as Language,
-                dateFormat: values.dateFormat as DateFormat
-            }
-
-            const res = await saveUser({
-                ...user,
-                ...userToSave
-            })
+            const res = await saveUser(values as Partial<IUser>)
 
             if (res) {
                 toast.success(t('form.messages.userSavedSuccess'))

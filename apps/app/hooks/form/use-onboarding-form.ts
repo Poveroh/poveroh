@@ -50,7 +50,6 @@ export function useOnBoardingForm() {
         setLoading(true)
 
         await saveUser({
-            ...userStore.user,
             name: values.name,
             surname: values.surname,
             email: userStore.user.email,
@@ -67,7 +66,6 @@ export function useOnBoardingForm() {
         setLoading(true)
 
         await saveUser({
-            ...userStore.user,
             onBoardingStep: OnBoardingStep.COMPLETED,
             preferredCurrency: values.preferredCurrency as Currencies,
             preferredLanguage: values.preferredLanguage as Language,

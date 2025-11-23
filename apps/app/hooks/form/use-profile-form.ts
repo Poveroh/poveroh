@@ -58,17 +58,7 @@ export const useProfileForm = (initialData?: IUser) => {
         setLoading(true)
 
         try {
-            const userToSave: Partial<IUser> = {
-                name: values.name,
-                surname: values.surname,
-                email: values.email,
-                country: values.country
-            }
-
-            const res = await saveUser({
-                ...user,
-                ...userToSave
-            })
+            const res = await saveUser(values as Partial<IUser>)
 
             if (res) {
                 toast.success(t('form.messages.userSavedSuccess'))
