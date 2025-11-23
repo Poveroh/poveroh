@@ -10,7 +10,7 @@ import { IUser } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 
-export const useProfileForm = (initialData?: IUser) => {
+export const useProfileForm = () => {
     const t = useTranslations()
 
     const { user, saveUser } = useUser()
@@ -23,23 +23,14 @@ export const useProfileForm = (initialData?: IUser) => {
         country: z.string().nonempty(t('messages.errors.required'))
     })
 
-    const defaultValues = initialData
-        ? {
-              name: initialData.name ?? '',
-              surname: initialData.surname ?? '',
-              email: initialData.email ?? '',
-              country: initialData.country ?? ''
-          }
-        : {
-              name: user?.name ?? '',
-              surname: user?.surname ?? '',
-              email: user?.email ?? '',
-              country: user?.country ?? ''
-          }
-
     const form = useForm({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: {
+            name: user?.name ?? '',
+            surname: user?.surname ?? '',
+            email: user?.email ?? '',
+            country: user?.country ?? ''
+        }
     })
 
     useEffect(() => {
