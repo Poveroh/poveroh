@@ -9,6 +9,8 @@ const config: IApiConfig = {
     BASE_URL: process.env.BASE_URL,
     APP_URL: process.env.APP_URL,
     NODE_ENV: process.env.NODE_ENV || 'development',
+    REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD || '',
     ALLOWED_ORIGINS: (() => {
         // Read comma-separated allowed origins; trim and filter empties
         const raw = process.env.ALLOWED_ORIGINS || ''

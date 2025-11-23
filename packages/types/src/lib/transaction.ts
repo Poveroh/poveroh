@@ -10,7 +10,7 @@ export interface IAmountBase {
 
 export interface IAmount extends IAmountBase {
     id: string
-    createdAt: string
+    createdAt: Date
 }
 
 export interface ITransactionMediaBase {

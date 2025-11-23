@@ -10,7 +10,7 @@ import { Form } from '@poveroh/ui/components/form'
 import Box from '@/components/box/box-wrapper'
 import { CurrencyField, SelectField } from '@/components/fields'
 import { Header } from '@/components/other/header-page'
-import { languageCatalog, dateFormatCatalog } from '@poveroh/types/dist'
+import { languageCatalog, dateFormatCatalog } from '@poveroh/types'
 import { usePreferencesForm } from '@/hooks/form/use-preferences-form'
 
 export default function PreferencesView() {

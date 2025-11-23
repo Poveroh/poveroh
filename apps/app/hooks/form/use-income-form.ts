@@ -24,8 +24,6 @@ export function useIncomeForm(props: TransactionFormProps) {
 
         const transaction = data as ITransaction
 
-        console.log('🔍 transformIncomeData - Raw data:', data)
-
         // Handle amounts array - Income data comes with amounts structure like Expenses
         const amounts = transaction.amounts as
             | Array<{ amount: number; financialAccountId: string; currency: string }>
@@ -45,8 +43,6 @@ export function useIncomeForm(props: TransactionFormProps) {
             note: (transaction.note as string) || '',
             ignore: (transaction.ignore as boolean) || false
         }
-
-        console.log('🔍 transformIncomeData - Transformed data:', transformed)
 
         return transformed
     }

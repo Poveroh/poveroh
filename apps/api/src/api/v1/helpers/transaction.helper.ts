@@ -1,15 +1,15 @@
-import { IAmountData } from '@/types/transaction'
 import prisma from '@poveroh/prisma'
 import {
     Currencies,
     ExpensesFormData,
     FormMode,
+    IAmountBase,
     IncomeFormData,
-    ITransaction,
     ITransactionBase,
     TransactionAction,
     TransferFormData
 } from '@poveroh/types'
+import { BalanceHelper } from './balance.helper'
 
 /**
  * Transaction Helper - Handles all transaction operations with optimized database transactions,
@@ -130,7 +130,7 @@ export const TransactionHelper = {
         currency: string,
         action: TransactionAction,
         financialAccountId: string
-    ): IAmountData {
+    ): IAmountBase {
         if (!transactionId || !financialAccountId) {
             throw new Error('Transaction ID and financial account ID are required')
         }
@@ -151,85 +151,79 @@ export const TransactionHelper = {
         let localTransactionId = transactionId || ''
 
         try {
-            await prisma.$transaction(async tx => {
-                if (transactionId) {
-                    // Edit flow: update transaction and replace amounts
-                    const transaction = await tx.transaction.findUnique({
-                        where: { id: transactionId },
-                        include: { amounts: true }
-                    })
+            if (transactionId) {
+                // Edit flow: update transaction and replace amounts
+                const transaction = await prisma.transaction.findUnique({
+                    where: { id: transactionId },
+                    include: { amounts: true }
+                })
 
-                    if (!transaction) {
-                        throw new Error(`Transaction with id ${transactionId} not found`)
-                    }
+                const originalAmounts = transaction?.amounts || []
 
-                    await tx.transaction.update({
-                        where: { id: transactionId },
-                        data: this.normalizeTransaction(TransactionAction.TRANSFER, data)
-                    })
-
-                    // Delete existing amounts and create new ones
-                    await tx.amount.deleteMany({
-                        where: { transactionId }
-                    })
-
-                    const amountsData = [
-                        this.createAmountData(
-                            transaction.id,
-                            data.amount,
-                            data.currency,
-                            TransactionAction.EXPENSES,
-                            data.from
-                        ),
-                        this.createAmountData(
-                            transaction.id,
-                            data.amount,
-                            data.currency,
-                            TransactionAction.INCOME,
-                            data.to
-                        )
-                    ]
-
-                    await tx.amount.createMany({
-                        data: amountsData
-                    })
-
-                    localTransactionId = transaction.id
-                } else {
-                    // Create flow: create new transaction and amounts
-                    const normalizedData = this.normalizeTransaction(TransactionAction.TRANSFER, data)
-                    const transaction = await tx.transaction.create({
-                        data: {
-                            ...normalizedData,
-                            action: TransactionAction.TRANSFER,
-                            userId: userId
-                        }
-                    })
-
-                    const amountsData = [
-                        this.createAmountData(
-                            transaction.id,
-                            data.amount,
-                            data.currency,
-                            TransactionAction.EXPENSES,
-                            data.from
-                        ),
-                        this.createAmountData(
-                            transaction.id,
-                            data.amount,
-                            data.currency,
-                            TransactionAction.INCOME,
-                            data.to
-                        )
-                    ]
-
-                    await tx.amount.createMany({
-                        data: amountsData
-                    })
-
-                    localTransactionId = transaction.id
+                if (!transaction) {
+                    throw new Error(`Transaction with id ${transactionId} not found`)
                 }
-            })
+
+                await prisma.transaction.update({
+                    where: { id: transactionId },
+                    data: this.normalizeTransaction(TransactionAction.TRANSFER, data)
+                })
+
+                // Delete existing amounts and create new ones
+                await prisma.amount.deleteMany({
+                    where: { transactionId }
+                })
+
+                const amountsData = [
+                    this.createAmountData(
+                        transaction.id,
+                        data.amount,
+                        data.currency,
+                        TransactionAction.EXPENSES,
+                        data.from
+                    ),
+                    this.createAmountData(transaction.id, data.amount, data.currency, TransactionAction.INCOME, data.to)
+                ]
+
+                await prisma.amount.createMany({
+                    data: amountsData
+                })
+
+                await BalanceHelper.updateAccountBalances(amountsData[0], originalAmounts[0].amount)
+                await BalanceHelper.updateAccountBalances(amountsData[1], originalAmounts[1].amount)
+
+                localTransactionId = transaction.id
+            } else {
+                // Create flow: create new transaction and amounts
+                const normalizedData = this.normalizeTransaction(TransactionAction.TRANSFER, data)
+                const transaction = await prisma.transaction.create({
+                    data: {
+                        ...normalizedData,
+                        action: TransactionAction.TRANSFER,
+                        userId: userId
+                    }
+                })
+
+                const amountsData = [
+                    this.createAmountData(
+                        transaction.id,
+                        data.amount,
+                        data.currency,
+                        TransactionAction.EXPENSES,
+                        data.from
+                    ),
+                    this.createAmountData(transaction.id, data.amount, data.currency, TransactionAction.INCOME, data.to)
+                ]
+
+                await prisma.amount.createMany({
+                    data: amountsData
+                })
+
+                await BalanceHelper.updateAccountBalances(amountsData[0])
+                await BalanceHelper.updateAccountBalances(amountsData[1])
+
+                localTransactionId = transaction.id
+            }
 
             return await this.fetchTransactionWithAmounts(localTransactionId)
         } catch (error) {
@@ -242,67 +236,78 @@ export const TransactionHelper = {
         let localTransactionId = transactionId || ''
 
         try {
-            await prisma.$transaction(async tx => {
-                if (transactionId) {
-                    // Edit flow: update transaction and replace the single amount
-                    const existingTransaction = await tx.transaction.findUnique({
-                        where: { id: transactionId },
-                        include: { amounts: true }
-                    })
+            if (transactionId) {
+                // Edit flow: update transaction and replace the single amount
+                const existingTransaction = await prisma.transaction.findUnique({
+                    where: { id: transactionId },
+                    include: { amounts: true }
+                })
 
-                    if (!existingTransaction) {
-                        throw new Error(`Transaction with id ${transactionId} not found`)
-                    }
-
-                    if (!existingTransaction.amounts || existingTransaction.amounts.length === 0) {
-                        throw new Error(`No amounts found for transaction with id ${transactionId}`)
-                    }
-
-                    await tx.transaction.update({
-                        where: {
-                            id: transactionId,
-                            userId: userId
-                        },
-                        data: this.normalizeTransaction(TransactionAction.INCOME, data)
-                    })
-
-                    await tx.amount.update({
-                        where: { id: existingTransaction.amounts[0].id },
-                        data: {
-                            amount: data.amount,
-                            currency: data.currency as Currencies,
-                            action: TransactionAction.INCOME,
-                            financialAccountId: data.financialAccountId
-                        }
-                    })
-
-                    localTransactionId = transactionId
-                } else {
-                    // Create flow: create new transaction and amount
-                    const normalizedData = this.normalizeTransaction(TransactionAction.INCOME, data)
-                    const transaction = await tx.transaction.create({
-                        data: {
-                            ...normalizedData,
-                            action: TransactionAction.INCOME,
-                            userId: userId
-                        }
-                    })
-
-                    const amountData = this.createAmountData(
-                        transaction.id,
-                        data.amount,
-                        data.currency,
-                        TransactionAction.INCOME,
-                        data.financialAccountId
-                    )
-
-                    await tx.amount.create({
-                        data: amountData
-                    })
-
-                    localTransactionId = transaction.id
+                if (!existingTransaction) {
+                    throw new Error(`Transaction with id ${transactionId} not found`)
                 }
-            })
+
+                if (!existingTransaction.amounts || existingTransaction.amounts.length === 0) {
+                    throw new Error(`No amounts found for transaction with id ${transactionId}`)
+                }
+
+                await prisma.transaction.update({
+                    where: {
+                        id: transactionId,
+                        userId: userId
+                    },
+                    data: this.normalizeTransaction(TransactionAction.INCOME, data)
+                })
+
+                await prisma.amount.update({
+                    where: { id: existingTransaction.amounts[0].id },
+                    data: {
+                        amount: data.amount,
+                        currency: data.currency as Currencies,
+                        action: TransactionAction.INCOME,
+                        financialAccountId: data.financialAccountId
+                    }
+                })
+
+                await BalanceHelper.updateAccountBalances(
+                    {
+                        transactionId: transactionId,
+                        amount: data.amount,
+                        currency: data.currency as Currencies,
+                        action: TransactionAction.INCOME,
+                        financialAccountId: data.financialAccountId
+                    },
+                    existingTransaction.amounts[0].amount
+                )
+
+                localTransactionId = transactionId
+            } else {
+                // Create flow: create new transaction and amount
+                const normalizedData = this.normalizeTransaction(TransactionAction.INCOME, data)
+                const transaction = await prisma.transaction.create({
+                    data: {
+                        ...normalizedData,
+                        action: TransactionAction.INCOME,
+                        userId: userId
+                    }
+                })
+
+                const amountData = this.createAmountData(
+                    transaction.id,
+                    data.amount,
+                    data.currency as Currencies,
+                    TransactionAction.INCOME,
+                    data.financialAccountId
+                )
+
+                await prisma.amount.create({
+                    data: amountData
+                })
+
+                await BalanceHelper.updateAccountBalances(amountData)
+
+                localTransactionId = transaction.id
+            }
 
             return await this.fetchTransactionWithAmounts(localTransactionId)
         } catch (error) {
@@ -315,49 +320,47 @@ export const TransactionHelper = {
         try {
             let resultTransactionId: string
 
-            await prisma.$transaction(async tx => {
-                if (transactionId) {
-                    // Edit flow: update transaction and replace amounts
-                    const transaction = await tx.transaction.update({
-                        where: { id: transactionId },
-                        data: this.normalizeTransaction(TransactionAction.EXPENSES, data)
+            if (transactionId) {
+                // Edit flow: update transaction and replace amounts
+                const transaction = await prisma.transaction.update({
+                    where: { id: transactionId },
+                    data: this.normalizeTransaction(TransactionAction.EXPENSES, data)
+                })
+
+                // Delete existing amounts
+                await prisma.amount.deleteMany({
+                    where: { transactionId: transaction.id }
+                })
+
+                // Create new amounts
+                const amountsData = this.buildExpensesAmounts(transaction.id, data)
+                if (amountsData.length > 0) {
+                    await prisma.amount.createMany({
+                        data: amountsData
                     })
-
-                    // Delete existing amounts
-                    await tx.amount.deleteMany({
-                        where: { transactionId: transaction.id }
-                    })
-
-                    // Create new amounts
-                    const amountsData = this.buildExpensesAmounts(transaction.id, data)
-                    if (amountsData.length > 0) {
-                        await tx.amount.createMany({
-                            data: amountsData
-                        })
-                    }
-
-                    resultTransactionId = transaction.id
-                } else {
-                    // Create flow: create new transaction and amounts
-                    const normalizedData = this.normalizeTransaction(TransactionAction.EXPENSES, data)
-                    const transaction = await tx.transaction.create({
-                        data: {
-                            ...normalizedData,
-                            action: TransactionAction.EXPENSES,
-                            userId: userId
-                        }
-                    })
-
-                    const amountsData = this.buildExpensesAmounts(transaction.id, data)
-                    if (amountsData.length > 0) {
-                        await tx.amount.createMany({
-                            data: amountsData
-                        })
-                    }
-
-                    resultTransactionId = transaction.id
                 }
-            })
+
+                resultTransactionId = transaction.id
+            } else {
+                // Create flow: create new transaction and amounts
+                const normalizedData = this.normalizeTransaction(TransactionAction.EXPENSES, data)
+                const transaction = await prisma.transaction.create({
+                    data: {
+                        ...normalizedData,
+                        action: TransactionAction.EXPENSES,
+                        userId: userId
+                    }
+                })
+
+                const amountsData = this.buildExpensesAmounts(transaction.id, data)
+                if (amountsData.length > 0) {
+                    await prisma.amount.createMany({
+                        data: amountsData
+                    })
+                }
+
+                resultTransactionId = transaction.id
+            }
 
             return await this.fetchTransactionWithAmounts(resultTransactionId!)
         } catch (error) {
@@ -367,8 +370,8 @@ export const TransactionHelper = {
         }
     },
 
-    buildExpensesAmounts(transactionId: string, data: ExpensesFormData): IAmountData[] {
-        const amountsData: IAmountData[] = []
+    buildExpensesAmounts(transactionId: string, data: ExpensesFormData): IAmountBase[] {
+        const amountsData: IAmountBase[] = []
 
         // Handle multiple amounts from split expenses
         if (data.amounts && data.amounts.length > 0) {

@@ -59,7 +59,7 @@ export const ImportHelper = {
                 amounts: [
                     {
                         id: uuidv4(),
-                        createdAt: new Date().toISOString(),
+                        createdAt: new Date(),
                         transactionId: transactionId,
                         amount: rawTransaction.amount,
                         currency: rawTransaction.currency,

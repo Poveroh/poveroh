@@ -33,9 +33,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
 
     const getInitialValues = (): T => {
         if (props.initialData && config.transformInitialData) {
-            const transformed = config.transformInitialData(props.initialData)
-            console.log('Initial values for', config.type, ':', transformed)
-            return transformed
+            return config.transformInitialData(props.initialData)
         }
         return config.defaultValues
     }
@@ -47,7 +45,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
     })
 
     const handleSubmit = async (values: T, dataCallback: (formData: FormData) => Promise<void>) => {
-        console.log('🚀 handleSubmit called with values:', values)
         setLoading(true)
         try {
             let localTransaction: T = { ...values }
@@ -65,7 +62,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
                 formData.append('file', file[0])
             }
 
-            console.log('🚀 Calling dataCallback with formData')
             await dataCallback(formData)
         } catch (error) {
             handleError(error, 'Form error')

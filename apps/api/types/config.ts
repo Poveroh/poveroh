@@ -9,4 +9,6 @@ export interface IApiConfig {
     APP_URL?: string
     NODE_ENV: string
     ALLOWED_ORIGINS: string[]
+    REDIS_URL?: string
+    REDIS_PASSWORD?: string
 }

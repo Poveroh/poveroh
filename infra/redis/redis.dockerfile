@@ -2,4 +2,4 @@ FROM redis
 
 EXPOSE 6379
 
-CMD ["redis-server"]
+CMD ["sh", "-c", "redis-server --requirepass $REDIS_PASSWORD"]
