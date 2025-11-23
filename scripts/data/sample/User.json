@@ -4,10 +4,17 @@
         "name": "Paperon",
         "surname": "De paperoni",
         "email": "p@poveroh.com",
-        "password": null,
         "emailVerified": false,
+        "onBoardingStep": 4,
+        "onBoardingAt": "2025-11-08T23:13:59.709Z",
         "image": null,
-        "createdAt": "2025-11-08 23:13:59.709",
-        "updatedAt": "2025-11-08 23:13:59.709"
+        "snapshotFrequency": "MONTHLY",
+        "preferredCurrency": "EUR",
+        "preferredLanguage": "EN",
+        "dateFormat": "DD_MM_YYYY",
+        "country": "italy",
+        "timezone": "UTC",
+        "createdAt": "2025-11-08T23:00:59.709Z",
+        "updatedAt": "2025-11-08T23:13:59.709Z"
     }
 ]
