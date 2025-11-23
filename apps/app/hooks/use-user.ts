@@ -67,7 +67,17 @@ export const useUser = () => {
             oldPassword = await encryptString(oldPassword)
             newPassword = await encryptString(newPassword)
 
-            return await userService.updatePassword(userStore.user.id, { oldPassword, newPassword })
+            const { data, error } = await authClient.changePassword({
+                newPassword: newPassword,
+                currentPassword: oldPassword,
+                revokeOtherSessions: true
+            })
+
+            if (data && !error) {
+                return true
+            }
+
+            return false
         } catch (error) {
             handleError(error, 'Error updating password')
             return false

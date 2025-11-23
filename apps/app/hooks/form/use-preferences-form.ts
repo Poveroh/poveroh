@@ -6,7 +6,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { Currencies, DateFormat, IUser, Language } from '@poveroh/types'
+import { IUser } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 
