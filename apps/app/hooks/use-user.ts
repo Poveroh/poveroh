@@ -15,7 +15,7 @@ export const useUser = () => {
 
     const router = useRouter()
 
-    const me = async () => {
+    const me = async (): Promise<IUser | null> => {
         try {
             const result = await authClient.getSession()
 
@@ -26,14 +26,15 @@ export const useUser = () => {
             if (result.data) {
                 userStore.setUser(result.data.user as IUser)
                 userStore.setLogged(true)
+                return result.data.user as IUser
             } else {
                 userStore.setLogged(false)
+                return null
             }
-
-            return userStore.user
         } catch (error) {
             userStore.setLogged(false)
-            return handleError(error, 'Error fetching user')
+            handleError(error, 'Error fetching user')
+            return null
         }
     }
 

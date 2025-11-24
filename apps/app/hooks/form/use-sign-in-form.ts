@@ -50,7 +50,7 @@ export function useSignInForm() {
                 const res = await signIn(user)
 
                 if (res) {
-                    if (userStore.user.onBoardingStep >= OnBoardingStep.PREFERENCES) {
+                    if (res.onBoardingStep >= OnBoardingStep.PREFERENCES) {
                         router.push('/dashboard')
                     } else {
                         router.push('/onboarding')
@@ -62,7 +62,7 @@ export function useSignInForm() {
                 setLoading(false)
             }
         },
-        [router, signIn, userStore.user]
+        [router, signIn]
     )
 
     return {

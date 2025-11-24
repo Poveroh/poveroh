@@ -19,30 +19,33 @@ export const useAuth = () => {
 
     const authSession = authClient.useSession()
 
-    const signIn = useCallback(async (userToLogin: IUserLogin) => {
-        try {
-            if (!isValidEmail(userToLogin.email)) {
-                throw new Error('E-mail not valid')
+    const signIn = useCallback(
+        async (userToLogin: IUserLogin) => {
+            try {
+                if (!isValidEmail(userToLogin.email)) {
+                    throw new Error('E-mail not valid')
+                }
+                if (isEmpty(userToLogin.password)) {
+                    throw new Error('Password not valid')
+                }
+
+                const result = await authClient.signIn.email(userToLogin)
+
+                if (result.error) {
+                    throw new Error(result.error.message || 'Login failed')
+                }
+
+                userStore.setLogged(true)
+
+                const user = await me()
+
+                return user
+            } catch (error) {
+                return handleError(error, 'Login failed')
             }
-            if (isEmpty(userToLogin.password)) {
-                throw new Error('Password not valid')
-            }
-
-            const result = await authClient.signIn.email(userToLogin)
-
-            if (result.error) {
-                throw new Error(result.error.message || 'Login failed')
-            }
-
-            userStore.setLogged(true)
-
-            await me()
-
-            return true
-        } catch (error) {
-            return handleError(error, 'Login failed')
-        }
-    }, [])
+        },
+        [handleError, me, userStore]
+    )
 
     const signUp = useCallback(
         async (userToSave: IUserLogin) => {
@@ -72,7 +75,7 @@ export const useAuth = () => {
                 return false
             }
         },
-        [handleError]
+        [handleError, userStore]
     )
 
     const logout = async () => {
