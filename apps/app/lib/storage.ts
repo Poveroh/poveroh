@@ -69,5 +69,13 @@ export const cookie = {
         } catch (error) {
             return null
         }
+    },
+
+    clear(): void {
+        if (typeof document === 'undefined') return
+        const allCookies = Cookies.get()
+        for (const cookieName in allCookies) {
+            Cookies.remove(cookieName)
+        }
     }
 }

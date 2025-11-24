@@ -19,6 +19,14 @@ export const useAuth = () => {
 
     const authSession = authClient.useSession()
 
+    const cleanUpAuthData = () => {
+        cookie.clear()
+        storage.clear()
+        userStore.resetAll()
+
+        router.push('/sign-in')
+    }
+
     const signIn = useCallback(
         async (userToLogin: IUserLogin) => {
             try {
@@ -83,22 +91,16 @@ export const useAuth = () => {
             await authClient.signOut({
                 fetchOptions: {
                     onSuccess: () => {
-                        cookie.remove('token')
-                        storage.clear()
-                        userStore.resetAll()
-
-                        router.push('/sign-in')
+                        cleanUpAuthData()
+                    },
+                    onError: () => {
+                        console.error('Error during sign out')
                     }
                 }
             })
         } catch (error) {
             console.error('Logout error:', error)
-
-            cookie.remove('token')
-            storage.clear()
-            userStore.resetAll()
-
-            router.push('/sign-in')
+            cleanUpAuthData()
         }
     }
 
