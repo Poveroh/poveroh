@@ -189,8 +189,10 @@ export const TransactionHelper = {
                     data: amountsData
                 })
 
-                await BalanceHelper.updateAccountBalances(amountsData[0], originalAmounts[0].amount)
-                await BalanceHelper.updateAccountBalances(amountsData[1], originalAmounts[1].amount)
+                // If multiple amounts, update balances for each
+                for (let i = 0; i < amountsData.length; i++) {
+                    await BalanceHelper.updateAccountBalances(amountsData[i], originalAmounts[i].amount)
+                }
 
                 localTransactionId = transaction.id
             } else {
@@ -219,8 +221,10 @@ export const TransactionHelper = {
                     data: amountsData
                 })
 
-                await BalanceHelper.updateAccountBalances(amountsData[0])
-                await BalanceHelper.updateAccountBalances(amountsData[1])
+                // If multiple amounts, update balances for each
+                for (let i = 0; i < amountsData.length; i++) {
+                    await BalanceHelper.updateAccountBalances(amountsData[i])
+                }
 
                 localTransactionId = transaction.id
             }
@@ -259,26 +263,20 @@ export const TransactionHelper = {
                     data: this.normalizeTransaction(TransactionAction.INCOME, data)
                 })
 
+                const amountData = this.createAmountData(
+                    transactionId,
+                    data.amount,
+                    data.currency as Currencies,
+                    TransactionAction.INCOME,
+                    data.financialAccountId
+                )
+
                 await prisma.amount.update({
                     where: { id: existingTransaction.amounts[0].id },
-                    data: {
-                        amount: data.amount,
-                        currency: data.currency as Currencies,
-                        action: TransactionAction.INCOME,
-                        financialAccountId: data.financialAccountId
-                    }
+                    data: amountData
                 })
 
-                await BalanceHelper.updateAccountBalances(
-                    {
-                        transactionId: transactionId,
-                        amount: data.amount,
-                        currency: data.currency as Currencies,
-                        action: TransactionAction.INCOME,
-                        financialAccountId: data.financialAccountId
-                    },
-                    existingTransaction.amounts[0].amount
-                )
+                await BalanceHelper.updateAccountBalances(amountData, existingTransaction.amounts[0].amount)
 
                 localTransactionId = transactionId
             } else {
@@ -355,7 +353,7 @@ export const TransactionHelper = {
                 }
 
                 // If multiple amounts, update balances for each
-                for (let i = 1; i < amountsData.length; i++) {
+                for (let i = 0; i < amountsData.length; i++) {
                     await BalanceHelper.updateAccountBalances(amountsData[i], existingTransaction.amounts[i].amount)
                 }
 
@@ -379,7 +377,7 @@ export const TransactionHelper = {
                 }
 
                 // If multiple amounts, update balances for each
-                for (let i = 1; i < amountsData.length; i++) {
+                for (let i = 0; i < amountsData.length; i++) {
                     await BalanceHelper.updateAccountBalances(amountsData[i])
                 }
 

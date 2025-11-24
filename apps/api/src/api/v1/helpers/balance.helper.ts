@@ -54,5 +54,6 @@ export const BalanceHelper = {
         })
 
         await RedisHelper.set(`balance:${amount.financialAccountId}`, newBalance.toString())
-    }
+    },
+    calculateBalance(accountId: string) {}
 }
