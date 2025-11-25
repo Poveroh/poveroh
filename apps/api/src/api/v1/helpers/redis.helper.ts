@@ -13,8 +13,9 @@ export const RedisHelper = {
     async set(key: string, value: string, ttl?: number): Promise<boolean> {
         try {
             const client = await getRedisClient()
-            if (ttl) {
-                await client.setEx(key, ttl, value)
+            const expiration = ttl !== undefined ? ttl : 3600
+            if (expiration > 0) {
+                await client.setEx(key, expiration, value)
             } else {
                 await client.set(key, value)
             }
