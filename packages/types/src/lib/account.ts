@@ -9,7 +9,6 @@ export interface IFinancialAccountBase {
 export interface IFinancialAccount extends IFinancialAccountBase {
     id: string
     userId: string
-    balance: number
     createdAt: string
     updatedAt: string
 }
