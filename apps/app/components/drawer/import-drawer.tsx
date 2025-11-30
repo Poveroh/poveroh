@@ -17,11 +17,12 @@ import {
 import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
+import { cn } from '@poveroh/ui/lib/utils'
 
 export function ImportDrawer() {
     const t = useTranslations()
 
-    const { completeImport, removeImport } = useImport()
+    const { completeImport, removeImport, pendingTransactions } = useImport()
 
     const drawerManager = useDrawer<IImport>()
     const deleteModalManager = useDeleteModal<IImport>()
@@ -76,7 +77,12 @@ export function ImportDrawer() {
         <>
             <Drawer open={drawerManager.isOpen} onOpenChange={drawerManager.closeDrawer}>
                 <DrawerContent>
-                    <div className='mx-auto  w-[448px] pt-10'>
+                    <div
+                        className={cn(
+                            'mx-auto overflow-y-scroll pt-10',
+                            pendingTransactions.length == 0 ? 'w-[448px]' : 'w-1/2'
+                        )}
+                    >
                         <DrawerHeader>
                             <DrawerTitle>
                                 {t(`imports.modal.${drawerManager.inEditingMode ? 'editTitle' : 'uploadTitle'}`)}
