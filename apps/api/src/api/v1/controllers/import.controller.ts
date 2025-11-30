@@ -254,7 +254,7 @@ export class ImportController {
             }
 
             const files = req.files as Express.Multer.File[]
-            const financialAccountId: string = req.body.financial_account_id
+            const financialAccountId: string = req.body.financialAccountId
             const userId = req.user.id
             const importId = uuidv4()
             const now = new Date()

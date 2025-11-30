@@ -1,18 +1,23 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { IImport } from '@poveroh/types'
+import { IImport, ITransaction } from '@poveroh/types'
 
 type ImportStore = {
     importCacheList: IImport[]
+    pendingTransactions: ITransaction[]
     addImport: (importItems: IImport[]) => void
     editImport: (importItem: IImport) => void
     setImports: (imports: IImport[]) => void
     removeImport: (importId: string) => void
     getImport: (importId: string) => IImport | null
+    setPendingTransactions: (transactions: ITransaction[]) => void
+    updatePendingTransaction: (transaction: ITransaction) => void
+    removePendingTransaction: (transactionId: string) => void
 }
 
 export const useImportStore = create<ImportStore>((set, get) => ({
     importCacheList: [],
+    pendingTransactions: [],
 
     addImport: importItems => {
         set(state => {
@@ -52,5 +57,31 @@ export const useImportStore = create<ImportStore>((set, get) => ({
     getImport: importId => {
         const importCacheList = get().importCacheList
         return importCacheList.find(item => item.id === importId) || null
+    },
+
+    setPendingTransactions: transactions => {
+        set(() => ({
+            pendingTransactions: transactions
+        }))
+    },
+
+    updatePendingTransaction: transaction => {
+        set(state => {
+            const index = state.pendingTransactions.findIndex(t => t.id === transaction.id)
+            if (index !== -1) {
+                const list = cloneDeep(state.pendingTransactions)
+                list[index] = transaction
+                return {
+                    pendingTransactions: list
+                }
+            }
+            return state
+        })
+    },
+
+    removePendingTransaction: transactionId => {
+        set(state => ({
+            pendingTransactions: state.pendingTransactions.filter(t => t.id !== transactionId)
+        }))
     }
 }))

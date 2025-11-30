@@ -18,7 +18,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
     mandatory = false
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
-    const { financialAccountCacheList } = useFinancialAccount()
+    const { financialAccountCacheList, fetchFinancialAccount } = useFinancialAccount()
 
     const [localAccountCacheList, setLocalAccountCacheList] = useState(financialAccountCacheList)
 
@@ -42,7 +42,11 @@ export function AccountField<T extends FieldValues = FieldValues>({
             options={localAccountCacheList}
             getOptionLabel={(item: IFinancialAccount) => item.title}
             getOptionValue={(item: IFinancialAccount) => item.id}
-            onOpenChange={() => {}}
+            onOpenChange={() => {
+                if (financialAccountCacheList.length === 0) {
+                    fetchFinancialAccount(true)
+                }
+            }}
             renderOptionContent={(item: IFinancialAccount) =>
                 createIconContent(item.logoIcon, item.title, { type: 'brand' })
             }

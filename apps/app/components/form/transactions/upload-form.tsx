@@ -1,14 +1,12 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useState } from 'react'
-
-import { IImport, ITransaction } from '@poveroh/types'
+import { forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { TransactionsApprovalList } from '@/components/other/transactions-approval-list'
 import { AccountAndFileForm } from './account-and-file-form'
-import { cloneDeep } from 'lodash'
-import { useImport } from '@/hooks/use-imports'
+import { IImport } from '@poveroh/types'
 import { FormRef } from '@/types'
+import { useImport } from '@/hooks/use-imports'
 
 type FormProps = {
     initialData?: IImport
@@ -18,39 +16,23 @@ type FormProps = {
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const [parsedTransaction, setParsedTransaction] = useState<ITransaction[]>(props.initialData?.transactions || [])
+    const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [localImports, setLocalImports] = useState<IImport | undefined>(props.initialData)
-
-    const { appendImport } = useImport()
+    const { pendingTransactions } = useImport()
 
     useImperativeHandle(ref, () => ({
         submit: () => {
-            if (!localImports) return
-
-            const clonedImports = cloneDeep(localImports)
-            clonedImports.transactions = parsedTransaction
-
-            return props.dataCallback(clonedImports)
+            formRef.current?.submit()
         }
     }))
 
-    const handleCallback = async (importedFiles: IImport | null) => {
-        if (!importedFiles || !importedFiles.transactions) return
-
-        const readedTransactions = cloneDeep(parsedTransaction)
-        readedTransactions.push(...importedFiles.transactions)
-        setParsedTransaction(readedTransactions)
-        appendImport([importedFiles])
-        setLocalImports(importedFiles)
-        props.showSaveButton(true)
-    }
+    const handleCallback = async (importedFiles: FormData | IImport) => {}
 
     return (
         <div className='flex flex-col space-y-6'>
-            <AccountAndFileForm dataCallback={handleCallback} />
+            <AccountAndFileForm ref={formRef} dataCallback={handleCallback} inEditingMode={!!props.initialData} />
 
-            {parsedTransaction.length > 0 && <TransactionsApprovalList transactions={parsedTransaction} />}
+            <TransactionsApprovalList />
         </div>
     )
 })

@@ -1,10 +1,11 @@
 'use client'
 
-import { IFilterOptions, IImport, IImportsFilters } from '@poveroh/types'
+import { IFilterOptions, IImport, IImportsFilters, ITransaction, TransactionStatus } from '@poveroh/types'
 import { useError } from './use-error'
 import { ImportService } from '@/services/import.service'
 import { useImportStore } from '@/store/imports.store'
 import { useState } from 'react'
+import logger from '@/lib/logger'
 
 type ImportLoadingState = {
     fetchImport: boolean
@@ -130,7 +131,10 @@ export const useImport = () => {
     const parseTransactionFromFile = async (data: FormData) => {
         setLoadingFor('parseTransactionFromFile', true)
         try {
-            return await importService.readFile(data)
+            const importData = await importService.readFile(data)
+            importStore.setPendingTransactions(importData.transactions)
+            appendImport([importData])
+            return importData
         } catch (error) {
             return handleError(error, 'Error parsing transaction from file')
         } finally {
@@ -138,9 +142,69 @@ export const useImport = () => {
         }
     }
 
+    const handleApproveTransaction = async (transactionId: string, newValue: TransactionStatus) => {
+        logger.debug('Toggle approve transaction:', transactionId)
+
+        const transaction = importStore.pendingTransactions.find(t => t.id === transactionId)
+
+        if (!transaction) {
+            logger.error('Transaction not found:', transactionId)
+            return
+        }
+
+        if (transaction.status === newValue) return
+
+        transaction.status = newValue
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify([transaction]))
+
+        editPendingTransaction(transactionId, formData)
+
+        importStore.updatePendingTransaction(transaction)
+    }
+
+    const handleAllApproveTransactions = (approveAll: boolean) => {
+        logger.debug('Handle all transactions approval:', approveAll)
+
+        if (importStore.pendingTransactions.length === 0) {
+            logger.debug('No transactions to approve or reject')
+            return
+        }
+
+        logger.debug(`Setting all transactions to ${approveAll ? 'approved' : 'rejected'}`)
+
+        const newTransactionStatus = approveAll ? TransactionStatus.IMPORT_APPROVED : TransactionStatus.IMPORT_REJECTED
+
+        const updatedTransactions = importStore.pendingTransactions.map(item => ({
+            ...item,
+            status: newTransactionStatus
+        }))
+
+        const formData = new FormData()
+        formData.append('data', JSON.stringify(updatedTransactions))
+
+        editPendingTransaction('', formData)
+
+        importStore.setPendingTransactions(updatedTransactions)
+    }
+
+    const handleEditTransaction = (transaction: ITransaction) => {
+        logger.debug('Edit transaction:', transaction)
+
+        importStore.updatePendingTransaction(transaction)
+    }
+
+    const handleDeleteTransaction = (transactionId: string) => {
+        logger.debug('Delete transaction:', transactionId)
+
+        importStore.removePendingTransaction(transactionId)
+    }
+
     return {
         importCacheList: importStore.importCacheList,
         importLoading,
+        pendingTransactions: importStore.pendingTransactions,
         fetchImport,
         removeImport,
         appendImport,
@@ -148,6 +212,10 @@ export const useImport = () => {
         readPendingTransaction,
         editPendingTransaction,
         removePendingTransaction,
-        parseTransactionFromFile
+        parseTransactionFromFile,
+        handleApproveTransaction,
+        handleAllApproveTransactions,
+        handleEditTransaction,
+        handleDeleteTransaction
     }
 }

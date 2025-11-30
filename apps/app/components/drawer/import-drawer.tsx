@@ -82,7 +82,7 @@ export function ImportDrawer() {
                                 {t(`imports.modal.${drawerManager.inEditingMode ? 'editTitle' : 'uploadTitle'}`)}
                             </DrawerTitle>
                             <DrawerDescription className='w-3/4 m-auto'>
-                                {t('imports.modal.fileDescription')}
+                                {t('imports.modal.description')}
                             </DrawerDescription>
                         </DrawerHeader>
                         <UploadForm
@@ -95,10 +95,12 @@ export function ImportDrawer() {
                         <DrawerFooter>
                             <DrawerClose asChild>
                                 <Button className='w-fit' variant='outline'>
-                                    Cancel
+                                    {t('buttons.cancel')}
                                 </Button>
                             </DrawerClose>
-                            <Button className='w-full'>Submit</Button>
+                            <Button className='w-full' onClick={() => formRef.current?.submit()}>
+                                {t('buttons.submit')}
+                            </Button>
                         </DrawerFooter>
                     </div>
                 </DrawerContent>
