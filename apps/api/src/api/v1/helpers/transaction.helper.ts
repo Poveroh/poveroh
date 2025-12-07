@@ -186,12 +186,12 @@ export const TransactionHelper = {
                 ]
 
                 await prisma.amount.createMany({
-                    data: amountsData
+                    data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
                 })
 
                 // If multiple amounts, update balances for each
                 for (let i = 0; i < amountsData.length; i++) {
-                    await BalanceHelper.updateAccountBalances(amountsData[i], originalAmounts[i].amount)
+                    await BalanceHelper.updateAccountBalances(amountsData[i], originalAmounts[i].amount.toNumber())
                 }
 
                 localTransactionId = transaction.id
@@ -201,7 +201,6 @@ export const TransactionHelper = {
                 const transaction = await prisma.transaction.create({
                     data: {
                         ...normalizedData,
-                        action: TransactionAction.TRANSFER,
                         userId: userId
                     }
                 })
@@ -218,7 +217,7 @@ export const TransactionHelper = {
                 ]
 
                 await prisma.amount.createMany({
-                    data: amountsData
+                    data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
                 })
 
                 // If multiple amounts, update balances for each
@@ -273,10 +272,10 @@ export const TransactionHelper = {
 
                 await prisma.amount.update({
                     where: { id: existingTransaction.amounts[0].id },
-                    data: amountData
+                    data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
                 })
 
-                await BalanceHelper.updateAccountBalances(amountData, existingTransaction.amounts[0].amount)
+                await BalanceHelper.updateAccountBalances(amountData, existingTransaction.amounts[0].amount.toNumber())
 
                 localTransactionId = transactionId
             } else {
@@ -285,7 +284,6 @@ export const TransactionHelper = {
                 const transaction = await prisma.transaction.create({
                     data: {
                         ...normalizedData,
-                        action: TransactionAction.INCOME,
                         userId: userId
                     }
                 })
@@ -299,7 +297,7 @@ export const TransactionHelper = {
                 )
 
                 await prisma.amount.create({
-                    data: amountData
+                    data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
                 })
 
                 await BalanceHelper.updateAccountBalances(amountData)
@@ -348,13 +346,16 @@ export const TransactionHelper = {
                 const amountsData = this.buildExpensesAmounts(transaction.id, data)
                 if (amountsData.length > 0) {
                     await prisma.amount.createMany({
-                        data: amountsData
+                        data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
                     })
                 }
 
                 // If multiple amounts, update balances for each
                 for (let i = 0; i < amountsData.length; i++) {
-                    await BalanceHelper.updateAccountBalances(amountsData[i], existingTransaction.amounts[i].amount)
+                    await BalanceHelper.updateAccountBalances(
+                        amountsData[i],
+                        existingTransaction.amounts[i].amount.toNumber()
+                    )
                 }
 
                 resultTransactionId = transaction.id
@@ -364,7 +365,6 @@ export const TransactionHelper = {
                 const transaction = await prisma.transaction.create({
                     data: {
                         ...normalizedData,
-                        action: TransactionAction.EXPENSES,
                         userId: userId
                     }
                 })
@@ -372,7 +372,7 @@ export const TransactionHelper = {
                 const amountsData = this.buildExpensesAmounts(transaction.id, data)
                 if (amountsData.length > 0) {
                     await prisma.amount.createMany({
-                        data: amountsData
+                        data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
                     })
                 }
 
@@ -456,8 +456,7 @@ export const TransactionHelper = {
     normalizeTransaction(action: TransactionAction, transaction: FormMode): ITransactionBase {
         const baseData: ITransactionBase = {
             title: transaction.title,
-            action,
-            date: new Date(transaction.date).toISOString(),
+            date: new Date(transaction.date),
             note: transaction.note,
             ignore: transaction.ignore || false,
             categoryId: undefined,

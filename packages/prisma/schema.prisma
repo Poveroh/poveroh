@@ -304,7 +304,6 @@ model Transaction {
     category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
     subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
     import       Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
-    transfer     Transfer?    @relation(fields: [transferId], references: [id], onDelete: SetNull)
     fromTransfer Transfer?    @relation("FromLeg")
     toTransfer   Transfer?    @relation("ToLeg")
 
@@ -329,10 +328,9 @@ model Transfer {
     createdAt         DateTime @default(now())
     updatedAt         DateTime @updatedAt
 
-    user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    fromTransaction Transaction?  @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
-    toTransaction   Transaction?  @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
-    transactions    Transaction[]
+    user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    fromTransaction Transaction? @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
+    toTransaction   Transaction? @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
 
     @@index([userId])
     @@index([transferDate])
