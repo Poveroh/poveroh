@@ -6,6 +6,7 @@ export interface IAmountBase {
     currency: Currencies
     action: TransactionAction
     financialAccountId: string
+    importReference?: string
 }
 
 export interface IAmount extends IAmountBase {
@@ -25,13 +26,26 @@ export interface ITransactionMedia extends ITransactionMediaBase {
     createdAt: Date
 }
 
+export interface ITransferBase {
+    transferDate: Date
+    note?: string
+}
+
+export interface ITransfer extends ITransferBase {
+    id: string
+    userId: string
+    fromTransactionId?: string
+    toTransactionId?: string
+    createdAt: Date
+    updatedAt: Date
+}
+
 export interface ITransactionBase {
     title: string
-    action: TransactionAction
     categoryId?: string
     subcategoryId?: string
     icon?: string
-    date: string
+    date: Date
     note?: string
     ignore: boolean
 }
@@ -42,7 +56,12 @@ export interface ITransaction extends ITransactionBase {
     createdAt: Date
     status: TransactionStatus
     importId?: string
+    updatedAt: Date
     amounts: IAmount[]
+    media?: ITransactionMedia[]
+    isTransferLeg: boolean
+    transferId?: string
+    transferHash?: string
 }
 
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
