@@ -117,7 +117,7 @@ export const useTransaction = () => {
 
     const groupTransactionsByDate = (transactions: ITransaction[]): GroupedTransactions => {
         return transactions.reduce((acc, transaction) => {
-            const dateKey = transaction.date.slice(0, 10)
+            const dateKey = transaction.date.toISOString().slice(0, 10)
             if (!acc[dateKey]) {
                 acc[dateKey] = []
             }

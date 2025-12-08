@@ -36,7 +36,7 @@ export function useExpensesForm(props: TransactionFormProps) {
         return {
             title: (transaction.title as string) || '',
             date: transaction.date
-                ? new Date(transaction.date as string).toISOString().split('T')[0]!
+                ? transaction.date.toISOString().split('T')[0]!
                 : new Date().toISOString().split('T')[0]!,
             currency: amounts?.[0]?.currency || '',
             totalAmount: Math.abs(Number(amounts?.[0]?.amount || 0)), // Ensure positive for expenses

@@ -210,10 +210,22 @@ export class ImportController {
 
             const updatedTransactions = await prisma.$transaction(
                 parsedData.map((t: ITransaction) => {
-                    const { amounts, ...transactionData } = t
+                    const { amounts, action, media, ...transactionData } = t
                     return prisma.transaction.update({
                         where: { id: t.id },
-                        data: transactionData
+                        data: {
+                            ...transactionData,
+                            media: media
+                                ? {
+                                      deleteMany: {},
+                                      create: media.map(m => ({
+                                          filename: m.filename,
+                                          filetype: m.filetype,
+                                          path: m.path
+                                      }))
+                                  }
+                                : undefined
+                        }
                     })
                 })
             )
@@ -315,7 +327,7 @@ export class ImportController {
             await prisma.importFile.createMany({ data: importFiles })
 
             await prisma.transaction.createMany({
-                data: parsedTransactions.map(({ amounts, ...transaction }) => ({
+                data: parsedTransactions.map(({ amounts, action, ...transaction }) => ({
                     ...transaction,
                     importId: importId
                 }))
@@ -323,8 +335,12 @@ export class ImportController {
 
             const allAmounts = parsedTransactions.flatMap(transaction =>
                 transaction.amounts.map(amount => ({
-                    ...amount,
-                    transactionId: transaction.id
+                    transactionId: amount.transactionId,
+                    amount: amount.amount,
+                    currency: amount.currency,
+                    action: amount.action as 'EXPENSES' | 'INCOME',
+                    financialAccountId: amount.financialAccountId,
+                    importReference: amount.importReference
                 }))
             )
 

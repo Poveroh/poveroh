@@ -11,6 +11,8 @@ import {
 } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
 
+type TransactionPrismaData = Omit<ITransactionBase, 'action'> & { date: Date }
+
 /**
  * Transaction Helper - Handles all transaction operations with optimized database transactions,
  * comprehensive validation, and error handling.
@@ -446,15 +448,8 @@ export const TransactionHelper = {
 
         return transaction
     },
-    /**
-     * Normalizes transaction form data into a standardized ITransactionBase structure
-     * This function ensures consistent data transformation for both create and update operations
-     * @param action - The transaction action type
-     * @param transaction - The form data to normalize
-     * @returns Normalized transaction data ready for database operations
-     */
-    normalizeTransaction(action: TransactionAction, transaction: FormMode): ITransactionBase {
-        const baseData: ITransactionBase = {
+    normalizeTransaction(action: TransactionAction, transaction: FormMode): TransactionPrismaData {
+        const baseData: TransactionPrismaData = {
             title: transaction.title,
             date: new Date(transaction.date),
             note: transaction.note,

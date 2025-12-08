@@ -56,6 +56,9 @@ export const ImportHelper = {
                 id: transactionId,
                 userId: userId,
                 createdAt: new Date(),
+                status: TransactionStatus.IMPORT_PENDING,
+                importId: undefined,
+                updatedAt: new Date(),
                 amounts: [
                     {
                         id: uuidv4(),
@@ -67,17 +70,19 @@ export const ImportHelper = {
                         financialAccountId: financialAccountId
                     }
                 ],
+                media: [],
+                isTransferLeg: false,
+                transferId: undefined,
+                transferHash: undefined,
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,
                 action: rawTransaction.action,
-                date: rawTransaction.date.toISOString(),
-                status: TransactionStatus.IMPORT_PENDING,
-                note: similarTransaction?.note || '',
-                ignore: false,
                 categoryId: similarTransaction?.categoryId || undefined,
                 subcategoryId: similarTransaction?.subcategoryId || undefined,
-                importId: undefined,
-                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || undefined
-            } as ITransaction)
+                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || undefined,
+                date: rawTransaction.date,
+                note: similarTransaction?.note || '',
+                ignore: false
+            })
         }
 
         return transactions

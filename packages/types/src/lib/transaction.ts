@@ -42,6 +42,7 @@ export interface ITransfer extends ITransferBase {
 
 export interface ITransactionBase {
     title: string
+    action: TransactionAction
     categoryId?: string
     subcategoryId?: string
     icon?: string
