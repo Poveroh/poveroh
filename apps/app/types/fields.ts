@@ -101,6 +101,8 @@ export type SelectFieldProps<OptionType, T extends FieldValues = FieldValues> = 
     getOptionLabel: (option: OptionType) => string
     /** Function to extract value from option */
     getOptionValue: (option: OptionType) => string
+    /** Function to determine if option is disabled */
+    getOptionDisabled?: (option: OptionType) => boolean
     /** Custom renderer for option content */
     renderOptionContent?: (option: OptionType) => ReactNode
 }
@@ -119,7 +121,10 @@ export type CategoryFieldProps<T extends FieldValues = FieldValues> = StandardFi
  * Props for account selection fields
  * @template T - Form values type extending FieldValues
  */
-export type AccountFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T>
+export type AccountFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+    /** IDs of accounts to exclude from selection */
+    excludeIds?: string[]
+}
 
 /**
  * Props for subcategory fields with optional subcategory data

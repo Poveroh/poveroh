@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { ICategory, ICategoryBase, ICategoryFilters } from '@poveroh/types'
-import { omit } from 'lodash'
+import omit from 'lodash/omit'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'

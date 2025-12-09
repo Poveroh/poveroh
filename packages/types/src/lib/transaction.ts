@@ -11,7 +11,7 @@ export interface IAmountBase {
 
 export interface IAmount extends IAmountBase {
     id: string
-    createdAt: Date
+    createdAt: string
 }
 
 export interface ITransactionMediaBase {
@@ -23,11 +23,11 @@ export interface ITransactionMediaBase {
 export interface ITransactionMedia extends ITransactionMediaBase {
     id: string
     transactionId: string
-    createdAt: Date
+    createdAt: string
 }
 
 export interface ITransferBase {
-    transferDate: Date
+    transferDate: string
     note?: string
 }
 
@@ -36,28 +36,28 @@ export interface ITransfer extends ITransferBase {
     userId: string
     fromTransactionId?: string
     toTransactionId?: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
-export interface ITransactionBase {
+export type ITransactionBase = {
     title: string
     action: TransactionAction
     categoryId?: string
     subcategoryId?: string
     icon?: string
-    date: Date
-    note?: string
+    date: string
+    note?: string | null
     ignore: boolean
 }
 
 export interface ITransaction extends ITransactionBase {
     id: string
     userId: string
-    createdAt: Date
+    createdAt: string
     status: TransactionStatus
     importId?: string
-    updatedAt: Date
+    updatedAt: string
     amounts: IAmount[]
     action: TransactionAction
     media?: ITransactionMedia[]

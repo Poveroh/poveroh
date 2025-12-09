@@ -32,9 +32,7 @@ export function useIncomeForm(props: TransactionFormProps) {
 
         const transformed = {
             title: (transaction.title as string) || '',
-            date: transaction.date
-                ? transaction.date.toISOString().split('T')[0]!
-                : new Date().toISOString().split('T')[0]!,
+            date: transaction.date ? transaction.date.split('T')[0]! : new Date().toISOString().split('T')[0]!,
             amount: Math.abs(Number(firstAmount?.amount || 0)), // Get from amounts array
             currency: firstAmount?.currency || '',
             financialAccountId: firstAmount?.financialAccountId || '',

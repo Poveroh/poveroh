@@ -2,7 +2,7 @@
 
 import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUser } from '@poveroh/types'
+import { IUser, normalizeToIUser } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient } from '@/lib/auth'
@@ -24,9 +24,10 @@ export const useUser = () => {
             }
 
             if (result.data) {
-                userStore.setUser(result.data.user as IUser)
+                const normalizedUser = normalizeToIUser(result.data.user)
+                userStore.setUser(normalizedUser)
                 userStore.setLogged(true)
-                return result.data.user as IUser
+                return normalizedUser
             } else {
                 userStore.setLogged(false)
                 return null

@@ -10,8 +10,8 @@ export interface IAssetBase {
 export interface IAsset extends IAssetBase {
     id: string
     userId: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export interface IMarketableAsset {
@@ -26,7 +26,7 @@ export interface IRealEstateAsset {
     assetId: string
     address?: string | null
     purchasePrice?: number | null
-    purchaseDate?: Date | null
+    purchaseDate?: string | null
     currentValue?: number | null
 }
 
@@ -34,9 +34,9 @@ export interface ICollectibleAsset {
     id: string
     assetId: string
     acquisitionCost?: number | null
-    acquisitionDate?: Date | null
+    acquisitionDate?: string | null
     appraisalValue?: number | null
-    appraisalDate?: Date | null
+    appraisalDate?: string | null
 }
 
 export interface IPrivateDealAsset {
@@ -45,7 +45,7 @@ export interface IPrivateDealAsset {
     committedAmount?: number | null
     calledAmount?: number | null
     latestNav?: number | null
-    navDate?: Date | null
+    navDate?: string | null
 }
 
 export interface IInsuranceAsset {
@@ -59,7 +59,7 @@ export interface IInsuranceAsset {
 export interface IAssetTransaction {
     id: string
     assetId: string
-    date: Date
+    date: string
     quantityChange: number
     unitPrice?: number | null
     totalAmount?: number | null
@@ -69,7 +69,7 @@ export interface IAssetTransaction {
 
 export interface IAssetTransactionBase {
     assetId: string
-    date: Date
+    date: string
     quantityChange: number
     unitPrice?: number | null
     totalAmount?: number | null

@@ -4,7 +4,7 @@ import { Decimal } from '@prisma/client/runtime/library'
 import { RedisHelper } from './redis.helper'
 
 export const BalanceHelper = {
-    getAccountBalance: async (financialAccountId: string) => {
+    getAccountBalance: async (financialAccountId: string, tx?: any) => {
         // Try to get from cache first
         const cachedBalance = await RedisHelper.get(`balance:${financialAccountId}`)
         if (cachedBalance) {
@@ -12,7 +12,7 @@ export const BalanceHelper = {
         }
 
         // If not in cache, get from DB
-        const account = await prisma.financialAccount.findUnique({
+        const account = await (tx || prisma).financialAccount.findUnique({
             where: { id: financialAccountId },
             select: { balance: true }
         })
@@ -27,7 +27,8 @@ export const BalanceHelper = {
 
         return decimalBalance
     },
-    updateAccountBalances: async (amount: IAmountBase, originalAmount?: number) => {
+    updateAccountBalances: async (amount: IAmountBase, originalAmount?: number, tx?: any) => {
+        const db = tx || prisma
         const currentBalance = await BalanceHelper.getAccountBalance(amount.financialAccountId)
 
         let newBalance = new Decimal(currentBalance)
@@ -48,7 +49,7 @@ export const BalanceHelper = {
             newBalance = newBalance.sub(new Decimal(amount.amount))
         }
 
-        await prisma.financialAccount.update({
+        await db.financialAccount.update({
             where: { id: amount.financialAccountId },
             data: { balance: newBalance }
         })

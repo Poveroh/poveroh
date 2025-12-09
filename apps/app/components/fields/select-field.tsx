@@ -14,6 +14,7 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
     options,
     getOptionLabel,
     getOptionValue,
+    getOptionDisabled,
     onValueChange,
     onOpenChange,
     renderOptionContent
@@ -43,7 +44,11 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
                         </FormControl>
                         <SelectContent>
                             {options.map((item: OptionType) => (
-                                <SelectItem key={getOptionValue(item)} value={getOptionValue(item)}>
+                                <SelectItem
+                                    key={getOptionValue(item)}
+                                    value={getOptionValue(item)}
+                                    disabled={getOptionDisabled ? getOptionDisabled(item) : false}
+                                >
                                     {renderOptionContent ? renderOptionContent(item) : getOptionLabel(item)}
                                 </SelectItem>
                             ))}

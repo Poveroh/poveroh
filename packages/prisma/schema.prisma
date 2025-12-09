@@ -297,9 +297,8 @@ model Transaction {
     media         TransactionMedia[]
     amounts       Amount[]
 
-    isTransferLeg Boolean @default(false)
-    transferId    String?
-    transferHash  String? @db.VarChar(64)
+    transferId   String?
+    transferHash String? @db.VarChar(64)
 
     user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
     category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
@@ -311,7 +310,6 @@ model Transaction {
     @@index([userId])
     @@index([date])
     @@index([userId, date])
-    @@index([isTransferLeg])
     @@index([transferId])
     @@index([transferHash])
     @@index([importId])
@@ -473,6 +471,7 @@ enum FinancialAccountType {
 enum TransactionAction {
     EXPENSES
     INCOME
+    TRANSFER
 }
 
 enum TransactionStatus {

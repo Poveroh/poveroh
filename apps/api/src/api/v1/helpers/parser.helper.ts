@@ -787,7 +787,7 @@ class HowIParsedYourDataAlgorithm {
                                 const title = titleValue || `Transaction ${index + 1}`
 
                                 transactions.push({
-                                    date: this.parseDate(dateValue),
+                                    date: this.parseDate(dateValue).toISOString(),
                                     amount: Math.abs(amount),
                                     action: amount >= 0 ? TransactionAction.INCOME : TransactionAction.EXPENSES,
                                     currency,

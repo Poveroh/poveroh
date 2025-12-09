@@ -1,5 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
+import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 export const ImportHelper = {
@@ -55,14 +56,14 @@ export const ImportHelper = {
             transactions.push({
                 id: transactionId,
                 userId: userId,
-                createdAt: new Date(),
+                createdAt: nowAsISOString(),
                 status: TransactionStatus.IMPORT_PENDING,
                 importId: undefined,
-                updatedAt: new Date(),
+                updatedAt: nowAsISOString(),
                 amounts: [
                     {
                         id: uuidv4(),
-                        createdAt: new Date(),
+                        createdAt: nowAsISOString(),
                         transactionId: transactionId,
                         amount: rawTransaction.amount,
                         currency: rawTransaction.currency,
