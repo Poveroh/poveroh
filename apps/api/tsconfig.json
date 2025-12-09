@@ -11,8 +11,10 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./*"],
+            "@poveroh/prisma": ["../../packages/prisma/src"],
             "@poveroh/prisma/*": ["../../packages/prisma/src/*"],
-            "@poveroh/types/*": ["../../packages/types/*"]
+            "@poveroh/types": ["../../packages/types/src"],
+            "@poveroh/types/*": ["../../packages/types/src/*"]
         }
     },
     "include": ["src", "types"]
