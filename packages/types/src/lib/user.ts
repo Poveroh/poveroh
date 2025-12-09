@@ -42,19 +42,19 @@ export interface IUser extends IUserBase {
     dateFormat: DateFormat
     country: string
     timezone: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export interface ISession {
     id: string
     token: string
     userId: string
-    expiresAt: Date
+    expiresAt: string
     ipAddress?: string | null
     userAgent?: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export interface IAccount {
@@ -65,22 +65,22 @@ export interface IAccount {
     accessToken?: string | null
     refreshToken?: string | null
     idToken?: string | null
-    accessTokenExpiresAt?: Date | null
-    refreshTokenExpiresAt?: Date | null
+    accessTokenExpiresAt?: string | null
+    refreshTokenExpiresAt?: string | null
     scope?: string | null
     password?: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export interface IVerification {
     id: string
     identifier: string
     value: string
-    expiresAt: Date
+    expiresAt: string
     userId?: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
 }
 
 export interface IPasswordToChange {
@@ -107,6 +107,22 @@ export const defaultUser: IUser = {
     dateFormat: DateFormat.DD_MM_YYYY,
     country: 'italy',
     timezone: 'UTC',
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+}
+
+export function normalizeToIUser(user: any): IUser {
+    if (user.createdAt) {
+        user.createdAt = new Date(user.createdAt).toISOString()
+    }
+
+    if (user.updatedAt) {
+        user.updatedAt = new Date(user.updatedAt).toISOString()
+    }
+
+    if (user.onBoardingAt) {
+        user.onBoardingAt = new Date(user.onBoardingAt).toISOString()
+    }
+
+    return user as IUser
 }

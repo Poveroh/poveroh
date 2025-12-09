@@ -26,7 +26,7 @@ export interface IValueReturned {
 }
 
 export interface IReadedTransaction {
-    date: Date
+    date: string
     amount: number
     action: TransactionAction
     currency: Currencies

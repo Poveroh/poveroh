@@ -1,5 +1,5 @@
 export interface ISnapshotBase {
-    snapshotDate: Date
+    snapshotDate: string
     note?: string | null
     totalCash: number
     totalInvestments: number

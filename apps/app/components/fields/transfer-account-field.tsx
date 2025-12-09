@@ -17,6 +17,9 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
     disabled = false,
     mandatory = false
 }: TransferFieldProps<T>) {
+    const fromValue = form?.watch(fromName)
+    const toValue = form?.watch(toName)
+
     const switchAccount = () => {
         const fromAccount = form?.getValues(fromName)
         const toAccount = form?.getValues(toName)
@@ -36,6 +39,7 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
+                    excludeIds={toValue ? [toValue] : []}
                 />
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -58,6 +62,7 @@ export function TransferAccountField<T extends FieldValues = FieldValues>({
                     variant={variant}
                     disabled={disabled}
                     mandatory={mandatory}
+                    excludeIds={fromValue ? [fromValue] : []}
                 />
             </div>
         </div>

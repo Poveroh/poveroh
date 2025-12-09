@@ -15,7 +15,8 @@ export function AccountField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = false
+    mandatory = false,
+    excludeIds = []
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
     const { financialAccountCacheList, fetchFinancialAccount } = useFinancialAccount()
@@ -42,6 +43,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
             options={localAccountCacheList}
             getOptionLabel={(item: IFinancialAccount) => item.title}
             getOptionValue={(item: IFinancialAccount) => item.id}
+            getOptionDisabled={(item: IFinancialAccount) => excludeIds.includes(item.id)}
             onOpenChange={() => {
                 if (financialAccountCacheList.length === 0) {
                     fetchFinancialAccount(true)

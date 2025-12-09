@@ -1,5 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
+import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 export const ImportHelper = {
@@ -55,11 +56,14 @@ export const ImportHelper = {
             transactions.push({
                 id: transactionId,
                 userId: userId,
-                createdAt: new Date(),
+                createdAt: nowAsISOString(),
+                status: TransactionStatus.IMPORT_PENDING,
+                importId: undefined,
+                updatedAt: nowAsISOString(),
                 amounts: [
                     {
                         id: uuidv4(),
-                        createdAt: new Date(),
+                        createdAt: nowAsISOString(),
                         transactionId: transactionId,
                         amount: rawTransaction.amount,
                         currency: rawTransaction.currency,
@@ -67,17 +71,19 @@ export const ImportHelper = {
                         financialAccountId: financialAccountId
                     }
                 ],
+                media: [],
+                isTransferLeg: false,
+                transferId: undefined,
+                transferHash: undefined,
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,
                 action: rawTransaction.action,
-                date: rawTransaction.date.toISOString(),
-                status: TransactionStatus.IMPORT_PENDING,
-                note: similarTransaction?.note || '',
-                ignore: false,
                 categoryId: similarTransaction?.categoryId || undefined,
                 subcategoryId: similarTransaction?.subcategoryId || undefined,
-                importId: undefined,
-                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || undefined
-            } as ITransaction)
+                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || undefined,
+                date: rawTransaction.date,
+                note: similarTransaction?.note || '',
+                ignore: false
+            })
         }
 
         return transactions

@@ -7,13 +7,11 @@ import * as z from 'zod'
 
 import { IUserLogin, OnBoardingStep } from '@poveroh/types'
 import { useAuth } from '@/hooks/use-auth'
-import { useUserStore } from '@/store/auth.store'
 
 export function useSignInForm() {
     const t = useTranslations()
     const router = useRouter()
     const { signIn } = useAuth()
-    const userStore = useUserStore()
 
     const [loading, setLoading] = useState(false)
 
