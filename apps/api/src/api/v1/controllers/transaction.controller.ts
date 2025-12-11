@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { IFilterOptions, ITransaction, ITransactionFilters } from '@poveroh/types'
+import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
 

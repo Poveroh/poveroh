@@ -1,5 +1,5 @@
 import { EMAIL_REGEX } from '@poveroh/types'
-import { isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash'
 
 /**
  * Checks if the given string is a valid email address.
