@@ -79,7 +79,7 @@ export function ImportDrawer() {
                 <DrawerContent>
                     <div
                         className={cn(
-                            'mx-auto overflow-y-scroll pt-10',
+                            'mx-auto overflow-y-auto pt-10',
                             pendingTransactions.length == 0 ? 'w-[448px]' : 'w-1/2'
                         )}
                     >
