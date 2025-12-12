@@ -10,12 +10,10 @@
         "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
-        "@poveroh/types": "*",
-        "lodash": "^4.17.21"
+        "@poveroh/types": "*"
     },
     "devDependencies": {
         "@poveroh/tsconfig": "*",
-        "@types/lodash": "^4.17.15",
         "typescript": "^5.7.3"
     }
 }

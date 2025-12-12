@@ -19,7 +19,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 
 import { IFilterOptions, ITransaction } from '@poveroh/types'
 
-import { isEmpty } from 'lodash'
+import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'
 import { Header } from '@/components/other/header-page'
 import { useModal } from '@/hooks/use-modal'

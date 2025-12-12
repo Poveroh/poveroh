@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty'
+import { isEmpty } from '@poveroh/utils'
 import Cookies from 'js-cookie'
 
 export const storage = {

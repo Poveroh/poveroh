@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { isEmpty } from 'lodash'
+import { isEmpty } from '@poveroh/utils'
 import { useTranslations } from 'next-intl'
 
 import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
