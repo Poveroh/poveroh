@@ -61,7 +61,6 @@ export interface ITransaction extends ITransactionBase {
     amounts: IAmount[]
     action: TransactionAction
     media?: ITransactionMedia[]
-    isTransferLeg: boolean
     transferId?: string
     transferHash?: string
 }

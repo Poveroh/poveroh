@@ -562,7 +562,6 @@ export const TransactionHelper = {
                     createdAt: a.createdAt.toISOString()
                 }))
             ],
-            isTransferLeg: true,
             transferId: transfer.id,
             title: transfer.fromTransaction.title,
             action: TransactionAction.TRANSFER,

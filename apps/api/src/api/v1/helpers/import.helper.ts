@@ -71,8 +71,7 @@ export const ImportHelper = {
                         financialAccountId: financialAccountId
                     }
                 ],
-                media: [],
-                isTransferLeg: false,
+                media: undefined,
                 transferId: undefined,
                 transferHash: undefined,
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,
