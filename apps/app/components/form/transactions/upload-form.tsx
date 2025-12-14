@@ -6,13 +6,11 @@ import { TransactionsApprovalList } from '@/components/other/transactions-approv
 import { AccountAndFileForm } from './account-and-file-form'
 import { IImport } from '@poveroh/types'
 import { FormRef } from '@/types'
-import { useImport } from '@/hooks/use-imports'
 
 type FormProps = {
     initialData?: IImport
     dataCallback: (data: IImport) => Promise<void>
     showSaveButton: (enable?: boolean) => void
-    closeDialog: () => void
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
@@ -24,7 +22,7 @@ export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref)
         }
     }))
 
-    const handleCallback = async (importedFiles: FormData | IImport) => {}
+    const handleCallback = async () => {}
 
     return (
         <div className='flex flex-col space-y-6'>

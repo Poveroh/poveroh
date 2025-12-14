@@ -11,17 +11,17 @@ export function TransactionsApprovalList() {
         handleApproveTransaction,
         handleDeleteTransaction,
         handleEditTransaction,
-        pendingTransactions
+        importStore
     } = useImport()
 
-    if (pendingTransactions.length === 0) {
+    if (importStore.pendingTransactions.length === 0) {
         return null
     }
 
     return (
-        <div className='flex flex-col space-y-4'>
-            <div className='flex flex-row items-center justify-between'>
-                <p>{t('transactions.approvalList.transactionFound', { a: pendingTransactions.length })}</p>
+        <div className='flex flex-col space-y-4 h-full'>
+            <div className='flex flex-row items-center justify-between flex-shrink-0'>
+                <p>{t('transactions.approvalList.transactionFound', { a: importStore.pendingTransactions.length })}</p>
                 <div className='flex flex-row justify-between space-x-2'>
                     <Button variant='danger' size='sm' onClick={() => handleAllApproveTransactions(false)}>
                         {t('transactions.approvalList.rejectAll')}
@@ -32,8 +32,8 @@ export function TransactionsApprovalList() {
                 </div>
             </div>
 
-            <div className='flex flex-col space-y-2'>
-                {pendingTransactions.map((transaction, index) => {
+            <div className='flex flex-col overflow-y-auto space-y-2 flex-1'>
+                {importStore.pendingTransactions.map((transaction, index) => {
                     return (
                         <TransactionApprovalItem
                             key={transaction.id}

@@ -22,7 +22,7 @@ import { cn } from '@poveroh/ui/lib/utils'
 export function ImportDrawer() {
     const t = useTranslations()
 
-    const { completeImport, removeImport, pendingTransactions } = useImport()
+    const { completeImport, removeImport, importStore } = useImport()
 
     const drawerManager = useDrawer<IImport>()
     const deleteModalManager = useDeleteModal<IImport>()
@@ -76,31 +76,38 @@ export function ImportDrawer() {
     return (
         <>
             <Drawer open={drawerManager.isOpen} onOpenChange={drawerManager.closeDrawer}>
-                <DrawerContent>
+                <DrawerContent className='flex flex-col'>
                     <div
                         className={cn(
-                            'mx-auto overflow-y-auto pt-10',
-                            pendingTransactions.length == 0 ? 'w-[448px]' : 'w-1/2'
+                            'mx-auto flex flex-col pb-4',
+                            importStore.pendingTransactions.length > 0 && 'h-full',
+                            importStore.pendingTransactions.length == 0 ? 'w-[448px]' : 'w-1/2'
                         )}
                     >
-                        <DrawerHeader>
+                        <DrawerHeader className='flex-shrink-0'>
                             <DrawerTitle>
                                 {t(`imports.modal.${drawerManager.inEditingMode ? 'editTitle' : 'uploadTitle'}`)}
                             </DrawerTitle>
-                            <DrawerDescription className='w-3/4 m-auto'>
-                                {t('imports.modal.description')}
-                            </DrawerDescription>
+                            <DrawerDescription className='m-auto'>{t('imports.modal.description')}</DrawerDescription>
                         </DrawerHeader>
-                        <UploadForm
-                            ref={formRef}
-                            initialData={localImports}
-                            dataCallback={handleFormSubmit}
-                            showSaveButton={() => {}}
-                            closeDialog={drawerManager.closeDrawer}
-                        ></UploadForm>
-                        <DrawerFooter>
+                        <div className='flex-1 overflow-auto'>
+                            <UploadForm
+                                ref={formRef}
+                                initialData={localImports}
+                                dataCallback={handleFormSubmit}
+                                showSaveButton={() => {}}
+                            ></UploadForm>
+                        </div>
+                        <DrawerFooter className='flex-shrink-0'>
                             <DrawerClose asChild>
-                                <Button className='w-fit' variant='outline'>
+                                <Button
+                                    className='w-fit'
+                                    variant='outline'
+                                    onClick={() => {
+                                        importStore.cleanCurrentImports()
+                                        drawerManager.closeDrawer()
+                                    }}
+                                >
                                     {t('buttons.cancel')}
                                 </Button>
                             </DrawerClose>

@@ -184,7 +184,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                                     <h5 className='font-bold'>{amount}</h5>
                                     <span>{currencySymbol}</span>
                                 </div>
-                                <p className='sub'>{category?.title || 'Internal transfer'}</p>
+                                <p className='sub'>{category?.title || t('messages.noCategoryAssigned')}</p>
                             </div>
                         </div>
                     </div>

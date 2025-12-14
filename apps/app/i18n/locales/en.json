@@ -56,6 +56,7 @@
         "noCategoriesAndAccountTitle": "It looks like you don’t have any bank accounts or categories yet.",
         "noCategoriesAndAccountSub": "Please create them before adding a transaction.",
         "copied": "Copied to clipboard",
+        "noCategoryAssigned": "No category assigned",
         "errors": {
             "generic": "Error: {a}",
             "required": "This field is required",

@@ -18,7 +18,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importStore, importCacheList, importLoading, fetchImport, readPendingTransaction } = useImport()
+    const { importStore, importLoading, fetchImport, readPendingTransaction } = useImport()
 
     const { openDrawer } = useDrawer<IImport>()
     const { openModal: openDeleteModal } = useDeleteModal<IImport>()
@@ -30,8 +30,8 @@ export default function ImportsView() {
     }, [])
 
     useEffect(() => {
-        setLocalImports(importCacheList)
-    }, [importCacheList])
+        setLocalImports(importStore.importCacheList)
+    }, [importStore.importCacheList])
 
     const handleItemToItEdit = async (item: IImport) => {
         const readedTransactions = await readPendingTransaction(item.id)
@@ -46,6 +46,7 @@ export default function ImportsView() {
         }
 
         importStore.setCurrentImport(itemToEdit)
+        openDrawer('edit', itemToEdit)
     }
 
     return (

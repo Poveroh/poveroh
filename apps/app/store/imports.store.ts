@@ -12,6 +12,7 @@ type ImportStore = {
     removeImport: (importId: string) => void
     getImport: (importId: string) => IImport | null
     setCurrentImport: (importItem: IImport | null) => void
+    cleanCurrentImports: () => void
     setPendingTransactions: (transactions: ITransaction[]) => void
     updatePendingTransaction: (transaction: ITransaction) => void
     removePendingTransaction: (transactionId: string) => void
@@ -57,6 +58,13 @@ export const useImportStore = create<ImportStore>((set, get) => ({
         }))
     },
 
+    cleanCurrentImports: () => {
+        set(() => ({
+            currentImport: null,
+            pendingTransactions: []
+        }))
+    },
+
     getImport: importId => {
         const importCacheList = get().importCacheList
         return importCacheList.find(item => item.id === importId) || null
@@ -70,7 +78,8 @@ export const useImportStore = create<ImportStore>((set, get) => ({
 
     setCurrentImport: importItem => {
         set(() => ({
-            currentImport: importItem
+            currentImport: importItem,
+            pendingTransactions: importItem ? importItem.transactions || [] : []
         }))
     },
 
