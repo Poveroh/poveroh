@@ -4,12 +4,14 @@ import { IImport, ITransaction } from '@poveroh/types'
 
 type ImportStore = {
     importCacheList: IImport[]
+    currentImport: IImport | null
     pendingTransactions: ITransaction[]
     addImport: (importItems: IImport[]) => void
     editImport: (importItem: IImport) => void
     setImports: (imports: IImport[]) => void
     removeImport: (importId: string) => void
     getImport: (importId: string) => IImport | null
+    setCurrentImport: (importItem: IImport | null) => void
     setPendingTransactions: (transactions: ITransaction[]) => void
     updatePendingTransaction: (transaction: ITransaction) => void
     removePendingTransaction: (transactionId: string) => void
@@ -17,6 +19,7 @@ type ImportStore = {
 
 export const useImportStore = create<ImportStore>((set, get) => ({
     importCacheList: [],
+    currentImport: null,
     pendingTransactions: [],
 
     addImport: importItems => {
@@ -62,6 +65,12 @@ export const useImportStore = create<ImportStore>((set, get) => ({
     setPendingTransactions: transactions => {
         set(() => ({
             pendingTransactions: transactions
+        }))
+    },
+
+    setCurrentImport: importItem => {
+        set(() => ({
+            currentImport: importItem
         }))
     },
 

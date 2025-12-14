@@ -208,27 +208,43 @@ export class ImportController {
                 return
             }
 
-            const updatedTransactions = await prisma.$transaction(
-                parsedData.map((t: ITransaction) => {
+            const updatedTransactions = await prisma.$transaction(async tx => {
+                const results = []
+
+                for (const t of parsedData) {
                     const { amounts, action, media, ...transactionData } = t
-                    return prisma.transaction.update({
+
+                    // Update transaction data (excluding media)
+                    const updatedTransaction = await tx.transaction.update({
                         where: { id: t.id },
-                        data: {
-                            ...transactionData,
-                            media: media
-                                ? {
-                                      deleteMany: {},
-                                      create: media.map(m => ({
-                                          filename: m.filename,
-                                          filetype: m.filetype,
-                                          path: m.path
-                                      }))
-                                  }
-                                : undefined
-                        }
+                        data: transactionData
                     })
-                })
-            )
+
+                    // Handle media separately if provided
+                    if (media && Array.isArray(media)) {
+                        // Delete existing media
+                        await tx.transactionMedia.deleteMany({
+                            where: { transactionId: t.id }
+                        })
+
+                        // Create new media records
+                        if (media.length > 0) {
+                            await tx.transactionMedia.createMany({
+                                data: media.map(m => ({
+                                    transactionId: t.id,
+                                    filename: m.filename,
+                                    filetype: m.filetype,
+                                    path: m.path
+                                }))
+                            })
+                        }
+                    }
+
+                    results.push(updatedTransaction)
+                }
+
+                return results
+            })
 
             res.status(200).json(updatedTransactions)
         } catch (error) {

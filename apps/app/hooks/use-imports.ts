@@ -204,6 +204,7 @@ export const useImport = () => {
     return {
         importCacheList: importStore.importCacheList,
         importLoading,
+        importStore,
         pendingTransactions: importStore.pendingTransactions,
         fetchImport,
         removeImport,

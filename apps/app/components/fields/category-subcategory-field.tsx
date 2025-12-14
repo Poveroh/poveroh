@@ -6,10 +6,12 @@ import { useCategoryStore } from '@/store/category.store'
 import { CategorySubcategoryFieldProps } from '@/types'
 import { FieldValues, Path } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
+import { useCategory } from '@/hooks/use-category'
 
 export function CategorySubcategoryField<T extends FieldValues = FieldValues>(props: CategorySubcategoryFieldProps<T>) {
     const t = useTranslations()
     const { categoryCacheList } = useCategoryStore()
+    const { fetchCategory } = useCategory()
 
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
@@ -24,15 +26,24 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
     )
 
     useEffect(() => {
-        const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''
-        if (initialCategoryId) {
-            parseSubcategoryList(initialCategoryId)
+        const initializeComponent = async () => {
+            if (categoryCacheList.length === 0) {
+                await fetchCategory()
+            }
+
+            const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''
+            if (initialCategoryId) {
+                parseSubcategoryList(initialCategoryId)
+            }
         }
+
+        initializeComponent()
     }, [categoryCacheList, props.categoryId, props.form, props.name, parseSubcategoryList])
 
     return (
         <div className='flex flex-row space-x-2'>
             <CategoryField
+                {...props}
                 control={props.control}
                 name={'categoryId' as Path<T>}
                 label={t('form.category.label')}

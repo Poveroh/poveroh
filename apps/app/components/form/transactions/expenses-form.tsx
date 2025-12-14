@@ -225,6 +225,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                     )}
 
                     <CategorySubcategoryField
+                        form={form}
                         control={form.control}
                         name='categoryId'
                         subcategoryName='subcategoryId'

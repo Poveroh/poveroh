@@ -18,7 +18,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importCacheList, importLoading, fetchImport, readPendingTransaction } = useImport()
+    const { importStore, importCacheList, importLoading, fetchImport, readPendingTransaction } = useImport()
 
     const { openDrawer } = useDrawer<IImport>()
     const { openModal: openDeleteModal } = useDeleteModal<IImport>()
@@ -45,7 +45,7 @@ export default function ImportsView() {
             transactions: readedTransactions
         }
 
-        // setItemToEdit(itemToEdit)
+        importStore.setCurrentImport(itemToEdit)
     }
 
     return (

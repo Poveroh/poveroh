@@ -578,7 +578,7 @@ export const TransactionHelper = {
         const baseData: ITransactionBase = {
             title: transaction.title,
             action: action,
-            date: transaction.date,
+            date: new Date(transaction.date).toISOString(),
             note: transaction.note,
             ignore: transaction.ignore || false,
             categoryId: undefined,

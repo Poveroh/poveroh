@@ -96,6 +96,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                         label={t('form.category.label')}
                         placeholder={t('form.category.placeholder')}
                         mandatory={true}
+                        variant={inputStyle}
                     />
 
                     <NoteField
