@@ -54,7 +54,7 @@
         "minimist": "^1.2.8",
         "prettier": "^3.2.5",
         "prisma": "^6.19.0",
-        "storybook": "^10.0.8",
+        "storybook": "^10.1.10",
         "turbo": "^2.6.1",
         "typescript": "5.5.4",
         "vite": "^7.2.2",
