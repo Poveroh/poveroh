@@ -60,7 +60,9 @@ export default function ImportsView() {
                         { label: t('imports.title') }
                     ]}
                     fetchAction={{
-                        onClick: fetchImport,
+                        onClick: () => {
+                            fetchImport()
+                        },
                         loading: importLoading.fetchImport
                     }}
                     addAction={{
