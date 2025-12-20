@@ -88,7 +88,9 @@ export function ImportDrawer() {
                             <DrawerTitle>
                                 {t(`imports.modal.${drawerManager.inEditingMode ? 'editTitle' : 'uploadTitle'}`)}
                             </DrawerTitle>
-                            <DrawerDescription className='m-auto'>{t('imports.modal.description')}</DrawerDescription>
+                            <DrawerDescription className='m-auto w-[448px]'>
+                                {t('imports.modal.description')}
+                            </DrawerDescription>
                         </DrawerHeader>
                         <div className='flex-1 overflow-auto'>
                             <UploadForm
@@ -111,7 +113,16 @@ export function ImportDrawer() {
                                     {t('buttons.cancel')}
                                 </Button>
                             </DrawerClose>
-                            <Button className='w-full' onClick={() => formRef.current?.submit()}>
+                            <Button
+                                className='w-full'
+                                onClick={() => {
+                                    if (importStore.pendingTransactions.length === 0) {
+                                        formRef.current?.submit()
+                                    } else {
+                                        handleFormSubmit(importStore.currentImport!)
+                                    }
+                                }}
+                            >
                                 {t('buttons.submit')}
                             </Button>
                         </DrawerFooter>

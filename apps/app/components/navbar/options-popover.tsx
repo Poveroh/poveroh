@@ -9,40 +9,48 @@ type OptionsPopoverContentProps<T> = {
     data: T
     openDelete: (item: T) => void
     openEdit: (item: T) => void
+    options?: {
+        hideEdit?: boolean
+        hideDelete?: boolean
+    }
 }
 
-function OptionsContent<T>({ data, openDelete, openEdit }: OptionsPopoverContentProps<T>) {
+function OptionsContent<T>({ data, openDelete, openEdit, options }: OptionsPopoverContentProps<T>) {
     const t = useTranslations()
 
     return (
         <div className='flex flex-col'>
-            <Button
-                variant='ghost'
-                className='justify-start w-full'
-                onClick={e => {
-                    e.stopPropagation()
-                    openEdit(data)
-                }}
-            >
-                <Pencil className='mr-2' />
-                <p>{t('buttons.editItem')}</p>
-            </Button>
-            <Button
-                variant='ghost'
-                className='justify-start w-full'
-                onClick={e => {
-                    e.stopPropagation()
-                    openDelete(data)
-                }}
-            >
-                <Trash2 className='mr-2 danger' />
-                <p className='danger'>{t('buttons.deleteItem')}</p>
-            </Button>
+            {!options?.hideEdit && (
+                <Button
+                    variant='ghost'
+                    className='justify-start w-full'
+                    onClick={e => {
+                        e.stopPropagation()
+                        openEdit(data)
+                    }}
+                >
+                    <Pencil className='mr-2' />
+                    <p>{t('buttons.editItem')}</p>
+                </Button>
+            )}
+            {!options?.hideDelete && (
+                <Button
+                    variant='ghost'
+                    className='justify-start w-full'
+                    onClick={e => {
+                        e.stopPropagation()
+                        openDelete(data)
+                    }}
+                >
+                    <Trash2 className='mr-2 danger' />
+                    <p className='danger'>{t('buttons.deleteItem')}</p>
+                </Button>
+            )}
         </div>
     )
 }
 
-export function OptionsPopover<T>({ data, openDelete, openEdit }: OptionsPopoverContentProps<T>) {
+export function OptionsPopover<T>(props: OptionsPopoverContentProps<T>) {
     return (
         <Popover>
             <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
@@ -51,7 +59,7 @@ export function OptionsPopover<T>({ data, openDelete, openEdit }: OptionsPopover
                 </Button>
             </PopoverTrigger>
             <PopoverContent align='end' className='w-52'>
-                <OptionsContent data={data} openDelete={openDelete} openEdit={openEdit} />
+                <OptionsContent {...props} />
             </PopoverContent>
         </Popover>
     )
