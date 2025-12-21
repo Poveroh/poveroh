@@ -57,7 +57,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
             fromAccount,
             toAccount,
             category,
-            amount: amount.amount || 0,
+            amount: Number(amount.amount) || 0,
             // currencySymbol: icons[amount.currency]?.symbol || '',
             isExpense: transaction.action === TransactionAction.EXPENSES
         }
@@ -108,13 +108,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                 <div className='flex flex-col space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
                         {transaction.action !== TransactionAction.TRANSFER && (
-                            <>
-                                {isExpense ? (
-                                    <p className='danger font-bold'>-</p>
-                                ) : (
-                                    <p className='success font-bold'>+</p>
-                                )}
-                            </>
+                            <h5 className='danger font-bold'>{isExpense ? '-' : '+'}</h5>
                         )}
                         <h5 className='font-bold'>{amount}</h5>
                         {/* <span>{currencySymbol}</span> */}
