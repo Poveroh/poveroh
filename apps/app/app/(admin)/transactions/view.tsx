@@ -35,6 +35,7 @@ export default function TransactionsView() {
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
+    const [isLoadingMore, setIsLoadingMore] = useState(false)
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
@@ -51,7 +52,30 @@ export default function TransactionsView() {
         setLocalTransactionList(transactionCacheList)
     }, [transactionCacheList])
 
+    // Infinite scroll: carica automaticamente più transazioni quando raggiungi il fondo
+    useEffect(() => {
+        const handleScroll = () => {
+            if (isLoadingMore || transactionLoading.fetch) return
+
+            const scrollTop = window.scrollY || document.documentElement.scrollTop
+            const scrollHeight = document.documentElement.scrollHeight
+            const clientHeight = window.innerHeight
+
+            // Carica quando sei a 100px dal fondo
+            if (scrollTop + clientHeight >= scrollHeight - 100) {
+                loadMore()
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [isLoadingMore, transactionCacheList])
+
     const loadMore = async () => {
+        if (isLoadingMore) return
+
+        setIsLoadingMore(true)
+
         const currentSkip = transactionFilterSetting.skip ?? 0
         const currentTake = transactionFilterSetting.take ?? 20
 
@@ -60,9 +84,10 @@ export default function TransactionsView() {
             take: currentTake
         }
 
-        await fetchTransaction({}, newOptions, true)
+        await fetchTransaction({}, newOptions, true, true)
 
         setTransactionFilterSetting(newOptions)
+        setIsLoadingMore(false)
     }
 
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,14 +163,11 @@ export default function TransactionsView() {
                                     </Box>
                                 </div>
                             ))}
-                        {
-                            //TODO: pagination
-                            /* <div className='flex flex-col flex-y-2 justify-center items-center w-full'>
-                            <Button variant='outline' onClick={loadMore}>
-                                {t('buttons.loadMore')}
-                            </Button>
-                        </div> */
-                        }
+                        {isLoadingMore && (
+                            <div className='flex flex-col flex-y-2 justify-center items-center w-full py-4'>
+                                <p className='text-muted-foreground'>{t('messages.loading')}...</p>
+                            </div>
+                        )}
                     </>
                 ) : (
                     <>

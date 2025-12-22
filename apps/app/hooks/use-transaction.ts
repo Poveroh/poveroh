@@ -87,10 +87,15 @@ export const useTransaction = () => {
             : transactionStore.getTransaction(transactionId)
     }
 
-    const fetchTransaction = async (filters?: ITransactionFilters, options?: IFilterOptions, append?: boolean) => {
+    const fetchTransaction = async (
+        filters?: ITransactionFilters,
+        options?: IFilterOptions,
+        append?: boolean,
+        forceFetch?: boolean
+    ) => {
         setLoadingFor('fetch', true)
         try {
-            if (transactionStore.transactionCacheList.length > 0) {
+            if (transactionStore.transactionCacheList.length > 0 && !forceFetch) {
                 return transactionStore.transactionCacheList
             }
             const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)

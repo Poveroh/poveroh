@@ -104,7 +104,7 @@ export class TransactionController {
             const queryOptions: any = {
                 where,
                 include: { amounts: true },
-                orderBy: { createdAt: 'desc' },
+                orderBy: { date: 'desc' },
                 skip
             }
 
