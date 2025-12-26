@@ -25,6 +25,11 @@ import { Header } from '@/components/other/header-page'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
+import { TransactionTable } from '@/components/table/transaction-table'
+import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
+
+type ViewModeType = 'list' | 'table'
+
 export default function TransactionsView() {
     const t = useTranslations()
     const { transactionCacheList, fetchTransaction, groupTransactionsByDate, transactionLoading } = useTransaction()
@@ -36,6 +41,8 @@ export default function TransactionsView() {
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
+
+    const [viewMode, setViewMode] = useState<ViewModeType>('list')
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
@@ -55,7 +62,9 @@ export default function TransactionsView() {
     // Infinite scroll: carica automaticamente più transazioni quando raggiungi il fondo
     useEffect(() => {
         const handleScroll = () => {
-            if (isLoadingMore || transactionLoading.fetch) return
+            if (isLoadingMore || transactionLoading.fetch || viewMode === 'table') {
+                return
+            }
 
             const scrollTop = window.scrollY || document.documentElement.scrollTop
             const scrollHeight = document.documentElement.scrollHeight
@@ -69,7 +78,7 @@ export default function TransactionsView() {
 
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
-    }, [isLoadingMore, transactionCacheList])
+    }, [isLoadingMore, transactionCacheList, viewMode])
 
     const loadMore = async () => {
         if (isLoadingMore) return
@@ -120,55 +129,76 @@ export default function TransactionsView() {
                     }}
                 />
 
-                <div className='flex flex-col'>
+                <div className='flex flex-row justify-between'>
                     <Input
                         startIcon={Search}
                         placeholder={t('messages.search')}
                         className='w-1/3'
                         onChange={onSearch}
                     />
+                    <Tabs
+                        defaultValue={viewMode}
+                        value={viewMode}
+                        className='w-[200px]'
+                        onValueChange={x => setViewMode(x as ViewModeType)}
+                    >
+                        <TabsList className='grid w-full grid-cols-2'>
+                            <TabsTrigger value='list'>{t('layout.viewMode.list')}</TabsTrigger>
+                            <TabsTrigger value='table'>{t('layout.viewMode.table')}</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                 </div>
                 {localTransactionList.length > 0 ? (
-                    <>
-                        {Object.entries(groupTransactionsByDate(localTransactionList))
-                            .sort(([a], [b]) => b.localeCompare(a))
-                            .map(([date, transactions]) => (
-                                <div key={date} className='flex flex-col space-y-2'>
-                                    <h4>
-                                        {(() => {
-                                            const currentYear = new Date().getFullYear()
-                                            const dateObj = new Date(date)
-                                            const isCurrentYear = dateObj.getFullYear() === currentYear
+                    viewMode === 'list' ? (
+                        <>
+                            {Object.entries(groupTransactionsByDate(localTransactionList))
+                                .sort(([a], [b]) => b.localeCompare(a))
+                                .map(([date, transactions]) => (
+                                    <div key={date} className='flex flex-col space-y-2'>
+                                        <h4>
+                                            {(() => {
+                                                const currentYear = new Date().getFullYear()
+                                                const dateObj = new Date(date)
+                                                const isCurrentYear = dateObj.getFullYear() === currentYear
 
-                                            const options: Intl.DateTimeFormatOptions = isCurrentYear
-                                                ? { day: 'numeric', month: 'long' }
-                                                : { day: 'numeric', month: 'long', year: 'numeric' }
+                                                const options: Intl.DateTimeFormatOptions = isCurrentYear
+                                                    ? { day: 'numeric', month: 'long' }
+                                                    : { day: 'numeric', month: 'long', year: 'numeric' }
 
-                                            return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
-                                        })()}
-                                    </h4>
-                                    <Box>
-                                        <>
-                                            {transactions.map(transaction => (
-                                                <TransactionItem
-                                                    key={transaction.id}
-                                                    transaction={transaction}
-                                                    openEdit={(item: ITransaction) => {
-                                                        openModal('edit', item)
-                                                    }}
-                                                    openDelete={openDeleteModal}
-                                                />
-                                            ))}
-                                        </>
-                                    </Box>
+                                                return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
+                                            })()}
+                                        </h4>
+                                        <Box>
+                                            <>
+                                                {transactions.map(transaction => (
+                                                    <TransactionItem
+                                                        key={transaction.id}
+                                                        transaction={transaction}
+                                                        openEdit={(item: ITransaction) => {
+                                                            openModal('edit', item)
+                                                        }}
+                                                        openDelete={openDeleteModal}
+                                                    />
+                                                ))}
+                                            </>
+                                        </Box>
+                                    </div>
+                                ))}
+                            {isLoadingMore && (
+                                <div className='flex flex-col flex-y-2 justify-center items-center w-full py-4'>
+                                    <p className='text-muted-foreground'>{t('messages.loading')}...</p>
                                 </div>
-                            ))}
-                        {isLoadingMore && (
-                            <div className='flex flex-col flex-y-2 justify-center items-center w-full py-4'>
-                                <p className='text-muted-foreground'>{t('messages.loading')}...</p>
-                            </div>
-                        )}
-                    </>
+                            )}
+                        </>
+                    ) : (
+                        <TransactionTable
+                            transactions={localTransactionList}
+                            categories={categoryCacheList}
+                            accounts={financialAccountCacheList}
+                            onEdit={transaction => openModal('edit', transaction)}
+                            onDelete={openDeleteModal}
+                        />
+                    )
                 ) : (
                     <>
                         <div className='flex justify-center w-full pt-20'>

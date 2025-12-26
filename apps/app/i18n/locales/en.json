@@ -223,6 +223,10 @@
         "navbar": {
             "signInLink": "Already have an account?",
             "signUpLink": "Already have an account?"
+        },
+        "viewMode": {
+            "list": "List",
+            "table": "Table"
         }
     },
     "brand": {
