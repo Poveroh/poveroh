@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
+import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { Input } from '@poveroh/ui/components/input'
 
-import { ArrowLeftRight, Plus, Search } from 'lucide-react'
+import { ArrowLeftRight, ArrowUpDown, List, Plus, Search, Table } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
@@ -17,7 +18,7 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 
-import { IFilterOptions, ITransaction } from '@poveroh/types'
+import { IFilterOptions, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'
@@ -25,8 +26,11 @@ import { Header } from '@/components/other/header-page'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
-import { TransactionTable } from '@/components/table/transaction-table'
+import { DataTable } from '@/components/table/data-table'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
+import { type ColumnDef } from '@tanstack/react-table'
+import { OptionsPopover } from '@/components/navbar/options-popover'
+import { cn } from '@poveroh/ui/lib/utils'
 
 type ViewModeType = 'list' | 'table'
 
@@ -42,7 +46,7 @@ export default function TransactionsView() {
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-    const [viewMode, setViewMode] = useState<ViewModeType>('list')
+    const [viewMode, setViewMode] = useState<ViewModeType>('table')
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
@@ -59,7 +63,7 @@ export default function TransactionsView() {
         setLocalTransactionList(transactionCacheList)
     }, [transactionCacheList])
 
-    // Infinite scroll: carica automaticamente più transazioni quando raggiungi il fondo
+    // Infinite scroll: automatically load more transactions when you reach the bottom
     useEffect(() => {
         const handleScroll = () => {
             if (isLoadingMore || transactionLoading.fetch || viewMode === 'table') {
@@ -70,7 +74,7 @@ export default function TransactionsView() {
             const scrollHeight = document.documentElement.scrollHeight
             const clientHeight = window.innerHeight
 
-            // Carica quando sei a 100px dal fondo
+            // Load when you're 100px from the bottom
             if (scrollTop + clientHeight >= scrollHeight - 100) {
                 loadMore()
             }
@@ -112,6 +116,174 @@ export default function TransactionsView() {
         setLocalTransactionList(filteredList)
     }
 
+    const columns: ColumnDef<ITransaction>[] = [
+        {
+            id: 'select',
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+                    onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label='Select all'
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={value => row.toggleSelected(!!value)}
+                    aria-label='Select row'
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false
+        },
+        {
+            accessorKey: 'title',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant='ghost'
+                        className='text-white font-bold'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.title.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => <p>{row.getValue('title')}</p>
+        },
+        {
+            accessorKey: 'date',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        className='text-white font-bold'
+                        variant='ghost'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.date.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => <p>{new Date(row.getValue('date')).toLocaleDateString('it-IT')}</p>
+        },
+
+        {
+            accessorKey: 'amount',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant='ghost'
+                        className='text-white font-bold'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.amount.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const transaction = row.original
+                const amount = transaction.amounts[0]?.amount || 0
+                const isExpense = transaction.action === TransactionAction.EXPENSES
+                return (
+                    <p>
+                        <span className={cn(isExpense ? 'danger' : 'success', 'font-bold')}>
+                            {isExpense ? '-' : '+'}
+                        </span>
+                        &nbsp;
+                        {Math.abs(amount)}
+                    </p>
+                )
+            }
+        },
+        {
+            accessorKey: 'category',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant='ghost'
+                        className='text-white font-bold'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.category.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const transaction = row.original
+                const category = categoryCacheList.find(c => c.id === transaction.categoryId)
+                return <p>{category?.title || ''}</p>
+            }
+        },
+        {
+            accessorKey: 'subcategory',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant='ghost'
+                        className='text-white font-bold'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.subcategory.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const transaction = row.original
+                const category = categoryCacheList.find(c => c.id === transaction.categoryId)
+
+                if (!category) return <p></p>
+
+                const subcategory = category.subcategories.find(s => s.id === transaction.subcategoryId)
+
+                return <p>{subcategory?.title || ''}</p>
+            }
+        },
+        {
+            accessorKey: 'account',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant='ghost'
+                        className='text-white font-bold'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        {t('form.account.label')}
+                        <ArrowUpDown />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const transaction = row.original
+                const account = financialAccountCacheList.find(a => a.id === transaction.amounts[0]?.financialAccountId)
+                return <p>{account?.title || ''}</p>
+            }
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const transaction = row.original
+
+                return (
+                    <div onClick={e => e.stopPropagation()} className='w-fit'>
+                        <OptionsPopover<ITransaction>
+                            data={transaction}
+                            openEdit={(item: ITransaction) => {
+                                openModal('edit', item)
+                            }}
+                            openDelete={openDeleteModal}
+                        />
+                    </div>
+                )
+            }
+        }
+    ]
+
     return (
         <>
             <div className='space-y-12'>
@@ -143,8 +315,14 @@ export default function TransactionsView() {
                         onValueChange={x => setViewMode(x as ViewModeType)}
                     >
                         <TabsList className='grid w-full grid-cols-2'>
-                            <TabsTrigger value='list'>{t('layout.viewMode.list')}</TabsTrigger>
-                            <TabsTrigger value='table'>{t('layout.viewMode.table')}</TabsTrigger>
+                            <TabsTrigger value='list' className='flex items-center gap-2'>
+                                <List />
+                                {t('layout.viewMode.list')}
+                            </TabsTrigger>
+                            <TabsTrigger value='table' className='flex items-center gap-2'>
+                                <Table />
+                                {t('layout.viewMode.table')}
+                            </TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>
@@ -191,13 +369,7 @@ export default function TransactionsView() {
                             )}
                         </>
                     ) : (
-                        <TransactionTable
-                            transactions={localTransactionList}
-                            categories={categoryCacheList}
-                            accounts={financialAccountCacheList}
-                            onEdit={transaction => openModal('edit', transaction)}
-                            onDelete={openDeleteModal}
-                        />
+                        <DataTable data={localTransactionList} columns={columns} />
                     )
                 ) : (
                     <>

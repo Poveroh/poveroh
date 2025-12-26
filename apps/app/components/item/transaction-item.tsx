@@ -7,6 +7,7 @@ import { ArrowRightLeft } from 'lucide-react'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
 import { OptionsPopover } from '../navbar/options-popover'
+import { cn } from '@poveroh/ui/lib/utils'
 
 type TransactionItemProps = {
     transaction: ITransaction
@@ -108,7 +109,9 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                 <div className='flex flex-col space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
                         {transaction.action !== TransactionAction.TRANSFER && (
-                            <h5 className='danger font-bold'>{isExpense ? '-' : '+'}</h5>
+                            <h5 className={cn(isExpense ? 'danger' : 'success', 'font-bold')}>
+                                {isExpense ? '-' : '+'}
+                            </h5>
                         )}
                         <h5 className='font-bold'>{amount}</h5>
                         {/* <span>{currencySymbol}</span> */}

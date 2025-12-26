@@ -52,6 +52,7 @@
         "deleted": "deleted",
         "saved": "saved",
         "successfully": "{a} {b} successfully",
+        "noResult": "No results found",
         "availableNextVersion": "This feature will be available in the next version.",
         "noCategoriesAndAccountTitle": "It looks like you don’t have any bank accounts or categories yet.",
         "noCategoriesAndAccountSub": "Please create them before adding a transaction.",
@@ -227,6 +228,11 @@
         "viewMode": {
             "list": "List",
             "table": "Table"
+        },
+        "table": {
+            "pageOf": "Page {a} of {b}",
+            "selectedRows": "{a} of {b} rows selected",
+            "rowsPerPage": "Rows per page"
         }
     },
     "brand": {
