@@ -1,6 +1,7 @@
 import { Currencies } from './currency.js'
 import { Language } from './language.js'
 import { DateFormat } from './date-format.js'
+import { Timezone } from './timezone.js'
 
 export enum OnBoardingStep {
     EMAIL = 1,
@@ -41,7 +42,7 @@ export interface IUser extends IUserBase {
     preferredLanguage: Language
     dateFormat: DateFormat
     country: string
-    timezone: string
+    timezone: Timezone
     createdAt: string
     updatedAt: string
 }
@@ -106,7 +107,7 @@ export const defaultUser: IUser = {
     preferredLanguage: Language.EN,
     dateFormat: DateFormat.DD_MM_YYYY,
     country: 'italy',
-    timezone: 'UTC',
+    timezone: Timezone.ETC_UTC,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
 }

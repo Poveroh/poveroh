@@ -19,7 +19,8 @@ export const usePreferencesForm = () => {
     const formSchema = z.object({
         preferredCurrency: z.string().nonempty(t('messages.errors.required')),
         preferredLanguage: z.string().nonempty(t('messages.errors.required')),
-        dateFormat: z.string().nonempty(t('messages.errors.required'))
+        dateFormat: z.string().nonempty(t('messages.errors.required')),
+        timezone: z.string().nonempty(t('messages.errors.required'))
     })
 
     const form = useForm({
@@ -27,7 +28,8 @@ export const usePreferencesForm = () => {
         defaultValues: {
             preferredCurrency: user?.preferredCurrency || 'EUR',
             preferredLanguage: user?.preferredLanguage || 'en',
-            dateFormat: user?.dateFormat || 'DD_MM_YYYY'
+            dateFormat: user?.dateFormat || 'DD_MM_YYYY',
+            timezone: user?.timezone || 'ETC_UTC'
         }
     })
 
@@ -36,7 +38,8 @@ export const usePreferencesForm = () => {
             form.reset({
                 preferredCurrency: user?.preferredCurrency || 'EUR',
                 preferredLanguage: user?.preferredLanguage || 'en',
-                dateFormat: user?.dateFormat || 'DD_MM_YYYY'
+                dateFormat: user?.dateFormat || 'DD_MM_YYYY',
+                timezone: user?.timezone || 'ETC_UTC'
             })
             console.log('Form reset with user data')
         }

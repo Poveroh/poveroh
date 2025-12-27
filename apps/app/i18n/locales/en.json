@@ -147,6 +147,10 @@
             "label": "Date format",
             "placeholder": "Select a date format"
         },
+        "timezone": {
+            "label": "Timezone",
+            "placeholder": "Select a timezone"
+        },
         "title": {
             "label": "Title"
         },

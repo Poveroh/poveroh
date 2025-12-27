@@ -10,7 +10,7 @@ import { Form } from '@poveroh/ui/components/form'
 import Box from '@/components/box/box-wrapper'
 import { CurrencyField, SelectField } from '@/components/fields'
 import { Header } from '@/components/other/header-page'
-import { languageCatalog, dateFormatCatalog } from '@poveroh/types'
+import { languageCatalog, dateFormatCatalog, timezoneCatalog } from '@poveroh/types'
 import { usePreferencesForm } from '@/hooks/form/use-preferences-form'
 
 export default function PreferencesView() {
@@ -62,6 +62,17 @@ export default function PreferencesView() {
                                 options={dateFormatCatalog}
                                 getOptionLabel={d => d.label}
                                 getOptionValue={d => d.value}
+                            />
+
+                            <SelectField
+                                control={form.control}
+                                name='timezone'
+                                label={t('form.timezone.label')}
+                                placeholder={t('form.timezone.placeholder')}
+                                mandatory
+                                options={timezoneCatalog}
+                                getOptionLabel={tz => tz.label}
+                                getOptionValue={tz => tz.value}
                             />
                             <div className='flex flex-col items-end w-full'>
                                 <Button type='submit' disabled={loading}>
