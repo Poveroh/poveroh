@@ -170,7 +170,8 @@ export default function TransactionsView() {
         },
 
         {
-            accessorKey: 'amount',
+            accessorFn: row => row.amounts[0]?.amount || 0,
+            id: 'amount',
             header: ({ column }) => {
                 return (
                     <Button
@@ -199,7 +200,8 @@ export default function TransactionsView() {
             }
         },
         {
-            accessorKey: 'category',
+            accessorFn: row => categoryCacheList.find(c => c.id === row.categoryId)?.title || '',
+            id: 'category',
             header: ({ column }) => {
                 return (
                     <Button
@@ -219,7 +221,11 @@ export default function TransactionsView() {
             }
         },
         {
-            accessorKey: 'subcategory',
+            accessorFn: row => {
+                const category = categoryCacheList.find(c => c.id === row.categoryId)
+                return category?.subcategories.find(s => s.id === row.subcategoryId)?.title || ''
+            },
+            id: 'subcategory',
             header: ({ column }) => {
                 return (
                     <Button
@@ -244,7 +250,9 @@ export default function TransactionsView() {
             }
         },
         {
-            accessorKey: 'account',
+            accessorFn: row =>
+                financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || '',
+            id: 'account',
             header: ({ column }) => {
                 return (
                     <Button
