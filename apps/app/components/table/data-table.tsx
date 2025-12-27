@@ -19,6 +19,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@poveroh/ui/components/table'
 import { useTranslations } from 'next-intl'
+import { cn } from '@poveroh/ui/lib/utils'
 
 type TableProps<T> = {
     data: T[]
@@ -82,7 +83,7 @@ export function DataTable<T>({ data, columns }: TableProps<T>) {
                             table.getRowModel().rows.map(row => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className={cn(cell.column.id == 'select' && 'px-2')}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
