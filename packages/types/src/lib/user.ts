@@ -107,7 +107,7 @@ export const defaultUser: IUser = {
     preferredLanguage: Language.EN,
     dateFormat: DateFormat.DD_MM_YYYY,
     country: 'italy',
-    timezone: Timezone.ETC_UTC,
+    timezone: Timezone.EUROPE_ROME,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
 }
