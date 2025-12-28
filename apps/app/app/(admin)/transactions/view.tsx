@@ -144,7 +144,7 @@ export default function TransactionsView() {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoadingMore, viewMode])
+    }, [isLoadingMore, viewMode, filters, transactionFilterSetting])
 
     // Sync filters to URL parameters
     const updateURLParams = (newFilters: ITransactionFilters) => {
@@ -173,8 +173,8 @@ export default function TransactionsView() {
         if (viewMode === 'table') {
             loadTransactionsPaginated(newOptions, newFilters)
         } else {
-            // For list view, fetch fresh data (not append)
-            fetchTransaction(newFilters, newOptions, true, false)
+            // For list view, fetch fresh data (not append) and force fetch
+            fetchTransaction(newFilters, newOptions, false, true)
         }
     }
 
@@ -219,14 +219,19 @@ export default function TransactionsView() {
     const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        if (isEmpty(textToSearch)) {
-            setLocalTransactionList(transactionCacheList)
-            return
+        if (viewMode === 'list') {
+            // For list view, filter locally from cache
+            if (isEmpty(textToSearch)) {
+                setLocalTransactionList(transactionCacheList)
+                return
+            }
+
+            const filteredList = transactionCacheList.filter(x =>
+                x.title.toLowerCase().includes(textToSearch.toLowerCase())
+            )
+            setLocalTransactionList(filteredList)
         }
-
-        const filteredList = transactionCacheList.filter(x => x.title.toLowerCase().includes(textToSearch))
-
-        setLocalTransactionList(filteredList)
+        // For table view, filtering is handled by the table component itself
     }
 
     const handleTablePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
