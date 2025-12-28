@@ -461,6 +461,7 @@ export default function TransactionsView() {
                             onPaginationChange={handleTablePaginationChange}
                             manualSorting={true}
                             onSortingChange={handleTableSortingChange}
+                            isLoading={transactionLoading.fetch}
                         />
                     )
                 ) : (

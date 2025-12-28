@@ -13,7 +13,7 @@ import {
     type SortingState,
     type VisibilityState
 } from '@tanstack/react-table'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2 } from 'lucide-react'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
@@ -29,6 +29,7 @@ type TableProps<T> = {
     onPaginationChange?: (pagination: PaginationState) => void
     manualSorting?: boolean
     onSortingChange?: (sorting: SortingState) => void
+    isLoading?: boolean
 }
 
 export function DataTable<T>({
@@ -38,7 +39,8 @@ export function DataTable<T>({
     pageCount: controlledPageCount,
     onPaginationChange: onPaginationChangeCallback,
     manualSorting = false,
-    onSortingChange: onSortingChangeCallback
+    onSortingChange: onSortingChangeCallback,
+    isLoading = false
 }: TableProps<T>) {
     const t = useTranslations()
 
@@ -99,7 +101,15 @@ export function DataTable<T>({
 
     return (
         <div className='w-full'>
-            <div className='overflow-hidden rounded-md border border-border'>
+            <div className='overflow-hidden rounded-md border border-border relative'>
+                {isLoading && (
+                    <div className='absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center'>
+                        <div className='flex items-center space-x-3 bg-card px-4 py-3 rounded-lg border border-border shadow-lg'>
+                            <Loader2 className='animate-spin' />
+                            <p>{t('messages.loading')}</p>
+                        </div>
+                    </div>
+                )}
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map(headerGroup => (
@@ -152,6 +162,7 @@ export function DataTable<T>({
                             onValueChange={value => {
                                 table.setPageSize(Number(value))
                             }}
+                            disabled={isLoading}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -175,21 +186,29 @@ export function DataTable<T>({
                         <Button
                             variant='secondary'
                             onClick={() => table.firstPage()}
-                            disabled={!table.getCanPreviousPage()}
+                            disabled={!table.getCanPreviousPage() || isLoading}
                         >
                             <ChevronsLeft />
                         </Button>
                         <Button
                             variant='secondary'
                             onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
+                            disabled={!table.getCanPreviousPage() || isLoading}
                         >
                             <ChevronLeft />
                         </Button>
-                        <Button variant='secondary' onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                        <Button
+                            variant='secondary'
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage() || isLoading}
+                        >
                             <ChevronRight />
                         </Button>
-                        <Button variant='secondary' onClick={() => table.lastPage()} disabled={!table.getCanNextPage()}>
+                        <Button
+                            variant='secondary'
+                            onClick={() => table.lastPage()}
+                            disabled={!table.getCanNextPage() || isLoading}
+                        >
                             <ChevronsRight />
                         </Button>
                     </div>
