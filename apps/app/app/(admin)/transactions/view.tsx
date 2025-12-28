@@ -26,7 +26,8 @@ import {
     ITransactionFilters,
     TransactionAction,
     FilterField,
-    DateFilter
+    DateFilter,
+    TransactionsFilterTypes
 } from '@poveroh/types'
 
 import { isEmpty } from '@poveroh/utils'
@@ -342,7 +343,7 @@ export default function TransactionsView() {
         handleFilterChange(newFilters)
     }
 
-    const getFilterLabel = (key: keyof ITransactionFilters, value: unknown) => {
+    const getFilterLabel = (key: keyof ITransactionFilters, value: TransactionsFilterTypes) => {
         if (key === 'type') {
             return value === TransactionAction.INCOME ? 'Income' : 'Expense'
         }

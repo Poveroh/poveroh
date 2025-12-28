@@ -1,9 +1,15 @@
 import { FinancialAccountType } from './account.js'
+import { IItem } from './item.js'
 import { TransactionAction } from './transaction.js'
 
 export type StringFilter = { equals?: string; contains?: string }
 export type DateFilter = { gte?: string; lte?: string }
 export type NumberFilter = { equals?: number; gte?: number; lte?: number }
+
+export type CategoryFilterTypes = string | StringFilter | TransactionAction | undefined
+export type TransactionsFilterTypes = string | StringFilter | DateFilter | TransactionAction | undefined
+export type SubcategoryFilterTypes = string | StringFilter | undefined
+export type FinancialAccountFilterTypes = string | StringFilter | FinancialAccountType | undefined
 
 export interface IFilterOptions {
     skip?: number
@@ -26,7 +32,7 @@ export interface ITransactionFilters {
     subcategoryId?: string
     financialAccountId?: string
     date?: DateFilter
-    [key: string]: string | StringFilter | DateFilter | TransactionAction | undefined
+    [key: string]: TransactionsFilterTypes
 }
 
 export interface ICategoryFilters {
@@ -34,7 +40,7 @@ export interface ICategoryFilters {
     title?: StringFilter
     description?: StringFilter
     for?: TransactionAction
-    [key: string]: string | StringFilter | TransactionAction | undefined
+    [key: string]: CategoryFilterTypes
 }
 
 export interface ISubcategoryFilters {
@@ -42,7 +48,7 @@ export interface ISubcategoryFilters {
     title?: StringFilter
     description?: StringFilter
     categoryId?: string
-    [key: string]: string | StringFilter | undefined
+    [key: string]: SubcategoryFilterTypes
 }
 
 export interface IFinancialAccountFilters {
@@ -50,7 +56,7 @@ export interface IFinancialAccountFilters {
     title?: StringFilter
     description?: StringFilter
     type?: FinancialAccountType
-    [key: string]: string | StringFilter | FinancialAccountType | undefined
+    [key: string]: FinancialAccountFilterTypes
 }
 
 export interface ISubscriptionFilters {
@@ -71,7 +77,7 @@ export type FilterField =
           name: string
           label: string
           type: 'select'
-          options: { label: string; value: string }[]
+          options: IItem[]
       }
     | {
           fromName: string
