@@ -50,7 +50,7 @@ export default function TransactionsView() {
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
-        take: 20
+        take: 50
     })
 
     useEffect(() => {
