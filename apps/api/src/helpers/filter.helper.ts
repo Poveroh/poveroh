@@ -1,17 +1,25 @@
 export function buildWhere<T extends Record<string, any>>(filters: T): any {
     if (Array.isArray(filters)) return { id: { in: filters } }
 
-    const { search, ...rest } = filters
+    const { search, type, ...rest } = filters
 
-    const andConditions = Object.entries(rest).map(([key, value]) => {
-        if (value === undefined) return null
+    // Map 'type' to 'action' for Transaction model compatibility
+    const mappedFilters: Record<string, any> = { ...rest }
+    if (type !== undefined) {
+        mappedFilters.action = type
+    }
 
-        if (typeof value === 'object' && value !== null && ('contains' in value || 'equals' in value)) {
+    const andConditions = Object.entries(mappedFilters)
+        .filter(([key]) => key !== 'type') // Ensure 'type' is never passed through
+        .map(([key, value]) => {
+            if (value === undefined) return null
+
+            if (typeof value === 'object' && value !== null && ('contains' in value || 'equals' in value)) {
+                return { [key]: value }
+            }
+
             return { [key]: value }
-        }
-
-        return { [key]: value }
-    })
+        })
 
     const searchConditions =
         search && typeof search === 'string'

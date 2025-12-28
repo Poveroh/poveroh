@@ -3,22 +3,24 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Checkbox } from '@poveroh/ui/components/checkbox'
 import { Input } from '@poveroh/ui/components/input'
 
-import { ArrowLeftRight, ArrowUpDown, List, Plus, Search, Table } from 'lucide-react'
+import { ArrowLeftRight, ArrowUpDown, List, Plus, Search, Table, X } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
 import { TransactionItem } from '@/components/item/transaction-item'
+import { FilterButton } from '@/components/filter/filter-button'
 
 import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 
-import { IFilterOptions, ITransaction, TransactionAction } from '@poveroh/types'
+import { IFilterOptions, ITransaction, ITransactionFilters, TransactionAction, FilterField } from '@poveroh/types'
 
 import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'
@@ -36,6 +38,9 @@ import { ViewModeType } from '@/types'
 
 export default function TransactionsView() {
     const t = useTranslations()
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
     const {
         transactionCacheList,
         fetchTransaction,
@@ -64,6 +69,29 @@ export default function TransactionsView() {
         take: 20
     })
 
+    // Initialize filters from URL parameters
+    const [filters, setFilters] = useState<ITransactionFilters>(() => {
+        const params: ITransactionFilters = {}
+        const categoryId = searchParams.get('categoryId')
+        const subcategoryId = searchParams.get('subcategoryId')
+        const financialAccountId = searchParams.get('financialAccountId')
+        const type = searchParams.get('type')
+        const fromDate = searchParams.get('fromDate')
+        const toDate = searchParams.get('toDate')
+
+        if (categoryId) params.categoryId = categoryId
+        if (subcategoryId) params.subcategoryId = subcategoryId
+        if (financialAccountId) params.financialAccountId = financialAccountId
+        if (type) params.type = type as TransactionAction
+        if (fromDate || toDate) {
+            params.date = {}
+            if (fromDate) params.date.gte = fromDate
+            if (toDate) params.date.lte = toDate
+        }
+
+        return params
+    })
+
     useEffect(() => {
         fetchCategory()
         fetchFinancialAccount()
@@ -72,7 +100,7 @@ export default function TransactionsView() {
         if (viewMode === 'table') {
             loadTransactionsPaginated(transactionFilterSetting)
         } else {
-            fetchTransaction({}, transactionFilterSetting)
+            fetchTransaction(filters, transactionFilterSetting)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -92,7 +120,7 @@ export default function TransactionsView() {
             // Reset to initial state for list view
             const initialOptions = { skip: 0, take: 20 }
             setTransactionFilterSetting(initialOptions)
-            await fetchTransaction({}, initialOptions)
+            await fetchTransaction(filters, initialOptions)
         }
     }
 
@@ -118,7 +146,42 @@ export default function TransactionsView() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoadingMore, viewMode])
 
-    const loadTransactionsPaginated = async (options: IFilterOptions) => {
+    // Sync filters to URL parameters
+    const updateURLParams = (newFilters: ITransactionFilters) => {
+        const params = new URLSearchParams()
+
+        if (newFilters.categoryId) params.set('categoryId', newFilters.categoryId)
+        if (newFilters.subcategoryId) params.set('subcategoryId', newFilters.subcategoryId)
+        if (newFilters.financialAccountId) params.set('financialAccountId', newFilters.financialAccountId)
+        if (newFilters.type) params.set('type', newFilters.type)
+        if (newFilters.date?.gte) params.set('fromDate', newFilters.date.gte)
+        if (newFilters.date?.lte) params.set('toDate', newFilters.date.lte)
+
+        const queryString = params.toString()
+        const newPath = queryString ? `/transactions?${queryString}` : '/transactions'
+        router.replace(newPath, { scroll: false })
+    }
+
+    const handleFilterChange = (newFilters: ITransactionFilters) => {
+        setFilters(newFilters)
+        updateURLParams(newFilters)
+
+        // Reset to first page and reload data
+        const newOptions = { skip: 0, take: 20 }
+        setTransactionFilterSetting(newOptions)
+
+        if (viewMode === 'table') {
+            loadTransactionsPaginated(newOptions, newFilters)
+        } else {
+            // For list view, fetch fresh data (not append)
+            fetchTransaction(newFilters, newOptions, true, false)
+        }
+    }
+
+    const loadTransactionsPaginated = async (options: IFilterOptions, filtersToUse?: ITransactionFilters) => {
+        // Use provided filters or fall back to state filters
+        const activeFilters = filtersToUse !== undefined ? filtersToUse : filters
+
         // Add sorting to options if present
         const optionsWithSort = {
             ...options,
@@ -128,7 +191,7 @@ export default function TransactionsView() {
                     sortOrder: sorting[0].desc ? ('desc' as const) : ('asc' as const)
                 })
         }
-        const result = await fetchTransactionPaginated({}, optionsWithSort)
+        const result = await fetchTransactionPaginated(activeFilters, optionsWithSort)
         if (result) {
             setTotalCount(result.total)
         }
@@ -147,7 +210,7 @@ export default function TransactionsView() {
             take: currentTake
         }
 
-        await fetchTransaction({}, newOptions, true, true)
+        await fetchTransaction(filters, newOptions, true, true)
 
         setTransactionFilterSetting(newOptions)
         setIsLoadingMore(false)
@@ -184,6 +247,109 @@ export default function TransactionsView() {
         }
         setTransactionFilterSetting(newOptions)
         loadTransactionsPaginated(newOptions)
+    }
+
+    // Define filter fields
+    const filterFields: FilterField[] = [
+        {
+            name: 'type',
+            label: 'form.type.label',
+            type: 'select',
+            options: [
+                { label: 'Income', value: TransactionAction.INCOME },
+                { label: 'Expense', value: TransactionAction.EXPENSES }
+            ]
+        },
+        {
+            name: 'categoryId',
+            label: 'form.category.label',
+            type: 'select',
+            options: categoryCacheList.map(cat => ({
+                label: cat.title,
+                value: cat.id
+            }))
+        },
+        {
+            name: 'financialAccountId',
+            label: 'form.account.label',
+            type: 'select',
+            options: financialAccountCacheList.map(acc => ({
+                label: acc.title,
+                value: acc.id
+            }))
+        },
+        {
+            name: 'dateRange',
+            label: 'form.date.label',
+            type: 'dateRange',
+            fromName: 'fromDate',
+            toName: 'toDate'
+        }
+    ]
+
+    const handleFlatFilterChange = (newFlatFilters: ITransactionFilters) => {
+        const newFilters: ITransactionFilters = {}
+
+        if (newFlatFilters.type) {
+            newFilters.type = newFlatFilters.type as TransactionAction
+        }
+        if (newFlatFilters.categoryId && newFlatFilters.categoryId !== '') {
+            newFilters.categoryId = newFlatFilters.categoryId
+        }
+        if (newFlatFilters.subcategoryId && newFlatFilters.subcategoryId !== '') {
+            newFilters.subcategoryId = newFlatFilters.subcategoryId
+        }
+        if (newFlatFilters.financialAccountId && newFlatFilters.financialAccountId !== '') {
+            newFilters.financialAccountId = newFlatFilters.financialAccountId
+        }
+        if (newFlatFilters.date) {
+            newFilters.date = {}
+            if (newFlatFilters.date.gte && newFlatFilters.date.gte !== '') {
+                newFilters.date.gte = newFlatFilters.date.gte
+            }
+            if (newFlatFilters.date.lte && newFlatFilters.date.lte !== '') {
+                newFilters.date.lte = newFlatFilters.date.lte
+            }
+            // Remove date object if it's empty
+            if (!newFilters.date.gte && !newFilters.date.lte) {
+                delete newFilters.date
+            }
+        }
+
+        handleFilterChange(newFilters)
+    }
+
+    const removeFilter = (key: keyof ITransactionFilters) => {
+        const newFilters: ITransactionFilters = { ...filters }
+
+        if (key === 'date') {
+            delete newFilters.date
+        } else {
+            delete newFilters[key]
+        }
+
+        handleFilterChange(newFilters)
+    }
+
+    const getFilterLabel = (key: keyof ITransactionFilters, value: unknown): string => {
+        if (key === 'type') {
+            return value === TransactionAction.INCOME ? 'Income' : 'Expense'
+        }
+        if (key === 'categoryId') {
+            return categoryCacheList.find(c => c.id === value)?.title || String(value)
+        }
+        if (key === 'financialAccountId') {
+            return financialAccountCacheList.find(a => a.id === value)?.title || String(value)
+        }
+        if (key === 'date') {
+            const dateFilter = value as { gte?: string; lte?: string }
+            if (dateFilter.gte && dateFilter.lte) {
+                return `${dateFilter.gte} - ${dateFilter.lte}`
+            }
+            if (dateFilter.gte) return `From ${dateFilter.gte}`
+            if (dateFilter.lte) return `To ${dateFilter.lte}`
+        }
+        return String(value)
     }
 
     const columns: ColumnDef<ITransaction>[] = [
@@ -373,7 +539,7 @@ export default function TransactionsView() {
                             if (viewMode === 'table') {
                                 loadTransactionsPaginated(transactionFilterSetting)
                             } else {
-                                fetchTransaction({}, transactionFilterSetting)
+                                fetchTransaction(filters, transactionFilterSetting)
                             }
                         },
                         loading:
@@ -386,12 +552,34 @@ export default function TransactionsView() {
                 />
 
                 <div className='flex flex-row justify-between'>
-                    <Input
-                        startIcon={Search}
-                        placeholder={t('messages.search')}
-                        className='w-1/3'
-                        onChange={onSearch}
-                    />
+                    <div className='flex flex-row space-x-6 w-full'>
+                        <div className='flex flex-row space-x-3'>
+                            <Input
+                                startIcon={Search}
+                                placeholder={t('messages.search')}
+                                className='w-80'
+                                onChange={onSearch}
+                            />
+
+                            {Object.entries(filters).map(([key, value]) => (
+                                <Button
+                                    key={key}
+                                    variant='secondary'
+                                    className='flex items-center gap-1'
+                                    onClick={() => removeFilter(key as keyof ITransactionFilters)}
+                                >
+                                    {getFilterLabel(key as keyof ITransactionFilters, value)}
+                                    <X />
+                                </Button>
+                            ))}
+                        </div>
+
+                        <FilterButton<ITransactionFilters>
+                            fields={filterFields}
+                            filters={filters}
+                            onFilterChange={handleFlatFilterChange}
+                        />
+                    </div>
                     <Tabs
                         defaultValue={viewMode}
                         value={viewMode}

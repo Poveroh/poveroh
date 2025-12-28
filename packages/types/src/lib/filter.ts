@@ -26,7 +26,7 @@ export interface ITransactionFilters {
     subcategoryId?: string
     financialAccountId?: string
     date?: DateFilter
-    fromDate?: string
+    [key: string]: string | StringFilter | DateFilter | TransactionAction | undefined
 }
 
 export interface ICategoryFilters {
@@ -34,6 +34,7 @@ export interface ICategoryFilters {
     title?: StringFilter
     description?: StringFilter
     for?: TransactionAction
+    [key: string]: string | StringFilter | TransactionAction | undefined
 }
 
 export interface ISubcategoryFilters {
@@ -41,6 +42,7 @@ export interface ISubcategoryFilters {
     title?: StringFilter
     description?: StringFilter
     categoryId?: string
+    [key: string]: string | StringFilter | undefined
 }
 
 export interface IFinancialAccountFilters {
@@ -48,6 +50,7 @@ export interface IFinancialAccountFilters {
     title?: StringFilter
     description?: StringFilter
     type?: FinancialAccountType
+    [key: string]: string | StringFilter | FinancialAccountType | undefined
 }
 
 export interface ISubscriptionFilters {
@@ -55,13 +58,16 @@ export interface ISubscriptionFilters {
     title?: StringFilter
     description?: StringFilter
     financialAccountId?: string
+    [key: string]: string | StringFilter | undefined
 }
 
 export type FilterField =
     | {
           name: string
           label: string
-          type: 'text' | 'date'
+          type: 'text' | 'date' | 'dateRange'
+          fromName?: string
+          toName?: string
       }
     | {
           name: string

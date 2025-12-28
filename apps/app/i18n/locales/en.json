@@ -156,7 +156,11 @@
         },
         "date": {
             "label": "Date",
-            "placeholder": "Select a date"
+            "placeholder": "Select a date",
+            "rangePlaceholder": {
+                "from": "From",
+                "to": "To"
+            }
         },
         "amount": {
             "label": "Amount",

@@ -36,6 +36,7 @@ export default function AccountView() {
 
     useEffect(() => {
         fetchFinancialAccount()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -121,30 +122,28 @@ export default function AccountView() {
                             onChange={onSearch}
                         />
 
-                        {Object.entries(filters)
-                            .filter(([key]) => key === 'type')
-                            .map(([key, value]) => {
-                                if (!value) return null
+                        {Object.entries(filters).map(([key, value]) => {
+                            if (!value) return null
 
-                                const item = TYPE_LIST.find(x => x.value == value)
+                            const item = TYPE_LIST.find(x => x.value == value)
 
-                                if (!item) return
+                            if (!item) return
 
-                                return (
-                                    <Button
-                                        key={key}
-                                        variant='secondary'
-                                        className='flex items-center gap-1'
-                                        onClick={() => removeFilter(key as keyof IFinancialAccountFilters)}
-                                    >
-                                        {item.label}
-                                        <X />
-                                    </Button>
-                                )
-                            })}
+                            return (
+                                <Button
+                                    key={key}
+                                    variant='secondary'
+                                    className='flex items-center gap-1'
+                                    onClick={() => removeFilter(key as keyof IFinancialAccountFilters)}
+                                >
+                                    {item.label}
+                                    <X />
+                                </Button>
+                            )
+                        })}
                     </div>
 
-                    <FilterButton
+                    <FilterButton<IFinancialAccountFilters>
                         fields={[
                             {
                                 name: 'type',

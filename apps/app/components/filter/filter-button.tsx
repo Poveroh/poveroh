@@ -10,13 +10,13 @@ import { useTranslations } from 'next-intl'
 import { FilterField } from '@poveroh/types'
 import Divider from '../other/divider'
 
-type FilterButtonProps<T extends Record<string, any>> = {
+type FilterButtonProps<T> = {
     fields: FilterField[]
     filters: T
     onFilterChange: (filters: T) => void
 }
 
-export function FilterButton<T extends Record<string, any>>({ fields, filters, onFilterChange }: FilterButtonProps<T>) {
+export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButtonProps<T>) {
     const t = useTranslations()
 
     const [localFilters, setLocalFilters] = useState<T>(filters)
@@ -25,7 +25,7 @@ export function FilterButton<T extends Record<string, any>>({ fields, filters, o
         setLocalFilters(filters)
     }, [filters])
 
-    const handleChange = (name: keyof T, value: any) => {
+    const handleChange = (name: keyof T, value: string) => {
         const updated = { ...localFilters, [name]: value }
         setLocalFilters(updated)
         onFilterChange(updated)
@@ -39,39 +39,73 @@ export function FilterButton<T extends Record<string, any>>({ fields, filters, o
                     {t('filter.title')}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align='end' className='w-72'>
+            <PopoverContent align='end'>
                 <div className='flex flex-col space-y-3'>
-                    {fields.map((field, index) => (
-                        <div key={field.name} className='flex flex-col space-y-3'>
-                            <label className='text-sm font-medium'>{t(field.label)}</label>
+                    {fields.map((field, index) => {
+                        if (field.type === 'select') {
+                            return (
+                                <div key={field.name} className='flex flex-col space-y-3'>
+                                    <p>{t(field.label)}</p>
+                                    <Select
+                                        value={(localFilters[field.name as keyof T] as string) || ''}
+                                        onValueChange={val => handleChange(field.name as keyof T, val)}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder={t('messages.selectValue')} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {field.options.map(opt => (
+                                                <SelectItem key={opt.value} value={opt.value}>
+                                                    {opt.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {index < fields.length - 1 && <Divider />}
+                                </div>
+                            )
+                        }
 
-                            {field.type === 'select' ? (
-                                <Select
-                                    value={localFilters[field.name] || ''}
-                                    onValueChange={val => handleChange(field.name as keyof T, val)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t('messages.selectValue')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {field.options.map(opt => (
-                                            <SelectItem key={opt.value} value={opt.value}>
-                                                {opt.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            ) : (
+                        if (field.type === 'dateRange') {
+                            return (
+                                <div key={field.name} className='flex flex-col space-y-3'>
+                                    <div className='flex flex-row gap-2'>
+                                        <div className='flex flex-col space-y-3'>
+                                            <p>{t('form.date.rangePlaceholder.from')}</p>
+                                            <Input
+                                                type='date'
+                                                value={(localFilters[field.fromName as keyof T] as string) || ''}
+                                                onChange={e => handleChange(field.fromName as keyof T, e.target.value)}
+                                                placeholder='From'
+                                            />
+                                        </div>
+                                        <div className='flex flex-col space-y-3'>
+                                            <p>{t('form.date.rangePlaceholder.to')}</p>
+                                            <Input
+                                                type='date'
+                                                value={(localFilters[field.toName as keyof T] as string) || ''}
+                                                onChange={e => handleChange(field.toName as keyof T, e.target.value)}
+                                                placeholder='To'
+                                            />
+                                        </div>
+                                    </div>
+                                    {index < fields.length - 1 && <Divider />}
+                                </div>
+                            )
+                        }
+
+                        return (
+                            <div key={field.name} className='flex flex-col space-y-3'>
+                                <p>{t(field.label)}</p>
                                 <Input
                                     type={field.type}
-                                    value={localFilters[field.name] || ''}
+                                    value={(localFilters[field.name as keyof T] as string) || ''}
                                     onChange={e => handleChange(field.name as keyof T, e.target.value)}
                                 />
-                            )}
-
-                            {fields.length - 1 !== index && <Divider />}
-                        </div>
-                    ))}
+                                {index < fields.length - 1 && <Divider />}
+                            </div>
+                        )
+                    })}
                 </div>
             </PopoverContent>
         </Popover>

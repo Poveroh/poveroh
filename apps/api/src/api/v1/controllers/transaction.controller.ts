@@ -6,6 +6,7 @@ import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
 import { TransactionWithAmounts } from '@/types/transactions'
+import { assert } from 'node:console'
 
 export class TransactionController {
     //POST /
@@ -85,8 +86,8 @@ export class TransactionController {
             const rawFilters = req.query['filter'] || {}
             const rawOptions = req.query['options'] || {}
 
-            const filters = rawFilters as unknown as ITransactionFilters
-            const options = rawOptions as unknown as IFilterOptions
+            const filters = rawFilters as ITransactionFilters
+            const options = rawOptions as IFilterOptions
 
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
@@ -99,7 +100,7 @@ export class TransactionController {
                 ...(filters.fromDate && {
                     date: {
                         ...(filters.date || {}),
-                        gte: new Date(filters.fromDate)
+                        gte: new Date(filters.date?.gte || filters.date?.lte || '')
                     }
                 })
             }
