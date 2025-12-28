@@ -31,7 +31,8 @@ export default function SubscriptionsView() {
     const { openModal: openDeleteModal } = useDeleteModal<ISubscription>()
 
     const [localSubscriptionList, setLocalSubscriptionList] = useState<ISubscription[]>(subscriptionCacheList)
-    const subscriptionsTotal = parseFloat(localSubscriptionList.reduce((sum, sub) => sum + sub.amount, 0).toFixed(2))
+    const total = localSubscriptionList.reduce((sum, sub) => sum + Number(sub.amount || 0), 0)
+    const subscriptionsTotal = parseFloat(total.toFixed(2))
 
     useEffect(() => {
         fetchSubscriptions()
