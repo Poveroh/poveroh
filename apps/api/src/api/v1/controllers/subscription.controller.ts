@@ -97,14 +97,17 @@ export class SubscriptionController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.subscription.findMany({
-                where,
-                orderBy: { createdAt: 'desc' },
-                skip,
-                take
-            })
+            const [data, total] = await Promise.all([
+                prisma.subscription.findMany({
+                    where,
+                    orderBy: { createdAt: 'desc' },
+                    skip,
+                    take
+                }),
+                prisma.subscription.count({ where })
+            ])
 
-            res.status(200).json(data)
+            res.status(200).json({ data, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

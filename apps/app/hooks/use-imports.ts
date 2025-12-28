@@ -43,8 +43,8 @@ export const useImport = () => {
         setLoadingFor('fetchImport', true)
         try {
             const res = await importService.read<IImport[], IImportsFilters>(filters, options)
-            importStore.setImports(res)
-            return res
+            importStore.setImports(res.data)
+            return res.data
         } catch (error) {
             handleError(error, 'Error fetching imports')
         } finally {

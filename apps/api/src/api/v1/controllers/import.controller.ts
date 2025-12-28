@@ -132,15 +132,18 @@ export class ImportController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.import.findMany({
-                where,
-                include: { files: true },
-                orderBy: { createdAt: 'desc' },
-                skip,
-                take
-            })
+            const [data, total] = await Promise.all([
+                prisma.import.findMany({
+                    where,
+                    include: { files: true },
+                    orderBy: { createdAt: 'desc' },
+                    skip,
+                    take
+                }),
+                prisma.import.count({ where })
+            ])
 
-            res.status(200).json(data)
+            res.status(200).json({ data, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

@@ -21,14 +21,14 @@ export class BaseService<T> {
         return await server.delete<boolean>(`${this.endpoint}/${id}`)
     }
 
-    async read<U, F = any>(filters?: F, options?: IFilterOptions): Promise<U> {
-        const queryObject: any = {}
+    async read<U, F = unknown>(filters?: F, options?: IFilterOptions): Promise<{ data: U; total: number }> {
+        const queryObject: Record<string, unknown> = {}
 
         if (filters) queryObject.filter = filters
         if (options) queryObject.options = options
 
         const query = qs.stringify(queryObject, { encode: true, indices: false })
 
-        return await server.get<U>(`${this.endpoint}?${query}`)
+        return await server.get<{ data: U; total: number }>(`${this.endpoint}?${query}`)
     }
 }

@@ -87,9 +87,11 @@ export const useCategory = () => {
     const getCategory = async (categoryId: string, fetchFromServer?: boolean) => {
         setCategoryLoadingFor('getCategory', true)
         try {
-            return fetchFromServer
-                ? await categoryService.read<ICategory | null, ICategoryFilters>({ id: categoryId })
-                : categoryStore.getCategory(categoryId)
+            if (fetchFromServer) {
+                const res = await categoryService.read<ICategory | null, ICategoryFilters>({ id: categoryId })
+                return res.data
+            }
+            return categoryStore.getCategory(categoryId)
         } catch (error) {
             return handleError(error, 'Error fetching category')
         } finally {
@@ -143,9 +145,11 @@ export const useCategory = () => {
     const getSubcategory = async (subcategoryId: string, fetchFromServer?: boolean) => {
         setCategoryLoadingFor('getSubcategory', true)
         try {
-            return fetchFromServer
-                ? await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: subcategoryId })
-                : categoryStore.getSubcategory(subcategoryId)
+            if (fetchFromServer) {
+                const res = await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: subcategoryId })
+                return res.data
+            }
+            return categoryStore.getSubcategory(subcategoryId)
         } catch (error) {
             return handleError(error, 'Error fetching subcategory')
         } finally {
@@ -160,8 +164,8 @@ export const useCategory = () => {
                 return categoryStore.categoryCacheList
             }
             const res = await categoryService.read<ICategory[], ICategoryFilters>()
-            categoryStore.setCategory(res)
-            return res
+            categoryStore.setCategory(res.data)
+            return res.data
         } catch (error) {
             return handleError(error, 'Error fetching categories')
         } finally {

@@ -70,9 +70,13 @@ export const useSubscription = () => {
     const getSubscription = async (subscriptionId: string, fetchFromServer?: boolean) => {
         setLoadingFor('get', true)
         try {
-            return fetchFromServer
-                ? await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({ id: subscriptionId })
-                : subscriptionStore.getSubscription(subscriptionId)
+            if (fetchFromServer) {
+                const res = await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({
+                    id: subscriptionId
+                })
+                return res.data
+            }
+            return subscriptionStore.getSubscription(subscriptionId)
         } catch (error) {
             return handleError(error, 'Error fetching subscription')
         } finally {
@@ -84,8 +88,8 @@ export const useSubscription = () => {
         setLoadingFor('fetch', true)
         try {
             const res = await subscriptionService.read<ISubscription[], ISubscriptionFilters>()
-            subscriptionStore.setSubscriptions(res)
-            return res
+            subscriptionStore.setSubscriptions(res.data)
+            return res.data
         } catch (error) {
             return handleError(error, 'Error fetching subscriptions')
         } finally {

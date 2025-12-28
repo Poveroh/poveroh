@@ -112,9 +112,12 @@ export class TransactionController {
                 queryOptions.take = take
             }
 
-            const data = await prisma.transaction.findMany(queryOptions)
+            const [data, total] = await Promise.all([
+                prisma.transaction.findMany(queryOptions),
+                prisma.transaction.count({ where })
+            ])
 
-            res.status(200).json(data)
+            res.status(200).json({ data, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

@@ -82,9 +82,11 @@ export const useTransaction = () => {
     }
 
     const getTransaction = async (transactionId: string, fetchFromServer?: boolean) => {
-        return fetchFromServer
-            ? await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transactionId })
-            : transactionStore.getTransaction(transactionId)
+        if (fetchFromServer) {
+            const res = await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transactionId })
+            return res.data
+        }
+        return transactionStore.getTransaction(transactionId)
     }
 
     const fetchTransaction = async (
@@ -100,10 +102,10 @@ export const useTransaction = () => {
             }
             const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
 
-            if (append) transactionStore.appendTransactions(res)
-            else transactionStore.setTransactions(res)
+            if (append) transactionStore.appendTransactions(res.data)
+            else transactionStore.setTransactions(res.data)
 
-            return res
+            return res.data
         } catch (error) {
             return handleError(error, 'Error fetching transactions')
         } finally {
@@ -118,6 +120,22 @@ export const useTransaction = () => {
             { value: TransactionAction.TRANSFER, label: t('transactions.action.internalTransfer') }
         ]
         return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.TRANSFER) : actionList
+    }
+
+    const fetchTransactionPaginated = async (
+        filters?: ITransactionFilters,
+        options?: IFilterOptions
+    ): Promise<{ data: ITransaction[]; total: number } | null> => {
+        setLoadingFor('fetch', true)
+        try {
+            const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
+            transactionStore.setTransactions(res.data)
+            return res
+        } catch (error) {
+            return handleError(error, 'Error fetching transactions')
+        } finally {
+            setLoadingFor('fetch', false)
+        }
     }
 
     const groupTransactionsByDate = (transactions: ITransaction[]): GroupedTransactions => {
@@ -139,6 +157,7 @@ export const useTransaction = () => {
         removeTransaction,
         getTransaction,
         fetchTransaction,
+        fetchTransactionPaginated,
         getActionList,
         groupTransactionsByDate
     }

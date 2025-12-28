@@ -70,11 +70,13 @@ export const useFinancialAccount = () => {
     const getFinancialAccount = async (financialAccountId: string, fetchFromServer?: boolean) => {
         setFinancialAccountLoadingFor('get', true)
         try {
-            return fetchFromServer
-                ? await financialAccountService.read<IFinancialAccount | null, IFinancialAccountFilters>({
-                      id: financialAccountId
-                  })
-                : financialAccountStore.getFinancialAccount(financialAccountId)
+            if (fetchFromServer) {
+                const res = await financialAccountService.read<IFinancialAccount | null, IFinancialAccountFilters>({
+                    id: financialAccountId
+                })
+                return res.data
+            }
+            return financialAccountStore.getFinancialAccount(financialAccountId)
         } catch (error) {
             return handleError(error, 'Error fetching ')
         } finally {
@@ -89,8 +91,8 @@ export const useFinancialAccount = () => {
                 return financialAccountStore.financialAccountCacheList
             }
             const res = await financialAccountService.read<IFinancialAccount[], IFinancialAccountFilters>()
-            financialAccountStore.setFinancialAccounts(res)
-            return res
+            financialAccountStore.setFinancialAccounts(res.data)
+            return res.data
         } catch (error) {
             return handleError(error, 'Error fetching s')
         } finally {

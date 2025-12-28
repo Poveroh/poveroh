@@ -91,17 +91,22 @@ export class FinancialAccountController {
 
             const where = buildWhere(filters)
 
-            const data = await prisma.financialAccount.findMany({
-                where: {
-                    ...where,
-                    userId: req.user.id
-                },
-                orderBy: { createdAt: 'desc' },
-                skip,
-                take
-            })
+            const whereCondition = {
+                ...where,
+                userId: req.user.id
+            }
 
-            res.status(200).json(data)
+            const [data, total] = await Promise.all([
+                prisma.financialAccount.findMany({
+                    where: whereCondition,
+                    orderBy: { createdAt: 'desc' },
+                    skip,
+                    take
+                }),
+                prisma.financialAccount.count({ where: whereCondition })
+            ])
+
+            res.status(200).json({ data, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
