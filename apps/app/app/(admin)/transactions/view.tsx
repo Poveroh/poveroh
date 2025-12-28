@@ -598,7 +598,11 @@ export default function TransactionsView() {
                         </TabsList>
                     </Tabs>
                 </div>
-                {localTransactionList.length > 0 ? (
+                {transactionLoading.fetch && localTransactionList.length === 0 ? (
+                    <div className='flex justify-center items-center w-full py-20'>
+                        <p className='text-muted-foreground'>{t('messages.loading')}...</p>
+                    </div>
+                ) : localTransactionList.length > 0 ? (
                     viewMode === 'list' ? (
                         <>
                             {Object.entries(groupTransactionsByDate(localTransactionList))
@@ -656,36 +660,59 @@ export default function TransactionsView() {
                     <>
                         <div className='flex justify-center w-full pt-20'>
                             <div className='flex flex-col items-center space-y-8 justify-center w-[400px]'>
-                                <div className='flex flex-col items-center space-y-8 justify-center'>
-                                    <ArrowLeftRight />
-                                    <div className='flex flex-col items-center space-y-2 justify-center'>
-                                        <h4>{t('transactions.empty.title')}</h4>
-                                        <p>{t('transactions.empty.subtitle')}</p>
+                                {Object.keys(filters).length > 0 ? (
+                                    // Show "no results" when filters are active
+                                    <div className='flex flex-col items-center space-y-8 justify-center'>
+                                        <Search className='w-16 h-16 text-muted-foreground' />
+                                        <div className='flex flex-col items-center space-y-2 justify-center text-center'>
+                                            <h4>{t('messages.noResults')}</h4>
+                                            <p className='text-muted-foreground'>{t('messages.tryAdjustingFilters')}</p>
+                                        </div>
+                                        <Button variant='outline' onClick={() => handleFilterChange({})}>
+                                            {t('messages.clearFilters')}
+                                        </Button>
                                     </div>
-                                </div>
-                                {(financialAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                ) : (
+                                    // Show empty state when no filters are active
                                     <>
-                                        <Divider />
                                         <div className='flex flex-col items-center space-y-8 justify-center'>
-                                            <div className='flex flex-col items-center space-y-2 justify-center'>
-                                                <p className='warning'>{t('messages.noCategoriesAndAccountTitle')}</p>
-                                                <p className='warning'>{t('messages.noCategoriesAndAccountSub')}</p>
-                                            </div>
-                                            <div className='flex flex-row space-x-4'>
-                                                <Link href='/accounts'>
-                                                    <Button variant='outline'>
-                                                        <Plus />
-                                                        {t('accounts.title')}
-                                                    </Button>
-                                                </Link>
-                                                <Link href='/categories'>
-                                                    <Button variant='outline'>
-                                                        <Plus />
-                                                        {t('categories.title')}
-                                                    </Button>
-                                                </Link>
+                                            <ArrowLeftRight className='w-16 h-16' />
+                                            <div className='flex flex-col items-center space-y-2 justify-center text-center'>
+                                                <h4>{t('transactions.empty.title')}</h4>
+                                                <p className='text-muted-foreground'>
+                                                    {t('transactions.empty.subtitle')}
+                                                </p>
                                             </div>
                                         </div>
+                                        {(financialAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                            <>
+                                                <Divider />
+                                                <div className='flex flex-col items-center space-y-8 justify-center'>
+                                                    <div className='flex flex-col items-center space-y-2 justify-center text-center'>
+                                                        <p className='warning'>
+                                                            {t('messages.noCategoriesAndAccountTitle')}
+                                                        </p>
+                                                        <p className='warning'>
+                                                            {t('messages.noCategoriesAndAccountSub')}
+                                                        </p>
+                                                    </div>
+                                                    <div className='flex flex-row space-x-4'>
+                                                        <Link href='/accounts'>
+                                                            <Button variant='outline'>
+                                                                <Plus />
+                                                                {t('accounts.title')}
+                                                            </Button>
+                                                        </Link>
+                                                        <Link href='/categories'>
+                                                            <Button variant='outline'>
+                                                                <Plus />
+                                                                {t('categories.title')}
+                                                            </Button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>

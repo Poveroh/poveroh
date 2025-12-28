@@ -94,13 +94,20 @@ export class TransactionController {
             const sortBy = options.sortBy || 'date'
             const sortOrder = options.sortOrder || 'desc'
 
+            // Extract transaction-specific filters that need special handling
+            const { type, financialAccountId, ...genericFilters } = filters
+
             const where = {
-                ...buildWhere(filters),
+                ...buildWhere(genericFilters),
                 status: TransactionStatus.APPROVED,
-                ...(filters.fromDate && {
-                    date: {
-                        ...(filters.date || {}),
-                        gte: new Date(filters.date?.gte || filters.date?.lte || '')
+                // Map 'type' to 'action' for Transaction model
+                ...(type && { action: type }),
+                // Handle financialAccountId filter through amounts relation
+                ...(financialAccountId && {
+                    amounts: {
+                        some: {
+                            financialAccountId
+                        }
                     }
                 })
             }
