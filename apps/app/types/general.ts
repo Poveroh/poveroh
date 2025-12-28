@@ -5,3 +5,5 @@ export type LoadingState = {
     get: boolean
     fetch: boolean
 }
+
+export type ViewModeType = 'list' | 'table'

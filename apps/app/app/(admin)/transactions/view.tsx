@@ -31,8 +31,8 @@ import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { type ColumnDef } from '@tanstack/react-table'
 import { OptionsPopover } from '@/components/navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
-
-type ViewModeType = 'list' | 'table'
+import { storage } from '@/lib/storage'
+import { ViewModeType } from '@/types'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -53,7 +53,10 @@ export default function TransactionsView() {
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [totalCount, setTotalCount] = useState(0)
 
-    const [viewMode, setViewMode] = useState<ViewModeType>('list')
+    const [viewMode, setViewMode] = useState<ViewModeType>(() => {
+        const saved = storage.get('transactionViewMode')
+        return (saved as ViewModeType) || 'list'
+    })
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
@@ -80,6 +83,7 @@ export default function TransactionsView() {
     // Handle view mode change and reload data accordingly
     const handleViewModeChange = async (newMode: ViewModeType) => {
         setViewMode(newMode)
+        storage.set('transactionViewMode', newMode)
 
         if (newMode === 'table') {
             await loadTransactionsPaginated(transactionFilterSetting)
