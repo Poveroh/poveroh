@@ -24,9 +24,18 @@ import { cn } from '@poveroh/ui/lib/utils'
 type TableProps<T> = {
     data: T[]
     columns: ColumnDef<T>[]
+    manualPagination?: boolean
+    pageCount?: number
+    onPaginationChange?: (pagination: PaginationState) => void
 }
 
-export function DataTable<T>({ data, columns }: TableProps<T>) {
+export function DataTable<T>({
+    data,
+    columns,
+    manualPagination = false,
+    pageCount: controlledPageCount,
+    onPaginationChange: onPaginationChangeCallback
+}: TableProps<T>) {
     const t = useTranslations()
 
     const [sorting, setSorting] = useState<SortingState>([])
@@ -35,12 +44,22 @@ export function DataTable<T>({ data, columns }: TableProps<T>) {
     const [rowSelection, setRowSelection] = useState({})
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 20
     })
+
+    const handlePaginationChange = (updater: ((old: PaginationState) => PaginationState) | PaginationState) => {
+        const newPagination = typeof updater === 'function' ? updater(pagination) : updater
+        setPagination(newPagination)
+        if (manualPagination && onPaginationChangeCallback) {
+            onPaginationChangeCallback(newPagination)
+        }
+    }
 
     const table = useReactTable({
         data,
         columns,
+        pageCount: controlledPageCount ?? -1,
+        manualPagination,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -49,7 +68,7 @@ export function DataTable<T>({ data, columns }: TableProps<T>) {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
-        onPaginationChange: setPagination,
+        onPaginationChange: handlePaginationChange,
         state: {
             sorting,
             columnFilters,

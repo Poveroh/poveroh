@@ -36,7 +36,13 @@ type ViewModeType = 'list' | 'table'
 
 export default function TransactionsView() {
     const t = useTranslations()
-    const { transactionCacheList, fetchTransaction, groupTransactionsByDate, transactionLoading } = useTransaction()
+    const {
+        transactionCacheList,
+        fetchTransaction,
+        fetchTransactionPaginated,
+        groupTransactionsByDate,
+        transactionLoading
+    } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
     const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
 
@@ -45,23 +51,45 @@ export default function TransactionsView() {
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
+    const [totalCount, setTotalCount] = useState(0)
 
-    const [viewMode, setViewMode] = useState<ViewModeType>('table')
+    const [viewMode, setViewMode] = useState<ViewModeType>('list')
 
     const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
         skip: 0,
-        take: 50
+        take: 20
     })
 
     useEffect(() => {
         fetchCategory()
         fetchFinancialAccount()
-        fetchTransaction({}, transactionFilterSetting)
+
+        // Load initial data based on view mode
+        if (viewMode === 'table') {
+            loadTransactionsPaginated(transactionFilterSetting)
+        } else {
+            fetchTransaction({}, transactionFilterSetting)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         setLocalTransactionList(transactionCacheList)
     }, [transactionCacheList])
+
+    // Handle view mode change and reload data accordingly
+    const handleViewModeChange = async (newMode: ViewModeType) => {
+        setViewMode(newMode)
+
+        if (newMode === 'table') {
+            await loadTransactionsPaginated(transactionFilterSetting)
+        } else {
+            // Reset to initial state for list view
+            const initialOptions = { skip: 0, take: 20 }
+            setTransactionFilterSetting(initialOptions)
+            await fetchTransaction({}, initialOptions)
+        }
+    }
 
     // Infinite scroll: automatically load more transactions when you reach the bottom
     useEffect(() => {
@@ -82,7 +110,15 @@ export default function TransactionsView() {
 
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
-    }, [isLoadingMore, transactionCacheList, viewMode])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoadingMore, viewMode])
+
+    const loadTransactionsPaginated = async (options: IFilterOptions) => {
+        const result = await fetchTransactionPaginated({}, options)
+        if (result) {
+            setTotalCount(result.total)
+        }
+    }
 
     const loadMore = async () => {
         if (isLoadingMore) return
@@ -114,6 +150,15 @@ export default function TransactionsView() {
         const filteredList = transactionCacheList.filter(x => x.title.toLowerCase().includes(textToSearch))
 
         setLocalTransactionList(filteredList)
+    }
+
+    const handleTablePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
+        const newOptions = {
+            skip: pagination.pageIndex * pagination.pageSize,
+            take: pagination.pageSize
+        }
+        setTransactionFilterSetting(newOptions)
+        loadTransactionsPaginated(newOptions)
     }
 
     const columns: ColumnDef<ITransaction>[] = [
@@ -299,7 +344,13 @@ export default function TransactionsView() {
                     title={t('transactions.title')}
                     breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('transactions.title') }]}
                     fetchAction={{
-                        onClick: () => fetchTransaction({}, transactionFilterSetting),
+                        onClick: () => {
+                            if (viewMode === 'table') {
+                                loadTransactionsPaginated(transactionFilterSetting)
+                            } else {
+                                fetchTransaction({}, transactionFilterSetting)
+                            }
+                        },
                         loading:
                             transactionLoading.fetch || categoryLoading.fetchCategory || financialAccountLoading.fetch
                     }}
@@ -320,7 +371,7 @@ export default function TransactionsView() {
                         defaultValue={viewMode}
                         value={viewMode}
                         className='w-[200px]'
-                        onValueChange={x => setViewMode(x as ViewModeType)}
+                        onValueChange={x => handleViewModeChange(x as ViewModeType)}
                     >
                         <TabsList className='grid w-full grid-cols-2'>
                             <TabsTrigger value='list' className='flex items-center gap-2'>
@@ -377,7 +428,13 @@ export default function TransactionsView() {
                             )}
                         </>
                     ) : (
-                        <DataTable data={localTransactionList} columns={columns} />
+                        <DataTable
+                            data={localTransactionList}
+                            columns={columns}
+                            manualPagination={true}
+                            pageCount={Math.ceil(totalCount / (transactionFilterSetting.take || 20))}
+                            onPaginationChange={handleTablePaginationChange}
+                        />
                     )
                 ) : (
                     <>
