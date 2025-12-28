@@ -5,6 +5,7 @@ import { buildWhere } from '../../../helpers/filter.helper'
 import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
+import { TransactionWithAmounts } from '@/types/transactions'
 
 export class TransactionController {
     //POST /
@@ -89,6 +90,8 @@ export class TransactionController {
 
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
+            const sortBy = options.sortBy || 'date'
+            const sortOrder = options.sortOrder || 'desc'
 
             const where = {
                 ...buildWhere(filters),
@@ -101,23 +104,55 @@ export class TransactionController {
                 })
             }
 
+            // Build orderBy dynamically
+            let orderBy: any = {}
+            let sortInMemory = false
+
+            if (sortBy === 'category') {
+                orderBy = { category: { title: sortOrder } }
+            } else if (sortBy === 'subcategory') {
+                orderBy = { subcategory: { title: sortOrder } }
+            } else if (sortBy === 'amount') {
+                // Amount is in a related table, we'll sort in memory after fetching
+                sortInMemory = true
+                orderBy = { date: 'desc' } // Default order for fetching
+            } else {
+                orderBy = { [sortBy]: sortOrder }
+            }
+
             const queryOptions: any = {
                 where,
                 include: { amounts: true },
-                orderBy: { date: 'desc' },
-                skip
+                orderBy,
+                skip: sortInMemory ? 0 : skip // If sorting in memory, fetch all first
             }
 
-            if (take && take > 0) {
+            if (!sortInMemory && take && take > 0) {
                 queryOptions.take = take
             }
 
-            const [data, total] = await Promise.all([
+            const [rawData, total] = await Promise.all([
                 prisma.transaction.findMany(queryOptions),
                 prisma.transaction.count({ where })
             ])
 
-            res.status(200).json({ data, total })
+            // Cast to the proper type with included relations
+            const data = rawData as TransactionWithAmounts[]
+
+            // Sort by amount in memory if needed
+            let finalData: TransactionWithAmounts[] = data
+            if (sortInMemory && sortBy === 'amount') {
+                finalData = data.sort((a, b) => {
+                    const amountA = Number(a.amounts[0]?.amount || 0)
+                    const amountB = Number(b.amounts[0]?.amount || 0)
+                    return sortOrder === 'asc' ? amountA - amountB : amountB - amountA
+                })
+
+                // Apply pagination after sorting
+                finalData = finalData.slice(skip, take ? skip + take : undefined)
+            }
+
+            res.status(200).json({ data: finalData, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })

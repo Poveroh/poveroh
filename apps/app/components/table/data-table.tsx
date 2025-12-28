@@ -27,6 +27,8 @@ type TableProps<T> = {
     manualPagination?: boolean
     pageCount?: number
     onPaginationChange?: (pagination: PaginationState) => void
+    manualSorting?: boolean
+    onSortingChange?: (sorting: SortingState) => void
 }
 
 export function DataTable<T>({
@@ -34,7 +36,9 @@ export function DataTable<T>({
     columns,
     manualPagination = false,
     pageCount: controlledPageCount,
-    onPaginationChange: onPaginationChangeCallback
+    onPaginationChange: onPaginationChangeCallback,
+    manualSorting = false,
+    onSortingChange: onSortingChangeCallback
 }: TableProps<T>) {
     const t = useTranslations()
 
@@ -55,12 +59,27 @@ export function DataTable<T>({
         }
     }
 
+    const handleSortingChange = (updater: ((old: SortingState) => SortingState) | SortingState) => {
+        const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+        setSorting(newSorting)
+
+        // Reset to first page when sorting changes in manual mode
+        if (manualSorting && manualPagination) {
+            setPagination(prev => ({ ...prev, pageIndex: 0 }))
+        }
+
+        if (manualSorting && onSortingChangeCallback) {
+            onSortingChangeCallback(newSorting)
+        }
+    }
+
     const table = useReactTable({
         data,
         columns,
         pageCount: controlledPageCount ?? -1,
         manualPagination,
-        onSortingChange: setSorting,
+        manualSorting,
+        onSortingChange: handleSortingChange,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),

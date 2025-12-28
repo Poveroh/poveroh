@@ -52,6 +52,7 @@ export default function TransactionsView() {
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [totalCount, setTotalCount] = useState(0)
+    const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
 
     const [viewMode, setViewMode] = useState<ViewModeType>(() => {
         const saved = storage.get('transactionViewMode')
@@ -118,7 +119,16 @@ export default function TransactionsView() {
     }, [isLoadingMore, viewMode])
 
     const loadTransactionsPaginated = async (options: IFilterOptions) => {
-        const result = await fetchTransactionPaginated({}, options)
+        // Add sorting to options if present
+        const optionsWithSort = {
+            ...options,
+            ...(sorting.length > 0 &&
+                sorting[0] && {
+                    sortBy: sorting[0].id,
+                    sortOrder: sorting[0].desc ? ('desc' as const) : ('asc' as const)
+                })
+        }
+        const result = await fetchTransactionPaginated({}, optionsWithSort)
         if (result) {
             setTotalCount(result.total)
         }
@@ -160,6 +170,17 @@ export default function TransactionsView() {
         const newOptions = {
             skip: pagination.pageIndex * pagination.pageSize,
             take: pagination.pageSize
+        }
+        setTransactionFilterSetting(newOptions)
+        loadTransactionsPaginated(newOptions)
+    }
+
+    const handleTableSortingChange = (newSorting: { id: string; desc: boolean }[]) => {
+        setSorting(newSorting)
+        // Reset to first page when sorting changes
+        const newOptions = {
+            ...transactionFilterSetting,
+            skip: 0
         }
         setTransactionFilterSetting(newOptions)
         loadTransactionsPaginated(newOptions)
@@ -438,6 +459,8 @@ export default function TransactionsView() {
                             manualPagination={true}
                             pageCount={Math.ceil(totalCount / (transactionFilterSetting.take || 20))}
                             onPaginationChange={handleTablePaginationChange}
+                            manualSorting={true}
+                            onSortingChange={handleTableSortingChange}
                         />
                     )
                 ) : (

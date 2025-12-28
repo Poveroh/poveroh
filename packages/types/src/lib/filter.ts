@@ -8,6 +8,8 @@ export type NumberFilter = { equals?: number; gte?: number; lte?: number }
 export interface IFilterOptions {
     skip?: number
     take?: number
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
 }
 
 export interface IImportsFilters {
