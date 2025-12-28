@@ -20,6 +20,7 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
     const t = useTranslations()
 
     const [localFilters, setLocalFilters] = useState<T>(filters)
+    const [open, setOpen] = useState(false)
 
     useEffect(() => {
         setLocalFilters(filters)
@@ -28,11 +29,20 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
     const handleChange = (name: keyof T, value: string) => {
         const updated = { ...localFilters, [name]: value }
         setLocalFilters(updated)
-        onFilterChange(updated)
+    }
+
+    const handleApply = () => {
+        onFilterChange(localFilters)
+        setOpen(false)
+    }
+
+    const handleCancel = () => {
+        setLocalFilters(filters)
+        setOpen(false)
     }
 
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant='secondary' className='w-fit'>
                     <ListFilter />
@@ -41,7 +51,7 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
             </PopoverTrigger>
             <PopoverContent align='end'>
                 <div className='flex flex-col space-y-3'>
-                    {fields.map((field, index) => {
+                    {fields.map(field => {
                         if (field.type === 'select') {
                             return (
                                 <div key={field.name} className='flex flex-col space-y-3'>
@@ -61,14 +71,13 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    {index < fields.length - 1 && <Divider />}
                                 </div>
                             )
                         }
 
                         if (field.type === 'dateRange') {
                             return (
-                                <div key={field.name} className='flex flex-col space-y-3'>
+                                <div key={field.label} className='flex flex-col space-y-3'>
                                     <div className='flex flex-row gap-2'>
                                         <div className='flex flex-col space-y-3'>
                                             <p>{t('form.date.rangePlaceholder.from')}</p>
@@ -89,7 +98,6 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
                                             />
                                         </div>
                                     </div>
-                                    {index < fields.length - 1 && <Divider />}
                                 </div>
                             )
                         }
@@ -102,10 +110,16 @@ export function FilterButton<T>({ fields, filters, onFilterChange }: FilterButto
                                     value={(localFilters[field.name as keyof T] as string) || ''}
                                     onChange={e => handleChange(field.name as keyof T, e.target.value)}
                                 />
-                                {index < fields.length - 1 && <Divider />}
                             </div>
                         )
                     })}
+                    <Divider />
+                    <div className='flex flex-row gap-2 justify-end'>
+                        <Button variant='outline' onClick={handleCancel}>
+                            {t('buttons.cancel')}
+                        </Button>
+                        <Button onClick={handleApply}>{t('buttons.apply')}</Button>
+                    </div>
                 </div>
             </PopoverContent>
         </Popover>

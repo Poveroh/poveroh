@@ -20,7 +20,14 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 
-import { IFilterOptions, ITransaction, ITransactionFilters, TransactionAction, FilterField } from '@poveroh/types'
+import {
+    IFilterOptions,
+    ITransaction,
+    ITransactionFilters,
+    TransactionAction,
+    FilterField,
+    DateFilter
+} from '@poveroh/types'
 
 import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'
@@ -35,6 +42,7 @@ import { OptionsPopover } from '@/components/navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
 import { storage } from '@/lib/storage'
 import { ViewModeType } from '@/types'
+import DynamicIcon from '@/components/icon/dynamic-icon'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -284,11 +292,10 @@ export default function TransactionsView() {
             }))
         },
         {
-            name: 'dateRange',
-            label: 'form.date.label',
-            type: 'dateRange',
             fromName: 'fromDate',
-            toName: 'toDate'
+            toName: 'toDate',
+            label: 'form.date.label',
+            type: 'dateRange'
         }
     ]
 
@@ -307,17 +314,16 @@ export default function TransactionsView() {
         if (newFlatFilters.financialAccountId && newFlatFilters.financialAccountId !== '') {
             newFilters.financialAccountId = newFlatFilters.financialAccountId
         }
-        if (newFlatFilters.date) {
-            newFilters.date = {}
-            if (newFlatFilters.date.gte && newFlatFilters.date.gte !== '') {
-                newFilters.date.gte = newFlatFilters.date.gte
+        if (newFlatFilters.fromDate && newFlatFilters.fromDate !== '') {
+            const fromDate = typeof newFlatFilters.fromDate === 'string' ? newFlatFilters.fromDate : undefined
+            if (fromDate) {
+                newFilters.date = { ...newFilters.date, gte: fromDate }
             }
-            if (newFlatFilters.date.lte && newFlatFilters.date.lte !== '') {
-                newFilters.date.lte = newFlatFilters.date.lte
-            }
-            // Remove date object if it's empty
-            if (!newFilters.date.gte && !newFilters.date.lte) {
-                delete newFilters.date
+        }
+        if (newFlatFilters.toDate && newFlatFilters.toDate !== '') {
+            const toDate = typeof newFlatFilters.toDate === 'string' ? newFlatFilters.toDate : undefined
+            if (toDate) {
+                newFilters.date = { ...newFilters.date, lte: toDate }
             }
         }
 
@@ -336,7 +342,7 @@ export default function TransactionsView() {
         handleFilterChange(newFilters)
     }
 
-    const getFilterLabel = (key: keyof ITransactionFilters, value: unknown): string => {
+    const getFilterLabel = (key: keyof ITransactionFilters, value: unknown) => {
         if (key === 'type') {
             return value === TransactionAction.INCOME ? 'Income' : 'Expense'
         }
@@ -347,9 +353,15 @@ export default function TransactionsView() {
             return financialAccountCacheList.find(a => a.id === value)?.title || String(value)
         }
         if (key === 'date') {
-            const dateFilter = value as { gte?: string; lte?: string }
+            const dateFilter = value as DateFilter
             if (dateFilter.gte && dateFilter.lte) {
-                return `${dateFilter.gte} - ${dateFilter.lte}`
+                return (
+                    <div className='flex flex-row gap-1'>
+                        {dateFilter.gte}
+                        <DynamicIcon name='move-right' />
+                        {dateFilter.lte}
+                    </div>
+                )
             }
             if (dateFilter.gte) return `From ${dateFilter.gte}`
             if (dateFilter.lte) return `To ${dateFilter.lte}`

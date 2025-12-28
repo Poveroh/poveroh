@@ -65,13 +65,17 @@ export type FilterField =
     | {
           name: string
           label: string
-          type: 'text' | 'date' | 'dateRange'
-          fromName?: string
-          toName?: string
+          type: 'text' | 'date'
       }
     | {
           name: string
           label: string
           type: 'select'
           options: { label: string; value: string }[]
+      }
+    | {
+          fromName: string
+          toName: string
+          label: string
+          type: 'dateRange'
       }
