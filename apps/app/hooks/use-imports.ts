@@ -81,7 +81,9 @@ export const useImport = () => {
     const completeImport = async (id: string) => {
         setLoadingFor('completeImport', true)
         try {
-            return await importService.complete(id)
+            const res = await importService.complete(id)
+            importStore.editImport(res)
+            return res
         } catch (error) {
             return handleError(error, 'Error saving import')
         } finally {
