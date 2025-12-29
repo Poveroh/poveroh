@@ -1,4 +1,5 @@
 import prisma from '@poveroh/prisma'
+import moment from 'moment-timezone'
 import {
     Currencies,
     ExpensesFormData,
@@ -150,6 +151,18 @@ export const TransactionHelper = {
     },
 
     async handleTransferTransaction(data: TransferFormData, userId: string, transactionId?: string) {
+        // Retrieve user timezone
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { timezone: true }
+        })
+        if (!user) {
+            throw new Error('User not found')
+        }
+
+        // Convert date to UTC
+        const utcDate = moment.tz(data.date, user.timezone).utc().toISOString()
+
         let localTransferId = transactionId || ''
 
         try {
@@ -170,7 +183,7 @@ export const TransactionHelper = {
 
                         await tx.transaction.update({
                             where: { id: transactionId },
-                            data: this.normalizeTransaction(TransactionAction.TRANSFER, data)
+                            data: await this.normalizeTransaction(TransactionAction.TRANSFER, data, userId)
                         })
 
                         // Delete existing amounts and create new ones
@@ -214,7 +227,7 @@ export const TransactionHelper = {
                 )
             } else {
                 const normalizedData = {
-                    ...this.normalizeTransaction(TransactionAction.TRANSFER, data),
+                    ...(await this.normalizeTransaction(TransactionAction.TRANSFER, data, userId)),
                     userId: userId
                 }
 
@@ -253,7 +266,7 @@ export const TransactionHelper = {
 
                         const transfer = await tx.transfer.create({
                             data: {
-                                transferDate: new Date(data.date),
+                                transferDate: utcDate,
                                 note: data.note,
                                 fromTransactionId: transactions[0].id,
                                 toTransactionId: transactions[1].id,
@@ -307,7 +320,7 @@ export const TransactionHelper = {
                                 id: transactionId,
                                 userId: userId
                             },
-                            data: this.normalizeTransaction(TransactionAction.INCOME, data)
+                            data: await this.normalizeTransaction(TransactionAction.INCOME, data, userId)
                         })
 
                         const amountData = this.createAmountData(
@@ -335,7 +348,7 @@ export const TransactionHelper = {
                 )
             } else {
                 // Create flow: create new transaction and amount
-                const normalizedData = this.normalizeTransaction(TransactionAction.INCOME, data)
+                const normalizedData = await this.normalizeTransaction(TransactionAction.INCOME, data, userId)
                 await prisma.$transaction(
                     async tx => {
                         const transaction = await tx.transaction.create({
@@ -396,7 +409,7 @@ export const TransactionHelper = {
                         // Edit flow: update transaction and replace amounts
                         const transaction = await tx.transaction.update({
                             where: { id: transactionId },
-                            data: this.normalizeTransaction(TransactionAction.EXPENSES, data)
+                            data: await this.normalizeTransaction(TransactionAction.EXPENSES, data, userId)
                         })
 
                         // Delete existing amounts
@@ -427,7 +440,7 @@ export const TransactionHelper = {
                 )
             } else {
                 // Create flow: create new transaction and amounts
-                const normalizedData = this.normalizeTransaction(TransactionAction.EXPENSES, data)
+                const normalizedData = await this.normalizeTransaction(TransactionAction.EXPENSES, data, userId)
                 await prisma.$transaction(
                     async tx => {
                         const transaction = await tx.transaction.create({
@@ -574,11 +587,27 @@ export const TransactionHelper = {
         return transaction
     },
 
-    normalizeTransaction(action: TransactionAction, transaction: FormMode): ITransactionBase {
+    async normalizeTransaction(
+        action: TransactionAction,
+        transaction: FormMode,
+        userId: string
+    ): Promise<ITransactionBase> {
+        // Retrieve user timezone
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { timezone: true }
+        })
+        if (!user) {
+            throw new Error('User not found')
+        }
+
+        // Convert date to UTC ISO 8601 based on user's timezone
+        const utcDate = moment.tz(transaction.date, user.timezone).utc().toISOString()
+
         const baseData: ITransactionBase = {
             title: transaction.title,
             action: action,
-            date: new Date(transaction.date).toISOString(),
+            date: utcDate,
             note: transaction.note,
             ignore: transaction.ignore || false,
             categoryId: undefined,

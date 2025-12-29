@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
+import moment from 'moment-timezone'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
 import { TransactionWithAmounts } from '@/types/transactions'
-import { assert } from 'node:console'
 
 export class TransactionController {
     //POST /
@@ -88,6 +88,25 @@ export class TransactionController {
 
             const filters = rawFilters as ITransactionFilters
             const options = rawOptions as IFilterOptions
+
+            // Retrieve user timezone for date filters
+            const user = await prisma.user.findUnique({
+                where: { id: req.user.id },
+                select: { timezone: true }
+            })
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            // Convert date filters to UTC
+            if (filters.date) {
+                if (filters.date.gte) {
+                    filters.date.gte = moment.tz(filters.date.gte, user.timezone).utc().toISOString()
+                }
+                if (filters.date.lte) {
+                    filters.date.lte = moment.tz(filters.date.lte, user.timezone).utc().toISOString()
+                }
+            }
 
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? undefined : Number(options.take)

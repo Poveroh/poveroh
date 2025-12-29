@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
+import moment from 'moment-timezone'
 import { ISubscription, ISubscriptionBase, ISubscriptionFilters } from '@poveroh/types'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
@@ -14,6 +15,18 @@ export class SubscriptionController {
             const parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
             parsedSubscription.isEnabled = true
 
+            // Retrieve user timezone
+            const user = await prisma.user.findUnique({
+                where: { id: req.user.id },
+                select: { timezone: true }
+            })
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            // Convert firstPayment to UTC
+            const utcFirstPayment = moment.tz(parsedSubscription.firstPayment, user.timezone).utc().toISOString()
+
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
@@ -25,6 +38,7 @@ export class SubscriptionController {
             const subscription = await prisma.subscription.create({
                 data: {
                     ...parsedSubscription,
+                    firstPayment: utcFirstPayment,
                     userId: req.user.id
                 }
             })
@@ -49,6 +63,18 @@ export class SubscriptionController {
                 return
             }
 
+            // Retrieve user timezone
+            const user = await prisma.user.findUnique({
+                where: { id: req.user.id },
+                select: { timezone: true }
+            })
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            // Convert firstPayment to UTC
+            const utcFirstPayment = moment.tz(parsedSubscription.firstPayment, user.timezone).utc().toISOString()
+
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
                     req.file,
@@ -59,7 +85,10 @@ export class SubscriptionController {
 
             const subscription = await prisma.subscription.update({
                 where: { id },
-                data: parsedSubscription
+                data: {
+                    ...parsedSubscription,
+                    firstPayment: utcFirstPayment
+                }
             })
 
             res.status(200).json(subscription)

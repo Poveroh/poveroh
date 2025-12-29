@@ -60,7 +60,7 @@ export default function TransactionsView() {
     } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
     const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
-    const { renderDate } = useConfig()
+    const { renderDate, preferedLanguage, timezone } = useConfig()
 
     const { openModal } = useModal<ITransaction>()
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
@@ -424,7 +424,7 @@ export default function TransactionsView() {
                     </Button>
                 )
             },
-            cell: ({ row }) => <p>{new Date(row.getValue('date')).toLocaleDateString('it-IT')}</p>
+            cell: ({ row }) => <p>{renderDate(row.getValue('date'))}</p>
         },
 
         {
@@ -634,14 +634,25 @@ export default function TransactionsView() {
                                         <h4>
                                             {(() => {
                                                 const currentYear = new Date().getFullYear()
-                                                const dateObj = new Date(date)
+                                                const dateObj = new Date(date + 'T00:00:00') // Assume date is YYYY-MM-DD
                                                 const isCurrentYear = dateObj.getFullYear() === currentYear
 
                                                 const options: Intl.DateTimeFormatOptions = isCurrentYear
-                                                    ? { day: 'numeric', month: 'long' }
-                                                    : { day: 'numeric', month: 'long', year: 'numeric' }
+                                                    ? { day: 'numeric', month: 'long', timeZone: timezone }
+                                                    : {
+                                                          day: 'numeric',
+                                                          month: 'long',
+                                                          year: 'numeric',
+                                                          timeZone: timezone
+                                                      }
 
-                                                return new Intl.DateTimeFormat('it-IT', options).format(dateObj)
+                                                const formatter = new Intl.DateTimeFormat(preferedLanguage, options)
+                                                const parts = formatter.formatToParts(dateObj)
+                                                const day = parts.find(p => p.type === 'day')?.value
+                                                const month = parts.find(p => p.type === 'month')?.value
+                                                const year = parts.find(p => p.type === 'year')?.value
+
+                                                return [day, month?.toLowerCase(), year].filter(Boolean).join(' ')
                                             })()}
                                         </h4>
                                         <Box>

@@ -31,8 +31,8 @@ export const useConfig = () => {
     const userStore = useUserStore()
 
     // Cache formatters and month names based on language and timezone
-    const { formatters, monthNames, formatMap } = useMemo(() => {
-        const language = userStore.user.preferredLanguage || Language.EN
+    const { formatters, monthNames, formatMap, timezone } = useMemo(() => {
+        const language = (userStore.user.preferredLanguage || Language.EN).toLowerCase()
         const timezone = toIanaTimezone(userStore.user.timezone || Timezone.EUROPE_ROME)
 
         const formatters = {
@@ -62,7 +62,7 @@ export const useConfig = () => {
             [DateFormat.YYYY_MMMM_DD]: 'YYYY MMMM DD'
         }
 
-        return { formatters, monthNames: monthNamesArray, formatMap }
+        return { formatters, monthNames: monthNamesArray, formatMap, timezone }
     }, [userStore.user.preferredLanguage, userStore.user.timezone])
 
     function renderDate(date: string | Date, format?: DateFormat) {
@@ -94,10 +94,10 @@ export const useConfig = () => {
 
     return {
         preferedCurrency: userStore.user.preferredCurrency || Currencies.EUR,
-        preferedLanguage: userStore.user.preferredLanguage || Language.EN,
+        preferedLanguage: (userStore.user.preferredLanguage || Language.EN).toLowerCase(),
         dateFormat: userStore.user.dateFormat || DateFormat.DD_MM_YYYY,
         country: userStore.user.country || 'italy',
-        timezone: userStore.user.timezone || Timezone.EUROPE_ROME,
+        timezone,
         renderDate
     }
 }
