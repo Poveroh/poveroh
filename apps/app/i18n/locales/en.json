@@ -54,6 +54,7 @@
         "successfully": "{a} {b} successfully",
         "noResult": "No results found",
         "noResults": "No results found",
+        "uncategorized": "Uncategorized",
         "tryAdjustingFilters": "Try adjusting your filters to see more results",
         "clearFilters": "Clear filters",
         "availableNextVersion": "This feature will be available in the next version.",

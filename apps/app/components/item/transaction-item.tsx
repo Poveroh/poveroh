@@ -8,6 +8,7 @@ import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
 import { OptionsPopover } from '../navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
+import { useTranslations } from 'next-intl'
 
 type TransactionItemProps = {
     transaction: ITransaction
@@ -16,6 +17,7 @@ type TransactionItemProps = {
 }
 
 const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openDelete, openEdit }) => {
+    const t = useTranslations()
     const { financialAccountCacheList } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
 
@@ -116,7 +118,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                         <h5 className='font-bold'>{amount}</h5>
                         {/* <span>{currencySymbol}</span> */}
                     </div>
-                    <p className='sub'>{category?.title || 'Internal transfer'}</p>
+                    <p className='sub'>{category?.title || t('messages.uncategorized')}</p>
                 </div>
                 <div onClick={e => e.stopPropagation()}>
                     <OptionsPopover<ITransaction> data={transaction} openDelete={openDelete} openEdit={openEdit} />
