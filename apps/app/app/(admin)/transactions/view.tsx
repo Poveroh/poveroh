@@ -45,6 +45,7 @@ import { storage } from '@/lib/storage'
 import { ViewModeType } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { useConfig } from '@/hooks/use-config'
+import moment from 'moment-timezone'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -561,7 +562,7 @@ export default function TransactionsView() {
                             if (viewMode === 'table') {
                                 loadTransactionsPaginated(transactionFilterSetting)
                             } else {
-                                fetchTransaction(filters, transactionFilterSetting)
+                                fetchTransaction(filters, transactionFilterSetting, false, true)
                             }
                         },
                         loading:
@@ -633,26 +634,15 @@ export default function TransactionsView() {
                                     <div key={date} className='flex flex-col space-y-2'>
                                         <h4>
                                             {(() => {
-                                                const currentYear = new Date().getFullYear()
-                                                const dateObj = new Date(date + 'T00:00:00') // Assume date is YYYY-MM-DD
-                                                const isCurrentYear = dateObj.getFullYear() === currentYear
+                                                const currentYear = moment().year()
+                                                const dateMoment = moment(date).tz(timezone)
+                                                const isCurrentYear = dateMoment.year() === currentYear
 
-                                                const options: Intl.DateTimeFormatOptions = isCurrentYear
-                                                    ? { day: 'numeric', month: 'long', timeZone: timezone }
-                                                    : {
-                                                          day: 'numeric',
-                                                          month: 'long',
-                                                          year: 'numeric',
-                                                          timeZone: timezone
-                                                      }
-
-                                                const formatter = new Intl.DateTimeFormat(preferedLanguage, options)
-                                                const parts = formatter.formatToParts(dateObj)
-                                                const day = parts.find(p => p.type === 'day')?.value
-                                                const month = parts.find(p => p.type === 'month')?.value
-                                                const year = parts.find(p => p.type === 'year')?.value
-
-                                                return [day, month?.toLowerCase(), year].filter(Boolean).join(' ')
+                                                return (
+                                                    isCurrentYear
+                                                        ? dateMoment.format('D MMMM')
+                                                        : dateMoment.format('D MMMM YYYY')
+                                                ).toLocaleLowerCase(preferedLanguage)
                                             })()}
                                         </h4>
                                         <Box>
