@@ -31,18 +31,21 @@ export interface IUserBase {
     surname?: string
 }
 
-export interface IUser extends IUserBase {
+export interface IUserPreferences {
+    preferredCurrency: Currencies
+    preferredLanguage: Language
+    dateFormat: DateFormat
+    country: string
+    timezone: Timezone
+}
+
+export interface IUser extends IUserBase, IUserPreferences {
     id: string
     onBoardingStep: OnBoardingStep
     onBoardingAt?: string | null
     image?: string | null
     emailVerified: boolean
     snapshotFrequency: SnapshotFrequency
-    preferredCurrency: Currencies
-    preferredLanguage: Language
-    dateFormat: DateFormat
-    country: string
-    timezone: Timezone
     createdAt: string
     updatedAt: string
 }

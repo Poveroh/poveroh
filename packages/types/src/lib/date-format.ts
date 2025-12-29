@@ -12,7 +12,19 @@ export enum DateFormat {
     YYYY_MMMM_DD = 'YYYY_MMMM_DD'
 }
 
+export const formatMap: Record<DateFormat, string> = {
+    [DateFormat.DD_MM_YYYY]: 'DD/MM/YYYY',
+    [DateFormat.MM_DD_YYYY]: 'MM/DD/YYYY',
+    [DateFormat.YYYY_MM_DD]: 'YYYY/MM/DD',
+    [DateFormat.DD_MM_YY]: 'DD/MM/YY',
+    [DateFormat.MM_DD_YY]: 'MM/DD/YY',
+    [DateFormat.YY_MM_DD]: 'YY/MM/DD',
+    [DateFormat.DD_MMMM_YYYY]: 'DD MMMM YYYY',
+    [DateFormat.MMMM_DD_YYYY]: 'MMMM DD, YYYY',
+    [DateFormat.YYYY_MMMM_DD]: 'YYYY MMMM DD'
+}
+
 export const dateFormatCatalog: IItem[] = Object.values(DateFormat).map(dateFormat => ({
-    label: dateFormat,
+    label: formatMap[dateFormat],
     value: dateFormat
 }))

@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@poveroh/ui/components/table'
 import { useTranslations } from 'next-intl'
 import { cn } from '@poveroh/ui/lib/utils'
+import { useConfig } from '@/hooks/use-config'
 
 type TableProps<T> = {
     data: T[]
@@ -30,6 +31,7 @@ type TableProps<T> = {
     manualSorting?: boolean
     onSortingChange?: (sorting: SortingState) => void
     isLoading?: boolean
+    dateColumns?: string[]
 }
 
 export function DataTable<T>({
@@ -40,9 +42,11 @@ export function DataTable<T>({
     onPaginationChange: onPaginationChangeCallback,
     manualSorting = false,
     onSortingChange: onSortingChangeCallback,
-    isLoading = false
+    isLoading = false,
+    dateColumns = ['createdAt', 'updatedAt', 'date']
 }: TableProps<T>) {
     const t = useTranslations()
+    const { renderDate } = useConfig()
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -130,11 +134,24 @@ export function DataTable<T>({
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map(row => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                    {row.getVisibleCells().map(cell => (
-                                        <TableCell key={cell.id} className={cn(cell.column.id == 'select' && 'px-2')}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
+                                    {row.getVisibleCells().map(cell => {
+                                        const cellValue = cell.getValue()
+                                        const isDateColumn = dateColumns.includes(cell.column.id)
+                                        const isDateValue =
+                                            cellValue instanceof Date ||
+                                            (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue)))
+
+                                        return (
+                                            <TableCell
+                                                key={cell.id}
+                                                className={cn(cell.column.id == 'select' && 'px-2')}
+                                            >
+                                                {isDateColumn && isDateValue
+                                                    ? renderDate(cellValue as string | Date)
+                                                    : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </TableCell>
+                                        )
+                                    })}
                                 </TableRow>
                             ))
                         ) : (

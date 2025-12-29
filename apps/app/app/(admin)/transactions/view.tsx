@@ -44,6 +44,7 @@ import { cn } from '@poveroh/ui/lib/utils'
 import { storage } from '@/lib/storage'
 import { ViewModeType } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
+import { useConfig } from '@/hooks/use-config'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -59,6 +60,7 @@ export default function TransactionsView() {
     } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
     const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
+    const { renderDate } = useConfig()
 
     const { openModal } = useModal<ITransaction>()
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
@@ -358,14 +360,14 @@ export default function TransactionsView() {
             if (dateFilter.gte && dateFilter.lte) {
                 return (
                     <div className='flex flex-row gap-1'>
-                        {dateFilter.gte}
+                        {renderDate(dateFilter.gte)}
                         <DynamicIcon name='move-right' />
-                        {dateFilter.lte}
+                        {renderDate(dateFilter.lte)}
                     </div>
                 )
             }
-            if (dateFilter.gte) return `From ${dateFilter.gte}`
-            if (dateFilter.lte) return `To ${dateFilter.lte}`
+            if (dateFilter.gte) return `From ${renderDate(dateFilter.gte)}`
+            if (dateFilter.lte) return `To ${renderDate(dateFilter.lte)}`
         }
         return String(value)
     }
@@ -391,6 +393,7 @@ export default function TransactionsView() {
             enableHiding: false
         },
         {
+            id: 'title',
             accessorKey: 'title',
             header: ({ column }) => {
                 return (
@@ -407,6 +410,7 @@ export default function TransactionsView() {
             cell: ({ row }) => <p>{row.getValue('title')}</p>
         },
         {
+            id: 'date',
             accessorKey: 'date',
             header: ({ column }) => {
                 return (
@@ -424,8 +428,8 @@ export default function TransactionsView() {
         },
 
         {
-            accessorFn: row => row.amounts[0]?.amount || 0,
             id: 'amount',
+            accessorFn: row => row.amounts[0]?.amount || 0,
             header: ({ column }) => {
                 return (
                     <Button
@@ -454,8 +458,8 @@ export default function TransactionsView() {
             }
         },
         {
-            accessorFn: row => categoryCacheList.find(c => c.id === row.categoryId)?.title || '',
             id: 'category',
+            accessorFn: row => categoryCacheList.find(c => c.id === row.categoryId)?.title || '',
             header: ({ column }) => {
                 return (
                     <Button
@@ -475,11 +479,11 @@ export default function TransactionsView() {
             }
         },
         {
+            id: 'subcategory',
             accessorFn: row => {
                 const category = categoryCacheList.find(c => c.id === row.categoryId)
                 return category?.subcategories.find(s => s.id === row.subcategoryId)?.title || ''
             },
-            id: 'subcategory',
             header: ({ column }) => {
                 return (
                     <Button
@@ -504,9 +508,9 @@ export default function TransactionsView() {
             }
         },
         {
+            id: 'account',
             accessorFn: row =>
                 financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || '',
-            id: 'account',
             header: ({ column }) => {
                 return (
                     <Button
