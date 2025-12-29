@@ -8,6 +8,7 @@ import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
+import { TransactionAction } from '@prisma/client'
 
 export class ImportController {
     //POST /
@@ -346,7 +347,7 @@ export class ImportController {
             await prisma.importFile.createMany({ data: importFiles })
 
             await prisma.transaction.createMany({
-                data: parsedTransactions.map(({ amounts, action, ...transaction }) => ({
+                data: parsedTransactions.map(({ amounts, ...transaction }) => ({
                     ...transaction,
                     importId: importId
                 }))
@@ -357,7 +358,7 @@ export class ImportController {
                     transactionId: amount.transactionId,
                     amount: amount.amount,
                     currency: amount.currency,
-                    action: amount.action as 'EXPENSES' | 'INCOME',
+                    action: amount.action as TransactionAction,
                     financialAccountId: amount.financialAccountId,
                     importReference: amount.importReference
                 }))
