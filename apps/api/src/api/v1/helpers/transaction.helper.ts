@@ -14,6 +14,7 @@ import {
     TransferFormData
 } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
+import { TransactionWithAmounts } from '@/types/transactions'
 
 /**
  * Transaction Helper - Handles all transaction operations including creation and updating of transactions
@@ -628,5 +629,39 @@ export const TransactionHelper = {
             default:
                 throw new Error(`Invalid transaction action: ${action}`)
         }
+    },
+
+    /**
+     * Merges TRANSFER transactions that share the same transferId into a single transaction object.
+     * The merged transaction will contain both amounts (INCOME and EXPENSES).
+     */
+    mergeTransferTransactions(transactions: TransactionWithAmounts[]): TransactionWithAmounts[] {
+        const transferMap = new Map<string, TransactionWithAmounts>()
+        const result: TransactionWithAmounts[] = []
+
+        for (const transaction of transactions) {
+            // If it's not a TRANSFER or has no transferId, add it as-is
+            if (transaction.action !== TransactionAction.TRANSFER || !transaction.transferId) {
+                result.push(transaction)
+                continue
+            }
+
+            const transferId = transaction.transferId
+
+            // Check if we already have a transaction with this transferId
+            if (transferMap.has(transferId)) {
+                // Merge amounts into the existing transaction
+                const existing = transferMap.get(transferId)!
+                existing.amounts.push(...transaction.amounts)
+            } else {
+                // First time seeing this transferId, store it
+                transferMap.set(transferId, { ...transaction })
+            }
+        }
+
+        // Add all merged transfer transactions to the result
+        result.push(...Array.from(transferMap.values()))
+
+        return result
     }
 }

@@ -274,7 +274,8 @@ export default function TransactionsView() {
             type: 'select',
             options: [
                 { label: 'Income', value: TransactionAction.INCOME },
-                { label: 'Expense', value: TransactionAction.EXPENSES }
+                { label: 'Expense', value: TransactionAction.EXPENSES },
+                { label: 'Transfer', value: TransactionAction.TRANSFER }
             ]
         },
         {
@@ -447,12 +448,16 @@ export default function TransactionsView() {
                 const transaction = row.original
                 const amount = transaction.amounts[0]?.amount || 0
                 const isExpense = transaction.action === TransactionAction.EXPENSES
+                const isTransfer = transaction.action === TransactionAction.TRANSFER
+
                 return (
                     <p>
-                        <span className={cn(isExpense ? 'danger' : 'success', 'font-bold')}>
-                            {isExpense ? '-' : '+'}
-                        </span>
-                        &nbsp;
+                        {!isTransfer && (
+                            <span className={cn(isExpense ? 'danger' : 'success', 'font-bold')}>
+                                {isExpense ? '-' : '+'}
+                            </span>
+                        )}
+                        {!isTransfer && '\u00A0'}
                         {Math.abs(amount)}
                     </p>
                 )
@@ -510,8 +515,16 @@ export default function TransactionsView() {
         },
         {
             id: 'account',
-            accessorFn: row =>
-                financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || '',
+            accessorFn: row => {
+                const firstAccount =
+                    financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || ''
+                if (row.action === TransactionAction.TRANSFER && row.amounts[1]) {
+                    const secondAccount =
+                        financialAccountCacheList.find(a => a.id === row.amounts[1]?.financialAccountId)?.title || ''
+                    return `${firstAccount} → ${secondAccount}`
+                }
+                return firstAccount
+            },
             header: ({ column }) => {
                 return (
                     <Button
@@ -526,8 +539,23 @@ export default function TransactionsView() {
             },
             cell: ({ row }) => {
                 const transaction = row.original
-                const account = financialAccountCacheList.find(a => a.id === transaction.amounts[0]?.financialAccountId)
-                return <p>{account?.title || ''}</p>
+                const firstAccount = financialAccountCacheList.find(
+                    a => a.id === transaction.amounts[0]?.financialAccountId
+                )
+
+                if (transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]) {
+                    const secondAccount = financialAccountCacheList.find(
+                        a => a.id === transaction.amounts[1]?.financialAccountId
+                    )
+                    return (
+                        <div className='flex flex-row items-center gap-1'>
+                            <p>{firstAccount?.title || ''}</p>
+                            <DynamicIcon name='move-right' className='h-4 w-4' />
+                            <p>{secondAccount?.title || ''}</p>
+                        </div>
+                    )
+                }
+                return <p>{firstAccount?.title || ''}</p>
             }
         },
         {
