@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { IAmount, IAmountBase, TransactionAction } from '@poveroh/types'
+import { Currencies, IAmount, IAmountBase, TransactionAction } from '@poveroh/types'
 import { Decimal } from '@prisma/client/runtime/library'
 import { RedisHelper } from './redis.helper'
 
@@ -27,34 +27,62 @@ export const BalanceHelper = {
 
         return decimalBalance
     },
-    updateAccountBalances: async (amount: IAmountBase, originalAmount?: number, tx?: any) => {
+    updateAccountBalances: async (
+        amounts: IAmountBase | IAmountBase[],
+        originalAmounts?: Map<string, number>,
+        tx?: any
+    ) => {
         const db = tx || prisma
-        const currentBalance = await BalanceHelper.getAccountBalance(amount.financialAccountId)
+        const amountsArray = Array.isArray(amounts) ? amounts : [amounts]
 
-        let newBalance = new Decimal(currentBalance)
+        // Raggruppa gli amounts per financialAccountId
+        const amountsByAccount = amountsArray.reduce(
+            (acc, amount) => {
+                if (!acc[amount.financialAccountId]) {
+                    acc[amount.financialAccountId] = []
+                }
+                acc[amount.financialAccountId].push(amount)
+                return acc
+            },
+            {} as Record<string, IAmountBase[]>
+        )
 
-        // If originalAmount exists, revert it first
-        if (originalAmount !== undefined) {
-            if (amount.action === TransactionAction.INCOME) {
-                newBalance = newBalance.sub(new Decimal(originalAmount))
-            } else if (amount.action === TransactionAction.EXPENSES) {
-                newBalance = newBalance.add(new Decimal(originalAmount))
+        // Aggiorna il balance per ogni account
+        const updatePromises = Object.entries(amountsByAccount).map(async ([accountId, accountAmounts]) => {
+            const currentBalance = await BalanceHelper.getAccountBalance(accountId, tx)
+            let newBalance = new Decimal(currentBalance)
+
+            // Applica tutti gli amounts per questo account
+            for (const amount of accountAmounts) {
+                // Se originalAmounts esiste, rivedi l'originale prima
+                const originalAmount = originalAmounts?.get(amount.transactionId)
+                if (originalAmount !== undefined) {
+                    if (amount.action === TransactionAction.INCOME) {
+                        newBalance = newBalance.sub(new Decimal(originalAmount))
+                    } else if (amount.action === TransactionAction.EXPENSES) {
+                        newBalance = newBalance.add(new Decimal(originalAmount))
+                    }
+                }
+
+                // Applica il nuovo amount
+                if (amount.action === TransactionAction.INCOME) {
+                    newBalance = newBalance.add(new Decimal(amount.amount))
+                } else if (amount.action === TransactionAction.EXPENSES) {
+                    newBalance = newBalance.sub(new Decimal(amount.amount))
+                }
             }
-        }
 
-        // Apply the new amount
-        if (amount.action === TransactionAction.INCOME) {
-            newBalance = newBalance.add(new Decimal(amount.amount))
-        } else if (amount.action === TransactionAction.EXPENSES) {
-            newBalance = newBalance.sub(new Decimal(amount.amount))
-        }
+            // Aggiorna il balance nel database
+            await db.financialAccount.update({
+                where: { id: accountId },
+                data: { balance: newBalance }
+            })
 
-        await db.financialAccount.update({
-            where: { id: amount.financialAccountId },
-            data: { balance: newBalance }
+            // Aggiorna la cache
+            await RedisHelper.set(`balance:${accountId}`, newBalance.toString())
         })
 
-        await RedisHelper.set(`balance:${amount.financialAccountId}`, newBalance.toString())
+        await Promise.all(updatePromises)
     },
     calculateBalance(accountId: string) {}
 }

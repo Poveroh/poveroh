@@ -2,13 +2,22 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { FileType, IImportsFile, TransactionStatus, ITransactionFilters, ITransaction } from '@poveroh/types'
+import {
+    FileType,
+    IImportsFile,
+    TransactionStatus,
+    ITransactionFilters,
+    ITransaction,
+    Currencies,
+    TransactionAction,
+    IAmountBase
+} from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
-import { TransactionAction } from '@prisma/client'
+import { BalanceHelper } from '../helpers/balance.helper'
 
 export class ImportController {
     //POST /
@@ -45,6 +54,12 @@ export class ImportController {
             }
 
             const imports = await prisma.$transaction(async tx => {
+                // Fetch approved transactions with their amounts before updating
+                const approvedTransactions = await tx.transaction.findMany({
+                    where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
+                    include: { amounts: true }
+                })
+
                 // Update transactions
                 await tx.transaction.updateMany({
                     where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
@@ -52,6 +67,14 @@ export class ImportController {
                         status: TransactionStatus.APPROVED
                     }
                 })
+
+                const flatAmounts = approvedTransactions.flatMap(t => t.amounts)
+
+                // Update balances for all approved transactions
+                const amountsToUpdate = flatAmounts.map(amount =>
+                    TransactionHelper.createAmountData({ dbAmount: amount })
+                )
+                await BalanceHelper.updateAccountBalances(amountsToUpdate, undefined, tx)
 
                 // Delete amounts and transactions for both statuses in a single transaction, but separate deleteMany calls are required
                 await tx.amount.deleteMany({
