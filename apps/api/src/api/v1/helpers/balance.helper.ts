@@ -35,7 +35,7 @@ export const BalanceHelper = {
         const db = tx || prisma
         const amountsArray = Array.isArray(amounts) ? amounts : [amounts]
 
-        // Raggruppa gli amounts per financialAccountId
+        // Group amounts by financialAccountId
         const amountsByAccount = amountsArray.reduce(
             (acc, amount) => {
                 if (!acc[amount.financialAccountId]) {
@@ -47,14 +47,12 @@ export const BalanceHelper = {
             {} as Record<string, IAmountBase[]>
         )
 
-        // Aggiorna il balance per ogni account
         const updatePromises = Object.entries(amountsByAccount).map(async ([accountId, accountAmounts]) => {
             const currentBalance = await BalanceHelper.getAccountBalance(accountId, tx)
             let newBalance = new Decimal(currentBalance)
 
-            // Applica tutti gli amounts per questo account
             for (const amount of accountAmounts) {
-                // Se originalAmounts esiste, rivedi l'originale prima
+                // If originalAmounts exists, revert the original amount first
                 const originalAmount = originalAmounts?.get(amount.transactionId)
                 if (originalAmount !== undefined) {
                     if (amount.action === TransactionAction.INCOME) {
@@ -64,7 +62,6 @@ export const BalanceHelper = {
                     }
                 }
 
-                // Applica il nuovo amount
                 if (amount.action === TransactionAction.INCOME) {
                     newBalance = newBalance.add(new Decimal(amount.amount))
                 } else if (amount.action === TransactionAction.EXPENSES) {
@@ -72,13 +69,11 @@ export const BalanceHelper = {
                 }
             }
 
-            // Aggiorna il balance nel database
             await db.financialAccount.update({
                 where: { id: accountId },
                 data: { balance: newBalance }
             })
 
-            // Aggiorna la cache
             await RedisHelper.set(`balance:${accountId}`, newBalance.toString())
         })
 
