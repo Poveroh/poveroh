@@ -116,6 +116,10 @@ export const defaultUser: IUser = {
 }
 
 export function normalizeToIUser(user: any): IUser {
+    if (!user) {
+        throw new Error('User data is null or undefined')
+    }
+
     if (user.createdAt) {
         user.createdAt = new Date(user.createdAt).toISOString()
     }

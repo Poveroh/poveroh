@@ -23,7 +23,7 @@ export const useUser = () => {
                 throw new Error(result.error.message || 'Login failed')
             }
 
-            if (result.data) {
+            if (result.data && result.data.user) {
                 const normalizedUser = normalizeToIUser(result.data.user)
                 userStore.setUser(normalizedUser)
                 userStore.setLogged(true)

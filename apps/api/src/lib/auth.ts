@@ -67,11 +67,26 @@ export const auth = betterAuth({
         user: {
             create: {
                 before: async (user, ctx) => {
+                    const fullName = user.name?.trim() || ''
+
+                    // Split name only if it has at least one space
+                    if (fullName && fullName.includes(' ')) {
+                        const parts = fullName.split(' ')
+                        return {
+                            data: {
+                                ...user,
+                                name: parts[0],
+                                surname: parts.slice(1).join(' ')
+                            }
+                        }
+                    }
+
+                    // Default to empty strings if no valid name provided
                     return {
                         data: {
                             ...user,
-                            name: user.name == '' ? '' : user.name.split(' ')[0],
-                            surname: user.name == '' ? '' : user.name.split(' ')[1]
+                            name: '',
+                            surname: ''
                         }
                     }
                 }

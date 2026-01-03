@@ -67,7 +67,7 @@ export const useAuth = () => {
                 const result = await authClient.signUp.email({
                     email: userToSave.email,
                     password: userToSave.password,
-                    name: ''
+                    name: ' '
                 })
 
                 if (result.error) {
