@@ -30,7 +30,12 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps<ISubcategory>>((pro
             >
                 <div className='flex flex-col space-y-6'>
                     <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
-                    <TextField control={form.control} name='description' label={t('form.description.label')} />
+                    <TextField
+                        control={form.control}
+                        name='description'
+                        label={t('form.description.label')}
+                        mandatory={false}
+                    />
 
                     <CategoryField
                         control={form.control}

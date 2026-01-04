@@ -29,7 +29,11 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
-        description: z.string(),
+        description: z
+            .string()
+            .optional()
+            .nullable()
+            .transform(val => val || ''),
         logoIcon: z.string().nonempty(t('messages.errors.required')),
         for: z.string()
     })
@@ -41,7 +45,10 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
 
     useEffect(() => {
         if (initialData) {
-            form.reset(initialData)
+            form.reset({
+                ...initialData,
+                description: initialData.description || ''
+            })
             setIcon(initialData.logoIcon)
         }
     }, [initialData, form])
