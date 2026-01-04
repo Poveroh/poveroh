@@ -38,7 +38,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
             list[index] = { ...list[index], ...category }
 
             return {
-                categoryCacheList: list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+                categoryCacheList: list
             }
         })
     },
@@ -93,8 +93,6 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
             }
 
             list[indexCat].subcategories[indexSub] = subcategory
-
-            list.at(indexCat)?.subcategories.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
 
             return { categoryCacheList: list }
         })
