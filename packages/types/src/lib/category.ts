@@ -19,6 +19,7 @@ export interface ICategoryBase {
     description?: string
     for: TransactionActionSimple
     logoIcon: string
+    color: string
 }
 
 export interface ICategory extends ICategoryBase {
@@ -35,6 +36,7 @@ export const defaultCategory: ICategory = {
     description: '',
     for: TransactionAction.EXPENSES,
     logoIcon: '',
+    color: '#8B5CF6',
     subcategories: [],
     createdAt: ''
 }

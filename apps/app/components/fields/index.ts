@@ -1,6 +1,7 @@
 export * from './amount-field'
 export * from './account-field'
 export * from './category-field'
+export * from './color-field'
 export * from './copyable-field'
 export * from './currency-field'
 export * from './date-field'

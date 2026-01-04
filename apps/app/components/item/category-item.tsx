@@ -13,14 +13,16 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
         <>
             <div className='border-border'>
                 <div
-                    className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+                    className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer hover:bg-accent/50 transition-colors'
                     onClick={() => openEdit('category', category)}
                 >
                     <div className='flex flex-row items-center space-x-5'>
-                        <DynamicIcon name={category.logoIcon} />
-                        <div>
-                            <p>{category.title}</p>
-                            <p className='sub'>{category.description}</p>
+                        <div
+                            className='flex items-center space-x-3 px-4 py-2 rounded-full'
+                            style={{ backgroundColor: `${category.color}20`, color: category.color }}
+                        >
+                            <DynamicIcon name={category.logoIcon} className='w-5 h-5' />
+                            <span style={{ color: category.color }}>{category.title}</span>
                         </div>
                     </div>
                     <OptionsPopover<ICategory>
@@ -32,14 +34,17 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                 {category.subcategories?.map((subcategory: ISubcategory) => (
                     <div
                         key={subcategory.id}
-                        className='flex flex-row justify-between items-center w-full pl-20 p-5 border-border cursor-pointer'
+                        className='flex flex-row justify-between items-center w-full pl-10 pr-5 p-2 border-border cursor-pointer hover:bg-accent/50 transition-colors'
                         onClick={() => openEdit('subcategory', subcategory)}
                     >
-                        <div className='flex flex-row items-center space-x-5'>
-                            <DynamicIcon name={subcategory.logoIcon} />
-                            <div>
-                                <p>{subcategory.title}</p>
-                                <p className='sub'>{subcategory.description}</p>
+                        <div className='flex flex-row items-center space-x-5' style={{ color: category.color }}>
+                            <DynamicIcon name='corner-down-right' className='w-5 h-5' />
+                            <div
+                                className='flex items-center space-x-2 px-3 py-1.5 rounded-full text-sm'
+                                style={{ backgroundColor: `${category.color}20`, color: category.color }}
+                            >
+                                <DynamicIcon name={subcategory.logoIcon} className='w-4 h-4' />
+                                <span style={{ color: category.color }}>{subcategory.title}</span>
                             </div>
                         </div>
                         <OptionsPopover<ISubcategory>

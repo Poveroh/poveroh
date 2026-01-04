@@ -24,6 +24,7 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
         title: '',
         description: '',
         logoIcon: iconList[0] as string,
+        color: '#8B5CF6',
         for: initialData?.for || 'EXPENSES'
     }
 
@@ -35,6 +36,7 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
             .nullable()
             .transform(val => val || ''),
         logoIcon: z.string().nonempty(t('messages.errors.required')),
+        color: z.string().nonempty(t('messages.errors.required')),
         for: z.string()
     })
 

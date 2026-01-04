@@ -43,4 +43,5 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 export type FormRef = {
     submit: () => void
+    reset: () => void
 }

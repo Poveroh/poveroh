@@ -17,6 +17,9 @@ export const SubcategoryForm = forwardRef<FormRef, FormProps<ISubcategory>>((pro
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
         }
     }))
 

@@ -9,6 +9,7 @@ import { useModal } from '@/hooks/use-modal'
 import { SubcategoryForm } from '../form/subcategory-form'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
+import { FormRef } from '@/types'
 
 type CategorySubcategoryDialogProps = {
     mode: CategoryModelMode
@@ -23,7 +24,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
     const modalManager = useModal<ICategory | ISubcategory>()
     const deleteModalManager = useDeleteModal<ICategory | ISubcategory>()
 
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
     const handleFormSubmit = async (data: FormData) => {
         modalManager.setLoading(true)

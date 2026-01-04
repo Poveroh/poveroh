@@ -217,6 +217,9 @@
             "addAsUrl": "Add as URL",
             "addAsFile": "Add as file"
         },
+        "color": {
+            "label": "Color"
+        },
         "first_payment": {
             "label": "FIrst payment"
         },

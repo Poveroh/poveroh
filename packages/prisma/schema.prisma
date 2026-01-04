@@ -405,6 +405,7 @@ model Category {
     description   String?
     for           TransactionAction
     logoIcon      String
+    color         String            @default("#8B5CF6")
     createdAt     DateTime          @default(now())
     transactions  Transaction[]
     subcategories Subcategory[]

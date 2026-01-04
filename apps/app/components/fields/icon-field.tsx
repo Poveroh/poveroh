@@ -15,19 +15,18 @@ export function IconField({
     errorMessage
 }: IconFieldProps) {
     return (
-        <div className='flex flex-col space-y-4'>
-            <FormItem>
-                <FormLabel mandatory={mandatory}>{label}</FormLabel>
-                <FormControl>
-                    <div className='grid grid-cols-12 gap-5 rounded-md box-border'>
-                        {iconList.map((iconName: string) => {
-                            return (
-                                <TooltipProvider key={iconName}>
-                                    <Tooltip>
+        <TooltipProvider>
+            <div className='flex flex-col space-y-4'>
+                <FormItem>
+                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
+                    <FormControl>
+                        <div className='grid grid-cols-12 gap-5 rounded-md box-border'>
+                            {iconList.map((iconName: string) => {
+                                return (
+                                    <Tooltip key={iconName}>
                                         <TooltipTrigger asChild>
                                             <div
-                                                key={iconName}
-                                                className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-[30px] w-[30px]
+                                                className={`box-border p-1 cursor-pointer flex justify-center items-center rounded-md h-8 w-8
                                                     ${selectedIcon === iconName ? 'bg-white text-black border border-hr' : ''}
                                                     ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 onClick={() => {
@@ -36,20 +35,20 @@ export function IconField({
                                                     }
                                                 }}
                                             >
-                                                <DynamicIcon key={iconName} name={iconName} />
+                                                <DynamicIcon name={iconName} className='w-5 h-5' />
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
                                             <p>{iconName}</p>
                                         </TooltipContent>
                                     </Tooltip>
-                                </TooltipProvider>
-                            )
-                        })}
-                    </div>
-                </FormControl>
-                {showError && errorMessage && <p className='danger'>{errorMessage}</p>}
-            </FormItem>
-        </div>
+                                )
+                            })}
+                        </div>
+                    </FormControl>
+                    {showError && errorMessage && <p className='danger'>{errorMessage}</p>}
+                </FormItem>
+            </div>
+        </TooltipProvider>
     )
 }
