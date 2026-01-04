@@ -22,6 +22,9 @@ export const AccountAndFileForm = forwardRef<
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleParseForm(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
         }
     }))
 

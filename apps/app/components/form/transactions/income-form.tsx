@@ -28,6 +28,9 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
         }
     }))
 

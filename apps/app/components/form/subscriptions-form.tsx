@@ -32,6 +32,9 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
         }
     }))
 

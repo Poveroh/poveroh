@@ -21,6 +21,11 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
                 if (formRef.current) {
                     formRef.current.submit()
                 }
+            },
+            reset: () => {
+                if (formRef.current) {
+                    formRef.current.reset()
+                }
             }
         }),
         []

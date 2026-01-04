@@ -24,6 +24,9 @@ export const AccountForm = forwardRef<FormRef, FormProps<IFinancialAccount>>(
         useImperativeHandle(ref, () => ({
             submit: () => {
                 form.handleSubmit(values => handleSubmit(values, dataCallback))()
+            },
+            reset: () => {
+                form.reset()
             }
         }))
 

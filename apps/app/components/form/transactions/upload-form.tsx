@@ -14,11 +14,14 @@ type FormProps = {
 }
 
 export const UploadForm = forwardRef<FormRef, FormProps>((props: FormProps, ref) => {
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
             formRef.current?.submit()
+        },
+        reset: () => {
+            formRef.current?.reset()
         }
     }))
 

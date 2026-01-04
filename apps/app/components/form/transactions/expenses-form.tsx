@@ -35,6 +35,9 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
         }
     }))
 
