@@ -44,7 +44,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
             return
         }
 
-        if (isEdit || !modalManager.keepAdding) {
+        if (isEdit || !modalManager.keepAdding.checked) {
             modalManager.closeModal()
         } else {
             formRef.current?.reset()
