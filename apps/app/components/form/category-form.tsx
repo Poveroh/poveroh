@@ -17,7 +17,7 @@ import { FormProps, FormRef } from '@/types'
 import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
-import { Ellipsis, Pencil } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 
 export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: FormProps<ICategory>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
