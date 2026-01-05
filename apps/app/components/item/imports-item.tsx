@@ -30,11 +30,19 @@ export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps)
             </div>
             <OptionsPopover<IImport>
                 data={imports}
-                openDelete={openDelete}
-                openEdit={openEdit}
-                options={{
-                    hideEdit: importApproved
-                }}
+                buttons={[
+                    {
+                        onClick: item => openEdit(item),
+                        label: t('buttons.editItem'),
+                        icon: 'pencil'
+                    },
+                    {
+                        onClick: item => openDelete(item),
+                        label: t('buttons.deleteItem'),
+                        hide: importApproved,
+                        icon: 'trash-2'
+                    }
+                ]}
             ></OptionsPopover>
         </div>
     )

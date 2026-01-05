@@ -121,7 +121,21 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                     <p className='sub'>{category?.title || t('messages.uncategorized')}</p>
                 </div>
                 <div onClick={e => e.stopPropagation()}>
-                    <OptionsPopover<ITransaction> data={transaction} openDelete={openDelete} openEdit={openEdit} />
+                    <OptionsPopover<ITransaction>
+                        data={transaction}
+                        buttons={[
+                            {
+                                onClick: item => openEdit(item),
+                                label: t('buttons.editItem'),
+                                icon: 'pencil'
+                            },
+                            {
+                                onClick: item => openDelete(item),
+                                label: t('buttons.deleteItem'),
+                                icon: 'trash-2'
+                            }
+                        ]}
+                    />
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { BrandIcon } from '../icon/brand-icon'
 import { IFinancialAccount } from '@poveroh/types'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
+import { useTranslations } from 'next-intl'
 
 type AccountItemProps = {
     account: IFinancialAccount
@@ -10,6 +11,7 @@ type AccountItemProps = {
 }
 
 export function AccountItem({ account, openDelete, openEdit }: AccountItemProps) {
+    const t = useTranslations()
     const { TYPE_LIST } = useFinancialAccount()
 
     const type = TYPE_LIST.find(tp => tp.value == account.type)
@@ -28,8 +30,18 @@ export function AccountItem({ account, openDelete, openEdit }: AccountItemProps)
             </div>
             <OptionsPopover<IFinancialAccount>
                 data={account}
-                openDelete={openDelete}
-                openEdit={openEdit}
+                buttons={[
+                    {
+                        onClick: item => openEdit(item),
+                        label: t('buttons.editItem'),
+                        icon: 'pencil'
+                    },
+                    {
+                        onClick: item => openDelete(item),
+                        label: t('buttons.deleteItem'),
+                        icon: 'trash-2'
+                    }
+                ]}
             ></OptionsPopover>
         </div>
     )

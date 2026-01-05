@@ -568,10 +568,20 @@ export default function TransactionsView() {
                     <div onClick={e => e.stopPropagation()} className='w-fit'>
                         <OptionsPopover<ITransaction>
                             data={transaction}
-                            openEdit={(item: ITransaction) => {
-                                openModal('edit', item)
-                            }}
-                            openDelete={openDeleteModal}
+                            buttons={[
+                                {
+                                    onClick: item => {
+                                        openModal('edit', item)
+                                    },
+                                    label: t('buttons.editItem'),
+                                    icon: 'pencil'
+                                },
+                                {
+                                    onClick: item => openDeleteModal(item),
+                                    label: t('buttons.deleteItem'),
+                                    icon: 'trash-2'
+                                }
+                            ]}
                         />
                     </div>
                 )

@@ -1,6 +1,7 @@
 import DynamicIcon from '../icon/dynamic-icon'
 import { CategoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
+import { useTranslations } from 'next-intl'
 
 type CategoryItemProps = {
     category: ICategory
@@ -9,6 +10,8 @@ type CategoryItemProps = {
 }
 
 export function CategoryItem({ category, openDelete, openEdit }: CategoryItemProps) {
+    const t = useTranslations()
+
     return (
         <>
             <div className='border-border'>
@@ -27,8 +30,18 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                     </div>
                     <OptionsPopover<ICategory>
                         data={category}
-                        openDelete={item => openDelete('category', item)}
-                        openEdit={item => openEdit('category', item)}
+                        buttons={[
+                            {
+                                onClick: item => openEdit('category', item),
+                                label: t('buttons.editItem'),
+                                icon: 'pencil'
+                            },
+                            {
+                                onClick: item => openDelete('category', item),
+                                label: t('buttons.deleteItem'),
+                                icon: 'trash-2'
+                            }
+                        ]}
                     ></OptionsPopover>
                 </div>
                 {category.subcategories?.map((subcategory: ISubcategory) => (
@@ -49,8 +62,18 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                         </div>
                         <OptionsPopover<ISubcategory>
                             data={subcategory}
-                            openDelete={item => openDelete('subcategory', item)}
-                            openEdit={item => openEdit('subcategory', item)}
+                            buttons={[
+                                {
+                                    onClick: item => openEdit('subcategory', item),
+                                    label: t('buttons.editItem'),
+                                    icon: 'pencil'
+                                },
+                                {
+                                    onClick: item => openDelete('subcategory', item),
+                                    label: t('buttons.deleteItem'),
+                                    icon: 'trash-2'
+                                }
+                            ]}
                         ></OptionsPopover>
                     </div>
                 ))}

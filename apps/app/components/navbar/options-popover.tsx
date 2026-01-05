@@ -1,51 +1,49 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
-import { useTranslations } from 'next-intl'
-import { Ellipsis, Pencil, Trash2 } from 'lucide-react'
-import { Button } from '@poveroh/ui/components/button'
+import { Ellipsis } from 'lucide-react'
+import { Button, ButtonsVariant } from '@poveroh/ui/components/button'
+import DynamicIcon from '../icon/dynamic-icon'
+import { cn } from '@poveroh/ui/lib/utils'
+
+type ExtraButton<T> = {
+    label: string
+    icon?: string
+    variant?: ButtonsVariant
+    onClick: (item: T) => void
+    hide?: boolean
+}
 
 type OptionsPopoverContentProps<T> = {
     data: T
-    openDelete: (item: T) => void
-    openEdit: (item: T) => void
-    options?: {
-        hideEdit?: boolean
-        hideDelete?: boolean
-    }
+    buttons?: Array<ExtraButton<T>>
 }
 
-function OptionsContent<T>({ data, openDelete, openEdit, options }: OptionsPopoverContentProps<T>) {
-    const t = useTranslations()
-
+function OptionsContent<T>({ data, buttons }: OptionsPopoverContentProps<T>) {
     return (
         <div className='flex flex-col'>
-            {!options?.hideEdit && (
-                <Button
-                    variant='ghost'
-                    className='justify-start w-full'
-                    onClick={e => {
-                        e.stopPropagation()
-                        openEdit(data)
-                    }}
-                >
-                    <Pencil className='mr-2' />
-                    <p>{t('buttons.editItem')}</p>
-                </Button>
-            )}
-            {!options?.hideDelete && (
-                <Button
-                    variant='ghost'
-                    className='justify-start w-full'
-                    onClick={e => {
-                        e.stopPropagation()
-                        openDelete(data)
-                    }}
-                >
-                    <Trash2 className='mr-2 danger' />
-                    <p className='danger'>{t('buttons.deleteItem')}</p>
-                </Button>
-            )}
+            {buttons?.map(btn => {
+                if (btn.hide) return null
+                return (
+                    <Button
+                        key={btn.label}
+                        className='justify-start w-full'
+                        variant={btn.variant || 'ghost'}
+                        onClick={e => {
+                            e.stopPropagation()
+                            btn.onClick(data)
+                        }}
+                    >
+                        {btn.icon && (
+                            <DynamicIcon
+                                name={btn.icon}
+                                className={cn('mr-2', btn.variant == 'danger' ? 'danger' : '')}
+                            />
+                        )}
+                        {btn.label}
+                    </Button>
+                )
+            })}
         </div>
     )
 }

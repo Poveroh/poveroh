@@ -6,6 +6,7 @@ import icons from 'currency-icons'
 import { useSubscription } from '@/hooks/use-subscriptions'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 type SubscriptionItemProps = {
     subscription: ISubscription
@@ -14,6 +15,7 @@ type SubscriptionItemProps = {
 }
 
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
+    const t = useTranslations()
     const { getNextExecutionText } = useSubscription()
     const { getFinancialAccount } = useFinancialAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
@@ -66,8 +68,18 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                 </div>
                 <OptionsPopover<ISubscription>
                     data={subscription}
-                    openDelete={openDelete}
-                    openEdit={openEdit}
+                    buttons={[
+                        {
+                            onClick: item => openEdit(item),
+                            label: t('buttons.editItem'),
+                            icon: 'pencil'
+                        },
+                        {
+                            onClick: item => openDelete(item),
+                            label: t('buttons.deleteItem'),
+                            icon: 'trash-2'
+                        }
+                    ]}
                 ></OptionsPopover>
             </div>
         </div>
