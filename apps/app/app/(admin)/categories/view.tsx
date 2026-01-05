@@ -11,7 +11,7 @@ import Box from '@/components/box/box-wrapper'
 import { Input } from '@poveroh/ui/components/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
-import { Search, Shapes } from 'lucide-react'
+import { List, ListTree, Search, Shapes } from 'lucide-react'
 import { Button } from '@poveroh/ui/components/button'
 import { CategorySubcategoryDialog } from '@/components/dialog/category-subcategory-dialog'
 import { useCategory } from '@/hooks/use-category'
@@ -24,7 +24,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryLoading, fetchCategory, importTemplates } = useCategory()
+    const { categoryCacheList, categoryLoading, fetchCategory, importTemplates, clearCategories } = useCategory()
 
     const { openModal } = useModal<ICategory | ISubcategory>()
     const { openModal: openDeleteModal } = useDeleteModal<ICategory | ISubcategory>()
@@ -94,9 +94,24 @@ export default function CategoryView() {
                         onClick: () => fetchCategory(true),
                         loading: categoryLoading.fetchCategory
                     }}
-                    addAction={{
-                        onClick: () => openNew('category'),
-                        loading: categoryLoading.addCategory
+                    addAction={[
+                        {
+                            onClick: () => openNew('category'),
+                            loading: categoryLoading.addCategory,
+                            label: t('categories.modal.newTitle'),
+                            icon: <List />
+                        },
+                        {
+                            onClick: () => openNew('subcategory'),
+                            loading: categoryLoading.addSubcategory,
+                            label: t('subcategories.modal.newTitle'),
+                            icon: <ListTree />
+                        }
+                    ]}
+                    onDeleteAll={{
+                        onClick: () => clearCategories(),
+                        loading: categoryLoading.clearCategories,
+                        disabled: localCategoryList.length === 0
                     }}
                 />
 

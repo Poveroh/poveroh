@@ -21,6 +21,10 @@ export class BaseService<T> {
         return await server.delete<boolean>(`${this.endpoint}/${id}`)
     }
 
+    async clear(): Promise<boolean> {
+        return this.delete('all')
+    }
+
     async read<U, F = unknown>(filters?: F, options?: IFilterOptions): Promise<{ data: U; total: number }> {
         const queryObject: Record<string, unknown> = {}
 

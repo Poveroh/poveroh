@@ -11,6 +11,7 @@ type categoryLoadingState = {
     addCategory: boolean
     editCategory: boolean
     removeCategory: boolean
+    clearCategories: boolean
     getCategory: boolean
     fetchCategory: boolean
     addSubcategory: boolean
@@ -31,6 +32,7 @@ export const useCategory = () => {
         addCategory: false,
         editCategory: false,
         removeCategory: false,
+        clearCategories: false,
         getCategory: false,
         fetchCategory: false,
         addSubcategory: false,
@@ -175,6 +177,19 @@ export const useCategory = () => {
         }
     }
 
+    const clearCategories = async () => {
+        setCategoryLoadingFor('clearCategories', true)
+        try {
+            const res = await categoryService.clear()
+            categoryStore.clearCategory()
+            return res
+        } catch (error) {
+            return handleError(error, 'Error clearing all categories')
+        } finally {
+            setCategoryLoadingFor('clearCategories', false)
+        }
+    }
+
     const importTemplates = async () => {
         setCategoryLoadingFor('fetchCategory', true)
         try {
@@ -202,6 +217,7 @@ export const useCategory = () => {
         editSubcategory,
         removeSubcategory,
         getSubcategory,
-        importTemplates
+        importTemplates,
+        clearCategories
     }
 }

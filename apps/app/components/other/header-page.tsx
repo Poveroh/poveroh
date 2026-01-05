@@ -19,6 +19,9 @@ import { cn } from '@poveroh/ui/lib/utils'
 type HeaderAction = {
     onClick: () => void
     loading: boolean
+    disabled?: boolean
+    label?: string
+    icon?: React.ReactNode
 }
 
 type HeaderProps = {
@@ -29,7 +32,7 @@ type HeaderProps = {
     uploadAction?: HeaderAction
     downloadAction?: HeaderAction
     onDeleteAll?: HeaderAction
-    addAction?: HeaderAction
+    addAction?: HeaderAction | HeaderAction[]
 }
 
 export function Header(props: HeaderProps) {
@@ -113,7 +116,7 @@ export function Header(props: HeaderProps) {
                                     <Button
                                         variant='ghost'
                                         className='justify-start w-full'
-                                        disabled={onDeleteAll?.loading}
+                                        disabled={onDeleteAll?.loading || onDeleteAll?.disabled}
                                         onClick={() => setOpenDeleteAllDialog(true)}
                                     >
                                         {onDeleteAll?.loading ? (
@@ -133,10 +136,41 @@ export function Header(props: HeaderProps) {
                             </Button>
                         )}
 
-                        <Button onClick={addAction?.onClick} disabled={addAction?.loading}>
-                            {addAction?.loading ? <Loader2 className='animate-spin mr-2' /> : <Plus />}
-                            {t('buttons.add.base')}
-                        </Button>
+                        {Array.isArray(addAction) ? (
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button>
+                                        <Plus />
+                                        {t('buttons.add.base')}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent align='end'>
+                                    <div className='flex flex-col'>
+                                        {addAction.map((action, index) => (
+                                            <Button
+                                                key={index}
+                                                variant='ghost'
+                                                className='justify-start w-full'
+                                                disabled={action.loading || action.disabled}
+                                                onClick={action.onClick}
+                                            >
+                                                {action.loading ? (
+                                                    <Loader2 className='animate-spin mr-2' />
+                                                ) : (
+                                                    (action.icon ?? <Plus className='mr-2' />)
+                                                )}
+                                                {action.label ?? t('buttons.add.base')}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        ) : (
+                            <Button onClick={addAction?.onClick} disabled={addAction?.loading}>
+                                {addAction?.loading ? <Loader2 className='animate-spin mr-2' /> : <Plus />}
+                                {addAction?.label ?? t('buttons.add.base')}
+                            </Button>
+                        )}
                     </div>
                 ) : null}
             </header>
@@ -147,7 +181,13 @@ export function Header(props: HeaderProps) {
                 open={openDeleteAllDialog}
                 closeDialog={() => setOpenDeleteAllDialog(false)}
                 loading={onDeleteAll?.loading ?? false}
-                onConfirm={onDeleteAll?.onClick ?? (() => {})}
+                onConfirm={() => {
+                    try {
+                        onDeleteAll?.onClick()
+                    } finally {
+                        setOpenDeleteAllDialog(false)
+                    }
+                }}
             ></DeleteModal>
         </>
     )

@@ -9,6 +9,7 @@ type CategoryStore = {
     setCategory: (category: ICategory[]) => void
     removeCategory: (categoryId: string) => void
     getCategory: (categoryId: string) => ICategory | null
+    clearCategory: () => void
 
     // --- Subcategory Actions ---
     addSubcategory: (subcategory: ISubcategory) => void
@@ -55,6 +56,11 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     getCategory: categoryId => {
         const list = get().categoryCacheList
         return list.find(item => item.id === categoryId) || null
+    },
+    clearCategory: () => {
+        set(() => ({
+            categoryCacheList: []
+        }))
     },
 
     // --- Subcategory Actions ---

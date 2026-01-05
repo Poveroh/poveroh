@@ -82,8 +82,13 @@ export class CategoryController {
                 return
             }
 
-            await prisma.subcategory.deleteMany({ where: { categoryId: id } })
-            await prisma.category.delete({ where: { id } })
+            if (id == 'all') {
+                await prisma.subcategory.deleteMany({})
+                await prisma.category.deleteMany({})
+            } else {
+                await prisma.subcategory.deleteMany({ where: { categoryId: id } })
+                await prisma.category.delete({ where: { id } })
+            }
 
             res.status(200).json(true)
         } catch (error) {
