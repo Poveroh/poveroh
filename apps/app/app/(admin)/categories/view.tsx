@@ -12,6 +12,7 @@ import { Input } from '@poveroh/ui/components/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
 import { Search, Shapes } from 'lucide-react'
+import { Button } from '@poveroh/ui/components/button'
 import { CategorySubcategoryDialog } from '@/components/dialog/category-subcategory-dialog'
 import { useCategory } from '@/hooks/use-category'
 import { CategoryItem } from '@/components/item/category-item'
@@ -23,7 +24,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryLoading, fetchCategory } = useCategory()
+    const { categoryCacheList, categoryLoading, fetchCategory, importTemplates } = useCategory()
 
     const { openModal } = useModal<ICategory | ISubcategory>()
     const { openModal: openDeleteModal } = useDeleteModal<ICategory | ISubcategory>()
@@ -106,12 +107,19 @@ export default function CategoryView() {
                         className='w-1/3'
                         onChange={onSearch}
                     />
-                    <Tabs defaultValue={activeTab} value={activeTab} className='w-[200px]' onValueChange={setActiveTab}>
-                        <TabsList className='grid w-full grid-cols-2'>
-                            <TabsTrigger value='expenses'>{t('transactions.action.expenses')}</TabsTrigger>
-                            <TabsTrigger value='income'>{t('transactions.action.income')}</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
+                    <div className='flex items-center space-x-3'>
+                        <Tabs
+                            defaultValue={activeTab}
+                            value={activeTab}
+                            className='w-[200px]'
+                            onValueChange={setActiveTab}
+                        >
+                            <TabsList className='grid w-full grid-cols-2'>
+                                <TabsTrigger value='expenses'>{t('transactions.action.expenses')}</TabsTrigger>
+                                <TabsTrigger value='income'>{t('transactions.action.income')}</TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
                 </div>
                 {!categoryLoading.fetchCategory && localCategoryList.length > 0 ? (
                     <Tabs defaultValue={activeTab} value={activeTab} className='p-0'>
@@ -162,6 +170,12 @@ export default function CategoryView() {
                                 <div className='flex flex-col items-center space-y-2 justify-center'>
                                     <h4>{t('categories.empty.title')}</h4>
                                     <p>{t('categories.empty.subtitle')}</p>
+                                </div>
+                                <div className='flex flex-row space-x-3'>
+                                    <Button variant='outline' onClick={() => importTemplates()}>
+                                        {t('buttons.addFromTemplates')}
+                                    </Button>
+                                    <Button onClick={() => openNew('category')}>{t('buttons.add.new')}</Button>
                                 </div>
                             </div>
                         )}

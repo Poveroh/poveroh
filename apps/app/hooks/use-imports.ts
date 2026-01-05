@@ -203,6 +203,17 @@ export const useImport = () => {
         importStore.removePendingTransaction(transactionId)
     }
 
+    const importTemplates = async (action: string) => {
+        try {
+            await importService.importTemplates(action)
+            logger.debug('Template import successful for action:', action)
+            return true
+        } catch (error) {
+            handleError(error, 'Error importing template')
+            return false
+        }
+    }
+
     return {
         importLoading,
         importStore,
@@ -217,6 +228,7 @@ export const useImport = () => {
         handleApproveTransaction,
         handleAllApproveTransactions,
         handleEditTransaction,
-        handleDeleteTransaction
+        handleDeleteTransaction,
+        importTemplates
     }
 }

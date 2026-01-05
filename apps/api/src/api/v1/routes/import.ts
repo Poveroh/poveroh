@@ -27,4 +27,6 @@ router.put(
 router.get('/transaction/:id', AuthMiddleware.isAuthenticated, ImportController.readPendingTransactions)
 router.delete('/transaction/:id', AuthMiddleware.isAuthenticated, ImportController.deletePendingTransaction)
 
+router.post('/template', AuthMiddleware.isAuthenticated, ImportController.importTemplates)
+
 export default router

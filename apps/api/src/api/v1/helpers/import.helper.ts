@@ -2,6 +2,7 @@ import prisma from '@poveroh/prisma'
 import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
 import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
+import CategoryTemplate from '../content/template/category'
 
 export const ImportHelper = {
     /**
@@ -86,5 +87,37 @@ export const ImportHelper = {
         }
 
         return transactions
+    },
+    async importCategoriesFromTemplate(userId: string): Promise<boolean> {
+        try {
+            for (const category of CategoryTemplate) {
+                const newCategory = await prisma.category.create({
+                    data: {
+                        userId: userId,
+                        title: category.title,
+                        description: category.description,
+                        for: category.for,
+                        logoIcon: category.logoIcon,
+                        color: category.color
+                    }
+                })
+
+                for (const subcategory of category.subcategories) {
+                    await prisma.subcategory.create({
+                        data: {
+                            categoryId: newCategory.id,
+                            title: subcategory.title,
+                            description: subcategory.description,
+                            logoIcon: subcategory.logoIcon
+                        }
+                    })
+                }
+            }
+
+            return true
+        } catch (error) {
+            console.error('Error importing categories from template:', error)
+            return false
+        }
     }
 }

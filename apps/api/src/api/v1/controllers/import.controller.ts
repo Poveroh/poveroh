@@ -8,9 +8,7 @@ import {
     TransactionStatus,
     ITransactionFilters,
     ITransaction,
-    Currencies,
-    TransactionAction,
-    IAmountBase
+    TransactionAction
 } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
@@ -399,6 +397,27 @@ export class ImportController {
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
+        }
+    }
+
+    static async importTemplates(req: Request, res: Response) {
+        try {
+            const userId = req.user.id
+            const { action } = req.body
+
+            switch (action) {
+                case 'categories':
+                    await ImportHelper.importCategoriesFromTemplate(userId)
+                    break
+                default:
+                    res.status(400).json({ message: 'Invalid action for template import' })
+                    return
+            }
+
+            res.status(200).json(true)
+        } catch (error) {
+            logger.error(error)
+            res.status(500).json({ message: 'Error importing templates', error })
         }
     }
 }

@@ -5,6 +5,7 @@ import { useCategoryStore } from '@/store/category.store'
 import { ICategory, ICategoryFilters } from '@poveroh/types'
 import { useError } from './use-error'
 import { useState } from 'react'
+import { useImport } from './use-imports'
 
 type categoryLoadingState = {
     addCategory: boolean
@@ -20,6 +21,7 @@ type categoryLoadingState = {
 
 export const useCategory = () => {
     const { handleError } = useError()
+    const { importTemplates: importFromTemplate } = useImport()
 
     const categoryService = new CategoryService()
     const subcategoryService = new SubcategoryService()
@@ -173,6 +175,21 @@ export const useCategory = () => {
         }
     }
 
+    const importTemplates = async () => {
+        setCategoryLoadingFor('fetchCategory', true)
+        try {
+            const res = await importFromTemplate('categories')
+            if (res) {
+                await fetchCategory(true)
+            }
+            return res
+        } catch (error) {
+            return handleError(error, 'Error importing categories from template')
+        } finally {
+            setCategoryLoadingFor('fetchCategory', false)
+        }
+    }
+
     return {
         categoryCacheList: categoryStore.categoryCacheList,
         categoryLoading,
@@ -184,6 +201,7 @@ export const useCategory = () => {
         addSubcategory,
         editSubcategory,
         removeSubcategory,
-        getSubcategory
+        getSubcategory,
+        importTemplates
     }
 }

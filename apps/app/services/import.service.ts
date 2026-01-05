@@ -26,4 +26,8 @@ export class ImportService extends BaseService<IImport> {
     async deleteTransaction(transaction_id: string): Promise<boolean> {
         return await server.delete<boolean>(`/import/transaction/${transaction_id}`)
     }
+
+    async importTemplates(action: string): Promise<boolean> {
+        return await server.post<boolean>('/import/template', { action }, false)
+    }
 }
