@@ -101,12 +101,16 @@ export default function CategoryView() {
                             label: t('categories.modal.newTitle'),
                             icon: <List />
                         },
-                        {
-                            onClick: () => openNew('subcategory'),
-                            loading: categoryLoading.addSubcategory,
-                            label: t('subcategories.modal.newTitle'),
-                            icon: <ListTree />
-                        }
+                        ...(categoryCacheList.length > 0
+                            ? [
+                                  {
+                                      onClick: () => openNew('subcategory'),
+                                      loading: categoryLoading.addSubcategory,
+                                      label: t('subcategories.modal.newTitle'),
+                                      icon: <ListTree />
+                                  }
+                              ]
+                            : [])
                     ]}
                     onDeleteAll={{
                         onClick: () => clearCategories(),
