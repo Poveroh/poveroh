@@ -87,7 +87,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                 title={
                     modalManager.inEditingMode && modalManager.item
                         ? modalManager.item.title
-                        : t(`${mode ? 'categories.modal.newTitle' : 'subcategories.modal.newTitle'}`)
+                        : t(`${mode == 'category' ? 'categories.modal.newTitle' : 'subcategories.modal.newTitle'}`)
                 }
                 decoration={{
                     iconLogo: {
