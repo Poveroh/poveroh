@@ -85,9 +85,10 @@ export default function CategoryView() {
             <div className='space-y-12'>
                 <Header
                     title={t('categories.title')}
+                    titleSize='compact'
                     breadcrumbs={[
-                        { label: t('settings.title'), href: '/settings' },
-                        { label: t('settings.manage.title'), href: '/settings' },
+                        { label: t('settings.title') },
+                        { label: t('settings.manage.title') },
                         { label: t('categories.title') }
                     ]}
                     fetchAction={{

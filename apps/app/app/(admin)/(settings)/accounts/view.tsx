@@ -92,9 +92,10 @@ export default function AccountView() {
             <div className='space-y-12'>
                 <Header
                     title={t('settings.manage.account.title')}
+                    titleSize='compact'
                     breadcrumbs={[
-                        { label: t('settings.title'), href: '/settings' },
-                        { label: t('settings.manage.title'), href: '/settings/manage' },
+                        { label: t('settings.title') },
+                        { label: t('settings.manage.title') },
                         { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{

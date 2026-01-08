@@ -26,6 +26,7 @@ type HeaderAction = {
 
 type HeaderProps = {
     title: string
+    titleSize?: 'default' | 'compact'
     subtitle?: string
     breadcrumbs: IBreadcrumb[]
     fetchAction?: HeaderAction
@@ -48,7 +49,7 @@ export function Header(props: HeaderProps) {
         <>
             <header className={cn('flex flex-row items-end', showHeaderActions ? 'justify-between' : 'justify-start')}>
                 <div className='flex flex-col space-y-3'>
-                    <h2>{title}</h2>
+                    {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h2>{title}</h2>}
                     {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
                     <Breadcrumb>
                         <BreadcrumbList>

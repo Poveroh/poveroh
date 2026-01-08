@@ -9,7 +9,6 @@ import { Form } from '@poveroh/ui/components/form'
 
 import Box from '@/components/box/box-wrapper'
 import { CurrencyField, SelectField } from '@/components/fields'
-import { Header } from '@/components/other/header-page'
 import { languageCatalog, dateFormatCatalog, timezoneCatalog } from '@poveroh/types'
 import { usePreferencesForm } from '@/hooks/form/use-preferences-form'
 
@@ -20,14 +19,6 @@ export default function PreferencesView() {
 
     return (
         <div className='space-y-12'>
-            <Header
-                title={t('settings.system.globalPreferences.title')}
-                breadcrumbs={[
-                    { label: t('settings.title'), href: '/settings' },
-                    { label: t('settings.system.title'), href: '/settings' },
-                    { label: t('settings.system.globalPreferences.title') }
-                ]}
-            />
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.system.globalPreferences.title')}</h4>
                 <Box>

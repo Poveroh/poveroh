@@ -10,7 +10,6 @@ import { Form } from '@poveroh/ui/components/form'
 import Box from '@/components/box/box-wrapper'
 import { CopyableField, EmailField, TextField } from '@/components/fields'
 import { useProfileForm } from '@/hooks/form/use-profile-form'
-import { Header } from '@/components/other/header-page'
 import { CountryField } from '@/components/fields/country-field'
 
 export default function ProfileView() {
@@ -20,14 +19,6 @@ export default function ProfileView() {
 
     return (
         <div className='space-y-12'>
-            <Header
-                title={t('settings.account.personalInfo.title')}
-                breadcrumbs={[
-                    { label: t('settings.title'), href: '/settings' },
-                    { label: t('settings.account.title'), href: '/settings' },
-                    { label: t('settings.account.personalInfo.title') }
-                ]}
-            />
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.personalInfo.title')}</h4>
                 <Box>

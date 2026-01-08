@@ -7,7 +7,6 @@ import { Button } from '@poveroh/ui/components/button'
 import { Form } from '@poveroh/ui/components/form'
 import { useProfileSecurityForm } from '@/hooks/form/use-profile-security-form'
 import { PasswordField } from '@/components/fields'
-import { Header } from '@/components/other/header-page'
 
 export default function SecurityView() {
     const t = useTranslations()
@@ -15,15 +14,6 @@ export default function SecurityView() {
 
     return (
         <div className='space-y-12'>
-            <Header
-                title={t('settings.account.security.title')}
-                breadcrumbs={[
-                    { label: t('settings.title'), href: '/settings' },
-                    { label: t('settings.account.title'), href: '/settings' },
-                    { label: t('settings.account.security.title') }
-                ]}
-            />
-
             <div className='flex flex-col space-y-3'>
                 <h4>{t('form.password.label')}</h4>
                 <Box>

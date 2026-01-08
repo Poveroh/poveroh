@@ -35,7 +35,7 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
                     </>
                 )}
                 <div className='flex flex-col space-y-5'>
-                    <Link className='flex items-center space-x-2 w-full' href='/settings'>
+                    <Link className='flex items-center space-x-2 w-full' href='/settings/profile'>
                         <Settings />
                         <p>{t('settings.title')}</p>
                     </Link>
