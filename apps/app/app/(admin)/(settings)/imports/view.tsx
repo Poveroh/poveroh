@@ -54,6 +54,7 @@ export default function ImportsView() {
             <div className='space-y-12'>
                 <Header
                     title={t('imports.title')}
+                    titleSize='compact'
                     breadcrumbs={[
                         { label: t('settings.title'), href: '/settings' },
                         { label: t('settings.manage.title'), href: '/settings' },
