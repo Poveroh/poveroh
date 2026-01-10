@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useBreakpoint } from '@/hooks/use-breakpoint'
 import { useUser } from '@/hooks/use-user'
+import { cn } from '@poveroh/ui/lib/utils'
 
 function NavBarLink({ direction }: { direction: 'row' | 'col' }) {
     const t = useTranslations()
@@ -43,11 +44,15 @@ function NavBarSideMenu() {
     )
 }
 
-export default function NavBar() {
+type NavBarProps = {
+    fixed?: boolean
+}
+
+export default function NavBar({ fixed = true }: NavBarProps) {
     const { width, breakpoints } = useBreakpoint()
     return (
         <>
-            <div className='nav-app fixed flex justify-center w-full'>
+            <div className={cn('nav-app', fixed && 'fixed', 'flex justify-center w-full')}>
                 <div className='container flex justify-between items-center space-x-6 pt-10 pb-10 mx-auto px-4'>
                     <div className='flex space-x-20 items-center'>
                         <Link href='/dashboard'>

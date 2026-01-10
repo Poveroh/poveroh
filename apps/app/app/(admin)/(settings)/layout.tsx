@@ -4,13 +4,13 @@ import SidebarSettings from '@/components/settings/sidebar'
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {
     return (
-        <SidebarProvider>
+        <SidebarProvider className='h-full'>
             <Sidebar variant='embedded' side='left'>
                 <SidebarContent>
                     <SidebarSettings />
                 </SidebarContent>
             </Sidebar>
-            <SidebarInset>{children}</SidebarInset>
+            <SidebarInset className='overflow-y-auto h-full pb-10'>{children}</SidebarInset>
         </SidebarProvider>
     )
 }
