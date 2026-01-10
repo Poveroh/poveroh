@@ -18,7 +18,7 @@ export default function PreferencesView() {
     const { form, loading, handleSubmit } = usePreferencesForm()
 
     return (
-        <div className='space-y-12'>
+        <div className='space-y-12 w-full'>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.system.globalPreferences.title')}</h4>
                 <Box>

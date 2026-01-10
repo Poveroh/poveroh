@@ -82,7 +82,7 @@ export default function CategoryView() {
 
     return (
         <>
-            <div className='space-y-12'>
+            <div className='space-y-12 w-full'>
                 <Header
                     title={t('categories.title')}
                     titleSize='compact'

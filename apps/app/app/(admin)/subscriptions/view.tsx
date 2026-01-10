@@ -58,7 +58,7 @@ export default function SubscriptionsView() {
 
     return (
         <>
-            <div className='space-y-12'>
+            <div className='space-y-12 w-full'>
                 <Header
                     title={t('subscriptions.title')}
                     breadcrumbs={[

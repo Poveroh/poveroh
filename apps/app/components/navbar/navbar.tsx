@@ -44,15 +44,11 @@ function NavBarSideMenu() {
     )
 }
 
-type NavBarProps = {
-    fixed?: boolean
-}
-
-export default function NavBar({ fixed = true }: NavBarProps) {
+export default function NavBar() {
     const { width, breakpoints } = useBreakpoint()
     return (
         <>
-            <div className={cn('nav-app', fixed && 'fixed', 'flex justify-center w-full')}>
+            <div className={cn('nav-app', 'flex justify-center w-full mb-5')}>
                 <div className='container flex justify-between items-center space-x-6 pt-10 pb-10 mx-auto px-4'>
                     <div className='flex space-x-20 items-center'>
                         <Link href='/dashboard'>

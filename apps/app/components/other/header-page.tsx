@@ -49,7 +49,7 @@ export function Header(props: HeaderProps) {
         <>
             <header className={cn('flex flex-row items-end', showHeaderActions ? 'justify-between' : 'justify-start')}>
                 <div className='flex flex-col space-y-3'>
-                    {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h2>{title}</h2>}
+                    {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}
                     {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
                     <Breadcrumb>
                         <BreadcrumbList>

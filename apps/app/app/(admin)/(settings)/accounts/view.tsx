@@ -89,7 +89,7 @@ export default function AccountView() {
 
     return (
         <>
-            <div className='space-y-12'>
+            <div className='space-y-12 w-full'>
                 <Header
                     title={t('settings.manage.account.title')}
                     titleSize='compact'

@@ -13,7 +13,7 @@ export default function SecurityView() {
     const { form, loading, handleSubmit } = useProfileSecurityForm()
 
     return (
-        <div className='space-y-12'>
+        <div className='space-y-12 w-full'>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('form.password.label')}</h4>
                 <Box>

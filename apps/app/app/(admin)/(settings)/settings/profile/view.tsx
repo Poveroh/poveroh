@@ -18,7 +18,7 @@ export default function ProfileView() {
     const { form, user, loading, handleSubmit } = useProfileForm()
 
     return (
-        <div className='space-y-12'>
+        <div className='space-y-12 w-full'>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.personalInfo.title')}</h4>
                 <Box>

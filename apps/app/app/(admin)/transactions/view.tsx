@@ -591,7 +591,7 @@ export default function TransactionsView() {
 
     return (
         <>
-            <div className='space-y-12'>
+            <div className='space-y-12 w-full'>
                 <Header
                     title={t('transactions.title')}
                     breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('transactions.title') }]}

@@ -50,7 +50,7 @@
     --popover-color: #212121;
     --popover-foreground-color: #fafafa;
 
-    --accent-color: rgb(40, 40, 45);
+    --accent-color: var(--input-color);
     --accent-foreground-color: #fafafa;
 
     --chart-1-color: #246bce;
@@ -256,7 +256,9 @@ hr {
 
 .nav-app {
     backdrop-filter: saturate(180%) blur(20px);
-    z-index: 5;
+    z-index: 50;
+    position: sticky;
+    top: 0;
 }
 
 /* BRAND */

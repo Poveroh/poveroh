@@ -51,7 +51,7 @@ export default function ImportsView() {
 
     return (
         <>
-            <div className='space-y-12'>
+            <div className='space-y-12 w-full'>
                 <Header
                     title={t('imports.title')}
                     titleSize='compact'
