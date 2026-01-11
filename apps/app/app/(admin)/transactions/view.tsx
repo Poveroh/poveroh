@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -51,6 +51,7 @@ export default function TransactionsView() {
     const t = useTranslations()
     const router = useRouter()
     const searchParams = useSearchParams()
+    const mainDivRef = useRef<HTMLDivElement | null>(null)
 
     const {
         transactionCacheList,
@@ -135,22 +136,38 @@ export default function TransactionsView() {
 
     // Infinite scroll: automatically load more transactions when you reach the bottom
     useEffect(() => {
+        let scrollContainer: HTMLElement | Window = mainDivRef.current?.closest('.overflow-y-auto') as HTMLElement
+
+        if (!scrollContainer) {
+            scrollContainer = window
+        }
+
         const handleScroll = () => {
             if (isLoadingMore || transactionLoading.fetch || viewMode === 'table') {
                 return
             }
 
-            const scrollTop = window.scrollY || document.documentElement.scrollTop
-            const scrollHeight = document.documentElement.scrollHeight
-            const clientHeight = window.innerHeight
+            let scrollTop: number
+            let scrollHeight: number
+            let clientHeight: number
+
+            if (scrollContainer instanceof Window) {
+                scrollTop = window.scrollY || document.documentElement.scrollTop
+                scrollHeight = document.documentElement.scrollHeight
+                clientHeight = window.innerHeight
+            } else {
+                scrollTop = (scrollContainer as HTMLElement).scrollTop
+                scrollHeight = (scrollContainer as HTMLElement).scrollHeight
+                clientHeight = (scrollContainer as HTMLElement).clientHeight
+            }
 
             if (scrollTop + clientHeight >= scrollHeight - 100) {
                 loadMore()
             }
         }
 
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
+        scrollContainer.addEventListener('scroll', handleScroll)
+        return () => scrollContainer.removeEventListener('scroll', handleScroll)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoadingMore, viewMode, filters, transactionFilterSetting])
 
@@ -581,7 +598,7 @@ export default function TransactionsView() {
 
     return (
         <>
-            <div className='space-y-12 w-full'>
+            <div ref={mainDivRef} className='space-y-12 w-full'>
                 <Header
                     title={t('transactions.title')}
                     breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('transactions.title') }]}
@@ -789,10 +806,6 @@ export default function TransactionsView() {
             </div>
 
             <TransactionDialog></TransactionDialog>
-
-            {/* {dialogUploadOpen && (
-                <ImportDialog open={true} inEditingMode={true} closeDialog={() => setItemToEdit(null)} />
-            )} */}
         </>
     )
 }
