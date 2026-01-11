@@ -115,7 +115,16 @@ export class ImportController {
             }
 
             const transactions = await prisma.transaction.findMany({
-                where: { importId: id },
+                where: {
+                    importId: id,
+                    status: {
+                        in: [
+                            TransactionStatus.IMPORT_PENDING,
+                            TransactionStatus.IMPORT_REJECTED,
+                            TransactionStatus.IMPORT_APPROVED
+                        ]
+                    }
+                },
                 select: { id: true }
             })
             const transactionIds = transactions.map(t => t.id)

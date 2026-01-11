@@ -452,7 +452,7 @@
             "editTitle": "Edit import",
             "description": "Upload a CSV file with your transactions. The algorithm will try to extract and match them with existing transactions and subscriptions. Check the transactions before saving them.",
             "fileDescription": "Upload a CSV",
-            "deleteDescription": "This action cannot be undone. This will permanently delete the import and related transactions."
+            "deleteDescription": "This action cannot be undone. This will permanently delete the import and related transactions that are not approved or that are in pending.<br/><br/>Approved and completed transactions will remain in your transactions list."
         },
         "status": {
             "APPROVED": "Approved",

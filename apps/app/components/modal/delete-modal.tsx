@@ -35,7 +35,7 @@ export function DeleteModal({ title, description, open, closeDialog, loading, on
                             a: title
                         })}
                     </AlertDialogTitle>
-                    {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+                    {description && <AlertDialogDescription dangerouslySetInnerHTML={{ __html: description }} />}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel disabled={loading} onClick={() => closeDialog()}>
