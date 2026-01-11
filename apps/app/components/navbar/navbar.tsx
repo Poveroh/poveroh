@@ -4,28 +4,11 @@ import { UserPopover, UserPopoverContent } from '@/components/navbar/user-popove
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@poveroh/ui/components/sheet'
 import { Logo } from '@poveroh/ui/components/logo'
 import { AlignJustify } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useBreakpoint } from '@/hooks/use-breakpoint'
 import { useUser } from '@/hooks/use-user'
 import { cn } from '@poveroh/ui/lib/utils'
 import { NavigationBar } from './navigation-bar'
-
-function NavBarLink({ direction }: { direction: 'row' | 'col' }) {
-    const t = useTranslations()
-
-    const xy = direction == 'row' ? 'x-6' : 'y-3'
-
-    return (
-        <div className={`flex flex-${direction} space-${xy}`}>
-            {['transactions', 'subscriptions', 'investments', 'reports'].map(item => (
-                <Link key={item} href={`/${item}`}>
-                    {t(`${item}.title`)}
-                </Link>
-            ))}
-        </div>
-    )
-}
 
 function NavBarSideMenu() {
     const { user } = useUser()
@@ -39,7 +22,7 @@ function NavBarSideMenu() {
                 <SheetHeader>
                     <SheetTitle></SheetTitle>
                 </SheetHeader>
-                <UserPopoverContent user={user} link={<NavBarLink direction='col' />} />
+                <UserPopoverContent user={user} link={<NavigationBar orientation='vertical' />} />
             </SheetContent>
         </Sheet>
     )
@@ -55,7 +38,6 @@ export default function NavBar() {
                         <Link href='/dashboard'>
                             <Logo color='white' mode='horizontal' width={120} height={50}></Logo>
                         </Link>
-                        {/* {width <= breakpoints.lg ? null : <NavBarLink direction='row' />} */}
                         {width <= breakpoints.lg ? null : <NavigationBar />}
                     </div>
 

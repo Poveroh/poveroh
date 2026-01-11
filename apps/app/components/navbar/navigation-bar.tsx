@@ -15,7 +15,11 @@ import { usePathname } from 'next/navigation'
 import { Separator } from '@poveroh/ui/components/separator'
 import Link from 'next/link'
 
-export function NavigationBar() {
+type NavigationBarProps = {
+    orientation?: 'horizontal' | 'vertical'
+}
+
+export function NavigationBar({ orientation = 'horizontal' }: NavigationBarProps) {
     const t = useTranslations()
     const navConfig = getNavConfig()
     const pathname = usePathname()
@@ -48,7 +52,7 @@ export function NavigationBar() {
 
     return (
         <NavigationMenu>
-            <NavigationMenuList>
+            <NavigationMenuList className={orientation === 'horizontal' ? 'flex-row' : 'flex-col'}>
                 {navConfig
                     .filter(menuItem => menuItem.show)
                     .map((menuItem, index) => (
