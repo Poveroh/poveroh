@@ -38,6 +38,7 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                             },
                             {
                                 onClick: item => openDelete('category', item),
+                                variant: 'danger',
                                 label: t('buttons.deleteItem'),
                                 icon: 'trash-2'
                             }
@@ -70,6 +71,7 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                                 },
                                 {
                                     onClick: item => openDelete('subcategory', item),
+                                    variant: 'danger',
                                     label: t('buttons.deleteItem'),
                                     icon: 'trash-2'
                                 }

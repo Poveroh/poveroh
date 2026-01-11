@@ -38,6 +38,7 @@ export function AccountItem({ account, openDelete, openEdit }: AccountItemProps)
                     },
                     {
                         onClick: item => openDelete(item),
+                        variant: 'danger',
                         label: t('buttons.deleteItem'),
                         icon: 'trash-2'
                     }

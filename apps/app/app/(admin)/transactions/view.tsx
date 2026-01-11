@@ -585,6 +585,7 @@ export default function TransactionsView() {
                                 },
                                 {
                                     onClick: item => openDeleteModal(item),
+                                    variant: 'danger',
                                     label: t('buttons.deleteItem'),
                                     icon: 'trash-2'
                                 }

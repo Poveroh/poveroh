@@ -131,6 +131,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                             },
                             {
                                 onClick: item => openDelete(item),
+                                variant: 'danger',
                                 label: t('buttons.deleteItem'),
                                 icon: 'trash-2'
                             }

@@ -76,6 +76,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                         },
                         {
                             onClick: item => openDelete(item),
+                            variant: 'danger',
                             label: t('buttons.deleteItem'),
                             icon: 'trash-2'
                         }
