@@ -28,7 +28,7 @@ function OptionsContent<T>({ data, buttons }: OptionsPopoverContentProps<T>) {
                     <Button
                         key={btn.label}
                         className='justify-start w-full'
-                        variant={btn.variant || 'ghost'}
+                        variant={btn.variant == 'danger' ? 'ghost' : btn.variant || 'ghost'}
                         onClick={e => {
                             e.stopPropagation()
                             btn.onClick(data)
@@ -40,7 +40,7 @@ function OptionsContent<T>({ data, buttons }: OptionsPopoverContentProps<T>) {
                                 className={cn('mr-2', btn.variant == 'danger' ? 'danger' : '')}
                             />
                         )}
-                        {btn.label}
+                        <p className={btn.variant == 'danger' ? 'text-danger' : ''}>{btn.label}</p>
                     </Button>
                 )
             })}

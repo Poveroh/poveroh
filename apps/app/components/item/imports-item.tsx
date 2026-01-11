@@ -39,6 +39,7 @@ export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps)
                     {
                         onClick: item => openDelete(item),
                         label: t('buttons.deleteItem'),
+                        variant: 'danger',
                         hide: importApproved,
                         icon: 'trash-2'
                     }
