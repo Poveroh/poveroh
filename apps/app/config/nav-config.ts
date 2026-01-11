@@ -5,12 +5,14 @@ export const BASE_NAV_CONFIG: INavItem[] = [
         title: 'transactions.title',
         href: '/transactions',
         show: true,
+        icon: 'credit-card',
         visibility: { header: true },
         children: []
     },
     {
         title: 'subscriptions.title',
         href: '/subscriptions',
+        icon: 'repeat',
         show: true,
         visibility: { header: true },
         children: []

@@ -8,6 +8,7 @@ export interface INavItem {
     href?: string
     description?: string
     show: boolean
+    icon?: string
     hasSeparator?: boolean
     visibility?: NavVisibility
     children?: INavItem[]

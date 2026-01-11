@@ -14,6 +14,7 @@ import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { Separator } from '@poveroh/ui/components/separator'
 import Link from 'next/link'
+import DynamicIcon from '../icon/dynamic-icon'
 
 type NavigationBarProps = {
     orientation?: 'horizontal' | 'vertical'
@@ -73,9 +74,13 @@ export function NavigationBar({ orientation = 'horizontal' }: NavigationBarProps
                                 <NavigationMenuLink
                                     asChild
                                     className={navigationMenuTriggerStyle()}
+                                    active={pathname === menuItem.href}
                                     data-active={pathname === menuItem.href}
                                 >
                                     <Link href={menuItem.href!} className={cn('inline-block')}>
+                                        {menuItem.icon && (
+                                            <DynamicIcon name={menuItem.icon} className='inline mr-2 mb-1 h-4 w-4' />
+                                        )}
                                         {t(menuItem.title)}
                                     </Link>
                                 </NavigationMenuLink>
