@@ -84,7 +84,7 @@ export default function ImportsView() {
                                     key={imports.id}
                                     imports={imports}
                                     openEdit={handleItemToItEdit}
-                                    openDelete={() => {}}
+                                    openDelete={x => openDeleteModal(x)}
                                 />
                             ))}
                         </>
