@@ -1,4 +1,4 @@
-export const SETTINGS_NAV = [
+export const SETTINGS_SIDEBAR = [
     {
         title: 'settings.account.title',
         items: [

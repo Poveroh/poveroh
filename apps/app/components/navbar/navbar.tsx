@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useBreakpoint } from '@/hooks/use-breakpoint'
 import { useUser } from '@/hooks/use-user'
 import { cn } from '@poveroh/ui/lib/utils'
+import { NavigationBar } from './navigation-bar'
 
 function NavBarLink({ direction }: { direction: 'row' | 'col' }) {
     const t = useTranslations()
@@ -54,7 +55,8 @@ export default function NavBar() {
                         <Link href='/dashboard'>
                             <Logo color='white' mode='horizontal' width={120} height={50}></Logo>
                         </Link>
-                        {width <= breakpoints.lg ? null : <NavBarLink direction='row' />}
+                        {/* {width <= breakpoints.lg ? null : <NavBarLink direction='row' />} */}
+                        {width <= breakpoints.lg ? null : <NavigationBar />}
                     </div>
 
                     {width <= breakpoints.lg ? (
