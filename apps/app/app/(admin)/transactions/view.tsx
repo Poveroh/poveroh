@@ -108,7 +108,6 @@ export default function TransactionsView() {
         fetchCategory()
         fetchFinancialAccount()
 
-        // Load initial data based on view mode
         if (viewMode === 'table') {
             loadTransactionsPaginated(transactionFilterSetting)
         } else {
@@ -121,7 +120,6 @@ export default function TransactionsView() {
         setLocalTransactionList(transactionCacheList)
     }, [transactionCacheList])
 
-    // Handle view mode change and reload data accordingly
     const handleViewModeChange = async (newMode: ViewModeType) => {
         setViewMode(newMode)
         storage.set('transactionViewMode', newMode)
@@ -129,7 +127,6 @@ export default function TransactionsView() {
         if (newMode === 'table') {
             await loadTransactionsPaginated(transactionFilterSetting)
         } else {
-            // Reset to initial state for list view
             const initialOptions = { skip: 0, take: 20 }
             setTransactionFilterSetting(initialOptions)
             await fetchTransaction(filters, initialOptions)
@@ -147,7 +144,6 @@ export default function TransactionsView() {
             const scrollHeight = document.documentElement.scrollHeight
             const clientHeight = window.innerHeight
 
-            // Load when you're 100px from the bottom
             if (scrollTop + clientHeight >= scrollHeight - 100) {
                 loadMore()
             }
@@ -158,7 +154,6 @@ export default function TransactionsView() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoadingMore, viewMode, filters, transactionFilterSetting])
 
-    // Sync filters to URL parameters
     const updateURLParams = (newFilters: ITransactionFilters) => {
         const params = new URLSearchParams()
 
@@ -185,16 +180,13 @@ export default function TransactionsView() {
         if (viewMode === 'table') {
             loadTransactionsPaginated(newOptions, newFilters)
         } else {
-            // For list view, fetch fresh data (not append) and force fetch
             fetchTransaction(newFilters, newOptions, false, true)
         }
     }
 
     const loadTransactionsPaginated = async (options: IFilterOptions, filtersToUse?: ITransactionFilters) => {
-        // Use provided filters or fall back to state filters
         const activeFilters = filtersToUse !== undefined ? filtersToUse : filters
 
-        // Add sorting to options if present
         const optionsWithSort = {
             ...options,
             ...(sorting.length > 0 &&
@@ -232,7 +224,6 @@ export default function TransactionsView() {
         const textToSearch = event.target.value
 
         if (viewMode === 'list') {
-            // For list view, filter locally from cache
             if (isEmpty(textToSearch)) {
                 setLocalTransactionList(transactionCacheList)
                 return
@@ -243,7 +234,6 @@ export default function TransactionsView() {
             )
             setLocalTransactionList(filteredList)
         }
-        // For table view, filtering is handled by the table component itself
     }
 
     const handleTablePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
@@ -668,37 +658,55 @@ export default function TransactionsView() {
                         <>
                             {Object.entries(groupTransactionsByDate(localTransactionList))
                                 .sort(([a], [b]) => b.localeCompare(a))
-                                .map(([date, transactions]) => (
-                                    <div key={date} className='flex flex-col space-y-2'>
-                                        <h4>
-                                            {(() => {
-                                                const currentYear = moment().year()
-                                                const dateMoment = moment(date).tz(timezone)
-                                                const isCurrentYear = dateMoment.year() === currentYear
+                                .map(([date, transactions]) => {
+                                    const dailyTotal = transactions.reduce((sum, transaction) => {
+                                        const amount = Number(transaction.amounts[0]?.amount || 0)
+                                        if (transaction.action === TransactionAction.EXPENSES) {
+                                            return sum - amount
+                                        } else if (transaction.action === TransactionAction.INCOME) {
+                                            return sum + amount
+                                        }
+                                        return sum
+                                    }, 0)
 
-                                                return (
-                                                    isCurrentYear
-                                                        ? dateMoment.format('D MMMM')
-                                                        : dateMoment.format('D MMMM YYYY')
-                                                ).toLocaleLowerCase(preferedLanguage)
-                                            })()}
-                                        </h4>
-                                        <Box>
-                                            <>
-                                                {transactions.map(transaction => (
-                                                    <TransactionItem
-                                                        key={transaction.id}
-                                                        transaction={transaction}
-                                                        openEdit={(item: ITransaction) => {
-                                                            openModal('edit', item)
-                                                        }}
-                                                        openDelete={openDeleteModal}
-                                                    />
-                                                ))}
-                                            </>
-                                        </Box>
-                                    </div>
-                                ))}
+                                    return (
+                                        <div key={date} className='flex flex-col space-y-2'>
+                                            <div className='flex flex-row justify-between'>
+                                                <h4>
+                                                    {(() => {
+                                                        const currentYear = moment().year()
+                                                        const dateMoment = moment(date).tz(timezone)
+                                                        const isCurrentYear = dateMoment.year() === currentYear
+
+                                                        return (
+                                                            isCurrentYear
+                                                                ? dateMoment.format('D MMMM')
+                                                                : dateMoment.format('D MMMM YYYY')
+                                                        ).toLocaleLowerCase(preferedLanguage)
+                                                    })()}
+                                                </h4>
+                                                <p>
+                                                    {dailyTotal !== 0 && <span>{dailyTotal > 0 ? '+' : ''}</span>}
+                                                    {dailyTotal.toFixed(2)}
+                                                </p>
+                                            </div>
+                                            <Box>
+                                                <>
+                                                    {transactions.map(transaction => (
+                                                        <TransactionItem
+                                                            key={transaction.id}
+                                                            transaction={transaction}
+                                                            openEdit={(item: ITransaction) => {
+                                                                openModal('edit', item)
+                                                            }}
+                                                            openDelete={openDeleteModal}
+                                                        />
+                                                    ))}
+                                                </>
+                                            </Box>
+                                        </div>
+                                    )
+                                })}
                             {isLoadingMore && (
                                 <div className='flex flex-col flex-y-2 justify-center items-center w-full py-4'>
                                     <p className='text-muted-foreground'>{t('messages.loading')}...</p>
@@ -722,7 +730,6 @@ export default function TransactionsView() {
                         <div className='flex justify-center w-full pt-20'>
                             <div className='flex flex-col items-center space-y-8 justify-center w-[400px]'>
                                 {Object.keys(filters).length > 0 ? (
-                                    // Show "no results" when filters are active
                                     <div className='flex flex-col items-center space-y-8 justify-center'>
                                         <Search className='w-16 h-16 text-muted-foreground' />
                                         <div className='flex flex-col items-center space-y-2 justify-center text-center'>
@@ -734,7 +741,6 @@ export default function TransactionsView() {
                                         </Button>
                                     </div>
                                 ) : (
-                                    // Show empty state when no filters are active
                                     <>
                                         <div className='flex flex-col items-center space-y-8 justify-center'>
                                             <ArrowLeftRight className='w-16 h-16' />
