@@ -1,5 +1,10 @@
-'use client'
+import { Metadata } from 'next'
+import DashBoardView from './view'
 
-export default function DashBoardPage() {
-    return <p>dashboard</p>
+export const metadata: Metadata = {
+    title: 'Dashboard'
+}
+
+export default function DashboardPage() {
+    return <DashBoardView />
 }
