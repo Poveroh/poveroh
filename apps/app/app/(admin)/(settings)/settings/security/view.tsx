@@ -7,13 +7,14 @@ import { Button } from '@poveroh/ui/components/button'
 import { Form } from '@poveroh/ui/components/form'
 import { useProfileSecurityForm } from '@/hooks/form/use-profile-security-form'
 import { PasswordField } from '@/components/fields'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function SecurityView() {
     const t = useTranslations()
     const { form, loading, handleSubmit } = useProfileSecurityForm()
 
     return (
-        <div className='space-y-12 w-full'>
+        <PageWrapper>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('form.password.label')}</h4>
                 <Box>
@@ -56,6 +57,6 @@ export default function SecurityView() {
                     </Form>
                 </Box>
             </div>
-        </div>
+        </PageWrapper>
     )
 }

@@ -20,6 +20,7 @@ import SkeletonItem from '@/components/skeleton/skeleton-item'
 import Box from '@/components/box/box-wrapper'
 import { SubscriptionItem } from '@/components/item/subscriptions-item'
 import { Header } from '@/components/other/header-page'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
@@ -58,7 +59,7 @@ export default function SubscriptionsView() {
 
     return (
         <>
-            <div className='space-y-12 w-full'>
+            <PageWrapper>
                 <Header
                     title={t('subscriptions.title')}
                     breadcrumbs={[
@@ -121,7 +122,7 @@ export default function SubscriptionsView() {
                         </div>
                     </div>
                 )}
-            </div>
+            </PageWrapper>
 
             <SubscriptionDialog></SubscriptionDialog>
         </>

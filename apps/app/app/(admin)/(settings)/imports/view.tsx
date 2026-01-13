@@ -14,6 +14,7 @@ import { ImportDrawer } from '@/components/drawer/import-drawer'
 import { Header } from '@/components/other/header-page'
 import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function ImportsView() {
     const t = useTranslations()
@@ -51,7 +52,7 @@ export default function ImportsView() {
 
     return (
         <>
-            <div className='space-y-12 w-full'>
+            <PageWrapper>
                 <Header
                     title={t('imports.title')}
                     titleSize='compact'
@@ -102,7 +103,7 @@ export default function ImportsView() {
                         </div>
                     </div>
                 )}
-            </div>
+            </PageWrapper>
 
             <ImportDrawer></ImportDrawer>
         </>

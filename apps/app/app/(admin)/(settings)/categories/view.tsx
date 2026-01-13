@@ -20,6 +20,7 @@ import { Header } from '@/components/other/header-page'
 import SkeletonItem from '@/components/skeleton/skeleton-item'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function CategoryView() {
     const t = useTranslations()
@@ -82,7 +83,7 @@ export default function CategoryView() {
 
     return (
         <>
-            <div className='space-y-12 w-full'>
+            <PageWrapper>
                 <Header
                     title={t('categories.title')}
                     titleSize='compact'
@@ -201,7 +202,7 @@ export default function CategoryView() {
                         )}
                     </>
                 )}
-            </div>
+            </PageWrapper>
 
             <CategorySubcategoryDialog mode={dialogModel}></CategorySubcategoryDialog>
         </>

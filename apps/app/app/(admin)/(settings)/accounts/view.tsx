@@ -20,6 +20,7 @@ import SkeletonItem from '@/components/skeleton/skeleton-item'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function AccountView() {
     const t = useTranslations()
@@ -89,7 +90,7 @@ export default function AccountView() {
 
     return (
         <>
-            <div className='space-y-12 w-full'>
+            <PageWrapper>
                 <Header
                     title={t('settings.manage.account.title')}
                     titleSize='compact'
@@ -187,7 +188,7 @@ export default function AccountView() {
                         )}
                     </>
                 )}
-            </div>
+            </PageWrapper>
 
             <AccountDialog></AccountDialog>
         </>

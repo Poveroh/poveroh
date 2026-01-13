@@ -11,6 +11,7 @@ import Box from '@/components/box/box-wrapper'
 import { CopyableField, EmailField, TextField } from '@/components/fields'
 import { useProfileForm } from '@/hooks/form/use-profile-form'
 import { CountryField } from '@/components/fields/country-field'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function ProfileView() {
     const t = useTranslations()
@@ -18,7 +19,7 @@ export default function ProfileView() {
     const { form, user, loading, handleSubmit } = useProfileForm()
 
     return (
-        <div className='space-y-12 w-full'>
+        <PageWrapper>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.account.personalInfo.title')}</h4>
                 <Box>
@@ -70,6 +71,6 @@ export default function ProfileView() {
                     </Form>
                 </Box>
             </div>
-        </div>
+        </PageWrapper>
     )
 }

@@ -11,6 +11,7 @@ import Box from '@/components/box/box-wrapper'
 import { CurrencyField, SelectField } from '@/components/fields'
 import { languageCatalog, dateFormatCatalog, timezoneCatalog } from '@poveroh/types'
 import { usePreferencesForm } from '@/hooks/form/use-preferences-form'
+import { PageWrapper } from '@/components/box/page-wrapper'
 
 export default function PreferencesView() {
     const t = useTranslations()
@@ -18,7 +19,7 @@ export default function PreferencesView() {
     const { form, loading, handleSubmit } = usePreferencesForm()
 
     return (
-        <div className='space-y-12 w-full'>
+        <PageWrapper>
             <div className='flex flex-col space-y-3'>
                 <h4>{t('settings.system.globalPreferences.title')}</h4>
                 <Box>
@@ -75,6 +76,6 @@ export default function PreferencesView() {
                     </Form>
                 </Box>
             </div>
-        </div>
+        </PageWrapper>
     )
 }
