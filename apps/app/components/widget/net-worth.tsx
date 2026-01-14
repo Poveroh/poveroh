@@ -1,8 +1,9 @@
 'use client'
 
 import { formatNumber } from '@/lib/format'
-import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
+import { useBalance } from '@/hooks/use-balance'
+import { Skeleton } from '@poveroh/ui/components/skeleton'
 
 type StatProps = {
     label: string
@@ -43,38 +44,48 @@ function Stat({ label, amount, changePct, positive, locale = 'it-IT' }: StatProp
 
 export function NetWorthWidget() {
     const t = useTranslations('dashboard')
+    const { balance, reports, loading, fetchBalance } = useBalance()
 
-    const {
-        expensesAmount = 156.58,
-        expensesChangePct = 0.05,
-        incomeAmount = 1658.0,
-        incomeChangePct = 1.05,
-        locale = 'it-IT'
-    } = {}
+    const locale = 'it-IT'
+
+    const totalBalance = balance?.totalBalance ?? 0
+    const totalIncome = reports?.totalIncome ?? 0
+    const totalExpense = reports?.totalExpense ?? 0
+
+    //mock
+    const incomeChangePct = 1.05
+    const expensesChangePct = 0.05
 
     return (
         <div className='flex flex-row justify-between'>
             <div className='flex flex-col'>
                 <p className='sub uppercase'>{t('totalBalance')}</p>
                 <div className='flex flex-row gap-8 items-center'>
-                    <h1 className='font-bold'>{formatNumber(5230.0, locale)}</h1>
-                    <Stat
-                        label={t('income')}
-                        amount={incomeAmount}
-                        changePct={incomeChangePct}
-                        positive={true}
-                        locale={locale}
-                    />
-                    <Stat
-                        label={t('expenses')}
-                        amount={expensesAmount}
-                        changePct={expensesChangePct}
-                        positive={false}
-                        locale={locale}
-                    />
+                    {loading ? (
+                        <Skeleton className='h-8 w-24' />
+                    ) : (
+                        <h1 className='font-bold'>{formatNumber(totalBalance, locale)}</h1>
+                    )}
+                    {reports && (
+                        <>
+                            <Stat
+                                label={t('income')}
+                                amount={totalIncome}
+                                changePct={incomeChangePct}
+                                positive={true}
+                                locale={locale}
+                            />
+                            <Stat
+                                label={t('expenses')}
+                                amount={totalExpense}
+                                changePct={expensesChangePct}
+                                positive={false}
+                                locale={locale}
+                            />
+                        </>
+                    )}
                 </div>
             </div>
-            <div className='flex flex-row gap-8'></div>
         </div>
     )
 }

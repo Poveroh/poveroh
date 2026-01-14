@@ -1,7 +1,7 @@
 'use client'
 
 import { useUserStore } from '@/store/auth.store'
-import { Currencies, DateFormat, Language, Timezone } from '@poveroh/types/dist'
+import { Currencies, DateFormat, Language, Timezone } from '@poveroh/types'
 import moment from 'moment-timezone'
 import 'moment/locale/it'
 import 'moment/locale/en-gb'

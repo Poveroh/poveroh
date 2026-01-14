@@ -7,6 +7,7 @@ import financialAccountRoutes from './routes/account'
 import transactionRoutes from './routes/transaction'
 import subscriptionRoutes from './routes/subscription'
 import importRoutes from './routes/import'
+import balanceRoutes from './routes/balance'
 
 import { Router } from 'express'
 
@@ -22,5 +23,6 @@ router.use('/transaction', transactionRoutes)
 router.use('/subscription', subscriptionRoutes)
 router.use('/financial-account', financialAccountRoutes)
 router.use('/import', importRoutes)
+router.use('/balance', balanceRoutes)
 
 export default router

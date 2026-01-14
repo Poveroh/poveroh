@@ -1,5 +1,6 @@
 export * from './lib/account.js'
 export * from './lib/asset.js'
+export * from './lib/balance.js'
 export * from './lib/brands.js'
 export * from './lib/category.js'
 export * from './lib/constants.js'
