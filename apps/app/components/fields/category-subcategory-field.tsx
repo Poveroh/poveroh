@@ -16,11 +16,25 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
     const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
 
     const parseSubcategoryList = useCallback(
-        async (categoryId: string) => {
+        async (categoryId: string, options?: { forceSelectFirst?: boolean }) => {
+            if (!categoryId) {
+                setSubcategoryList([])
+                if (props.form) {
+                    props.form.setValue(props.subcategoryName, '' as T[Path<T>])
+                }
+                return
+            }
+
             const category = categoryCacheList.find(item => item.id === categoryId)
             const res = category ? category.subcategories : []
-            props.form?.setValue(props.subcategoryName, (res[0]?.id || '') as T[Path<T>])
             setSubcategoryList(res)
+
+            const currentValue = props.form?.getValues(props.subcategoryName) as string | undefined
+            const hasCurrentValue = currentValue ? res.some(item => item.id === currentValue) : false
+
+            if (options?.forceSelectFirst || !hasCurrentValue) {
+                props.form?.setValue(props.subcategoryName, (res[0]?.id || '') as T[Path<T>])
+            }
         },
         [categoryCacheList, props.form, props.subcategoryName]
     )
@@ -49,7 +63,7 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
                 label={t('form.category.label')}
                 placeholder={t('form.category.placeholder')}
                 onValueChange={categoryId => {
-                    parseSubcategoryList(categoryId)
+                    parseSubcategoryList(categoryId, { forceSelectFirst: true })
                 }}
             />
             <SubcategoryField
