@@ -83,13 +83,19 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
             onClick={handleClick}
         >
             <div className='flex flex-row items-center space-x-5'>
-                <div className='flex items-center justify-center h-[40px] w-[40px]'>
+                <div
+                    className='flex items-center justify-center h-[40px] w-[40px] rounded-full'
+                    style={{
+                        backgroundColor: category?.color ? `${category.color}20` : 'var(--muted)',
+                        color: category?.color
+                    }}
+                >
                     {transaction.action === TransactionAction.TRANSFER ? (
-                        <ArrowRightLeft />
+                        <ArrowRightLeft size={20} />
                     ) : transaction.icon ? (
                         <BrandIcon icon={transaction.icon} />
                     ) : (
-                        <DynamicIcon name={category?.logoIcon || 'landmark'} className='h-[30px] w-[30px]' />
+                        <DynamicIcon name={category?.logoIcon || 'landmark'} className='h-[20px] w-[20px]' />
                     )}
                 </div>
 
