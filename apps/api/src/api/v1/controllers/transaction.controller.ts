@@ -182,7 +182,7 @@ export class TransactionController {
             // Merge TRANSFER transactions with the same transferId
             const mergedData = TransactionHelper.mergeTransferTransactions(finalData)
 
-            res.status(200).json({ data: mergedData, total: mergedData.length })
+            res.status(200).json({ data: mergedData, total })
         } catch (error) {
             logger.error(error)
             res.status(500).json({ message: 'An error occurred', error })
