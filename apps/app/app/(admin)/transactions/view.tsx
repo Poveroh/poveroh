@@ -14,6 +14,7 @@ import { ArrowLeftRight, ArrowUpDown, List, Plus, Search, Table, X } from 'lucid
 import Box from '@/components/box/box-wrapper'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
 import { TransactionItem } from '@/components/item/transaction-item'
+import { CategoryBadge } from '@/components/item/category-badge'
 import { FilterButton } from '@/components/filter/filter-button'
 
 import { useTransaction } from '@/hooks/use-transaction'
@@ -488,7 +489,10 @@ export default function TransactionsView() {
             cell: ({ row }) => {
                 const transaction = row.original
                 const category = categoryCacheList.find(c => c.id === transaction.categoryId)
-                return <p>{category?.title || ''}</p>
+
+                if (!category) return <p></p>
+
+                return <CategoryBadge category={category} compact />
             }
         },
         {
@@ -517,7 +521,17 @@ export default function TransactionsView() {
 
                 const subcategory = category.subcategories.find(s => s.id === transaction.subcategoryId)
 
-                return <p>{subcategory?.title || ''}</p>
+                if (!subcategory) return <p></p>
+
+                return (
+                    <CategoryBadge
+                        variant='subcategory'
+                        subcategory={subcategory}
+                        color={category.color}
+                        compact
+                        showConnector={false}
+                    />
+                )
             }
         },
         {
