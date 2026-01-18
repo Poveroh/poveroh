@@ -9,7 +9,7 @@
         },
         "continueInsert": {
             "label": "Keep adding",
-            "subtitle": "It does not close the modal and allows adding more items."
+            "subtitle": "Keeps modal open for adding more items."
         },
         "confirmationDialog": {
             "title": "Are you sure you want to leave?",
