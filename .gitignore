@@ -50,5 +50,6 @@ yarn-error.log*
 .idea
 
 # app
+/craftingtable
 /scripts/data/import/*
 /cdn-data
