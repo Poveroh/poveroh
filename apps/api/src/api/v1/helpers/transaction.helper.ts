@@ -566,22 +566,10 @@ export const TransactionHelper = {
         transaction: FormMode,
         userId: string
     ): Promise<ITransactionBase> {
-        // Retrieve user timezone
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { timezone: true }
-        })
-        if (!user) {
-            throw new Error('User not found')
-        }
-
-        // Convert date to UTC ISO 8601 based on user's timezone
-        const utcDate = moment.tz(transaction.date, user.timezone).utc().toISOString()
-
         const baseData: ITransactionBase = {
             title: transaction.title,
             action: action,
-            date: utcDate,
+            date: new Date(transaction.date).toISOString(),
             note: transaction.note,
             ignore: transaction.ignore || false,
             categoryId: undefined,

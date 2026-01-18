@@ -693,7 +693,7 @@ export default function TransactionsView() {
                                                 <h4>
                                                     {(() => {
                                                         const currentYear = moment().year()
-                                                        const dateMoment = moment(date).tz(timezone)
+                                                        const dateMoment = moment(date)
                                                         const isCurrentYear = dateMoment.year() === currentYear
 
                                                         return (
