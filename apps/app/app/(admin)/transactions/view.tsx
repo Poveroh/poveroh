@@ -16,6 +16,7 @@ import { TransactionDialog } from '@/components/dialog/transaction-dialog'
 import { TransactionItem } from '@/components/item/transaction-item'
 import { CategoryBadge } from '@/components/item/category-badge'
 import { FilterButton } from '@/components/filter/filter-button'
+import { BrandIcon } from '@/components/icon/brand-icon'
 
 import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
@@ -569,14 +570,25 @@ export default function TransactionsView() {
                         a => a.id === transaction.amounts[1]?.financialAccountId
                     )
                     return (
-                        <div className='flex flex-row items-center gap-1'>
-                            <p>{firstAccount?.title || ''}</p>
+                        <div className='flex flex-row items-center gap-2'>
+                            <div className='flex flex-row items-center gap-2'>
+                                {firstAccount?.logoIcon && <BrandIcon icon={firstAccount.logoIcon} size='sm' />}
+                                <p>{firstAccount?.title || ''}</p>
+                            </div>
                             <DynamicIcon name='move-right' className='h-4 w-4' />
-                            <p>{secondAccount?.title || ''}</p>
+                            <div className='flex flex-row items-center gap-2'>
+                                {secondAccount?.logoIcon && <BrandIcon icon={secondAccount.logoIcon} size='sm' />}
+                                <p>{secondAccount?.title || ''}</p>
+                            </div>
                         </div>
                     )
                 }
-                return <p>{firstAccount?.title || ''}</p>
+                return (
+                    <div className='flex flex-row items-center gap-2'>
+                        {firstAccount?.logoIcon && <BrandIcon icon={firstAccount.logoIcon} size='sm' />}
+                        <p>{firstAccount?.title || ''}</p>
+                    </div>
+                )
             }
         },
         {
