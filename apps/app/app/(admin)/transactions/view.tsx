@@ -63,7 +63,7 @@ export default function TransactionsView() {
     } = useTransaction()
     const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
     const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
-    const { renderDate, preferedLanguage, timezone } = useConfig()
+    const { renderDate, preferedLanguage } = useConfig()
 
     const { openModal } = useModal<ITransaction>()
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
