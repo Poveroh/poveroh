@@ -102,8 +102,11 @@ export const useTransaction = () => {
             }
             const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
 
-            if (append) transactionStore.appendTransactions(res.data)
-            else transactionStore.setTransactions(res.data)
+            if (append) {
+                transactionStore.appendTransactions(res.data)
+            } else {
+                transactionStore.setTransactions(res.data)
+            }
 
             return res.data
         } catch (error) {
