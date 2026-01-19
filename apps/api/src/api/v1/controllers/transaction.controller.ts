@@ -98,16 +98,6 @@ export class TransactionController {
                 throw new Error('User not found')
             }
 
-            // Convert date filters to UTC
-            if (filters.date) {
-                if (filters.date.gte) {
-                    filters.date.gte = moment.tz(filters.date.gte, user.timezone).utc().toISOString()
-                }
-                if (filters.date.lte) {
-                    filters.date.lte = moment.tz(filters.date.lte, user.timezone).utc().toISOString()
-                }
-            }
-
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
             const sortBy = options.sortBy || 'date'
@@ -132,19 +122,21 @@ export class TransactionController {
             }
 
             // Build orderBy dynamically
-            let orderBy: any = {}
+            let orderBy: any[] = []
             let sortInMemory = false
 
+            const stableTieBreakers = [{ createdAt: sortOrder }, { id: sortOrder }]
+
             if (sortBy === 'category') {
-                orderBy = { category: { title: sortOrder } }
+                orderBy = [{ category: { title: sortOrder } }, ...stableTieBreakers]
             } else if (sortBy === 'subcategory') {
-                orderBy = { subcategory: { title: sortOrder } }
+                orderBy = [{ subcategory: { title: sortOrder } }, ...stableTieBreakers]
             } else if (sortBy === 'amount') {
                 // Amount is in a related table, we'll sort in memory after fetching
                 sortInMemory = true
-                orderBy = { date: 'desc' } // Default order for fetching
+                orderBy = [{ date: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }] // Default order for fetching
             } else {
-                orderBy = { [sortBy]: sortOrder }
+                orderBy = [{ [sortBy]: sortOrder }, ...stableTieBreakers]
             }
 
             const queryOptions: any = {
