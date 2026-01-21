@@ -150,6 +150,14 @@ export const CategoryTemplate: ICategory[] = [
                 description: undefined,
                 logoIcon: 'heart-pulse',
                 createdAt: '2026-01-03T00:00:00.000Z'
+            },
+            {
+                id: '',
+                categoryId: '',
+                title: 'Loan reimbursement',
+                description: undefined,
+                logoIcon: 'landmark',
+                createdAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -568,6 +576,34 @@ export const CategoryTemplate: ICategory[] = [
     {
         id: '',
         userId: '',
+        title: 'Loans',
+        description: undefined,
+        for: TransactionAction.EXPENSES,
+        logoIcon: 'landmark',
+        color: '#0EA5E9',
+        createdAt: '2026-01-03T00:00:00.000Z',
+        subcategories: [
+            {
+                id: '',
+                categoryId: '',
+                title: 'Loan disbursement',
+                description: undefined,
+                logoIcon: 'arrow-up-right',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            },
+            {
+                id: '',
+                categoryId: '',
+                title: 'Loan repayment',
+                description: undefined,
+                logoIcon: 'arrow-down-left',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            }
+        ]
+    },
+    {
+        id: '',
+        userId: '',
         title: 'Transfer Between Accounts',
         description: undefined,
         for: TransactionAction.EXPENSES,
@@ -589,6 +625,14 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Cash withdrawal-deposit',
                 description: undefined,
                 logoIcon: 'wallet',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            },
+            {
+                id: '',
+                categoryId: '',
+                title: 'Investments',
+                description: undefined,
+                logoIcon: 'piggy-bank',
                 createdAt: '2026-01-03T00:00:00.000Z'
             }
         ]
