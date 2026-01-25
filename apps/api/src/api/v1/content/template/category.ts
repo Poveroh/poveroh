@@ -440,7 +440,7 @@ export const CategoryTemplate: ICategory[] = [
     {
         id: '',
         userId: '',
-        title: 'Clothing',
+        title: 'Shopping',
         description: undefined,
         for: TransactionAction.EXPENSES,
         logoIcon: 'shirt',
@@ -469,6 +469,14 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Accessories',
                 description: undefined,
                 logoIcon: 'watch',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            },
+            {
+                id: '',
+                categoryId: '',
+                title: 'E-commerce',
+                description: undefined,
+                logoIcon: 'shopping-bag',
                 createdAt: '2026-01-03T00:00:00.000Z'
             }
         ]
@@ -538,7 +546,7 @@ export const CategoryTemplate: ICategory[] = [
             {
                 id: '',
                 categoryId: '',
-                title: 'Fines',
+                title: 'Fees',
                 description: undefined,
                 logoIcon: 'triangle-alert',
                 createdAt: '2026-01-03T00:00:00.000Z'
@@ -633,6 +641,74 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Investments',
                 description: undefined,
                 logoIcon: 'piggy-bank',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            }
+        ]
+    },
+    {
+        id: '',
+        userId: '',
+        title: 'Transfer Between Accounts',
+        description: undefined,
+        for: TransactionAction.INCOME,
+        logoIcon: 'arrow-left-right',
+        color: '#2DD4BF',
+        createdAt: '2026-01-03T00:00:00.000Z',
+        subcategories: [
+            {
+                id: '',
+                categoryId: '',
+                title: 'Between my accounts',
+                description: undefined,
+                logoIcon: 'arrow-left-right',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            },
+            {
+                id: '',
+                categoryId: '',
+                title: 'Cash deposit',
+                description: undefined,
+                logoIcon: 'wallet',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            }
+        ]
+    },
+    {
+        id: '',
+        userId: '',
+        title: 'Generic',
+        description: undefined,
+        for: TransactionAction.INCOME,
+        logoIcon: 'arrow-left-right',
+        color: '#F472B6',
+        createdAt: '2026-01-03T00:00:00.000Z',
+        subcategories: [
+            {
+                id: '',
+                categoryId: '',
+                title: 'Generic',
+                description: undefined,
+                logoIcon: 'wallet',
+                createdAt: '2026-01-03T00:00:00.000Z'
+            }
+        ]
+    },
+    {
+        id: '',
+        userId: '',
+        title: 'Generic',
+        description: undefined,
+        for: TransactionAction.EXPENSES,
+        logoIcon: 'arrow-left-right',
+        color: '#F472B6',
+        createdAt: '2026-01-03T00:00:00.000Z',
+        subcategories: [
+            {
+                id: '',
+                categoryId: '',
+                title: 'Generic',
+                description: undefined,
+                logoIcon: 'wallet',
                 createdAt: '2026-01-03T00:00:00.000Z'
             }
         ]
