@@ -3,12 +3,20 @@ import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
 import { IUser } from '@poveroh/types'
 import { UserHelper } from '../helpers/user.helper'
+import { getParamString } from '../../../utils/request'
 
 export class UserController {
     // GET /
     static async read(req: Request, res: Response) {
         try {
-            const user = await UserHelper.getUser(req.params.email)
+            const email = getParamString(req.params, 'email')
+
+            if (!email) {
+                res.status(400).json({ message: 'Missing email in path' })
+                return
+            }
+
+            const user = await UserHelper.getUser(email)
 
             if (!user) {
                 res.status(404).json({ message: 'User not found' })
@@ -25,10 +33,14 @@ export class UserController {
     // PUT /:id
     static async save(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
             const { data } = req.body
 
             if (!data) throw new Error('Data not provided')
+            if (!id) {
+                res.status(400).json({ message: 'Missing user ID' })
+                return
+            }
 
             const parsedUser: Partial<IUser> = JSON.parse(data)
 

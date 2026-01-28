@@ -4,6 +4,7 @@ import { IFinancialAccount, IFinancialAccountBase, IFinancialAccountFilters } fr
 import { MediaHelper } from '../../../helpers/media.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import logger from '../../../utils/logger'
+import { getParamString } from '../../../utils/request'
 
 export class FinancialAccountController {
     //POST /
@@ -69,10 +70,15 @@ export class FinancialAccountController {
     //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                res.status(400).json({ message: 'Missing financial account ID' })
+                return
+            }
 
             await prisma.financialAccount.delete({
-                where: { id: id }
+                where: { id }
             })
 
             res.status(200).json(true)

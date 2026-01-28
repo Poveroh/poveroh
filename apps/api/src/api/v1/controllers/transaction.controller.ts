@@ -7,6 +7,7 @@ import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
 import { TransactionWithAmounts } from '@/types/transactions'
+import { getParamString } from '../../../utils/request'
 
 export class TransactionController {
     //POST /
@@ -33,7 +34,7 @@ export class TransactionController {
     //POST /:id
     static async save(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
             const { data, action } = req.body
 
             if (!id || !data) {
@@ -62,7 +63,7 @@ export class TransactionController {
     //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing transaction ID' })

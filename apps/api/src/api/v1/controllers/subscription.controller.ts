@@ -5,6 +5,7 @@ import { ISubscription, ISubscriptionBase, ISubscriptionFilters } from '@poveroh
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
+import { getParamString } from '../../../utils/request'
 
 export class SubscriptionController {
     //POST /
@@ -56,7 +57,7 @@ export class SubscriptionController {
             if (!req.body.data) throw new Error('Data not provided')
 
             const parsedSubscription: ISubscription = JSON.parse(req.body.data)
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing subscription ID' })
@@ -101,7 +102,7 @@ export class SubscriptionController {
     //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing subscription ID' })

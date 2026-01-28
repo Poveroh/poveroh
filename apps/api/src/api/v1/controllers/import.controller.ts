@@ -16,6 +16,8 @@ import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { BalanceHelper } from '../helpers/balance.helper'
+import { getParamString } from '../../../utils/request'
+import { TransactionWithAmounts } from '@/types/transactions'
 
 export class ImportController {
     //POST /
@@ -42,7 +44,12 @@ export class ImportController {
     //PUT /:id
     static async complete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                res.status(400).json({ message: 'Missing import ID' })
+                return
+            }
 
             const deletePattern = {
                 importId: id,
@@ -53,10 +60,10 @@ export class ImportController {
 
             const imports = await prisma.$transaction(async tx => {
                 // Fetch approved transactions with their amounts before updating
-                const approvedTransactions = await tx.transaction.findMany({
+                const approvedTransactions = (await tx.transaction.findMany({
                     where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
                     include: { amounts: true }
-                })
+                })) as TransactionWithAmounts[]
 
                 // Update transactions
                 await tx.transaction.updateMany({
@@ -107,7 +114,7 @@ export class ImportController {
     //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing import ID' })
@@ -183,7 +190,12 @@ export class ImportController {
 
     static async readPendingTransactions(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                res.status(400).json({ message: 'Missing import ID' })
+                return
+            }
 
             const filters = req.query as unknown as ITransactionFilters
 
@@ -214,7 +226,7 @@ export class ImportController {
 
     static async deletePendingTransaction(req: Request, res: Response) {
         try {
-            const { transactionId } = req.params
+            const transactionId = getParamString(req.params, 'transactionId')
 
             if (!transactionId) {
                 res.status(400).json({ message: 'Missing transaction ID' })

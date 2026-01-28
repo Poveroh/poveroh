@@ -4,6 +4,7 @@ import { ISubcategory, ISubcategoryBase, ISubcategoryFilters } from '@poveroh/ty
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
+import { getParamString } from '../../../utils/request'
 
 export class SubcategoryController {
     //POST /
@@ -38,7 +39,7 @@ export class SubcategoryController {
             if (!req.body.data) throw new Error('Data not provided')
 
             const readedSubcategory: ISubcategory = JSON.parse(req.body.data)
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing subcategory ID in path' })
@@ -68,7 +69,7 @@ export class SubcategoryController {
     //DELETE /:id
     static async delete(req: Request, res: Response) {
         try {
-            const { id } = req.params
+            const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing subcategory ID in path' })
