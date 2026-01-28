@@ -1,7 +1,7 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
 import appConfig from '../config'
-import { PublicEnvScript } from 'next-runtime-env'
+import { PublicEnvProvider } from 'next-runtime-env'
 
 const getFallbackProps = () => ({
     locale: 'en',
@@ -15,6 +15,8 @@ export const metadata = {
     }
 }
 
+export const dynamic = 'force-dynamic'
+
 type RootLayoutProps = Readonly<{
     children: React.ReactNode
 }>
@@ -24,11 +26,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
     return (
         <html lang={locale} dir={direction} suppressHydrationWarning>
-            <head>
-                <PublicEnvScript />
-            </head>
             <body className='antialiased'>
-                <Providers>{children}</Providers>
+                <PublicEnvProvider>
+                    <Providers>{children}</Providers>
+                </PublicEnvProvider>
             </body>
         </html>
     )
