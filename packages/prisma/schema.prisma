@@ -40,10 +40,23 @@ model User {
     verifications     Verification[]
     assets            Asset[]
     snapshots         Snapshot[]
+    dashboardLayout   DashboardLayout?
 
     @@index([surname])
     @@index([createdAt])
     @@index([email])
+}
+
+model DashboardLayout {
+    id        String   @id @default(uuid())
+    userId    String   @unique
+    version   Int      @default(1)
+    layout    Json
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model Session {
