@@ -21,14 +21,14 @@ export const useDashboardLayout = (): UseDashboardLayout => {
 
         const load = async () => {
             try {
-                const stored = await service.read()
+                const stored = await service.readLayout()
                 if (!active) return
 
                 if (stored?.layout) {
                     setLayout(stored.layout)
                 } else {
                     setLayout(DASHBOARD_DEFAULT_LAYOUT)
-                    await service.save(DASHBOARD_DEFAULT_LAYOUT)
+                    await service.saveLayout(DASHBOARD_DEFAULT_LAYOUT)
                 }
             } catch {
                 if (active) {
@@ -51,7 +51,7 @@ export const useDashboardLayout = (): UseDashboardLayout => {
     const saveLayout = useCallback(
         async (next: DashboardLayout) => {
             setLayout(next)
-            await service.save(next)
+            await service.saveLayout(next)
         },
         [service]
     )

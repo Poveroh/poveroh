@@ -40,3 +40,9 @@ export interface ISnapshotAssetValueBase {
     unitPrice?: number | null
     totalValue: number
 }
+
+export interface ISnapshotAccountBalanceCreate {
+    snapshotDate: string
+    balance: number
+    note?: string | null
+}

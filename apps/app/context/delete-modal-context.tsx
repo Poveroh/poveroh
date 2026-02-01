@@ -1,7 +1,8 @@
 'use client'
 
 import React, { createContext } from 'react'
-import { useDeleteModalStore, DeleteModalStore } from '@/store/delete.modal.store'
+import { useDeleteModalStore } from '@/store/delete.modal.store'
+import { DeleteModalStore } from '@/types/modal'
 
 const DeleteModalContext = createContext<DeleteModalStore | undefined>(undefined)
 

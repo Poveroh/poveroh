@@ -15,7 +15,8 @@ export function SubscriptionDialog() {
     const t = useTranslations()
     const { addSubscription, editSubscription, removeSubscription } = useSubscription()
 
-    const modalManager = useModal<ISubscription>()
+    const modalId = 'subscription'
+    const modalManager = useModal<ISubscription>(modalId)
     const deleteModalManager = useDeleteModal<ISubscription>()
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
@@ -127,6 +128,7 @@ export function SubscriptionDialog() {
     return (
         <>
             <Modal
+                modalId={modalId}
                 open={modalManager.isOpen}
                 title={title}
                 decoration={{

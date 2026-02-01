@@ -227,9 +227,9 @@ model Snapshot {
     userId           String
     snapshotDate     DateTime                 @db.Timestamptz
     note             String?
-    totalCash        Decimal                  @db.Decimal(20, 2)
-    totalInvestments Decimal                  @db.Decimal(20, 2)
-    totalNetWorth    Decimal                  @db.Decimal(20, 2)
+    totalCash        Decimal                  @default(0) @db.Decimal(20, 2)
+    totalInvestments Decimal                  @default(0) @db.Decimal(20, 2)
+    totalNetWorth    Decimal                  @default(0) @db.Decimal(20, 2)
     user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
     accountBalances  SnapshotAccountBalance[]
     assetValues      SnapshotAssetValue[]

@@ -1,5 +1,5 @@
 import DrawerContext from '@/context/drawer-context'
-import { DrawerStore } from '@/store/drawer.store'
+import { DrawerStore } from '@/types/drawer'
 import { useContext } from 'react'
 
 export function useDrawer<T>() {

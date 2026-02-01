@@ -28,7 +28,7 @@ export default function SubscriptionsView() {
     const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
     const { fetchFinancialAccount } = useFinancialAccount()
 
-    const { openModal } = useModal<ISubscription>()
+    const { openModal } = useModal<ISubscription>('subscription')
     const { openModal: openDeleteModal } = useDeleteModal<ISubscription>()
 
     const [localSubscriptionList, setLocalSubscriptionList] = useState<ISubscription[]>(subscriptionCacheList)

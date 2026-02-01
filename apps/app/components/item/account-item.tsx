@@ -3,14 +3,16 @@ import { IFinancialAccount } from '@poveroh/types'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
+import { ExtraButton } from '@/types/options'
 
 type AccountItemProps = {
     account: IFinancialAccount
+    buttons?: ExtraButton<IFinancialAccount>[]
     openDelete: (item: IFinancialAccount) => void
     openEdit: (item: IFinancialAccount) => void
 }
 
-export function AccountItem({ account, openDelete, openEdit }: AccountItemProps) {
+export function AccountItem({ account, buttons, openDelete, openEdit }: AccountItemProps) {
     const t = useTranslations()
     const { TYPE_LIST } = useFinancialAccount()
 
@@ -36,6 +38,7 @@ export function AccountItem({ account, openDelete, openEdit }: AccountItemProps)
                         label: t('buttons.editItem'),
                         icon: 'pencil'
                     },
+                    ...(buttons || []),
                     {
                         onClick: item => openDelete(item),
                         variant: 'danger',

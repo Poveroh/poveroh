@@ -24,7 +24,7 @@ import { ModalProps } from '@/types/modal'
 export default function Modal<T>(props: ModalProps) {
     const t = useTranslations()
 
-    const { closeModal } = useModal<T>()
+    const { closeModal } = useModal<T>(props.modalId)
 
     const [showConfirmationDialog, setConfirmationDialog] = useState(props.askForConfirmation || false)
     const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
@@ -38,17 +38,31 @@ export default function Modal<T>(props: ModalProps) {
             props.confirmationExit()
         }
         setConfirmationDialog(false)
+        if (props.onOpenChange) {
+            props.onOpenChange(false)
+        } else {
+            closeModal()
+        }
     }
 
     const handleCancelExit = () => {
         setConfirmationDialog(false)
     }
 
-    const handleOpenChange = () => {
-        if (showConfirmationDialog) {
-            setOpenConfirmationDialog(true)
-        } else {
-            closeModal()
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!nextOpen) {
+            if (showConfirmationDialog) {
+                setOpenConfirmationDialog(true)
+            } else if (props.onOpenChange) {
+                props.onOpenChange(false)
+            } else {
+                closeModal()
+            }
+            return
+        }
+
+        if (props.onOpenChange) {
+            props.onOpenChange(true)
         }
     }
 

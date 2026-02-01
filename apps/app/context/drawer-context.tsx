@@ -1,7 +1,8 @@
 'use client'
 
 import React, { createContext } from 'react'
-import { useDrawerStore, DrawerStore } from '@/store/drawer.store'
+import { useDrawerStore } from '@/store/drawer.store'
+import { DrawerStore } from '@/types/drawer'
 
 const DrawerContext = createContext<DrawerStore | undefined>(undefined)
 
@@ -10,9 +11,9 @@ type DrawerContextProviderProps = {
 }
 
 export function DrawerContextProvider({ children }: DrawerContextProviderProps) {
-    const DrawerStore = useDrawerStore()
+    const drawerStore = useDrawerStore()
 
-    return <DrawerContext.Provider value={DrawerStore}>{children}</DrawerContext.Provider>
+    return <DrawerContext.Provider value={drawerStore}>{children}</DrawerContext.Provider>
 }
 
 export default DrawerContext

@@ -1,5 +1,5 @@
 import DeleteModalContext from '@/context/delete-modal-context'
-import { DeleteModalStore } from '@/store/delete.modal.store'
+import { DeleteModalStore } from '@/types/modal'
 import { useContext } from 'react'
 
 export function useDeleteModal<T>() {

@@ -397,6 +397,17 @@
     },
     "accounts": {
         "title": "Accounts",
+        "actions": {
+            "addAccount": "Add account"
+        },
+        "snapshot": {
+            "button": "Add balance snapshot",
+            "success": "Snapshot saved successfully",
+            "modal": {
+                "title": "New balance snapshot",
+                "description": "Set the account balance for a specific date."
+            }
+        },
         "empty": {
             "title": "It all begins with account",
             "subtitle": "Click the + Add button to create a new one"

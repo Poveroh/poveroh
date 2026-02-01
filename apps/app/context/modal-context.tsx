@@ -1,9 +1,9 @@
 'use client'
 
 import React, { createContext } from 'react'
-import { useModalStore, ModalStore } from '@/store/modal.store'
+import { useModalStore, ModalStoreState } from '@/store/modal.store'
 
-const ModalContext = createContext<ModalStore | undefined>(undefined)
+const ModalContext = createContext<ModalStoreState | undefined>(undefined)
 
 type ModalContextProviderProps = {
     children: React.ReactNode

@@ -14,7 +14,8 @@ export function TransactionDialog() {
 
     const { addTransaction, editTransaction, removeTransaction } = useTransaction()
 
-    const modalManager = useModal<ITransaction>()
+    const modalId = 'transaction'
+    const modalManager = useModal<ITransaction>(modalId)
     const deleteModalManager = useDeleteModal<ITransaction>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -100,6 +101,7 @@ export function TransactionDialog() {
     return (
         <>
             <Modal<ITransaction>
+                modalId={modalId}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
