@@ -52,15 +52,12 @@ export const useAccountBalanceSnapshotForm = (
 
     const handleSubmit = async (
         values: z.infer<typeof formSchema>,
-        dataCallback: (formData: FormData) => Promise<void>
+        dataCallback: (formData: Partial<ISnapshotAccountBalance>) => Promise<void>
     ) => {
         try {
             setLoading(true)
-            const formData = new FormData()
 
-            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            await dataCallback(formData)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

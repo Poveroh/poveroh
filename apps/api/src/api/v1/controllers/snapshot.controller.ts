@@ -29,22 +29,6 @@ export class SnapshotController {
                 return
             }
 
-            const user = await prisma.user.findUnique({
-                where: { id: req.user.id },
-                select: { timezone: true }
-            })
-
-            if (!user) {
-                res.status(404).json({ message: 'User not found' })
-                return
-            }
-
-            const snapshotDateUtc = moment.tz(snapshotDate, user.timezone).startOf('day').utc().toDate()
-            if (Number.isNaN(snapshotDateUtc.getTime())) {
-                res.status(400).json({ message: 'Invalid snapshotDate' })
-                return
-            }
-
             const account = await prisma.financialAccount.findFirst({
                 where: { id: accountId, userId: req.user.id },
                 select: { id: true }
@@ -59,13 +43,13 @@ export class SnapshotController {
                 where: {
                     userId_snapshotDate: {
                         userId: req.user.id,
-                        snapshotDate: snapshotDateUtc
+                        snapshotDate: snapshotDate
                     }
                 },
                 update: note !== undefined ? { note } : {},
                 create: {
                     userId: req.user.id,
-                    snapshotDate: snapshotDateUtc,
+                    snapshotDate: snapshotDate,
                     note: note ?? null,
                     totalCash: 0,
                     totalInvestments: 0,
@@ -110,7 +94,7 @@ export class SnapshotController {
                 orderBy: { snapshot: { snapshotDate: 'desc' } }
             })
 
-            if (latestSnapshot?.snapshot.snapshotDate.getTime() === snapshotDateUtc.getTime()) {
+            if (latestSnapshot?.snapshot.snapshotDate.getTime() === new Date(snapshotDate).getTime()) {
                 await prisma.financialAccount.update({
                     where: { id: accountId },
                     data: { balance: parsedBalance }
