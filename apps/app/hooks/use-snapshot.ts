@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
 import { SnapshotService } from '@/services/snapshot.service'
+import { ISnapshotAccountBalance } from '@poveroh/types/dist'
 
 export const useSnapshot = () => {
     const { handleError } = useError()
@@ -10,7 +11,7 @@ export const useSnapshot = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const addAccountBalanceSnapshot = async (data: FormData) => {
+    const addAccountBalanceSnapshot = async (data: Partial<ISnapshotAccountBalance>) => {
         setLoading(true)
         try {
             return await snapshotService.addAccountBalanceSnapshot(data)

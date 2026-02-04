@@ -27,7 +27,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
 
     const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData) => {
+    const handleFormSubmit = async (data: FormData | Partial<ICategory | ISubcategory>) => {
         modalManager.setLoading(true)
         let res: ICategory | ISubcategory | null = null
 

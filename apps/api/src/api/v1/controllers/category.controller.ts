@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ICategory, ICategoryBase, ICategoryFilters } from '@poveroh/types'
+import { ICategory, ICategoryFilters } from '@poveroh/types'
 import omit from 'lodash/omit'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
@@ -11,9 +11,9 @@ export class CategoryController {
     //POST /
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const readCategory: ICategoryBase = JSON.parse(req.body.data)
+            const readCategory: Omit<ICategory, 'id' | 'createdAt' | 'subcategories'> = req.body
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -27,9 +27,6 @@ export class CategoryController {
                 data: {
                     ...readCategory,
                     userId: req.user.id
-                },
-                include: {
-                    subcategories: true
                 }
             })
 
@@ -43,9 +40,9 @@ export class CategoryController {
     //POST /:id
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const readCategory: ICategory = JSON.parse(req.body.data)
+            const readCategory: ICategory = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {

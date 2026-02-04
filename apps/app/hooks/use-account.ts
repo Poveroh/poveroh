@@ -27,7 +27,7 @@ export const useFinancialAccount = () => {
         setFinancialAccountLoading(prev => ({ ...prev, [key]: value }))
     }
 
-    const addFinancialAccount = async (data: FormData) => {
+    const addFinancialAccount = async (data: FormData | Partial<IFinancialAccount>) => {
         setFinancialAccountLoadingFor('add', true)
         try {
             const res = await financialAccountService.add(data)
@@ -40,7 +40,7 @@ export const useFinancialAccount = () => {
         }
     }
 
-    const editFinancialAccount = async (id: string, data: FormData) => {
+    const editFinancialAccount = async (id: string, data: FormData | Partial<IFinancialAccount>) => {
         setFinancialAccountLoadingFor('edit', true)
         try {
             const res = await financialAccountService.save(id, data)

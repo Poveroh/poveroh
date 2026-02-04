@@ -18,19 +18,21 @@ export const useSubscriptionForm = (initialData: ISubscription | null | undefine
     const [icon, setIcon] = useState(iconList[0])
     const [loading, setLoading] = useState(false)
 
-    const defaultValues = initialData || {
-        title: '',
-        description: '',
-        amount: 0,
-        currency: Currencies.EUR,
-        appearanceMode: AppearanceMode.ICON,
-        appearanceLogoIcon: iconList[0] as string,
-        firstPayment: new Date().toISOString().split('T')[0],
-        cycleNumber: '1',
-        cyclePeriod: CyclePeriod.MONTH,
-        rememberPeriod: RememberPeriod.THREE_DAYS,
-        financialAccountId: ''
-    }
+    const defaultValues =
+        initialData ||
+        ({
+            title: '',
+            description: '',
+            amount: 0,
+            currency: Currencies.EUR,
+            appearanceMode: AppearanceMode.ICON,
+            appearanceLogoIcon: iconList[0] as string,
+            firstPayment: new Date().toISOString().split('T')[0],
+            cycleNumber: '1',
+            cyclePeriod: CyclePeriod.MONTH,
+            rememberPeriod: RememberPeriod.THREE_DAYS,
+            financialAccountId: ''
+        } as Partial<ISubscription>)
 
     const formSchema = z
         .object({
@@ -72,17 +74,14 @@ export const useSubscriptionForm = (initialData: ISubscription | null | undefine
 
     const handleSubmit = async (
         values: z.infer<typeof formSchema>,
-        dataCallback: (formData: FormData) => Promise<void>
+        dataCallback: (formData: Partial<ISubscription>) => Promise<void>
     ) => {
         try {
             setLoading(true)
-            const formData = new FormData()
 
             values.firstPayment = new Date(values.firstPayment).toISOString()
 
-            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
-
-            await dataCallback(formData)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

@@ -2,7 +2,7 @@
 
 import { CategoryService, SubcategoryService } from '@/services/category.service'
 import { useCategoryStore } from '@/store/category.store'
-import { ICategory, ICategoryFilters } from '@poveroh/types'
+import { ICategory, ICategoryFilters, ISubcategory } from '@poveroh/types'
 import { useError } from './use-error'
 import { useState } from 'react'
 import { useImport } from './use-imports'
@@ -46,7 +46,7 @@ export const useCategory = () => {
     }
 
     // Category
-    const addCategory = async (data: FormData) => {
+    const addCategory = async (data: FormData | Partial<ICategory>) => {
         setCategoryLoadingFor('addCategory', true)
         try {
             const res = await categoryService.add(data)
@@ -59,7 +59,7 @@ export const useCategory = () => {
         }
     }
 
-    const editCategory = async (id: string, data: FormData) => {
+    const editCategory = async (id: string, data: FormData | Partial<ICategory>) => {
         setCategoryLoadingFor('editCategory', true)
         try {
             const res = await categoryService.save(id, data)
@@ -104,7 +104,7 @@ export const useCategory = () => {
     }
 
     // Subcategory methods
-    const addSubcategory = async (data: FormData) => {
+    const addSubcategory = async (data: FormData | Partial<ISubcategory>) => {
         setCategoryLoadingFor('addSubcategory', true)
         try {
             const res = await subcategoryService.add(data)
@@ -117,7 +117,7 @@ export const useCategory = () => {
         }
     }
 
-    const editSubcategory = async (id: string, data: FormData) => {
+    const editSubcategory = async (id: string, data: FormData | Partial<ISubcategory>) => {
         setCategoryLoadingFor('editSubcategory', true)
         try {
             const res = await subcategoryService.save(id, data)

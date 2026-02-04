@@ -20,7 +20,7 @@ export function TransactionDialog() {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (data: FormData) => {
+    const handleFormSubmit = async (data: FormData | Partial<ITransaction>) => {
         if (modalManager.loading) return // Prevent multiple submissions
 
         modalManager.setLoading(true)
@@ -30,7 +30,7 @@ export function TransactionDialog() {
 
             // edit dialog
             if (modalManager.inEditingMode && modalManager.item) {
-                res = await editTransaction(modalManager.item.id, data)
+                res = await editTransaction(modalManager.item.id, data as FormData)
 
                 if (!res) {
                     modalManager.setLoading(false)
@@ -40,7 +40,7 @@ export function TransactionDialog() {
                 modalManager.closeModal()
             } else {
                 // new dialog
-                res = await addTransaction(data)
+                res = await addTransaction(data as FormData)
 
                 if (!res) {
                     modalManager.setLoading(false)

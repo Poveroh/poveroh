@@ -9,12 +9,14 @@ export class BaseService<T> {
         this.endpoint = endpoint
     }
 
-    async add(data: FormData): Promise<T> {
-        return await server.post<T>(this.endpoint, data, true)
+    async add(data: FormData | Partial<T>): Promise<T> {
+        const isFormData = data instanceof FormData
+        return await server.post<T>(this.endpoint, data, isFormData)
     }
 
-    async save(id: string, data: FormData): Promise<T> {
-        return await server.put<T>(`${this.endpoint}/${id}`, data, true)
+    async save(id: string, data: FormData | Partial<T>): Promise<T> {
+        const isFormData = data instanceof FormData
+        return await server.put<T>(`${this.endpoint}/${id}`, data, isFormData)
     }
 
     async delete(id: string): Promise<boolean> {

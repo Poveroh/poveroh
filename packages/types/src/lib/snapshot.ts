@@ -1,13 +1,10 @@
-export interface ISnapshotBase {
+export interface ISnapshot {
+    id: string
     snapshotDate: string
     note?: string | null
     totalCash: number
     totalInvestments: number
     totalNetWorth: number
-}
-
-export interface ISnapshot extends ISnapshotBase {
-    id: string
     userId: string
 }
 
@@ -25,24 +22,4 @@ export interface ISnapshotAssetValue {
     quantity?: number | null
     unitPrice?: number | null
     totalValue: number
-}
-
-export interface ISnapshotAccountBalanceBase {
-    snapshotId: string
-    accountId: string
-    balance: number
-}
-
-export interface ISnapshotAssetValueBase {
-    snapshotId: string
-    assetId: string
-    quantity?: number | null
-    unitPrice?: number | null
-    totalValue: number
-}
-
-export interface ISnapshotAccountBalanceCreate {
-    snapshotDate: string
-    balance: number
-    note?: string | null
 }

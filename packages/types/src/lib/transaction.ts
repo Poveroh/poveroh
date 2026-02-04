@@ -120,5 +120,4 @@ export enum TransactionStatus {
     IMPORT_APPROVED = 'IMPORT_APPROVED'
 }
 
-export type TransactionActionSimple = Exclude<TransactionAction, TransactionAction.TRANSFER>
 export type GroupedTransactions = Record<string, ITransaction[]>

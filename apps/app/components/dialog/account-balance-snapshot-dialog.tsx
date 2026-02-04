@@ -25,10 +25,10 @@ export function AccountBalanceSnapshotDialog() {
         }
     }
 
-    const handleSubmit = async (data: FormData) => {
+    const handleSubmit = async (data: FormData | Partial<ISnapshotAccountBalance>) => {
         modalManager.setLoading(true)
 
-        const res = await addAccountBalanceSnapshot(data)
+        const res = await addAccountBalanceSnapshot(data as Partial<ISnapshotAccountBalance>)
 
         if (!res) return
 

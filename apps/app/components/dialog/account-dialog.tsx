@@ -19,7 +19,7 @@ export function AccountDialog() {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (data: FormData) => {
+    const handleFormSubmit = async (data: FormData | Partial<IFinancialAccount>) => {
         modalManager.setLoading(true)
 
         let res: IFinancialAccount | null
