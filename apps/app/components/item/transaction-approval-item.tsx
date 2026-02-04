@@ -72,12 +72,15 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         fetchData()
     }, [transaction, getFinancialAccount, getCategory])
 
-    const handleEditTransaction = async (formData: FormData) => {
-        const editedTransaction = await editPendingTransaction(transaction.id, formData)
+    const handleEditTransaction = async (data: FormData | Partial<ITransaction>) => {
+        // For now, we only handle FormData case since editPendingTransaction expects FormData
+        if (data instanceof FormData) {
+            const editedTransaction = await editPendingTransaction(transaction.id, data)
 
-        if (!editedTransaction) return
+            if (!editedTransaction) return
 
-        onEdit(editedTransaction)
+            onEdit(editedTransaction)
+        }
     }
 
     const handleDeleteTransaction = async () => {

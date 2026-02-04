@@ -11,10 +11,7 @@ import { iconList } from '@/components/icon'
 import { useError } from '@/hooks/use-error'
 import { useTransaction } from '@/hooks/use-transaction'
 
-export const useCategoryForm = (
-    initialData?: Omit<ICategory, 'subcategory'> | null,
-    inEditingMode: boolean = false
-) => {
+export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: boolean = false) => {
     const t = useTranslations()
 
     const { handleError } = useError()
@@ -23,15 +20,13 @@ export const useCategoryForm = (
     const [icon, setIcon] = useState(iconList[0])
     const [loading, setLoading] = useState(false)
 
-    const defaultValues =
-        initialData ||
-        ({
-            title: '',
-            description: '',
-            logoIcon: iconList[0] as string,
-            color: '#8B5CF6',
-            for: TransactionAction.EXPENSES
-        } as Partial<ICategory>)
+    const defaultValues = initialData || {
+        title: '',
+        description: '',
+        logoIcon: iconList[0] as string,
+        color: '#8B5CF6',
+        for: TransactionAction.EXPENSES
+    }
 
     const formSchema = z.object({
         title: z.string().nonempty(t('messages.errors.required')),
@@ -45,7 +40,7 @@ export const useCategoryForm = (
         for: z.enum([TransactionAction.INCOME, TransactionAction.EXPENSES])
     })
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: defaultValues
     })
