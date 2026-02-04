@@ -4,6 +4,7 @@ import moment from 'moment-timezone'
 import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
 import { RedisHelper } from '../helpers/redis.helper'
+import { recalculateSubsequentSnapshots } from '../helpers/snapshot.helper'
 
 export class SnapshotController {
     // POST /snapshot/account-balance
@@ -87,6 +88,9 @@ export class SnapshotController {
                     totalNetWorth: totalCash
                 }
             })
+
+            // Recalculate the balances of subsequent snapshots for this account
+            await recalculateSubsequentSnapshots(accountId, snapshotDate, parsedBalance, req.user.id)
 
             const latestSnapshot = await prisma.snapshotAccountBalance.findFirst({
                 where: { accountId },
