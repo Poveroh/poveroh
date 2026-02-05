@@ -100,7 +100,7 @@ async function columnExists(tableName, columnName) {
 }
 
 async function prepareRecord(tableName, item, userId) {
-    const dateFields = ['createdAt', 'updatedAt', 'deletedAt']
+    const dateFields = ['createdAt', 'updatedAt', 'deletedAt', 'date']
     const processedItem = { ...item }
 
     for (const field of dateFields) {
