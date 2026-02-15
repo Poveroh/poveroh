@@ -309,16 +309,18 @@
             }
         }
     },
-    "dashboard": {
-        "title": "Dashboard",
-        "totalBalance": "Total balance",
-        "expenses": "Expenses",
-        "income": "Income"
-    },
+
     "widget": {
         "lastTransactions": "Last transactions",
         "nextPayments": "Next subscription payments",
-        "trend": "Trend"
+        "trend": "Trend",
+        "net-worth-evolution": {
+            "title": "Dashboard",
+            "totalBalance": "Total balance",
+            "live": "Live",
+            "expenses": "Expenses",
+            "income": "Income"
+        }
     },
     "settings": {
         "title": "Settings",

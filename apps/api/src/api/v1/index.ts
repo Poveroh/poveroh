@@ -9,6 +9,7 @@ import subscriptionRoutes from './routes/subscription'
 import importRoutes from './routes/import'
 import dashboardRoutes from './routes/dashboard'
 import snapshotRoutes from './routes/snapshot'
+import reportRoutes from './routes/report'
 
 import { Router } from 'express'
 
@@ -26,5 +27,6 @@ router.use('/financial-account', financialAccountRoutes)
 router.use('/import', importRoutes)
 router.use('/dashboard', dashboardRoutes)
 router.use('/snapshot', snapshotRoutes)
+router.use('/report', reportRoutes)
 
 export default router

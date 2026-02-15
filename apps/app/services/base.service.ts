@@ -1,6 +1,6 @@
 import { server } from '@/lib/server'
+import { buildFilters } from '@/utils/server'
 import { IFilterOptions } from '@poveroh/types'
-import qs from 'qs'
 
 export class BaseService<T> {
     private endpoint: string
@@ -28,12 +28,7 @@ export class BaseService<T> {
     }
 
     async read<U, F = unknown>(filters?: F, options?: IFilterOptions): Promise<{ data: U; total: number }> {
-        const queryObject: Record<string, unknown> = {}
-
-        if (filters) queryObject.filter = filters
-        if (options) queryObject.options = options
-
-        const query = qs.stringify(queryObject, { encode: true, indices: false })
+        const query = buildFilters<F>(filters, options)
 
         return await server.get<{ data: U; total: number }>(`${this.endpoint}?${query}`)
     }

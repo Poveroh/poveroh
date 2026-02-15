@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react'
 type BoxProps = {
     title?: string
     header?: ReactNode
-    children: ReactElement
+    children: ReactElement | ReactElement[]
 }
 
 export default function Box({ title, header, children }: BoxProps) {

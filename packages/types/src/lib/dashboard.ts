@@ -1,4 +1,5 @@
 export type DashboardWidgetId =
+    | 'net-worth-evolution'
     | 'kpi-row'
     | 'liquidity-evolution'
     | 'income-expense-month'

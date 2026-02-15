@@ -261,6 +261,12 @@ hr {
     top: 0;
 }
 
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
 /* BRAND */
 .brands {
     width: 40px;
