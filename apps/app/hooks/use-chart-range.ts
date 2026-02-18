@@ -2,7 +2,7 @@
 
 import { useChartRangeStore } from '@/store/chart-range.store'
 import { useCallback, useMemo } from 'react'
-import { ChartRange, INetWorthEvolutionDataPoint } from '@poveroh/types/dist'
+import { ChartRange, INetWorthEvolutionDataPoint, INetWorthEvolutionFilters } from '@poveroh/types/dist'
 
 type ChartRangeOption = {
     value: ChartRange
@@ -131,10 +131,33 @@ export const useChartRange = () => {
         [range]
     )
 
+    const getRangeFilter = useCallback(
+        (endDate?: Date): INetWorthEvolutionFilters | undefined => {
+            if (range === 'ALL') {
+                return undefined
+            }
+
+            const bounds = getRangeBounds(range, endDate ?? new Date())
+
+            if (!bounds.start || !bounds.end) {
+                return undefined
+            }
+
+            return {
+                date: {
+                    gte: bounds.start.toISOString(),
+                    lte: bounds.end.toISOString()
+                }
+            }
+        },
+        [range]
+    )
+
     return {
         range,
         setRange,
         options,
-        filterDataPoints
+        filterDataPoints,
+        getRangeFilter
     }
 }

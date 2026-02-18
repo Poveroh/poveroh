@@ -2,7 +2,7 @@
 
 import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useReport } from '@/hooks/use-report'
 import { INetWorthEvolutionReport } from '@poveroh/types/dist'
 import { NetWorthEvolutionChart } from '../charts/net-worth-evolution-chart'
@@ -15,21 +15,17 @@ export const NetWorthEvolutionWidget = () => {
     const t = useTranslations('widget.net-worth-evolution')
 
     const { getNetWorthEvolution } = useReport()
-    const { filterDataPoints } = useChartRange()
+    const { range, getRangeFilter } = useChartRange()
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getNetWorthEvolution()
-            setData(data)
+            const filter = getRangeFilter()
+            const response = await getNetWorthEvolution(filter)
+            setData(response)
         }
 
         fetchData()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const filteredDataPoints = useMemo(() => {
-        return filterDataPoints(data ? data.dataPoints : [])
-    }, [data, filterDataPoints])
+    }, [range, getRangeFilter])
 
     return (
         <Box>
@@ -49,7 +45,7 @@ export const NetWorthEvolutionWidget = () => {
                     </div>
                     <ChartRangeSelect />
                 </div>
-                <NetWorthEvolutionChart dataPoints={filteredDataPoints} />
+                <NetWorthEvolutionChart dataPoints={data ? data.dataPoints : []} />
             </div>
         </Box>
     )

@@ -8,9 +8,18 @@ export class ReportController {
     // GET /report/trend
     static async readTrend(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as INetWorthEvolutionFilters
+            const filters = (req.query.filter ?? {}) as Partial<INetWorthEvolutionFilters>
 
-            const where = buildWhere(filters)
+            const whereFilters = {
+                ...filters,
+                ...(filters?.date ? { snapshotDate: filters.date } : {})
+            }
+
+            if (filters?.date) {
+                delete (whereFilters as Partial<INetWorthEvolutionFilters>).date
+            }
+
+            const where = buildWhere(whereFilters)
 
             const whereCondition = {
                 ...where,
