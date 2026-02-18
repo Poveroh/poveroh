@@ -30,6 +30,7 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
 
         return {
             ...point,
+            timestamp: new Date(point.date).getTime(),
             delta,
             deltaPct
         }
@@ -73,11 +74,14 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
     }
 
     return (
-        <ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full'>
-            <LineChart accessibilityLayer data={chartData}>
+        <ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full min-w-0 justify-start'>
+            <LineChart accessibilityLayer data={chartData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis
-                    dataKey='date'
+                    dataKey='timestamp'
+                    type='number'
+                    domain={['dataMin', 'dataMax']}
+                    scale='time'
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
@@ -90,7 +94,13 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
                         })
                     }}
                 />
-                <YAxis tickLine={false} axisLine={false} tickFormatter={value => `${value / 1000}k`} />
+                <YAxis
+                    width={32}
+                    tickMargin={4}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={value => `${value / 1000}k`}
+                />
                 <ChartTooltip content={renderTooltip} />
                 <Line
                     dataKey='totalNetWorth'
