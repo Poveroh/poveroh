@@ -2,7 +2,7 @@
 
 import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useReport } from '@/hooks/use-report'
 import { INetWorthEvolutionReport } from '@poveroh/types/dist'
 import { NetWorthEvolutionChart } from '../charts/net-worth-evolution-chart'
@@ -27,6 +27,27 @@ export const NetWorthEvolutionWidget = () => {
         fetchData()
     }, [range, getRangeFilter])
 
+    const formatCurrency = (value: number) =>
+        value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
+
+    const comparison = useMemo(() => {
+        if (!data?.dataPoints?.length) return null
+
+        const latest = data.dataPoints[data.dataPoints.length - 1]
+        const reference = data.dataPoints[0]
+
+        if (!latest || !reference) return null
+
+        const delta = latest.totalNetWorth - reference.totalNetWorth
+        const deltaPct = reference.totalNetWorth ? (delta / reference.totalNetWorth) * 100 : 0
+
+        return {
+            delta,
+            deltaPct,
+            isPositive: delta >= 0
+        }
+    }, [data])
+
     return (
         <Box>
             <div className='flex flex-col gap-5'>
@@ -42,6 +63,16 @@ export const NetWorthEvolutionWidget = () => {
                             )}
                         </div>
                         <h2>$ {data ? data.totalNetWorth.toFixed(2) : '0.00'}</h2>
+                        {comparison && (
+                            <div className='flex items-center gap-2 text-sm'>
+                                <span className={comparison.isPositive ? 'text-emerald-500' : 'text-red-500'}>
+                                    {`${comparison.isPositive ? '+' : '-'}${formatCurrency(
+                                        Math.abs(comparison.delta)
+                                    )} (${comparison.isPositive ? '+' : '-'}${Math.abs(comparison.deltaPct).toFixed(1)}%)`}
+                                </span>
+                                <span className='text-muted-foreground'>vs. {range}</span>
+                            </div>
+                        )}
                     </div>
                     <ChartRangeSelect />
                 </div>
