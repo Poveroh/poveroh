@@ -75,7 +75,12 @@ const SortableWidget = ({ id, className, children }: SortableWidgetProps) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
     const style = {
-        transform: CSS.Transform.toString(transform),
+        transform: CSS.Transform.toString({
+            x: transform?.x ?? 0,
+            y: transform?.y ?? 0,
+            scaleX: 1,
+            scaleY: 1
+        }),
         transition
     }
 
