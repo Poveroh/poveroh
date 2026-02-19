@@ -25,7 +25,9 @@ export const NetWorthEvolutionWidget = () => {
         }
 
         fetchData()
-    }, [range, getRangeFilter])
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [range])
 
     const formatCurrency = (value: number) =>
         value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
