@@ -4,6 +4,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
 import { UserHelper } from '../api/v1/helpers/user.helper'
+import { DashboardTemplate } from '../api/v1/content/template/dashboard'
 
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
@@ -72,38 +73,34 @@ export const auth = betterAuth({
                     // Split name only if it has at least one space
                     if (fullName && fullName.includes(' ')) {
                         const parts = fullName.split(' ')
-                        return {
-                            data: {
-                                ...user,
-                                name: parts[0],
-                                surname: parts.slice(1).join(' ')
-                            }
-                        }
+                        user.name = parts[0]
+                        user.surname = parts.slice(1).join(' ')
+                        return
                     }
 
-                    // Default to empty strings if no valid name provided
-                    return {
+                    user.name = ''
+                    user.surname = ''
+                },
+                after: async (user, ctx) => {
+                    await prisma.dashboardLayout.create({
                         data: {
-                            ...user,
-                            name: '',
-                            surname: ''
+                            userId: user.id,
+                            version: 1,
+                            layout: DashboardTemplate
                         }
-                    }
+                    })
+
+                    return
                 }
             },
             update: {
                 before: async (user, ctx) => {
                     if (user.name) {
-                        return {
-                            data: {
-                                ...user,
-                                name: user.name.split(' ')[0],
-                                surname: user.name.split(' ')[1]
-                            }
-                        }
+                        const parts = user.name.split(' ')
+                        user.name = parts[0]
+                        user.surname = parts[1] || ''
+                        return
                     }
-
-                    return { data: user }
                 }
             }
         }
