@@ -76,7 +76,7 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
     return (
         <ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full min-w-0 justify-start'>
             <LineChart accessibilityLayer data={chartData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
-                <CartesianGrid vertical={false} />
+                <CartesianGrid vertical={false} stroke='var(--hr-color)' />
                 <XAxis
                     dataKey='timestamp'
                     type='number'
