@@ -1,68 +1,71 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@poveroh/ui/components/card'
+import { useEffect } from 'react'
+import Box from '@/components/box/box-wrapper'
+import { useTranslations } from 'next-intl'
+import BoxHeader from '@/components/box/box-header'
 import { Button } from '@poveroh/ui/components/button'
-import { cn } from '@poveroh/ui/lib/utils'
-import { recentTransactions } from '../mock-data'
-import { TransactionsSparkline } from '../charts/transactions-sparkline'
-
-type FilterType = 'ALL' | 'INCOME' | 'EXPENSES'
+import { PlusIcon } from 'lucide-react'
+import { useModal } from '@/hooks/use-modal'
+import { ITransaction } from '@poveroh/types/dist'
+import { TransactionDialog } from '@/components/dialog/transaction-dialog'
+import { TransactionItem } from '@/components/item/transaction-item'
+import { useTransaction } from '@/hooks/use-transaction'
 
 export const RecentTransactionsWidget = () => {
-    const [filter, setFilter] = useState<FilterType>('ALL')
+    const t = useTranslations()
+    const { openModal } = useModal<ITransaction>('transaction')
 
-    const data = useMemo(() => {
-        if (filter === 'ALL') return recentTransactions
-        return recentTransactions.filter(item => item.type === filter)
-    }, [filter])
+    const { transactionCacheList, fetchTransaction } = useTransaction()
+
+    useEffect(() => {
+        fetchTransaction(
+            undefined,
+            {
+                take: 5,
+                sortBy: 'date',
+                sortOrder: 'desc'
+            },
+            false,
+            true,
+            true
+        )
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
-        <Card className='h-full'>
-            <CardHeader>
-                <CardTitle>Transazioni recenti</CardTitle>
-                <CardDescription>Ultimi 30 giorni con sparkline.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className='mb-4'>
-                    <TransactionsSparkline />
-                </div>
-                <div className='flex flex-wrap gap-2 pb-4'>
-                    {(['ALL', 'EXPENSES', 'INCOME'] as const).map(item => (
+        <>
+            <Box noDivide gap={3}>
+                <BoxHeader
+                    title={t('widget.recent-transactions.title')}
+                    sideChildren={
                         <Button
-                            key={item}
-                            type='button'
-                            variant={filter === item ? 'default' : 'ghost'}
                             size='sm'
-                            onClick={() => setFilter(item)}
+                            onClick={() => {
+                                openModal('create')
+                            }}
                         >
-                            {item === 'ALL' ? 'Tutte' : item === 'INCOME' ? 'Entrate' : 'Uscite'}
+                            <PlusIcon />
+                            {t('buttons.add.transaction')}
                         </Button>
+                    }
+                />
+                <div className='flex flex-col divide-y'>
+                    {transactionCacheList.map(transaction => (
+                        <TransactionItem
+                            compact
+                            showOptions={false}
+                            key={transaction.id}
+                            transaction={transaction}
+                            openEdit={(item: ITransaction) => {
+                                openModal('edit', item)
+                            }}
+                        />
                     ))}
                 </div>
-                <div className='space-y-3'>
-                    {data.slice(0, 15).map(item => (
-                        <div
-                            key={item.id}
-                            className='flex items-center justify-between rounded-md border border-border/50 px-3 py-2'
-                        >
-                            <div>
-                                <p className='text-sm font-medium'>{item.title}</p>
-                                <p className='text-xs text-muted-foreground'>{item.date}</p>
-                            </div>
-                            <span
-                                className={cn(
-                                    'text-sm font-semibold tabular-nums',
-                                    item.amount >= 0 ? 'text-emerald-500' : 'text-rose-500'
-                                )}
-                            >
-                                {item.amount >= 0 ? '+' : ''}
-                                {item.amount.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' })}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
+            </Box>
+            <TransactionDialog></TransactionDialog>
+        </>
     )
 }

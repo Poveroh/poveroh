@@ -96,7 +96,8 @@
             "base": "Add",
             "new": "Add new",
             "import": "Import",
-            "manually": "Add manually"
+            "manually": "Add manually",
+            "transaction": "Add transaction"
         },
         "save": "Save",
         "export": {
@@ -311,8 +312,6 @@
     },
 
     "widget": {
-        "lastTransactions": "Last transactions",
-        "nextPayments": "Next subscription payments",
         "trend": "Trend",
         "net-worth-evolution": {
             "title": "Dashboard",
@@ -320,6 +319,10 @@
             "live": "Live",
             "expenses": "Expenses",
             "income": "Income"
+        },
+        "recent-transactions": {
+            "title": "Recent transactions",
+            "description": "Latest transactions in the last 30 days"
         }
     },
     "settings": {

@@ -17,6 +17,8 @@ export const Widget = ({ id }: WidgetProps) => {
     switch (id) {
         case 'net-worth-evolution':
             return <NetWorthEvolutionWidget />
+        case 'recent-transactions':
+            return <RecentTransactionsWidget />
         case 'kpi-row':
             return <KpiRow />
         case 'liquidity-evolution':
@@ -31,8 +33,7 @@ export const Widget = ({ id }: WidgetProps) => {
             return <AccountBalancesWidget />
         case 'expense-macro-distribution':
             return <ExpenseMacroDistributionWidget />
-        case 'recent-transactions':
-            return <RecentTransactionsWidget />
+
         default:
             return null
     }
