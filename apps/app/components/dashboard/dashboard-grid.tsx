@@ -10,6 +10,7 @@ import { cn } from '@poveroh/ui/lib/utils'
 import { Button } from '@poveroh/ui/components/button'
 import { Widget } from './render-widget'
 import { useDashboardLayout } from '@/hooks/dashboard/use-dashboard-layout'
+import { DashboardGridSkeleton } from '@/components/skeleton/dashboard-grid-skeleton'
 
 const colSpanClass = (span: DashboardLayoutItem['colSpan']) => {
     switch (span) {
@@ -34,7 +35,7 @@ export const DashboardGrid = ({ items }: DashboardGridProps) => {
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
     if (isLoading) {
-        return <p className='text-muted-foreground'>Caricamento dashboard...</p>
+        return <DashboardGridSkeleton />
     }
 
     const handleDragEnd = (event: DragEndEvent) => {
