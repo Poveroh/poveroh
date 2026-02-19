@@ -1,22 +1,14 @@
 'use client'
 
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren } from 'react'
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { DashboardLayoutItem, DashboardWidgetId } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
-import { KpiRow } from './widgets/kpi-row'
-import { LiquidityEvolutionWidget } from './widgets/liquidity-evolution-widget'
-import { IncomeExpenseMonthWidget } from './widgets/income-expense-month-widget'
-import { MonthComparisonWidget } from './widgets/month-comparison-widget'
-import { CategoryTrendWidget } from './widgets/category-trend-widget'
-import { AccountBalancesWidget } from './widgets/account-balances-widget'
-import { ExpenseMacroDistributionWidget } from './widgets/expense-macro-distribution-widget'
-import { RecentTransactionsWidget } from './widgets/recent-transactions-widget'
-import { NetWorthEvolutionWidget } from './widgets/net-worth-evolution-widget'
 import { Button } from '@poveroh/ui/components/button'
+import { Widget } from './render-widget'
 
 const colSpanClass = (span: DashboardLayoutItem['colSpan']) => {
     switch (span) {
@@ -40,35 +32,6 @@ type DashboardGridProps = {
 export const DashboardGrid = ({ items, onReorder }: DashboardGridProps) => {
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
-    const renderWidget = useMemo(
-        // eslint-disable-next-line react/display-name
-        () => (id: DashboardWidgetId) => {
-            switch (id) {
-                case 'net-worth-evolution':
-                    return <NetWorthEvolutionWidget />
-                case 'kpi-row':
-                    return <KpiRow />
-                case 'liquidity-evolution':
-                    return <LiquidityEvolutionWidget />
-                case 'income-expense-month':
-                    return <IncomeExpenseMonthWidget />
-                case 'month-comparison':
-                    return <MonthComparisonWidget />
-                case 'category-trend':
-                    return <CategoryTrendWidget />
-                case 'account-balances':
-                    return <AccountBalancesWidget />
-                case 'expense-macro-distribution':
-                    return <ExpenseMacroDistributionWidget />
-                case 'recent-transactions':
-                    return <RecentTransactionsWidget />
-                default:
-                    return null
-            }
-        },
-        []
-    )
-
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
@@ -89,7 +52,9 @@ export const DashboardGrid = ({ items, onReorder }: DashboardGridProps) => {
                         .filter(item => item.visible !== false)
                         .map(item => (
                             <SortableWidget key={item.id} id={item.id} className={colSpanClass(item.colSpan)}>
-                                <div className='w-full'>{renderWidget(item.id)}</div>
+                                <div className='w-full'>
+                                    <Widget id={item.id} />
+                                </div>
                             </SortableWidget>
                         ))}
                 </div>
