@@ -9,6 +9,7 @@ import { DashboardLayoutItem, DashboardWidgetId } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
 import { Button } from '@poveroh/ui/components/button'
 import { Widget } from './render-widget'
+import { useDashboardLayout } from '@/hooks/dashboard/use-dashboard-layout'
 
 const colSpanClass = (span: DashboardLayoutItem['colSpan']) => {
     switch (span) {
@@ -25,30 +26,34 @@ const colSpanClass = (span: DashboardLayoutItem['colSpan']) => {
 }
 
 type DashboardGridProps = {
-    items: DashboardLayoutItem[]
-    onReorder: (items: DashboardLayoutItem[]) => void
+    items?: DashboardLayoutItem[]
 }
 
-export const DashboardGrid = ({ items, onReorder }: DashboardGridProps) => {
+export const DashboardGrid = ({ items }: DashboardGridProps) => {
+    const { layout, isLoading, saveLayout } = useDashboardLayout()
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
+
+    if (isLoading) {
+        return <p className='text-muted-foreground'>Caricamento dashboard...</p>
+    }
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
 
         if (!over || active.id === over.id) return
 
-        const oldIndex = items.findIndex(item => item.id === active.id)
-        const newIndex = items.findIndex(item => item.id === over.id)
+        const oldIndex = (items || layout.items).findIndex(item => item.id === active.id)
+        const newIndex = (items || layout.items).findIndex(item => item.id === over.id)
         if (oldIndex === -1 || newIndex === -1) return
 
-        onReorder(arrayMove(items, oldIndex, newIndex))
+        saveLayout({ ...layout, items: arrayMove(items || layout.items, oldIndex, newIndex) })
     }
 
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <SortableContext items={items.map(item => item.id)}>
+            <SortableContext items={(items || layout.items).map(item => item.id)}>
                 <div className='grid grid-cols-12 gap-6'>
-                    {items
+                    {(items || layout.items)
                         .filter(item => item.visible !== false)
                         .map(item => (
                             <SortableWidget key={item.id} id={item.id} className={colSpanClass(item.colSpan)}>
