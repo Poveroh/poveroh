@@ -109,6 +109,7 @@ export class TransactionController {
 
             const where = {
                 ...buildWhere(genericFilters),
+                userId: req.user.id,
                 status: TransactionStatus.APPROVED,
                 // Map 'type' to 'action' for Transaction model
                 ...(type && { action: type }),
