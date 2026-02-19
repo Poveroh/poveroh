@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
 import BoxHeader from '@/components/box/box-header'
@@ -34,6 +34,8 @@ export const RecentTransactionsWidget = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const data = useMemo(() => transactionCacheList.slice(0, 5), [transactionCacheList])
+
     return (
         <>
             <Box noDivide gap={3}>
@@ -52,17 +54,23 @@ export const RecentTransactionsWidget = () => {
                     }
                 />
                 <div className='flex flex-col divide-y'>
-                    {transactionCacheList.map(transaction => (
-                        <TransactionItem
-                            compact
-                            showOptions={false}
-                            key={transaction.id}
-                            transaction={transaction}
-                            openEdit={(item: ITransaction) => {
-                                openModal('edit', item)
-                            }}
-                        />
-                    ))}
+                    {data.length > 0 ? (
+                        data.map(transaction => (
+                            <TransactionItem
+                                compact
+                                showOptions={false}
+                                key={transaction.id}
+                                transaction={transaction}
+                                openEdit={(item: ITransaction) => {
+                                    openModal('edit', item)
+                                }}
+                            />
+                        ))
+                    ) : (
+                        <div className='w-full flex items-center justify-center p-10 sub'>
+                            {t('messages.noResults')}
+                        </div>
+                    )}
                 </div>
             </Box>
             <TransactionDialog></TransactionDialog>
