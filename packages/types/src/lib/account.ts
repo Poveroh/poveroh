@@ -1,13 +1,10 @@
-export interface IFinancialAccountBase {
+export interface IFinancialAccount {
+    id: string
     title: string
     description: string
     type: FinancialAccountType
     logoIcon: string
     balance: number
-}
-
-export interface IFinancialAccount extends IFinancialAccountBase {
-    id: string
     userId: string
     createdAt: string
     updatedAt: string

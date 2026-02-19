@@ -54,7 +54,7 @@
     --accent-foreground-color: #fafafa;
 
     --chart-1-color: #246bce;
-    --chart-2-color: #2db592;
+    --chart-2-color: #2dd181;
     --chart-3-color: #e69b3a;
     --chart-4-color: #8e40c8;
     --chart-5-color: #e63a79;
@@ -259,6 +259,12 @@ hr {
     z-index: 50;
     position: sticky;
     top: 0;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 
 /* BRAND */

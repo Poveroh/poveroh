@@ -14,10 +14,14 @@ import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
 import { useState } from 'react'
 import { LoadingState } from '@/types/general'
+import { useCategory } from './use-category'
+import { useFinancialAccount } from './use-account'
 
 export const useTransaction = () => {
     const t = useTranslations()
     const { handleError } = useError()
+    const { fetchCategory } = useCategory()
+    const { fetchFinancialAccount } = useFinancialAccount()
 
     const transactionService = new TransactionService()
     const transactionStore = useTransactionStore()
@@ -93,10 +97,15 @@ export const useTransaction = () => {
         filters?: ITransactionFilters,
         options?: IFilterOptions,
         append?: boolean,
-        forceFetch?: boolean
+        forceFetch?: boolean,
+        prefetchCategoryAndAccount?: boolean
     ) => {
         setLoadingFor('fetch', true)
         try {
+            if (prefetchCategoryAndAccount) {
+                await fetchCategory()
+                await fetchFinancialAccount()
+            }
             if (transactionStore.transactionCacheList.length > 0 && !forceFetch) {
                 return transactionStore.transactionCacheList
             }

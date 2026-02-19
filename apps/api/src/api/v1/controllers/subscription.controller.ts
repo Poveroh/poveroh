@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { ISubscription, ISubscriptionBase, ISubscriptionFilters } from '@poveroh/types'
+import { ISubscription, ISubscriptionFilters } from '@poveroh/types'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
@@ -11,22 +11,10 @@ export class SubscriptionController {
     //POST /
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const parsedSubscription: ISubscriptionBase = JSON.parse(req.body.data)
+            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
             parsedSubscription.isEnabled = true
-
-            // Retrieve user timezone
-            const user = await prisma.user.findUnique({
-                where: { id: req.user.id },
-                select: { timezone: true }
-            })
-            if (!user) {
-                throw new Error('User not found')
-            }
-
-            // Convert firstPayment to UTC
-            const utcFirstPayment = moment.tz(parsedSubscription.firstPayment, user.timezone).utc().toISOString()
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -39,7 +27,6 @@ export class SubscriptionController {
             const subscription = await prisma.subscription.create({
                 data: {
                     ...parsedSubscription,
-                    firstPayment: utcFirstPayment,
                     userId: req.user.id
                 }
             })
@@ -54,27 +41,15 @@ export class SubscriptionController {
     //POST /:id
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const parsedSubscription: ISubscription = JSON.parse(req.body.data)
+            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
                 res.status(400).json({ message: 'Missing subscription ID' })
                 return
             }
-
-            // Retrieve user timezone
-            const user = await prisma.user.findUnique({
-                where: { id: req.user.id },
-                select: { timezone: true }
-            })
-            if (!user) {
-                throw new Error('User not found')
-            }
-
-            // Convert firstPayment to UTC
-            const utcFirstPayment = moment.tz(parsedSubscription.firstPayment, user.timezone).utc().toISOString()
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -86,10 +61,7 @@ export class SubscriptionController {
 
             const subscription = await prisma.subscription.update({
                 where: { id },
-                data: {
-                    ...parsedSubscription,
-                    firstPayment: utcFirstPayment
-                }
+                data: parsedSubscription
             })
 
             res.status(200).json(subscription)

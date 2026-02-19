@@ -2,17 +2,10 @@
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import { Ellipsis } from 'lucide-react'
-import { Button, ButtonsVariant } from '@poveroh/ui/components/button'
+import { Button } from '@poveroh/ui/components/button'
 import DynamicIcon from '../icon/dynamic-icon'
 import { cn } from '@poveroh/ui/lib/utils'
-
-type ExtraButton<T> = {
-    label: string
-    icon?: string
-    variant?: ButtonsVariant
-    onClick: (item: T) => void
-    hide?: boolean
-}
+import { ExtraButton } from '@/types/options'
 
 type OptionsPopoverContentProps<T> = {
     data: T

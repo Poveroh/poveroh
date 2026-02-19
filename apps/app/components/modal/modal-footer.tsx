@@ -13,7 +13,7 @@ export function ModalFooter<T>(props: ModalFooterProps) {
     const t = useTranslations()
 
     const { keepAdding, inEditingMode, setKeepAddingChecked, closeModal, loading, buttonDisabled, showSaveButton } =
-        useModal<T>()
+        useModal<T>(props.modalId)
 
     return (
         <DialogFooter>

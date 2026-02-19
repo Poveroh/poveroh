@@ -1,7 +1,10 @@
 import { Currencies } from './currency.js'
 import { AppearanceMode } from './modal.js'
 
-export interface ISubscriptionBase {
+export interface ISubscription {
+    id: string
+    userId: string
+    createdAt: string
     title: string
     description: string
     amount: number
@@ -14,12 +17,6 @@ export interface ISubscriptionBase {
     rememberPeriod: RememberPeriod
     financialAccountId: string
     isEnabled: boolean
-}
-
-export interface ISubscription extends ISubscriptionBase {
-    id: string
-    userId: string
-    createdAt: string
 }
 
 export enum CyclePeriod {

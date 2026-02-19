@@ -5,7 +5,8 @@ import { urlJoiner } from '@poveroh/utils'
 
 export const server = {
     // Generic send method
-    send<T>(type: ServerRequest, url: string, data: any, authenticate: boolean, formData?: boolean): Promise<T> {
+    send<T>(type: ServerRequest, url: string, data: unknown, authenticate: boolean, formData?: boolean): Promise<T> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<T>(async (resolve, reject) => {
             let res: AxiosResponse
 
@@ -70,11 +71,11 @@ export const server = {
         })
     },
 
-    post<T>(url: string, data: any, formData?: boolean) {
+    post<T>(url: string, data: unknown, formData?: boolean) {
         return server.send<T>(ServerRequest.POST, url, data, true, formData)
     },
 
-    put<T>(url: string, data: any, formData?: boolean) {
+    put<T>(url: string, data: unknown, formData?: boolean) {
         return server.send<T>(ServerRequest.PUT, url, data, true, formData)
     },
 

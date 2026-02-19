@@ -10,7 +10,7 @@ export function TextField<T extends FieldValues = FieldValues>({
     placeholder,
     variant = 'contained',
     disabled = false,
-    mandatory = true
+    mandatory = false
 }: TextInputFieldProps<T>) {
     return (
         <FormField

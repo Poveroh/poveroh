@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ISubcategory, ISubcategoryBase, ISubcategoryFilters } from '@poveroh/types'
+import { ISubcategory, ISubcategoryFilters } from '@poveroh/types'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
@@ -10,9 +10,9 @@ export class SubcategoryController {
     //POST /
     static async add(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const readedSubcategory: ISubcategoryBase = JSON.parse(req.body.data)
+            const readedSubcategory: Omit<ISubcategory, 'id' | 'createdAt'> = req.body
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -36,9 +36,9 @@ export class SubcategoryController {
     //POST /:id
     static async save(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
+            if (!req.body) throw new Error('Data not provided')
 
-            const readedSubcategory: ISubcategory = JSON.parse(req.body.data)
+            const readedSubcategory: ISubcategory = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {

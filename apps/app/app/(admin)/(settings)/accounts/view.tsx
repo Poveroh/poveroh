@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IFinancialAccount, IFinancialAccountFilters } from '@poveroh/types'
+import { IFinancialAccount, IFinancialAccountFilters, ISnapshotAccountBalance } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
@@ -12,6 +12,7 @@ import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
 import { AccountDialog } from '@/components/dialog/account-dialog'
+import { AccountBalanceSnapshotDialog } from '@/components/dialog/account-balance-snapshot-dialog'
 import { AccountItem } from '@/components/item/account-item'
 import { FilterButton } from '@/components/filter/filter-button'
 import { Header } from '@/components/other/header-page'
@@ -28,7 +29,8 @@ export default function AccountView() {
     const { financialAccountCacheList, fetchFinancialAccount, TYPE_LIST, financialAccountLoading } =
         useFinancialAccount()
 
-    const { openModal } = useModal<IFinancialAccount>()
+    const { openModal } = useModal<IFinancialAccount>('account')
+    const { openModal: openSnapshotModal } = useModal<ISnapshotAccountBalance>('account-snapshot')
     const { openModal: openDeleteModal } = useDeleteModal<IFinancialAccount>()
 
     const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(financialAccountCacheList)
@@ -169,6 +171,15 @@ export default function AccountView() {
                                         openModal('edit', item)
                                     }}
                                     openDelete={openDeleteModal}
+                                    buttons={[
+                                        {
+                                            onClick: x => {
+                                                openSnapshotModal('create', undefined, { accountId: x.id })
+                                            },
+                                            label: t('accounts.snapshot.button'),
+                                            icon: 'calendar-plus'
+                                        }
+                                    ]}
                                 />
                             ))}
                         </>
@@ -191,6 +202,7 @@ export default function AccountView() {
             </PageWrapper>
 
             <AccountDialog></AccountDialog>
+            <AccountBalanceSnapshotDialog />
         </>
     )
 }

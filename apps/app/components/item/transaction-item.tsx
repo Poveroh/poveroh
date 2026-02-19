@@ -12,11 +12,19 @@ import { useTranslations } from 'next-intl'
 
 type TransactionItemProps = {
     transaction: ITransaction
-    openDelete: (item: ITransaction) => void
-    openEdit: (item: ITransaction) => void
+    compact?: boolean
+    showOptions?: boolean
+    openDelete?: (item: ITransaction) => void
+    openEdit?: (item: ITransaction) => void
 }
 
-const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openDelete, openEdit }) => {
+const TransactionItemComponent: FC<TransactionItemProps> = ({
+    transaction,
+    compact,
+    showOptions = true,
+    openDelete,
+    openEdit
+}) => {
     const t = useTranslations()
     const { financialAccountCacheList } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
@@ -71,7 +79,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
     const handleClick = () => {
         if (isClickingRef.current) return
         isClickingRef.current = true
-        openEdit(transaction)
+        openEdit?.(transaction)
         setTimeout(() => {
             isClickingRef.current = false
         }, 300)
@@ -79,7 +87,10 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
 
     return (
         <div
-            className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
+            className={cn(
+                'flex flex-row justify-between items-center w-full border-border cursor-pointer',
+                compact ? 'pt-2 pb-2' : 'pt-5 pb-5'
+            )}
             onClick={handleClick}
         >
             <div className='flex flex-row items-center space-x-5'>
@@ -126,24 +137,26 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({ transaction, openD
                     </div>
                     <p className='sub'>{category?.title || t('messages.uncategorized')}</p>
                 </div>
-                <div onClick={e => e.stopPropagation()}>
-                    <OptionsPopover<ITransaction>
-                        data={transaction}
-                        buttons={[
-                            {
-                                onClick: item => openEdit(item),
-                                label: t('buttons.editItem'),
-                                icon: 'pencil'
-                            },
-                            {
-                                onClick: item => openDelete(item),
-                                variant: 'danger',
-                                label: t('buttons.deleteItem'),
-                                icon: 'trash-2'
-                            }
-                        ]}
-                    />
-                </div>
+                {showOptions && (
+                    <div onClick={e => e.stopPropagation()}>
+                        <OptionsPopover<ITransaction>
+                            data={transaction}
+                            buttons={[
+                                {
+                                    onClick: item => openEdit?.(item),
+                                    label: t('buttons.editItem'),
+                                    icon: 'pencil'
+                                },
+                                {
+                                    onClick: item => openDelete?.(item),
+                                    variant: 'danger',
+                                    label: t('buttons.deleteItem'),
+                                    icon: 'trash-2'
+                                }
+                            ]}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     )

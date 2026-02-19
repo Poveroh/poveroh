@@ -1,28 +1,5 @@
+import { DrawerStore } from '@/types/drawer'
 import { create } from 'zustand'
-
-export interface DrawerState<T = unknown> {
-    isOpen: boolean
-    item?: T
-    loading: boolean
-    inEditingMode: boolean
-    keepAdding: { visibility: boolean; checked: boolean }
-    buttonDisabled: boolean
-    showSaveButton: boolean
-}
-
-export interface DrawerActions<T = unknown> {
-    openDrawer: (mode: 'edit' | 'create', item?: T) => void
-    closeDrawer: () => void
-    setItem: (item?: T) => void
-    setLoading: (loading: boolean) => void
-    setInEditingMode: (editing: boolean) => void
-    setKeepAddingVisibility: (visibility?: boolean) => void
-    setKeepAddingChecked: (checked?: boolean) => void
-    setButtonDisabled: (disabled: boolean) => void
-    setShowSaveButton: (show: boolean) => void
-}
-
-export type DrawerStore<T = unknown> = DrawerState<T> & DrawerActions<T>
 
 export const useDrawerStore = create<DrawerStore>(set => ({
     isOpen: false,

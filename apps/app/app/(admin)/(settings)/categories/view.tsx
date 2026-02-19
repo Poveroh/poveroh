@@ -27,7 +27,8 @@ export default function CategoryView() {
 
     const { categoryCacheList, categoryLoading, fetchCategory, importTemplates, clearCategories } = useCategory()
 
-    const { openModal } = useModal<ICategory | ISubcategory>()
+    const categoryModal = useModal<ICategory | ISubcategory>('category-dialog')
+    const subcategoryModal = useModal<ICategory | ISubcategory>('subcategory-dialog')
     const { openModal: openDeleteModal } = useDeleteModal<ICategory | ISubcategory>()
 
     const [dialogModel, setDialogModel] = useState<CategoryModelMode>('category')
@@ -78,7 +79,8 @@ export default function CategoryView() {
 
     const openNew = (mode: CategoryModelMode) => {
         setDialogModel(mode)
-        openModal('create')
+        const manager = mode === 'category' ? categoryModal : subcategoryModal
+        manager.openModal('create')
     }
 
     return (
@@ -165,7 +167,9 @@ export default function CategoryView() {
                                                         item: ICategory | ISubcategory
                                                     ) => {
                                                         setDialogModel(mode)
-                                                        openModal('edit', item)
+                                                        const manager =
+                                                            mode === 'category' ? categoryModal : subcategoryModal
+                                                        manager.openModal('edit', item)
                                                     }}
                                                     openDelete={(
                                                         mode: CategoryModelMode,

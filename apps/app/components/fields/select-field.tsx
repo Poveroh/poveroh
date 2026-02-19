@@ -45,7 +45,7 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
                         <SelectContent>
                             {options.map((item: OptionType) => (
                                 <SelectItem
-                                    key={getOptionLabel(item)}
+                                    key={getOptionValue(item)}
                                     value={getOptionValue(item)}
                                     disabled={getOptionDisabled ? getOptionDisabled(item) : false}
                                 >

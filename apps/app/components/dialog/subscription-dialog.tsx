@@ -15,7 +15,8 @@ export function SubscriptionDialog() {
     const t = useTranslations()
     const { addSubscription, editSubscription, removeSubscription } = useSubscription()
 
-    const modalManager = useModal<ISubscription>()
+    const modalId = 'subscription'
+    const modalManager = useModal<ISubscription>(modalId)
     const deleteModalManager = useDeleteModal<ISubscription>()
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
@@ -49,40 +50,44 @@ export function SubscriptionDialog() {
         setTitle(t('subscriptions.modal.newTitle'))
     }
 
-    const handleFormSubmit = async (data: FormData) => {
-        modalManager.setLoading(true)
-
-        let res: ISubscription | null
-
-        // edit dialog
-        if (modalManager.inEditingMode && modalManager.item) {
-            res = await editSubscription(modalManager.item.id, data)
-
-            if (!res) return
-
-            modalManager.closeModal()
+    const handleFormSubmit = async (data: FormData | Partial<ISubscription>) => {
+        if (data instanceof FormData) {
+            throw new Error('FormData handling not implemented for subscriptions')
         } else {
-            // new dialog
-            res = await addSubscription(data)
+            modalManager.setLoading(true)
 
-            if (!res) return
+            let res: ISubscription | null
 
-            if (modalManager.keepAdding.checked) {
-                formRef.current?.reset()
-                clearUp()
-            } else {
+            // edit dialog
+            if (modalManager.inEditingMode && modalManager.item) {
+                res = await editSubscription(modalManager.item.id, data)
+
+                if (!res) return
+
                 modalManager.closeModal()
+            } else {
+                // new dialog
+                res = await addSubscription(data)
+
+                if (!res) return
+
+                if (modalManager.keepAdding.checked) {
+                    formRef.current?.reset()
+                    clearUp()
+                } else {
+                    modalManager.closeModal()
+                }
             }
+
+            toast.success(
+                t('messages.successfully', {
+                    a: res.title,
+                    b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
+                })
+            )
+
+            modalManager.setLoading(false)
         }
-
-        toast.success(
-            t('messages.successfully', {
-                a: res.title,
-                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-            })
-        )
-
-        modalManager.setLoading(false)
     }
 
     const onTemplateSelected = (brand: IBrand) => {
@@ -127,6 +132,7 @@ export function SubscriptionDialog() {
     return (
         <>
             <Modal
+                modalId={modalId}
                 open={modalManager.isOpen}
                 title={title}
                 decoration={{

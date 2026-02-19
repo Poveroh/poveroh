@@ -1,19 +1,5 @@
 import { create } from 'zustand'
-
-export interface DeleteModalState<T = unknown> {
-    isOpen: boolean
-    item?: T
-    loading: boolean
-}
-
-export interface DeleteModalActions<T = unknown> {
-    openModal: (item?: T) => void
-    closeModal: () => void
-    setItem: (item?: T) => void
-    setLoading: (loading: boolean) => void
-}
-
-export type DeleteModalStore<T = unknown> = DeleteModalState<T> & DeleteModalActions<T>
+import { DeleteModalStore } from '@/types/modal'
 
 export const useDeleteModalStore = create<DeleteModalStore>(set => ({
     isOpen: false,

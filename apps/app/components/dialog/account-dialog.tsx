@@ -13,12 +13,13 @@ export function AccountDialog() {
     const t = useTranslations()
     const { addFinancialAccount, editFinancialAccount, removeFinancialAccount } = useFinancialAccount()
 
-    const modalManager = useModal<IFinancialAccount>()
+    const modalId = 'account'
+    const modalManager = useModal<IFinancialAccount>(modalId)
     const deleteModalManager = useDeleteModal<IFinancialAccount>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (data: FormData) => {
+    const handleFormSubmit = async (data: FormData | Partial<IFinancialAccount>) => {
         modalManager.setLoading(true)
 
         let res: IFinancialAccount | null
@@ -74,6 +75,7 @@ export function AccountDialog() {
     return (
         <>
             <Modal<IFinancialAccount>
+                modalId={modalId}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item

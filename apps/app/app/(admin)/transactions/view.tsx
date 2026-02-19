@@ -65,7 +65,7 @@ export default function TransactionsView() {
     const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
     const { renderDate, preferedLanguage } = useConfig()
 
-    const { openModal } = useModal<ITransaction>()
+    const { openModal } = useModal<ITransaction>('transaction')
     const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
 
     const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])

@@ -67,6 +67,10 @@ export interface ISubscriptionFilters {
     [key: string]: string | StringFilter | undefined
 }
 
+export interface INetWorthEvolutionFilters {
+    date: DateFilter
+}
+
 export type FilterField =
     | {
           name: string

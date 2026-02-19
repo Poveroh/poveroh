@@ -1,30 +1,24 @@
-import { TransactionAction, TransactionActionSimple } from './transaction.js'
+import { TransactionAction } from './transaction.js'
 
 export type CategoryModelMode = 'category' | 'subcategory'
 
-export interface ISubcategoryBase {
+export interface ISubcategory {
+    id: string
     categoryId: string
     title: string
     description?: string
     logoIcon: string
-}
-
-export interface ISubcategory extends ISubcategoryBase {
-    id: string
     createdAt: string
 }
 
-export interface ICategoryBase {
-    title: string
-    description?: string
-    for: TransactionActionSimple
-    logoIcon: string
-    color: string
-}
-
-export interface ICategory extends ICategoryBase {
+export interface ICategory {
     id: string
     userId: string
+    title: string
+    description?: string
+    for: TransactionAction.EXPENSES | TransactionAction.INCOME
+    logoIcon: string
+    color: string
     subcategories: ISubcategory[]
     createdAt: string
 }

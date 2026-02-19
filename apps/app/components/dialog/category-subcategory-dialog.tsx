@@ -21,12 +21,13 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
     const { editCategory, addCategory, removeSubcategory, removeCategory, addSubcategory, editSubcategory } =
         useCategory()
 
-    const modalManager = useModal<ICategory | ISubcategory>()
+    const modalId = mode === 'category' ? 'category-dialog' : 'subcategory-dialog'
+    const modalManager = useModal<ICategory | ISubcategory>(modalId)
     const deleteModalManager = useDeleteModal<ICategory | ISubcategory>()
 
     const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData) => {
+    const handleFormSubmit = async (data: FormData | Partial<ICategory | ISubcategory>) => {
         modalManager.setLoading(true)
         let res: ICategory | ISubcategory | null = null
 
@@ -83,6 +84,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
     return (
         <>
             <Modal<ICategory | ISubcategory>
+                modalId={modalId}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item

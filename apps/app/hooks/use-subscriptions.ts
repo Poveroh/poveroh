@@ -27,7 +27,7 @@ export const useSubscription = () => {
         setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
     }
 
-    const addSubscription = async (data: FormData) => {
+    const addSubscription = async (data: Partial<ISubscription>) => {
         setLoadingFor('add', true)
         try {
             const res = await subscriptionService.add(data)
@@ -40,7 +40,7 @@ export const useSubscription = () => {
         }
     }
 
-    const editSubscription = async (id: string, data: FormData) => {
+    const editSubscription = async (id: string, data: Partial<ISubscription>) => {
         setLoadingFor('edit', true)
         try {
             const res = await subscriptionService.save(id, data)
