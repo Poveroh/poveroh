@@ -1,4 +1,4 @@
-import { INetWorthEvolutionFilters, INetWorthEvolutionReport } from '@poveroh/types/dist'
+import { INetWorthEvolutionFilters, INetWorthEvolutionReport } from '@poveroh/types'
 import { buildFilters } from '@/utils/server'
 import { server } from '@/lib/server'
 

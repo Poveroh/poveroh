@@ -2,7 +2,7 @@
 
 import { useChartRangeStore } from '@/store/chart-range.store'
 import { useCallback, useMemo } from 'react'
-import { ChartRange, INetWorthEvolutionDataPoint, INetWorthEvolutionFilters } from '@poveroh/types/dist'
+import { ChartRange, INetWorthEvolutionDataPoint, INetWorthEvolutionFilters } from '@poveroh/types'
 
 type ChartRangeOption = {
     value: ChartRange

@@ -2,7 +2,7 @@
 
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, TooltipProps } from 'recharts'
 import { ChartContainer, ChartTooltip } from '@poveroh/ui/components/chart'
-import { INetWorthEvolutionDataPoint } from '@poveroh/types/dist'
+import { INetWorthEvolutionDataPoint } from '@poveroh/types'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
 type NetWorthEvolutionChartProps = {

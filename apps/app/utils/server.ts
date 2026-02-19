@@ -1,4 +1,4 @@
-import { IFilterOptions } from '@poveroh/types/dist'
+import { IFilterOptions } from '@poveroh/types'
 import qs from 'qs'
 
 export function buildFilters<F = unknown>(filters?: F, options?: IFilterOptions) {

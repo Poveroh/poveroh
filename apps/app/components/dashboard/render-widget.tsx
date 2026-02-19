@@ -1,4 +1,4 @@
-import { DashboardWidgetId } from '@poveroh/types/dist'
+import { DashboardWidgetId } from '@poveroh/types'
 import { AccountBalancesWidget } from './widgets/account-balances-widget'
 import { CategoryTrendWidget } from './widgets/category-trend-widget'
 import { ExpenseMacroDistributionWidget } from './widgets/expense-macro-distribution-widget'

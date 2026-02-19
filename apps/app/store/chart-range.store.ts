@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { ChartRange } from '@poveroh/types/dist'
+import { ChartRange } from '@poveroh/types'
 
 type ChartRangeStore = {
     range: ChartRange

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
-import { INetWorthEvolutionFilters } from '@poveroh/types/dist'
+import { INetWorthEvolutionFilters } from '@poveroh/types'
 import { ReportService } from '@/services/report.service'
 
 export const useReport = () => {
