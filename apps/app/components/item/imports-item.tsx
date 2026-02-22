@@ -1,4 +1,5 @@
-import { IImport, TransactionStatus } from '@poveroh/types'
+import type { Import } from '@/lib/api-client'
+import { TransactionStatus } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { cn } from '@poveroh/ui/lib/utils'

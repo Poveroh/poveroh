@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useRef } from 'react'
 
 import { TransactionsApprovalList } from '@/components/other/transactions-approval-list'
 import { AccountAndFileForm } from './account-and-file-form'
-import { IImport } from '@poveroh/types'
+import { IImport } from '@/types/api'
 import { FormRef } from '@/types'
 
 type FormProps = {

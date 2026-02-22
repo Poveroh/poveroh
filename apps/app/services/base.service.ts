@@ -1,6 +1,6 @@
 import { server } from '@/lib/server'
 import { buildFilters } from '@/utils/server'
-import { IFilterOptions } from '@poveroh/types'
+import type { FilterOptions } from '@/lib/api-client'
 
 export class BaseService<T> {
     private endpoint: string
@@ -27,7 +27,7 @@ export class BaseService<T> {
         return this.delete('all')
     }
 
-    async read<U, F = unknown>(filters?: F, options?: IFilterOptions): Promise<{ data: U; total: number }> {
+    async read<U, F = unknown>(filters?: F, options?: FilterOptions): Promise<{ data: U; total: number }> {
         const query = buildFilters<F>(filters, options)
 
         return await server.get<{ data: U; total: number }>(`${this.endpoint}?${query}`)

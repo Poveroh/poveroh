@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { ITransaction, InputVariantStyle, TransactionAction } from '@poveroh/types'
+import { InputVariantStyle, TransactionAction } from '@poveroh/types'
+import { ITransaction } from '@/types/api'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
 import { FieldValues } from 'react-hook-form'

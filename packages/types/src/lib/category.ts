@@ -1,34 +1,16 @@
 import { TransactionAction } from './transaction.js'
 
+// Category-related types used in UI and business logic
+
 export type CategoryModelMode = 'category' | 'subcategory'
 
-export interface ISubcategory {
-    id: string
-    categoryId: string
-    title: string
-    description?: string
-    logoIcon: string
-    createdAt: string
-}
-
-export interface ICategory {
-    id: string
-    userId: string
-    title: string
-    description?: string
-    for: TransactionAction.EXPENSES | TransactionAction.INCOME
-    logoIcon: string
-    color: string
-    subcategories: ISubcategory[]
-    createdAt: string
-}
-
-export const defaultCategory: ICategory = {
+// Default category for form initialization
+export const defaultCategory = {
     id: '',
     userId: '',
     title: '',
     description: '',
-    for: TransactionAction.EXPENSES,
+    for: TransactionAction.EXPENSES as TransactionAction.EXPENSES | TransactionAction.INCOME,
     logoIcon: '',
     color: '#8B5CF6',
     subcategories: [],

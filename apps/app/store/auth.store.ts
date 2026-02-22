@@ -1,13 +1,14 @@
 import { storage } from '@/lib/storage'
-import { defaultUser, IUser, OnBoardingStep } from '@poveroh/types'
+import { defaultUser, OnBoardingStep } from '@poveroh/types'
+import type { User } from '@/lib/api-client'
 import { create } from 'zustand'
 
 type UserStore = {
-    user: IUser
+    user: User
     logged: boolean
     setOnBoardingStep: (newStep: OnBoardingStep) => void
-    updateUser: (newUserData: Partial<IUser>) => void
-    setUser: (newUser: IUser) => void
+    updateUser: (newUserData: Partial<User>) => void
+    setUser: (newUser: User) => void
     setLogged: (newLoggedState: boolean) => void
     resetAll: () => void
 }

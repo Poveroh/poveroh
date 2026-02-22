@@ -1,33 +1,76 @@
-import { IImport, ITransaction } from '@poveroh/types'
-import { BaseService } from './base.service'
-import { server } from '@/lib/server'
+import {
+    getImport,
+    postImport,
+    deleteImportById,
+    putImportCompleteById,
+    postImportReadFile,
+    getImportTransactionById,
+    putImportTransactionById,
+    deleteImportTransactionById,
+    postImportTemplate,
+    type ImportsFile,
+    type FilterOptions
+} from '@/lib/api-client'
 
-export class ImportService extends BaseService<IImport> {
-    constructor() {
-        super('/import')
+export class ImportService {
+    async add(data: FormData) {
+        const response = await postImport({ body: data as any })
+        return response.data
     }
 
-    async complete(id: string): Promise<IImport> {
-        return await server.put<IImport>(`/import/complete${'/' + id}`, {}, false)
+    async delete(id: string) {
+        const response = await deleteImportById({ path: { id } })
+        return response.data
     }
 
-    async readFile(data: FormData): Promise<IImport> {
-        return await server.post<IImport>('/import/read-file', data, true)
+    async clear() {
+        return this.delete('all')
     }
 
-    async readTransaction(id: string): Promise<ITransaction[]> {
-        return await server.get<ITransaction[]>(`/import/transaction/${id}`)
+    async read(filters?: ImportsFile, options?: FilterOptions) {
+        const response = await getImport({
+            query: {
+                filter: filters,
+                options: options
+            }
+        })
+        return response.data
     }
 
-    async saveTransaction(id: string, data: FormData): Promise<ITransaction> {
-        return await server.put<ITransaction>(`/import/transaction/${id}`, data, true)
+    async complete(id: string) {
+        const response = await putImportCompleteById({ path: { id } })
+        return response.data
     }
 
-    async deleteTransaction(transaction_id: string): Promise<boolean> {
-        return await server.delete<boolean>(`/import/transaction/${transaction_id}`)
+    async readFile(data: FormData) {
+        const response = await postImportReadFile({ body: data as any })
+        return response.data
     }
 
-    async importTemplates(action: string): Promise<boolean> {
-        return await server.post<boolean>('/import/template', { action }, false)
+    async readTransaction(id: string) {
+        const response = await getImportTransactionById({ path: { id } })
+        return response.data
+    }
+
+    async saveTransaction(id: string, data: FormData) {
+        const response = await putImportTransactionById({
+            path: { id },
+            body: data as any
+        })
+        return response.data
+    }
+
+    async deleteTransaction(transaction_id: string) {
+        const response = await deleteImportTransactionById({
+            path: { id: transaction_id }
+        })
+        return response.data
+    }
+
+    async importTemplates(action: string) {
+        const response = await postImportTemplate({
+            body: { action }
+        })
+        return response.data
     }
 }

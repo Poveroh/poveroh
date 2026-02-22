@@ -1,14 +1,17 @@
 import { Request, Response } from 'express'
 import logger from '../../../utils/logger'
-import { INetWorthEvolutionFilters, INetWorthEvolutionReport } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import { buildWhere } from '../../../helpers/filter.helper'
 import prisma from '@poveroh/prisma'
+
+type NetWorthEvolutionFilters = components['schemas']['NetWorthEvolutionFilters']
+type NetWorthEvolutionReport = components['schemas']['NetWorthEvolutionReport']
 
 export class ReportController {
     // GET /report/trend
     static async readTrend(req: Request, res: Response) {
         try {
-            const filters = (req.query.filter ?? {}) as Partial<INetWorthEvolutionFilters>
+            const filters = (req.query.filter ?? {}) as Partial<NetWorthEvolutionFilters>
 
             const whereFilters = {
                 ...filters,
@@ -16,7 +19,7 @@ export class ReportController {
             }
 
             if (filters?.date) {
-                delete (whereFilters as Partial<INetWorthEvolutionFilters>).date
+                delete (whereFilters as Partial<NetWorthEvolutionFilters>).date
             }
 
             const where = buildWhere(whereFilters)
@@ -38,7 +41,7 @@ export class ReportController {
 
             const totalNetWorth = dataPoints.length > 0 ? dataPoints[dataPoints.length - 1].totalNetWorth : 0
 
-            const report: INetWorthEvolutionReport = {
+            const report: NetWorthEvolutionReport = {
                 totalNetWorth,
                 dataPoints
             }

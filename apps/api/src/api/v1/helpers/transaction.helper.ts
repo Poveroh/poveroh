@@ -1,21 +1,17 @@
 import prisma from '@poveroh/prisma'
-import { Prisma } from '@prisma/client'
+import { Prisma, Currency, TransactionAction as PrismaTransactionAction } from '@prisma/client'
 import moment from 'moment-timezone'
 import {
-    Currencies,
     ExpensesFormData,
     FormMode,
-    IAmount,
-    IAmountBase,
     IncomeFormData,
-    ITransaction,
-    ITransactionBase,
     TransactionAction,
     TransactionStatus,
     TransferFormData
 } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
-import { TransactionWithAmounts } from '@/types/transactions'
+import { TransactionWithAmounts, IAmountBase, ITransactionBase } from '@/types/transactions'
+import { Transaction as ITransaction } from '@/types/transactions'
 
 /**
  * Transaction Helper - Handles all transaction operations including creation and updating of transactions
@@ -187,7 +183,7 @@ export const TransactionHelper = {
                         ]
 
                         await tx.amount.createMany({
-                            data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                            data: amountsData
                         })
 
                         // If multiple amounts, update balances for each
@@ -234,7 +230,7 @@ export const TransactionHelper = {
                             data: amountsData
                         })
 
-                        // If multiple amounts, update balances for each
+                        // Update balances for each amount
                         for (let i = 0; i < amountsData.length; i++) {
                             await BalanceHelper.updateAccountBalances(amountsData[i], undefined, tx)
                         }
@@ -308,7 +304,7 @@ export const TransactionHelper = {
 
                         await tx.amount.update({
                             where: { id: existingTransaction.amounts[0].id },
-                            data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
+                            data: amountData
                         })
 
                         const originalAmountsMap = new Map([
@@ -341,7 +337,7 @@ export const TransactionHelper = {
                         })
 
                         await tx.amount.create({
-                            data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
+                            data: amountData
                         })
 
                         await BalanceHelper.updateAccountBalances(amountData, undefined, tx)
@@ -395,7 +391,7 @@ export const TransactionHelper = {
                         const amountsData = this.buildExpensesAmounts(transaction.id, data)
                         if (amountsData.length > 0) {
                             await tx.amount.createMany({
-                                data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                                data: amountsData
                             })
                         }
 
@@ -427,11 +423,11 @@ export const TransactionHelper = {
                         const amountsData = this.buildExpensesAmounts(transaction.id, data)
                         if (amountsData.length > 0) {
                             await tx.amount.createMany({
-                                data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                                data: amountsData
                             })
                         }
 
-                        // If multiple amounts, update balances for each
+                        // Update balances for each amount
                         for (let i = 0; i < amountsData.length; i++) {
                             await BalanceHelper.updateAccountBalances(amountsData[i], undefined, tx)
                         }
@@ -535,26 +531,26 @@ export const TransactionHelper = {
                 ...transfer.fromTransaction.amounts.map(a => ({
                     ...a,
                     amount: a.amount.toNumber(),
-                    currency: a.currency as Currencies,
-                    action: a.action as TransactionAction,
+                    currency: a.currency,
+                    action: a.action,
                     importReference: a.importReference || undefined,
                     createdAt: a.createdAt.toISOString()
                 })),
                 ...transfer.toTransaction.amounts.map(a => ({
                     ...a,
                     amount: a.amount.toNumber(),
-                    currency: a.currency as Currencies,
-                    action: a.action as TransactionAction,
+                    currency: a.currency,
+                    action: a.action,
                     importReference: a.importReference || undefined,
                     createdAt: a.createdAt.toISOString()
                 }))
             ],
             transferId: transfer.id,
             title: transfer.fromTransaction.title,
-            action: TransactionAction.TRANSFER,
+            action: TransactionAction.TRANSFER as any,
             createdAt: transfer.transferDate.toISOString(),
             updatedAt: transfer.transferDate.toISOString(),
-            status: TransactionStatus.APPROVED,
+            status: TransactionStatus.APPROVED as any,
             ignore: false
         }
 
@@ -568,12 +564,12 @@ export const TransactionHelper = {
     ): Promise<ITransactionBase> {
         const baseData: ITransactionBase = {
             title: transaction.title,
-            action: action,
+            action: action as PrismaTransactionAction,
             date: new Date(transaction.date).toISOString(),
             note: transaction.note,
             ignore: transaction.ignore || false,
-            categoryId: undefined,
-            subcategoryId: undefined
+            categoryId: null,
+            subcategoryId: null
         }
 
         switch (action) {
@@ -584,8 +580,8 @@ export const TransactionHelper = {
                 const categoryData = transaction as IncomeFormData | ExpensesFormData
                 return {
                     ...baseData,
-                    categoryId: categoryData.categoryId,
-                    subcategoryId: categoryData.subcategoryId
+                    categoryId: categoryData.categoryId || null,
+                    subcategoryId: categoryData.subcategoryId || null
                 }
             default:
                 throw new Error(`Invalid transaction action: ${action}`)
@@ -611,8 +607,8 @@ export const TransactionHelper = {
             return {
                 transactionId: dbAmount.transactionId,
                 amount: typeof dbAmount.amount === 'number' ? dbAmount.amount : dbAmount.amount.toNumber(),
-                currency: dbAmount.currency as Currencies,
-                action: dbAmount.action as TransactionAction,
+                currency: dbAmount.currency,
+                action: dbAmount.action,
                 financialAccountId: dbAmount.financialAccountId
             }
         }
@@ -629,8 +625,8 @@ export const TransactionHelper = {
         return {
             transactionId,
             amount,
-            currency: currency as Currencies,
-            action,
+            currency: currency as Currency,
+            action: action as PrismaTransactionAction,
             financialAccountId
         }
     },

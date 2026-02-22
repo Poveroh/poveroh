@@ -1,5 +1,6 @@
 import prisma from '@poveroh/prisma'
-import { Currencies, IAmount, IAmountBase, TransactionAction } from '@poveroh/types'
+import { Currencies, TransactionAction } from '@poveroh/types'
+import { IAmountBase } from '@/types/transactions'
 import { Decimal } from '@prisma/client/runtime/library'
 import { RedisHelper } from './redis.helper'
 

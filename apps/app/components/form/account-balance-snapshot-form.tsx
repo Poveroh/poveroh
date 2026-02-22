@@ -9,7 +9,7 @@ import { DateField } from '../fields/date-field'
 import { NoteField } from '../fields/note-field'
 import { FormProps, FormRef } from '@/types'
 import { useAccountBalanceSnapshotForm } from '@/hooks/form/use-account-balance-snapshot-form'
-import { ISnapshotAccountBalance } from '@poveroh/types'
+import { ISnapshotAccountBalance } from '@/types/api'
 
 export const AccountBalanceSnapshotForm = forwardRef<
     FormRef,

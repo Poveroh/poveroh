@@ -12,8 +12,19 @@ import snapshotRoutes from './routes/snapshot'
 import reportRoutes from './routes/report'
 
 import { Router } from 'express'
+import swaggerUi from 'swagger-ui-express'
+import openapiSpec from '../../../openapi.json'
+import config from '../../utils/environment'
 
 const router: Router = Router()
+
+// OpenAPI documentation endpoints (only in development)
+if (config.NODE_ENV === 'development') {
+    router.get('/openapi.json', (_, res) => {
+        res.json(openapiSpec)
+    })
+    router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec))
+}
 
 router.use('/', statusRoutes)
 router.use('/status', statusRoutes)

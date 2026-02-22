@@ -3,6 +3,7 @@ import { Language } from './language.js'
 import { DateFormat } from './date-format.js'
 import { Timezone } from './timezone.js'
 
+// User enums - used throughout the application
 export enum OnBoardingStep {
     EMAIL = 1,
     GENERALITIES = 2,
@@ -20,71 +21,10 @@ export enum SnapshotFrequency {
     ANNUAL = 'ANNUAL'
 }
 
+// User-related types for forms and authentication
 export interface IUserLogin {
     email: string
     password: string
-}
-
-export interface IUserBase {
-    email: string
-    name: string
-    surname?: string
-}
-
-export interface IUserPreferences {
-    preferredCurrency: Currencies
-    preferredLanguage: Language
-    dateFormat: DateFormat
-    country: string
-    timezone: Timezone
-}
-
-export interface IUser extends IUserBase, IUserPreferences {
-    id: string
-    onBoardingStep: OnBoardingStep
-    onBoardingAt?: string | null
-    image?: string | null
-    emailVerified: boolean
-    snapshotFrequency: SnapshotFrequency
-    createdAt: string
-    updatedAt: string
-}
-
-export interface ISession {
-    id: string
-    token: string
-    userId: string
-    expiresAt: string
-    ipAddress?: string | null
-    userAgent?: string | null
-    createdAt: string
-    updatedAt: string
-}
-
-export interface IAccount {
-    id: string
-    accountId: string
-    providerId: string
-    userId: string
-    accessToken?: string | null
-    refreshToken?: string | null
-    idToken?: string | null
-    accessTokenExpiresAt?: string | null
-    refreshTokenExpiresAt?: string | null
-    scope?: string | null
-    password?: string | null
-    createdAt: string
-    updatedAt: string
-}
-
-export interface IVerification {
-    id: string
-    identifier: string
-    value: string
-    expiresAt: string
-    userId?: string | null
-    createdAt: string
-    updatedAt: string
 }
 
 export interface IPasswordToChange {
@@ -96,7 +36,8 @@ export interface IPassword extends IPasswordToChange {
     confirmPassword: string
 }
 
-export const defaultUser: IUser = {
+// Default user for initialization
+export const defaultUser = {
     id: '',
     name: '',
     surname: '',
@@ -113,24 +54,4 @@ export const defaultUser: IUser = {
     timezone: Timezone.EUROPE_ROME,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
-}
-
-export function normalizeToIUser(user: any): IUser {
-    if (!user) {
-        throw new Error('User data is null or undefined')
-    }
-
-    if (user.createdAt) {
-        user.createdAt = new Date(user.createdAt).toISOString()
-    }
-
-    if (user.updatedAt) {
-        user.updatedAt = new Date(user.updatedAt).toISOString()
-    }
-
-    if (user.onBoardingAt) {
-        user.onBoardingAt = new Date(user.onBoardingAt).toISOString()
-    }
-
-    return user as IUser
 }

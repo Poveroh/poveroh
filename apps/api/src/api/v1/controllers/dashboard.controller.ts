@@ -1,7 +1,12 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
-import { DashboardLayout } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
+
+// OpenAPI types
+type DashboardLayout = components['schemas']['DashboardLayout']
+type DashboardLayoutRecord = components['schemas']['DashboardLayoutRecord']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class DashboardController {
     // GET /

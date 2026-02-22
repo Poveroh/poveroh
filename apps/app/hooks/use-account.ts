@@ -2,7 +2,8 @@
 
 import { FinancialAccountService } from '@/services/account.service'
 import { useFinancialAccountStore } from '@/store/account.store'
-import { FinancialAccountType, IFinancialAccount, IFinancialAccountFilters } from '@poveroh/types'
+import { FinancialAccountType } from '@poveroh/types'
+import { IFinancialAccount, IFinancialAccountFilters } from '@/types/api'
 import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
 import { useState } from 'react'

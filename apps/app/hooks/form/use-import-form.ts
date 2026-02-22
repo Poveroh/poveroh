@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { IImport } from '@poveroh/types'
+import { IImport } from '@/types/api'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
 import { useImport } from '../use-imports'

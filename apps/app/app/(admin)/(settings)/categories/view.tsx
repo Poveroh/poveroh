@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { isEmpty } from '@poveroh/utils'
 import { useTranslations } from 'next-intl'
 
-import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
+import { CategoryModelMode, TransactionAction } from '@poveroh/types'
+import { ICategory, ISubcategory } from '@/types/api'
 
 import Box from '@/components/box/box-wrapper'
 

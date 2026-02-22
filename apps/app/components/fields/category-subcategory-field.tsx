@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { CategoryField } from './category-field'
 import { SubcategoryField } from './subcategory-field'
-import { ISubcategory } from '@poveroh/types'
+import { ISubcategory } from '@/types/api'
 import { useCategoryStore } from '@/store/category.store'
 import { CategorySubcategoryFieldProps } from '@/types'
 import { FieldValues, Path } from 'react-hook-form'

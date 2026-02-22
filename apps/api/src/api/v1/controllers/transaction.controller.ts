@@ -3,11 +3,18 @@ import prisma from '@poveroh/prisma'
 import moment from 'moment-timezone'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { IFilterOptions, ITransactionFilters } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import logger from '../../../utils/logger'
 import { TransactionStatus } from '@prisma/client'
 import { TransactionWithAmounts } from '@/types/transactions'
 import { getParamString } from '../../../utils/request'
+
+// OpenAPI types
+type Transaction = components['schemas']['Transaction']
+type TransactionFilters = components['schemas']['TransactionFilters']
+type FilterOptions = components['schemas']['FilterOptions']
+type TransactionCollection = components['schemas']['TransactionCollection']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class TransactionController {
     //POST /
@@ -87,8 +94,8 @@ export class TransactionController {
             const rawFilters = req.query['filter'] || {}
             const rawOptions = req.query['options'] || {}
 
-            const filters = rawFilters as ITransactionFilters
-            const options = rawOptions as IFilterOptions
+            const filters = rawFilters as TransactionFilters
+            const options = rawOptions as FilterOptions
 
             // Retrieve user timezone for date filters
             const user = await prisma.user.findUnique({

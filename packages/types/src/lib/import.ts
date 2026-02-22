@@ -1,5 +1,7 @@
 import { Currencies } from './currency.js'
-import { ITransaction, TransactionAction, TransactionStatus } from './transaction.js'
+import { TransactionAction } from './transaction.js'
+
+// Import-related types used in UI and business logic
 
 export interface IFieldMapping {
     date?: string
@@ -32,26 +34,6 @@ export interface IReadedTransaction {
     currency: Currencies
     title: string
     originalRow?: Record<string, any>
-}
-
-export interface IImportsFile {
-    id: string
-    importId: string
-    filename: string
-    filetype: FileType
-    path: string
-    createdAt: string
-}
-
-export interface IImport {
-    id: string
-    userId: string
-    title: string
-    status: TransactionStatus
-    createdAt: string
-    financialAccountId: string
-    files: IImportsFile[]
-    transactions: ITransaction[]
 }
 
 export enum FileType {

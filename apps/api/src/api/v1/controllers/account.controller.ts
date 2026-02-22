@@ -1,10 +1,13 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { IFinancialAccount, IFinancialAccountFilters } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
 import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
+
+type FinancialAccount = components['schemas']['FinancialAccount']
+type FinancialAccountFilters = components['schemas']['FinancialAccountFilters']
 
 export class FinancialAccountController {
     //POST /
@@ -12,7 +15,7 @@ export class FinancialAccountController {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let readedAccount: Omit<IFinancialAccount, 'id' | 'createdAt' | 'userId'> = JSON.parse(req.body.data)
+            let readedAccount: Omit<FinancialAccount, 'id' | 'createdAt' | 'userId'> = JSON.parse(req.body.data)
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -38,7 +41,7 @@ export class FinancialAccountController {
         try {
             if (!req.body.data) throw new Error('Data not provided')
 
-            let readedAccount: IFinancialAccount = JSON.parse(req.body.data)
+            let readedAccount: FinancialAccount = JSON.parse(req.body.data)
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -91,7 +94,7 @@ export class FinancialAccountController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as IFinancialAccountFilters
+            const filters = req.query as unknown as FinancialAccountFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 

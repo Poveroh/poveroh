@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import { Upload } from 'lucide-react'
 
-import { IImport } from '@poveroh/types'
+import { IImport } from '@/types/api'
 
 import { useImport } from '@/hooks/use-imports'
 import Box from '@/components/box/box-wrapper'

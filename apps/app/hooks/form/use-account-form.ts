@@ -6,7 +6,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { FinancialAccountType, IFinancialAccount } from '@poveroh/types'
+import { FinancialAccountType } from '@poveroh/types'
+import { IFinancialAccount } from '@/types/api'
 
 import { useError } from '@/hooks/use-error'
 

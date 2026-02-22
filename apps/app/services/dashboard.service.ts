@@ -1,17 +1,15 @@
-import { DashboardLayout, IDashboardLayout } from '@poveroh/types'
-import { BaseService } from './base.service'
-import { server } from '@/lib/server'
+import { getDashboard, putDashboard, type DashboardLayout } from '@/lib/api-client'
 
-export class DashboardService extends BaseService<IDashboardLayout> {
-    constructor() {
-        super('/dashboard')
+export class DashboardService {
+    async readLayout() {
+        const response = await getDashboard()
+        return response.data
     }
 
-    async readLayout(): Promise<IDashboardLayout | null> {
-        return server.get<IDashboardLayout | null>('/dashboard')
-    }
-
-    async saveLayout(layout: DashboardLayout): Promise<IDashboardLayout> {
-        return server.put<IDashboardLayout>('/dashboard', { layout })
+    async saveLayout(layout: DashboardLayout) {
+        const response = await putDashboard({
+            body: { layout }
+        })
+        return response.data
     }
 }

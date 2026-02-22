@@ -2,7 +2,7 @@
 
 import { CategoryService, SubcategoryService } from '@/services/category.service'
 import { useCategoryStore } from '@/store/category.store'
-import { ICategory, ICategoryFilters, ISubcategory } from '@poveroh/types'
+import { ICategory, ICategoryFilters, ISubcategory } from '@/types/api'
 import { useError } from './use-error'
 import { useState } from 'react'
 import { useImport } from './use-imports'

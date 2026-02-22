@@ -1,6 +1,7 @@
 'use client'
 
-import { IFilterOptions, IImport, IImportsFilters, ITransaction, TransactionStatus } from '@poveroh/types'
+import { TransactionStatus } from '@poveroh/types'
+import { IFilterOptions, IImport, IImportsFilters, ITransaction } from '@/types/api'
 import { useError } from './use-error'
 import { ImportService } from '@/services/import.service'
 import { useImportStore } from '@/store/imports.store'

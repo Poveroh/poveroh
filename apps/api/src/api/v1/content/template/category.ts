@@ -1,6 +1,7 @@
-import { ICategory, TransactionAction } from '@poveroh/types'
+import { TransactionAction } from '@poveroh/types'
+import { Category } from '@/types/transactions'
 
-export const CategoryTemplate: ICategory[] = [
+export const CategoryTemplate: Category[] = [
     {
         id: '',
         userId: '',

@@ -1,23 +1,4 @@
-import { Currencies } from './currency.js'
-import { AppearanceMode } from './modal.js'
-
-export interface ISubscription {
-    id: string
-    userId: string
-    createdAt: string
-    title: string
-    description: string
-    amount: number
-    currency: Currencies
-    appearanceMode: AppearanceMode
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: string
-    cyclePeriod: CyclePeriod
-    rememberPeriod: RememberPeriod
-    financialAccountId: string
-    isEnabled: boolean
-}
+// Subscription enums - used in UI and business logic
 
 export enum CyclePeriod {
     DAY = 'DAY',

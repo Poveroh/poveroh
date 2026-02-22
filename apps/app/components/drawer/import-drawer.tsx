@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
-import { IImport } from '@poveroh/types'
+import type { Import } from '@/lib/api-client'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UploadForm } from '../form/transactions/upload-form'
 import { useImport } from '@/hooks/use-imports'

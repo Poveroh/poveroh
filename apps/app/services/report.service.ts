@@ -1,11 +1,10 @@
-import { INetWorthEvolutionFilters, INetWorthEvolutionReport } from '@poveroh/types'
-import { buildFilters } from '@/utils/server'
-import { server } from '@/lib/server'
+import { getReportTrend, type NetWorthEvolutionFilters } from '@/lib/api-client'
 
 export class ReportService {
-    async getNetWorthEvolution(filter?: INetWorthEvolutionFilters): Promise<INetWorthEvolutionReport> {
-        const query = buildFilters<INetWorthEvolutionFilters>(filter)
-
-        return await server.get<INetWorthEvolutionReport>(`${'/report/trend'}?${query}`)
+    async getNetWorthEvolution(filter?: NetWorthEvolutionFilters) {
+        const response = await getReportTrend({
+            query: { filter }
+        })
+        return response.data
     }
 }

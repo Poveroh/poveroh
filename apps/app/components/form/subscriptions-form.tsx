@@ -3,7 +3,8 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
+import { CyclePeriod, RememberPeriod } from '@poveroh/types'
+import { ISubscription } from '@/types/api'
 
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
 import {

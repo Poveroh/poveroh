@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 
-import { IImport } from '@poveroh/types'
+import { IImport } from '@/types/api'
 
 import { Form } from '@poveroh/ui/components/form'
 import { AccountField, FileUploadField } from '@/components/fields'

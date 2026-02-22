@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IFinancialAccount, IFinancialAccountFilters, ISnapshotAccountBalance } from '@poveroh/types'
+import { IFinancialAccount, IFinancialAccountFilters, ISnapshotAccountBalance } from '@/types/api'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'

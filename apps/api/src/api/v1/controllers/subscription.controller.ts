@@ -1,11 +1,17 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { ISubscription, ISubscriptionFilters } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
+
+// OpenAPI types
+type Subscription = components['schemas']['Subscription']
+type SubscriptionFilters = components['schemas']['SubscriptionFilters']
+type SubscriptionCollection = components['schemas']['SubscriptionCollection']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class SubscriptionController {
     //POST /
@@ -13,7 +19,7 @@ export class SubscriptionController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
+            const parsedSubscription: Omit<Subscription, 'id' | 'userId' | 'createdAt'> = req.body
             parsedSubscription.isEnabled = true
 
             if (req.file) {
@@ -28,7 +34,7 @@ export class SubscriptionController {
                 data: {
                     ...parsedSubscription,
                     userId: req.user.id
-                }
+                } as any
             })
 
             res.status(200).json(subscription)
@@ -43,7 +49,7 @@ export class SubscriptionController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
+            const parsedSubscription: Omit<Subscription, 'id' | 'userId' | 'createdAt'> = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
@@ -61,7 +67,7 @@ export class SubscriptionController {
 
             const subscription = await prisma.subscription.update({
                 where: { id },
-                data: parsedSubscription
+                data: parsedSubscription as any
             })
 
             res.status(200).json(subscription)
@@ -93,7 +99,7 @@ export class SubscriptionController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ISubscriptionFilters
+            const filters = req.query as unknown as SubscriptionFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 

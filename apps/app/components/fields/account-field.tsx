@@ -2,7 +2,7 @@ import { FieldValues, Path } from 'react-hook-form'
 import { AccountFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { IFinancialAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@/types/api'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 

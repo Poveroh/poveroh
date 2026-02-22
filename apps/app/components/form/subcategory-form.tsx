@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 import { useWatch } from 'react-hook-form'
 
-import { ISubcategory } from '@poveroh/types'
+import { ISubcategory } from '@/types/api'
 
 import { Form } from '@poveroh/ui/components/form'
 import { TextField } from '@/components/fields/text-field'

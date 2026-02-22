@@ -6,7 +6,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { AppearanceMode, Currencies, CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
+import { AppearanceMode, Currencies, CyclePeriod, RememberPeriod } from '@poveroh/types'
+import { ISubscription } from '@/types/api'
 
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'

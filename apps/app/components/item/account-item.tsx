@@ -1,5 +1,5 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { IFinancialAccount } from '@poveroh/types'
+import type { FinancialAccount } from '@/lib/api-client'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'

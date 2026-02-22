@@ -1,15 +1,4 @@
-export interface IFinancialAccount {
-    id: string
-    title: string
-    description: string
-    type: FinancialAccountType
-    logoIcon: string
-    balance: number
-    userId: string
-    createdAt: string
-    updatedAt: string
-}
-
+// FinancialAccountType enum - used in UI and business logic
 export enum FinancialAccountType {
     ONLINE_BANK = 'ONLINE_BANK',
     BANK_ACCOUNT = 'BANK_ACCOUNT',

@@ -1,5 +1,5 @@
 import DynamicIcon from '../icon/dynamic-icon'
-import { ICategory, ISubcategory } from '@poveroh/types'
+import { ICategory, ISubcategory } from '@/types/api'
 
 type CategoryBadgeProps =
     | {

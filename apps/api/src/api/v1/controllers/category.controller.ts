@@ -1,11 +1,17 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ICategory, ICategoryFilters } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import omit from 'lodash/omit'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
+
+// OpenAPI types
+type Category = components['schemas']['Category']
+type CategoryFilters = components['schemas']['CategoryFilters']
+type CategoryCollection = components['schemas']['CategoryCollection']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class CategoryController {
     //POST /
@@ -13,7 +19,7 @@ export class CategoryController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const readCategory: Omit<ICategory, 'id' | 'createdAt' | 'subcategories'> = req.body
+            const readCategory: Omit<Category, 'id' | 'createdAt' | 'subcategories'> = req.body
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -42,7 +48,7 @@ export class CategoryController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const readCategory: ICategory = req.body
+            const readCategory: Category = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
@@ -98,7 +104,7 @@ export class CategoryController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ICategoryFilters
+            const filters = req.query as unknown as CategoryFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 

@@ -1,6 +1,7 @@
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
-import { ITransaction, TransactionAction } from '@poveroh/types'
+import type { Transaction } from '@/lib/api-client'
+import { TransactionAction } from '@poveroh/types'
 
 import { useMemo, memo, useRef, type FC } from 'react'
 import { ArrowRightLeft } from 'lucide-react'

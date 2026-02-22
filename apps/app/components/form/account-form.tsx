@@ -3,7 +3,8 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IFinancialAccount, IItem } from '@poveroh/types'
+import { IItem } from '@poveroh/types'
+import { IFinancialAccount } from '@/types/api'
 
 import { Form } from '@poveroh/ui/components/form'
 

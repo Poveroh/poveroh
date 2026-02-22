@@ -1,5 +1,6 @@
 import DynamicIcon from '../icon/dynamic-icon'
-import { CategoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
+import { CategoryModelMode } from '@poveroh/types'
+import { ICategory, ISubcategory } from '@/types/api'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { CategoryBadge } from './category-badge'

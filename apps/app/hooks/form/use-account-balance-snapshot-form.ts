@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useError } from '@/hooks/use-error'
-import { ISnapshotAccountBalance } from '@poveroh/types'
+import { ISnapshotAccountBalance } from '@/types/api'
 
 export const useAccountBalanceSnapshotForm = (
     initialData: ISnapshotAccountBalance | null | undefined,

@@ -1,70 +1,21 @@
 import { Currencies } from './currency.js'
 
-export interface IAmountBase {
-    transactionId: string
-    amount: number
-    currency: Currencies
-    action: TransactionAction
-    financialAccountId: string
-    importReference?: string
+// Transaction enums - used throughout the application
+export enum TransactionAction {
+    INCOME = 'INCOME',
+    EXPENSES = 'EXPENSES',
+    TRANSFER = 'TRANSFER'
 }
 
-export interface IAmount extends IAmountBase {
-    id: string
-    createdAt: string
+export enum TransactionStatus {
+    APPROVED = 'APPROVED',
+    REJECTED = 'REJECTED',
+    IMPORT_PENDING = 'IMPORT_PENDING',
+    IMPORT_REJECTED = 'IMPORT_REJECTED',
+    IMPORT_APPROVED = 'IMPORT_APPROVED'
 }
 
-export interface ITransactionMediaBase {
-    filename: string
-    filetype: string
-    path: string
-}
-
-export interface ITransactionMedia extends ITransactionMediaBase {
-    id: string
-    transactionId: string
-    createdAt: string
-}
-
-export interface ITransferBase {
-    transferDate: string
-    note?: string
-}
-
-export interface ITransfer extends ITransferBase {
-    id: string
-    userId: string
-    fromTransactionId?: string
-    toTransactionId?: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type ITransactionBase = {
-    title: string
-    action: TransactionAction
-    categoryId?: string
-    subcategoryId?: string
-    icon?: string
-    date: string
-    note?: string | null
-    ignore: boolean
-}
-
-export interface ITransaction extends ITransactionBase {
-    id: string
-    userId: string
-    createdAt: string
-    status: TransactionStatus
-    importId?: string
-    updatedAt: string
-    amounts: IAmount[]
-    action: TransactionAction
-    media?: ITransactionMedia[]
-    transferId?: string
-    transferHash?: string
-}
-
+// Form data types - used in UI forms
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
 export type ExpensesFormData = {
@@ -105,19 +56,3 @@ export type TransferFormData = {
 }
 
 export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
-
-export enum TransactionAction {
-    INCOME = 'INCOME',
-    EXPENSES = 'EXPENSES',
-    TRANSFER = 'TRANSFER'
-}
-
-export enum TransactionStatus {
-    APPROVED = 'APPROVED',
-    REJECTED = 'REJECTED',
-    IMPORT_PENDING = 'IMPORT_PENDING',
-    IMPORT_REJECTED = 'IMPORT_REJECTED',
-    IMPORT_APPROVED = 'IMPORT_APPROVED'
-}
-
-export type GroupedTransactions = Record<string, ITransaction[]>

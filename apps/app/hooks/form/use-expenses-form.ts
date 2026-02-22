@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
-import { ExpensesFormData, ITransaction, TransactionAction } from '@poveroh/types'
+import { ExpensesFormData, TransactionAction } from '@poveroh/types'
+import { ITransaction } from '@/types/api'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps, amountSchema } from '@/types/form'
 import { useConfig } from '../use-config'

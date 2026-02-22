@@ -1,6 +1,7 @@
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
-import { ICategory, TransactionStatus, ITransaction, TransactionAction } from '@poveroh/types'
+import { TransactionStatus, TransactionAction } from '@poveroh/types'
+import { ICategory, ITransaction } from '@/types/api'
 
 import { useEffect, useRef, useState } from 'react'
 import icons from 'currency-icons'

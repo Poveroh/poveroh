@@ -1,21 +1,21 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { ICategory, ISubcategory } from '@poveroh/types'
+import type { Category, Subcategory } from '@/lib/api-client'
 
 type CategoryStore = {
-    categoryCacheList: ICategory[]
-    addCategory: (category: ICategory) => void
-    editCategory: (category: ICategory) => void
-    setCategory: (category: ICategory[]) => void
+    categoryCacheList: Category[]
+    addCategory: (category: Category) => void
+    editCategory: (category: Category) => void
+    setCategory: (category: Category[]) => void
     removeCategory: (categoryId: string) => void
-    getCategory: (categoryId: string) => ICategory | null
+    getCategory: (categoryId: string) => Category | null
     clearCategory: () => void
 
     // --- Subcategory Actions ---
-    addSubcategory: (subcategory: ISubcategory) => void
-    editSubcategory: (subcategory: ISubcategory) => void
+    addSubcategory: (subcategory: Subcategory) => void
+    editSubcategory: (subcategory: Subcategory) => void
     removeSubcategory: (subcategoryId: string) => void
-    getSubcategory: (subcategoryId: string) => ISubcategory | null
+    getSubcategory: (subcategoryId: string) => Subcategory | null
 }
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({

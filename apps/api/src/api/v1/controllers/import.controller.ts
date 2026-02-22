@@ -2,14 +2,8 @@ import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { buildWhere } from '../../../helpers/filter.helper'
-import {
-    FileType,
-    IImportsFile,
-    TransactionStatus,
-    ITransactionFilters,
-    ITransaction,
-    TransactionAction
-} from '@poveroh/types'
+import { components } from '../../../generated/openapi'
+import { TransactionStatus, FileType } from '@poveroh/types'
 import logger from '../../../utils/logger'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { ImportHelper } from '../helpers/import.helper'
@@ -18,6 +12,11 @@ import { MediaHelper } from '../../../helpers/media.helper'
 import { BalanceHelper } from '../helpers/balance.helper'
 import { getParamString } from '../../../utils/request'
 import { TransactionWithAmounts } from '@/types/transactions'
+
+type ImportsFile = components['schemas']['ImportsFile']
+type TransactionFilters = components['schemas']['TransactionFilters']
+type Transaction = components['schemas']['Transaction']
+type TransactionAction = components['schemas']['TransactionAction']
 
 export class ImportController {
     //POST /
@@ -164,7 +163,7 @@ export class ImportController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as IImportsFile
+            const filters = req.query as unknown as ImportsFile
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
@@ -197,7 +196,7 @@ export class ImportController {
                 return
             }
 
-            const filters = req.query as unknown as ITransactionFilters
+            const filters = req.query as unknown as TransactionFilters
 
             const where = buildWhere(filters)
 
@@ -247,7 +246,7 @@ export class ImportController {
         try {
             const { data } = req.body
 
-            const parsedData: ITransaction[] = JSON.parse(data)
+            const parsedData: Transaction[] = JSON.parse(data)
 
             if (!Array.isArray(parsedData) || parsedData.length === 0) {
                 res.status(400).json({ message: 'Missing or empty transactions array' })
@@ -366,7 +365,7 @@ export class ImportController {
                 allTransactions
             )
 
-            const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
+            const importFiles: ImportsFile[] = savedFiles.map((path, idx) => ({
                 id: uuidv4(),
                 importId: importId,
                 filename: files[idx]?.originalname || '',
@@ -396,7 +395,7 @@ export class ImportController {
             })
 
             const allAmounts = parsedTransactions.flatMap(transaction =>
-                transaction.amounts.map(amount => ({
+                transaction.amounts.map((amount: any) => ({
                     transactionId: amount.transactionId,
                     amount: amount.amount,
                     currency: amount.currency,

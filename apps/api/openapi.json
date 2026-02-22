@@ -1,0 +1,2286 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Poveroh API",
+        "version": "1.0.0",
+        "description": "OpenAPI definition for the Poveroh v1 API"
+    },
+    "servers": [
+        { "url": "http://localhost:3001/v1", "description": "API Poveroh Localhost v1" },
+        { "url": "http://api.poveroh.local/v1", "description": "API Poveroh Localhost proxy v1" },
+        { "url": "http://api.poveroh.com/v1", "description": "API Poveroh Production v1" }
+    ],
+    "components": {
+        "schemas": {
+            "StatusResponse": {
+                "type": "object",
+                "required": ["status", "uptime", "version", "timestamp"],
+                "properties": {
+                    "status": { "type": "string" },
+                    "uptime": { "type": "number" },
+                    "version": { "type": "string" },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                    "message": { "type": "string" },
+                    "error": { "nullable": true }
+                }
+            },
+            "StringFilter": {
+                "type": "object",
+                "properties": {
+                    "equals": { "type": "string" },
+                    "contains": { "type": "string" }
+                }
+            },
+            "DateFilter": {
+                "type": "object",
+                "properties": {
+                    "gte": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "lte": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "NumberFilter": {
+                "type": "object",
+                "properties": {
+                    "equals": { "type": "number" },
+                    "gte": { "type": "number" },
+                    "lte": { "type": "number" }
+                }
+            },
+            "FilterOptions": {
+                "type": "object",
+                "properties": {
+                    "skip": { "type": "number" },
+                    "take": { "type": "number" },
+                    "sortBy": { "type": "string" },
+                    "sortOrder": {
+                        "type": "string",
+                        "enum": ["asc", "desc"]
+                    }
+                }
+            },
+            "TransactionAction": {
+                "type": "string",
+                "enum": ["INCOME", "EXPENSES", "TRANSFER"]
+            },
+            "TransactionStatus": {
+                "type": "string",
+                "enum": ["APPROVED", "REJECTED", "IMPORT_PENDING", "IMPORT_REJECTED", "IMPORT_APPROVED"]
+            },
+            "FinancialAccountType": {
+                "type": "string",
+                "enum": [
+                    "ONLINE_BANK",
+                    "BANK_ACCOUNT",
+                    "CIRCUIT",
+                    "DEPOSIT_BANK",
+                    "BROKER",
+                    "WALLET",
+                    "CASH",
+                    "CREDIT_CARD",
+                    "OTHER"
+                ]
+            },
+            "CyclePeriod": {
+                "type": "string",
+                "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
+            },
+            "RememberPeriod": {
+                "type": "string",
+                "enum": ["SAME_DAY", "THREE_DAYS", "SEVEN_DAYS", "FOURTEEN_DAYS", "THIRTY_DAYS", "NINETY_DAYS"]
+            },
+            "User": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "email",
+                    "name",
+                    "onBoardingStep",
+                    "emailVerified",
+                    "snapshotFrequency",
+                    "preferredCurrency",
+                    "preferredLanguage",
+                    "dateFormat",
+                    "country",
+                    "timezone",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "email": { "type": "string" },
+                    "name": { "type": "string" },
+                    "surname": { "type": "string", "nullable": true },
+                    "onBoardingStep": { "type": "number" },
+                    "onBoardingAt": { "type": "string", "nullable": true },
+                    "image": { "type": "string", "nullable": true },
+                    "emailVerified": { "type": "boolean" },
+                    "snapshotFrequency": { "type": "string" },
+                    "preferredCurrency": { "type": "string" },
+                    "preferredLanguage": { "type": "string" },
+                    "dateFormat": { "type": "string" },
+                    "country": { "type": "string" },
+                    "timezone": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Category": {
+                "type": "object",
+                "required": ["id", "userId", "title", "for", "logoIcon", "color", "subcategories", "createdAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "userId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string", "nullable": true },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionAction"
+                    },
+                    "logoIcon": { "type": "string" },
+                    "color": { "type": "string" },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Subcategory": {
+                "type": "object",
+                "required": ["id", "categoryId", "title", "logoIcon", "createdAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "categoryId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string", "nullable": true },
+                    "logoIcon": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "FinancialAccount": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "type",
+                    "logoIcon",
+                    "balance",
+                    "userId",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountType"
+                    },
+                    "logoIcon": { "type": "string" },
+                    "balance": { "type": "number" },
+                    "userId": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Subscription": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "createdAt",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId",
+                    "isEnabled"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "userId": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "amount": { "type": "number" },
+                    "currency": { "type": "string" },
+                    "appearanceMode": { "type": "string" },
+                    "appearanceLogoIcon": { "type": "string" },
+                    "firstPayment": { "type": "string" },
+                    "cycleNumber": { "type": "string" },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriod"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriod"
+                    },
+                    "financialAccountId": { "type": "string" },
+                    "isEnabled": { "type": "boolean" }
+                }
+            },
+            "Amount": {
+                "type": "object",
+                "required": ["id", "transactionId", "amount", "currency", "action", "financialAccountId", "createdAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "transactionId": { "type": "string" },
+                    "amount": { "type": "number" },
+                    "currency": { "type": "string" },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionAction"
+                    },
+                    "financialAccountId": { "type": "string" },
+                    "importReference": { "type": "string", "nullable": true },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "TransactionMedia": {
+                "type": "object",
+                "required": ["id", "transactionId", "filename", "filetype", "path", "createdAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "transactionId": { "type": "string" },
+                    "filename": { "type": "string" },
+                    "filetype": { "type": "string" },
+                    "path": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Transaction": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "action",
+                    "date",
+                    "ignore",
+                    "createdAt",
+                    "status",
+                    "updatedAt",
+                    "amounts"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "userId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionAction"
+                    },
+                    "categoryId": { "type": "string", "nullable": true },
+                    "subcategoryId": { "type": "string", "nullable": true },
+                    "icon": { "type": "string", "nullable": true },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "note": { "type": "string", "nullable": true },
+                    "ignore": { "type": "boolean" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatus"
+                    },
+                    "importId": { "type": "string", "nullable": true },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "transferId": { "type": "string", "nullable": true },
+                    "transferHash": { "type": "string", "nullable": true }
+                }
+            },
+            "ImportsFile": {
+                "type": "object",
+                "required": ["id", "importId", "filename", "filetype", "path", "createdAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "importId": { "type": "string" },
+                    "filename": { "type": "string" },
+                    "filetype": {
+                        "type": "string",
+                        "enum": ["CSV", "PDF"]
+                    },
+                    "path": { "type": "string" },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Import": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "status",
+                    "createdAt",
+                    "financialAccountId",
+                    "files",
+                    "transactions"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "userId": { "type": "string" },
+                    "title": { "type": "string" },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatus"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "financialAccountId": { "type": "string" },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportsFile"
+                        }
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    }
+                }
+            },
+            "DashboardLayoutItem": {
+                "type": "object",
+                "required": ["id", "colSpan"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "colSpan": { "type": "number" },
+                    "minHeight": { "type": "number", "nullable": true },
+                    "visible": { "type": "boolean", "nullable": true }
+                }
+            },
+            "DashboardLayout": {
+                "type": "object",
+                "required": ["version", "items"],
+                "properties": {
+                    "version": { "type": "number" },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DashboardLayoutItem"
+                        }
+                    }
+                }
+            },
+            "DashboardLayoutRecord": {
+                "type": "object",
+                "required": ["id", "userId", "version", "layout", "createdAt", "updatedAt"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "userId": { "type": "string" },
+                    "version": { "type": "number" },
+                    "layout": {
+                        "$ref": "#/components/schemas/DashboardLayout"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Snapshot": {
+                "type": "object",
+                "required": ["id", "snapshotDate", "totalCash", "totalInvestments", "totalNetWorth", "userId"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "snapshotDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "note": { "type": "string", "nullable": true },
+                    "totalCash": { "type": "number" },
+                    "totalInvestments": { "type": "number" },
+                    "totalNetWorth": { "type": "number" },
+                    "userId": { "type": "string" }
+                }
+            },
+            "SnapshotAccountBalance": {
+                "type": "object",
+                "required": ["id", "snapshotId", "accountId", "balance"],
+                "properties": {
+                    "id": { "type": "string" },
+                    "snapshotId": { "type": "string" },
+                    "accountId": { "type": "string" },
+                    "balance": { "type": "number" }
+                }
+            },
+            "NetWorthEvolutionDataPoint": {
+                "type": "object",
+                "required": ["date", "totalNetWorth"],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "totalNetWorth": { "type": "number" }
+                }
+            },
+            "NetWorthEvolutionReport": {
+                "type": "object",
+                "required": ["totalNetWorth", "dataPoints"],
+                "properties": {
+                    "totalNetWorth": { "type": "number" },
+                    "dataPoints": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NetWorthEvolutionDataPoint"
+                        }
+                    }
+                }
+            },
+            "TransactionFilters": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "note": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/TransactionAction"
+                    },
+                    "categoryId": { "type": "string" },
+                    "subcategoryId": { "type": "string" },
+                    "financialAccountId": { "type": "string" },
+                    "date": {
+                        "$ref": "#/components/schemas/DateFilter"
+                    }
+                }
+            },
+            "CategoryFilters": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionAction"
+                    }
+                }
+            },
+            "SubcategoryFilters": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "categoryId": { "type": "string" }
+                }
+            },
+            "FinancialAccountFilters": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountType"
+                    }
+                }
+            },
+            "SubscriptionFilters": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "id": { "type": "string" },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "financialAccountId": { "type": "string" }
+                }
+            },
+            "NetWorthEvolutionFilters": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "$ref": "#/components/schemas/DateFilter"
+                    }
+                }
+            },
+            "CategoryCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Category"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            },
+            "SubcategoryCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            },
+            "FinancialAccountCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FinancialAccount"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            },
+            "TransactionCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            },
+            "SubscriptionCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subscription"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            },
+            "ImportCollection": {
+                "type": "object",
+                "required": ["data", "total"],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Import"
+                        }
+                    },
+                    "total": { "type": "number" }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "tags": ["status"],
+                "summary": "Healthcheck",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/status": {
+            "get": {
+                "tags": ["status"],
+                "summary": "Healthcheck",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": ["user"],
+                "summary": "Get user by email",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "email",
+                        "schema": { "type": "string" },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "put": {
+                "tags": ["user"],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of Partial<User>"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of Partial<User>"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing user ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category": {
+            "post": {
+                "tags": ["category"],
+                "summary": "Create category",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "for": {
+                                        "$ref": "#/components/schemas/TransactionAction"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "for": {
+                                        "$ref": "#/components/schemas/TransactionAction"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["category"],
+                "summary": "List categories",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/CategoryFilters"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{id}": {
+            "put": {
+                "tags": ["category"],
+                "summary": "Update category",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "for": {
+                                        "$ref": "#/components/schemas/TransactionAction"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Category"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["category"],
+                "summary": "Delete category",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subcategory": {
+            "post": {
+                "tags": ["subcategory"],
+                "summary": "Create subcategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "categoryId": {
+                                        "type": "string"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "categoryId": {
+                                        "type": "string"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subcategory",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subcategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["subcategory"],
+                "summary": "List subcategories",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/SubcategoryFilters"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subcategories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubcategoryCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subcategory/{id}": {
+            "put": {
+                "tags": ["subcategory"],
+                "summary": "Update subcategory",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "categoryId": {
+                                        "type": "string"
+                                    },
+                                    "logoIcon": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Subcategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subcategory",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subcategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["subcategory"],
+                "summary": "Delete subcategory",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-account": {
+            "post": {
+                "tags": ["financial-account"],
+                "summary": "Create financial account",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of FinancialAccount input"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of FinancialAccount input"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Financial account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FinancialAccount"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["financial-account"],
+                "summary": "List financial accounts",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FinancialAccountFilters"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Financial accounts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FinancialAccountCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-account/{id}": {
+            "put": {
+                "tags": ["financial-account"],
+                "summary": "Update financial account",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of FinancialAccount"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string of FinancialAccount"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Financial account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FinancialAccount"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["financial-account"],
+                "summary": "Delete financial account",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction": {
+            "post": {
+                "tags": ["transaction"],
+                "summary": "Create transaction",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string payload for TransactionHelper"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["transaction"],
+                "summary": "List transactions",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/TransactionFilters"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransactionCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction/{id}": {
+            "put": {
+                "tags": ["transaction"],
+                "summary": "Update transaction",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON string payload for TransactionHelper"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["transaction"],
+                "summary": "Delete transaction",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscription": {
+            "post": {
+                "tags": ["subscription"],
+                "summary": "Create subscription",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "appearanceMode": {
+                                        "type": "string"
+                                    },
+                                    "appearanceLogoIcon": {
+                                        "type": "string"
+                                    },
+                                    "firstPayment": {
+                                        "type": "string"
+                                    },
+                                    "cycleNumber": {
+                                        "type": "string"
+                                    },
+                                    "cyclePeriod": {
+                                        "$ref": "#/components/schemas/CyclePeriod"
+                                    },
+                                    "rememberPeriod": {
+                                        "$ref": "#/components/schemas/RememberPeriod"
+                                    },
+                                    "financialAccountId": {
+                                        "type": "string"
+                                    },
+                                    "isEnabled": {
+                                        "type": "boolean"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Subscription"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subscription",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["subscription"],
+                "summary": "List subscriptions",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/SubscriptionFilters"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subscriptions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubscriptionCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subscription/{id}": {
+            "put": {
+                "tags": ["subscription"],
+                "summary": "Update subscription",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "appearanceMode": {
+                                        "type": "string"
+                                    },
+                                    "appearanceLogoIcon": {
+                                        "type": "string"
+                                    },
+                                    "firstPayment": {
+                                        "type": "string"
+                                    },
+                                    "cycleNumber": {
+                                        "type": "string"
+                                    },
+                                    "cyclePeriod": {
+                                        "$ref": "#/components/schemas/CyclePeriod"
+                                    },
+                                    "rememberPeriod": {
+                                        "$ref": "#/components/schemas/RememberPeriod"
+                                    },
+                                    "financialAccountId": {
+                                        "type": "string"
+                                    },
+                                    "isEnabled": {
+                                        "type": "boolean"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Subscription"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subscription",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["subscription"],
+                "summary": "Delete subscription",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import": {
+            "post": {
+                "tags": ["import"],
+                "summary": "Create import transaction",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "action": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transaction result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["import"],
+                "summary": "List imports",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": { "type": "object" }
+                    },
+                    {
+                        "in": "query",
+                        "name": "options",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imports",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ImportCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/{id}": {
+            "delete": {
+                "tags": ["import"],
+                "summary": "Delete import",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/complete/{id}": {
+            "put": {
+                "tags": ["import"],
+                "summary": "Complete import",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Import",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Import"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/read-file": {
+            "post": {
+                "tags": ["import"],
+                "summary": "Parse file and create transactions",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["files", "financialAccountId"],
+                                "properties": {
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "financialAccountId": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Import",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Import"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/transaction/{id}": {
+            "get": {
+                "tags": ["import"],
+                "summary": "Read pending transactions",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/TransactionFilters"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["import"],
+                "summary": "Update pending transactions",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["data"],
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON array of Transaction"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["import"],
+                "summary": "Delete pending transaction",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/transaction": {
+            "put": {
+                "tags": ["import"],
+                "summary": "Update pending transactions (bulk)",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["data"],
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "description": "JSON array of Transaction"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/template": {
+            "post": {
+                "tags": ["import"],
+                "summary": "Import templates",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["action"],
+                                "properties": {
+                                    "action": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboard": {
+            "get": {
+                "tags": ["dashboard"],
+                "summary": "Get dashboard layout",
+                "responses": {
+                    "200": {
+                        "description": "Layout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DashboardLayoutRecord"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["dashboard"],
+                "summary": "Save dashboard layout",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "layout": {
+                                        "$ref": "#/components/schemas/DashboardLayout"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Layout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DashboardLayoutRecord"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/snapshot/account-balance": {
+            "post": {
+                "tags": ["snapshot"],
+                "summary": "Add account balance snapshot",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["accountId", "balance", "snapshotDate"],
+                                "properties": {
+                                    "accountId": {
+                                        "type": "string"
+                                    },
+                                    "balance": {
+                                        "type": "number"
+                                    },
+                                    "snapshotDate": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "note": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Snapshot created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "snapshot": {
+                                            "$ref": "#/components/schemas/Snapshot"
+                                        },
+                                        "accountBalance": {
+                                            "$ref": "#/components/schemas/SnapshotAccountBalance"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/report/trend": {
+            "get": {
+                "tags": ["report"],
+                "summary": "Net worth evolution",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "filter",
+                        "style": "deepObject",
+                        "explode": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/NetWorthEvolutionFilters"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Report",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NetWorthEvolutionReport"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

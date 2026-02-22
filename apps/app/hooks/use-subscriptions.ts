@@ -4,7 +4,8 @@ import { useError } from './use-error'
 import { SubscriptionService } from '@/services/subscriptions.service'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
 import { LoadingState } from '@/types'
-import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
+import type { Subscription, SubscriptionFilters } from '@/lib/api-client'
+import { CyclePeriod } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
@@ -27,7 +28,7 @@ export const useSubscription = () => {
         setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
     }
 
-    const addSubscription = async (data: Partial<ISubscription>) => {
+    const addSubscription = async (data: Partial<Subscription>) => {
         setLoadingFor('add', true)
         try {
             const res = await subscriptionService.add(data)
@@ -40,7 +41,7 @@ export const useSubscription = () => {
         }
     }
 
-    const editSubscription = async (id: string, data: Partial<ISubscription>) => {
+    const editSubscription = async (id: string, data: Partial<Subscription>) => {
         setLoadingFor('edit', true)
         try {
             const res = await subscriptionService.save(id, data)
@@ -71,9 +72,7 @@ export const useSubscription = () => {
         setLoadingFor('get', true)
         try {
             if (fetchFromServer) {
-                const res = await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({
-                    id: subscriptionId
-                })
+                const res = await subscriptionService.read({ id: subscriptionId } as SubscriptionFilters)
                 return res.data
             }
             return subscriptionStore.getSubscription(subscriptionId)
@@ -87,7 +86,7 @@ export const useSubscription = () => {
     const fetchSubscriptions = async () => {
         setLoadingFor('fetch', true)
         try {
-            const res = await subscriptionService.read<ISubscription[], ISubscriptionFilters>()
+            const res = await subscriptionService.read()
             subscriptionStore.setSubscriptions(res.data)
             return res.data
         } catch (error) {
@@ -97,7 +96,7 @@ export const useSubscription = () => {
         }
     }
 
-    const getNextExecutionText = (subscription: ISubscription, fromDate: Date = new Date()) => {
+    const getNextExecutionText = (subscription: Subscription, fromDate: Date = new Date()) => {
         const now = fromDate
         const next = new Date(subscription.firstPayment)
 

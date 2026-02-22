@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
 import { SnapshotService } from '@/services/snapshot.service'
-import { ISnapshotAccountBalance } from '@poveroh/types'
+import { ISnapshotAccountBalance } from '@/types/api'
 
 export const useSnapshot = () => {
     const { handleError } = useError()

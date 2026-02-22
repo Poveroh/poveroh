@@ -2,7 +2,7 @@
 
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { IFinancialAccount } from '@poveroh/types'
+import { IFinancialAccount } from '@/types/api'
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'

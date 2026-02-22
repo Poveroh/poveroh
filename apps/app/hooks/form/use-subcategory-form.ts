@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { ISubcategory } from '@poveroh/types'
+import { ISubcategory } from '@/types/api'
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
 

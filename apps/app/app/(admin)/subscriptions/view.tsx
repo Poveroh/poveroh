@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
 import { Landmark, Search } from 'lucide-react'
 
-import { ISubscription } from '@poveroh/types'
+import { ISubscription } from '@/types/api'
 
 import { useSubscription } from '@/hooks/use-subscriptions'
 import { useFinancialAccount } from '@/hooks/use-account'

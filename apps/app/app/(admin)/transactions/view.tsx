@@ -21,15 +21,8 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 
-import {
-    IFilterOptions,
-    ITransaction,
-    ITransactionFilters,
-    TransactionAction,
-    FilterField,
-    DateFilter,
-    TransactionsFilterTypes
-} from '@poveroh/types'
+import { TransactionAction, FilterField, DateFilter, TransactionsFilterTypes } from '@poveroh/types'
+import { IFilterOptions, ITransaction, ITransactionFilters } from '@/types/api'
 
 import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'

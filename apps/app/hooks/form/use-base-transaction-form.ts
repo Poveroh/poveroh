@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
-import { ITransaction } from '@poveroh/types'
+import { ITransaction } from '@/types/api'
 
 /**
  * Custom hook for managing base transaction form state and operations.

@@ -1,9 +1,13 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
-import { IUser } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import { UserHelper } from '../helpers/user.helper'
 import { getParamString } from '../../../utils/request'
+
+// OpenAPI types
+type User = components['schemas']['User']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class UserController {
     // GET /
@@ -42,7 +46,7 @@ export class UserController {
                 return
             }
 
-            const parsedUser: Partial<IUser> = JSON.parse(data)
+            const parsedUser: Partial<User> = JSON.parse(data)
 
             const user = await prisma.user.findUnique({
                 where: { id }
@@ -55,7 +59,7 @@ export class UserController {
 
             const updatedUser = await prisma.user.update({
                 where: { id },
-                data: parsedUser
+                data: parsedUser as any
             })
 
             res.status(200).json(updatedUser)

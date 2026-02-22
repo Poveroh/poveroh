@@ -1,10 +1,16 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { ISubcategory, ISubcategoryFilters } from '@poveroh/types'
+import { components } from '../../../generated/openapi'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
+
+// OpenAPI types
+type Subcategory = components['schemas']['Subcategory']
+type SubcategoryFilters = components['schemas']['SubcategoryFilters']
+type SubcategoryCollection = components['schemas']['SubcategoryCollection']
+type ErrorResponse = components['schemas']['ErrorResponse']
 
 export class SubcategoryController {
     //POST /
@@ -12,7 +18,7 @@ export class SubcategoryController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const readedSubcategory: Omit<ISubcategory, 'id' | 'createdAt'> = req.body
+            const readedSubcategory: Omit<Subcategory, 'id' | 'createdAt'> = req.body
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -38,7 +44,7 @@ export class SubcategoryController {
         try {
             if (!req.body) throw new Error('Data not provided')
 
-            const readedSubcategory: ISubcategory = req.body
+            const readedSubcategory: Subcategory = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
@@ -88,7 +94,7 @@ export class SubcategoryController {
     //GET /
     static async read(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ISubcategoryFilters
+            const filters = req.query as unknown as SubcategoryFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 

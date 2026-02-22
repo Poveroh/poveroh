@@ -1,5 +1,6 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { AppearanceMode, IFinancialAccount, ISubscription } from '@poveroh/types'
+import { AppearanceMode } from '@poveroh/types'
+import { IFinancialAccount, ISubscription } from '@/types/api'
 import { OptionsPopover } from '../navbar/options-popover'
 import DynamicIcon from '../icon/dynamic-icon'
 import icons from 'currency-icons'

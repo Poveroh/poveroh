@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { ITransaction, TransactionAction, TransferFormData } from '@poveroh/types'
+import { TransactionAction, TransferFormData } from '@poveroh/types'
+import { ITransaction } from '@/types/api'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
 import { useConfig } from '../use-config'

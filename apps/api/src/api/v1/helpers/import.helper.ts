@@ -1,5 +1,6 @@
 import prisma from '@poveroh/prisma'
-import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
+import { TransactionStatus, IReadedTransaction } from '@poveroh/types'
+import { Transaction as ITransaction } from '@/types/transactions'
 import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
 import CategoryTemplate from '../content/template/category'
