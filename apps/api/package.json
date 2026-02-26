@@ -8,8 +8,8 @@
         "start": "node dist/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
-        "openapi:generate-spec": "ts-node ./src/openapi/generate.ts",
-        "openapi:generate-contracts": "openapi-typescript ./openapi.json -o ../../packages/contracts/src/generated/openapi.ts"
+        "openapi:generate-spec": "ts-node ../../packages/openapi/generate.ts",
+        "openapi:generate-contracts": "openapi-typescript ../../packages/openapi/openapi.json -o ../../packages/contracts/src/generated/openapi.ts --export-type"
     },
     "keywords": [],
     "author": "",
