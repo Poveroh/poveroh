@@ -1,4 +1,4 @@
-import { z } from './zod'
+import { z } from '../zod'
 
 export const StatusResponseSchema = z
     .object({
@@ -8,10 +8,3 @@ export const StatusResponseSchema = z
         timestamp: z.string().datetime()
     })
     .openapi('StatusResponse')
-
-export const ErrorResponseSchema = z
-    .object({
-        message: z.string(),
-        error: z.unknown().optional()
-    })
-    .openapi('ErrorResponse')
