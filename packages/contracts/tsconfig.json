@@ -2,7 +2,9 @@
     "extends": "@poveroh/tsconfig/base.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "outDir": "dist"
+        "outDir": "dist",
+        "module": "es2015",
+        "moduleResolution": "bundler"
     },
     "include": ["."],
     "exclude": ["dist", "build", "node_modules"]
