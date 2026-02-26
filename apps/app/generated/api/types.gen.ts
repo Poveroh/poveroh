@@ -306,30 +306,30 @@ export type ImportCollection = {
     total: number;
 };
 
-export type GetData = {
+export type GetRootStatusData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/';
 };
 
-export type GetErrors = {
+export type GetRootStatusErrors = {
     /**
      * Error
      */
     500: ErrorResponse;
 };
 
-export type GetError = GetErrors[keyof GetErrors];
+export type GetRootStatusError = GetRootStatusErrors[keyof GetRootStatusErrors];
 
-export type GetResponses = {
+export type GetRootStatusResponses = {
     /**
      * OK
      */
     200: StatusResponse;
 };
 
-export type GetResponse = GetResponses[keyof GetResponses];
+export type GetRootStatusResponse = GetRootStatusResponses[keyof GetRootStatusResponses];
 
 export type GetStatusData = {
     body?: never;

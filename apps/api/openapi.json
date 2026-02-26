@@ -6,38 +6,68 @@
         "description": "OpenAPI definition for the Poveroh v1 API"
     },
     "servers": [
-        { "url": "http://localhost:3001/v1", "description": "API Poveroh Localhost v1" },
-        { "url": "http://api.poveroh.local/v1", "description": "API Poveroh Localhost proxy v1" },
-        { "url": "http://api.poveroh.com/v1", "description": "API Poveroh Production v1" }
+        {
+            "url": "http://localhost:3001/v1",
+            "description": "API Poveroh Localhost v1"
+        },
+        {
+            "url": "http://api.poveroh.local/v1",
+            "description": "API Poveroh Localhost proxy v1"
+        },
+        {
+            "url": "http://api.poveroh.com/v1",
+            "description": "API Poveroh Production v1"
+        }
     ],
     "components": {
         "schemas": {
             "StatusResponse": {
                 "type": "object",
-                "required": ["status", "uptime", "version", "timestamp"],
                 "properties": {
-                    "status": { "type": "string" },
-                    "uptime": { "type": "number" },
-                    "version": { "type": "string" },
+                    "status": {
+                        "type": "string"
+                    },
+                    "uptime": {
+                        "type": "number"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
                     "timestamp": {
                         "type": "string",
                         "format": "date-time"
                     }
-                }
+                },
+                "required": [
+                    "status",
+                    "uptime",
+                    "version",
+                    "timestamp"
+                ]
             },
             "ErrorResponse": {
                 "type": "object",
-                "required": ["message"],
                 "properties": {
-                    "message": { "type": "string" },
-                    "error": { "nullable": true }
-                }
+                    "message": {
+                        "type": "string"
+                    },
+                    "error": {
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "message"
+                ]
             },
             "StringFilter": {
                 "type": "object",
                 "properties": {
-                    "equals": { "type": "string" },
-                    "contains": { "type": "string" }
+                    "equals": {
+                        "type": "string"
+                    },
+                    "contains": {
+                        "type": "string"
+                    }
                 }
             },
             "DateFilter": {
@@ -56,30 +86,55 @@
             "NumberFilter": {
                 "type": "object",
                 "properties": {
-                    "equals": { "type": "number" },
-                    "gte": { "type": "number" },
-                    "lte": { "type": "number" }
+                    "equals": {
+                        "type": "number"
+                    },
+                    "gte": {
+                        "type": "number"
+                    },
+                    "lte": {
+                        "type": "number"
+                    }
                 }
             },
             "FilterOptions": {
                 "type": "object",
                 "properties": {
-                    "skip": { "type": "number" },
-                    "take": { "type": "number" },
-                    "sortBy": { "type": "string" },
+                    "skip": {
+                        "type": "number"
+                    },
+                    "take": {
+                        "type": "number"
+                    },
+                    "sortBy": {
+                        "type": "string"
+                    },
                     "sortOrder": {
                         "type": "string",
-                        "enum": ["asc", "desc"]
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
                     }
                 }
             },
             "TransactionAction": {
                 "type": "string",
-                "enum": ["INCOME", "EXPENSES", "TRANSFER"]
+                "enum": [
+                    "INCOME",
+                    "EXPENSES",
+                    "TRANSFER"
+                ]
             },
             "TransactionStatus": {
                 "type": "string",
-                "enum": ["APPROVED", "REJECTED", "IMPORT_PENDING", "IMPORT_REJECTED", "IMPORT_APPROVED"]
+                "enum": [
+                    "APPROVED",
+                    "REJECTED",
+                    "IMPORT_PENDING",
+                    "IMPORT_REJECTED",
+                    "IMPORT_APPROVED"
+                ]
             },
             "FinancialAccountType": {
                 "type": "string",
@@ -97,11 +152,23 @@
             },
             "CyclePeriod": {
                 "type": "string",
-                "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
+                "enum": [
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
+                ]
             },
             "RememberPeriod": {
                 "type": "string",
-                "enum": ["SAME_DAY", "THREE_DAYS", "SEVEN_DAYS", "FOURTEEN_DAYS", "THIRTY_DAYS", "NINETY_DAYS"]
+                "enum": [
+                    "SAME_DAY",
+                    "THREE_DAYS",
+                    "SEVEN_DAYS",
+                    "FOURTEEN_DAYS",
+                    "THIRTY_DAYS",
+                    "NINETY_DAYS"
+                ]
             },
             "User": {
                 "type": "object",
@@ -121,20 +188,51 @@
                     "updatedAt"
                 ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "email": { "type": "string" },
-                    "name": { "type": "string" },
-                    "surname": { "type": "string", "nullable": true },
-                    "onBoardingStep": { "type": "number" },
-                    "onBoardingAt": { "type": "string", "nullable": true },
-                    "image": { "type": "string", "nullable": true },
-                    "emailVerified": { "type": "boolean" },
-                    "snapshotFrequency": { "type": "string" },
-                    "preferredCurrency": { "type": "string" },
-                    "preferredLanguage": { "type": "string" },
-                    "dateFormat": { "type": "string" },
-                    "country": { "type": "string" },
-                    "timezone": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "surname": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "onBoardingStep": {
+                        "type": "number"
+                    },
+                    "onBoardingAt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emailVerified": {
+                        "type": "boolean"
+                    },
+                    "snapshotFrequency": {
+                        "type": "string"
+                    },
+                    "preferredCurrency": {
+                        "type": "string"
+                    },
+                    "preferredLanguage": {
+                        "type": "string"
+                    },
+                    "dateFormat": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "timezone": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -147,17 +245,39 @@
             },
             "Category": {
                 "type": "object",
-                "required": ["id", "userId", "title", "for", "logoIcon", "color", "subcategories", "createdAt"],
+                "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "color",
+                    "subcategories",
+                    "createdAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "userId": { "type": "string" },
-                    "title": { "type": "string" },
-                    "description": { "type": "string", "nullable": true },
+                    "id": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "for": {
                         "$ref": "#/components/schemas/TransactionAction"
                     },
-                    "logoIcon": { "type": "string" },
-                    "color": { "type": "string" },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "string"
+                    },
                     "subcategories": {
                         "type": "array",
                         "items": {
@@ -172,13 +292,30 @@
             },
             "Subcategory": {
                 "type": "object",
-                "required": ["id", "categoryId", "title", "logoIcon", "createdAt"],
+                "required": [
+                    "id",
+                    "categoryId",
+                    "title",
+                    "logoIcon",
+                    "createdAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "categoryId": { "type": "string" },
-                    "title": { "type": "string" },
-                    "description": { "type": "string", "nullable": true },
-                    "logoIcon": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -199,15 +336,27 @@
                     "updatedAt"
                 ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "title": { "type": "string" },
-                    "description": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
                     "type": {
                         "$ref": "#/components/schemas/FinancialAccountType"
                     },
-                    "logoIcon": { "type": "string" },
-                    "balance": { "type": "number" },
-                    "userId": { "type": "string" },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -238,43 +387,88 @@
                     "isEnabled"
                 ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "userId": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "title": { "type": "string" },
-                    "description": { "type": "string" },
-                    "amount": { "type": "number" },
-                    "currency": { "type": "string" },
-                    "appearanceMode": { "type": "string" },
-                    "appearanceLogoIcon": { "type": "string" },
-                    "firstPayment": { "type": "string" },
-                    "cycleNumber": { "type": "string" },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "appearanceMode": {
+                        "type": "string"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string"
+                    },
+                    "cycleNumber": {
+                        "type": "string"
+                    },
                     "cyclePeriod": {
                         "$ref": "#/components/schemas/CyclePeriod"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriod"
                     },
-                    "financialAccountId": { "type": "string" },
-                    "isEnabled": { "type": "boolean" }
+                    "financialAccountId": {
+                        "type": "string"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    }
                 }
             },
             "Amount": {
                 "type": "object",
-                "required": ["id", "transactionId", "amount", "currency", "action", "financialAccountId", "createdAt"],
+                "required": [
+                    "id",
+                    "transactionId",
+                    "amount",
+                    "currency",
+                    "action",
+                    "financialAccountId",
+                    "createdAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "transactionId": { "type": "string" },
-                    "amount": { "type": "number" },
-                    "currency": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
                     "action": {
                         "$ref": "#/components/schemas/TransactionAction"
                     },
-                    "financialAccountId": { "type": "string" },
-                    "importReference": { "type": "string", "nullable": true },
+                    "financialAccountId": {
+                        "type": "string"
+                    },
+                    "importReference": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -283,13 +477,30 @@
             },
             "TransactionMedia": {
                 "type": "object",
-                "required": ["id", "transactionId", "filename", "filetype", "path", "createdAt"],
+                "required": [
+                    "id",
+                    "transactionId",
+                    "filename",
+                    "filetype",
+                    "path",
+                    "createdAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "transactionId": { "type": "string" },
-                    "filename": { "type": "string" },
-                    "filetype": { "type": "string" },
-                    "path": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "filetype": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -311,21 +522,41 @@
                     "amounts"
                 ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "userId": { "type": "string" },
-                    "title": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
                     "action": {
                         "$ref": "#/components/schemas/TransactionAction"
                     },
-                    "categoryId": { "type": "string", "nullable": true },
-                    "subcategoryId": { "type": "string", "nullable": true },
-                    "icon": { "type": "string", "nullable": true },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "date": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "note": { "type": "string", "nullable": true },
-                    "ignore": { "type": "boolean" },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -333,7 +564,10 @@
                     "status": {
                         "$ref": "#/components/schemas/TransactionStatus"
                     },
-                    "importId": { "type": "string", "nullable": true },
+                    "importId": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
@@ -350,22 +584,46 @@
                             "$ref": "#/components/schemas/TransactionMedia"
                         }
                     },
-                    "transferId": { "type": "string", "nullable": true },
-                    "transferHash": { "type": "string", "nullable": true }
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
                 }
             },
             "ImportsFile": {
                 "type": "object",
-                "required": ["id", "importId", "filename", "filetype", "path", "createdAt"],
+                "required": [
+                    "id",
+                    "importId",
+                    "filename",
+                    "filetype",
+                    "path",
+                    "createdAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "importId": { "type": "string" },
-                    "filename": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "importId": {
+                        "type": "string"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
                     "filetype": {
                         "type": "string",
-                        "enum": ["CSV", "PDF"]
+                        "enum": [
+                            "CSV",
+                            "PDF"
+                        ]
                     },
-                    "path": { "type": "string" },
+                    "path": {
+                        "type": "string"
+                    },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -385,9 +643,15 @@
                     "transactions"
                 ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "userId": { "type": "string" },
-                    "title": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
                     "status": {
                         "$ref": "#/components/schemas/TransactionStatus"
                     },
@@ -395,7 +659,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "financialAccountId": { "type": "string" },
+                    "financialAccountId": {
+                        "type": "string"
+                    },
                     "files": {
                         "type": "array",
                         "items": {
@@ -412,19 +678,37 @@
             },
             "DashboardLayoutItem": {
                 "type": "object",
-                "required": ["id", "colSpan"],
+                "required": [
+                    "id",
+                    "colSpan"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "colSpan": { "type": "number" },
-                    "minHeight": { "type": "number", "nullable": true },
-                    "visible": { "type": "boolean", "nullable": true }
+                    "id": {
+                        "type": "string"
+                    },
+                    "colSpan": {
+                        "type": "number"
+                    },
+                    "minHeight": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "nullable": true
+                    }
                 }
             },
             "DashboardLayout": {
                 "type": "object",
-                "required": ["version", "items"],
+                "required": [
+                    "version",
+                    "items"
+                ],
                 "properties": {
-                    "version": { "type": "number" },
+                    "version": {
+                        "type": "number"
+                    },
                     "items": {
                         "type": "array",
                         "items": {
@@ -435,11 +719,24 @@
             },
             "DashboardLayoutRecord": {
                 "type": "object",
-                "required": ["id", "userId", "version", "layout", "createdAt", "updatedAt"],
+                "required": [
+                    "id",
+                    "userId",
+                    "version",
+                    "layout",
+                    "createdAt",
+                    "updatedAt"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "userId": { "type": "string" },
-                    "version": { "type": "number" },
+                    "id": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "number"
+                    },
                     "layout": {
                         "$ref": "#/components/schemas/DashboardLayout"
                     },
@@ -455,46 +752,89 @@
             },
             "Snapshot": {
                 "type": "object",
-                "required": ["id", "snapshotDate", "totalCash", "totalInvestments", "totalNetWorth", "userId"],
+                "required": [
+                    "id",
+                    "snapshotDate",
+                    "totalCash",
+                    "totalInvestments",
+                    "totalNetWorth",
+                    "userId"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "snapshotDate": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "note": { "type": "string", "nullable": true },
-                    "totalCash": { "type": "number" },
-                    "totalInvestments": { "type": "number" },
-                    "totalNetWorth": { "type": "number" },
-                    "userId": { "type": "string" }
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "totalCash": {
+                        "type": "number"
+                    },
+                    "totalInvestments": {
+                        "type": "number"
+                    },
+                    "totalNetWorth": {
+                        "type": "number"
+                    },
+                    "userId": {
+                        "type": "string"
+                    }
                 }
             },
             "SnapshotAccountBalance": {
                 "type": "object",
-                "required": ["id", "snapshotId", "accountId", "balance"],
+                "required": [
+                    "id",
+                    "snapshotId",
+                    "accountId",
+                    "balance"
+                ],
                 "properties": {
-                    "id": { "type": "string" },
-                    "snapshotId": { "type": "string" },
-                    "accountId": { "type": "string" },
-                    "balance": { "type": "number" }
+                    "id": {
+                        "type": "string"
+                    },
+                    "snapshotId": {
+                        "type": "string"
+                    },
+                    "accountId": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    }
                 }
             },
             "NetWorthEvolutionDataPoint": {
                 "type": "object",
-                "required": ["date", "totalNetWorth"],
+                "required": [
+                    "date",
+                    "totalNetWorth"
+                ],
                 "properties": {
                     "date": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "totalNetWorth": { "type": "number" }
+                    "totalNetWorth": {
+                        "type": "number"
+                    }
                 }
             },
             "NetWorthEvolutionReport": {
                 "type": "object",
-                "required": ["totalNetWorth", "dataPoints"],
+                "required": [
+                    "totalNetWorth",
+                    "dataPoints"
+                ],
                 "properties": {
-                    "totalNetWorth": { "type": "number" },
+                    "totalNetWorth": {
+                        "type": "number"
+                    },
                     "dataPoints": {
                         "type": "array",
                         "items": {
@@ -507,7 +847,9 @@
                 "type": "object",
                 "additionalProperties": true,
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
@@ -517,9 +859,15 @@
                     "type": {
                         "$ref": "#/components/schemas/TransactionAction"
                     },
-                    "categoryId": { "type": "string" },
-                    "subcategoryId": { "type": "string" },
-                    "financialAccountId": { "type": "string" },
+                    "categoryId": {
+                        "type": "string"
+                    },
+                    "subcategoryId": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string"
+                    },
                     "date": {
                         "$ref": "#/components/schemas/DateFilter"
                     }
@@ -529,7 +877,9 @@
                 "type": "object",
                 "additionalProperties": true,
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
@@ -545,21 +895,27 @@
                 "type": "object",
                 "additionalProperties": true,
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
                     "description": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
-                    "categoryId": { "type": "string" }
+                    "categoryId": {
+                        "type": "string"
+                    }
                 }
             },
             "FinancialAccountFilters": {
                 "type": "object",
                 "additionalProperties": true,
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
@@ -575,14 +931,18 @@
                 "type": "object",
                 "additionalProperties": true,
                 "properties": {
-                    "id": { "type": "string" },
+                    "id": {
+                        "type": "string"
+                    },
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
                     "description": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
-                    "financialAccountId": { "type": "string" }
+                    "financialAccountId": {
+                        "type": "string"
+                    }
                 }
             },
             "NetWorthEvolutionFilters": {
@@ -595,7 +955,10 @@
             },
             "CategoryCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -603,12 +966,17 @@
                             "$ref": "#/components/schemas/Category"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             },
             "SubcategoryCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -616,12 +984,17 @@
                             "$ref": "#/components/schemas/Subcategory"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             },
             "FinancialAccountCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -629,12 +1002,17 @@
                             "$ref": "#/components/schemas/FinancialAccount"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             },
             "TransactionCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -642,12 +1020,17 @@
                             "$ref": "#/components/schemas/Transaction"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             },
             "SubscriptionCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -655,12 +1038,17 @@
                             "$ref": "#/components/schemas/Subscription"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             },
             "ImportCollection": {
                 "type": "object",
-                "required": ["data", "total"],
+                "required": [
+                    "data",
+                    "total"
+                ],
                 "properties": {
                     "data": {
                         "type": "array",
@@ -668,15 +1056,21 @@
                             "$ref": "#/components/schemas/Import"
                         }
                     },
-                    "total": { "type": "number" }
+                    "total": {
+                        "type": "number"
+                    }
                 }
             }
-        }
+        },
+        "parameters": {}
     },
     "paths": {
         "/": {
             "get": {
-                "tags": ["status"],
+                "tags": [
+                    "Status"
+                ],
+                "operationId": "getRootStatus",
                 "summary": "Healthcheck",
                 "responses": {
                     "200": {
@@ -704,7 +1098,10 @@
         },
         "/status": {
             "get": {
-                "tags": ["status"],
+                "tags": [
+                    "Status"
+                ],
+                "operationId": "getStatus",
                 "summary": "Healthcheck",
                 "responses": {
                     "200": {
@@ -732,13 +1129,17 @@
         },
         "/user": {
             "get": {
-                "tags": ["user"],
+                "tags": [
+                    "user"
+                ],
                 "summary": "Get user by email",
                 "parameters": [
                     {
                         "in": "query",
                         "name": "email",
-                        "schema": { "type": "string" },
+                        "schema": {
+                            "type": "string"
+                        },
                         "required": true
                     }
                 ],
@@ -778,14 +1179,18 @@
         },
         "/user/{id}": {
             "put": {
-                "tags": ["user"],
+                "tags": [
+                    "user"
+                ],
                 "summary": "Update user",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -845,7 +1250,9 @@
         },
         "/category": {
             "post": {
-                "tags": ["category"],
+                "tags": [
+                    "category"
+                ],
                 "summary": "Create category",
                 "requestBody": {
                     "required": true,
@@ -914,7 +1321,9 @@
                 }
             },
             "get": {
-                "tags": ["category"],
+                "tags": [
+                    "category"
+                ],
                 "summary": "List categories",
                 "parameters": [
                     {
@@ -952,14 +1361,18 @@
         },
         "/category/{id}": {
             "put": {
-                "tags": ["category"],
+                "tags": [
+                    "category"
+                ],
                 "summary": "Update category",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -1015,14 +1428,18 @@
                 }
             },
             "delete": {
-                "tags": ["category"],
+                "tags": [
+                    "category"
+                ],
                 "summary": "Delete category",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1041,7 +1458,9 @@
         },
         "/subcategory": {
             "post": {
-                "tags": ["subcategory"],
+                "tags": [
+                    "subcategory"
+                ],
                 "summary": "Create subcategory",
                 "requestBody": {
                     "required": true,
@@ -1104,7 +1523,9 @@
                 }
             },
             "get": {
-                "tags": ["subcategory"],
+                "tags": [
+                    "subcategory"
+                ],
                 "summary": "List subcategories",
                 "parameters": [
                     {
@@ -1142,14 +1563,18 @@
         },
         "/subcategory/{id}": {
             "put": {
-                "tags": ["subcategory"],
+                "tags": [
+                    "subcategory"
+                ],
                 "summary": "Update subcategory",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -1202,14 +1627,18 @@
                 }
             },
             "delete": {
-                "tags": ["subcategory"],
+                "tags": [
+                    "subcategory"
+                ],
                 "summary": "Delete subcategory",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1228,7 +1657,9 @@
         },
         "/financial-account": {
             "post": {
-                "tags": ["financial-account"],
+                "tags": [
+                    "financial-account"
+                ],
                 "summary": "Create financial account",
                 "requestBody": {
                     "required": true,
@@ -1275,7 +1706,9 @@
                 }
             },
             "get": {
-                "tags": ["financial-account"],
+                "tags": [
+                    "financial-account"
+                ],
                 "summary": "List financial accounts",
                 "parameters": [
                     {
@@ -1313,14 +1746,18 @@
         },
         "/financial-account/{id}": {
             "put": {
-                "tags": ["financial-account"],
+                "tags": [
+                    "financial-account"
+                ],
                 "summary": "Update financial account",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -1368,14 +1805,18 @@
                 }
             },
             "delete": {
-                "tags": ["financial-account"],
+                "tags": [
+                    "financial-account"
+                ],
                 "summary": "Delete financial account",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1394,7 +1835,9 @@
         },
         "/transaction": {
             "post": {
-                "tags": ["transaction"],
+                "tags": [
+                    "transaction"
+                ],
                 "summary": "Create transaction",
                 "requestBody": {
                     "required": true,
@@ -1446,7 +1889,9 @@
                 }
             },
             "get": {
-                "tags": ["transaction"],
+                "tags": [
+                    "transaction"
+                ],
                 "summary": "List transactions",
                 "parameters": [
                     {
@@ -1484,14 +1929,18 @@
         },
         "/transaction/{id}": {
             "put": {
-                "tags": ["transaction"],
+                "tags": [
+                    "transaction"
+                ],
                 "summary": "Update transaction",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -1544,14 +1993,18 @@
                 }
             },
             "delete": {
-                "tags": ["transaction"],
+                "tags": [
+                    "transaction"
+                ],
                 "summary": "Delete transaction",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1570,7 +2023,9 @@
         },
         "/subscription": {
             "post": {
-                "tags": ["subscription"],
+                "tags": [
+                    "subscription"
+                ],
                 "summary": "Create subscription",
                 "requestBody": {
                     "required": true,
@@ -1643,7 +2098,9 @@
                 }
             },
             "get": {
-                "tags": ["subscription"],
+                "tags": [
+                    "subscription"
+                ],
                 "summary": "List subscriptions",
                 "parameters": [
                     {
@@ -1681,14 +2138,18 @@
         },
         "/subscription/{id}": {
             "put": {
-                "tags": ["subscription"],
+                "tags": [
+                    "subscription"
+                ],
                 "summary": "Update subscription",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -1762,14 +2223,18 @@
                 }
             },
             "delete": {
-                "tags": ["subscription"],
+                "tags": [
+                    "subscription"
+                ],
                 "summary": "Delete subscription",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1788,7 +2253,9 @@
         },
         "/import": {
             "post": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Create import transaction",
                 "requestBody": {
                     "required": true,
@@ -1839,7 +2306,9 @@
                 }
             },
             "get": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "List imports",
                 "parameters": [
                     {
@@ -1847,7 +2316,9 @@
                         "name": "filter",
                         "style": "deepObject",
                         "explode": true,
-                        "schema": { "type": "object" }
+                        "schema": {
+                            "type": "object"
+                        }
                     },
                     {
                         "in": "query",
@@ -1875,14 +2346,18 @@
         },
         "/import/{id}": {
             "delete": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Delete import",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1901,14 +2376,18 @@
         },
         "/import/complete/{id}": {
             "put": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Complete import",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1927,7 +2406,9 @@
         },
         "/import/read-file": {
             "post": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Parse file and create transactions",
                 "requestBody": {
                     "required": true,
@@ -1935,7 +2416,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "required": ["files", "financialAccountId"],
+                                "required": [
+                                    "files",
+                                    "financialAccountId"
+                                ],
                                 "properties": {
                                     "files": {
                                         "type": "array",
@@ -1968,14 +2452,18 @@
         },
         "/import/transaction/{id}": {
             "get": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Read pending transactions",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "in": "query",
@@ -2004,14 +2492,18 @@
                 }
             },
             "put": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Update pending transactions",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -2020,7 +2512,9 @@
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "required": ["data"],
+                                "required": [
+                                    "data"
+                                ],
                                 "properties": {
                                     "data": {
                                         "type": "string",
@@ -2052,14 +2546,18 @@
                 }
             },
             "delete": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Delete pending transaction",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "schema": { "type": "string" }
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -2078,7 +2576,9 @@
         },
         "/import/transaction": {
             "put": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Update pending transactions (bulk)",
                 "requestBody": {
                     "required": true,
@@ -2086,7 +2586,9 @@
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "required": ["data"],
+                                "required": [
+                                    "data"
+                                ],
                                 "properties": {
                                     "data": {
                                         "type": "string",
@@ -2120,7 +2622,9 @@
         },
         "/import/template": {
             "post": {
-                "tags": ["import"],
+                "tags": [
+                    "import"
+                ],
                 "summary": "Import templates",
                 "requestBody": {
                     "required": true,
@@ -2128,7 +2632,9 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "required": ["action"],
+                                "required": [
+                                    "action"
+                                ],
                                 "properties": {
                                     "action": {
                                         "type": "string"
@@ -2154,7 +2660,9 @@
         },
         "/dashboard": {
             "get": {
-                "tags": ["dashboard"],
+                "tags": [
+                    "dashboard"
+                ],
                 "summary": "Get dashboard layout",
                 "responses": {
                     "200": {
@@ -2170,7 +2678,9 @@
                 }
             },
             "put": {
-                "tags": ["dashboard"],
+                "tags": [
+                    "dashboard"
+                ],
                 "summary": "Save dashboard layout",
                 "requestBody": {
                     "required": true,
@@ -2203,7 +2713,9 @@
         },
         "/snapshot/account-balance": {
             "post": {
-                "tags": ["snapshot"],
+                "tags": [
+                    "snapshot"
+                ],
                 "summary": "Add account balance snapshot",
                 "requestBody": {
                     "required": true,
@@ -2211,7 +2723,11 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "required": ["accountId", "balance", "snapshotDate"],
+                                "required": [
+                                    "accountId",
+                                    "balance",
+                                    "snapshotDate"
+                                ],
                                 "properties": {
                                     "accountId": {
                                         "type": "string"
@@ -2255,7 +2771,9 @@
         },
         "/report/trend": {
             "get": {
-                "tags": ["report"],
+                "tags": [
+                    "report"
+                ],
                 "summary": "Net worth evolution",
                 "parameters": [
                     {

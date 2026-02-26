@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { components } from '../../../generated/openapi'
+import { components } from '@poveroh/contracts'
 import omit from 'lodash/omit'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'

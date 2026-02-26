@@ -17,6 +17,7 @@
         "@dnd-kit/utilities": "^3.2.2",
         "@hey-api/client-axios": "^0.9.1",
         "@next/env": "16.0.1",
+        "@poveroh/contracts": "*",
         "@poveroh/types": "*",
         "@poveroh/ui": "*",
         "@poveroh/utils": "*",

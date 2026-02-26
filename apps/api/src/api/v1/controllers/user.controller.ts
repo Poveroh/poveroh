@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
-import { components } from '../../../generated/openapi'
+import { components } from '@poveroh/contracts'
 import { UserHelper } from '../helpers/user.helper'
 import { getParamString } from '../../../utils/request'
 

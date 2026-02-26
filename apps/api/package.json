@@ -7,18 +7,22 @@
         "build": "npx tsc",
         "start": "node dist/index.js",
         "lint": "eslint src/**/*.ts",
-        "openapi:generate-types": "openapi-typescript ./openapi.json -o ./src/generated/openapi.ts"
+        "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
+        "openapi:generate-spec": "ts-node ./src/openapi/generate.ts",
+        "openapi:generate-contracts": "openapi-typescript ./openapi.json -o ../../packages/contracts/src/generated/openapi.ts"
     },
     "keywords": [],
     "author": "",
     "description": "",
     "dependencies": {
         "@poveroh/eslint-config": "*",
+        "@poveroh/contracts": "*",
         "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^6.19.0",
+        "@asteasolutions/zod-to-openapi": "^7.3.4",
         "@types/swagger-ui-express": "^4.1.8",
         "bcryptjs": "^3.0.2",
         "better-auth": "^1.4.0",
@@ -41,7 +45,8 @@
         "typescript": "^5.7.3",
         "ua-parser-js": "^2.0.1",
         "uuid": "^9.0.1",
-        "winston": "^3.17.0"
+        "winston": "^3.17.0",
+        "zod": "^3.25.76"
     },
     "devDependencies": {
         "@poveroh/eslint-config": "*",

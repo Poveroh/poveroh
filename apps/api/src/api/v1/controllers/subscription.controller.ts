@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { components } from '../../../generated/openapi'
+import { components } from '@poveroh/contracts'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
 import logger from '../../../utils/logger'

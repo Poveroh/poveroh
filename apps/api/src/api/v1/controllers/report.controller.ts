@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import logger from '../../../utils/logger'
-import { components } from '../../../generated/openapi'
+import { components } from '@poveroh/contracts'
 import { buildWhere } from '../../../helpers/filter.helper'
 import prisma from '@poveroh/prisma'
 

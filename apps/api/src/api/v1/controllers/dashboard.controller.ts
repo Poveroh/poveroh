@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
-import { components } from '../../../generated/openapi'
+import { components } from '@poveroh/contracts'
 
 // OpenAPI types
 type DashboardLayout = components['schemas']['DashboardLayout']

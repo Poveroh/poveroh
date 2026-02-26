@@ -1,5 +1,5 @@
 import { Prisma, Currency, TransactionAction as PrismaTransactionAction } from '@prisma/client'
-import { components } from '../src/generated/openapi'
+import { components } from '@poveroh/contracts'
 
 // OpenAPI types
 export type Transaction = components['schemas']['Transaction']

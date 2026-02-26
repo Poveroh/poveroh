@@ -2,24 +2,24 @@
 
 ## 📋 Panoramica
 
-Questo progetto ora utilizza **OpenAPI 3.0** per garantire type-safety completo tra client e server. L'approccio utilizzato è **Contract-Last** (Code-First), dove la specifica OpenAPI viene mantenuta manualmente e il client TypeScript viene generato automaticamente.
+Questo progetto ora utilizza **OpenAPI 3.0** per garantire type-safety completo tra server e client. La pipeline è **API-first**: la specifica è mantenuta nel backend (`apps/api/openapi.json`) e da lì vengono generati tutti gli artefatti downstream.
 
 ## 🏗️ Architettura
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        OPENAPI SPEC                         │
+│                 API SOURCE OF TRUTH                         │
 │                  apps/api/openapi.json                      │
 └─────────────────┬───────────────────────────────────────────┘
-                  │
-         ┌────────┴────────┐
-         │                 │
-         ▼                 ▼
-  ┌──────────┐      ┌────────────┐
-  │  SERVER  │      │   CLIENT   │
-  │ Swagger  │      │ TypeScript │
-  │    UI    │      │  Generated │
-  └──────────┘      └────────────┘
+      │
+  ┌───────────┼───────────────────────┐
+  │           │                       │
+  ▼           ▼                       ▼
+┌──────────┐ ┌───────────────┐     ┌────────────┐
+│  SERVER  │ │   CONTRACTS   │     │   CLIENT   │
+│ Swagger  │ │ packages/     │     │ apps/app   │
+│    UI    │ │ contracts     │     │ generated  │
+└──────────┘ └───────────────┘     └────────────┘
 ```
 
 ## 🚀 Setup Completato
@@ -36,6 +36,11 @@ Questo progetto ora utilizza **OpenAPI 3.0** per garantire type-safety completo 
 - ✅ Client TypeScript type-safe generato in `generated/api/`
 - ✅ Configurazione client in `lib/api-client.ts`
 - ✅ Esempio di utilizzo in `services/transaction-example.service.ts`
+
+### 3. **Shared Contracts** (packages/contracts)
+
+- ✅ Tipi DTO/API condivisi generati in `src/generated/openapi.ts`
+- ✅ Package `@poveroh/contracts` consumabile da `apps/api` e `apps/app`
 
 ## 📚 Come Usare
 
@@ -94,8 +99,11 @@ console.log(response.data?.total) // number
 Ogni volta che modifichi `openapi.json`, rigenera il client:
 
 ```bash
-# Dal root del progetto
+# Dal root del progetto (pipeline completa)
 npm run openapi:generate
+
+# Solo step API (genera tipi server + contracts)
+npm run openapi:generate-api
 
 # Oppure da apps/app
 cd apps/app && npm run openapi:generate
@@ -107,10 +115,10 @@ cd apps/app && npm run openapi:generate
 
 ### Scenario 1: Nuovo Endpoint API
 
-1. **Implementa l'endpoint sul server** (apps/api)
-2. **Aggiorna `openapi.json`** con il nuovo endpoint
-3. **Rigenera il client**: `npm run openapi:generate`
-4. **Usa il nuovo endpoint type-safe nel frontend**
+1. **Implementa/modifica endpoint sul server** (`apps/api`)
+2. **Aggiorna `apps/api/openapi.json`**
+3. **Rigenera artefatti**: `npm run openapi:generate`
+4. Consuma i tipi da `@poveroh/contracts` e il client da `apps/app/generated/api`
 
 ### Scenario 2: Modifica Endpoint Esistente
 
@@ -126,6 +134,7 @@ cd apps/app && npm run openapi:generate
 | `apps/api/openapi.json`                            | Specifica OpenAPI (manuale)      |
 | `apps/api/src/api/v1/index.ts`                     | Configurazione Swagger UI        |
 | `apps/app/openapi-ts.config.ts`                    | Configurazione generatore client |
+| `packages/contracts/src/generated/openapi.ts`      | Tipi DTO/API condivisi           |
 | `apps/app/lib/api-client.ts`                       | Client configurato per l'uso     |
 | `apps/app/generated/api/`                          | Client generato (in .gitignore)  |
 | `apps/app/services/transaction-example.service.ts` | Esempi di utilizzo               |
@@ -142,8 +151,11 @@ cd apps/app && npm run openapi:generate
 ## 📝 Script NPM Disponibili
 
 ```bash
-# Genera client TypeScript dal openapi.json
+# Genera la pipeline completa (API -> contracts + client)
 npm run openapi:generate
+
+# Genera solo artefatti API (server types + contracts)
+npm run openapi:generate-api
 
 # Mostra URL della documentazione Swagger UI
 npm run openapi:docs
