@@ -1,5 +1,5 @@
+import { Category } from '@poveroh/contracts'
 import { TransactionAction } from '@poveroh/types'
-import { Category } from '@/types/transactions'
 
 export const CategoryTemplate: Category[] = [
     {
