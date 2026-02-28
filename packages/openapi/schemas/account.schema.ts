@@ -1,15 +1,29 @@
 import { z } from '../zod'
+import { FinancialAccountTypeEnum } from './enum.schema'
 
-export const AccountSchema = z
+export const FinancialAccountSchema = z
     .object({
         id: z.string(),
+        userId: z.string(),
         title: z.string(),
         description: z.string(),
-        type: z.string(), // enum se serve
-        logoIcon: z.string(),
         balance: z.number(),
-        userId: z.string(),
+        type: FinancialAccountTypeEnum,
+        logoIcon: z.string(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime()
     })
-    .openapi('Account')
+    .openapi('FinancialAccount')
+
+export const FinancialAccountRequestSchema = FinancialAccountSchema.omit({
+    id: true,
+    userId: true,
+    createdAt: true,
+    updatedAt: true
+}).openapi('FinancialAccountRequest')
+
+export const FinancialAccountResponseSchema = z
+    .object({
+        data: FinancialAccountSchema
+    })
+    .openapi('FinancialAccountResponse')

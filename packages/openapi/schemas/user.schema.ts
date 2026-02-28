@@ -1,22 +1,38 @@
 import { z } from '../zod'
+import { SnapshotFrequencyEnum, CurrencyEnum, LanguageEnum, DateFormatEnum, TimezoneEnum } from './enum.schema'
+
+export const UserPreferencesSchema = z
+    .object({
+        snapshotFrequency: SnapshotFrequencyEnum,
+        preferredCurrency: CurrencyEnum,
+        preferredLanguage: LanguageEnum,
+        dateFormat: DateFormatEnum,
+        country: z.string(),
+        timezone: TimezoneEnum
+    })
+    .openapi('UserPreferences')
 
 export const UserSchema = z
     .object({
-        id: z.string(),
-        email: z.string(),
-        name: z.string(),
-        surname: z.string().nullable(),
-        onBoardingStep: z.number(),
-        onBoardingAt: z.string().nullable(),
-        image: z.string().nullable(),
+        id: z.string().uuid(),
+        name: z.string().min(1),
+        surname: z.string().min(1),
+        email: z.string().email(),
         emailVerified: z.boolean(),
-        snapshotFrequency: z.string(),
-        preferredCurrency: z.string(),
-        preferredLanguage: z.string(),
-        dateFormat: z.string(),
-        country: z.string(),
-        timezone: z.string(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        onBoardingStep: z.number().int(),
+        onBoardingAt: z.date().nullable(),
+        image: z.string().url().nullable(),
+
+        createdAt: z.date(),
+        updatedAt: z.date()
     })
+    .extend(UserPreferencesSchema.shape)
     .openapi('User')
+
+export const UserLoginSchema = z
+    .object({
+        email: z.string().email(),
+        password: z.string().min(8)
+    })
+    .extend(UserPreferencesSchema.shape)
+    .openapi('UserLogin')

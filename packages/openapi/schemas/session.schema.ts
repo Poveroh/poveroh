@@ -8,3 +8,16 @@ export const SessionSchema = z
         updatedAt: z.string().datetime()
     })
     .openapi('Session')
+
+export const SessionRequestSchema = z
+    .object({
+        token: z.string().optional(),
+        expiresAt: z.string().datetime().optional()
+    })
+    .openapi('SessionRequest')
+
+export const SessionResponseSchema = z
+    .object({
+        data: SessionSchema
+    })
+    .openapi('SessionResponse')

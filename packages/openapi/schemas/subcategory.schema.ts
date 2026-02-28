@@ -10,3 +10,18 @@ export const SubcategorySchema = z
         createdAt: z.string().datetime()
     })
     .openapi('Subcategory')
+
+export const SubcategoryRequestSchema = z
+    .object({
+        categoryId: z.string(),
+        title: z.string(),
+        description: z.string().nullable().optional(),
+        logoIcon: z.string().optional()
+    })
+    .openapi('SubcategoryRequest')
+
+export const SubcategoryResponseSchema = z
+    .object({
+        data: SubcategorySchema
+    })
+    .openapi('SubcategoryResponse')

@@ -11,3 +11,19 @@ export const SnapshotSchema = z
         userId: z.string()
     })
     .openapi('Snapshot')
+
+export const SnapshotRequestSchema = z
+    .object({
+        snapshotDate: z.string().datetime(),
+        note: z.string().nullable().optional(),
+        totalCash: z.number().optional(),
+        totalInvestments: z.number().optional(),
+        totalNetWorth: z.number().optional()
+    })
+    .openapi('SnapshotRequest')
+
+export const SnapshotResponseSchema = z
+    .object({
+        data: SnapshotSchema
+    })
+    .openapi('SnapshotResponse')

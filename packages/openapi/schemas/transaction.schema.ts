@@ -22,3 +22,26 @@ export const TransactionSchema = z
         transferHash: z.string().nullable()
     })
     .openapi('Transaction')
+
+export const TransactionRequestSchema = z
+    .object({
+        title: z.string(),
+        date: z.string().datetime(),
+        action: z.string(),
+        categoryId: z.string().nullable().optional(),
+        subcategoryId: z.string().nullable().optional(),
+        icon: z.string().nullable().optional(),
+        note: z.string().nullable().optional(),
+        ignore: z.boolean().optional(),
+        importId: z.string().nullable().optional(),
+        amounts: z.array(z.any()).optional(),
+        media: z.array(z.any()).optional(),
+        transferId: z.string().nullable().optional()
+    })
+    .openapi('TransactionRequest')
+
+export const TransactionResponseSchema = z
+    .object({
+        data: TransactionSchema
+    })
+    .openapi('TransactionResponse')
