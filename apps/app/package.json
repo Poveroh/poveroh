@@ -21,6 +21,7 @@
         "@poveroh/types": "*",
         "@poveroh/ui": "*",
         "@poveroh/utils": "*",
+        "@poveroh/schemas": "*",
         "@prisma/client": "^6.4.1",
         "@tanstack/react-table": "^8.21.3",
         "axios": "^1.13.5",

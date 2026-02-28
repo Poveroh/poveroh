@@ -2,8 +2,8 @@
     "extends": "@poveroh/tsconfig/base.json",
     "compilerOptions": {
         "outDir": "dist",
-        "rootDir": "..",
-        "composite": false
+        "baseUrl": "."
     },
-    "include": ["src", "../openapi/schemas/**/*.ts"]
+    "include": ["."],
+    "exclude": ["dist", "build", "node_modules"]
 }

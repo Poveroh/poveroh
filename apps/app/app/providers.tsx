@@ -8,12 +8,14 @@ import { Toaster } from '@poveroh/ui/components/sonner'
 import { TooltipProvider } from '@poveroh/ui/components/tooltip'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import ZodLocaleProvider from '@/components/ZodLocaleProvider'
 
 export async function Providers({ children }: { children: React.ReactNode }) {
     const messages = await getMessages()
 
     return (
         <NextIntlClientProvider messages={messages}>
+            <ZodLocaleProvider />
             <ThemeProviders>
                 <AuthProvider>
                     <AppContextProvider>

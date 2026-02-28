@@ -31,8 +31,7 @@ export const UserSchema = z
 
 export const UserLoginSchema = z
     .object({
-        email: z.string().email(),
-        password: z.string().min(8)
+        email: z.string().nonempty().email(),
+        password: z.string().nonempty().min(6)
     })
-    .extend(UserPreferencesSchema.shape)
     .openapi('UserLogin')
