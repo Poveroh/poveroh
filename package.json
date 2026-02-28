@@ -3,11 +3,12 @@
     "private": true,
     "scripts": {
         "build": "npm run build:packages && turbo build",
-        "build:packages": "npm run build:types && npm run build:contracts && npm run build:prisma && npm run build:utils",
+        "build:packages": "npm run build:types && npm run build:contracts && npm run build:prisma && npm run build:utils && npm run build:schemas",
         "build:types": "cd packages/types && npm run build",
         "build:contracts": "cd packages/contracts && npm run build",
         "build:prisma": "cd packages/prisma && npm run build",
         "build:utils": "cd packages/utils && npm run build",
+        "build:schemas": "cd packages/schemas && npm run build",
         "build:storybook": "turbo build --filter=storybook",
         "build:api": "turbo build --filter=api",
         "build:app": "turbo build --filter=app",
