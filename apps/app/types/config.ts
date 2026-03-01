@@ -1,6 +1,6 @@
 import { LogLevel } from '@poveroh/types'
 
-export interface IAppConfig {
+export type AppConfig = {
     name: string
     version: string
     apiUrl: string

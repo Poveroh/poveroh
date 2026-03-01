@@ -1,7 +1,7 @@
-import { IAppConfig } from '@/types/config'
+import { AppConfig } from '@/types/config'
 import { LogLevel } from '@poveroh/types'
 
-const createAppConfig = (): IAppConfig => {
+const createAppConfig = (): AppConfig => {
     return {
         get name(): string {
             return 'Poveroh'

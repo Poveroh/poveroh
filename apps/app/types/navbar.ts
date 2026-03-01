@@ -1,8 +1,8 @@
-export interface NavVisibility {
+export type NavVisibility = {
     header?: boolean
 }
 
-export interface INavItem {
+export type NavItem = {
     key?: string
     title: string
     href?: string
@@ -11,5 +11,5 @@ export interface INavItem {
     icon?: string
     hasSeparator?: boolean
     visibility?: NavVisibility
-    children?: INavItem[]
+    children?: NavItem[]
 }
