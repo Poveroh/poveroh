@@ -2,17 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ImportsFile } from './ImportsFile';
-import type { Transaction } from './Transaction';
-import type { TransactionStatus } from './TransactionStatus';
+import type { ImportFile } from './ImportFile';
 export type Import = {
     id: string;
     userId: string;
     title: string;
-    status: TransactionStatus;
-    createdAt: string;
     financialAccountId: string;
-    files: Array<ImportsFile>;
-    transactions: Array<Transaction>;
+    status: string;
+    createdAt: string;
+    transactions?: Array<any>;
+    files?: Array<ImportFile>;
 };
 

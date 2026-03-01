@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Category } from './Category';
-export type CategoryCollection = {
-    data: Array<Category>;
-    total: number;
+import type { Import } from './Import';
+export type ImportResponse = {
+    data: Import;
 };
 

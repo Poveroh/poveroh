@@ -2,11 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Subscription = {
-    id: string;
-    userId: string;
+export type SubscriptionRequest = {
     title: string;
-    description: string | null;
+    description?: string | null;
     amount: number;
     currency: string;
     appearanceMode: string;
@@ -16,7 +14,6 @@ export type Subscription = {
     cyclePeriod: string;
     rememberPeriod: string;
     financialAccountId: string;
-    isEnabled: boolean;
-    createdAt: string;
+    isEnabled?: boolean;
 };
 

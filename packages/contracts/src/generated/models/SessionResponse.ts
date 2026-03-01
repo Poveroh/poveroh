@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DateFilter = {
-    gte?: string;
-    lte?: string;
+import type { Session } from './Session';
+export type SessionResponse = {
+    data: Session;
 };
 

@@ -2,4 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CategoryFilters = Record<string, any>;
+import type { Subscription } from './Subscription';
+export type SubscriptionResponse = {
+    data: Subscription;
+};
+

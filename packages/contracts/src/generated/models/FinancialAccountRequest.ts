@@ -3,15 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum';
-export type FinancialAccount = {
-    id: string;
-    userId: string;
+export type FinancialAccountRequest = {
     title: string;
     description: string;
     balance: number;
     type: FinancialAccountTypeEnum;
     logoIcon: string;
-    createdAt: string;
-    updatedAt: string;
 };
 

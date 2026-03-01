@@ -2,10 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SnapshotAccountBalance = {
+export type ImportFile = {
     id: string;
-    snapshotId: string;
-    accountId: string;
-    balance: number;
+    importId: string;
+    filename: string;
+    filetype: string;
+    path: string;
+    createdAt: string;
 };
 

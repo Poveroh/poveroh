@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DashboardLayoutItem = {
+export type Session = {
     id: string;
-    colSpan: number;
-    minHeight?: number | null;
-    visible?: boolean | null;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
 };
 

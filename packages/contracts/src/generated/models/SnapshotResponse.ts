@@ -2,4 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FinancialAccountFilters = Record<string, any>;
+import type { Snapshot } from './Snapshot';
+export type SnapshotResponse = {
+    data: Snapshot;
+};
+

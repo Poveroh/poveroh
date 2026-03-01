@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DateFilter } from './DateFilter';
-export type NetWorthEvolutionFilters = {
-    date?: DateFilter;
+import type { FinancialAccount } from './FinancialAccount';
+export type FinancialAccountResponse = {
+    data: FinancialAccount;
 };
 

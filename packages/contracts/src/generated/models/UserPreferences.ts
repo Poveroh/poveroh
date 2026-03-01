@@ -7,17 +7,7 @@ import type { DateFormatEnum } from './DateFormatEnum';
 import type { LanguageEnum } from './LanguageEnum';
 import type { SnapshotFrequencyEnum } from './SnapshotFrequencyEnum';
 import type { TimezoneEnum } from './TimezoneEnum';
-export type User = {
-    id: string;
-    name: string;
-    surname: string;
-    email: string;
-    emailVerified: boolean;
-    onBoardingStep: number;
-    onBoardingAt: string | null;
-    image: string | null;
-    createdAt: string;
-    updatedAt: string;
+export type UserPreferences = {
     snapshotFrequency: SnapshotFrequencyEnum;
     preferredCurrency: CurrencyEnum;
     preferredLanguage: LanguageEnum;

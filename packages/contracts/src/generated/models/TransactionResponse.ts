@@ -2,4 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TransactionFilters = Record<string, any>;
+import type { Transaction } from './Transaction';
+export type TransactionResponse = {
+    data: Transaction;
+};
+

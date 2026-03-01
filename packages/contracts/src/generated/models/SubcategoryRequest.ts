@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FilterOptions = {
-    skip?: number;
-    take?: number;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
+export type SubcategoryRequest = {
+    categoryId: string;
+    title: string;
+    description?: string | null;
+    logoIcon?: string;
 };
 

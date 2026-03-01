@@ -2,17 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Subcategory } from './Subcategory';
-import type { TransactionAction } from './TransactionAction';
 export type Category = {
     id: string;
     userId: string;
     title: string;
-    description?: string | null;
-    for: TransactionAction;
+    description: string | null;
+    for: string;
     logoIcon: string;
     color: string;
-    subcategories: Array<Subcategory>;
+    subcategories: Array<any>;
     createdAt: string;
 };
 

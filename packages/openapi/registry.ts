@@ -1,19 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
-// Force-import all schemas so their `.openapi()` calls register definitions
-import './schemas/account.schema'
-import './schemas/category.schema'
-import './schemas/dashboard.schema'
-import './schemas/enum.schema'
-import './schemas/error.schema'
-import './schemas/import.schema'
-import './schemas/report.schema'
-import './schemas/session.schema'
-import './schemas/snapshot.schema'
-import './schemas/status.schema'
-import './schemas/subcategory.schema'
-import './schemas/subscription.schema'
-import './schemas/transaction.schema'
-import './schemas/user.schema'
+import * as schemas from './schemas'
 import { registerStatusPath } from './paths/status.path'
 import { registerUserPath } from './paths/user.path'
 import { registerTransactionPath } from './paths/transaction.path'
@@ -22,6 +8,31 @@ import { registerCategoryPath } from './paths/category.path'
 import { registerSubcategoryPath } from './paths/subcategory.path'
 import { registerSnapshotPath } from './paths/snapshot.path'
 import { registerSessionPath } from './paths/session.path'
+
+type OpenApiAwareSchema = {
+    _def?: {
+        openapi?: {
+            _internal?: {
+                refId?: string
+            }
+        }
+    }
+}
+
+const isOpenApiAwareSchema = (value: unknown): value is OpenApiAwareSchema => {
+    return typeof value === 'object' && value !== null && '_def' in value
+}
+
+const registerAllSchemas = (registry: OpenAPIRegistry) => {
+    for (const [exportName, schema] of Object.entries(schemas)) {
+        if (!isOpenApiAwareSchema(schema)) {
+            continue
+        }
+
+        const schemaName = schema._def?.openapi?._internal?.refId ?? exportName
+        registry.register(schemaName, schema)
+    }
+}
 
 export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerStatusPath(registry)
@@ -36,6 +47,7 @@ export const registerAllPaths = (registry: OpenAPIRegistry) => {
 
 export const createOpenApiRegistry = () => {
     const registry = new OpenAPIRegistry()
+    registerAllSchemas(registry)
     registerAllPaths(registry)
     return registry
 }

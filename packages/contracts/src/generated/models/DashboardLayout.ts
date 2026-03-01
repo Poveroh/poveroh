@@ -2,9 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DashboardLayoutItem } from './DashboardLayoutItem';
 export type DashboardLayout = {
+    id: string;
+    userId: string;
     version: number;
-    items: Array<DashboardLayoutItem>;
+    layout?: any;
+    createdAt: string;
+    updatedAt: string;
 };
 

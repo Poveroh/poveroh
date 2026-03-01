@@ -16,155 +16,221 @@ export type ErrorResponse = {
     error?: unknown;
 };
 
-export type StringFilter = {
-    equals?: string;
-    contains?: string;
+export type SnapshotFrequencyEnum = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'SEMIANNUAL' | 'ANNUAL';
+
+export type CurrencyEnum = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CNY' | 'INR' | 'AUD' | 'CAD' | 'CHF' | 'SEK' | 'NZD' | 'MXN' | 'SGD' | 'HKD' | 'NOK' | 'KRW' | 'TRY' | 'UNKNOWN';
+
+export type LanguageEnum = 'EN' | 'ES' | 'FR' | 'DE' | 'IT' | 'PT' | 'NL' | 'RU' | 'ZH' | 'JA' | 'KO' | 'AR' | 'HI' | 'TH' | 'VI' | 'TR' | 'PL' | 'CS' | 'HU' | 'RO' | 'BG' | 'HR' | 'SK' | 'SL' | 'ET' | 'LV' | 'LT' | 'MT' | 'FI' | 'SV' | 'DA' | 'NO' | 'IS' | 'EL' | 'HE' | 'FA' | 'UR' | 'BN' | 'TA' | 'TE' | 'ML' | 'KN' | 'GU' | 'MR' | 'PA' | 'OR' | 'AS' | 'NE' | 'SI' | 'MY' | 'KH' | 'LO' | 'KA' | 'AM' | 'TI' | 'SW' | 'ZU' | 'AF' | 'XH' | 'ST' | 'TN' | 'SS' | 'VE' | 'TS' | 'NR' | 'IG' | 'YO' | 'HA' | 'FF' | 'WO' | 'BM' | 'DY' | 'SN';
+
+export type DateFormatEnum = 'DD_MM_YYYY' | 'MM_DD_YYYY' | 'YYYY_MM_DD' | 'DD_MM_YY' | 'MM_DD_YY' | 'YY_MM_DD' | 'DD_MMMM_YYYY' | 'MMMM_DD_YYYY' | 'YYYY_MMMM_DD';
+
+export type TimezoneEnum = 'AFRICA_ALGIERS' | 'AFRICA_CAIRO' | 'AFRICA_CASABLANCA' | 'AFRICA_HARARE' | 'AFRICA_JOHANNESBURG' | 'AFRICA_MONROVIA' | 'AFRICA_NAIROBI' | 'AFRICA_WEST_CENTRAL' | 'AMERICA_ARGENTINA_BUENOS_AIRES' | 'AMERICA_BOGOTA' | 'AMERICA_CARACAS' | 'AMERICA_CHICAGO' | 'AMERICA_CHIHUAHUA' | 'AMERICA_DENVER' | 'AMERICA_GUATEMALA' | 'AMERICA_GUYANA' | 'AMERICA_HALIFAX' | 'AMERICA_INDIANA_INDIANAPOLIS' | 'AMERICA_JUNEAU' | 'AMERICA_LA_PAZ' | 'AMERICA_LIMA' | 'AMERICA_QUITO' | 'AMERICA_LOS_ANGELES' | 'AMERICA_MAZATLAN' | 'AMERICA_MEXICO_CITY' | 'AMERICA_GUADALAJARA' | 'AMERICA_MONTERREY' | 'AMERICA_MONTEVIDEO' | 'AMERICA_NEW_YORK' | 'AMERICA_PHOENIX' | 'AMERICA_PUERTO_RICO' | 'AMERICA_REGINA' | 'AMERICA_SANTIAGO' | 'AMERICA_SAO_PAULO' | 'AMERICA_ST_JOHNS' | 'AMERICA_TIJUANA' | 'ASIA_ALMATY' | 'ASIA_ASTANA' | 'ASIA_BAGHDAD' | 'ASIA_BAKU' | 'ASIA_BANGKOK' | 'ASIA_CHENNAI' | 'ASIA_HANOI' | 'ASIA_CHONGQING' | 'ASIA_COLOMBO' | 'ASIA_DHAKA' | 'ASIA_HONG_KONG' | 'ASIA_IRKUTSK' | 'ASIA_JAKARTA' | 'ASIA_JERUSALEM' | 'ASIA_KABUL' | 'ASIA_KAMCHATKA' | 'ASIA_KARACHI' | 'ASIA_ISLAMABAD' | 'ASIA_KATHMANDU' | 'ASIA_KOLKATA' | 'ASIA_MUMBAI' | 'ASIA_NEW_DELHI' | 'ASIA_KRASNOYARSK' | 'ASIA_KUALA_LUMPUR' | 'ASIA_KUWAIT' | 'ASIA_MAGADAN' | 'ASIA_MUSCAT' | 'ASIA_ABU_DHABI' | 'ASIA_NOVOSIBIRSK' | 'ASIA_RIYADH' | 'ASIA_SEOUL' | 'ASIA_SHANGHAI' | 'ASIA_SINGAPORE' | 'ASIA_SREDNEKOLYMSK' | 'ASIA_TAIPEI' | 'ASIA_TASHKENT' | 'ASIA_TBILISI' | 'ASIA_TEHRAN' | 'ASIA_TOKYO' | 'ASIA_OSAKA' | 'ASIA_SAPPORO' | 'ASIA_ULAANBAATAR' | 'ASIA_URUMQI' | 'ASIA_VLADIVOSTOK' | 'ASIA_YAKUTSK' | 'ASIA_YEKATERINBURG' | 'ASIA_YEREVAN' | 'ATLANTIC_AZORES' | 'ATLANTIC_CAPE_VERDE' | 'ATLANTIC_SOUTH_GEORGIA' | 'AUSTRALIA_ADELAIDE' | 'AUSTRALIA_BRISBANE' | 'AUSTRALIA_CANBERRA' | 'AUSTRALIA_DARWIN' | 'AUSTRALIA_HOBART' | 'AUSTRALIA_MELBOURNE' | 'AUSTRALIA_PERTH' | 'AUSTRALIA_SYDNEY' | 'ETC_GMT_PLUS_12' | 'ETC_UTC' | 'EUROPE_AMSTERDAM' | 'EUROPE_ATHENS' | 'EUROPE_BELGRADE' | 'EUROPE_BERN' | 'EUROPE_BERLIN' | 'EUROPE_BRATISLAVA' | 'EUROPE_BRUSSELS' | 'EUROPE_BUCHAREST' | 'EUROPE_BUDAPEST' | 'EUROPE_COPENHAGEN' | 'EUROPE_DUBLIN' | 'EUROPE_HELSINKI' | 'EUROPE_ISTANBUL' | 'EUROPE_KALININGRAD' | 'EUROPE_LISBON' | 'EUROPE_LJUBLJANA' | 'EUROPE_LONDON' | 'EUROPE_EDINBURGH' | 'EUROPE_MADRID' | 'EUROPE_MINSK' | 'EUROPE_MOSCOW' | 'EUROPE_ST_PETERSBURG' | 'EUROPE_PARIS' | 'EUROPE_PRAGUE' | 'EUROPE_RIGA' | 'EUROPE_ROME' | 'EUROPE_SAMARA' | 'EUROPE_SARAJEVO' | 'EUROPE_SKOPJE' | 'EUROPE_SOFIA' | 'EUROPE_STOCKHOLM' | 'EUROPE_TALLINN' | 'EUROPE_VIENNA' | 'EUROPE_VILNIUS' | 'EUROPE_VOLGOGRAD' | 'EUROPE_WARSAW' | 'EUROPE_ZAGREB' | 'EUROPE_ZURICH' | 'PACIFIC_APIA' | 'PACIFIC_AUCKLAND' | 'PACIFIC_WELLINGTON' | 'PACIFIC_CHATHAM' | 'PACIFIC_FAKAOFO' | 'PACIFIC_FIJI' | 'PACIFIC_GUADALCANAL' | 'PACIFIC_GUAM' | 'PACIFIC_HONOLULU' | 'PACIFIC_MAJURO' | 'PACIFIC_MIDWAY' | 'PACIFIC_NOUMEA' | 'PACIFIC_PAGO_PAGO' | 'PACIFIC_PORT_MORESBY' | 'PACIFIC_TONGATAPU';
+
+export type UserPreferences = {
+    snapshotFrequency: SnapshotFrequencyEnum;
+    preferredCurrency: CurrencyEnum;
+    preferredLanguage: LanguageEnum;
+    dateFormat: DateFormatEnum;
+    country: string;
+    timezone: TimezoneEnum;
 };
-
-export type DateFilter = {
-    gte?: string;
-    lte?: string;
-};
-
-export type NumberFilter = {
-    equals?: number;
-    gte?: number;
-    lte?: number;
-};
-
-export type FilterOptions = {
-    skip?: number;
-    take?: number;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-};
-
-export type TransactionAction = 'INCOME' | 'EXPENSES' | 'TRANSFER';
-
-export type TransactionStatus = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED';
-
-export type FinancialAccountType = 'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER';
-
-export type CyclePeriod = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
-
-export type RememberPeriod = 'SAME_DAY' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'FOURTEEN_DAYS' | 'THIRTY_DAYS' | 'NINETY_DAYS';
 
 export type User = {
     id: string;
-    email: string;
     name: string;
-    surname?: string | null;
-    onBoardingStep: number;
-    onBoardingAt?: string | null;
-    image?: string | null;
+    surname: string;
+    email: string;
     emailVerified: boolean;
-    snapshotFrequency: string;
-    preferredCurrency: string;
-    preferredLanguage: string;
-    dateFormat: string;
+    onBoardingStep: number;
+    onBoardingAt: string | null;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+    snapshotFrequency: SnapshotFrequencyEnum;
+    preferredCurrency: CurrencyEnum;
+    preferredLanguage: LanguageEnum;
+    dateFormat: DateFormatEnum;
     country: string;
-    timezone: string;
-    createdAt: string;
-    updatedAt: string;
+    timezone: TimezoneEnum;
 };
 
-export type Category = {
-    id: string;
-    userId: string;
-    title: string;
-    description?: string | null;
-    for: TransactionAction;
-    logoIcon: string;
-    color: string;
-    subcategories: Array<Subcategory>;
-    createdAt: string;
-};
-
-export type Subcategory = {
-    id: string;
-    categoryId: string;
-    title: string;
-    description?: string | null;
-    logoIcon: string;
-    createdAt: string;
-};
-
-export type FinancialAccount = {
-    id: string;
-    title: string;
-    description: string;
-    type: FinancialAccountType;
-    logoIcon: string;
-    balance: number;
-    userId: string;
-    createdAt: string;
-    updatedAt: string;
-};
-
-export type Subscription = {
-    id: string;
-    userId: string;
-    createdAt: string;
-    title: string;
-    description: string;
-    amount: number;
-    currency: string;
-    appearanceMode: string;
-    appearanceLogoIcon: string;
-    firstPayment: string;
-    cycleNumber: string;
-    cyclePeriod: CyclePeriod;
-    rememberPeriod: RememberPeriod;
-    financialAccountId: string;
-    isEnabled: boolean;
-};
-
-export type Amount = {
-    id: string;
-    transactionId: string;
-    amount: number;
-    currency: string;
-    action: TransactionAction;
-    financialAccountId: string;
-    importReference?: string | null;
-    createdAt: string;
-};
-
-export type TransactionMedia = {
-    id: string;
-    transactionId: string;
-    filename: string;
-    filetype: string;
-    path: string;
-    createdAt: string;
+export type UserLogin = {
+    email: string;
+    password: string;
 };
 
 export type Transaction = {
     id: string;
     userId: string;
     title: string;
-    action: TransactionAction;
+    action: string;
+    categoryId: string | null;
+    subcategoryId: string | null;
+    icon: string | null;
+    date: string;
+    note: string | null;
+    ignore: boolean;
+    createdAt: string;
+    status: string;
+    importId: string | null;
+    updatedAt: string;
+    amounts: Array<unknown>;
+    media: Array<unknown>;
+    transferId: string | null;
+    transferHash: string | null;
+};
+
+export type TransactionRequest = {
+    title: string;
+    date: string;
+    action: string;
     categoryId?: string | null;
     subcategoryId?: string | null;
     icon?: string | null;
-    date: string;
     note?: string | null;
-    ignore: boolean;
-    createdAt: string;
-    status: TransactionStatus;
+    ignore?: boolean;
     importId?: string | null;
-    updatedAt: string;
-    amounts: Array<Amount>;
-    media?: Array<TransactionMedia>;
+    amounts?: Array<unknown>;
+    media?: Array<unknown>;
     transferId?: string | null;
-    transferHash?: string | null;
 };
 
-export type ImportsFile = {
+export type TransactionResponse = {
+    data: Transaction;
+};
+
+export type FinancialAccountTypeEnum = 'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER';
+
+export type FinancialAccount = {
+    id: string;
+    userId: string;
+    title: string;
+    description: string;
+    balance: number;
+    type: FinancialAccountTypeEnum;
+    logoIcon: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type FinancialAccountRequest = {
+    title: string;
+    description: string;
+    balance: number;
+    type: FinancialAccountTypeEnum;
+    logoIcon: string;
+};
+
+export type FinancialAccountResponse = {
+    data: FinancialAccount;
+};
+
+export type Category = {
+    id: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    for: string;
+    logoIcon: string;
+    color: string;
+    subcategories: Array<unknown>;
+    createdAt: string;
+};
+
+export type CategoryRequest = {
+    title: string;
+    description: string | null;
+    for: string;
+    logoIcon: string;
+    color: string;
+    subcategories?: Array<unknown>;
+};
+
+export type CategoryResponse = Category & {
+    [key: string]: unknown;
+};
+
+export type Subcategory = {
+    id: string;
+    categoryId: string;
+    title: string;
+    description: string | null;
+    logoIcon: string;
+    createdAt: string;
+};
+
+export type SubcategoryRequest = {
+    categoryId: string;
+    title: string;
+    description?: string | null;
+    logoIcon?: string;
+};
+
+export type SubcategoryResponse = {
+    data: Subcategory;
+};
+
+export type Snapshot = {
+    id: string;
+    snapshotDate: string;
+    note: string | null;
+    totalCash: number;
+    totalInvestments: number;
+    totalNetWorth: number;
+    userId: string;
+};
+
+export type SnapshotRequest = {
+    snapshotDate: string;
+    note?: string | null;
+    totalCash?: number;
+    totalInvestments?: number;
+    totalNetWorth?: number;
+};
+
+export type SnapshotResponse = {
+    data: Snapshot;
+};
+
+export type Session = {
+    id: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type SessionRequest = {
+    token?: string;
+    expiresAt?: string;
+};
+
+export type SessionResponse = {
+    data: Session;
+};
+
+export type DashboardLayout = {
+    id: string;
+    userId: string;
+    version: number;
+    layout?: unknown;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type DashboardLayoutRequest = {
+    version?: number;
+    layout?: unknown;
+};
+
+export type DashboardLayoutResponse = {
+    data: DashboardLayout;
+};
+
+export type ImportFile = {
     id: string;
     importId: string;
     filename: string;
-    filetype: 'CSV' | 'PDF';
+    filetype: string;
     path: string;
     createdAt: string;
 };
@@ -173,137 +239,76 @@ export type Import = {
     id: string;
     userId: string;
     title: string;
-    status: TransactionStatus;
-    createdAt: string;
     financialAccountId: string;
-    files: Array<ImportsFile>;
-    transactions: Array<Transaction>;
-};
-
-export type DashboardLayoutItem = {
-    id: string;
-    colSpan: number;
-    minHeight?: number | null;
-    visible?: boolean | null;
-};
-
-export type DashboardLayout = {
-    version: number;
-    items: Array<DashboardLayoutItem>;
-};
-
-export type DashboardLayoutRecord = {
-    id: string;
-    userId: string;
-    version: number;
-    layout: DashboardLayout;
+    status: string;
     createdAt: string;
-    updatedAt: string;
+    transactions?: Array<unknown>;
+    files?: Array<ImportFile>;
 };
 
-export type Snapshot = {
+export type ImportRequest = {
+    title: string;
+    financialAccountId: string;
+    files?: Array<{
+        filename: string;
+        filetype: string;
+        path: string;
+    }>;
+};
+
+export type ImportResponse = {
+    data: Import;
+};
+
+export type Subscription = {
     id: string;
-    snapshotDate: string;
-    note?: string | null;
-    totalCash: number;
-    totalInvestments: number;
-    totalNetWorth: number;
     userId: string;
+    title: string;
+    description: string | null;
+    amount: number;
+    currency: string;
+    appearanceMode: string;
+    appearanceLogoIcon: string;
+    firstPayment: string;
+    cycleNumber: string;
+    cyclePeriod: string;
+    rememberPeriod: string;
+    financialAccountId: string;
+    isEnabled: boolean;
+    createdAt: string;
 };
 
-export type SnapshotAccountBalance = {
-    id: string;
-    snapshotId: string;
-    accountId: string;
-    balance: number;
+export type SubscriptionRequest = {
+    title: string;
+    description?: string | null;
+    amount: number;
+    currency: string;
+    appearanceMode: string;
+    appearanceLogoIcon: string;
+    firstPayment: string;
+    cycleNumber: string;
+    cyclePeriod: string;
+    rememberPeriod: string;
+    financialAccountId: string;
+    isEnabled?: boolean;
 };
 
-export type NetWorthEvolutionDataPoint = {
-    date: string;
-    totalNetWorth: number;
+export type SubscriptionResponse = {
+    data: Subscription;
 };
 
-export type NetWorthEvolutionReport = {
-    totalNetWorth: number;
-    dataPoints: Array<NetWorthEvolutionDataPoint>;
+export type ReportRequest = {
+    from: string;
+    to: string;
+    type?: string;
 };
 
-export type TransactionFilters = {
-    id?: string;
-    title?: StringFilter;
-    note?: StringFilter;
-    type?: TransactionAction;
-    categoryId?: string;
-    subcategoryId?: string;
-    financialAccountId?: string;
-    date?: DateFilter;
-    [key: string]: unknown | string | StringFilter | TransactionAction | DateFilter | undefined;
-};
-
-export type CategoryFilters = {
-    id?: string;
-    title?: StringFilter;
-    description?: StringFilter;
-    for?: TransactionAction;
-    [key: string]: unknown | string | StringFilter | TransactionAction | undefined;
-};
-
-export type SubcategoryFilters = {
-    id?: string;
-    title?: StringFilter;
-    description?: StringFilter;
-    categoryId?: string;
-    [key: string]: unknown | string | StringFilter | undefined;
-};
-
-export type FinancialAccountFilters = {
-    id?: string;
-    title?: StringFilter;
-    description?: StringFilter;
-    type?: FinancialAccountType;
-    [key: string]: unknown | string | StringFilter | FinancialAccountType | undefined;
-};
-
-export type SubscriptionFilters = {
-    id?: string;
-    title?: StringFilter;
-    description?: StringFilter;
-    financialAccountId?: string;
-    [key: string]: unknown | string | StringFilter | undefined;
-};
-
-export type NetWorthEvolutionFilters = {
-    date?: DateFilter;
-};
-
-export type CategoryCollection = {
-    data: Array<Category>;
-    total: number;
-};
-
-export type SubcategoryCollection = {
-    data: Array<Subcategory>;
-    total: number;
-};
-
-export type FinancialAccountCollection = {
-    data: Array<FinancialAccount>;
-    total: number;
-};
-
-export type TransactionCollection = {
-    data: Array<Transaction>;
-    total: number;
-};
-
-export type SubscriptionCollection = {
-    data: Array<Subscription>;
-    total: number;
-};
-
-export type ImportCollection = {
-    data: Array<Import>;
-    total: number;
+export type ReportResponse = {
+    reportType: string;
+    totals: {
+        [key: string]: number;
+    };
+    metadata?: unknown;
 };
 
 export type GetRootStatusData = {
@@ -356,720 +361,555 @@ export type GetStatusResponses = {
 
 export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses];
 
-export type GetUserData = {
-    body?: never;
-    path?: never;
-    query: {
-        email: string;
-    };
-    url: '/user';
-};
-
-export type GetUserErrors = {
-    /**
-     * Missing email
-     */
-    400: ErrorResponse;
-    /**
-     * Not found
-     */
-    404: ErrorResponse;
-};
-
-export type GetUserError = GetUserErrors[keyof GetUserErrors];
-
-export type GetUserResponses = {
-    /**
-     * User
-     */
-    200: User;
-};
-
-export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
-
-export type PutUserByIdData = {
-    body: {
-        /**
-         * JSON string of Partial<User>
-         */
-        data?: string;
-    };
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/user/{id}';
-};
-
-export type PutUserByIdErrors = {
-    /**
-     * Missing user ID
-     */
-    400: ErrorResponse;
-};
-
-export type PutUserByIdError = PutUserByIdErrors[keyof PutUserByIdErrors];
-
-export type PutUserByIdResponses = {
-    /**
-     * Updated user
-     */
-    200: User;
-};
-
-export type PutUserByIdResponse = PutUserByIdResponses[keyof PutUserByIdResponses];
-
-export type GetCategoryData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: CategoryFilters;
-        options?: FilterOptions;
-    };
-    url: '/category';
-};
-
-export type GetCategoryResponses = {
-    /**
-     * Categories
-     */
-    200: CategoryCollection;
-};
-
-export type GetCategoryResponse = GetCategoryResponses[keyof GetCategoryResponses];
-
-export type PostCategoryData = {
-    body: {
-        title?: string;
-        description?: string;
-        for?: TransactionAction;
-        logoIcon?: string;
-        color?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/category';
-};
-
-export type PostCategoryResponses = {
-    /**
-     * Category
-     */
-    200: Category;
-};
-
-export type PostCategoryResponse = PostCategoryResponses[keyof PostCategoryResponses];
-
-export type DeleteCategoryByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/category/{id}';
-};
-
-export type DeleteCategoryByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteCategoryByIdResponse = DeleteCategoryByIdResponses[keyof DeleteCategoryByIdResponses];
-
-export type PutCategoryByIdData = {
-    body: Category;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/category/{id}';
-};
-
-export type PutCategoryByIdResponses = {
-    /**
-     * Category
-     */
-    200: Category;
-};
-
-export type PutCategoryByIdResponse = PutCategoryByIdResponses[keyof PutCategoryByIdResponses];
-
-export type GetSubcategoryData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: SubcategoryFilters;
-        options?: FilterOptions;
-    };
-    url: '/subcategory';
-};
-
-export type GetSubcategoryResponses = {
-    /**
-     * Subcategories
-     */
-    200: SubcategoryCollection;
-};
-
-export type GetSubcategoryResponse = GetSubcategoryResponses[keyof GetSubcategoryResponses];
-
-export type PostSubcategoryData = {
-    body: {
-        title?: string;
-        description?: string;
-        categoryId?: string;
-        logoIcon?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/subcategory';
-};
-
-export type PostSubcategoryResponses = {
-    /**
-     * Subcategory
-     */
-    200: Subcategory;
-};
-
-export type PostSubcategoryResponse = PostSubcategoryResponses[keyof PostSubcategoryResponses];
-
-export type DeleteSubcategoryByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/subcategory/{id}';
-};
-
-export type DeleteSubcategoryByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteSubcategoryByIdResponse = DeleteSubcategoryByIdResponses[keyof DeleteSubcategoryByIdResponses];
-
-export type PutSubcategoryByIdData = {
-    body: Subcategory;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/subcategory/{id}';
-};
-
-export type PutSubcategoryByIdResponses = {
-    /**
-     * Subcategory
-     */
-    200: Subcategory;
-};
-
-export type PutSubcategoryByIdResponse = PutSubcategoryByIdResponses[keyof PutSubcategoryByIdResponses];
-
-export type GetFinancialAccountData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: FinancialAccountFilters;
-        options?: FilterOptions;
-    };
-    url: '/financial-account';
-};
-
-export type GetFinancialAccountResponses = {
-    /**
-     * Financial accounts
-     */
-    200: FinancialAccountCollection;
-};
-
-export type GetFinancialAccountResponse = GetFinancialAccountResponses[keyof GetFinancialAccountResponses];
-
-export type PostFinancialAccountData = {
-    body: {
-        /**
-         * JSON string of FinancialAccount input
-         */
-        data?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/financial-account';
-};
-
-export type PostFinancialAccountResponses = {
-    /**
-     * Financial account
-     */
-    200: FinancialAccount;
-};
-
-export type PostFinancialAccountResponse = PostFinancialAccountResponses[keyof PostFinancialAccountResponses];
-
-export type DeleteFinancialAccountByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/financial-account/{id}';
-};
-
-export type DeleteFinancialAccountByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteFinancialAccountByIdResponse = DeleteFinancialAccountByIdResponses[keyof DeleteFinancialAccountByIdResponses];
-
-export type PutFinancialAccountByIdData = {
-    body: {
-        /**
-         * JSON string of FinancialAccount
-         */
-        data?: string;
-    };
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/financial-account/{id}';
-};
-
-export type PutFinancialAccountByIdResponses = {
-    /**
-     * Financial account
-     */
-    200: FinancialAccount;
-};
-
-export type PutFinancialAccountByIdResponse = PutFinancialAccountByIdResponses[keyof PutFinancialAccountByIdResponses];
-
-export type GetTransactionData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: TransactionFilters;
-        options?: FilterOptions;
-    };
-    url: '/transaction';
-};
-
-export type GetTransactionResponses = {
-    /**
-     * Transactions
-     */
-    200: TransactionCollection;
-};
-
-export type GetTransactionResponse = GetTransactionResponses[keyof GetTransactionResponses];
-
-export type PostTransactionData = {
-    body: {
-        data?: string;
-        action?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/transaction';
-};
-
-export type PostTransactionResponses = {
-    /**
-     * Transaction result
-     */
-    200: Transaction;
-};
-
-export type PostTransactionResponse = PostTransactionResponses[keyof PostTransactionResponses];
-
-export type DeleteTransactionByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/transaction/{id}';
-};
-
-export type DeleteTransactionByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteTransactionByIdResponse = DeleteTransactionByIdResponses[keyof DeleteTransactionByIdResponses];
-
-export type PutTransactionByIdData = {
-    body: {
-        data?: string;
-        action?: string;
-    };
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/transaction/{id}';
-};
-
-export type PutTransactionByIdResponses = {
-    /**
-     * Transaction result
-     */
-    200: Transaction;
-};
-
-export type PutTransactionByIdResponse = PutTransactionByIdResponses[keyof PutTransactionByIdResponses];
-
-export type GetSubscriptionData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: SubscriptionFilters;
-        options?: FilterOptions;
-    };
-    url: '/subscription';
-};
-
-export type GetSubscriptionResponses = {
-    /**
-     * Subscriptions
-     */
-    200: SubscriptionCollection;
-};
-
-export type GetSubscriptionResponse = GetSubscriptionResponses[keyof GetSubscriptionResponses];
-
-export type PostSubscriptionData = {
-    body: Subscription;
-    path?: never;
-    query?: never;
-    url: '/subscription';
-};
-
-export type PostSubscriptionResponses = {
-    /**
-     * Subscription
-     */
-    200: Subscription;
-};
-
-export type PostSubscriptionResponse = PostSubscriptionResponses[keyof PostSubscriptionResponses];
-
-export type DeleteSubscriptionByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/subscription/{id}';
-};
-
-export type DeleteSubscriptionByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteSubscriptionByIdResponse = DeleteSubscriptionByIdResponses[keyof DeleteSubscriptionByIdResponses];
-
-export type PutSubscriptionByIdData = {
-    body: Subscription;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/subscription/{id}';
-};
-
-export type PutSubscriptionByIdResponses = {
-    /**
-     * Subscription
-     */
-    200: Subscription;
-};
-
-export type PutSubscriptionByIdResponse = PutSubscriptionByIdResponses[keyof PutSubscriptionByIdResponses];
-
-export type GetImportData = {
-    body?: never;
-    path?: never;
-    query?: {
-        filter?: {
-            [key: string]: unknown;
-        };
-        options?: FilterOptions;
-    };
-    url: '/import';
-};
-
-export type GetImportResponses = {
-    /**
-     * Imports
-     */
-    200: ImportCollection;
-};
-
-export type GetImportResponse = GetImportResponses[keyof GetImportResponses];
-
-export type PostImportData = {
-    body: {
-        data?: string;
-        action?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/import';
-};
-
-export type PostImportResponses = {
-    /**
-     * Transaction result
-     */
-    200: Transaction;
-};
-
-export type PostImportResponse = PostImportResponses[keyof PostImportResponses];
-
-export type DeleteImportByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/import/{id}';
-};
-
-export type DeleteImportByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteImportByIdResponse = DeleteImportByIdResponses[keyof DeleteImportByIdResponses];
-
-export type PutImportCompleteByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/import/complete/{id}';
-};
-
-export type PutImportCompleteByIdResponses = {
-    /**
-     * Import
-     */
-    200: Import;
-};
-
-export type PutImportCompleteByIdResponse = PutImportCompleteByIdResponses[keyof PutImportCompleteByIdResponses];
-
-export type PostImportReadFileData = {
-    body: {
-        files: Array<Blob | File>;
-        financialAccountId: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/import/read-file';
-};
-
-export type PostImportReadFileResponses = {
-    /**
-     * Import
-     */
-    200: Import;
-};
-
-export type PostImportReadFileResponse = PostImportReadFileResponses[keyof PostImportReadFileResponses];
-
-export type DeleteImportTransactionByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/import/transaction/{id}';
-};
-
-export type DeleteImportTransactionByIdResponses = {
-    /**
-     * Deleted
-     */
-    200: boolean;
-};
-
-export type DeleteImportTransactionByIdResponse = DeleteImportTransactionByIdResponses[keyof DeleteImportTransactionByIdResponses];
-
-export type GetImportTransactionByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: {
-        filter?: TransactionFilters;
-    };
-    url: '/import/transaction/{id}';
-};
-
-export type GetImportTransactionByIdResponses = {
-    /**
-     * Transactions
-     */
-    200: Array<Transaction>;
-};
-
-export type GetImportTransactionByIdResponse = GetImportTransactionByIdResponses[keyof GetImportTransactionByIdResponses];
-
-export type PutImportTransactionByIdData = {
-    body: {
-        /**
-         * JSON array of Transaction
-         */
-        data: string;
-        file?: Blob | File;
-    };
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/import/transaction/{id}';
-};
-
-export type PutImportTransactionByIdResponses = {
-    /**
-     * Updated transactions
-     */
-    200: Array<Transaction>;
-};
-
-export type PutImportTransactionByIdResponse = PutImportTransactionByIdResponses[keyof PutImportTransactionByIdResponses];
-
-export type PutImportTransactionData = {
-    body: {
-        /**
-         * JSON array of Transaction
-         */
-        data: string;
-        file?: Blob | File;
-    };
-    path?: never;
-    query?: never;
-    url: '/import/transaction';
-};
-
-export type PutImportTransactionResponses = {
-    /**
-     * Updated transactions
-     */
-    200: Array<Transaction>;
-};
-
-export type PutImportTransactionResponse = PutImportTransactionResponses[keyof PutImportTransactionResponses];
-
-export type PostImportTemplateData = {
-    body: {
-        action: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/import/template';
-};
-
-export type PostImportTemplateResponses = {
-    /**
-     * Completed
-     */
-    200: boolean;
-};
-
-export type PostImportTemplateResponse = PostImportTemplateResponses[keyof PostImportTemplateResponses];
-
-export type GetDashboardData = {
+export type GetUsersData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/dashboard';
+    url: '/users';
 };
 
-export type GetDashboardResponses = {
+export type GetUsersResponses = {
     /**
-     * Layout
+     * List of users
      */
-    200: DashboardLayoutRecord;
+    200: unknown;
 };
 
-export type GetDashboardResponse = GetDashboardResponses[keyof GetDashboardResponses];
-
-export type PutDashboardData = {
-    body: {
-        layout?: DashboardLayout;
-    };
+export type PostUsersData = {
+    body?: never;
     path?: never;
     query?: never;
-    url: '/dashboard';
+    url: '/users';
 };
 
-export type PutDashboardResponses = {
+export type PostUsersResponses = {
     /**
-     * Layout
+     * User created
      */
-    200: DashboardLayoutRecord;
+    201: unknown;
 };
 
-export type PutDashboardResponse = PutDashboardResponses[keyof PutDashboardResponses];
-
-export type PostSnapshotAccountBalanceData = {
-    body: {
-        accountId: string;
-        balance: number;
-        snapshotDate: string;
-        note?: string;
-    };
+export type DeleteUsersByIdData = {
+    body?: never;
     path?: never;
     query?: never;
-    url: '/snapshot/account-balance';
+    url: '/users/{id}';
 };
 
-export type PostSnapshotAccountBalanceResponses = {
+export type DeleteUsersByIdResponses = {
+    /**
+     * User deleted
+     */
+    204: void;
+};
+
+export type DeleteUsersByIdResponse = DeleteUsersByIdResponses[keyof DeleteUsersByIdResponses];
+
+export type GetUsersByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/users/{id}';
+};
+
+export type GetUsersByIdErrors = {
+    /**
+     * User not found
+     */
+    404: unknown;
+};
+
+export type GetUsersByIdResponses = {
+    /**
+     * User found
+     */
+    200: unknown;
+};
+
+export type PutUsersByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/users/{id}';
+};
+
+export type PutUsersByIdResponses = {
+    /**
+     * User updated
+     */
+    200: unknown;
+};
+
+export type GetTransactionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/transactions';
+};
+
+export type GetTransactionsResponses = {
+    /**
+     * List of transactions
+     */
+    200: unknown;
+};
+
+export type PostTransactionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/transactions';
+};
+
+export type PostTransactionsResponses = {
+    /**
+     * Transaction created
+     */
+    201: unknown;
+};
+
+export type DeleteTransactionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/transactions/{id}';
+};
+
+export type DeleteTransactionsByIdResponses = {
+    /**
+     * Transaction deleted
+     */
+    204: void;
+};
+
+export type DeleteTransactionsByIdResponse = DeleteTransactionsByIdResponses[keyof DeleteTransactionsByIdResponses];
+
+export type GetTransactionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/transactions/{id}';
+};
+
+export type GetTransactionsByIdErrors = {
+    /**
+     * Transaction not found
+     */
+    404: unknown;
+};
+
+export type GetTransactionsByIdResponses = {
+    /**
+     * Transaction found
+     */
+    200: unknown;
+};
+
+export type PutTransactionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/transactions/{id}';
+};
+
+export type PutTransactionsByIdResponses = {
+    /**
+     * Transaction updated
+     */
+    200: unknown;
+};
+
+export type GetAccountsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/accounts';
+};
+
+export type GetAccountsResponses = {
+    /**
+     * List of accounts
+     */
+    200: unknown;
+};
+
+export type PostAccountsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/accounts';
+};
+
+export type PostAccountsResponses = {
+    /**
+     * Account created
+     */
+    201: unknown;
+};
+
+export type DeleteAccountsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/accounts/{id}';
+};
+
+export type DeleteAccountsByIdResponses = {
+    /**
+     * Account deleted
+     */
+    204: void;
+};
+
+export type DeleteAccountsByIdResponse = DeleteAccountsByIdResponses[keyof DeleteAccountsByIdResponses];
+
+export type GetAccountsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/accounts/{id}';
+};
+
+export type GetAccountsByIdErrors = {
+    /**
+     * Account not found
+     */
+    404: unknown;
+};
+
+export type GetAccountsByIdResponses = {
+    /**
+     * Account found
+     */
+    200: unknown;
+};
+
+export type PutAccountsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/accounts/{id}';
+};
+
+export type PutAccountsByIdResponses = {
+    /**
+     * Account updated
+     */
+    200: unknown;
+};
+
+export type GetCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/categories';
+};
+
+export type GetCategoriesResponses = {
+    /**
+     * List of categories
+     */
+    200: unknown;
+};
+
+export type PostCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/categories';
+};
+
+export type PostCategoriesResponses = {
+    /**
+     * Category created
+     */
+    201: unknown;
+};
+
+export type DeleteCategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/categories/{id}';
+};
+
+export type DeleteCategoriesByIdResponses = {
+    /**
+     * Category deleted
+     */
+    204: void;
+};
+
+export type DeleteCategoriesByIdResponse = DeleteCategoriesByIdResponses[keyof DeleteCategoriesByIdResponses];
+
+export type GetCategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/categories/{id}';
+};
+
+export type GetCategoriesByIdErrors = {
+    /**
+     * Category not found
+     */
+    404: unknown;
+};
+
+export type GetCategoriesByIdResponses = {
+    /**
+     * Category found
+     */
+    200: unknown;
+};
+
+export type PutCategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/categories/{id}';
+};
+
+export type PutCategoriesByIdResponses = {
+    /**
+     * Category updated
+     */
+    200: unknown;
+};
+
+export type GetSubcategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/subcategories';
+};
+
+export type GetSubcategoriesResponses = {
+    /**
+     * List of subcategories
+     */
+    200: unknown;
+};
+
+export type PostSubcategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/subcategories';
+};
+
+export type PostSubcategoriesResponses = {
+    /**
+     * Subcategory created
+     */
+    201: unknown;
+};
+
+export type DeleteSubcategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/subcategories/{id}';
+};
+
+export type DeleteSubcategoriesByIdResponses = {
+    /**
+     * Subcategory deleted
+     */
+    204: void;
+};
+
+export type DeleteSubcategoriesByIdResponse = DeleteSubcategoriesByIdResponses[keyof DeleteSubcategoriesByIdResponses];
+
+export type GetSubcategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/subcategories/{id}';
+};
+
+export type GetSubcategoriesByIdErrors = {
+    /**
+     * Subcategory not found
+     */
+    404: unknown;
+};
+
+export type GetSubcategoriesByIdResponses = {
+    /**
+     * Subcategory found
+     */
+    200: unknown;
+};
+
+export type PutSubcategoriesByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/subcategories/{id}';
+};
+
+export type PutSubcategoriesByIdResponses = {
+    /**
+     * Subcategory updated
+     */
+    200: unknown;
+};
+
+export type GetSnapshotsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/snapshots';
+};
+
+export type GetSnapshotsResponses = {
+    /**
+     * List of snapshots
+     */
+    200: unknown;
+};
+
+export type PostSnapshotsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/snapshots';
+};
+
+export type PostSnapshotsResponses = {
     /**
      * Snapshot created
      */
-    200: {
-        snapshot?: Snapshot;
-        accountBalance?: SnapshotAccountBalance;
-    };
+    201: unknown;
 };
 
-export type PostSnapshotAccountBalanceResponse = PostSnapshotAccountBalanceResponses[keyof PostSnapshotAccountBalanceResponses];
-
-export type GetReportTrendData = {
+export type DeleteSnapshotsByIdData = {
     body?: never;
     path?: never;
-    query?: {
-        filter?: NetWorthEvolutionFilters;
-    };
-    url: '/report/trend';
+    query?: never;
+    url: '/snapshots/{id}';
 };
 
-export type GetReportTrendResponses = {
+export type DeleteSnapshotsByIdResponses = {
     /**
-     * Report
+     * Snapshot deleted
      */
-    200: NetWorthEvolutionReport;
+    204: void;
 };
 
-export type GetReportTrendResponse = GetReportTrendResponses[keyof GetReportTrendResponses];
+export type DeleteSnapshotsByIdResponse = DeleteSnapshotsByIdResponses[keyof DeleteSnapshotsByIdResponses];
+
+export type GetSnapshotsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/snapshots/{id}';
+};
+
+export type GetSnapshotsByIdErrors = {
+    /**
+     * Snapshot not found
+     */
+    404: unknown;
+};
+
+export type GetSnapshotsByIdResponses = {
+    /**
+     * Snapshot found
+     */
+    200: unknown;
+};
+
+export type PutSnapshotsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/snapshots/{id}';
+};
+
+export type PutSnapshotsByIdResponses = {
+    /**
+     * Snapshot updated
+     */
+    200: unknown;
+};
+
+export type GetSessionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sessions';
+};
+
+export type GetSessionsResponses = {
+    /**
+     * List of sessions
+     */
+    200: unknown;
+};
+
+export type PostSessionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sessions';
+};
+
+export type PostSessionsResponses = {
+    /**
+     * Session created
+     */
+    201: unknown;
+};
+
+export type DeleteSessionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sessions/{id}';
+};
+
+export type DeleteSessionsByIdResponses = {
+    /**
+     * Session deleted
+     */
+    204: void;
+};
+
+export type DeleteSessionsByIdResponse = DeleteSessionsByIdResponses[keyof DeleteSessionsByIdResponses];
+
+export type GetSessionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sessions/{id}';
+};
+
+export type GetSessionsByIdErrors = {
+    /**
+     * Session not found
+     */
+    404: unknown;
+};
+
+export type GetSessionsByIdResponses = {
+    /**
+     * Session found
+     */
+    200: unknown;
+};
+
+export type PutSessionsByIdData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sessions/{id}';
+};
+
+export type PutSessionsByIdResponses = {
+    /**
+     * Session updated
+     */
+    200: unknown;
+};

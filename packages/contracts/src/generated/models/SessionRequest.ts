@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Subcategory } from './Subcategory';
-export type SubcategoryCollection = {
-    data: Array<Subcategory>;
-    total: number;
+export type SessionRequest = {
+    token?: string;
+    expiresAt?: string;
 };
 

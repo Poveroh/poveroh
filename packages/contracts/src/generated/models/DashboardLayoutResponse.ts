@@ -2,4 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TransactionStatus = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED';
+import type { DashboardLayout } from './DashboardLayout';
+export type DashboardLayoutResponse = {
+    data: DashboardLayout;
+};
+

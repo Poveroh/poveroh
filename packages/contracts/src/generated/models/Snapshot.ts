@@ -5,7 +5,7 @@
 export type Snapshot = {
     id: string;
     snapshotDate: string;
-    note?: string | null;
+    note: string | null;
     totalCash: number;
     totalInvestments: number;
     totalNetWorth: number;

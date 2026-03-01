@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Subcategory = {
-    id: string;
-    categoryId: string;
+export type CategoryRequest = {
     title: string;
     description: string | null;
+    for: string;
     logoIcon: string;
-    createdAt: string;
+    color: string;
+    subcategories?: Array<any>;
 };
 
