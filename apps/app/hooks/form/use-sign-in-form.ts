@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 
-import { IUserLogin, OnBoardingStep } from '@poveroh/types'
+import { OnBoardingStep } from '@poveroh/types'
 import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
+import { UserLogin } from '@/api'
 
 export function useSignInForm() {
     const router = useRouter()
@@ -13,7 +14,7 @@ export function useSignInForm() {
 
     const [loading, setLoading] = useState(false)
 
-    const form = useForm<IUserLogin>({
+    const form = useForm<UserLogin>({
         resolver: zodResolver(UserLoginSchema),
         defaultValues: {
             email: '',
@@ -22,7 +23,7 @@ export function useSignInForm() {
     })
 
     const handleSignIn = useCallback(
-        async (user: IUserLogin) => {
+        async (user: UserLogin) => {
             setLoading(true)
 
             try {

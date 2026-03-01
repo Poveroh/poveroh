@@ -9,7 +9,7 @@
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
         "openapi:generate-spec": "ts-node ../../packages/openapi/generate.ts",
-        "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ../../packages/contracts/src/generated --exportModels true --exportServices false --exportCore false --useUnionTypes"
+        "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ./types/contracts --exportModels true --exportServices false --exportCore false --useUnionTypes"
     },
     "keywords": [],
     "author": "",
