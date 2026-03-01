@@ -42,7 +42,7 @@ export const auth = betterAuth({
     }),
     plugins: [
         customSession(async ({ user, session }) => {
-            const readedUser = await UserHelper.getUser(user.email)
+            const readedUser = await UserHelper.getUserByEmail(user.email)
 
             return {
                 user: readedUser,

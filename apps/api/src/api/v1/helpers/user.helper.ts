@@ -1,7 +1,7 @@
 import prisma from '@poveroh/prisma'
 
 export const UserHelper = {
-    getUser(email: string) {
+    getUserByEmail(email: string) {
         return prisma.user.findUnique({
             where: { email }
         })

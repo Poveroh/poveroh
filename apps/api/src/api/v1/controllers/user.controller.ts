@@ -7,16 +7,16 @@ import { User } from '@poveroh/types/contracts'
 
 export class UserController {
     // GET /
-    static async read(req: Request, res: Response) {
+    static async getUser(req: Request, res: Response) {
         try {
-            const email = getParamString(req.params, 'email')
+            const email = req.user?.email
 
             if (!email) {
                 res.status(400).json({ message: 'Missing email in path' })
                 return
             }
 
-            const user = await UserHelper.getUser(email)
+            const user = await UserHelper.getUserByEmail(email)
 
             if (!user) {
                 res.status(404).json({ message: 'User not found' })
@@ -31,9 +31,10 @@ export class UserController {
     }
 
     // PUT
-    static async save(req: Request, res: Response) {
+    static async updateUser(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+
             const { data } = req.body
 
             if (!data) throw new Error('Data not provided')
@@ -55,7 +56,7 @@ export class UserController {
 
             const updatedUser = await prisma.user.update({
                 where: { id },
-                data: parsedUser as any
+                data: parsedUser
             })
 
             res.status(200).json(updatedUser)

@@ -5,7 +5,7 @@ import { upload } from '../../../middleware/upload.middleware'
 
 const router: Router = Router()
 
-router.get('/', AuthMiddleware.isAuthenticated, UserController.read)
-router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), UserController.save)
+router.get('/', AuthMiddleware.isAuthenticated, UserController.getUser)
+router.put('/:id', AuthMiddleware.isAuthenticated, UserController.updateUser)
 
 export default router
