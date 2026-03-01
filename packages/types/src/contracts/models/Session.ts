@@ -3,8 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Session = {
-    id: string
-    userId: string
-    createdAt: string
-    updatedAt: string
-}
+    id: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+};
+

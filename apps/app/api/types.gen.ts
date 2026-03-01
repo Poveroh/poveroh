@@ -1477,24 +1477,7 @@ export type GetUserResponses = {
     /**
      * User found
      */
-    200: User & {
-        id?: string
-        name?: string
-        surname?: string
-        email?: string
-        emailVerified?: boolean
-        onBoardingStep?: number
-        onBoardingAt?: string | null
-        image?: string | null
-        createdAt?: string
-        updatedAt?: string
-        snapshotFrequency?: SnapshotFrequencyEnum
-        preferredCurrency?: CurrencyEnum
-        preferredLanguage?: LanguageEnum
-        dateFormat?: DateFormatEnum
-        country?: string
-        timezone?: TimezoneEnum
-    }
+    200: User
 }
 
 export type GetUserResponse = GetUserResponses[keyof GetUserResponses]
@@ -1529,24 +1512,7 @@ export type PutUserResponses = {
     /**
      * User updated
      */
-    200: User & {
-        id?: string
-        name?: string
-        surname?: string
-        email?: string
-        emailVerified?: boolean
-        onBoardingStep?: number
-        onBoardingAt?: string | null
-        image?: string | null
-        createdAt?: string
-        updatedAt?: string
-        snapshotFrequency?: SnapshotFrequencyEnum
-        preferredCurrency?: CurrencyEnum
-        preferredLanguage?: LanguageEnum
-        dateFormat?: DateFormatEnum
-        country?: string
-        timezone?: TimezoneEnum
-    }
+    200: User
 }
 
 export type PutUserResponse = PutUserResponses[keyof PutUserResponses]

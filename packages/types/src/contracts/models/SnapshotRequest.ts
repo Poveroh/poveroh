@@ -3,9 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SnapshotRequest = {
-    snapshotDate: string
-    note?: string | null
-    totalCash?: number
-    totalInvestments?: number
-    totalNetWorth?: number
-}
+    snapshotDate: string;
+    note?: string | null;
+    totalCash?: number;
+    totalInvestments?: number;
+    totalNetWorth?: number;
+};
+

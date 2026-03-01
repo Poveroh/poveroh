@@ -3,11 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ImportRequest = {
-    title: string
-    financialAccountId: string
+    title: string;
+    financialAccountId: string;
     files?: Array<{
-        filename: string
-        filetype: string
-        path: string
-    }>
-}
+        filename: string;
+        filetype: string;
+        path: string;
+    }>;
+};
+

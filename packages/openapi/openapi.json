@@ -2296,70 +2296,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "format": "uuid"
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                },
-                                                "surname": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "format": "email"
-                                                },
-                                                "emailVerified": {
-                                                    "type": "boolean"
-                                                },
-                                                "onBoardingStep": {
-                                                    "type": "integer"
-                                                },
-                                                "onBoardingAt": {
-                                                    "type": "string",
-                                                    "nullable": true
-                                                },
-                                                "image": {
-                                                    "type": "string",
-                                                    "nullable": true,
-                                                    "format": "uri"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "snapshotFrequency": {
-                                                    "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                                                },
-                                                "preferredCurrency": {
-                                                    "$ref": "#/components/schemas/CurrencyEnum"
-                                                },
-                                                "preferredLanguage": {
-                                                    "$ref": "#/components/schemas/LanguageEnum"
-                                                },
-                                                "dateFormat": {
-                                                    "$ref": "#/components/schemas/DateFormatEnum"
-                                                },
-                                                "country": {
-                                                    "type": "string"
-                                                },
-                                                "timezone": {
-                                                    "$ref": "#/components/schemas/TimezoneEnum"
-                                                }
-                                            }
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -2399,70 +2336,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "format": "uuid"
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                },
-                                                "surname": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "format": "email"
-                                                },
-                                                "emailVerified": {
-                                                    "type": "boolean"
-                                                },
-                                                "onBoardingStep": {
-                                                    "type": "integer"
-                                                },
-                                                "onBoardingAt": {
-                                                    "type": "string",
-                                                    "nullable": true
-                                                },
-                                                "image": {
-                                                    "type": "string",
-                                                    "nullable": true,
-                                                    "format": "uri"
-                                                },
-                                                "createdAt": {
-                                                    "type": "string"
-                                                },
-                                                "updatedAt": {
-                                                    "type": "string"
-                                                },
-                                                "snapshotFrequency": {
-                                                    "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                                                },
-                                                "preferredCurrency": {
-                                                    "$ref": "#/components/schemas/CurrencyEnum"
-                                                },
-                                                "preferredLanguage": {
-                                                    "$ref": "#/components/schemas/LanguageEnum"
-                                                },
-                                                "dateFormat": {
-                                                    "$ref": "#/components/schemas/DateFormatEnum"
-                                                },
-                                                "country": {
-                                                    "type": "string"
-                                                },
-                                                "timezone": {
-                                                    "$ref": "#/components/schemas/TimezoneEnum"
-                                                }
-                                            }
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }

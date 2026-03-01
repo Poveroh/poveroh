@@ -4,15 +4,40 @@ import { useUserStore } from '@/store/auth.store'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient, getSession } from '@/lib/auth'
-import { useRouter } from 'next/navigation'
 import { User } from '@poveroh/types/contracts'
-import { putUser } from '@/lib/api-client'
+import { putUserMutation } from '@/api/@tanstack/react-query.gen'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import router from 'next/router'
 
 export const useUser = () => {
     const { handleError } = useError()
     const userStore = useUserStore()
+    const queryClient = useQueryClient()
 
-    const router = useRouter()
+    const updateUserMutation = useMutation({
+        ...putUserMutation(),
+        onSuccess: async (_data, variables) => {
+            if (!variables.body) return
+
+            await userStore.updateUser(variables.body)
+
+            queryClient.invalidateQueries({ queryKey: ['getUser'] })
+
+            if (variables.body.email && userStore.user.email !== variables.body.email) {
+                const res = await authClient.changeEmail({
+                    newEmail: variables.body.email,
+                    callbackURL: '/logout'
+                })
+
+                if (res.data?.status) {
+                    router.push('/logout')
+                }
+            }
+        },
+        onError: error => {
+            handleError(error, 'Error saving user data')
+        }
+    })
 
     const me = async (): Promise<User | null> => {
         try {
@@ -35,36 +60,6 @@ export const useUser = () => {
             userStore.setLogged(false)
             handleError(error, 'Error fetching user')
             return null
-        }
-    }
-
-    const saveUser = async (userToSave: Partial<User>) => {
-        try {
-            // Call hey-api putUser directly
-            const response = await putUser({
-                body: userToSave
-            })
-
-            if (response.error) {
-                throw new Error('Error saving user')
-            }
-
-            await userStore.updateUser(userToSave)
-
-            if (userToSave.email && userStore.user.email != userToSave.email) {
-                const res = await authClient.changeEmail({
-                    newEmail: userToSave.email,
-                    callbackURL: '/logout'
-                })
-
-                if (res.data?.status as boolean) {
-                    router.push('/logout')
-                }
-            }
-
-            return true
-        } catch (error) {
-            return handleError(error, 'Error saving user data')
         }
     }
 
@@ -92,8 +87,8 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
+        updateUserMutation,
         me,
-        saveUser,
         updatePassword
     }
 }

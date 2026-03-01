@@ -3,8 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type StatusResponse = {
-    status: string
-    uptime: number
-    version: string
-    timestamp: string
-}
+    status: string;
+    uptime: number;
+    version: string;
+    timestamp: string;
+};
+

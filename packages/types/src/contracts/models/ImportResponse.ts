@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Import } from './Import'
+import type { Import } from './Import';
 export type ImportResponse = {
-    data: Import
-}
+    data: Import;
+};
+

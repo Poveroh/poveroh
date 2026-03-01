@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ErrorResponse = {
-    message: string
-    error?: any
-}
+    message: string;
+    error?: any;
+};
+

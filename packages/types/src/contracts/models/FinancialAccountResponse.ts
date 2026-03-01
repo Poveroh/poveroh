@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccount } from './FinancialAccount'
+import type { FinancialAccount } from './FinancialAccount';
 export type FinancialAccountResponse = {
-    data: FinancialAccount
-}
+    data: FinancialAccount;
+};
+

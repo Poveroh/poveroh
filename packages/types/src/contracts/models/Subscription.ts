@@ -3,19 +3,20 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Subscription = {
-    id: string
-    userId: string
-    title: string
-    description: string | null
-    amount: number
-    currency: string
-    appearanceMode: string
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: string
-    cyclePeriod: string
-    rememberPeriod: string
-    financialAccountId: string
-    isEnabled: boolean
-    createdAt: string
-}
+    id: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    amount: number;
+    currency: string;
+    appearanceMode: string;
+    appearanceLogoIcon: string;
+    firstPayment: string;
+    cycleNumber: string;
+    cyclePeriod: string;
+    rememberPeriod: string;
+    financialAccountId: string;
+    isEnabled: boolean;
+    createdAt: string;
+};
+

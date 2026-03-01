@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ReportResponse = {
-    reportType: string
-    totals: Record<string, number>
-    metadata?: any
-}
+    reportType: string;
+    totals: Record<string, number>;
+    metadata?: any;
+};
+

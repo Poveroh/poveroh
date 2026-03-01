@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Subcategory } from './Subcategory'
+import type { Subcategory } from './Subcategory';
 export type SubcategoryResponse = {
-    data: Subcategory
-}
+    data: Subcategory;
+};
+
