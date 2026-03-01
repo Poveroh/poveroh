@@ -4,9 +4,6 @@
     "git.allowNoVerifyCommit": true,
     "typescript.preferences.autoImportFileExcludePatterns": ["**/*.gen.ts", "apps/app/api/**/*.gen.ts"],
     "javascript.preferences.autoImportFileExcludePatterns": ["**/*.gen.ts", "apps/app/api/**/*.gen.ts"],
-    "files.exclude": {
-        "**/*.gen.ts": true
-    },
     "search.exclude": {
         "**/*.gen.ts": true
     }
