@@ -114,12 +114,8 @@ export class ResponseHelper {
      * Use this in catch blocks to automatically handle HttpError instances
      */
     static handleError(res: Response, error: any): Response {
-        // Log the error if logger is provided
-        if (logger) {
-            logger.error(error)
-        }
+        logger.error(error)
 
-        // Handle HttpError instances
         if (error instanceof HttpError) {
             return res.status(error.statusCode).json({
                 success: false,
@@ -128,7 +124,6 @@ export class ResponseHelper {
             })
         }
 
-        // Handle generic errors
         return this.serverError(res, 'An unexpected error occurred', error)
     }
 }

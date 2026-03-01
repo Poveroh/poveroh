@@ -27,7 +27,7 @@ export class UserController {
         }
     }
 
-    // PUT
+    // PUT /:id
     static async updateUser(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
