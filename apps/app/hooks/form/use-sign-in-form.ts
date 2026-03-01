@@ -3,10 +3,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 
-import { OnBoardingStep } from '@poveroh/types'
 import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
-import { UserLogin } from '@/api'
+import { OnBoardingStep } from '@poveroh/types'
+import { UserLogin } from '@poveroh/types/contracts'
 
 export function useSignInForm() {
     const router = useRouter()
