@@ -12,7 +12,17 @@ export type StatusResponse = {
 }
 
 export type ErrorResponse = {
+    /**
+     * Always false for error responses
+     */
+    success: false
+    /**
+     * Error message describing what went wrong
+     */
     message: string
+    /**
+     * Optional additional error details or context
+     */
     error?: unknown
 }
 
@@ -844,6 +854,17 @@ export type UpdateUserRequest = {
     timezone?: TimezoneEnum
 }
 
+export type SimpleSuccessResponse = {
+    /**
+     * Always true for success responses
+     */
+    success: true
+    /**
+     * Optional success message
+     */
+    message?: string
+}
+
 export type GetRootStatusData = {
     body?: never
     path?: never
@@ -1458,26 +1479,55 @@ export type GetUserErrors = {
     /**
      * Invalid request
      */
-    400: unknown
+    400: ErrorResponse
     /**
      * Unauthorized
      */
-    401: unknown
+    401: ErrorResponse
     /**
      * User not found
      */
-    404: unknown
+    404: ErrorResponse
     /**
      * Internal server error
      */
-    500: unknown
+    500: ErrorResponse
 }
+
+export type GetUserError = GetUserErrors[keyof GetUserErrors]
 
 export type GetUserResponses = {
     /**
      * User found
      */
-    200: User
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id?: string
+            name?: string
+            surname?: string
+            email?: string
+            emailVerified?: boolean
+            onBoardingStep?: number
+            onBoardingAt?: string | null
+            image?: string | null
+            createdAt?: string
+            updatedAt?: string
+            snapshotFrequency?: SnapshotFrequencyEnum
+            preferredCurrency?: CurrencyEnum
+            preferredLanguage?: LanguageEnum
+            dateFormat?: DateFormatEnum
+            country?: string
+            timezone?: TimezoneEnum
+        }
+    }
 }
 
 export type GetUserResponse = GetUserResponses[keyof GetUserResponses]
@@ -1493,26 +1543,55 @@ export type PutUserErrors = {
     /**
      * Invalid request body
      */
-    400: unknown
+    400: ErrorResponse
     /**
      * Unauthorized
      */
-    401: unknown
+    401: ErrorResponse
     /**
      * User not found
      */
-    404: unknown
+    404: ErrorResponse
     /**
      * Internal server error
      */
-    500: unknown
+    500: ErrorResponse
 }
+
+export type PutUserError = PutUserErrors[keyof PutUserErrors]
 
 export type PutUserResponses = {
     /**
      * User updated
      */
-    200: User
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id?: string
+            name?: string
+            surname?: string
+            email?: string
+            emailVerified?: boolean
+            onBoardingStep?: number
+            onBoardingAt?: string | null
+            image?: string | null
+            createdAt?: string
+            updatedAt?: string
+            snapshotFrequency?: SnapshotFrequencyEnum
+            preferredCurrency?: CurrencyEnum
+            preferredLanguage?: LanguageEnum
+            dateFormat?: DateFormatEnum
+            country?: string
+            timezone?: TimezoneEnum
+        }
+    }
 }
 
 export type PutUserResponse = PutUserResponses[keyof PutUserResponses]

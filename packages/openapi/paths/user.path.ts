@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import { UserSchema } from '@poveroh/schemas'
-import { UpdateUserSchemaRequest } from '../schemas'
+import { UpdateUserSchemaRequest, ErrorResponseSchema, SuccessResponseSchema } from '../schemas'
 
 export const registerUserPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
@@ -14,14 +14,42 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
                 description: 'User found',
                 content: {
                     'application/json': {
-                        schema: UserSchema
+                        schema: SuccessResponseSchema(UserSchema)
                     }
                 }
             },
-            400: { description: 'Invalid request' },
-            401: { description: 'Unauthorized' },
-            404: { description: 'User not found' },
-            500: { description: 'Internal server error' }
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'User not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
         }
     })
     registry.registerPath({
@@ -44,14 +72,42 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
                 description: 'User updated',
                 content: {
                     'application/json': {
-                        schema: UserSchema
+                        schema: SuccessResponseSchema(UserSchema)
                     }
                 }
             },
-            400: { description: 'Invalid request body' },
-            401: { description: 'Unauthorized' },
-            404: { description: 'User not found' },
-            500: { description: 'Internal server error' }
+            400: {
+                description: 'Invalid request body',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'User not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
         }
     })
 }

@@ -23,14 +23,21 @@ export const StatusResponseSchema = {
 export const ErrorResponseSchema = {
     type: 'object',
     properties: {
+        success: {
+            type: 'boolean',
+            enum: [false],
+            description: 'Always false for error responses'
+        },
         message: {
-            type: 'string'
+            type: 'string',
+            description: 'Error message describing what went wrong'
         },
         error: {
-            nullable: true
+            nullable: true,
+            description: 'Optional additional error details or context'
         }
     },
-    required: ['message']
+    required: ['success', 'message']
 } as const
 
 export const SnapshotFrequencyEnumSchema = {
@@ -1627,4 +1634,20 @@ export const UpdateUserRequestSchema = {
             $ref: '#/components/schemas/TimezoneEnum'
         }
     }
+} as const
+
+export const SimpleSuccessResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            enum: [true],
+            description: 'Always true for success responses'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success']
 } as const

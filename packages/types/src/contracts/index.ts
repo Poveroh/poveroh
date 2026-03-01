@@ -32,6 +32,7 @@ export type { ReportResponse } from './models/ReportResponse';
 export type { Session } from './models/Session';
 export type { SessionRequest } from './models/SessionRequest';
 export type { SessionResponse } from './models/SessionResponse';
+export type { SimpleSuccessResponse } from './models/SimpleSuccessResponse';
 export type { Snapshot } from './models/Snapshot';
 export type { SnapshotFrequencyEnum } from './models/SnapshotFrequencyEnum';
 export type { SnapshotRequest } from './models/SnapshotRequest';

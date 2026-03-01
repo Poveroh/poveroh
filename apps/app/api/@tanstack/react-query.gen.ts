@@ -79,6 +79,7 @@ import type {
     GetTransactionsByIdData,
     GetTransactionsData,
     GetUserData,
+    GetUserError,
     GetUserResponse,
     GetUsersByIdData,
     GetUsersData,
@@ -96,6 +97,7 @@ import type {
     PutSubcategoriesByIdData,
     PutTransactionsByIdData,
     PutUserData,
+    PutUserError,
     PutUserResponse,
     PutUsersByIdData
 } from '../types.gen.js'
@@ -887,7 +889,7 @@ export const getUserQueryKey = (options?: Options<GetUserData>) => createQueryKe
  * Get user information and preferences
  */
 export const getUserOptions = (options?: Options<GetUserData>) =>
-    queryOptions<GetUserResponse, DefaultError, GetUserResponse, ReturnType<typeof getUserQueryKey>>({
+    queryOptions<GetUserResponse, GetUserError, GetUserResponse, ReturnType<typeof getUserQueryKey>>({
         queryFn: async ({ queryKey, signal }) => {
             const { data } = await getUser({
                 ...options,
@@ -907,8 +909,8 @@ export const getUserOptions = (options?: Options<GetUserData>) =>
  */
 export const putUserMutation = (
     options?: Partial<Options<PutUserData>>
-): UseMutationOptions<PutUserResponse, DefaultError, Options<PutUserData>> => {
-    const mutationOptions: UseMutationOptions<PutUserResponse, DefaultError, Options<PutUserData>> = {
+): UseMutationOptions<PutUserResponse, PutUserError, Options<PutUserData>> => {
+    const mutationOptions: UseMutationOptions<PutUserResponse, PutUserError, Options<PutUserData>> = {
         mutationFn: async fnOptions => {
             const { data } = await putUser({
                 ...options,

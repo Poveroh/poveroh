@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import logger from '../../../utils/logger'
+import { ResponseHelper, BadRequestError, NotFoundError } from '../../../utils'
 import { UserHelper } from '../helpers/user.helper'
 import { getParamString } from '../../../utils/request'
 import { User } from '@poveroh/types/contracts'
@@ -12,21 +12,18 @@ export class UserController {
             const email = req.user?.email
 
             if (!email) {
-                res.status(400).json({ message: 'Missing email in path' })
-                return
+                throw new BadRequestError('Missing email in path')
             }
 
             const user = await UserHelper.getUserByEmail(email)
 
             if (!user) {
-                res.status(404).json({ message: 'User not found' })
-                return
+                throw new NotFoundError('User not found')
             }
 
-            res.status(200).json(user)
+            return ResponseHelper.success(res, user)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
@@ -34,13 +31,14 @@ export class UserController {
     static async updateUser(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
-
             const { data } = req.body
 
-            if (!data) throw new Error('Data not provided')
+            if (!data) {
+                throw new BadRequestError('Data not provided')
+            }
+
             if (!id) {
-                res.status(400).json({ message: 'Missing user ID' })
-                return
+                throw new BadRequestError('Missing user ID')
             }
 
             const parsedUser: Partial<User> = JSON.parse(data)
@@ -50,8 +48,7 @@ export class UserController {
             })
 
             if (!user) {
-                res.status(404).json({ message: 'User not found' })
-                return
+                throw new NotFoundError('User not found')
             }
 
             const updatedUser = await prisma.user.update({
@@ -59,10 +56,9 @@ export class UserController {
                 data: parsedUser
             })
 
-            res.status(200).json(updatedUser)
+            return ResponseHelper.success(res, updatedUser)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'Failed to update user', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }
