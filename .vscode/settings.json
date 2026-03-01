@@ -1,10 +1,5 @@
 {
     "spellright.language": ["en"],
     "spellright.documentTypes": ["markdown", "latex", "plaintext"],
-    "git.allowNoVerifyCommit": true,
-    "typescript.preferences.autoImportFileExcludePatterns": ["**/*.gen.ts", "apps/app/api/**/*.gen.ts"],
-    "javascript.preferences.autoImportFileExcludePatterns": ["**/*.gen.ts", "apps/app/api/**/*.gen.ts"],
-    "search.exclude": {
-        "**/*.gen.ts": true
-    }
+    "git.allowNoVerifyCommit": true
 }
