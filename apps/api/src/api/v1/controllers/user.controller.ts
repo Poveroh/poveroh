@@ -1,13 +1,9 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
 import logger from '../../../utils/logger'
-import { components } from '@poveroh/contracts'
 import { UserHelper } from '../helpers/user.helper'
 import { getParamString } from '../../../utils/request'
-
-// OpenAPI types
-type User = components['schemas']['User']
-type ErrorResponse = components['schemas']['ErrorResponse']
+import { User } from '@poveroh/types/contracts'
 
 export class UserController {
     // GET /
@@ -34,7 +30,7 @@ export class UserController {
         }
     }
 
-    // PUT /:id
+    // PUT
     static async save(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')

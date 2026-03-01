@@ -106,11 +106,11 @@ export const auth = betterAuth({
         }
     },
     session: {
-        expiresIn: 60 * 60 * 24, // 24 hours (same as current JWT)
-        updateAge: 60 * 60 * 24, // Update session every 24 hours
+        expiresIn: 60 * 60 * 24,
+        updateAge: 60 * 60 * 24,
         cookieCache: {
             enabled: true,
-            maxAge: 60 * 60 * 24 // 24 hours
+            maxAge: 60 * 60 * 24
         },
         // Force SameSite=None for cross-site session cookies in production so
         // the browser will send them on cross-origin requests when credentials

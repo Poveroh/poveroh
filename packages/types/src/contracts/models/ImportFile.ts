@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ImportFile = {
-    id: string;
-    importId: string;
-    filename: string;
-    filetype: string;
-    path: string;
-    createdAt: string;
-};
-
+    id: string
+    importId: string
+    filename: string
+    filetype: string
+    path: string
+    createdAt: string
+}

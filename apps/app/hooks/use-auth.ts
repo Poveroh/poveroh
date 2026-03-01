@@ -3,16 +3,17 @@
 import { authClient } from '@/lib/auth'
 import { cookie, storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
-import { IUserLogin } from '@poveroh/types'
 import { isValidEmail, isEmpty } from '@poveroh/utils'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useError } from './use-error'
 import { useUser } from './use-user'
+import { UserLogin } from '@poveroh/types/contracts'
 
 export const useAuth = () => {
     const { handleError } = useError()
     const { me } = useUser()
+
     const userStore = useUserStore()
     const router = useRouter()
 
@@ -27,7 +28,7 @@ export const useAuth = () => {
     }
 
     const signIn = useCallback(
-        async (userToLogin: IUserLogin) => {
+        async (userToLogin: UserLogin) => {
             try {
                 if (!isValidEmail(userToLogin.email)) {
                     throw new Error('E-mail not valid')
@@ -55,7 +56,7 @@ export const useAuth = () => {
     )
 
     const signUp = useCallback(
-        async (userToSave: IUserLogin) => {
+        async (userToSave: UserLogin) => {
             try {
                 if (!isValidEmail(userToSave.email)) {
                     throw new Error('E-mail not valid')
@@ -92,13 +93,13 @@ export const useAuth = () => {
                     onSuccess: () => {
                         cleanUpAuthData()
                     },
-                    onError: () => {
-                        console.error('Error during sign out')
+                    onError: error => {
+                        handleError(error, 'Error during sign out')
                     }
                 }
             })
         } catch (error) {
-            console.error('Logout error:', error)
+            handleError(error, 'Logout failed')
             cleanUpAuthData()
         }
     }

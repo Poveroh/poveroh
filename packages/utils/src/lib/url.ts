@@ -1,3 +1,10 @@
+/**
+ * Normalizes and joins multiple URL segments into a single URL string,
+ * ensuring proper formatting and handling of edge cases such as protocol prefixes, query parameters, and hash fragments.
+ *
+ * @param strArray - The array of URL segments to normalize and join.
+ * @returns The normalized and joined URL string.
+ */
 function normalize(strArray: string[]): string {
     const resultArray: string[] = []
     if (strArray.length === 0) return ''
@@ -66,6 +73,12 @@ function normalize(strArray: string[]): string {
     return str
 }
 
+/**
+ * Joins multiple URL segments into a single URL string, ensuring proper formatting and normalization.
+ *
+ * @param value - The URL segments to join, which can be provided as individual strings or as an array of strings.
+ * @returns The joined and normalized URL string.
+ */
 export function urlJoiner(...args: (string | string[])[]): string {
     const parts = Array.isArray(args[0]) ? [...(args[0] as string[])] : (args as string[])
     return normalize(parts)

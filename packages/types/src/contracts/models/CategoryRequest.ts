@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CategoryRequest = {
-    title: string;
-    description: string | null;
-    for: string;
-    logoIcon: string;
-    color: string;
-    subcategories?: Array<any>;
-};
-
+    title: string
+    description: string | null
+    for: string
+    logoIcon: string
+    color: string
+    subcategories?: Array<any>
+}

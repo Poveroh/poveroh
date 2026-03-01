@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Session } from './Session';
+import type { Session } from './Session'
 export type SessionResponse = {
-    data: Session;
-};
-
+    data: Session
+}

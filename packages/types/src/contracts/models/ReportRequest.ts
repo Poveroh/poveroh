@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ReportRequest = {
-    from: string;
-    to: string;
-    type?: string;
-};
-
+    from: string
+    to: string
+    type?: string
+}

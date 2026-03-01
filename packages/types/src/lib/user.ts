@@ -1,57 +1,29 @@
-import { Currencies } from './currency.js'
-import { Language } from './language.js'
-import { DateFormat } from './date-format.js'
-import { Timezone } from './timezone.js'
+import {
+    User,
+    SnapshotFrequencyEnum,
+    CurrencyEnum,
+    LanguageEnum,
+    TimezoneEnum,
+    DateFormatEnum,
+    OnBoardingStepEnum,
+    CountriesEnum
+} from 'src/contracts'
 
-// User enums - used throughout the application
-export enum OnBoardingStep {
-    EMAIL = 1,
-    GENERALITIES = 2,
-    PREFERENCES = 3,
-    COMPLETED = 4
-}
-
-export enum SnapshotFrequency {
-    NONE = 'NONE',
-    DAILY = 'DAILY',
-    WEEKLY = 'WEEKLY',
-    MONTHLY = 'MONTHLY',
-    QUARTERLY = 'QUARTERLY',
-    SEMIANNUAL = 'SEMIANNUAL',
-    ANNUAL = 'ANNUAL'
-}
-
-// User-related types for forms and authentication
-export interface IUserLogin {
-    email: string
-    password: string
-}
-
-export interface IPasswordToChange {
-    oldPassword: string
-    newPassword: string
-}
-
-export interface IPassword extends IPasswordToChange {
-    confirmPassword: string
-}
-
-// Default user for initialization
-export const defaultUser = {
+export const defaultUser: User = {
     id: '',
     name: '',
     surname: '',
     email: '',
     image: null,
     emailVerified: false,
-    onBoardingStep: 1,
+    onBoardingStep: 'EMAIL' as OnBoardingStepEnum,
     onBoardingAt: null,
-    snapshotFrequency: SnapshotFrequency.MONTHLY,
-    preferredCurrency: Currencies.EUR,
-    preferredLanguage: Language.EN,
-    dateFormat: DateFormat.DD_MM_YYYY,
-    country: 'italy',
-    timezone: Timezone.EUROPE_ROME,
+    snapshotFrequency: 'MONTHLY' as SnapshotFrequencyEnum,
+    preferredCurrency: 'EUR' as CurrencyEnum,
+    preferredLanguage: 'EN' as LanguageEnum,
+    dateFormat: 'DD_MM_YYYY' as DateFormatEnum,
+    country: 'ITALY' as CountriesEnum,
+    timezone: 'EUROPE_ROME' as TimezoneEnum,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
 }

@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Snapshot } from './Snapshot';
+import type { Snapshot } from './Snapshot'
 export type SnapshotResponse = {
-    data: Snapshot;
-};
-
+    data: Snapshot
+}

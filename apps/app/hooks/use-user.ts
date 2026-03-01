@@ -1,30 +1,29 @@
 'use client'
 
-import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUser } from '@/types/api'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
-import { authClient } from '@/lib/auth'
+import { authClient, getSession } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
+import { User } from '@poveroh/types/contracts'
+import { putUser } from '@/lib/api-client'
 
 export const useUser = () => {
     const { handleError } = useError()
-    const userService = new UserService()
     const userStore = useUserStore()
 
     const router = useRouter()
 
-    const me = async (): Promise<IUser | null> => {
+    const me = async (): Promise<User | null> => {
         try {
-            const result = await authClient.getSession()
+            const result = await getSession()
 
             if (result.error) {
                 throw new Error(result.error.message || 'Login failed')
             }
 
-            if (result.data && result.data.user) {
-                const user = result.data.user as IUser
+            if (result.data?.user) {
+                const user: User = result.data.user
                 userStore.setUser(user)
                 userStore.setLogged(true)
                 return user
@@ -39,12 +38,17 @@ export const useUser = () => {
         }
     }
 
-    const saveUser = async (userToSave: Partial<IUser>) => {
+    const saveUser = async (userToSave: Partial<User>) => {
         try {
-            const formData = new FormData()
-            formData.append('data', JSON.stringify(userToSave))
+            // Call hey-api putUser directly
+            const response = await putUser({
+                body: userToSave
+            })
 
-            await userService.save(userStore.user.id, formData)
+            if (response.error) {
+                throw new Error('Error saving user')
+            }
+
             await userStore.updateUser(userToSave)
 
             if (userToSave.email && userStore.user.email != userToSave.email) {

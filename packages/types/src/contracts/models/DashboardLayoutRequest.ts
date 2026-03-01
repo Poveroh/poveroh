@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type DashboardLayoutRequest = {
-    version?: number;
-    layout?: any;
-};
-
+    version?: number
+    layout?: any
+}

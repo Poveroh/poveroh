@@ -356,7 +356,7 @@
                         "$ref": "#/components/schemas/DateFormatEnum"
                     },
                     "country": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CountriesEnum"
                     },
                     "timezone": {
                         "$ref": "#/components/schemas/TimezoneEnum"
@@ -394,7 +394,7 @@
                         "type": "boolean"
                     },
                     "onBoardingStep": {
-                        "type": "integer"
+                        "$ref": "#/components/schemas/OnBoardingStepEnum"
                     },
                     "onBoardingAt": {
                         "type": "string",
@@ -424,7 +424,7 @@
                         "$ref": "#/components/schemas/DateFormatEnum"
                     },
                     "country": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CountriesEnum"
                     },
                     "timezone": {
                         "$ref": "#/components/schemas/TimezoneEnum"
@@ -1363,6 +1363,425 @@
                     "reportType",
                     "totals"
                 ]
+            },
+            "UpdateUser": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    },
+                    "preferredCurrency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "preferredLanguage": {
+                        "$ref": "#/components/schemas/LanguageEnum"
+                    },
+                    "dateFormat": {
+                        "$ref": "#/components/schemas/DateFormatEnum"
+                    },
+                    "timezone": {
+                        "$ref": "#/components/schemas/TimezoneEnum"
+                    }
+                }
+            },
+            "UserSession": {
+                "type": "object",
+                "properties": {
+                    "session": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "createdAt": {
+                                "type": "string"
+                            },
+                            "updatedAt": {
+                                "type": "string"
+                            },
+                            "userId": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "expiresAt": {
+                                "type": "string"
+                            },
+                            "token": {
+                                "type": "string"
+                            },
+                            "ipAddress": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "ip"
+                            },
+                            "userAgent": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "createdAt",
+                            "updatedAt",
+                            "userId",
+                            "expiresAt",
+                            "token",
+                            "ipAddress",
+                            "userAgent"
+                        ]
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "required": [
+                    "session",
+                    "user"
+                ]
+            },
+            "AssetTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "STOCK",
+                    "BOND",
+                    "ETF",
+                    "MUTUAL_FUND",
+                    "CRYPTOCURRENCY",
+                    "REAL_ESTATE",
+                    "COLLECTIBLE",
+                    "PRIVATE_EQUITY",
+                    "VENTURE_CAPITAL",
+                    "PRIVATE_DEBT",
+                    "P2P_LENDING",
+                    "INSURANCE_POLICY",
+                    "AGRICULTURAL_LAND",
+                    "OTHER"
+                ]
+            },
+            "TransactionActionEnum": {
+                "type": "string",
+                "enum": [
+                    "EXPENSES",
+                    "INCOME",
+                    "TRANSFER"
+                ]
+            },
+            "TransactionStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "APPROVED",
+                    "REJECTED",
+                    "IMPORT_PENDING",
+                    "IMPORT_REJECTED",
+                    "IMPORT_APPROVED"
+                ]
+            },
+            "RememberPeriodEnum": {
+                "type": "string",
+                "enum": [
+                    "SAME_DAY",
+                    "THREE_DAYS",
+                    "SEVEN_DAYS",
+                    "FOURTEEN_DAYS",
+                    "THIRTY_DAYS",
+                    "NINETY_DAYS"
+                ]
+            },
+            "AppearanceModeEnum": {
+                "type": "string",
+                "enum": [
+                    "LOGO",
+                    "ICON"
+                ]
+            },
+            "FileTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "CSV",
+                    "PDF"
+                ]
+            },
+            "OnBoardingStepEnum": {
+                "type": "string",
+                "enum": [
+                    "EMAIL",
+                    "GENERALITES",
+                    "PREFERENCES",
+                    "COMPLETED"
+                ]
+            },
+            "CountriesEnum": {
+                "type": "string",
+                "enum": [
+                    "AFGHANISTAN",
+                    "ALBANIA",
+                    "ALGERIA",
+                    "ANDORRA",
+                    "ANGOLA",
+                    "ANTIGUA_AND_BARBUDA",
+                    "ARGENTINA",
+                    "ARMENIA",
+                    "AUSTRALIA",
+                    "AUSTRIA",
+                    "AZERBAIJAN",
+                    "BAHAMAS",
+                    "BAHRAIN",
+                    "BANGLADESH",
+                    "BARBADOS",
+                    "BELARUS",
+                    "BELGIUM",
+                    "BELIZE",
+                    "BENIN",
+                    "BHUTAN",
+                    "BOLIVIA",
+                    "BOSNIA_AND_HERZEGOVINA",
+                    "BOTSWANA",
+                    "BRAZIL",
+                    "BRUNEI",
+                    "BULGARIA",
+                    "BURKINA_FASO",
+                    "BURUNDI",
+                    "CABO_VERDE",
+                    "CAMBODIA",
+                    "CAMEROON",
+                    "CANADA",
+                    "CENTRAL_AFRICAN_REPUBLIC",
+                    "CHAD",
+                    "CHILE",
+                    "CHINA",
+                    "COLOMBIA",
+                    "COMOROS",
+                    "CONGO_DEMOCRATIC_REPUBLIC",
+                    "CONGO_REPUBLIC",
+                    "COSTA_RICA",
+                    "CROATIA",
+                    "CUBA",
+                    "CYPRUS",
+                    "CZECH_REPUBLIC",
+                    "DENMARK",
+                    "DJIBOUTI",
+                    "DOMINICA",
+                    "DOMINICAN_REPUBLIC",
+                    "ECUADOR",
+                    "EGYPT",
+                    "EL_SALVADOR",
+                    "EQUATORIAL_GUINEA",
+                    "ERITREA",
+                    "ESTONIA",
+                    "ESWATINI",
+                    "ETHIOPIA",
+                    "FIJI",
+                    "FINLAND",
+                    "FRANCE",
+                    "GABON",
+                    "GAMBIA",
+                    "GEORGIA",
+                    "GERMANY",
+                    "GHANA",
+                    "GREECE",
+                    "GRENADA",
+                    "GUATEMALA",
+                    "GUINEA",
+                    "GUINEA_BISSAU",
+                    "GUYANA",
+                    "HAITI",
+                    "HONDURAS",
+                    "HUNGARY",
+                    "ICELAND",
+                    "INDIA",
+                    "INDONESIA",
+                    "IRAN",
+                    "IRAQ",
+                    "IRELAND",
+                    "ISRAEL",
+                    "ITALY",
+                    "JAMAICA",
+                    "JAPAN",
+                    "JORDAN",
+                    "KAZAKHSTAN",
+                    "KENYA",
+                    "KIRIBATI",
+                    "KOREA_NORTH",
+                    "KOREA_SOUTH",
+                    "KUWAIT",
+                    "KYRGYZSTAN",
+                    "LAOS",
+                    "LATVIA",
+                    "LEBANON",
+                    "LESOTHO",
+                    "LIBERIA",
+                    "LIBYA",
+                    "LIECHTENSTEIN",
+                    "LITHUANIA",
+                    "LUXEMBOURG",
+                    "MADAGASCAR",
+                    "MALAWI",
+                    "MALAYSIA",
+                    "MALDIVES",
+                    "MALI",
+                    "MALTA",
+                    "MARSHALL_ISLANDS",
+                    "MAURITANIA",
+                    "MAURITIUS",
+                    "MEXICO",
+                    "MICRONESIA",
+                    "MOLDOVA",
+                    "MONACO",
+                    "MONGOLIA",
+                    "MONTENEGRO",
+                    "MOROCCO",
+                    "MOZAMBIQUE",
+                    "MYANMAR",
+                    "NAMIBIA",
+                    "NAURU",
+                    "NEPAL",
+                    "NETHERLANDS",
+                    "NEW_ZEALAND",
+                    "NICARAGUA",
+                    "NIGER",
+                    "NIGERIA",
+                    "NORTH_MACEDONIA",
+                    "NORWAY",
+                    "OMAN",
+                    "PAKISTAN",
+                    "PALAU",
+                    "PALESTINE",
+                    "PANAMA",
+                    "PAPUA_NEW_GUINEA",
+                    "PARAGUAY",
+                    "PERU",
+                    "PHILIPPINES",
+                    "POLAND",
+                    "PORTUGAL",
+                    "QATAR",
+                    "ROMANIA",
+                    "RUSSIA",
+                    "RWANDA",
+                    "SAINT_KITTS_AND_NEVIS",
+                    "SAINT_LUCIA",
+                    "SAINT_VINCENT_AND_GRENADINES",
+                    "SAMOA",
+                    "SAN_MARINO",
+                    "SAO_TOME_AND_PRINCIPE",
+                    "SAUDI_ARABIA",
+                    "SENEGAL",
+                    "SERBIA",
+                    "SEYCHELLES",
+                    "SIERRA_LEONE",
+                    "SINGAPORE",
+                    "SLOVAKIA",
+                    "SLOVENIA",
+                    "SOLOMON_ISLANDS",
+                    "SOMALIA",
+                    "SOUTH_AFRICA",
+                    "SOUTH_SUDAN",
+                    "SPAIN",
+                    "SRI_LANKA",
+                    "SUDAN",
+                    "SURINAME",
+                    "SWEDEN",
+                    "SWITZERLAND",
+                    "SYRIA",
+                    "TAIWAN",
+                    "TAJIKISTAN",
+                    "TANZANIA",
+                    "THAILAND",
+                    "TIMOR_LESTE",
+                    "TOGO",
+                    "TONGA",
+                    "TRINIDAD_AND_TOBAGO",
+                    "TUNISIA",
+                    "TURKEY",
+                    "TURKMENISTAN",
+                    "TUVALU",
+                    "UGANDA",
+                    "UKRAINE",
+                    "UNITED_ARAB_EMIRATES",
+                    "UNITED_KINGDOM",
+                    "UNITED_STATES",
+                    "URUGUAY",
+                    "UZBEKISTAN",
+                    "VANUATU",
+                    "VATICAN_CITY",
+                    "VENEZUELA",
+                    "VIETNAM",
+                    "YEMEN",
+                    "ZAMBIA",
+                    "ZIMBABWE"
+                ]
+            },
+            "UpdateUserRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "emailVerified": {
+                        "type": "boolean"
+                    },
+                    "onBoardingStep": {
+                        "$ref": "#/components/schemas/OnBoardingStepEnum"
+                    },
+                    "onBoardingAt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "snapshotFrequency": {
+                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                    },
+                    "preferredCurrency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "preferredLanguage": {
+                        "$ref": "#/components/schemas/LanguageEnum"
+                    },
+                    "dateFormat": {
+                        "$ref": "#/components/schemas/DateFormatEnum"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    },
+                    "timezone": {
+                        "$ref": "#/components/schemas/TimezoneEnum"
+                    }
+                }
             }
         },
         "parameters": {}
@@ -1860,6 +2279,205 @@
                 "responses": {
                     "204": {
                         "description": "Session deleted"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user",
+                "description": "Get user information and preferences",
+                "responses": {
+                    "200": {
+                        "description": "User found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "surname": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                },
+                                                "emailVerified": {
+                                                    "type": "boolean"
+                                                },
+                                                "onBoardingStep": {
+                                                    "type": "integer"
+                                                },
+                                                "onBoardingAt": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "nullable": true,
+                                                    "format": "uri"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string"
+                                                },
+                                                "snapshotFrequency": {
+                                                    "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                                                },
+                                                "preferredCurrency": {
+                                                    "$ref": "#/components/schemas/CurrencyEnum"
+                                                },
+                                                "preferredLanguage": {
+                                                    "$ref": "#/components/schemas/LanguageEnum"
+                                                },
+                                                "dateFormat": {
+                                                    "$ref": "#/components/schemas/DateFormatEnum"
+                                                },
+                                                "country": {
+                                                    "type": "string"
+                                                },
+                                                "timezone": {
+                                                    "$ref": "#/components/schemas/TimezoneEnum"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user",
+                "description": "Update user preferences and information",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "format": "uuid"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "surname": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email"
+                                                },
+                                                "emailVerified": {
+                                                    "type": "boolean"
+                                                },
+                                                "onBoardingStep": {
+                                                    "type": "integer"
+                                                },
+                                                "onBoardingAt": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "nullable": true,
+                                                    "format": "uri"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string"
+                                                },
+                                                "snapshotFrequency": {
+                                                    "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                                                },
+                                                "preferredCurrency": {
+                                                    "$ref": "#/components/schemas/CurrencyEnum"
+                                                },
+                                                "preferredLanguage": {
+                                                    "$ref": "#/components/schemas/LanguageEnum"
+                                                },
+                                                "dateFormat": {
+                                                    "$ref": "#/components/schemas/DateFormatEnum"
+                                                },
+                                                "country": {
+                                                    "type": "string"
+                                                },
+                                                "timezone": {
+                                                    "$ref": "#/components/schemas/TimezoneEnum"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }

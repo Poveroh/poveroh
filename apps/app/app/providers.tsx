@@ -9,7 +9,7 @@ import { TooltipProvider } from '@poveroh/ui/components/tooltip'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import ZodLocaleProvider from '@/components/ZodLocaleProvider'
-import { SwrProvider } from '@/providers/swr-provider'
+import { ServerProvider } from '@/providers/server-provider'
 
 export async function Providers({ children }: { children: React.ReactNode }) {
     const messages = await getMessages()
@@ -18,7 +18,7 @@ export async function Providers({ children }: { children: React.ReactNode }) {
         <NextIntlClientProvider messages={messages}>
             <ZodLocaleProvider />
             <ThemeProviders>
-                <SwrProvider>
+                <ServerProvider>
                     <AuthProvider>
                         <AppContextProvider>
                             <ModalContextProvider>
@@ -33,7 +33,7 @@ export async function Providers({ children }: { children: React.ReactNode }) {
                             </ModalContextProvider>
                         </AppContextProvider>
                     </AuthProvider>
-                </SwrProvider>
+                </ServerProvider>
             </ThemeProviders>
         </NextIntlClientProvider>
     )

@@ -1,49 +1,35 @@
-import {
-    getUser,
-    postUser,
-    putUserById,
-    deleteUserById,
-    putUserSetPasswordById,
-    type UserFilters,
-    type FilterOptions,
-    type PasswordToChange
-} from '@/lib/api-client'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getUserOptions, putUserMutation } from '../api/@tanstack/react-query.gen'
 
-export class UserService {
-    async add(data: FormData) {
-        const response = await postUser({ body: data })
-        return response.data
-    }
-
-    async save(id: string, data: FormData) {
-        const response = await putUserById({ path: { id }, body: data })
-        return response.data
-    }
-
-    async delete(id: string) {
-        const response = await deleteUserById({ path: { id } })
-        return response.data
-    }
-
-    async clear() {
-        return this.delete('all')
-    }
-
-    async read(filters?: UserFilters, options?: FilterOptions) {
-        const response = await getUser({
-            query: {
-                filter: filters,
-                options: options
-            }
-        })
-        return response.data
-    }
-
-    async updatePassword(id: string, passwords: PasswordToChange) {
-        const response = await putUserSetPasswordById({
-            path: { id },
-            body: passwords
-        })
-        return response.data
-    }
+/**
+ * Hook per ottenere l'utente corrente (AUTENTICATA)
+ * Usa il cookie di sessione di better-auth automaticamente
+ */
+export const useGetUser = () => {
+    return useQuery(getUserOptions())
 }
+
+/**
+ * Hook per aggiornare l'utente corrente (AUTENTICATA)
+ * Usa il cookie di sessione di better-auth automaticamente
+ */
+export const useUpdateUser = () => {
+    return useMutation(putUserMutation())
+}
+
+/**
+ * ESEMPIO: Hook per ottenere dati pubblici (NON AUTENTICATA)
+ * Importa withoutAuth da '@/lib/api-client' e passalo alle options
+ *
+ * @example
+ * import { withoutAuth } from '@/lib/api-client'
+ * import { getRootStatusOptions } from '../api/@tanstack/react-query.gen'
+ *
+ * export const useGetPublicData = () => {
+ *     return useQuery(
+ *         getRootStatusOptions(withoutAuth())
+ *     )
+ * }
+ *
+ * Vedi services/EXAMPLES.ts per altri esempi completi
+ */

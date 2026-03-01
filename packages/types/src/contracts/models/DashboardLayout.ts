@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type DashboardLayout = {
-    id: string;
-    userId: string;
-    version: number;
-    layout?: any;
-    createdAt: string;
-    updatedAt: string;
-};
-
+    id: string
+    userId: string
+    version: number
+    layout?: any
+    createdAt: string
+    updatedAt: string
+}

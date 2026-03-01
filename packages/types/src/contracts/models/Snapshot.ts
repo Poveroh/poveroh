@@ -3,12 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Snapshot = {
-    id: string;
-    snapshotDate: string;
-    note: string | null;
-    totalCash: number;
-    totalInvestments: number;
-    totalNetWorth: number;
-    userId: string;
-};
-
+    id: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    userId: string
+}

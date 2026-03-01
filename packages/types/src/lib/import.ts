@@ -1,7 +1,4 @@
-import { Currencies } from './currency.js'
-import { TransactionAction } from './transaction.js'
-
-// Import-related types used in UI and business logic
+import { TransactionActionEnum, CurrencyEnum } from 'src/contracts'
 
 export interface IFieldMapping {
     date?: string
@@ -30,8 +27,8 @@ export interface IValueReturned {
 export interface IReadedTransaction {
     date: string
     amount: number
-    action: TransactionAction
-    currency: Currencies
+    action: TransactionActionEnum
+    currency: CurrencyEnum
     title: string
     originalRow?: Record<string, any>
 }

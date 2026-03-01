@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SessionRequest = {
-    token?: string;
-    expiresAt?: string;
-};
-
+    token?: string
+    expiresAt?: string
+}

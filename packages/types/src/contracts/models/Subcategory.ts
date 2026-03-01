@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Subcategory = {
-    id: string;
-    categoryId: string;
-    title: string;
-    description: string | null;
-    logoIcon: string;
-    createdAt: string;
-};
-
+    id: string
+    categoryId: string
+    title: string
+    description: string | null
+    logoIcon: string
+    createdAt: string
+}

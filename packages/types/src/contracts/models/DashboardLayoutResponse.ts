@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DashboardLayout } from './DashboardLayout';
+import type { DashboardLayout } from './DashboardLayout'
 export type DashboardLayoutResponse = {
-    data: DashboardLayout;
-};
-
+    data: DashboardLayout
+}

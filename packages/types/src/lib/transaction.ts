@@ -1,21 +1,3 @@
-import { Currencies } from './currency.js'
-
-// Transaction enums - used throughout the application
-export enum TransactionAction {
-    INCOME = 'INCOME',
-    EXPENSES = 'EXPENSES',
-    TRANSFER = 'TRANSFER'
-}
-
-export enum TransactionStatus {
-    APPROVED = 'APPROVED',
-    REJECTED = 'REJECTED',
-    IMPORT_PENDING = 'IMPORT_PENDING',
-    IMPORT_REJECTED = 'IMPORT_REJECTED',
-    IMPORT_APPROVED = 'IMPORT_APPROVED'
-}
-
-// Form data types - used in UI forms
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
 export type ExpensesFormData = {

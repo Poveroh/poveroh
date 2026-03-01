@@ -2,8 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Subscription } from './Subscription';
+import type { Subscription } from './Subscription'
 export type SubscriptionResponse = {
-    data: Subscription;
-};
-
+    data: Subscription
+}
