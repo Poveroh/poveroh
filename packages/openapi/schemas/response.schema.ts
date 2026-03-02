@@ -3,11 +3,11 @@ import { z } from '../zod'
 /**
  * Generic success response wrapper
  */
-export const SuccessResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+export const SuccessResponseSchema = <T extends z.ZodTypeAny>(dataSchema?: T) =>
     z.object({
         success: z.literal(true).describe('Always true for success responses'),
         message: z.string().optional().describe('Optional success message'),
-        data: dataSchema.optional().describe('Response data')
+        data: (dataSchema || z.unknown()).optional().describe('Response data')
     })
 
 /**

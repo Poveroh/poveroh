@@ -299,8 +299,8 @@ export type User = {
     name: string
     surname: string
     email: string
-    emailVerified: boolean
-    onBoardingStep: OnBoardingStepEnum
+    emailVerified?: boolean
+    onBoardingStep?: OnBoardingStepEnum & unknown
     onBoardingAt: string | null
     image: string | null
     createdAt: string
@@ -841,7 +841,7 @@ export type UpdateUserRequest = {
     surname?: string
     email?: string
     emailVerified?: boolean
-    onBoardingStep?: OnBoardingStepEnum
+    onBoardingStep?: OnBoardingStepEnum & unknown
     onBoardingAt?: string | null
     image?: string | null
     createdAt?: string
@@ -863,6 +863,62 @@ export type SimpleSuccessResponse = {
      * Optional success message
      */
     message?: string
+}
+
+export type StringFilter = {
+    equals?: string
+    contains?: string
+}
+
+export type FilterOptions = {
+    skip?: number
+    take?: number
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
+}
+
+export type CreateFinancialAccountRequest = {
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+}
+
+export type CreateFinancialAccountMultipartRequest = {
+    data: CreateFinancialAccountRequest
+    /**
+     * Optional file upload for the financial account logo icon
+     */
+    file?: Blob | File
+}
+
+export type UpdateFinancialAccountRequest = {
+    id?: string
+    title?: string
+    description?: string
+    balance?: number
+    type?: FinancialAccountTypeEnum
+    logoIcon?: string
+}
+
+export type FinancialAccountParamsId = {
+    id: string
+}
+
+export type FinancialAccountFilters = {
+    id?: string
+    title?: StringFilter
+    description?: StringFilter
+    type?: FinancialAccountTypeEnum
+    [key: string]:
+        | string
+        | StringFilter
+        | FinancialAccountTypeEnum
+        | string
+        | StringFilter
+        | FinancialAccountTypeEnum
+        | undefined
 }
 
 export type GetRootStatusData = {
@@ -1595,3 +1651,389 @@ export type PutUserResponses = {
 }
 
 export type PutUserResponse = PutUserResponses[keyof PutUserResponses]
+
+export type GetMeData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/me'
+}
+
+export type GetMeErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetMeError = GetMeErrors[keyof GetMeErrors]
+
+export type GetMeResponses = {
+    /**
+     * User found
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id: string
+            name: string
+            surname: string
+            email: string
+            emailVerified: boolean
+            onBoardingStep: OnBoardingStepEnum
+            onBoardingAt: string | null
+            image: string | null
+            createdAt: string
+            updatedAt: string
+            snapshotFrequency: SnapshotFrequencyEnum
+            preferredCurrency: CurrencyEnum
+            preferredLanguage: LanguageEnum
+            dateFormat: DateFormatEnum
+            country: CountriesEnum
+            timezone: TimezoneEnum
+        }
+    }
+}
+
+export type GetMeResponse = GetMeResponses[keyof GetMeResponses]
+
+export type PatchMeData = {
+    body?: UpdateUserRequest
+    path?: never
+    query?: never
+    url: '/me'
+}
+
+export type PatchMeErrors = {
+    /**
+     * Invalid request body
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type PatchMeError = PatchMeErrors[keyof PatchMeErrors]
+
+export type PatchMeResponses = {
+    /**
+     * User updated
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id: string
+            name: string
+            surname: string
+            email: string
+            emailVerified: boolean
+            onBoardingStep: OnBoardingStepEnum
+            onBoardingAt: string | null
+            image: string | null
+            createdAt: string
+            updatedAt: string
+            snapshotFrequency: SnapshotFrequencyEnum
+            preferredCurrency: CurrencyEnum
+            preferredLanguage: LanguageEnum
+            dateFormat: DateFormatEnum
+            country: CountriesEnum
+            timezone: TimezoneEnum
+        }
+    }
+}
+
+export type PatchMeResponse = PatchMeResponses[keyof PatchMeResponses]
+
+export type GetFinancialAccountData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: FinancialAccountFilters
+        options?: FilterOptions
+    }
+    url: '/financial-account'
+}
+
+export type GetFinancialAccountErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetFinancialAccountError = GetFinancialAccountErrors[keyof GetFinancialAccountErrors]
+
+export type GetFinancialAccountResponses = {
+    /**
+     * List of financial accounts
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: Array<FinancialAccount>
+    }
+}
+
+export type GetFinancialAccountResponse = GetFinancialAccountResponses[keyof GetFinancialAccountResponses]
+
+export type PostFinancialAccountData = {
+    /**
+     * Financial account data to create
+     */
+    body: CreateFinancialAccountMultipartRequest
+    path?: never
+    query?: never
+    url: '/financial-account'
+}
+
+export type PostFinancialAccountErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type PostFinancialAccountError = PostFinancialAccountErrors[keyof PostFinancialAccountErrors]
+
+export type PostFinancialAccountResponses = {
+    /**
+     * Financial account created
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: FinancialAccount & unknown
+    }
+}
+
+export type PostFinancialAccountResponse = PostFinancialAccountResponses[keyof PostFinancialAccountResponses]
+
+export type GetFinancialAccountsByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-accounts/{id}'
+}
+
+export type GetFinancialAccountsByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetFinancialAccountsByIdError = GetFinancialAccountsByIdErrors[keyof GetFinancialAccountsByIdErrors]
+
+export type GetFinancialAccountsByIdResponses = {
+    /**
+     * Financial account found
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: FinancialAccount & unknown
+    }
+}
+
+export type GetFinancialAccountsByIdResponse =
+    GetFinancialAccountsByIdResponses[keyof GetFinancialAccountsByIdResponses]
+
+export type DeleteFinancialAccountByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-account/{id}'
+}
+
+export type DeleteFinancialAccountByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteFinancialAccountByIdError = DeleteFinancialAccountByIdErrors[keyof DeleteFinancialAccountByIdErrors]
+
+export type DeleteFinancialAccountByIdResponses = {
+    /**
+     * Financial account deleted
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: unknown
+    }
+}
+
+export type DeleteFinancialAccountByIdResponse =
+    DeleteFinancialAccountByIdResponses[keyof DeleteFinancialAccountByIdResponses]
+
+export type PatchFinancialAccountByIdData = {
+    /**
+     * Financial account data to update
+     */
+    body: UpdateFinancialAccountRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-account/{id}'
+}
+
+export type PatchFinancialAccountByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type PatchFinancialAccountByIdError = PatchFinancialAccountByIdErrors[keyof PatchFinancialAccountByIdErrors]
+
+export type PatchFinancialAccountByIdResponses = {
+    /**
+     * Financial account updated
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: unknown
+    }
+}
+
+export type PatchFinancialAccountByIdResponse =
+    PatchFinancialAccountByIdResponses[keyof PatchFinancialAccountByIdResponses]

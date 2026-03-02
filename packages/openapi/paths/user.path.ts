@@ -5,10 +5,11 @@ import { UpdateUserSchemaRequest, ErrorResponseSchema, SuccessResponseSchema } f
 export const registerUserPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
         method: 'get',
-        path: '/user',
+        path: '/me',
         tags: ['User'],
-        summary: 'Get user',
-        description: 'Get user information and preferences',
+        summary: 'Get authenticated user',
+        description: 'Get authenticated user information and preferences',
+        security: [{ bearerAuth: [] }],
         responses: {
             200: {
                 description: 'User found',
@@ -35,7 +36,7 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
                 }
             },
             404: {
-                description: 'User not found',
+                description: 'Authenticated user not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema
@@ -53,11 +54,13 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
         }
     })
     registry.registerPath({
-        method: 'put',
-        path: '/user',
+        method: 'patch',
+        path: '/me',
         tags: ['User'],
-        summary: 'Update user',
-        description: 'Update user preferences and information',
+        summary: 'Update authenticated user',
+        description:
+            "Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.",
+        security: [{ bearerAuth: [] }],
         request: {
             body: {
                 content: {
@@ -93,7 +96,7 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
                 }
             },
             404: {
-                description: 'User not found',
+                description: 'Authenticated user not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema

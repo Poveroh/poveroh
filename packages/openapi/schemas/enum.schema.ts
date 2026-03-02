@@ -1,5 +1,8 @@
 import { z } from '../zod'
 
+/**
+ * Timezone enum representing the various timezones that can be used in the application
+ */
 export const TimezoneEnum = z
     .enum([
         'AFRICA_ALGIERS',
@@ -161,10 +164,16 @@ export const TimezoneEnum = z
     ])
     .openapi('TimezoneEnum')
 
+/**
+ * Snapshot frequency enum representing how often snapshots are created
+ */
 export const SnapshotFrequencyEnum = z
     .enum(['NONE', 'DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'SEMIANNUAL', 'ANNUAL'])
     .openapi('SnapshotFrequencyEnum')
 
+/**
+ * Asset type enum representing the supported asset categories
+ */
 export const AssetTypeEnum = z
     .enum([
         'STOCK',
@@ -184,6 +193,9 @@ export const AssetTypeEnum = z
     ])
     .openapi('AssetTypeEnum')
 
+/**
+ * Financial account type enum representing the supported account categories
+ */
 export const FinancialAccountTypeEnum = z
     .enum([
         'ONLINE_BANK',
@@ -198,12 +210,21 @@ export const FinancialAccountTypeEnum = z
     ])
     .openapi('FinancialAccountTypeEnum')
 
+/**
+ * Transaction action enum representing the available transaction actions
+ */
 export const TransactionActionEnum = z.enum(['EXPENSES', 'INCOME', 'TRANSFER']).openapi('TransactionActionEnum')
 
+/**
+ * Transaction status enum representing the transaction processing states
+ */
 export const TransactionStatusEnum = z
     .enum(['APPROVED', 'REJECTED', 'IMPORT_PENDING', 'IMPORT_REJECTED', 'IMPORT_APPROVED'])
     .openapi('TransactionStatusEnum')
 
+/**
+ * Currency enum representing the supported currencies in the application
+ */
 export const CurrencyEnum = z
     .enum([
         'USD',
@@ -227,14 +248,26 @@ export const CurrencyEnum = z
     ])
     .openapi('CurrencyEnum')
 
+/**
+ * Remember period enum representing available session persistence durations
+ */
 export const RememberPeriodEnum = z
     .enum(['SAME_DAY', 'THREE_DAYS', 'SEVEN_DAYS', 'FOURTEEN_DAYS', 'THIRTY_DAYS', 'NINETY_DAYS'])
     .openapi('RememberPeriodEnum')
 
+/**
+ * Appearance mode enum representing the available branding display modes
+ */
 export const AppearanceModeEnum = z.enum(['LOGO', 'ICON']).openapi('AppearanceModeEnum')
 
+/**
+ * File type enum representing the supported export file formats
+ */
 export const FileTypeEnum = z.enum(['CSV', 'PDF']).openapi('FileTypeEnum')
 
+/**
+ * Language enum representing the supported localization languages
+ */
 export const LanguageEnum = z
     .enum([
         'EN',
@@ -313,6 +346,9 @@ export const LanguageEnum = z
     ])
     .openapi('LanguageEnum')
 
+/**
+ * Date format enum representing the available date display formats
+ */
 export const DateFormatEnum = z
     .enum([
         'DD_MM_YYYY',
@@ -327,10 +363,17 @@ export const DateFormatEnum = z
     ])
     .openapi('DateFormatEnum')
 
+/**
+ * Onboarding step enum representing the user onboarding workflow stages
+ * In order: EMAIL -> GENERALITES -> PREFERENCES -> COMPLETED
+ */
 export const OnBoardingStepEnum = z
     .enum(['EMAIL', 'GENERALITES', 'PREFERENCES', 'COMPLETED'])
     .openapi('OnBoardingStepEnum')
 
+/**
+ * Countries enum representing the supported country values
+ */
 export const CountriesEnum = z
     .enum([
         'AFGHANISTAN',

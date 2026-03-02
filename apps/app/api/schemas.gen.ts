@@ -363,10 +363,18 @@ export const UserSchema = {
             format: 'email'
         },
         emailVerified: {
-            type: 'boolean'
+            type: 'boolean',
+            default: false
         },
         onBoardingStep: {
-            $ref: '#/components/schemas/OnBoardingStepEnum'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/OnBoardingStepEnum'
+                },
+                {
+                    default: 'EMAIL'
+                }
+            ]
         },
         onBoardingAt: {
             type: 'string',
@@ -407,8 +415,6 @@ export const UserSchema = {
         'name',
         'surname',
         'email',
-        'emailVerified',
-        'onBoardingStep',
         'onBoardingAt',
         'image',
         'createdAt',
@@ -609,10 +615,12 @@ export const FinancialAccountSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string'
+            type: 'string',
+            format: 'uuid'
         },
         userId: {
-            type: 'string'
+            type: 'string',
+            format: 'uuid'
         },
         title: {
             type: 'string'
@@ -1595,10 +1603,18 @@ export const UpdateUserRequestSchema = {
             format: 'email'
         },
         emailVerified: {
-            type: 'boolean'
+            type: 'boolean',
+            default: false
         },
         onBoardingStep: {
-            $ref: '#/components/schemas/OnBoardingStepEnum'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/OnBoardingStepEnum'
+                },
+                {
+                    default: 'EMAIL'
+                }
+            ]
         },
         onBoardingAt: {
             type: 'string',
@@ -1650,4 +1666,142 @@ export const SimpleSuccessResponseSchema = {
         }
     },
     required: ['success']
+} as const
+
+export const StringFilterSchema = {
+    type: 'object',
+    properties: {
+        equals: {
+            type: 'string'
+        },
+        contains: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const FilterOptionsSchema = {
+    type: 'object',
+    properties: {
+        skip: {
+            type: 'integer',
+            minimum: 0
+        },
+        take: {
+            type: 'integer',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        sortBy: {
+            type: 'string'
+        },
+        sortOrder: {
+            type: 'string',
+            enum: ['asc', 'desc']
+        }
+    }
+} as const
+
+export const CreateFinancialAccountRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        balance: {
+            type: 'number'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        },
+        logoIcon: {
+            type: 'string'
+        }
+    },
+    required: ['title', 'description', 'balance', 'type', 'logoIcon']
+} as const
+
+export const CreateFinancialAccountMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/CreateFinancialAccountRequest'
+        },
+        file: {
+            type: 'string',
+            format: 'binary',
+            description: 'Optional file upload for the financial account logo icon'
+        }
+    },
+    required: ['data']
+} as const
+
+export const UpdateFinancialAccountRequestSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        balance: {
+            type: 'number'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        },
+        logoIcon: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const FinancialAccountParamsIdSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['id']
+} as const
+
+export const FinancialAccountFiltersSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        title: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        description: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        }
+    },
+    additionalProperties: {
+        anyOf: [
+            {
+                type: 'string'
+            },
+            {
+                $ref: '#/components/schemas/StringFilter'
+            },
+            {
+                $ref: '#/components/schemas/FinancialAccountTypeEnum'
+            }
+        ]
+    }
 } as const

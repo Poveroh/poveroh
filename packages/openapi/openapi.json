@@ -401,10 +401,18 @@
                         "format": "email"
                     },
                     "emailVerified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "default": false
                     },
                     "onBoardingStep": {
-                        "$ref": "#/components/schemas/OnBoardingStepEnum"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OnBoardingStepEnum"
+                            },
+                            {
+                                "default": "EMAIL"
+                            }
+                        ]
                     },
                     "onBoardingAt": {
                         "type": "string",
@@ -445,8 +453,6 @@
                     "name",
                     "surname",
                     "email",
-                    "emailVerified",
-                    "onBoardingStep",
                     "onBoardingAt",
                     "image",
                     "createdAt",
@@ -660,10 +666,12 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "userId": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "title": {
                         "type": "string"
@@ -1753,10 +1761,18 @@
                         "format": "email"
                     },
                     "emailVerified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "default": false
                     },
                     "onBoardingStep": {
-                        "$ref": "#/components/schemas/OnBoardingStepEnum"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OnBoardingStepEnum"
+                            },
+                            {
+                                "default": "EMAIL"
+                            }
+                        ]
                     },
                     "onBoardingAt": {
                         "type": "string",
@@ -1811,6 +1827,150 @@
                 "required": [
                     "success"
                 ]
+            },
+            "StringFilter": {
+                "type": "object",
+                "properties": {
+                    "equals": {
+                        "type": "string"
+                    },
+                    "contains": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FilterOptions": {
+                "type": "object",
+                "properties": {
+                    "skip": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "take": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "sortBy": {
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    }
+                }
+            },
+            "CreateFinancialAccountRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon"
+                ]
+            },
+            "CreateFinancialAccountMultipartRequest": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/CreateFinancialAccountRequest"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Optional file upload for the financial account logo icon"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "UpdateFinancialAccountRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FinancialAccountParamsId": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "FinancialAccountFilters": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    }
+                },
+                "additionalProperties": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/components/schemas/StringFilter"
+                        },
+                        {
+                            "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                        }
+                    ]
+                }
             }
         },
         "parameters": {},
@@ -2595,6 +2755,856 @@
                     },
                     "404": {
                         "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get authenticated user",
+                "description": "Get authenticated user information and preferences",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                        },
+                                                        "surname": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "format": "email"
+                                                        },
+                                                        "emailVerified": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "onBoardingStep": {
+                                                            "$ref": "#/components/schemas/OnBoardingStepEnum"
+                                                        },
+                                                        "onBoardingAt": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "image": {
+                                                            "type": "string",
+                                                            "nullable": true,
+                                                            "format": "uri"
+                                                        },
+                                                        "createdAt": {
+                                                            "type": "string"
+                                                        },
+                                                        "updatedAt": {
+                                                            "type": "string"
+                                                        },
+                                                        "snapshotFrequency": {
+                                                            "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                                                        },
+                                                        "preferredCurrency": {
+                                                            "$ref": "#/components/schemas/CurrencyEnum"
+                                                        },
+                                                        "preferredLanguage": {
+                                                            "$ref": "#/components/schemas/LanguageEnum"
+                                                        },
+                                                        "dateFormat": {
+                                                            "$ref": "#/components/schemas/DateFormatEnum"
+                                                        },
+                                                        "country": {
+                                                            "$ref": "#/components/schemas/CountriesEnum"
+                                                        },
+                                                        "timezone": {
+                                                            "$ref": "#/components/schemas/TimezoneEnum"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "surname",
+                                                        "email",
+                                                        "emailVerified",
+                                                        "onBoardingStep",
+                                                        "onBoardingAt",
+                                                        "image",
+                                                        "createdAt",
+                                                        "updatedAt",
+                                                        "snapshotFrequency",
+                                                        "preferredCurrency",
+                                                        "preferredLanguage",
+                                                        "dateFormat",
+                                                        "country",
+                                                        "timezone"
+                                                    ],
+                                                    "description": "Response data"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Authenticated user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update authenticated user",
+                "description": "Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                        },
+                                                        "surname": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "format": "email"
+                                                        },
+                                                        "emailVerified": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "onBoardingStep": {
+                                                            "$ref": "#/components/schemas/OnBoardingStepEnum"
+                                                        },
+                                                        "onBoardingAt": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "image": {
+                                                            "type": "string",
+                                                            "nullable": true,
+                                                            "format": "uri"
+                                                        },
+                                                        "createdAt": {
+                                                            "type": "string"
+                                                        },
+                                                        "updatedAt": {
+                                                            "type": "string"
+                                                        },
+                                                        "snapshotFrequency": {
+                                                            "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                                                        },
+                                                        "preferredCurrency": {
+                                                            "$ref": "#/components/schemas/CurrencyEnum"
+                                                        },
+                                                        "preferredLanguage": {
+                                                            "$ref": "#/components/schemas/LanguageEnum"
+                                                        },
+                                                        "dateFormat": {
+                                                            "$ref": "#/components/schemas/DateFormatEnum"
+                                                        },
+                                                        "country": {
+                                                            "$ref": "#/components/schemas/CountriesEnum"
+                                                        },
+                                                        "timezone": {
+                                                            "$ref": "#/components/schemas/TimezoneEnum"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "surname",
+                                                        "email",
+                                                        "emailVerified",
+                                                        "onBoardingStep",
+                                                        "onBoardingAt",
+                                                        "image",
+                                                        "createdAt",
+                                                        "updatedAt",
+                                                        "snapshotFrequency",
+                                                        "preferredCurrency",
+                                                        "preferredLanguage",
+                                                        "dateFormat",
+                                                        "country",
+                                                        "timezone"
+                                                    ],
+                                                    "description": "Response data"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Authenticated user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-account": {
+            "get": {
+                "tags": [
+                    "Financial Account"
+                ],
+                "summary": "Get all financial accounts",
+                "description": "Retrieve a list of all financial accounts associated with the user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/FinancialAccountFilters"
+                        },
+                        "required": false,
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        },
+                        "required": false,
+                        "name": "options",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of financial accounts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FinancialAccount"
+                                            },
+                                            "description": "Response data"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Account not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Financial Account"
+                ],
+                "summary": "Create financial account",
+                "description": "Create a new financial account with the provided data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Financial account data to create",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFinancialAccountMultipartRequest"
+                            },
+                            "encoding": {
+                                "data": {
+                                    "contentType": "application/json"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Financial account created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/FinancialAccount"
+                                                },
+                                                {
+                                                    "description": "Response data"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-accounts/{id}": {
+            "get": {
+                "tags": [
+                    "Financial Account"
+                ],
+                "summary": "Get financial account by ID",
+                "description": "Retrieve a specific financial account by its ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Financial account found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/FinancialAccount"
+                                                },
+                                                {
+                                                    "description": "Response data"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Financial account not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-account/{id}": {
+            "patch": {
+                "tags": [
+                    "Financial Account"
+                ],
+                "summary": "Update financial account",
+                "description": "Update an existing financial account with the provided data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Financial account data to update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFinancialAccountRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Financial account updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "nullable": true,
+                                            "description": "Response data"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Financial account not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Financial Account"
+                ],
+                "summary": "Delete financial account",
+                "description": "Delete an existing financial account with the provided ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Financial account deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "enum": [
+                                                true
+                                            ],
+                                            "description": "Always true for success responses"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Optional success message"
+                                        },
+                                        "data": {
+                                            "nullable": true,
+                                            "description": "Response data"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Financial account not found",
                         "content": {
                             "application/json": {
                                 "schema": {

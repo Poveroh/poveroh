@@ -1,0 +1,293 @@
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import {
+    CreateFinancialAccountMultipartRequestSchema,
+    ErrorResponseSchema,
+    FinancialAccountFiltersSchema,
+    FinancialAccountParamsId,
+    FinancialAccountSchema,
+    SuccessResponseSchema,
+    UpdateFinancialAccountRequestSchema,
+    ReadQuerySchema
+} from '../schemas'
+
+export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
+    registry.registerPath({
+        method: 'get',
+        path: '/financial-account',
+        tags: ['Financial Account'],
+        summary: 'Get all financial accounts',
+        description: 'Retrieve a list of all financial accounts associated with the user',
+        security: [{ bearerAuth: [] }],
+        request: {
+            query: ReadQuerySchema(FinancialAccountFiltersSchema)
+        },
+        responses: {
+            200: {
+                description: 'List of financial accounts',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(FinancialAccountSchema.array())
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Account not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'get',
+        path: '/financial-accounts/{id}',
+        tags: ['Financial Account'],
+        summary: 'Get financial account by ID',
+        description: 'Retrieve a specific financial account by its ID',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: FinancialAccountParamsId.describe('ID of the financial account to retrieve')
+        },
+        responses: {
+            200: {
+                description: 'Financial account found',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(FinancialAccountSchema)
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Financial account not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'post',
+        path: '/financial-account',
+        tags: ['Financial Account'],
+        summary: 'Create financial account',
+        description: 'Create a new financial account with the provided data',
+        security: [{ bearerAuth: [] }],
+        request: {
+            body: {
+                description: 'Financial account data to create',
+                required: true,
+                content: {
+                    'multipart/form-data': {
+                        schema: CreateFinancialAccountMultipartRequestSchema,
+                        encoding: {
+                            data: {
+                                contentType: 'application/json'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Financial account created',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(FinancialAccountSchema)
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'patch',
+        path: '/financial-account/{id}',
+        tags: ['Financial Account'],
+        summary: 'Update financial account',
+        description: 'Update an existing financial account with the provided data',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: FinancialAccountParamsId.describe('ID of the financial account to update'),
+            body: {
+                description: 'Financial account data to update',
+                required: true,
+                content: {
+                    'application/json': {
+                        schema: UpdateFinancialAccountRequestSchema
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Financial account updated',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema()
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Financial account not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'delete',
+        path: '/financial-account/{id}',
+        tags: ['Financial Account'],
+        summary: 'Delete financial account',
+        description: 'Delete an existing financial account with the provided ID',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: FinancialAccountParamsId.describe('ID of the financial account to delete')
+        },
+        responses: {
+            200: {
+                description: 'Financial account deleted',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema()
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Financial account not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+}
