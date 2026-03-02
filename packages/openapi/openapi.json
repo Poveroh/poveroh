@@ -1813,7 +1813,14 @@
                 ]
             }
         },
-        "parameters": {}
+        "parameters": {},
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
     },
     "paths": {
         "/": {
@@ -1823,6 +1830,7 @@
                 ],
                 "operationId": "getRootStatus",
                 "summary": "Healthcheck",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1854,6 +1862,7 @@
                 ],
                 "operationId": "getStatus",
                 "summary": "Healthcheck",
+                "security": [],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2607,5 +2616,10 @@
                 }
             }
         }
-    }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ]
 }

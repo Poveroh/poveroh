@@ -73,6 +73,20 @@ const generate = () => {
 
     const merged = mergeOpenApi(existing, generated as OpenApiDocument)
 
+    merged.components = {
+        ...(merged.components ?? {}),
+        securitySchemes: {
+            ...((merged.components?.securitySchemes as Record<string, unknown> | undefined) ?? {}),
+            bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT'
+            }
+        }
+    }
+
+    merged.security = [{ bearerAuth: [] }]
+
     fs.writeFileSync(OPENAPI_PATH, `${JSON.stringify(merged, null, 4)}\n`, 'utf8')
 
     console.log(`✅ OpenAPI generated from code and merged: ${OPENAPI_PATH}`)

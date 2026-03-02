@@ -8,6 +8,7 @@ export const registerStatusPath = (registry: OpenAPIRegistry) => {
         tags: ['Status'],
         operationId: 'getRootStatus',
         summary: 'Healthcheck',
+        security: [],
         responses: {
             200: {
                 description: 'OK',
@@ -34,6 +35,7 @@ export const registerStatusPath = (registry: OpenAPIRegistry) => {
         tags: ['Status'],
         operationId: 'getStatus',
         summary: 'Healthcheck',
+        security: [],
         responses: {
             200: {
                 description: 'OK',

@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth'
-import { customSession } from 'better-auth/plugins'
+import { bearer, customSession } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
@@ -41,6 +41,7 @@ export const auth = betterAuth({
         provider: 'postgresql'
     }),
     plugins: [
+        bearer(),
         customSession(async ({ user, session }) => {
             const readedUser = await UserHelper.getUserByEmail(user.email)
 

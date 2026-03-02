@@ -1,5 +1,6 @@
 import { client } from '@/api/client.gen'
 import appConfig from '@/config'
+import { authToken } from '@/lib/auth-token'
 import axios, { type AxiosRequestConfig } from 'axios'
 
 /**
@@ -14,6 +15,26 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json'
     },
     withCredentials: true
+})
+
+axiosInstance.interceptors.request.use(config => {
+    const token = authToken.get()
+
+    if (!token) return config
+
+    config.headers = config.headers || {}
+    config.headers.Authorization = `Bearer ${token}`
+
+    return config
+})
+
+axiosInstance.interceptors.response.use(response => {
+    const nextToken = response.headers['set-auth-token']
+    if (typeof nextToken === 'string') {
+        authToken.set(nextToken)
+    }
+
+    return response
 })
 
 client.setConfig({
@@ -57,6 +78,15 @@ export const withoutAuth = () => {
             'Content-Type': 'application/json'
         },
         withCredentials: false
+    })
+
+    axiosInstanceNoAuth.interceptors.response.use(response => {
+        const nextToken = response.headers['set-auth-token']
+        if (typeof nextToken === 'string') {
+            authToken.set(nextToken)
+        }
+
+        return response
     })
 
     return {

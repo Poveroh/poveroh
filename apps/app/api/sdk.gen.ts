@@ -129,13 +129,21 @@ export const getStatus = <ThrowOnError extends boolean = false>(options?: Option
  * Get all users
  */
 export const getUsers = <ThrowOnError extends boolean = false>(options?: Options<GetUsersData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUsersResponses, unknown, ThrowOnError>({ url: '/users', ...options })
+    (options?.client ?? client).get<GetUsersResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/users',
+        ...options
+    })
 
 /**
  * Create user
  */
 export const postUsers = <ThrowOnError extends boolean = false>(options?: Options<PostUsersData, ThrowOnError>) =>
-    (options?.client ?? client).post<PostUsersResponses, unknown, ThrowOnError>({ url: '/users', ...options })
+    (options?.client ?? client).post<PostUsersResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/users',
+        ...options
+    })
 
 /**
  * Delete user
@@ -144,6 +152,7 @@ export const deleteUsersById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteUsersByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteUsersByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/users/{id}',
         ...options
     })
@@ -153,6 +162,7 @@ export const deleteUsersById = <ThrowOnError extends boolean = false>(
  */
 export const getUsersById = <ThrowOnError extends boolean = false>(options?: Options<GetUsersByIdData, ThrowOnError>) =>
     (options?.client ?? client).get<GetUsersByIdResponses, GetUsersByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/users/{id}',
         ...options
     })
@@ -161,7 +171,11 @@ export const getUsersById = <ThrowOnError extends boolean = false>(options?: Opt
  * Update user
  */
 export const putUsersById = <ThrowOnError extends boolean = false>(options?: Options<PutUsersByIdData, ThrowOnError>) =>
-    (options?.client ?? client).put<PutUsersByIdResponses, unknown, ThrowOnError>({ url: '/users/{id}', ...options })
+    (options?.client ?? client).put<PutUsersByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/users/{id}',
+        ...options
+    })
 
 /**
  * Get all transactions
@@ -170,6 +184,7 @@ export const getTransactions = <ThrowOnError extends boolean = false>(
     options?: Options<GetTransactionsData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetTransactionsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions',
         ...options
     })
@@ -181,6 +196,7 @@ export const postTransactions = <ThrowOnError extends boolean = false>(
     options?: Options<PostTransactionsData, ThrowOnError>
 ) =>
     (options?.client ?? client).post<PostTransactionsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions',
         ...options
     })
@@ -192,6 +208,7 @@ export const deleteTransactionsById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteTransactionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteTransactionsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions/{id}',
         ...options
     })
@@ -203,6 +220,7 @@ export const getTransactionsById = <ThrowOnError extends boolean = false>(
     options?: Options<GetTransactionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetTransactionsByIdResponses, GetTransactionsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions/{id}',
         ...options
     })
@@ -214,6 +232,7 @@ export const putTransactionsById = <ThrowOnError extends boolean = false>(
     options?: Options<PutTransactionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutTransactionsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions/{id}',
         ...options
     })
@@ -222,13 +241,21 @@ export const putTransactionsById = <ThrowOnError extends boolean = false>(
  * Get all accounts
  */
 export const getAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetAccountsData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetAccountsResponses, unknown, ThrowOnError>({ url: '/accounts', ...options })
+    (options?.client ?? client).get<GetAccountsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/accounts',
+        ...options
+    })
 
 /**
  * Create account
  */
 export const postAccounts = <ThrowOnError extends boolean = false>(options?: Options<PostAccountsData, ThrowOnError>) =>
-    (options?.client ?? client).post<PostAccountsResponses, unknown, ThrowOnError>({ url: '/accounts', ...options })
+    (options?.client ?? client).post<PostAccountsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/accounts',
+        ...options
+    })
 
 /**
  * Delete account
@@ -237,6 +264,7 @@ export const deleteAccountsById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteAccountsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteAccountsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/accounts/{id}',
         ...options
     })
@@ -248,6 +276,7 @@ export const getAccountsById = <ThrowOnError extends boolean = false>(
     options?: Options<GetAccountsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetAccountsByIdResponses, GetAccountsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/accounts/{id}',
         ...options
     })
@@ -259,6 +288,7 @@ export const putAccountsById = <ThrowOnError extends boolean = false>(
     options?: Options<PutAccountsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutAccountsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/accounts/{id}',
         ...options
     })
@@ -268,7 +298,12 @@ export const putAccountsById = <ThrowOnError extends boolean = false>(
  */
 export const getCategories = <ThrowOnError extends boolean = false>(
     options?: Options<GetCategoriesData, ThrowOnError>
-) => (options?.client ?? client).get<GetCategoriesResponses, unknown, ThrowOnError>({ url: '/categories', ...options })
+) =>
+    (options?.client ?? client).get<GetCategoriesResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/categories',
+        ...options
+    })
 
 /**
  * Create category
@@ -276,7 +311,11 @@ export const getCategories = <ThrowOnError extends boolean = false>(
 export const postCategories = <ThrowOnError extends boolean = false>(
     options?: Options<PostCategoriesData, ThrowOnError>
 ) =>
-    (options?.client ?? client).post<PostCategoriesResponses, unknown, ThrowOnError>({ url: '/categories', ...options })
+    (options?.client ?? client).post<PostCategoriesResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/categories',
+        ...options
+    })
 
 /**
  * Delete category
@@ -285,6 +324,7 @@ export const deleteCategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteCategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteCategoriesByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/categories/{id}',
         ...options
     })
@@ -296,6 +336,7 @@ export const getCategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<GetCategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetCategoriesByIdResponses, GetCategoriesByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/categories/{id}',
         ...options
     })
@@ -307,6 +348,7 @@ export const putCategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<PutCategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutCategoriesByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/categories/{id}',
         ...options
     })
@@ -318,6 +360,7 @@ export const getSubcategories = <ThrowOnError extends boolean = false>(
     options?: Options<GetSubcategoriesData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetSubcategoriesResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subcategories',
         ...options
     })
@@ -329,6 +372,7 @@ export const postSubcategories = <ThrowOnError extends boolean = false>(
     options?: Options<PostSubcategoriesData, ThrowOnError>
 ) =>
     (options?.client ?? client).post<PostSubcategoriesResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subcategories',
         ...options
     })
@@ -340,6 +384,7 @@ export const deleteSubcategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteSubcategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteSubcategoriesByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subcategories/{id}',
         ...options
     })
@@ -351,6 +396,7 @@ export const getSubcategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<GetSubcategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetSubcategoriesByIdResponses, GetSubcategoriesByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subcategories/{id}',
         ...options
     })
@@ -362,6 +408,7 @@ export const putSubcategoriesById = <ThrowOnError extends boolean = false>(
     options?: Options<PutSubcategoriesByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutSubcategoriesByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subcategories/{id}',
         ...options
     })
@@ -370,14 +417,23 @@ export const putSubcategoriesById = <ThrowOnError extends boolean = false>(
  * Get all snapshots
  */
 export const getSnapshots = <ThrowOnError extends boolean = false>(options?: Options<GetSnapshotsData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetSnapshotsResponses, unknown, ThrowOnError>({ url: '/snapshots', ...options })
+    (options?.client ?? client).get<GetSnapshotsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/snapshots',
+        ...options
+    })
 
 /**
  * Create snapshot
  */
 export const postSnapshots = <ThrowOnError extends boolean = false>(
     options?: Options<PostSnapshotsData, ThrowOnError>
-) => (options?.client ?? client).post<PostSnapshotsResponses, unknown, ThrowOnError>({ url: '/snapshots', ...options })
+) =>
+    (options?.client ?? client).post<PostSnapshotsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/snapshots',
+        ...options
+    })
 
 /**
  * Delete snapshot
@@ -386,6 +442,7 @@ export const deleteSnapshotsById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteSnapshotsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteSnapshotsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/snapshots/{id}',
         ...options
     })
@@ -397,6 +454,7 @@ export const getSnapshotsById = <ThrowOnError extends boolean = false>(
     options?: Options<GetSnapshotsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetSnapshotsByIdResponses, GetSnapshotsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/snapshots/{id}',
         ...options
     })
@@ -408,6 +466,7 @@ export const putSnapshotsById = <ThrowOnError extends boolean = false>(
     options?: Options<PutSnapshotsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutSnapshotsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/snapshots/{id}',
         ...options
     })
@@ -416,13 +475,21 @@ export const putSnapshotsById = <ThrowOnError extends boolean = false>(
  * Get all sessions
  */
 export const getSessions = <ThrowOnError extends boolean = false>(options?: Options<GetSessionsData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetSessionsResponses, unknown, ThrowOnError>({ url: '/sessions', ...options })
+    (options?.client ?? client).get<GetSessionsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/sessions',
+        ...options
+    })
 
 /**
  * Create session
  */
 export const postSessions = <ThrowOnError extends boolean = false>(options?: Options<PostSessionsData, ThrowOnError>) =>
-    (options?.client ?? client).post<PostSessionsResponses, unknown, ThrowOnError>({ url: '/sessions', ...options })
+    (options?.client ?? client).post<PostSessionsResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/sessions',
+        ...options
+    })
 
 /**
  * Delete session
@@ -431,6 +498,7 @@ export const deleteSessionsById = <ThrowOnError extends boolean = false>(
     options?: Options<DeleteSessionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).delete<DeleteSessionsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/sessions/{id}',
         ...options
     })
@@ -442,6 +510,7 @@ export const getSessionsById = <ThrowOnError extends boolean = false>(
     options?: Options<GetSessionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).get<GetSessionsByIdResponses, GetSessionsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/sessions/{id}',
         ...options
     })
@@ -453,6 +522,7 @@ export const putSessionsById = <ThrowOnError extends boolean = false>(
     options?: Options<PutSessionsByIdData, ThrowOnError>
 ) =>
     (options?.client ?? client).put<PutSessionsByIdResponses, unknown, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/sessions/{id}',
         ...options
     })
@@ -463,7 +533,11 @@ export const putSessionsById = <ThrowOnError extends boolean = false>(
  * Get user information and preferences
  */
 export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({ url: '/user', ...options })
+    (options?.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user',
+        ...options
+    })
 
 /**
  * Update user
@@ -472,6 +546,7 @@ export const getUser = <ThrowOnError extends boolean = false>(options?: Options<
  */
 export const putUser = <ThrowOnError extends boolean = false>(options?: Options<PutUserData, ThrowOnError>) =>
     (options?.client ?? client).put<PutUserResponses, PutUserErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
         url: '/user',
         ...options,
         headers: {

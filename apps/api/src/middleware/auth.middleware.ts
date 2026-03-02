@@ -25,7 +25,9 @@ export class AuthMiddleware {
             }
 
             // Fallback to legacy JWT token for backward compatibility during migration
-            const token = req.cookies.token
+            const authHeader = req.headers.authorization
+            const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : undefined
+            const token = bearerToken || req.cookies.token
             if (token) {
                 jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
                     if (err) {

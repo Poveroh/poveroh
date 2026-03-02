@@ -1,6 +1,7 @@
 'use client'
 
 import { authClient } from '@/lib/auth'
+import { authToken } from '@/lib/auth-token'
 import { cookie, storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
 import { isValidEmail, isEmpty } from '@poveroh/utils'
@@ -19,7 +20,16 @@ export const useAuth = () => {
 
     const authSession = authClient.useSession()
 
+    const storeTokenFromFetchContext = (context: unknown) => {
+        const response = (context as { response?: Response } | undefined)?.response
+        const token = response?.headers?.get('set-auth-token')
+        if (token) {
+            authToken.set(token)
+        }
+    }
+
     const cleanUpAuthData = () => {
+        authToken.clear()
         cookie.clear()
         storage.clear()
         userStore.resetAll()
@@ -37,7 +47,12 @@ export const useAuth = () => {
                     throw new Error('Password not valid')
                 }
 
-                const result = await authClient.signIn.email(userToLogin)
+                const result = await authClient.signIn.email({
+                    ...userToLogin,
+                    fetchOptions: {
+                        onSuccess: storeTokenFromFetchContext
+                    }
+                })
 
                 if (result.error) {
                     throw new Error(result.error.message || 'Login failed')
@@ -68,7 +83,10 @@ export const useAuth = () => {
                 const result = await authClient.signUp.email({
                     email: userToSave.email,
                     password: userToSave.password,
-                    name: ' '
+                    name: ' ',
+                    fetchOptions: {
+                        onSuccess: storeTokenFromFetchContext
+                    }
                 })
 
                 if (result.error) {
