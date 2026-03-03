@@ -21,181 +21,6 @@
     ],
     "components": {
         "schemas": {
-            "StatusResponse": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "string"
-                    },
-                    "uptime": {
-                        "type": "number"
-                    },
-                    "version": {
-                        "type": "string"
-                    },
-                    "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "status",
-                    "uptime",
-                    "version",
-                    "timestamp"
-                ]
-            },
-            "ErrorResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "enum": [
-                            false
-                        ],
-                        "description": "Always false for error responses"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Error message describing what went wrong"
-                    },
-                    "error": {
-                        "nullable": true,
-                        "description": "Optional additional error details or context"
-                    }
-                },
-                "required": [
-                    "success",
-                    "message"
-                ]
-            },
-            "SnapshotFrequencyEnum": {
-                "type": "string",
-                "enum": [
-                    "NONE",
-                    "DAILY",
-                    "WEEKLY",
-                    "MONTHLY",
-                    "QUARTERLY",
-                    "SEMIANNUAL",
-                    "ANNUAL"
-                ]
-            },
-            "CurrencyEnum": {
-                "type": "string",
-                "enum": [
-                    "USD",
-                    "EUR",
-                    "GBP",
-                    "JPY",
-                    "CNY",
-                    "INR",
-                    "AUD",
-                    "CAD",
-                    "CHF",
-                    "SEK",
-                    "NZD",
-                    "MXN",
-                    "SGD",
-                    "HKD",
-                    "NOK",
-                    "KRW",
-                    "TRY",
-                    "UNKNOWN"
-                ]
-            },
-            "LanguageEnum": {
-                "type": "string",
-                "enum": [
-                    "EN",
-                    "ES",
-                    "FR",
-                    "DE",
-                    "IT",
-                    "PT",
-                    "NL",
-                    "RU",
-                    "ZH",
-                    "JA",
-                    "KO",
-                    "AR",
-                    "HI",
-                    "TH",
-                    "VI",
-                    "TR",
-                    "PL",
-                    "CS",
-                    "HU",
-                    "RO",
-                    "BG",
-                    "HR",
-                    "SK",
-                    "SL",
-                    "ET",
-                    "LV",
-                    "LT",
-                    "MT",
-                    "FI",
-                    "SV",
-                    "DA",
-                    "NO",
-                    "IS",
-                    "EL",
-                    "HE",
-                    "FA",
-                    "UR",
-                    "BN",
-                    "TA",
-                    "TE",
-                    "ML",
-                    "KN",
-                    "GU",
-                    "MR",
-                    "PA",
-                    "OR",
-                    "AS",
-                    "NE",
-                    "SI",
-                    "MY",
-                    "KH",
-                    "LO",
-                    "KA",
-                    "AM",
-                    "TI",
-                    "SW",
-                    "ZU",
-                    "AF",
-                    "XH",
-                    "ST",
-                    "TN",
-                    "SS",
-                    "VE",
-                    "TS",
-                    "NR",
-                    "IG",
-                    "YO",
-                    "HA",
-                    "FF",
-                    "WO",
-                    "BM",
-                    "DY",
-                    "SN"
-                ]
-            },
-            "DateFormatEnum": {
-                "type": "string",
-                "enum": [
-                    "DD_MM_YYYY",
-                    "MM_DD_YYYY",
-                    "YYYY_MM_DD",
-                    "DD_MM_YY",
-                    "MM_DD_YY",
-                    "YY_MM_DD",
-                    "DD_MMMM_YYYY",
-                    "MMMM_DD_YYYY",
-                    "YYYY_MMMM_DD"
-                ]
-            },
             "TimezoneEnum": {
                 "type": "string",
                 "enum": [
@@ -350,6 +175,418 @@
                     "PACIFIC_TONGATAPU"
                 ]
             },
+            "SnapshotFrequencyEnum": {
+                "type": "string",
+                "enum": [
+                    "NONE",
+                    "DAILY",
+                    "WEEKLY",
+                    "MONTHLY",
+                    "QUARTERLY",
+                    "SEMIANNUAL",
+                    "ANNUAL"
+                ]
+            },
+            "AssetTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "STOCK",
+                    "BOND",
+                    "ETF",
+                    "MUTUAL_FUND",
+                    "CRYPTOCURRENCY",
+                    "REAL_ESTATE",
+                    "COLLECTIBLE",
+                    "PRIVATE_EQUITY",
+                    "VENTURE_CAPITAL",
+                    "PRIVATE_DEBT",
+                    "P2P_LENDING",
+                    "INSURANCE_POLICY",
+                    "AGRICULTURAL_LAND",
+                    "OTHER"
+                ]
+            },
+            "FinancialAccountTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "ONLINE_BANK",
+                    "BANK_ACCOUNT",
+                    "CIRCUIT",
+                    "DEPOSIT_BANK",
+                    "BROKER",
+                    "WALLET",
+                    "CASH",
+                    "CREDIT_CARD",
+                    "OTHER"
+                ]
+            },
+            "TransactionActionEnum": {
+                "type": "string",
+                "enum": [
+                    "EXPENSES",
+                    "INCOME",
+                    "TRANSFER"
+                ]
+            },
+            "TransactionStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "APPROVED",
+                    "REJECTED",
+                    "IMPORT_PENDING",
+                    "IMPORT_REJECTED",
+                    "IMPORT_APPROVED"
+                ]
+            },
+            "CurrencyEnum": {
+                "type": "string",
+                "enum": [
+                    "USD",
+                    "EUR",
+                    "GBP",
+                    "JPY",
+                    "CNY",
+                    "INR",
+                    "AUD",
+                    "CAD",
+                    "CHF",
+                    "SEK",
+                    "NZD",
+                    "MXN",
+                    "SGD",
+                    "HKD",
+                    "NOK",
+                    "KRW",
+                    "TRY",
+                    "UNKNOWN"
+                ]
+            },
+            "RememberPeriodEnum": {
+                "type": "string",
+                "enum": [
+                    "SAME_DAY",
+                    "THREE_DAYS",
+                    "SEVEN_DAYS",
+                    "FOURTEEN_DAYS",
+                    "THIRTY_DAYS",
+                    "NINETY_DAYS"
+                ]
+            },
+            "AppearanceModeEnum": {
+                "type": "string",
+                "enum": [
+                    "LOGO",
+                    "ICON"
+                ]
+            },
+            "FileTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "CSV",
+                    "PDF"
+                ]
+            },
+            "LanguageEnum": {
+                "type": "string",
+                "enum": [
+                    "EN",
+                    "ES",
+                    "FR",
+                    "DE",
+                    "IT",
+                    "PT",
+                    "NL",
+                    "RU",
+                    "ZH",
+                    "JA",
+                    "KO",
+                    "AR",
+                    "HI",
+                    "TH",
+                    "VI",
+                    "TR",
+                    "PL",
+                    "CS",
+                    "HU",
+                    "RO",
+                    "BG",
+                    "HR",
+                    "SK",
+                    "SL",
+                    "ET",
+                    "LV",
+                    "LT",
+                    "MT",
+                    "FI",
+                    "SV",
+                    "DA",
+                    "NO",
+                    "IS",
+                    "EL",
+                    "HE",
+                    "FA",
+                    "UR",
+                    "BN",
+                    "TA",
+                    "TE",
+                    "ML",
+                    "KN",
+                    "GU",
+                    "MR",
+                    "PA",
+                    "OR",
+                    "AS",
+                    "NE",
+                    "SI",
+                    "MY",
+                    "KH",
+                    "LO",
+                    "KA",
+                    "AM",
+                    "TI",
+                    "SW",
+                    "ZU",
+                    "AF",
+                    "XH",
+                    "ST",
+                    "TN",
+                    "SS",
+                    "VE",
+                    "TS",
+                    "NR",
+                    "IG",
+                    "YO",
+                    "HA",
+                    "FF",
+                    "WO",
+                    "BM",
+                    "DY",
+                    "SN"
+                ]
+            },
+            "DateFormatEnum": {
+                "type": "string",
+                "enum": [
+                    "DD_MM_YYYY",
+                    "MM_DD_YYYY",
+                    "YYYY_MM_DD",
+                    "DD_MM_YY",
+                    "MM_DD_YY",
+                    "YY_MM_DD",
+                    "DD_MMMM_YYYY",
+                    "MMMM_DD_YYYY",
+                    "YYYY_MMMM_DD"
+                ]
+            },
+            "OnBoardingStepEnum": {
+                "type": "string",
+                "enum": [
+                    "EMAIL",
+                    "GENERALITES",
+                    "PREFERENCES",
+                    "COMPLETED"
+                ]
+            },
+            "CountriesEnum": {
+                "type": "string",
+                "enum": [
+                    "AFGHANISTAN",
+                    "ALBANIA",
+                    "ALGERIA",
+                    "ANDORRA",
+                    "ANGOLA",
+                    "ANTIGUA_AND_BARBUDA",
+                    "ARGENTINA",
+                    "ARMENIA",
+                    "AUSTRALIA",
+                    "AUSTRIA",
+                    "AZERBAIJAN",
+                    "BAHAMAS",
+                    "BAHRAIN",
+                    "BANGLADESH",
+                    "BARBADOS",
+                    "BELARUS",
+                    "BELGIUM",
+                    "BELIZE",
+                    "BENIN",
+                    "BHUTAN",
+                    "BOLIVIA",
+                    "BOSNIA_AND_HERZEGOVINA",
+                    "BOTSWANA",
+                    "BRAZIL",
+                    "BRUNEI",
+                    "BULGARIA",
+                    "BURKINA_FASO",
+                    "BURUNDI",
+                    "CABO_VERDE",
+                    "CAMBODIA",
+                    "CAMEROON",
+                    "CANADA",
+                    "CENTRAL_AFRICAN_REPUBLIC",
+                    "CHAD",
+                    "CHILE",
+                    "CHINA",
+                    "COLOMBIA",
+                    "COMOROS",
+                    "CONGO_DEMOCRATIC_REPUBLIC",
+                    "CONGO_REPUBLIC",
+                    "COSTA_RICA",
+                    "CROATIA",
+                    "CUBA",
+                    "CYPRUS",
+                    "CZECH_REPUBLIC",
+                    "DENMARK",
+                    "DJIBOUTI",
+                    "DOMINICA",
+                    "DOMINICAN_REPUBLIC",
+                    "ECUADOR",
+                    "EGYPT",
+                    "EL_SALVADOR",
+                    "EQUATORIAL_GUINEA",
+                    "ERITREA",
+                    "ESTONIA",
+                    "ESWATINI",
+                    "ETHIOPIA",
+                    "FIJI",
+                    "FINLAND",
+                    "FRANCE",
+                    "GABON",
+                    "GAMBIA",
+                    "GEORGIA",
+                    "GERMANY",
+                    "GHANA",
+                    "GREECE",
+                    "GRENADA",
+                    "GUATEMALA",
+                    "GUINEA",
+                    "GUINEA_BISSAU",
+                    "GUYANA",
+                    "HAITI",
+                    "HONDURAS",
+                    "HUNGARY",
+                    "ICELAND",
+                    "INDIA",
+                    "INDONESIA",
+                    "IRAN",
+                    "IRAQ",
+                    "IRELAND",
+                    "ISRAEL",
+                    "ITALY",
+                    "JAMAICA",
+                    "JAPAN",
+                    "JORDAN",
+                    "KAZAKHSTAN",
+                    "KENYA",
+                    "KIRIBATI",
+                    "KOREA_NORTH",
+                    "KOREA_SOUTH",
+                    "KUWAIT",
+                    "KYRGYZSTAN",
+                    "LAOS",
+                    "LATVIA",
+                    "LEBANON",
+                    "LESOTHO",
+                    "LIBERIA",
+                    "LIBYA",
+                    "LIECHTENSTEIN",
+                    "LITHUANIA",
+                    "LUXEMBOURG",
+                    "MADAGASCAR",
+                    "MALAWI",
+                    "MALAYSIA",
+                    "MALDIVES",
+                    "MALI",
+                    "MALTA",
+                    "MARSHALL_ISLANDS",
+                    "MAURITANIA",
+                    "MAURITIUS",
+                    "MEXICO",
+                    "MICRONESIA",
+                    "MOLDOVA",
+                    "MONACO",
+                    "MONGOLIA",
+                    "MONTENEGRO",
+                    "MOROCCO",
+                    "MOZAMBIQUE",
+                    "MYANMAR",
+                    "NAMIBIA",
+                    "NAURU",
+                    "NEPAL",
+                    "NETHERLANDS",
+                    "NEW_ZEALAND",
+                    "NICARAGUA",
+                    "NIGER",
+                    "NIGERIA",
+                    "NORTH_MACEDONIA",
+                    "NORWAY",
+                    "OMAN",
+                    "PAKISTAN",
+                    "PALAU",
+                    "PALESTINE",
+                    "PANAMA",
+                    "PAPUA_NEW_GUINEA",
+                    "PARAGUAY",
+                    "PERU",
+                    "PHILIPPINES",
+                    "POLAND",
+                    "PORTUGAL",
+                    "QATAR",
+                    "ROMANIA",
+                    "RUSSIA",
+                    "RWANDA",
+                    "SAINT_KITTS_AND_NEVIS",
+                    "SAINT_LUCIA",
+                    "SAINT_VINCENT_AND_GRENADINES",
+                    "SAMOA",
+                    "SAN_MARINO",
+                    "SAO_TOME_AND_PRINCIPE",
+                    "SAUDI_ARABIA",
+                    "SENEGAL",
+                    "SERBIA",
+                    "SEYCHELLES",
+                    "SIERRA_LEONE",
+                    "SINGAPORE",
+                    "SLOVAKIA",
+                    "SLOVENIA",
+                    "SOLOMON_ISLANDS",
+                    "SOMALIA",
+                    "SOUTH_AFRICA",
+                    "SOUTH_SUDAN",
+                    "SPAIN",
+                    "SRI_LANKA",
+                    "SUDAN",
+                    "SURINAME",
+                    "SWEDEN",
+                    "SWITZERLAND",
+                    "SYRIA",
+                    "TAIWAN",
+                    "TAJIKISTAN",
+                    "TANZANIA",
+                    "THAILAND",
+                    "TIMOR_LESTE",
+                    "TOGO",
+                    "TONGA",
+                    "TRINIDAD_AND_TOBAGO",
+                    "TUNISIA",
+                    "TURKEY",
+                    "TURKMENISTAN",
+                    "TUVALU",
+                    "UGANDA",
+                    "UKRAINE",
+                    "UNITED_ARAB_EMIRATES",
+                    "UNITED_KINGDOM",
+                    "UNITED_STATES",
+                    "URUGUAY",
+                    "UZBEKISTAN",
+                    "VANUATU",
+                    "VATICAN_CITY",
+                    "VENEZUELA",
+                    "VIETNAM",
+                    "YEMEN",
+                    "ZAMBIA",
+                    "ZIMBABWE"
+                ]
+            },
             "UserPreferences": {
                 "type": "object",
                 "properties": {
@@ -463,6 +700,130 @@
                     "dateFormat",
                     "country",
                     "timezone"
+                ]
+            },
+            "UpdateUserRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "emailVerified": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "onBoardingStep": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OnBoardingStepEnum"
+                            },
+                            {
+                                "default": "EMAIL"
+                            }
+                        ]
+                    },
+                    "onBoardingAt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "snapshotFrequency": {
+                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                    },
+                    "preferredCurrency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "preferredLanguage": {
+                        "$ref": "#/components/schemas/LanguageEnum"
+                    },
+                    "dateFormat": {
+                        "$ref": "#/components/schemas/DateFormatEnum"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    },
+                    "timezone": {
+                        "$ref": "#/components/schemas/TimezoneEnum"
+                    }
+                }
+            },
+            "UserSession": {
+                "type": "object",
+                "properties": {
+                    "session": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "createdAt": {
+                                "type": "string"
+                            },
+                            "updatedAt": {
+                                "type": "string"
+                            },
+                            "userId": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "expiresAt": {
+                                "type": "string"
+                            },
+                            "token": {
+                                "type": "string"
+                            },
+                            "ipAddress": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "ip"
+                            },
+                            "userAgent": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "createdAt",
+                            "updatedAt",
+                            "userId",
+                            "expiresAt",
+                            "token",
+                            "ipAddress",
+                            "userAgent"
+                        ]
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "required": [
+                    "session",
+                    "user"
                 ]
             },
             "UserLogin": {
@@ -648,19 +1009,40 @@
                     "data"
                 ]
             },
-            "FinancialAccountTypeEnum": {
-                "type": "string",
-                "enum": [
-                    "ONLINE_BANK",
-                    "BANK_ACCOUNT",
-                    "CIRCUIT",
-                    "DEPOSIT_BANK",
-                    "BROKER",
-                    "WALLET",
-                    "CASH",
-                    "CREDIT_CARD",
-                    "OTHER"
-                ]
+            "StringFilter": {
+                "type": "object",
+                "properties": {
+                    "equals": {
+                        "type": "string"
+                    },
+                    "contains": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FilterOptions": {
+                "type": "object",
+                "properties": {
+                    "skip": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "take": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "sortBy": {
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    }
+                }
             },
             "FinancialAccount": {
                 "type": "object",
@@ -709,7 +1091,7 @@
                     "updatedAt"
                 ]
             },
-            "FinancialAccountRequest": {
+            "CreateFinancialAccountRequest": {
                 "type": "object",
                 "properties": {
                     "title": {
@@ -736,16 +1118,87 @@
                     "logoIcon"
                 ]
             },
-            "FinancialAccountResponse": {
+            "CreateFinancialAccountMultipartRequest": {
                 "type": "object",
                 "properties": {
                     "data": {
-                        "$ref": "#/components/schemas/FinancialAccount"
+                        "$ref": "#/components/schemas/CreateFinancialAccountRequest"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Optional file upload for the financial account logo icon"
                     }
                 },
                 "required": [
                     "data"
                 ]
+            },
+            "UpdateFinancialAccountRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FinancialAccountParamsId": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "FinancialAccountFilters": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/StringFilter"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    }
+                },
+                "additionalProperties": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "$ref": "#/components/schemas/StringFilter"
+                        },
+                        {
+                            "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                        }
+                    ]
+                }
             },
             "Category": {
                 "type": "object",
@@ -1025,6 +1478,73 @@
                 },
                 "required": [
                     "data"
+                ]
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ],
+                        "description": "Always false for error responses"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message describing what went wrong"
+                    },
+                    "error": {
+                        "nullable": true,
+                        "description": "Optional additional error details or context"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message"
+                ]
+            },
+            "SimpleSuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ],
+                        "description": "Always true for success responses"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": [
+                    "success"
+                ]
+            },
+            "StatusResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "uptime": {
+                        "type": "number"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "status",
+                    "uptime",
+                    "version",
+                    "timestamp"
                 ]
             },
             "DashboardLayout": {
@@ -1381,596 +1901,6 @@
                     "reportType",
                     "totals"
                 ]
-            },
-            "UpdateUser": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "surname": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "country": {
-                        "$ref": "#/components/schemas/CountriesEnum"
-                    },
-                    "preferredCurrency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "preferredLanguage": {
-                        "$ref": "#/components/schemas/LanguageEnum"
-                    },
-                    "dateFormat": {
-                        "$ref": "#/components/schemas/DateFormatEnum"
-                    },
-                    "timezone": {
-                        "$ref": "#/components/schemas/TimezoneEnum"
-                    }
-                }
-            },
-            "UserSession": {
-                "type": "object",
-                "properties": {
-                    "session": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string",
-                                "format": "uuid"
-                            },
-                            "createdAt": {
-                                "type": "string"
-                            },
-                            "updatedAt": {
-                                "type": "string"
-                            },
-                            "userId": {
-                                "type": "string",
-                                "format": "uuid"
-                            },
-                            "expiresAt": {
-                                "type": "string"
-                            },
-                            "token": {
-                                "type": "string"
-                            },
-                            "ipAddress": {
-                                "type": "string",
-                                "nullable": true,
-                                "format": "ip"
-                            },
-                            "userAgent": {
-                                "type": "string",
-                                "nullable": true
-                            }
-                        },
-                        "required": [
-                            "id",
-                            "createdAt",
-                            "updatedAt",
-                            "userId",
-                            "expiresAt",
-                            "token",
-                            "ipAddress",
-                            "userAgent"
-                        ]
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    }
-                },
-                "required": [
-                    "session",
-                    "user"
-                ]
-            },
-            "AssetTypeEnum": {
-                "type": "string",
-                "enum": [
-                    "STOCK",
-                    "BOND",
-                    "ETF",
-                    "MUTUAL_FUND",
-                    "CRYPTOCURRENCY",
-                    "REAL_ESTATE",
-                    "COLLECTIBLE",
-                    "PRIVATE_EQUITY",
-                    "VENTURE_CAPITAL",
-                    "PRIVATE_DEBT",
-                    "P2P_LENDING",
-                    "INSURANCE_POLICY",
-                    "AGRICULTURAL_LAND",
-                    "OTHER"
-                ]
-            },
-            "TransactionActionEnum": {
-                "type": "string",
-                "enum": [
-                    "EXPENSES",
-                    "INCOME",
-                    "TRANSFER"
-                ]
-            },
-            "TransactionStatusEnum": {
-                "type": "string",
-                "enum": [
-                    "APPROVED",
-                    "REJECTED",
-                    "IMPORT_PENDING",
-                    "IMPORT_REJECTED",
-                    "IMPORT_APPROVED"
-                ]
-            },
-            "RememberPeriodEnum": {
-                "type": "string",
-                "enum": [
-                    "SAME_DAY",
-                    "THREE_DAYS",
-                    "SEVEN_DAYS",
-                    "FOURTEEN_DAYS",
-                    "THIRTY_DAYS",
-                    "NINETY_DAYS"
-                ]
-            },
-            "AppearanceModeEnum": {
-                "type": "string",
-                "enum": [
-                    "LOGO",
-                    "ICON"
-                ]
-            },
-            "FileTypeEnum": {
-                "type": "string",
-                "enum": [
-                    "CSV",
-                    "PDF"
-                ]
-            },
-            "OnBoardingStepEnum": {
-                "type": "string",
-                "enum": [
-                    "EMAIL",
-                    "GENERALITES",
-                    "PREFERENCES",
-                    "COMPLETED"
-                ]
-            },
-            "CountriesEnum": {
-                "type": "string",
-                "enum": [
-                    "AFGHANISTAN",
-                    "ALBANIA",
-                    "ALGERIA",
-                    "ANDORRA",
-                    "ANGOLA",
-                    "ANTIGUA_AND_BARBUDA",
-                    "ARGENTINA",
-                    "ARMENIA",
-                    "AUSTRALIA",
-                    "AUSTRIA",
-                    "AZERBAIJAN",
-                    "BAHAMAS",
-                    "BAHRAIN",
-                    "BANGLADESH",
-                    "BARBADOS",
-                    "BELARUS",
-                    "BELGIUM",
-                    "BELIZE",
-                    "BENIN",
-                    "BHUTAN",
-                    "BOLIVIA",
-                    "BOSNIA_AND_HERZEGOVINA",
-                    "BOTSWANA",
-                    "BRAZIL",
-                    "BRUNEI",
-                    "BULGARIA",
-                    "BURKINA_FASO",
-                    "BURUNDI",
-                    "CABO_VERDE",
-                    "CAMBODIA",
-                    "CAMEROON",
-                    "CANADA",
-                    "CENTRAL_AFRICAN_REPUBLIC",
-                    "CHAD",
-                    "CHILE",
-                    "CHINA",
-                    "COLOMBIA",
-                    "COMOROS",
-                    "CONGO_DEMOCRATIC_REPUBLIC",
-                    "CONGO_REPUBLIC",
-                    "COSTA_RICA",
-                    "CROATIA",
-                    "CUBA",
-                    "CYPRUS",
-                    "CZECH_REPUBLIC",
-                    "DENMARK",
-                    "DJIBOUTI",
-                    "DOMINICA",
-                    "DOMINICAN_REPUBLIC",
-                    "ECUADOR",
-                    "EGYPT",
-                    "EL_SALVADOR",
-                    "EQUATORIAL_GUINEA",
-                    "ERITREA",
-                    "ESTONIA",
-                    "ESWATINI",
-                    "ETHIOPIA",
-                    "FIJI",
-                    "FINLAND",
-                    "FRANCE",
-                    "GABON",
-                    "GAMBIA",
-                    "GEORGIA",
-                    "GERMANY",
-                    "GHANA",
-                    "GREECE",
-                    "GRENADA",
-                    "GUATEMALA",
-                    "GUINEA",
-                    "GUINEA_BISSAU",
-                    "GUYANA",
-                    "HAITI",
-                    "HONDURAS",
-                    "HUNGARY",
-                    "ICELAND",
-                    "INDIA",
-                    "INDONESIA",
-                    "IRAN",
-                    "IRAQ",
-                    "IRELAND",
-                    "ISRAEL",
-                    "ITALY",
-                    "JAMAICA",
-                    "JAPAN",
-                    "JORDAN",
-                    "KAZAKHSTAN",
-                    "KENYA",
-                    "KIRIBATI",
-                    "KOREA_NORTH",
-                    "KOREA_SOUTH",
-                    "KUWAIT",
-                    "KYRGYZSTAN",
-                    "LAOS",
-                    "LATVIA",
-                    "LEBANON",
-                    "LESOTHO",
-                    "LIBERIA",
-                    "LIBYA",
-                    "LIECHTENSTEIN",
-                    "LITHUANIA",
-                    "LUXEMBOURG",
-                    "MADAGASCAR",
-                    "MALAWI",
-                    "MALAYSIA",
-                    "MALDIVES",
-                    "MALI",
-                    "MALTA",
-                    "MARSHALL_ISLANDS",
-                    "MAURITANIA",
-                    "MAURITIUS",
-                    "MEXICO",
-                    "MICRONESIA",
-                    "MOLDOVA",
-                    "MONACO",
-                    "MONGOLIA",
-                    "MONTENEGRO",
-                    "MOROCCO",
-                    "MOZAMBIQUE",
-                    "MYANMAR",
-                    "NAMIBIA",
-                    "NAURU",
-                    "NEPAL",
-                    "NETHERLANDS",
-                    "NEW_ZEALAND",
-                    "NICARAGUA",
-                    "NIGER",
-                    "NIGERIA",
-                    "NORTH_MACEDONIA",
-                    "NORWAY",
-                    "OMAN",
-                    "PAKISTAN",
-                    "PALAU",
-                    "PALESTINE",
-                    "PANAMA",
-                    "PAPUA_NEW_GUINEA",
-                    "PARAGUAY",
-                    "PERU",
-                    "PHILIPPINES",
-                    "POLAND",
-                    "PORTUGAL",
-                    "QATAR",
-                    "ROMANIA",
-                    "RUSSIA",
-                    "RWANDA",
-                    "SAINT_KITTS_AND_NEVIS",
-                    "SAINT_LUCIA",
-                    "SAINT_VINCENT_AND_GRENADINES",
-                    "SAMOA",
-                    "SAN_MARINO",
-                    "SAO_TOME_AND_PRINCIPE",
-                    "SAUDI_ARABIA",
-                    "SENEGAL",
-                    "SERBIA",
-                    "SEYCHELLES",
-                    "SIERRA_LEONE",
-                    "SINGAPORE",
-                    "SLOVAKIA",
-                    "SLOVENIA",
-                    "SOLOMON_ISLANDS",
-                    "SOMALIA",
-                    "SOUTH_AFRICA",
-                    "SOUTH_SUDAN",
-                    "SPAIN",
-                    "SRI_LANKA",
-                    "SUDAN",
-                    "SURINAME",
-                    "SWEDEN",
-                    "SWITZERLAND",
-                    "SYRIA",
-                    "TAIWAN",
-                    "TAJIKISTAN",
-                    "TANZANIA",
-                    "THAILAND",
-                    "TIMOR_LESTE",
-                    "TOGO",
-                    "TONGA",
-                    "TRINIDAD_AND_TOBAGO",
-                    "TUNISIA",
-                    "TURKEY",
-                    "TURKMENISTAN",
-                    "TUVALU",
-                    "UGANDA",
-                    "UKRAINE",
-                    "UNITED_ARAB_EMIRATES",
-                    "UNITED_KINGDOM",
-                    "UNITED_STATES",
-                    "URUGUAY",
-                    "UZBEKISTAN",
-                    "VANUATU",
-                    "VATICAN_CITY",
-                    "VENEZUELA",
-                    "VIETNAM",
-                    "YEMEN",
-                    "ZAMBIA",
-                    "ZIMBABWE"
-                ]
-            },
-            "UpdateUserRequest": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "name": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "surname": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "emailVerified": {
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "onBoardingStep": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/OnBoardingStepEnum"
-                            },
-                            {
-                                "default": "EMAIL"
-                            }
-                        ]
-                    },
-                    "onBoardingAt": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "image": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri"
-                    },
-                    "createdAt": {
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "type": "string"
-                    },
-                    "snapshotFrequency": {
-                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                    },
-                    "preferredCurrency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "preferredLanguage": {
-                        "$ref": "#/components/schemas/LanguageEnum"
-                    },
-                    "dateFormat": {
-                        "$ref": "#/components/schemas/DateFormatEnum"
-                    },
-                    "country": {
-                        "$ref": "#/components/schemas/CountriesEnum"
-                    },
-                    "timezone": {
-                        "$ref": "#/components/schemas/TimezoneEnum"
-                    }
-                }
-            },
-            "SimpleSuccessResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    }
-                },
-                "required": [
-                    "success"
-                ]
-            },
-            "StringFilter": {
-                "type": "object",
-                "properties": {
-                    "equals": {
-                        "type": "string"
-                    },
-                    "contains": {
-                        "type": "string"
-                    }
-                }
-            },
-            "FilterOptions": {
-                "type": "object",
-                "properties": {
-                    "skip": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "take": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "sortBy": {
-                        "type": "string"
-                    },
-                    "sortOrder": {
-                        "type": "string",
-                        "enum": [
-                            "asc",
-                            "desc"
-                        ]
-                    }
-                }
-            },
-            "CreateFinancialAccountRequest": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "title",
-                    "description",
-                    "balance",
-                    "type",
-                    "logoIcon"
-                ]
-            },
-            "CreateFinancialAccountMultipartRequest": {
-                "type": "object",
-                "properties": {
-                    "data": {
-                        "$ref": "#/components/schemas/CreateFinancialAccountRequest"
-                    },
-                    "file": {
-                        "type": "string",
-                        "format": "binary",
-                        "description": "Optional file upload for the financial account logo icon"
-                    }
-                },
-                "required": [
-                    "data"
-                ]
-            },
-            "UpdateFinancialAccountRequest": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string"
-                    }
-                }
-            },
-            "FinancialAccountParamsId": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "required": [
-                    "id"
-                ]
-            },
-            "FinancialAccountFilters": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "$ref": "#/components/schemas/StringFilter"
-                    },
-                    "description": {
-                        "$ref": "#/components/schemas/StringFilter"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                    }
-                },
-                "additionalProperties": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "$ref": "#/components/schemas/StringFilter"
-                        },
-                        {
-                            "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                        }
-                    ]
-                }
             }
         },
         "parameters": {},
@@ -2036,735 +1966,6 @@
                     },
                     "500": {
                         "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get all users",
-                "responses": {
-                    "200": {
-                        "description": "List of users"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Create user",
-                "responses": {
-                    "201": {
-                        "description": "User created"
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get user by ID",
-                "responses": {
-                    "200": {
-                        "description": "User found"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update user",
-                "responses": {
-                    "200": {
-                        "description": "User updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete user",
-                "responses": {
-                    "204": {
-                        "description": "User deleted"
-                    }
-                }
-            }
-        },
-        "/transactions": {
-            "get": {
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "Get all transactions",
-                "responses": {
-                    "200": {
-                        "description": "List of transactions"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "Create transaction",
-                "responses": {
-                    "201": {
-                        "description": "Transaction created"
-                    }
-                }
-            }
-        },
-        "/transactions/{id}": {
-            "get": {
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "Get transaction by ID",
-                "responses": {
-                    "200": {
-                        "description": "Transaction found"
-                    },
-                    "404": {
-                        "description": "Transaction not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "Update transaction",
-                "responses": {
-                    "200": {
-                        "description": "Transaction updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Transaction"
-                ],
-                "summary": "Delete transaction",
-                "responses": {
-                    "204": {
-                        "description": "Transaction deleted"
-                    }
-                }
-            }
-        },
-        "/accounts": {
-            "get": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Get all accounts",
-                "responses": {
-                    "200": {
-                        "description": "List of accounts"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Create account",
-                "responses": {
-                    "201": {
-                        "description": "Account created"
-                    }
-                }
-            }
-        },
-        "/accounts/{id}": {
-            "get": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Get account by ID",
-                "responses": {
-                    "200": {
-                        "description": "Account found"
-                    },
-                    "404": {
-                        "description": "Account not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Update account",
-                "responses": {
-                    "200": {
-                        "description": "Account updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Account"
-                ],
-                "summary": "Delete account",
-                "responses": {
-                    "204": {
-                        "description": "Account deleted"
-                    }
-                }
-            }
-        },
-        "/categories": {
-            "get": {
-                "tags": [
-                    "Category"
-                ],
-                "summary": "Get all categories",
-                "responses": {
-                    "200": {
-                        "description": "List of categories"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Category"
-                ],
-                "summary": "Create category",
-                "responses": {
-                    "201": {
-                        "description": "Category created"
-                    }
-                }
-            }
-        },
-        "/categories/{id}": {
-            "get": {
-                "tags": [
-                    "Category"
-                ],
-                "summary": "Get category by ID",
-                "responses": {
-                    "200": {
-                        "description": "Category found"
-                    },
-                    "404": {
-                        "description": "Category not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Category"
-                ],
-                "summary": "Update category",
-                "responses": {
-                    "200": {
-                        "description": "Category updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Category"
-                ],
-                "summary": "Delete category",
-                "responses": {
-                    "204": {
-                        "description": "Category deleted"
-                    }
-                }
-            }
-        },
-        "/subcategories": {
-            "get": {
-                "tags": [
-                    "Subcategory"
-                ],
-                "summary": "Get all subcategories",
-                "responses": {
-                    "200": {
-                        "description": "List of subcategories"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Subcategory"
-                ],
-                "summary": "Create subcategory",
-                "responses": {
-                    "201": {
-                        "description": "Subcategory created"
-                    }
-                }
-            }
-        },
-        "/subcategories/{id}": {
-            "get": {
-                "tags": [
-                    "Subcategory"
-                ],
-                "summary": "Get subcategory by ID",
-                "responses": {
-                    "200": {
-                        "description": "Subcategory found"
-                    },
-                    "404": {
-                        "description": "Subcategory not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Subcategory"
-                ],
-                "summary": "Update subcategory",
-                "responses": {
-                    "200": {
-                        "description": "Subcategory updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Subcategory"
-                ],
-                "summary": "Delete subcategory",
-                "responses": {
-                    "204": {
-                        "description": "Subcategory deleted"
-                    }
-                }
-            }
-        },
-        "/snapshots": {
-            "get": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "summary": "Get all snapshots",
-                "responses": {
-                    "200": {
-                        "description": "List of snapshots"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "summary": "Create snapshot",
-                "responses": {
-                    "201": {
-                        "description": "Snapshot created"
-                    }
-                }
-            }
-        },
-        "/snapshots/{id}": {
-            "get": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "summary": "Get snapshot by ID",
-                "responses": {
-                    "200": {
-                        "description": "Snapshot found"
-                    },
-                    "404": {
-                        "description": "Snapshot not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "summary": "Update snapshot",
-                "responses": {
-                    "200": {
-                        "description": "Snapshot updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "summary": "Delete snapshot",
-                "responses": {
-                    "204": {
-                        "description": "Snapshot deleted"
-                    }
-                }
-            }
-        },
-        "/sessions": {
-            "get": {
-                "tags": [
-                    "Session"
-                ],
-                "summary": "Get all sessions",
-                "responses": {
-                    "200": {
-                        "description": "List of sessions"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Session"
-                ],
-                "summary": "Create session",
-                "responses": {
-                    "201": {
-                        "description": "Session created"
-                    }
-                }
-            }
-        },
-        "/sessions/{id}": {
-            "get": {
-                "tags": [
-                    "Session"
-                ],
-                "summary": "Get session by ID",
-                "responses": {
-                    "200": {
-                        "description": "Session found"
-                    },
-                    "404": {
-                        "description": "Session not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Session"
-                ],
-                "summary": "Update session",
-                "responses": {
-                    "200": {
-                        "description": "Session updated"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Session"
-                ],
-                "summary": "Delete session",
-                "responses": {
-                    "204": {
-                        "description": "Session deleted"
-                    }
-                }
-            }
-        },
-        "/user": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get user",
-                "description": "Get user information and preferences",
-                "responses": {
-                    "200": {
-                        "description": "User found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "enum": [
-                                                true
-                                            ],
-                                            "description": "Always true for success responses"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "Optional success message"
-                                        },
-                                        "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/User"
-                                                },
-                                                {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "minLength": 1
-                                                        },
-                                                        "surname": {
-                                                            "type": "string",
-                                                            "minLength": 1
-                                                        },
-                                                        "email": {
-                                                            "type": "string",
-                                                            "format": "email"
-                                                        },
-                                                        "emailVerified": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "onBoardingStep": {
-                                                            "type": "integer"
-                                                        },
-                                                        "onBoardingAt": {
-                                                            "type": "string",
-                                                            "nullable": true
-                                                        },
-                                                        "image": {
-                                                            "type": "string",
-                                                            "nullable": true,
-                                                            "format": "uri"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "snapshotFrequency": {
-                                                            "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                                                        },
-                                                        "preferredCurrency": {
-                                                            "$ref": "#/components/schemas/CurrencyEnum"
-                                                        },
-                                                        "preferredLanguage": {
-                                                            "$ref": "#/components/schemas/LanguageEnum"
-                                                        },
-                                                        "dateFormat": {
-                                                            "$ref": "#/components/schemas/DateFormatEnum"
-                                                        },
-                                                        "country": {
-                                                            "type": "string"
-                                                        },
-                                                        "timezone": {
-                                                            "$ref": "#/components/schemas/TimezoneEnum"
-                                                        }
-                                                    },
-                                                    "description": "Response data"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update user",
-                "description": "Update user preferences and information",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateUserRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "enum": [
-                                                true
-                                            ],
-                                            "description": "Always true for success responses"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "Optional success message"
-                                        },
-                                        "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/User"
-                                                },
-                                                {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "minLength": 1
-                                                        },
-                                                        "surname": {
-                                                            "type": "string",
-                                                            "minLength": 1
-                                                        },
-                                                        "email": {
-                                                            "type": "string",
-                                                            "format": "email"
-                                                        },
-                                                        "emailVerified": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "onBoardingStep": {
-                                                            "type": "integer"
-                                                        },
-                                                        "onBoardingAt": {
-                                                            "type": "string",
-                                                            "nullable": true
-                                                        },
-                                                        "image": {
-                                                            "type": "string",
-                                                            "nullable": true,
-                                                            "format": "uri"
-                                                        },
-                                                        "createdAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "updatedAt": {
-                                                            "type": "string"
-                                                        },
-                                                        "snapshotFrequency": {
-                                                            "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                                                        },
-                                                        "preferredCurrency": {
-                                                            "$ref": "#/components/schemas/CurrencyEnum"
-                                                        },
-                                                        "preferredLanguage": {
-                                                            "$ref": "#/components/schemas/LanguageEnum"
-                                                        },
-                                                        "dateFormat": {
-                                                            "$ref": "#/components/schemas/DateFormatEnum"
-                                                        },
-                                                        "country": {
-                                                            "type": "string"
-                                                        },
-                                                        "timezone": {
-                                                            "$ref": "#/components/schemas/TimezoneEnum"
-                                                        }
-                                                    },
-                                                    "description": "Response data"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "User not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3113,6 +2314,68 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Get all transactions",
+                "responses": {
+                    "200": {
+                        "description": "List of transactions"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Create transaction",
+                "responses": {
+                    "201": {
+                        "description": "Transaction created"
+                    }
+                }
+            }
+        },
+        "/transactions/{id}": {
+            "get": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Get transaction by ID",
+                "responses": {
+                    "200": {
+                        "description": "Transaction found"
+                    },
+                    "404": {
+                        "description": "Transaction not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Update transaction",
+                "responses": {
+                    "200": {
+                        "description": "Transaction updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "Delete transaction",
+                "responses": {
+                    "204": {
+                        "description": "Transaction deleted"
                     }
                 }
             }
@@ -3622,6 +2885,254 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get all categories",
+                "responses": {
+                    "200": {
+                        "description": "List of categories"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Create category",
+                "responses": {
+                    "201": {
+                        "description": "Category created"
+                    }
+                }
+            }
+        },
+        "/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get category by ID",
+                "responses": {
+                    "200": {
+                        "description": "Category found"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Update category",
+                "responses": {
+                    "200": {
+                        "description": "Category updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Delete category",
+                "responses": {
+                    "204": {
+                        "description": "Category deleted"
+                    }
+                }
+            }
+        },
+        "/subcategories": {
+            "get": {
+                "tags": [
+                    "Subcategory"
+                ],
+                "summary": "Get all subcategories",
+                "responses": {
+                    "200": {
+                        "description": "List of subcategories"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Subcategory"
+                ],
+                "summary": "Create subcategory",
+                "responses": {
+                    "201": {
+                        "description": "Subcategory created"
+                    }
+                }
+            }
+        },
+        "/subcategories/{id}": {
+            "get": {
+                "tags": [
+                    "Subcategory"
+                ],
+                "summary": "Get subcategory by ID",
+                "responses": {
+                    "200": {
+                        "description": "Subcategory found"
+                    },
+                    "404": {
+                        "description": "Subcategory not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Subcategory"
+                ],
+                "summary": "Update subcategory",
+                "responses": {
+                    "200": {
+                        "description": "Subcategory updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Subcategory"
+                ],
+                "summary": "Delete subcategory",
+                "responses": {
+                    "204": {
+                        "description": "Subcategory deleted"
+                    }
+                }
+            }
+        },
+        "/snapshots": {
+            "get": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "summary": "Get all snapshots",
+                "responses": {
+                    "200": {
+                        "description": "List of snapshots"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "summary": "Create snapshot",
+                "responses": {
+                    "201": {
+                        "description": "Snapshot created"
+                    }
+                }
+            }
+        },
+        "/snapshots/{id}": {
+            "get": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "summary": "Get snapshot by ID",
+                "responses": {
+                    "200": {
+                        "description": "Snapshot found"
+                    },
+                    "404": {
+                        "description": "Snapshot not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "summary": "Update snapshot",
+                "responses": {
+                    "200": {
+                        "description": "Snapshot updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "summary": "Delete snapshot",
+                "responses": {
+                    "204": {
+                        "description": "Snapshot deleted"
+                    }
+                }
+            }
+        },
+        "/sessions": {
+            "get": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get all sessions",
+                "responses": {
+                    "200": {
+                        "description": "List of sessions"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Create session",
+                "responses": {
+                    "201": {
+                        "description": "Session created"
+                    }
+                }
+            }
+        },
+        "/sessions/{id}": {
+            "get": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get session by ID",
+                "responses": {
+                    "200": {
+                        "description": "Session found"
+                    },
+                    "404": {
+                        "description": "Session not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Update session",
+                "responses": {
+                    "200": {
+                        "description": "Session updated"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Delete session",
+                "responses": {
+                    "204": {
+                        "description": "Session deleted"
                     }
                 }
             }

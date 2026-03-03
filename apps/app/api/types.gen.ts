@@ -4,136 +4,6 @@ export type ClientOptions = {
     baseUrl: 'http://localhost:3001/v1' | 'http://api.poveroh.local/v1' | 'http://api.poveroh.com/v1' | (string & {})
 }
 
-export type StatusResponse = {
-    status: string
-    uptime: number
-    version: string
-    timestamp: string
-}
-
-export type ErrorResponse = {
-    /**
-     * Always false for error responses
-     */
-    success: false
-    /**
-     * Error message describing what went wrong
-     */
-    message: string
-    /**
-     * Optional additional error details or context
-     */
-    error?: unknown
-}
-
-export type SnapshotFrequencyEnum = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'SEMIANNUAL' | 'ANNUAL'
-
-export type CurrencyEnum =
-    | 'USD'
-    | 'EUR'
-    | 'GBP'
-    | 'JPY'
-    | 'CNY'
-    | 'INR'
-    | 'AUD'
-    | 'CAD'
-    | 'CHF'
-    | 'SEK'
-    | 'NZD'
-    | 'MXN'
-    | 'SGD'
-    | 'HKD'
-    | 'NOK'
-    | 'KRW'
-    | 'TRY'
-    | 'UNKNOWN'
-
-export type LanguageEnum =
-    | 'EN'
-    | 'ES'
-    | 'FR'
-    | 'DE'
-    | 'IT'
-    | 'PT'
-    | 'NL'
-    | 'RU'
-    | 'ZH'
-    | 'JA'
-    | 'KO'
-    | 'AR'
-    | 'HI'
-    | 'TH'
-    | 'VI'
-    | 'TR'
-    | 'PL'
-    | 'CS'
-    | 'HU'
-    | 'RO'
-    | 'BG'
-    | 'HR'
-    | 'SK'
-    | 'SL'
-    | 'ET'
-    | 'LV'
-    | 'LT'
-    | 'MT'
-    | 'FI'
-    | 'SV'
-    | 'DA'
-    | 'NO'
-    | 'IS'
-    | 'EL'
-    | 'HE'
-    | 'FA'
-    | 'UR'
-    | 'BN'
-    | 'TA'
-    | 'TE'
-    | 'ML'
-    | 'KN'
-    | 'GU'
-    | 'MR'
-    | 'PA'
-    | 'OR'
-    | 'AS'
-    | 'NE'
-    | 'SI'
-    | 'MY'
-    | 'KH'
-    | 'LO'
-    | 'KA'
-    | 'AM'
-    | 'TI'
-    | 'SW'
-    | 'ZU'
-    | 'AF'
-    | 'XH'
-    | 'ST'
-    | 'TN'
-    | 'SS'
-    | 'VE'
-    | 'TS'
-    | 'NR'
-    | 'IG'
-    | 'YO'
-    | 'HA'
-    | 'FF'
-    | 'WO'
-    | 'BM'
-    | 'DY'
-    | 'SN'
-
-export type DateFormatEnum =
-    | 'DD_MM_YYYY'
-    | 'MM_DD_YYYY'
-    | 'YYYY_MM_DD'
-    | 'DD_MM_YY'
-    | 'MM_DD_YY'
-    | 'YY_MM_DD'
-    | 'DD_MMMM_YYYY'
-    | 'MMMM_DD_YYYY'
-    | 'YYYY_MMMM_DD'
-
 export type TimezoneEnum =
     | 'AFRICA_ALGIERS'
     | 'AFRICA_CAIRO'
@@ -285,324 +155,7 @@ export type TimezoneEnum =
     | 'PACIFIC_PORT_MORESBY'
     | 'PACIFIC_TONGATAPU'
 
-export type UserPreferences = {
-    snapshotFrequency: SnapshotFrequencyEnum
-    preferredCurrency: CurrencyEnum
-    preferredLanguage: LanguageEnum
-    dateFormat: DateFormatEnum
-    country: CountriesEnum
-    timezone: TimezoneEnum
-}
-
-export type User = {
-    id: string
-    name: string
-    surname: string
-    email: string
-    emailVerified?: boolean
-    onBoardingStep?: OnBoardingStepEnum & unknown
-    onBoardingAt: string | null
-    image: string | null
-    createdAt: string
-    updatedAt: string
-    snapshotFrequency: SnapshotFrequencyEnum
-    preferredCurrency: CurrencyEnum
-    preferredLanguage: LanguageEnum
-    dateFormat: DateFormatEnum
-    country: CountriesEnum
-    timezone: TimezoneEnum
-}
-
-export type UserLogin = {
-    email: string
-    password: string
-}
-
-export type Transaction = {
-    id: string
-    userId: string
-    title: string
-    action: string
-    categoryId: string | null
-    subcategoryId: string | null
-    icon: string | null
-    date: string
-    note: string | null
-    ignore: boolean
-    createdAt: string
-    status: string
-    importId: string | null
-    updatedAt: string
-    amounts: Array<unknown>
-    media: Array<unknown>
-    transferId: string | null
-    transferHash: string | null
-}
-
-export type TransactionRequest = {
-    title: string
-    date: string
-    action: string
-    categoryId?: string | null
-    subcategoryId?: string | null
-    icon?: string | null
-    note?: string | null
-    ignore?: boolean
-    importId?: string | null
-    amounts?: Array<unknown>
-    media?: Array<unknown>
-    transferId?: string | null
-}
-
-export type TransactionResponse = {
-    data: Transaction
-}
-
-export type FinancialAccountTypeEnum =
-    | 'ONLINE_BANK'
-    | 'BANK_ACCOUNT'
-    | 'CIRCUIT'
-    | 'DEPOSIT_BANK'
-    | 'BROKER'
-    | 'WALLET'
-    | 'CASH'
-    | 'CREDIT_CARD'
-    | 'OTHER'
-
-export type FinancialAccount = {
-    id: string
-    userId: string
-    title: string
-    description: string
-    balance: number
-    type: FinancialAccountTypeEnum
-    logoIcon: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type FinancialAccountRequest = {
-    title: string
-    description: string
-    balance: number
-    type: FinancialAccountTypeEnum
-    logoIcon: string
-}
-
-export type FinancialAccountResponse = {
-    data: FinancialAccount
-}
-
-export type Category = {
-    id: string
-    userId: string
-    title: string
-    description: string | null
-    for: string
-    logoIcon: string
-    color: string
-    subcategories: Array<unknown>
-    createdAt: string
-}
-
-export type CategoryRequest = {
-    title: string
-    description: string | null
-    for: string
-    logoIcon: string
-    color: string
-    subcategories?: Array<unknown>
-}
-
-export type CategoryResponse = Category & {
-    [key: string]: unknown
-}
-
-export type Subcategory = {
-    id: string
-    categoryId: string
-    title: string
-    description: string | null
-    logoIcon: string
-    createdAt: string
-}
-
-export type SubcategoryRequest = {
-    categoryId: string
-    title: string
-    description?: string | null
-    logoIcon?: string
-}
-
-export type SubcategoryResponse = {
-    data: Subcategory
-}
-
-export type Snapshot = {
-    id: string
-    snapshotDate: string
-    note: string | null
-    totalCash: number
-    totalInvestments: number
-    totalNetWorth: number
-    userId: string
-}
-
-export type SnapshotRequest = {
-    snapshotDate: string
-    note?: string | null
-    totalCash?: number
-    totalInvestments?: number
-    totalNetWorth?: number
-}
-
-export type SnapshotResponse = {
-    data: Snapshot
-}
-
-export type Session = {
-    id: string
-    userId: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type SessionRequest = {
-    token?: string
-    expiresAt?: string
-}
-
-export type SessionResponse = {
-    data: Session
-}
-
-export type DashboardLayout = {
-    id: string
-    userId: string
-    version: number
-    layout?: unknown
-    createdAt: string
-    updatedAt: string
-}
-
-export type DashboardLayoutRequest = {
-    version?: number
-    layout?: unknown
-}
-
-export type DashboardLayoutResponse = {
-    data: DashboardLayout
-}
-
-export type ImportFile = {
-    id: string
-    importId: string
-    filename: string
-    filetype: string
-    path: string
-    createdAt: string
-}
-
-export type Import = {
-    id: string
-    userId: string
-    title: string
-    financialAccountId: string
-    status: string
-    createdAt: string
-    transactions?: Array<unknown>
-    files?: Array<ImportFile>
-}
-
-export type ImportRequest = {
-    title: string
-    financialAccountId: string
-    files?: Array<{
-        filename: string
-        filetype: string
-        path: string
-    }>
-}
-
-export type ImportResponse = {
-    data: Import
-}
-
-export type Subscription = {
-    id: string
-    userId: string
-    title: string
-    description: string | null
-    amount: number
-    currency: string
-    appearanceMode: string
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: string
-    cyclePeriod: string
-    rememberPeriod: string
-    financialAccountId: string
-    isEnabled: boolean
-    createdAt: string
-}
-
-export type SubscriptionRequest = {
-    title: string
-    description?: string | null
-    amount: number
-    currency: string
-    appearanceMode: string
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: string
-    cyclePeriod: string
-    rememberPeriod: string
-    financialAccountId: string
-    isEnabled?: boolean
-}
-
-export type SubscriptionResponse = {
-    data: Subscription
-}
-
-export type ReportRequest = {
-    from: string
-    to: string
-    type?: string
-}
-
-export type ReportResponse = {
-    reportType: string
-    totals: {
-        [key: string]: number
-    }
-    metadata?: unknown
-}
-
-export type UpdateUser = {
-    name?: string
-    surname?: string
-    email?: string
-    country?: CountriesEnum
-    preferredCurrency?: CurrencyEnum
-    preferredLanguage?: LanguageEnum
-    dateFormat?: DateFormatEnum
-    timezone?: TimezoneEnum
-}
-
-export type UserSession = {
-    session: {
-        id: string
-        createdAt: string
-        updatedAt: string
-        userId: string
-        expiresAt: string
-        token: string
-        ipAddress: string | null
-        userAgent: string | null
-    }
-    user: User
-}
+export type SnapshotFrequencyEnum = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'SEMIANNUAL' | 'ANNUAL'
 
 export type AssetTypeEnum =
     | 'STOCK'
@@ -620,9 +173,40 @@ export type AssetTypeEnum =
     | 'AGRICULTURAL_LAND'
     | 'OTHER'
 
+export type FinancialAccountTypeEnum =
+    | 'ONLINE_BANK'
+    | 'BANK_ACCOUNT'
+    | 'CIRCUIT'
+    | 'DEPOSIT_BANK'
+    | 'BROKER'
+    | 'WALLET'
+    | 'CASH'
+    | 'CREDIT_CARD'
+    | 'OTHER'
+
 export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER'
 
 export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
+
+export type CurrencyEnum =
+    | 'USD'
+    | 'EUR'
+    | 'GBP'
+    | 'JPY'
+    | 'CNY'
+    | 'INR'
+    | 'AUD'
+    | 'CAD'
+    | 'CHF'
+    | 'SEK'
+    | 'NZD'
+    | 'MXN'
+    | 'SGD'
+    | 'HKD'
+    | 'NOK'
+    | 'KRW'
+    | 'TRY'
+    | 'UNKNOWN'
 
 export type RememberPeriodEnum =
     | 'SAME_DAY'
@@ -635,6 +219,92 @@ export type RememberPeriodEnum =
 export type AppearanceModeEnum = 'LOGO' | 'ICON'
 
 export type FileTypeEnum = 'CSV' | 'PDF'
+
+export type LanguageEnum =
+    | 'EN'
+    | 'ES'
+    | 'FR'
+    | 'DE'
+    | 'IT'
+    | 'PT'
+    | 'NL'
+    | 'RU'
+    | 'ZH'
+    | 'JA'
+    | 'KO'
+    | 'AR'
+    | 'HI'
+    | 'TH'
+    | 'VI'
+    | 'TR'
+    | 'PL'
+    | 'CS'
+    | 'HU'
+    | 'RO'
+    | 'BG'
+    | 'HR'
+    | 'SK'
+    | 'SL'
+    | 'ET'
+    | 'LV'
+    | 'LT'
+    | 'MT'
+    | 'FI'
+    | 'SV'
+    | 'DA'
+    | 'NO'
+    | 'IS'
+    | 'EL'
+    | 'HE'
+    | 'FA'
+    | 'UR'
+    | 'BN'
+    | 'TA'
+    | 'TE'
+    | 'ML'
+    | 'KN'
+    | 'GU'
+    | 'MR'
+    | 'PA'
+    | 'OR'
+    | 'AS'
+    | 'NE'
+    | 'SI'
+    | 'MY'
+    | 'KH'
+    | 'LO'
+    | 'KA'
+    | 'AM'
+    | 'TI'
+    | 'SW'
+    | 'ZU'
+    | 'AF'
+    | 'XH'
+    | 'ST'
+    | 'TN'
+    | 'SS'
+    | 'VE'
+    | 'TS'
+    | 'NR'
+    | 'IG'
+    | 'YO'
+    | 'HA'
+    | 'FF'
+    | 'WO'
+    | 'BM'
+    | 'DY'
+    | 'SN'
+
+export type DateFormatEnum =
+    | 'DD_MM_YYYY'
+    | 'MM_DD_YYYY'
+    | 'YYYY_MM_DD'
+    | 'DD_MM_YY'
+    | 'MM_DD_YY'
+    | 'YY_MM_DD'
+    | 'DD_MMMM_YYYY'
+    | 'MMMM_DD_YYYY'
+    | 'YYYY_MMMM_DD'
 
 export type OnBoardingStepEnum = 'EMAIL' | 'GENERALITES' | 'PREFERENCES' | 'COMPLETED'
 
@@ -835,6 +505,34 @@ export type CountriesEnum =
     | 'ZAMBIA'
     | 'ZIMBABWE'
 
+export type UserPreferences = {
+    snapshotFrequency: SnapshotFrequencyEnum
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    country: CountriesEnum
+    timezone: TimezoneEnum
+}
+
+export type User = {
+    id: string
+    name: string
+    surname: string
+    email: string
+    emailVerified?: boolean
+    onBoardingStep?: OnBoardingStepEnum & unknown
+    onBoardingAt: string | null
+    image: string | null
+    createdAt: string
+    updatedAt: string
+    snapshotFrequency: SnapshotFrequencyEnum
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    country: CountriesEnum
+    timezone: TimezoneEnum
+}
+
 export type UpdateUserRequest = {
     id?: string
     name?: string
@@ -854,15 +552,63 @@ export type UpdateUserRequest = {
     timezone?: TimezoneEnum
 }
 
-export type SimpleSuccessResponse = {
-    /**
-     * Always true for success responses
-     */
-    success: true
-    /**
-     * Optional success message
-     */
-    message?: string
+export type UserSession = {
+    session: {
+        id: string
+        createdAt: string
+        updatedAt: string
+        userId: string
+        expiresAt: string
+        token: string
+        ipAddress: string | null
+        userAgent: string | null
+    }
+    user: User
+}
+
+export type UserLogin = {
+    email: string
+    password: string
+}
+
+export type Transaction = {
+    id: string
+    userId: string
+    title: string
+    action: string
+    categoryId: string | null
+    subcategoryId: string | null
+    icon: string | null
+    date: string
+    note: string | null
+    ignore: boolean
+    createdAt: string
+    status: string
+    importId: string | null
+    updatedAt: string
+    amounts: Array<unknown>
+    media: Array<unknown>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type TransactionRequest = {
+    title: string
+    date: string
+    action: string
+    categoryId?: string | null
+    subcategoryId?: string | null
+    icon?: string | null
+    note?: string | null
+    ignore?: boolean
+    importId?: string | null
+    amounts?: Array<unknown>
+    media?: Array<unknown>
+    transferId?: string | null
+}
+
+export type TransactionResponse = {
+    data: Transaction
 }
 
 export type StringFilter = {
@@ -875,6 +621,18 @@ export type FilterOptions = {
     take?: number
     sortBy?: string
     sortOrder?: 'asc' | 'desc'
+}
+
+export type FinancialAccount = {
+    id: string
+    userId: string
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
 }
 
 export type CreateFinancialAccountRequest = {
@@ -919,6 +677,225 @@ export type FinancialAccountFilters = {
         | StringFilter
         | FinancialAccountTypeEnum
         | undefined
+}
+
+export type Category = {
+    id: string
+    userId: string
+    title: string
+    description: string | null
+    for: string
+    logoIcon: string
+    color: string
+    subcategories: Array<unknown>
+    createdAt: string
+}
+
+export type CategoryRequest = {
+    title: string
+    description: string | null
+    for: string
+    logoIcon: string
+    color: string
+    subcategories?: Array<unknown>
+}
+
+export type CategoryResponse = Category & {
+    [key: string]: unknown
+}
+
+export type Subcategory = {
+    id: string
+    categoryId: string
+    title: string
+    description: string | null
+    logoIcon: string
+    createdAt: string
+}
+
+export type SubcategoryRequest = {
+    categoryId: string
+    title: string
+    description?: string | null
+    logoIcon?: string
+}
+
+export type SubcategoryResponse = {
+    data: Subcategory
+}
+
+export type Snapshot = {
+    id: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    userId: string
+}
+
+export type SnapshotRequest = {
+    snapshotDate: string
+    note?: string | null
+    totalCash?: number
+    totalInvestments?: number
+    totalNetWorth?: number
+}
+
+export type SnapshotResponse = {
+    data: Snapshot
+}
+
+export type Session = {
+    id: string
+    userId: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type SessionRequest = {
+    token?: string
+    expiresAt?: string
+}
+
+export type SessionResponse = {
+    data: Session
+}
+
+export type ErrorResponse = {
+    /**
+     * Always false for error responses
+     */
+    success: false
+    /**
+     * Error message describing what went wrong
+     */
+    message: string
+    /**
+     * Optional additional error details or context
+     */
+    error?: unknown
+}
+
+export type SimpleSuccessResponse = {
+    /**
+     * Always true for success responses
+     */
+    success: true
+    /**
+     * Optional success message
+     */
+    message?: string
+}
+
+export type StatusResponse = {
+    status: string
+    uptime: number
+    version: string
+    timestamp: string
+}
+
+export type DashboardLayout = {
+    id: string
+    userId: string
+    version: number
+    layout?: unknown
+    createdAt: string
+    updatedAt: string
+}
+
+export type DashboardLayoutRequest = {
+    version?: number
+    layout?: unknown
+}
+
+export type DashboardLayoutResponse = {
+    data: DashboardLayout
+}
+
+export type ImportFile = {
+    id: string
+    importId: string
+    filename: string
+    filetype: string
+    path: string
+    createdAt: string
+}
+
+export type Import = {
+    id: string
+    userId: string
+    title: string
+    financialAccountId: string
+    status: string
+    createdAt: string
+    transactions?: Array<unknown>
+    files?: Array<ImportFile>
+}
+
+export type ImportRequest = {
+    title: string
+    financialAccountId: string
+    files?: Array<{
+        filename: string
+        filetype: string
+        path: string
+    }>
+}
+
+export type ImportResponse = {
+    data: Import
+}
+
+export type Subscription = {
+    id: string
+    userId: string
+    title: string
+    description: string | null
+    amount: number
+    currency: string
+    appearanceMode: string
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: string
+    cyclePeriod: string
+    rememberPeriod: string
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+}
+
+export type SubscriptionRequest = {
+    title: string
+    description?: string | null
+    amount: number
+    currency: string
+    appearanceMode: string
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: string
+    cyclePeriod: string
+    rememberPeriod: string
+    financialAccountId: string
+    isEnabled?: boolean
+}
+
+export type SubscriptionResponse = {
+    data: Subscription
+}
+
+export type ReportRequest = {
+    from: string
+    to: string
+    type?: string
+}
+
+export type ReportResponse = {
+    reportType: string
+    totals: {
+        [key: string]: number
+    }
+    metadata?: unknown
 }
 
 export type GetRootStatusData = {
@@ -971,84 +948,133 @@ export type GetStatusResponses = {
 
 export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses]
 
-export type GetUsersData = {
+export type GetMeData = {
     body?: never
     path?: never
     query?: never
-    url: '/users'
+    url: '/me'
 }
 
-export type GetUsersResponses = {
+export type GetMeErrors = {
     /**
-     * List of users
+     * Invalid request
      */
-    200: unknown
-}
-
-export type PostUsersData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/users'
-}
-
-export type PostUsersResponses = {
+    400: ErrorResponse
     /**
-     * User created
+     * Unauthorized
      */
-    201: unknown
-}
-
-export type DeleteUsersByIdData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/users/{id}'
-}
-
-export type DeleteUsersByIdResponses = {
+    401: ErrorResponse
     /**
-     * User deleted
+     * Authenticated user not found
      */
-    204: void
-}
-
-export type DeleteUsersByIdResponse = DeleteUsersByIdResponses[keyof DeleteUsersByIdResponses]
-
-export type GetUsersByIdData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/users/{id}'
-}
-
-export type GetUsersByIdErrors = {
+    404: ErrorResponse
     /**
-     * User not found
+     * Internal server error
      */
-    404: unknown
+    500: ErrorResponse
 }
 
-export type GetUsersByIdResponses = {
+export type GetMeError = GetMeErrors[keyof GetMeErrors]
+
+export type GetMeResponses = {
     /**
      * User found
      */
-    200: unknown
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id: string
+            name: string
+            surname: string
+            email: string
+            emailVerified: boolean
+            onBoardingStep: OnBoardingStepEnum
+            onBoardingAt: string | null
+            image: string | null
+            createdAt: string
+            updatedAt: string
+            snapshotFrequency: SnapshotFrequencyEnum
+            preferredCurrency: CurrencyEnum
+            preferredLanguage: LanguageEnum
+            dateFormat: DateFormatEnum
+            country: CountriesEnum
+            timezone: TimezoneEnum
+        }
+    }
 }
 
-export type PutUsersByIdData = {
-    body?: never
+export type GetMeResponse = GetMeResponses[keyof GetMeResponses]
+
+export type PatchMeData = {
+    body?: UpdateUserRequest
     path?: never
     query?: never
-    url: '/users/{id}'
+    url: '/me'
 }
 
-export type PutUsersByIdResponses = {
+export type PatchMeErrors = {
+    /**
+     * Invalid request body
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type PatchMeError = PatchMeErrors[keyof PatchMeErrors]
+
+export type PatchMeResponses = {
     /**
      * User updated
      */
-    200: unknown
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: User & {
+            id: string
+            name: string
+            surname: string
+            email: string
+            emailVerified: boolean
+            onBoardingStep: OnBoardingStepEnum
+            onBoardingAt: string | null
+            image: string | null
+            createdAt: string
+            updatedAt: string
+            snapshotFrequency: SnapshotFrequencyEnum
+            preferredCurrency: CurrencyEnum
+            preferredLanguage: LanguageEnum
+            dateFormat: DateFormatEnum
+            country: CountriesEnum
+            timezone: TimezoneEnum
+        }
+    }
 }
+
+export type PatchMeResponse = PatchMeResponses[keyof PatchMeResponses]
 
 export type GetTransactionsData = {
     body?: never
@@ -1129,84 +1155,263 @@ export type PutTransactionsByIdResponses = {
     200: unknown
 }
 
-export type GetAccountsData = {
+export type GetFinancialAccountData = {
     body?: never
     path?: never
-    query?: never
-    url: '/accounts'
+    query?: {
+        filter?: FinancialAccountFilters
+        options?: FilterOptions
+    }
+    url: '/financial-account'
 }
 
-export type GetAccountsResponses = {
+export type GetFinancialAccountErrors = {
     /**
-     * List of accounts
+     * Invalid request
      */
-    200: unknown
-}
-
-export type PostAccountsData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/accounts'
-}
-
-export type PostAccountsResponses = {
+    400: ErrorResponse
     /**
-     * Account created
+     * Unauthorized
      */
-    201: unknown
-}
-
-export type DeleteAccountsByIdData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/accounts/{id}'
-}
-
-export type DeleteAccountsByIdResponses = {
-    /**
-     * Account deleted
-     */
-    204: void
-}
-
-export type DeleteAccountsByIdResponse = DeleteAccountsByIdResponses[keyof DeleteAccountsByIdResponses]
-
-export type GetAccountsByIdData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/accounts/{id}'
-}
-
-export type GetAccountsByIdErrors = {
+    401: ErrorResponse
     /**
      * Account not found
      */
-    404: unknown
-}
-
-export type GetAccountsByIdResponses = {
+    404: ErrorResponse
     /**
-     * Account found
+     * Internal server error
      */
-    200: unknown
+    500: ErrorResponse
 }
 
-export type PutAccountsByIdData = {
-    body?: never
+export type GetFinancialAccountError = GetFinancialAccountErrors[keyof GetFinancialAccountErrors]
+
+export type GetFinancialAccountResponses = {
+    /**
+     * List of financial accounts
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: Array<FinancialAccount>
+    }
+}
+
+export type GetFinancialAccountResponse = GetFinancialAccountResponses[keyof GetFinancialAccountResponses]
+
+export type PostFinancialAccountData = {
+    /**
+     * Financial account data to create
+     */
+    body: CreateFinancialAccountMultipartRequest
     path?: never
     query?: never
-    url: '/accounts/{id}'
+    url: '/financial-account'
 }
 
-export type PutAccountsByIdResponses = {
+export type PostFinancialAccountErrors = {
     /**
-     * Account updated
+     * Invalid request
      */
-    200: unknown
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
 }
+
+export type PostFinancialAccountError = PostFinancialAccountErrors[keyof PostFinancialAccountErrors]
+
+export type PostFinancialAccountResponses = {
+    /**
+     * Financial account created
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: FinancialAccount & unknown
+    }
+}
+
+export type PostFinancialAccountResponse = PostFinancialAccountResponses[keyof PostFinancialAccountResponses]
+
+export type GetFinancialAccountsByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-accounts/{id}'
+}
+
+export type GetFinancialAccountsByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetFinancialAccountsByIdError = GetFinancialAccountsByIdErrors[keyof GetFinancialAccountsByIdErrors]
+
+export type GetFinancialAccountsByIdResponses = {
+    /**
+     * Financial account found
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        data?: FinancialAccount & unknown
+    }
+}
+
+export type GetFinancialAccountsByIdResponse =
+    GetFinancialAccountsByIdResponses[keyof GetFinancialAccountsByIdResponses]
+
+export type DeleteFinancialAccountByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-account/{id}'
+}
+
+export type DeleteFinancialAccountByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteFinancialAccountByIdError = DeleteFinancialAccountByIdErrors[keyof DeleteFinancialAccountByIdErrors]
+
+export type DeleteFinancialAccountByIdResponses = {
+    /**
+     * Financial account deleted
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: unknown
+    }
+}
+
+export type DeleteFinancialAccountByIdResponse =
+    DeleteFinancialAccountByIdResponses[keyof DeleteFinancialAccountByIdResponses]
+
+export type PatchFinancialAccountByIdData = {
+    /**
+     * Financial account data to update
+     */
+    body: UpdateFinancialAccountRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-account/{id}'
+}
+
+export type PatchFinancialAccountByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type PatchFinancialAccountByIdError = PatchFinancialAccountByIdErrors[keyof PatchFinancialAccountByIdErrors]
+
+export type PatchFinancialAccountByIdResponses = {
+    /**
+     * Financial account updated
+     */
+    200: {
+        /**
+         * Always true for success responses
+         */
+        success: true
+        /**
+         * Optional success message
+         */
+        message?: string
+        /**
+         * Response data
+         */
+        data?: unknown
+    }
+}
+
+export type PatchFinancialAccountByIdResponse =
+    PatchFinancialAccountByIdResponses[keyof PatchFinancialAccountByIdResponses]
 
 export type GetCategoriesData = {
     body?: never
@@ -1523,517 +1728,3 @@ export type PutSessionsByIdResponses = {
      */
     200: unknown
 }
-
-export type GetUserData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/user'
-}
-
-export type GetUserErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * User not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetUserError = GetUserErrors[keyof GetUserErrors]
-
-export type GetUserResponses = {
-    /**
-     * User found
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: User & {
-            id?: string
-            name?: string
-            surname?: string
-            email?: string
-            emailVerified?: boolean
-            onBoardingStep?: number
-            onBoardingAt?: string | null
-            image?: string | null
-            createdAt?: string
-            updatedAt?: string
-            snapshotFrequency?: SnapshotFrequencyEnum
-            preferredCurrency?: CurrencyEnum
-            preferredLanguage?: LanguageEnum
-            dateFormat?: DateFormatEnum
-            country?: string
-            timezone?: TimezoneEnum
-        }
-    }
-}
-
-export type GetUserResponse = GetUserResponses[keyof GetUserResponses]
-
-export type PutUserData = {
-    body?: UpdateUserRequest
-    path?: never
-    query?: never
-    url: '/user'
-}
-
-export type PutUserErrors = {
-    /**
-     * Invalid request body
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * User not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type PutUserError = PutUserErrors[keyof PutUserErrors]
-
-export type PutUserResponses = {
-    /**
-     * User updated
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: User & {
-            id?: string
-            name?: string
-            surname?: string
-            email?: string
-            emailVerified?: boolean
-            onBoardingStep?: number
-            onBoardingAt?: string | null
-            image?: string | null
-            createdAt?: string
-            updatedAt?: string
-            snapshotFrequency?: SnapshotFrequencyEnum
-            preferredCurrency?: CurrencyEnum
-            preferredLanguage?: LanguageEnum
-            dateFormat?: DateFormatEnum
-            country?: string
-            timezone?: TimezoneEnum
-        }
-    }
-}
-
-export type PutUserResponse = PutUserResponses[keyof PutUserResponses]
-
-export type GetMeData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/me'
-}
-
-export type GetMeErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Authenticated user not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetMeError = GetMeErrors[keyof GetMeErrors]
-
-export type GetMeResponses = {
-    /**
-     * User found
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: User & {
-            id: string
-            name: string
-            surname: string
-            email: string
-            emailVerified: boolean
-            onBoardingStep: OnBoardingStepEnum
-            onBoardingAt: string | null
-            image: string | null
-            createdAt: string
-            updatedAt: string
-            snapshotFrequency: SnapshotFrequencyEnum
-            preferredCurrency: CurrencyEnum
-            preferredLanguage: LanguageEnum
-            dateFormat: DateFormatEnum
-            country: CountriesEnum
-            timezone: TimezoneEnum
-        }
-    }
-}
-
-export type GetMeResponse = GetMeResponses[keyof GetMeResponses]
-
-export type PatchMeData = {
-    body?: UpdateUserRequest
-    path?: never
-    query?: never
-    url: '/me'
-}
-
-export type PatchMeErrors = {
-    /**
-     * Invalid request body
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Authenticated user not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type PatchMeError = PatchMeErrors[keyof PatchMeErrors]
-
-export type PatchMeResponses = {
-    /**
-     * User updated
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: User & {
-            id: string
-            name: string
-            surname: string
-            email: string
-            emailVerified: boolean
-            onBoardingStep: OnBoardingStepEnum
-            onBoardingAt: string | null
-            image: string | null
-            createdAt: string
-            updatedAt: string
-            snapshotFrequency: SnapshotFrequencyEnum
-            preferredCurrency: CurrencyEnum
-            preferredLanguage: LanguageEnum
-            dateFormat: DateFormatEnum
-            country: CountriesEnum
-            timezone: TimezoneEnum
-        }
-    }
-}
-
-export type PatchMeResponse = PatchMeResponses[keyof PatchMeResponses]
-
-export type GetFinancialAccountData = {
-    body?: never
-    path?: never
-    query?: {
-        filter?: FinancialAccountFilters
-        options?: FilterOptions
-    }
-    url: '/financial-account'
-}
-
-export type GetFinancialAccountErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetFinancialAccountError = GetFinancialAccountErrors[keyof GetFinancialAccountErrors]
-
-export type GetFinancialAccountResponses = {
-    /**
-     * List of financial accounts
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        /**
-         * Response data
-         */
-        data?: Array<FinancialAccount>
-    }
-}
-
-export type GetFinancialAccountResponse = GetFinancialAccountResponses[keyof GetFinancialAccountResponses]
-
-export type PostFinancialAccountData = {
-    /**
-     * Financial account data to create
-     */
-    body: CreateFinancialAccountMultipartRequest
-    path?: never
-    query?: never
-    url: '/financial-account'
-}
-
-export type PostFinancialAccountErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type PostFinancialAccountError = PostFinancialAccountErrors[keyof PostFinancialAccountErrors]
-
-export type PostFinancialAccountResponses = {
-    /**
-     * Financial account created
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: FinancialAccount & unknown
-    }
-}
-
-export type PostFinancialAccountResponse = PostFinancialAccountResponses[keyof PostFinancialAccountResponses]
-
-export type GetFinancialAccountsByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/financial-accounts/{id}'
-}
-
-export type GetFinancialAccountsByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetFinancialAccountsByIdError = GetFinancialAccountsByIdErrors[keyof GetFinancialAccountsByIdErrors]
-
-export type GetFinancialAccountsByIdResponses = {
-    /**
-     * Financial account found
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        data?: FinancialAccount & unknown
-    }
-}
-
-export type GetFinancialAccountsByIdResponse =
-    GetFinancialAccountsByIdResponses[keyof GetFinancialAccountsByIdResponses]
-
-export type DeleteFinancialAccountByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/financial-account/{id}'
-}
-
-export type DeleteFinancialAccountByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteFinancialAccountByIdError = DeleteFinancialAccountByIdErrors[keyof DeleteFinancialAccountByIdErrors]
-
-export type DeleteFinancialAccountByIdResponses = {
-    /**
-     * Financial account deleted
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        /**
-         * Response data
-         */
-        data?: unknown
-    }
-}
-
-export type DeleteFinancialAccountByIdResponse =
-    DeleteFinancialAccountByIdResponses[keyof DeleteFinancialAccountByIdResponses]
-
-export type PatchFinancialAccountByIdData = {
-    /**
-     * Financial account data to update
-     */
-    body: UpdateFinancialAccountRequest
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/financial-account/{id}'
-}
-
-export type PatchFinancialAccountByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type PatchFinancialAccountByIdError = PatchFinancialAccountByIdErrors[keyof PatchFinancialAccountByIdErrors]
-
-export type PatchFinancialAccountByIdResponses = {
-    /**
-     * Financial account updated
-     */
-    200: {
-        /**
-         * Always true for success responses
-         */
-        success: true
-        /**
-         * Optional success message
-         */
-        message?: string
-        /**
-         * Response data
-         */
-        data?: unknown
-    }
-}
-
-export type PatchFinancialAccountByIdResponse =
-    PatchFinancialAccountByIdResponses[keyof PatchFinancialAccountByIdResponses]

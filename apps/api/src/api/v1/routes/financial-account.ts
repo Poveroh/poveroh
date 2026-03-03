@@ -1,4 +1,4 @@
-import { FinancialAccountController } from '../controllers/account.controller'
+import { FinancialAccountController } from '../controllers/financial-account.controller'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
 import { upload } from '../../../middleware/upload.middleware'
 import { Router } from 'express'

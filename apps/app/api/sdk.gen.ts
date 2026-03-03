@@ -3,8 +3,6 @@
 import { client } from './client.gen.js'
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client/index.js'
 import type {
-    DeleteAccountsByIdData,
-    DeleteAccountsByIdResponses,
     DeleteCategoriesByIdData,
     DeleteCategoriesByIdResponses,
     DeleteFinancialAccountByIdData,
@@ -18,13 +16,6 @@ import type {
     DeleteSubcategoriesByIdResponses,
     DeleteTransactionsByIdData,
     DeleteTransactionsByIdResponses,
-    DeleteUsersByIdData,
-    DeleteUsersByIdResponses,
-    GetAccountsByIdData,
-    GetAccountsByIdErrors,
-    GetAccountsByIdResponses,
-    GetAccountsData,
-    GetAccountsResponses,
     GetCategoriesByIdData,
     GetCategoriesByIdErrors,
     GetCategoriesByIdResponses,
@@ -65,22 +56,12 @@ import type {
     GetTransactionsByIdResponses,
     GetTransactionsData,
     GetTransactionsResponses,
-    GetUserData,
-    GetUserErrors,
-    GetUserResponses,
-    GetUsersByIdData,
-    GetUsersByIdErrors,
-    GetUsersByIdResponses,
-    GetUsersData,
-    GetUsersResponses,
     PatchFinancialAccountByIdData,
     PatchFinancialAccountByIdErrors,
     PatchFinancialAccountByIdResponses,
     PatchMeData,
     PatchMeErrors,
     PatchMeResponses,
-    PostAccountsData,
-    PostAccountsResponses,
     PostCategoriesData,
     PostCategoriesResponses,
     PostFinancialAccountData,
@@ -94,10 +75,6 @@ import type {
     PostSubcategoriesResponses,
     PostTransactionsData,
     PostTransactionsResponses,
-    PostUsersData,
-    PostUsersResponses,
-    PutAccountsByIdData,
-    PutAccountsByIdResponses,
     PutCategoriesByIdData,
     PutCategoriesByIdResponses,
     PutSessionsByIdData,
@@ -107,12 +84,7 @@ import type {
     PutSubcategoriesByIdData,
     PutSubcategoriesByIdResponses,
     PutTransactionsByIdData,
-    PutTransactionsByIdResponses,
-    PutUserData,
-    PutUserErrors,
-    PutUserResponses,
-    PutUsersByIdData,
-    PutUsersByIdResponses
+    PutTransactionsByIdResponses
 } from './types.gen.js'
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<
@@ -147,55 +119,31 @@ export const getStatus = <ThrowOnError extends boolean = false>(options?: Option
     (options?.client ?? client).get<GetStatusResponses, GetStatusErrors, ThrowOnError>({ url: '/status', ...options })
 
 /**
- * Get all users
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
  */
-export const getUsers = <ThrowOnError extends boolean = false>(options?: Options<GetUsersData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUsersResponses, unknown, ThrowOnError>({
+export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>) =>
+    (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/users',
+        url: '/me',
         ...options
     })
 
 /**
- * Create user
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
  */
-export const postUsers = <ThrowOnError extends boolean = false>(options?: Options<PostUsersData, ThrowOnError>) =>
-    (options?.client ?? client).post<PostUsersResponses, unknown, ThrowOnError>({
+export const patchMe = <ThrowOnError extends boolean = false>(options?: Options<PatchMeData, ThrowOnError>) =>
+    (options?.client ?? client).patch<PatchMeResponses, PatchMeErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/users',
-        ...options
-    })
-
-/**
- * Delete user
- */
-export const deleteUsersById = <ThrowOnError extends boolean = false>(
-    options?: Options<DeleteUsersByIdData, ThrowOnError>
-) =>
-    (options?.client ?? client).delete<DeleteUsersByIdResponses, unknown, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/users/{id}',
-        ...options
-    })
-
-/**
- * Get user by ID
- */
-export const getUsersById = <ThrowOnError extends boolean = false>(options?: Options<GetUsersByIdData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUsersByIdResponses, GetUsersByIdErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/users/{id}',
-        ...options
-    })
-
-/**
- * Update user
- */
-export const putUsersById = <ThrowOnError extends boolean = false>(options?: Options<PutUsersByIdData, ThrowOnError>) =>
-    (options?.client ?? client).put<PutUsersByIdResponses, unknown, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/users/{id}',
-        ...options
+        url: '/me',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
     })
 
 /**
@@ -259,60 +207,89 @@ export const putTransactionsById = <ThrowOnError extends boolean = false>(
     })
 
 /**
- * Get all accounts
+ * Get all financial accounts
+ *
+ * Retrieve a list of all financial accounts associated with the user
  */
-export const getAccounts = <ThrowOnError extends boolean = false>(options?: Options<GetAccountsData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetAccountsResponses, unknown, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/accounts',
-        ...options
-    })
-
-/**
- * Create account
- */
-export const postAccounts = <ThrowOnError extends boolean = false>(options?: Options<PostAccountsData, ThrowOnError>) =>
-    (options?.client ?? client).post<PostAccountsResponses, unknown, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/accounts',
-        ...options
-    })
-
-/**
- * Delete account
- */
-export const deleteAccountsById = <ThrowOnError extends boolean = false>(
-    options?: Options<DeleteAccountsByIdData, ThrowOnError>
+export const getFinancialAccount = <ThrowOnError extends boolean = false>(
+    options?: Options<GetFinancialAccountData, ThrowOnError>
 ) =>
-    (options?.client ?? client).delete<DeleteAccountsByIdResponses, unknown, ThrowOnError>({
+    (options?.client ?? client).get<GetFinancialAccountResponses, GetFinancialAccountErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/accounts/{id}',
+        url: '/financial-account',
         ...options
     })
 
 /**
- * Get account by ID
+ * Create financial account
+ *
+ * Create a new financial account with the provided data
  */
-export const getAccountsById = <ThrowOnError extends boolean = false>(
-    options?: Options<GetAccountsByIdData, ThrowOnError>
+export const postFinancialAccount = <ThrowOnError extends boolean = false>(
+    options: Options<PostFinancialAccountData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<GetAccountsByIdResponses, GetAccountsByIdErrors, ThrowOnError>({
+    (options.client ?? client).post<PostFinancialAccountResponses, PostFinancialAccountErrors, ThrowOnError>({
+        ...formDataBodySerializer,
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/accounts/{id}',
+        url: '/financial-account',
+        ...options,
+        headers: {
+            'Content-Type': null,
+            ...options.headers
+        }
+    })
+
+/**
+ * Get financial account by ID
+ *
+ * Retrieve a specific financial account by its ID
+ */
+export const getFinancialAccountsById = <ThrowOnError extends boolean = false>(
+    options: Options<GetFinancialAccountsByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetFinancialAccountsByIdResponses, GetFinancialAccountsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/financial-accounts/{id}',
         ...options
     })
 
 /**
- * Update account
+ * Delete financial account
+ *
+ * Delete an existing financial account with the provided ID
  */
-export const putAccountsById = <ThrowOnError extends boolean = false>(
-    options?: Options<PutAccountsByIdData, ThrowOnError>
+export const deleteFinancialAccountById = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteFinancialAccountByIdData, ThrowOnError>
 ) =>
-    (options?.client ?? client).put<PutAccountsByIdResponses, unknown, ThrowOnError>({
+    (options.client ?? client).delete<
+        DeleteFinancialAccountByIdResponses,
+        DeleteFinancialAccountByIdErrors,
+        ThrowOnError
+    >({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/accounts/{id}',
+        url: '/financial-account/{id}',
         ...options
     })
+
+/**
+ * Update financial account
+ *
+ * Update an existing financial account with the provided data
+ */
+export const patchFinancialAccountById = <ThrowOnError extends boolean = false>(
+    options: Options<PatchFinancialAccountByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<PatchFinancialAccountByIdResponses, PatchFinancialAccountByIdErrors, ThrowOnError>(
+        {
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/financial-account/{id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        }
+    )
 
 /**
  * Get all categories
@@ -547,144 +524,3 @@ export const putSessionsById = <ThrowOnError extends boolean = false>(
         url: '/sessions/{id}',
         ...options
     })
-
-/**
- * Get user
- *
- * Get user information and preferences
- */
-export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/user',
-        ...options
-    })
-
-/**
- * Update user
- *
- * Update user preferences and information
- */
-export const putUser = <ThrowOnError extends boolean = false>(options?: Options<PutUserData, ThrowOnError>) =>
-    (options?.client ?? client).put<PutUserResponses, PutUserErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/user',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    })
-
-/**
- * Get authenticated user
- *
- * Get authenticated user information and preferences
- */
-export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/me',
-        ...options
-    })
-
-/**
- * Update authenticated user
- *
- * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
- */
-export const patchMe = <ThrowOnError extends boolean = false>(options?: Options<PatchMeData, ThrowOnError>) =>
-    (options?.client ?? client).patch<PatchMeResponses, PatchMeErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/me',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
-    })
-
-/**
- * Get all financial accounts
- *
- * Retrieve a list of all financial accounts associated with the user
- */
-export const getFinancialAccount = <ThrowOnError extends boolean = false>(
-    options?: Options<GetFinancialAccountData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetFinancialAccountResponses, GetFinancialAccountErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account',
-        ...options
-    })
-
-/**
- * Create financial account
- *
- * Create a new financial account with the provided data
- */
-export const postFinancialAccount = <ThrowOnError extends boolean = false>(
-    options: Options<PostFinancialAccountData, ThrowOnError>
-) =>
-    (options.client ?? client).post<PostFinancialAccountResponses, PostFinancialAccountErrors, ThrowOnError>({
-        ...formDataBodySerializer,
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account',
-        ...options,
-        headers: {
-            'Content-Type': null,
-            ...options.headers
-        }
-    })
-
-/**
- * Get financial account by ID
- *
- * Retrieve a specific financial account by its ID
- */
-export const getFinancialAccountsById = <ThrowOnError extends boolean = false>(
-    options: Options<GetFinancialAccountsByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).get<GetFinancialAccountsByIdResponses, GetFinancialAccountsByIdErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-accounts/{id}',
-        ...options
-    })
-
-/**
- * Delete financial account
- *
- * Delete an existing financial account with the provided ID
- */
-export const deleteFinancialAccountById = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteFinancialAccountByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).delete<
-        DeleteFinancialAccountByIdResponses,
-        DeleteFinancialAccountByIdErrors,
-        ThrowOnError
-    >({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account/{id}',
-        ...options
-    })
-
-/**
- * Update financial account
- *
- * Update an existing financial account with the provided data
- */
-export const patchFinancialAccountById = <ThrowOnError extends boolean = false>(
-    options: Options<PatchFinancialAccountByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<PatchFinancialAccountByIdResponses, PatchFinancialAccountByIdErrors, ThrowOnError>(
-        {
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/financial-account/{id}',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        }
-    )

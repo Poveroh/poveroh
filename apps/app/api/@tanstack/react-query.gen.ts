@@ -4,16 +4,12 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 
 import { client } from '../client.gen.js'
 import {
-    deleteAccountsById,
     deleteCategoriesById,
     deleteFinancialAccountById,
     deleteSessionsById,
     deleteSnapshotsById,
     deleteSubcategoriesById,
     deleteTransactionsById,
-    deleteUsersById,
-    getAccounts,
-    getAccountsById,
     getCategories,
     getCategoriesById,
     getFinancialAccount,
@@ -29,32 +25,22 @@ import {
     getSubcategoriesById,
     getTransactions,
     getTransactionsById,
-    getUser,
-    getUsers,
-    getUsersById,
     type Options,
     patchFinancialAccountById,
     patchMe,
-    postAccounts,
     postCategories,
     postFinancialAccount,
     postSessions,
     postSnapshots,
     postSubcategories,
     postTransactions,
-    postUsers,
-    putAccountsById,
     putCategoriesById,
     putSessionsById,
     putSnapshotsById,
     putSubcategoriesById,
-    putTransactionsById,
-    putUser,
-    putUsersById
+    putTransactionsById
 } from '../sdk.gen.js'
 import type {
-    DeleteAccountsByIdData,
-    DeleteAccountsByIdResponse,
     DeleteCategoriesByIdData,
     DeleteCategoriesByIdResponse,
     DeleteFinancialAccountByIdData,
@@ -68,10 +54,6 @@ import type {
     DeleteSubcategoriesByIdResponse,
     DeleteTransactionsByIdData,
     DeleteTransactionsByIdResponse,
-    DeleteUsersByIdData,
-    DeleteUsersByIdResponse,
-    GetAccountsByIdData,
-    GetAccountsData,
     GetCategoriesByIdData,
     GetCategoriesData,
     GetFinancialAccountData,
@@ -97,18 +79,12 @@ import type {
     GetSubcategoriesData,
     GetTransactionsByIdData,
     GetTransactionsData,
-    GetUserData,
-    GetUserError,
-    GetUserResponse,
-    GetUsersByIdData,
-    GetUsersData,
     PatchFinancialAccountByIdData,
     PatchFinancialAccountByIdError,
     PatchFinancialAccountByIdResponse,
     PatchMeData,
     PatchMeError,
     PatchMeResponse,
-    PostAccountsData,
     PostCategoriesData,
     PostFinancialAccountData,
     PostFinancialAccountError,
@@ -117,17 +93,11 @@ import type {
     PostSnapshotsData,
     PostSubcategoriesData,
     PostTransactionsData,
-    PostUsersData,
-    PutAccountsByIdData,
     PutCategoriesByIdData,
     PutSessionsByIdData,
     PutSnapshotsByIdData,
     PutSubcategoriesByIdData,
-    PutTransactionsByIdData,
-    PutUserData,
-    PutUserError,
-    PutUserResponse,
-    PutUsersByIdData
+    PutTransactionsByIdData
 } from '../types.gen.js'
 
 export type QueryKey<TOptions extends Options> = [
@@ -212,15 +182,17 @@ export const getStatusOptions = (options?: Options<GetStatusData>) =>
         queryKey: getStatusQueryKey(options)
     })
 
-export const getUsersQueryKey = (options?: Options<GetUsersData>) => createQueryKey('getUsers', options)
+export const getMeQueryKey = (options?: Options<GetMeData>) => createQueryKey('getMe', options)
 
 /**
- * Get all users
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
  */
-export const getUsersOptions = (options?: Options<GetUsersData>) =>
-    queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getUsersQueryKey>>({
+export const getMeOptions = (options?: Options<GetMeData>) =>
+    queryOptions<GetMeResponse, GetMeError, GetMeResponse, ReturnType<typeof getMeQueryKey>>({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUsers({
+            const { data } = await getMe({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -228,75 +200,20 @@ export const getUsersOptions = (options?: Options<GetUsersData>) =>
             })
             return data
         },
-        queryKey: getUsersQueryKey(options)
+        queryKey: getMeQueryKey(options)
     })
 
 /**
- * Create user
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
  */
-export const postUsersMutation = (
-    options?: Partial<Options<PostUsersData>>
-): UseMutationOptions<unknown, DefaultError, Options<PostUsersData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PostUsersData>> = {
+export const patchMeMutation = (
+    options?: Partial<Options<PatchMeData>>
+): UseMutationOptions<PatchMeResponse, PatchMeError, Options<PatchMeData>> => {
+    const mutationOptions: UseMutationOptions<PatchMeResponse, PatchMeError, Options<PatchMeData>> = {
         mutationFn: async fnOptions => {
-            const { data } = await postUsers({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete user
- */
-export const deleteUsersByIdMutation = (
-    options?: Partial<Options<DeleteUsersByIdData>>
-): UseMutationOptions<DeleteUsersByIdResponse, DefaultError, Options<DeleteUsersByIdData>> => {
-    const mutationOptions: UseMutationOptions<DeleteUsersByIdResponse, DefaultError, Options<DeleteUsersByIdData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteUsersById({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getUsersByIdQueryKey = (options?: Options<GetUsersByIdData>) => createQueryKey('getUsersById', options)
-
-/**
- * Get user by ID
- */
-export const getUsersByIdOptions = (options?: Options<GetUsersByIdData>) =>
-    queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getUsersByIdQueryKey>>({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUsersById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getUsersByIdQueryKey(options)
-    })
-
-/**
- * Update user
- */
-export const putUsersByIdMutation = (
-    options?: Partial<Options<PutUsersByIdData>>
-): UseMutationOptions<unknown, DefaultError, Options<PutUsersByIdData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PutUsersByIdData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await putUsersById({
+            const { data } = await patchMe({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -408,15 +325,23 @@ export const putTransactionsByIdMutation = (
     return mutationOptions
 }
 
-export const getAccountsQueryKey = (options?: Options<GetAccountsData>) => createQueryKey('getAccounts', options)
+export const getFinancialAccountQueryKey = (options?: Options<GetFinancialAccountData>) =>
+    createQueryKey('getFinancialAccount', options)
 
 /**
- * Get all accounts
+ * Get all financial accounts
+ *
+ * Retrieve a list of all financial accounts associated with the user
  */
-export const getAccountsOptions = (options?: Options<GetAccountsData>) =>
-    queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getAccountsQueryKey>>({
+export const getFinancialAccountOptions = (options?: Options<GetFinancialAccountData>) =>
+    queryOptions<
+        GetFinancialAccountResponse,
+        GetFinancialAccountError,
+        GetFinancialAccountResponse,
+        ReturnType<typeof getFinancialAccountQueryKey>
+    >({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAccounts({
+            const { data } = await getFinancialAccount({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -424,41 +349,24 @@ export const getAccountsOptions = (options?: Options<GetAccountsData>) =>
             })
             return data
         },
-        queryKey: getAccountsQueryKey(options)
+        queryKey: getFinancialAccountQueryKey(options)
     })
 
 /**
- * Create account
+ * Create financial account
+ *
+ * Create a new financial account with the provided data
  */
-export const postAccountsMutation = (
-    options?: Partial<Options<PostAccountsData>>
-): UseMutationOptions<unknown, DefaultError, Options<PostAccountsData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PostAccountsData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await postAccounts({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete account
- */
-export const deleteAccountsByIdMutation = (
-    options?: Partial<Options<DeleteAccountsByIdData>>
-): UseMutationOptions<DeleteAccountsByIdResponse, DefaultError, Options<DeleteAccountsByIdData>> => {
+export const postFinancialAccountMutation = (
+    options?: Partial<Options<PostFinancialAccountData>>
+): UseMutationOptions<PostFinancialAccountResponse, PostFinancialAccountError, Options<PostFinancialAccountData>> => {
     const mutationOptions: UseMutationOptions<
-        DeleteAccountsByIdResponse,
-        DefaultError,
-        Options<DeleteAccountsByIdData>
+        PostFinancialAccountResponse,
+        PostFinancialAccountError,
+        Options<PostFinancialAccountData>
     > = {
         mutationFn: async fnOptions => {
-            const { data } = await deleteAccountsById({
+            const { data } = await postFinancialAccount({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -469,16 +377,23 @@ export const deleteAccountsByIdMutation = (
     return mutationOptions
 }
 
-export const getAccountsByIdQueryKey = (options?: Options<GetAccountsByIdData>) =>
-    createQueryKey('getAccountsById', options)
+export const getFinancialAccountsByIdQueryKey = (options: Options<GetFinancialAccountsByIdData>) =>
+    createQueryKey('getFinancialAccountsById', options)
 
 /**
- * Get account by ID
+ * Get financial account by ID
+ *
+ * Retrieve a specific financial account by its ID
  */
-export const getAccountsByIdOptions = (options?: Options<GetAccountsByIdData>) =>
-    queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getAccountsByIdQueryKey>>({
+export const getFinancialAccountsByIdOptions = (options: Options<GetFinancialAccountsByIdData>) =>
+    queryOptions<
+        GetFinancialAccountsByIdResponse,
+        GetFinancialAccountsByIdError,
+        GetFinancialAccountsByIdResponse,
+        ReturnType<typeof getFinancialAccountsByIdQueryKey>
+    >({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAccountsById({
+            const { data } = await getFinancialAccountsById({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -486,18 +401,57 @@ export const getAccountsByIdOptions = (options?: Options<GetAccountsByIdData>) =
             })
             return data
         },
-        queryKey: getAccountsByIdQueryKey(options)
+        queryKey: getFinancialAccountsByIdQueryKey(options)
     })
 
 /**
- * Update account
+ * Delete financial account
+ *
+ * Delete an existing financial account with the provided ID
  */
-export const putAccountsByIdMutation = (
-    options?: Partial<Options<PutAccountsByIdData>>
-): UseMutationOptions<unknown, DefaultError, Options<PutAccountsByIdData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PutAccountsByIdData>> = {
+export const deleteFinancialAccountByIdMutation = (
+    options?: Partial<Options<DeleteFinancialAccountByIdData>>
+): UseMutationOptions<
+    DeleteFinancialAccountByIdResponse,
+    DeleteFinancialAccountByIdError,
+    Options<DeleteFinancialAccountByIdData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteFinancialAccountByIdResponse,
+        DeleteFinancialAccountByIdError,
+        Options<DeleteFinancialAccountByIdData>
+    > = {
         mutationFn: async fnOptions => {
-            const { data } = await putAccountsById({
+            const { data } = await deleteFinancialAccountById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update financial account
+ *
+ * Update an existing financial account with the provided data
+ */
+export const patchFinancialAccountByIdMutation = (
+    options?: Partial<Options<PatchFinancialAccountByIdData>>
+): UseMutationOptions<
+    PatchFinancialAccountByIdResponse,
+    PatchFinancialAccountByIdError,
+    Options<PatchFinancialAccountByIdData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PatchFinancialAccountByIdResponse,
+        PatchFinancialAccountByIdError,
+        Options<PatchFinancialAccountByIdData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await patchFinancialAccountById({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -899,227 +853,6 @@ export const putSessionsByIdMutation = (
     const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PutSessionsByIdData>> = {
         mutationFn: async fnOptions => {
             const { data } = await putSessionsById({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getUserQueryKey = (options?: Options<GetUserData>) => createQueryKey('getUser', options)
-
-/**
- * Get user
- *
- * Get user information and preferences
- */
-export const getUserOptions = (options?: Options<GetUserData>) =>
-    queryOptions<GetUserResponse, GetUserError, GetUserResponse, ReturnType<typeof getUserQueryKey>>({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getUser({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getUserQueryKey(options)
-    })
-
-/**
- * Update user
- *
- * Update user preferences and information
- */
-export const putUserMutation = (
-    options?: Partial<Options<PutUserData>>
-): UseMutationOptions<PutUserResponse, PutUserError, Options<PutUserData>> => {
-    const mutationOptions: UseMutationOptions<PutUserResponse, PutUserError, Options<PutUserData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await putUser({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getMeQueryKey = (options?: Options<GetMeData>) => createQueryKey('getMe', options)
-
-/**
- * Get authenticated user
- *
- * Get authenticated user information and preferences
- */
-export const getMeOptions = (options?: Options<GetMeData>) =>
-    queryOptions<GetMeResponse, GetMeError, GetMeResponse, ReturnType<typeof getMeQueryKey>>({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getMe({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getMeQueryKey(options)
-    })
-
-/**
- * Update authenticated user
- *
- * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
- */
-export const patchMeMutation = (
-    options?: Partial<Options<PatchMeData>>
-): UseMutationOptions<PatchMeResponse, PatchMeError, Options<PatchMeData>> => {
-    const mutationOptions: UseMutationOptions<PatchMeResponse, PatchMeError, Options<PatchMeData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await patchMe({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getFinancialAccountQueryKey = (options?: Options<GetFinancialAccountData>) =>
-    createQueryKey('getFinancialAccount', options)
-
-/**
- * Get all financial accounts
- *
- * Retrieve a list of all financial accounts associated with the user
- */
-export const getFinancialAccountOptions = (options?: Options<GetFinancialAccountData>) =>
-    queryOptions<
-        GetFinancialAccountResponse,
-        GetFinancialAccountError,
-        GetFinancialAccountResponse,
-        ReturnType<typeof getFinancialAccountQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getFinancialAccount({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getFinancialAccountQueryKey(options)
-    })
-
-/**
- * Create financial account
- *
- * Create a new financial account with the provided data
- */
-export const postFinancialAccountMutation = (
-    options?: Partial<Options<PostFinancialAccountData>>
-): UseMutationOptions<PostFinancialAccountResponse, PostFinancialAccountError, Options<PostFinancialAccountData>> => {
-    const mutationOptions: UseMutationOptions<
-        PostFinancialAccountResponse,
-        PostFinancialAccountError,
-        Options<PostFinancialAccountData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await postFinancialAccount({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getFinancialAccountsByIdQueryKey = (options: Options<GetFinancialAccountsByIdData>) =>
-    createQueryKey('getFinancialAccountsById', options)
-
-/**
- * Get financial account by ID
- *
- * Retrieve a specific financial account by its ID
- */
-export const getFinancialAccountsByIdOptions = (options: Options<GetFinancialAccountsByIdData>) =>
-    queryOptions<
-        GetFinancialAccountsByIdResponse,
-        GetFinancialAccountsByIdError,
-        GetFinancialAccountsByIdResponse,
-        ReturnType<typeof getFinancialAccountsByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getFinancialAccountsById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getFinancialAccountsByIdQueryKey(options)
-    })
-
-/**
- * Delete financial account
- *
- * Delete an existing financial account with the provided ID
- */
-export const deleteFinancialAccountByIdMutation = (
-    options?: Partial<Options<DeleteFinancialAccountByIdData>>
-): UseMutationOptions<
-    DeleteFinancialAccountByIdResponse,
-    DeleteFinancialAccountByIdError,
-    Options<DeleteFinancialAccountByIdData>
-> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteFinancialAccountByIdResponse,
-        DeleteFinancialAccountByIdError,
-        Options<DeleteFinancialAccountByIdData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteFinancialAccountById({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Update financial account
- *
- * Update an existing financial account with the provided data
- */
-export const patchFinancialAccountByIdMutation = (
-    options?: Partial<Options<PatchFinancialAccountByIdData>>
-): UseMutationOptions<
-    PatchFinancialAccountByIdResponse,
-    PatchFinancialAccountByIdError,
-    Options<PatchFinancialAccountByIdData>
-> => {
-    const mutationOptions: UseMutationOptions<
-        PatchFinancialAccountByIdResponse,
-        PatchFinancialAccountByIdError,
-        Options<PatchFinancialAccountByIdData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await patchFinancialAccountById({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
