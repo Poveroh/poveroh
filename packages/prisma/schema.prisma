@@ -420,6 +420,7 @@ model Category {
     logoIcon      String
     color         String            @default("#8B5CF6")
     createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
     transactions  Transaction[]
     subcategories Subcategory[]
     user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -435,6 +436,7 @@ model Subcategory {
     description  String?
     logoIcon     String
     createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
     transactions Transaction[]
     category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 

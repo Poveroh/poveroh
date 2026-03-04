@@ -1,6 +1,7 @@
 import { z } from '../zod'
 import { FinancialAccountTypeEnum } from './enum.schema'
 import { StringFilterSchema } from './filter.schema'
+import { MultipartRequestSchema } from './media.schema'
 
 /**
  * Financial account schema representing a user's financial account
@@ -31,16 +32,9 @@ export const CreateFinancialAccountRequestSchema = FinancialAccountSchema.omit({
     updatedAt: true
 }).openapi('CreateFinancialAccountRequest')
 
-export const CreateFinancialAccountMultipartRequestSchema = z
-    .object({
-        data: CreateFinancialAccountRequestSchema,
-        file: z
-            .string()
-            .openapi({ format: 'binary' })
-            .optional()
-            .describe('Optional file upload for the financial account logo icon')
-    })
-    .openapi('CreateFinancialAccountMultipartRequest')
+export const CreateFinancialAccountMultipartRequestSchema = MultipartRequestSchema(
+    CreateFinancialAccountRequestSchema
+).openapi('CreateFinancialAccountMultipartRequest')
 
 /**
  * Request schema for updating an existing financial account
@@ -68,10 +62,11 @@ export const FinancialAccountParamsId = FinancialAccountSchema.pick({
  */
 export const FinancialAccountFiltersSchema = z
     .object({
-        id: z.string().optional(),
+        id: FinancialAccountParamsId,
         title: StringFilterSchema.optional(),
         description: StringFilterSchema.optional(),
         type: FinancialAccountTypeEnum.optional()
     })
+    .partial()
     .catchall(z.union([z.string(), StringFilterSchema, FinancialAccountTypeEnum]))
     .openapi('FinancialAccountFilters')
