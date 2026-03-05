@@ -4,12 +4,12 @@ import {
     SuccessResponseSchema,
     ReadQuerySchema,
     SubscriptionFiltersSchema,
-    SubcategoryParamsId,
     CreateSubscriptionMultipartRequestSchema,
-    SubscriptionParamsId,
     SubscriptionSchema,
-    UpdateSubscriptionRequestSchema
+    UpdateSubscriptionRequestSchema,
+    SubscriptionParamsId
 } from '../schemas'
+import { SubcategoryParamsId } from '../schemas/subcategory.schema'
 
 export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({

@@ -1,5 +1,10 @@
 import { z } from '../zod'
 
+/**
+ * StringFilterSchema defines a schema for filtering string fields in API requests.
+ * It includes optional properties for exact matches (equals) and partial matches (contains).
+ * This schema can be used to create flexible filtering options for string fields in various API endpoints.
+ */
 export const StringFilterSchema = z
     .object({
         equals: z.string().optional(),
@@ -7,6 +12,12 @@ export const StringFilterSchema = z
     })
     .openapi('StringFilter')
 
+/**
+ * FilterOptionsSchema defines a schema for pagination and sorting options in API requests.
+ * It includes optional properties for skipping a certain number of records (skip), limiting the number of records returned (take),
+ * specifying the field to sort by (sortBy), and the sort order (sortOrder).
+ * This schema can be used to create flexible querying options for various API endpoints that support pagination and sorting.
+ */
 export const FilterOptionsSchema = z
     .object({
         skip: z.number().int().nonnegative().optional(),
@@ -16,6 +27,11 @@ export const FilterOptionsSchema = z
     })
     .openapi('FilterOptions')
 
+/**
+ * ReadQuerySchema defines a schema for read queries in API requests.
+ * @param dataSchema The schema for the filter data
+ * @returns A schema for the read query, including filter and options
+ */
 export const ReadQuerySchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
     z.object({
         filter: dataSchema.optional(),

@@ -1,14 +1,12 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import { ErrorResponseSchema, SuccessResponseSchema, ReadQuerySchema } from '../schemas'
 import {
-    ErrorResponseSchema,
-    SuccessResponseSchema,
-    ReadQuerySchema,
-    CreateSubcategoryMultipartRequestSchema,
     SubcategoryFiltersSchema,
-    SubcategoryParamsId,
     SubcategorySchema,
+    SubcategoryParamsId,
+    CreateSubcategoryMultipartRequestSchema,
     UpdateSubcategoryRequestSchema
-} from '../schemas'
+} from '../schemas/subcategory.schema'
 
 export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
