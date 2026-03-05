@@ -8,6 +8,7 @@ import { registerCategoryPath } from './paths/category.path'
 import { registerSubcategoryPath } from './paths/subcategory.path'
 import { registerSnapshotPath } from './paths/snapshot.path'
 import { registerSessionPath } from './paths/session.path'
+import { registerSubscriptionPath } from './paths/subscription.path'
 
 type OpenApiAwareSchema = {
     _def?: {
@@ -39,6 +40,7 @@ export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerUserPath(registry)
     registerTransactionPath(registry)
     registerFinancialAccountPath(registry)
+    registerSubscriptionPath(registry)
     registerCategoryPath(registry)
     registerSubcategoryPath(registry)
     registerSnapshotPath(registry)

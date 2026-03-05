@@ -1,6 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
-import { UserSchema } from '@poveroh/schemas'
-import { UpdateUserSchemaRequest, ErrorResponseSchema, SuccessResponseSchema } from '../schemas'
+import { UpdateUserSchemaRequest, ErrorResponseSchema, SuccessResponseSchema, UserSchema } from '../schemas'
 
 export const registerUserPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
