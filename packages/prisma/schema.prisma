@@ -271,11 +271,13 @@ model Import {
     title              String
     financialAccountId String
     status             TransactionStatus @default(IMPORT_PENDING)
-    createdAt          DateTime          @default(now())
-    user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount   FinancialAccount  @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
     transactions       Transaction[]
     files              ImportFile[]
+    createdAt          DateTime          @default(now())
+    updatedAt          DateTime          @updatedAt
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([status])
@@ -288,7 +290,9 @@ model ImportFile {
     filetype  FileType
     path      String
     createdAt DateTime @default(now())
-    import    Import   @relation(fields: [importId], references: [id], onDelete: Cascade)
+    updatedAt DateTime @updatedAt
+
+    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
 
     @@index([importId])
 }
