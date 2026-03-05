@@ -28,6 +28,18 @@ export const FilterOptionsSchema = z
     .openapi('FilterOptions')
 
 /**
+ * DateFilterSchema defines a schema for filtering date fields in API requests.
+ * It includes optional properties for filtering records that are greater than or equal to a certain date (gte) and less than or equal to a certain date (lte).
+ * This schema can be used to create flexible filtering options for date fields in various API endpoints.
+ */
+export const DateFilterSchema = z
+    .object({
+        gte: z.string().datetime().optional(),
+        lte: z.string().datetime().optional()
+    })
+    .openapi('DateFilter')
+
+/**
  * ReadQuerySchema defines a schema for read queries in API requests.
  * @param dataSchema The schema for the filter data
  * @returns A schema for the read query, including filter and options

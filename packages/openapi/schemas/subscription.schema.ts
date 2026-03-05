@@ -49,6 +49,7 @@ export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(C
  */
 export const UpdateSubscriptionRequestSchema = SubscriptionSchema.partial()
     .omit({
+        id: true,
         userId: true,
         createdAt: true,
         updatedAt: true
