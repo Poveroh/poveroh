@@ -1,13 +1,15 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
-    SuccessResponseSchema,
-    ReadQuerySchema,
-    CategorySchema,
-    CategoryFiltersSchema,
     CategoryParamsId,
     CreateCategoryMultipartRequestSchema,
-    UpdateCategoryRequestSchema
+    UpdateCategoryRequestSchema,
+    QueryCategoryFiltersSchema,
+    GetCategoryListResponseSchema,
+    GetCategoryResponseSchema,
+    UpdateCategoryResponseSchema,
+    DeleteCategoryResponseSchema,
+    CreateCategoryResponseSchema
 } from '../schemas'
 
 export const registerCategoryPath = (registry: OpenAPIRegistry) => {
@@ -19,14 +21,14 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all categories associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(CategoryFiltersSchema)
+            query: QueryCategoryFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of categories',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(CategorySchema.array())
+                        schema: GetCategoryListResponseSchema
                     }
                 }
             },
@@ -79,7 +81,7 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Category found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(CategorySchema)
+                        schema: GetCategoryResponseSchema
                     }
                 }
             },
@@ -145,7 +147,7 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Category created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(CategorySchema)
+                        schema: CreateCategoryResponseSchema
                     }
                 }
             },
@@ -199,7 +201,7 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Category updated',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateCategoryResponseSchema
                     }
                 }
             },
@@ -252,7 +254,7 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Category deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteCategoryResponseSchema
                     }
                 }
             },
