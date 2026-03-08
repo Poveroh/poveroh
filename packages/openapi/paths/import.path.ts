@@ -1,0 +1,283 @@
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import {
+    ErrorResponseSchema,
+    SuccessResponseSchema,
+    ReadQuerySchema,
+    ImportSchema,
+    ImportFileSchema,
+    ImportParamsId,
+    CreateImportMultipartRequestSchema
+} from '../schemas'
+
+export const registerImportPath = (registry: OpenAPIRegistry) => {
+    registry.registerPath({
+        method: 'get',
+        path: '/imports',
+        tags: ['Import'],
+        summary: 'Get all imports',
+        description: 'Retrieve a list of all imports associated with the user',
+        security: [{ bearerAuth: [] }],
+        request: {
+            query: ReadQuerySchema(ImportFileSchema)
+        },
+        responses: {
+            200: {
+                description: 'List of imports',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(ImportSchema.array())
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'get',
+        path: '/imports/{id}',
+        tags: ['Import'],
+        summary: 'Get import by ID',
+        description: 'Retrieve a specific import by its ID',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to retrieve')
+        },
+        responses: {
+            200: {
+                description: 'Import retrieved',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(ImportSchema)
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'post',
+        path: '/imports',
+        tags: ['Import'],
+        summary: 'Create import',
+        description: 'Create a new import with the provided data',
+        security: [{ bearerAuth: [] }],
+        request: {
+            body: {
+                description: 'Import data to create',
+                required: true,
+                content: {
+                    'multipart/form-data': {
+                        schema: CreateImportMultipartRequestSchema,
+                        encoding: {
+                            data: {
+                                contentType: 'application/json'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Import created',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema(ImportSchema)
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'patch',
+        path: '/imports/complete/{id}',
+        tags: ['Import'],
+        summary: 'Complete import',
+        description: 'Mark an existing import as complete',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to complete')
+        },
+        responses: {
+            200: {
+                description: 'Import completed',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema()
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'delete',
+        path: '/imports/{id}',
+        tags: ['Import'],
+        summary: 'Delete import',
+        description: 'Delete an existing import with the provided ID',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to delete')
+        },
+        responses: {
+            200: {
+                description: 'Import deleted',
+                content: {
+                    'application/json': {
+                        schema: SuccessResponseSchema()
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+}
