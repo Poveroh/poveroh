@@ -54,7 +54,8 @@ model DashboardLayout {
     layout    Json
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }
@@ -68,7 +69,8 @@ model Session {
     userAgent String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([token])
@@ -88,7 +90,8 @@ model Account {
     password              String?
     createdAt             DateTime  @default(now())
     updatedAt             DateTime  @updatedAt
-    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }
@@ -101,7 +104,8 @@ model Verification {
     userId     String?
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
-    user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([identifier, value])
     @@index([identifier])
@@ -124,9 +128,10 @@ model FinancialAccount {
     updatedAt        DateTime                 @updatedAt
     subscriptions    Subscription[]
     amounts          Amount[]
-    user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
     imports          Import[]
     snapshotBalances SnapshotAccountBalance[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@map("FinancialAccounts")
@@ -144,7 +149,6 @@ model Asset {
     currency       Currency             @default(EUR)
     createdAt      DateTime             @default(now())
     updatedAt      DateTime             @updatedAt
-    user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
     marketable     MarketableAsset?
     realEstate     RealEstateAsset?
     collectible    CollectibleAsset?
@@ -152,6 +156,8 @@ model Asset {
     insurance      InsuranceAsset?
     transactions   AssetTransaction[]
     snapshotValues SnapshotAssetValue[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([userId, type])
@@ -162,7 +168,8 @@ model MarketableAsset {
     assetId String  @unique
     symbol  String?
     isin    String?
-    asset   Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model RealEstateAsset {
@@ -172,7 +179,8 @@ model RealEstateAsset {
     purchasePrice Decimal?  @db.Decimal(20, 2)
     purchaseDate  DateTime?
     currentValue  Decimal?  @db.Decimal(20, 2)
-    asset         Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model CollectibleAsset {
@@ -182,7 +190,8 @@ model CollectibleAsset {
     acquisitionDate DateTime?
     appraisalValue  Decimal?  @db.Decimal(20, 2)
     appraisalDate   DateTime?
-    asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model PrivateDealAsset {
@@ -192,7 +201,8 @@ model PrivateDealAsset {
     calledAmount    Decimal?  @db.Decimal(20, 2)
     latestNav       Decimal?  @db.Decimal(20, 2)
     navDate         DateTime?
-    asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model InsuranceAsset {
@@ -201,7 +211,8 @@ model InsuranceAsset {
     policyNumber   String?
     premiumPaid    Decimal? @db.Decimal(20, 2)
     surrenderValue Decimal? @db.Decimal(20, 2)
-    asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model AssetTransaction {
@@ -213,7 +224,8 @@ model AssetTransaction {
     totalAmount    Decimal? @db.Decimal(20, 2)
     fees           Decimal? @db.Decimal(10, 2)
     note           String?
-    asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
     @@index([assetId])
     @@index([assetId, date])
@@ -230,21 +242,25 @@ model Snapshot {
     totalCash        Decimal                  @default(0) @db.Decimal(20, 2)
     totalInvestments Decimal                  @default(0) @db.Decimal(20, 2)
     totalNetWorth    Decimal                  @default(0) @db.Decimal(20, 2)
-    user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
     accountBalances  SnapshotAccountBalance[]
     assetValues      SnapshotAssetValue[]
+    createdAt        DateTime                 @default(now())
+    updatedAt        DateTime                 @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([userId, snapshotDate])
     @@index([userId, snapshotDate(sort: Desc)])
 }
 
 model SnapshotAccountBalance {
-    id         String           @id @default(uuid())
+    id         String  @id @default(uuid())
     snapshotId String
     accountId  String
-    balance    Decimal          @db.Decimal(20, 2)
-    snapshot   Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    account    FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    balance    Decimal @db.Decimal(20, 2)
+
+    snapshot Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    account  FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([snapshotId, accountId])
 }
@@ -256,8 +272,9 @@ model SnapshotAssetValue {
     quantity   Decimal? @db.Decimal(20, 10)
     unitPrice  Decimal? @db.Decimal(20, 8)
     totalValue Decimal  @db.Decimal(20, 2)
-    snapshot   Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    asset      Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    asset    Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
     @@unique([snapshotId, assetId])
 }
@@ -357,14 +374,15 @@ model Transfer {
 }
 
 model TransactionMedia {
-    id            String      @id @default(uuid())
+    id            String   @id @default(uuid())
     transactionId String
     filename      String
     filetype      String
     path          String
-    createdAt     DateTime    @default(now())
-    updatedAt     DateTime    @updatedAt
-    transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
 }
@@ -379,8 +397,9 @@ model Amount {
     importReference    String?
     createdAt          DateTime          @default(now())
     updatedAt          DateTime          @updatedAt
-    financialAccount   FinancialAccount  @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-    transaction        Transaction       @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
     @@index([financialAccountId])
@@ -391,11 +410,11 @@ model Amount {
 // SUBSCRIPTIONS
 // ===========================================================================
 model Subscription {
-    id                 String           @id @default(uuid())
+    id                 String         @id @default(uuid())
     userId             String
     title              String
     description        String?
-    amount             Decimal          @db.Decimal(20, 2)
+    amount             Decimal        @db.Decimal(20, 2)
     currency           Currency
     appearanceMode     AppearanceMode
     appearanceLogoIcon String
@@ -405,10 +424,11 @@ model Subscription {
     rememberPeriod     RememberPeriod
     financialAccountId String
     isEnabled          Boolean
-    createdAt          DateTime         @default(now())
-    updatedAt          DateTime         @updatedAt
-    user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount   FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    createdAt          DateTime       @default(now())
+    updatedAt          DateTime       @updatedAt
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([financialAccountId])
@@ -430,7 +450,8 @@ model Category {
     updatedAt     DateTime          @updatedAt
     transactions  Transaction[]
     subcategories Subcategory[]
-    user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([for])
@@ -445,7 +466,8 @@ model Subcategory {
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
     transactions Transaction[]
-    category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     @@index([categoryId])
 }
