@@ -2,12 +2,14 @@ import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     CreateFinancialAccountMultipartRequestSchema,
     ErrorResponseSchema,
-    FinancialAccountFiltersSchema,
     FinancialAccountParamsId,
-    FinancialAccountSchema,
-    SuccessResponseSchema,
     UpdateFinancialAccountRequestSchema,
-    ReadQuerySchema
+    GetFinancialAccountListResponseSchema,
+    QueryFinancialAccountFiltersSchema,
+    GetFinancialAccountResponseSchema,
+    CreateFinancialAccountResponseSchema,
+    UpdateFinancialAccountResponseSchema,
+    DeleteFinancialAccountResponseSchema
 } from '../schemas'
 
 export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
@@ -19,14 +21,14 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all financial accounts associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(FinancialAccountFiltersSchema)
+            query: QueryFinancialAccountFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of financial accounts',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(FinancialAccountSchema.array())
+                        schema: GetFinancialAccountListResponseSchema
                     }
                 }
             },
@@ -79,7 +81,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 description: 'Financial account found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(FinancialAccountSchema)
+                        schema: GetFinancialAccountResponseSchema
                     }
                 }
             },
@@ -145,7 +147,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 description: 'Financial account created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(FinancialAccountSchema)
+                        schema: CreateFinancialAccountResponseSchema
                     }
                 }
             },
@@ -199,7 +201,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 description: 'Financial account updated',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateFinancialAccountResponseSchema
                     }
                 }
             },
@@ -252,7 +254,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 description: 'Financial account deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteFinancialAccountResponseSchema
                     }
                 }
             },
