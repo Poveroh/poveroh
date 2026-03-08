@@ -3,7 +3,9 @@ import {
     ErrorResponseSchema,
     SuccessResponseSchema,
     DashboardLayoutSchema,
-    UpdateDashboardLayoutRequestSchema
+    UpdateDashboardLayoutRequestSchema,
+    GetDashboardLayoutResponseSchema,
+    UpdateDashboardLayoutResponseSchema
 } from '../schemas'
 
 export const registerDashboardPath = (registry: OpenAPIRegistry) => {
@@ -19,7 +21,7 @@ export const registerDashboardPath = (registry: OpenAPIRegistry) => {
                 description: 'Dashboard layout found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(DashboardLayoutSchema)
+                        schema: GetDashboardLayoutResponseSchema
                     }
                 }
             },
@@ -80,7 +82,7 @@ export const registerDashboardPath = (registry: OpenAPIRegistry) => {
                 description: 'Dashboard layout updated successfully',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(DashboardLayoutSchema)
+                        schema: UpdateDashboardLayoutResponseSchema
                     }
                 }
             },
