@@ -439,7 +439,10 @@
                         "type": "number"
                     },
                     "layout": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DashboardLayoutItem"
+                        }
                     },
                     "createdAt": {
                         "type": "string",
@@ -476,7 +479,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/DashboardLayout"
+                                "$ref": "#/components/schemas/GetDashboardLayout"
                             },
                             {
                                 "description": "Response data"
@@ -495,7 +498,10 @@
                         "type": "number"
                     },
                     "layout": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DashboardLayoutItem"
+                        }
                     }
                 },
                 "required": [
@@ -3592,6 +3598,48 @@
                 "required": [
                     "email",
                     "password"
+                ]
+            },
+            "DashboardLayoutItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "colSpan": {
+                        "type": "number"
+                    },
+                    "minHeight": {
+                        "type": "number"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "colSpan",
+                    "minHeight"
+                ]
+            },
+            "GetDashboardLayout": {
+                "type": "object",
+                "properties": {
+                    "layout": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DashboardLayoutItem"
+                        }
+                    },
+                    "version": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "layout",
+                    "version"
                 ]
             }
         },

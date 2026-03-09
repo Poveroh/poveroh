@@ -3,12 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { DashboardLayoutItem } from './DashboardLayoutItem';
-export type DashboardLayout = {
-    id: string;
-    userId: string;
-    version: number;
+export type GetDashboardLayout = {
     layout: Array<DashboardLayoutItem>;
-    createdAt: string;
-    updatedAt: string;
+    version: number;
 };
 

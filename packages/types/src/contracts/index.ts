@@ -36,6 +36,7 @@ export type { CreateTransactionRequest } from './models/CreateTransactionRequest
 export type { CreateTransactionResponse } from './models/CreateTransactionResponse';
 export type { CurrencyEnum } from './models/CurrencyEnum';
 export type { DashboardLayout } from './models/DashboardLayout';
+export type { DashboardLayoutItem } from './models/DashboardLayoutItem';
 export type { DateFilter } from './models/DateFilter';
 export type { DateFormatEnum } from './models/DateFormatEnum';
 export type { DeleteCategoryResponse } from './models/DeleteCategoryResponse';
@@ -53,6 +54,7 @@ export type { FinancialAccountParamsId } from './models/FinancialAccountParamsId
 export type { FinancialAccountTypeEnum } from './models/FinancialAccountTypeEnum';
 export type { GetCategoryListResponse } from './models/GetCategoryListResponse';
 export type { GetCategoryResponse } from './models/GetCategoryResponse';
+export type { GetDashboardLayout } from './models/GetDashboardLayout';
 export type { GetDashboardLayoutResponse } from './models/GetDashboardLayoutResponse';
 export type { GetFinancialAccountListResponse } from './models/GetFinancialAccountListResponse';
 export type { GetFinancialAccountResponse } from './models/GetFinancialAccountResponse';

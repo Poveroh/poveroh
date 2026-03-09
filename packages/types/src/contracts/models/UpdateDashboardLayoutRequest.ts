@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { DashboardLayoutItem } from './DashboardLayoutItem';
 export type UpdateDashboardLayoutRequest = {
     version: number;
-    layout: string;
+    layout: Array<DashboardLayoutItem>;
 };
 
