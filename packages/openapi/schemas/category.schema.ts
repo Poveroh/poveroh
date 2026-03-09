@@ -43,6 +43,7 @@ export const GetCategoryResponseSchema = SuccessResponseSchema(CategorySchema).o
 export const CreateCategoryRequestSchema = CategorySchema.omit({
     id: true,
     userId: true,
+    subcategories: true,
     createdAt: true,
     updatedAt: true
 }).openapi('CreateCategoryRequest')

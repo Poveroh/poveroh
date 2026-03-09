@@ -195,12 +195,6 @@
                     "color": {
                         "type": "string",
                         "default": "#8B5CF6"
-                    },
-                    "subcategories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Subcategory"
-                        }
                     }
                 },
                 "required": [
