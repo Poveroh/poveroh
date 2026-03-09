@@ -12,12 +12,18 @@ import {
     createSubcategory,
     createSubscription,
     createTransaction,
+    deleteCategories,
     deleteCategory,
     deleteFinancialAccount,
+    deleteFinancialAccounts,
     deleteImport,
+    deleteImports,
+    deleteSubcategories,
     deleteSubcategory,
     deleteSubscription,
+    deleteSubscriptions,
     deleteTransaction,
+    deleteTransactions,
     getAuthenticatedUser,
     getCategories,
     getCategoryById,
@@ -70,24 +76,42 @@ import type {
     CreateTransactionData,
     CreateTransactionError,
     CreateTransactionResponse2,
+    DeleteCategoriesData,
+    DeleteCategoriesError,
+    DeleteCategoriesResponse,
     DeleteCategoryData,
     DeleteCategoryError,
     DeleteCategoryResponse2,
     DeleteFinancialAccountData,
     DeleteFinancialAccountError,
     DeleteFinancialAccountResponse2,
+    DeleteFinancialAccountsData,
+    DeleteFinancialAccountsError,
+    DeleteFinancialAccountsResponse,
     DeleteImportData,
     DeleteImportError,
     DeleteImportResponse2,
+    DeleteImportsData,
+    DeleteImportsError,
+    DeleteImportsResponse,
+    DeleteSubcategoriesData,
+    DeleteSubcategoriesError,
+    DeleteSubcategoriesResponse,
     DeleteSubcategoryData,
     DeleteSubcategoryError,
     DeleteSubcategoryResponse2,
     DeleteSubscriptionData,
     DeleteSubscriptionError,
     DeleteSubscriptionResponse2,
+    DeleteSubscriptionsData,
+    DeleteSubscriptionsError,
+    DeleteSubscriptionsResponse,
     DeleteTransactionData,
     DeleteTransactionError,
     DeleteTransactionResponse2,
+    DeleteTransactionsData,
+    DeleteTransactionsError,
+    DeleteTransactionsResponse,
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
     GetAuthenticatedUserResponse,
@@ -164,6 +188,31 @@ import type {
     UpdateTransactionError,
     UpdateTransactionResponse2
 } from '../types.gen.js'
+
+/**
+ * Delete all categories
+ *
+ * Delete all categories associated with the user
+ */
+export const deleteCategoriesMutation = (
+    options?: Partial<Options<DeleteCategoriesData>>
+): UseMutationOptions<DeleteCategoriesResponse, DeleteCategoriesError, Options<DeleteCategoriesData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteCategoriesResponse,
+        DeleteCategoriesError,
+        Options<DeleteCategoriesData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteCategories({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -388,6 +437,35 @@ export const updateDashboardLayoutMutation = (
     return mutationOptions
 }
 
+/**
+ * Delete all financial accounts
+ *
+ * Delete all financial accounts associated with the user
+ */
+export const deleteFinancialAccountsMutation = (
+    options?: Partial<Options<DeleteFinancialAccountsData>>
+): UseMutationOptions<
+    DeleteFinancialAccountsResponse,
+    DeleteFinancialAccountsError,
+    Options<DeleteFinancialAccountsData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteFinancialAccountsResponse,
+        DeleteFinancialAccountsError,
+        Options<DeleteFinancialAccountsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteFinancialAccounts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
 export const getFinancialAccountsQueryKey = (options?: Options<GetFinancialAccountsData>) =>
     createQueryKey('getFinancialAccounts', options)
 
@@ -519,6 +597,27 @@ export const updateFinancialAccountMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateFinancialAccount({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all imports
+ *
+ * Delete all imports associated with the user
+ */
+export const deleteImportsMutation = (
+    options?: Partial<Options<DeleteImportsData>>
+): UseMutationOptions<DeleteImportsResponse, DeleteImportsError, Options<DeleteImportsData>> => {
+    const mutationOptions: UseMutationOptions<DeleteImportsResponse, DeleteImportsError, Options<DeleteImportsData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteImports({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -763,6 +862,31 @@ export const getStatusOptions = (options?: Options<GetStatusData>) =>
         queryKey: getStatusQueryKey(options)
     })
 
+/**
+ * Delete all subcategories
+ *
+ * Delete all subcategories associated with the user
+ */
+export const deleteSubcategoriesMutation = (
+    options?: Partial<Options<DeleteSubcategoriesData>>
+): UseMutationOptions<DeleteSubcategoriesResponse, DeleteSubcategoriesError, Options<DeleteSubcategoriesData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubcategoriesResponse,
+        DeleteSubcategoriesError,
+        Options<DeleteSubcategoriesData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubcategories({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
 export const getSubcategoriesQueryKey = (options?: Options<GetSubcategoriesData>) =>
     createQueryKey('getSubcategories', options)
 
@@ -892,6 +1016,31 @@ export const updateSubcategoryMutation = (
     return mutationOptions
 }
 
+/**
+ * Delete all subscriptions
+ *
+ * Delete all subscriptions associated with the user
+ */
+export const deleteSubscriptionsMutation = (
+    options?: Partial<Options<DeleteSubscriptionsData>>
+): UseMutationOptions<DeleteSubscriptionsResponse, DeleteSubscriptionsError, Options<DeleteSubscriptionsData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubscriptionsResponse,
+        DeleteSubscriptionsError,
+        Options<DeleteSubscriptionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubscriptions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
 export const getSubscriptionsQueryKey = (options?: Options<GetSubscriptionsData>) =>
     createQueryKey('getSubscriptions', options)
 
@@ -1011,6 +1160,31 @@ export const updateSubscriptionMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateSubscription({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all transactions
+ *
+ * Delete all transactions associated with the user
+ */
+export const deleteTransactionsMutation = (
+    options?: Partial<Options<DeleteTransactionsData>>
+): UseMutationOptions<DeleteTransactionsResponse, DeleteTransactionsError, Options<DeleteTransactionsData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteTransactionsResponse,
+        DeleteTransactionsError,
+        Options<DeleteTransactionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteTransactions({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

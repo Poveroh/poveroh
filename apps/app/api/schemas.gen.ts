@@ -152,12 +152,6 @@ export const CreateCategoryRequestSchema = {
         color: {
             type: 'string',
             default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
         }
     },
     required: ['title', 'for', 'logoIcon']
@@ -382,7 +376,10 @@ export const DashboardLayoutSchema = {
             type: 'number'
         },
         layout: {
-            type: 'string'
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/DashboardLayoutItem'
+            }
         },
         createdAt: {
             type: 'string',
@@ -411,7 +408,7 @@ export const GetDashboardLayoutResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/DashboardLayout'
+                    $ref: '#/components/schemas/GetDashboardLayout'
                 },
                 {
                     description: 'Response data'
@@ -429,7 +426,10 @@ export const UpdateDashboardLayoutRequestSchema = {
             type: 'number'
         },
         layout: {
-            type: 'string'
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/DashboardLayoutItem'
+            }
         }
     },
     required: ['version', 'layout']
@@ -3313,4 +3313,41 @@ export const UserLoginSchema = {
         }
     },
     required: ['email', 'password']
+} as const
+
+export const DashboardLayoutItemSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        colSpan: {
+            type: 'number'
+        },
+        minHeight: {
+            type: 'number'
+        },
+        visible: {
+            type: 'boolean',
+            default: true
+        }
+    },
+    required: ['id', 'colSpan', 'minHeight']
+} as const
+
+export const GetDashboardLayoutSchema = {
+    type: 'object',
+    properties: {
+        layout: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/DashboardLayoutItem'
+            }
+        },
+        version: {
+            type: 'number'
+        }
+    },
+    required: ['layout', 'version']
 } as const

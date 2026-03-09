@@ -5,9 +5,9 @@ import { CategoryController } from '../controllers/category.controller'
 
 const router: Router = Router()
 
-router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.add)
-router.get('/', AuthMiddleware.isAuthenticated, CategoryController.read)
-router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.save)
-router.delete('/:id', AuthMiddleware.isAuthenticated, CategoryController.delete)
+router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.addCategory)
+router.get('/', AuthMiddleware.isAuthenticated, CategoryController.readCategories)
+router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), CategoryController.updateCategory)
+router.delete('/:id', AuthMiddleware.isAuthenticated, CategoryController.deleteCategory)
 
 export default router

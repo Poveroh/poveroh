@@ -27,24 +27,42 @@ import type {
     CreateTransactionData,
     CreateTransactionErrors,
     CreateTransactionResponses,
+    DeleteCategoriesData,
+    DeleteCategoriesErrors,
+    DeleteCategoriesResponses,
     DeleteCategoryData,
     DeleteCategoryErrors,
     DeleteCategoryResponses,
     DeleteFinancialAccountData,
     DeleteFinancialAccountErrors,
     DeleteFinancialAccountResponses,
+    DeleteFinancialAccountsData,
+    DeleteFinancialAccountsErrors,
+    DeleteFinancialAccountsResponses,
     DeleteImportData,
     DeleteImportErrors,
     DeleteImportResponses,
+    DeleteImportsData,
+    DeleteImportsErrors,
+    DeleteImportsResponses,
+    DeleteSubcategoriesData,
+    DeleteSubcategoriesErrors,
+    DeleteSubcategoriesResponses,
     DeleteSubcategoryData,
     DeleteSubcategoryErrors,
     DeleteSubcategoryResponses,
     DeleteSubscriptionData,
     DeleteSubscriptionErrors,
     DeleteSubscriptionResponses,
+    DeleteSubscriptionsData,
+    DeleteSubscriptionsErrors,
+    DeleteSubscriptionsResponses,
     DeleteTransactionData,
     DeleteTransactionErrors,
     DeleteTransactionResponses,
+    DeleteTransactionsData,
+    DeleteTransactionsErrors,
+    DeleteTransactionsResponses,
     GetAuthenticatedUserData,
     GetAuthenticatedUserErrors,
     GetAuthenticatedUserResponses,
@@ -138,6 +156,20 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>
 }
+
+/**
+ * Delete all categories
+ *
+ * Delete all categories associated with the user
+ */
+export const deleteCategories = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteCategoriesData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteCategoriesResponses, DeleteCategoriesErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/categories',
+        ...options
+    })
 
 /**
  * Get all categories
@@ -251,6 +283,20 @@ export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
     })
 
 /**
+ * Delete all financial accounts
+ *
+ * Delete all financial accounts associated with the user
+ */
+export const deleteFinancialAccounts = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteFinancialAccountsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteFinancialAccountsResponses, DeleteFinancialAccountsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/financial-account',
+        ...options
+    })
+
+/**
  * Get all financial accounts
  *
  * Retrieve a list of all financial accounts associated with the user
@@ -327,6 +373,20 @@ export const updateFinancialAccount = <ThrowOnError extends boolean = false>(
             'Content-Type': 'application/json',
             ...options.headers
         }
+    })
+
+/**
+ * Delete all imports
+ *
+ * Delete all imports associated with the user
+ */
+export const deleteImports = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteImportsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteImportsResponses, DeleteImportsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports',
+        ...options
     })
 
 /**
@@ -465,6 +525,20 @@ export const getStatus = <ThrowOnError extends boolean = false>(options?: Option
     (options?.client ?? client).get<GetStatusResponses, GetStatusErrors, ThrowOnError>({ url: '/status', ...options })
 
 /**
+ * Delete all subcategories
+ *
+ * Delete all subcategories associated with the user
+ */
+export const deleteSubcategories = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteSubcategoriesData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteSubcategoriesResponses, DeleteSubcategoriesErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subcategories',
+        ...options
+    })
+
+/**
  * Get all subcategories
  *
  * Retrieve a list of all subcategories associated with the user
@@ -544,6 +618,20 @@ export const updateSubcategory = <ThrowOnError extends boolean = false>(
     })
 
 /**
+ * Delete all subscriptions
+ *
+ * Delete all subscriptions associated with the user
+ */
+export const deleteSubscriptions = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteSubscriptionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteSubscriptionsResponses, DeleteSubscriptionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions',
+        ...options
+    })
+
+/**
  * Get all subscriptions
  *
  * Retrieve a list of all subscriptions associated with the user
@@ -620,6 +708,20 @@ export const updateSubscription = <ThrowOnError extends boolean = false>(
             'Content-Type': 'application/json',
             ...options.headers
         }
+    })
+
+/**
+ * Delete all transactions
+ *
+ * Delete all transactions associated with the user
+ */
+export const deleteTransactions = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteTransactionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteTransactionsResponses, DeleteTransactionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions',
+        ...options
     })
 
 /**

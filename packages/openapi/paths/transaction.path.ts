@@ -297,4 +297,47 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
+    registry.registerPath({
+        method: 'delete',
+        path: '/transactions',
+        tags: ['Transaction'],
+        operationId: 'deleteTransactions',
+        summary: 'Delete all transactions',
+        description: 'Delete all transactions associated with the user',
+        security: [{ bearerAuth: [] }],
+        responses: {
+            200: {
+                description: 'Transactions deleted',
+                content: {
+                    'application/json': {
+                        schema: DeleteTransactionResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
 }

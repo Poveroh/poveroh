@@ -1,25 +1,21 @@
 import { Request, Response } from 'express'
 import prisma from '@poveroh/prisma'
-import { components } from '@poveroh/contracts'
 import omit from 'lodash/omit'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { MediaHelper } from '../../../helpers/media.helper'
-import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
-
-// OpenAPI types
-type Category = components['schemas']['Category']
-type CategoryFilters = components['schemas']['CategoryFilters']
-type CategoryCollection = components['schemas']['CategoryCollection']
-type ErrorResponse = components['schemas']['ErrorResponse']
+import { CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types/contracts'
+import { BadRequestError, ResponseHelper } from '@/src/utils'
 
 export class CategoryController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async addCategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
 
-            const readCategory: Omit<Category, 'id' | 'createdAt' | 'subcategories'> = req.body
+            const readCategory: CreateCategoryRequest = req.body
 
             if (req.file) {
                 const filePath = await MediaHelper.handleUpload(
@@ -36,24 +32,25 @@ export class CategoryController {
                 }
             })
 
-            res.status(200).json(category)
+            return ResponseHelper.success(res, category)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PATCH /:id
+    static async updateCategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
 
-            const readCategory: Category = req.body
+            const readCategory: UpdateCategoryRequest = req.body
+
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing category ID in path' })
-                return
+                throw new BadRequestError('Missing category ID in path')
             }
 
             if (req.file) {
@@ -69,21 +66,19 @@ export class CategoryController {
                 data: omit(readCategory, ['subcategories'])
             })
 
-            res.status(200).json(category)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteCategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing category ID in path' })
-                return
+                throw new BadRequestError('Missing category ID in path')
             }
 
             if (id == 'all') {
@@ -94,15 +89,14 @@ export class CategoryController {
                 await prisma.category.delete({ where: { id } })
             }
 
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readCategories(req: Request, res: Response) {
         try {
             const filters = req.query as unknown as CategoryFilters
             const skip = Number(req.query.skip) || 0
@@ -121,10 +115,9 @@ export class CategoryController {
                 prisma.category.count({ where })
             ])
 
-            res.status(200).json({ data, total })
+            return ResponseHelper.success(res, { data, total })
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

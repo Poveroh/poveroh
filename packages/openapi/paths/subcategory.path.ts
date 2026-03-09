@@ -297,4 +297,47 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
+    registry.registerPath({
+        method: 'delete',
+        path: '/subcategories',
+        tags: ['Subcategory'],
+        operationId: 'deleteSubcategories',
+        summary: 'Delete all subcategories',
+        description: 'Delete all subcategories associated with the user',
+        security: [{ bearerAuth: [] }],
+        responses: {
+            200: {
+                description: 'Subcategories deleted',
+                content: {
+                    'application/json': {
+                        schema: DeleteSubcategoryResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
 }

@@ -297,4 +297,47 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
+    registry.registerPath({
+        method: 'delete',
+        path: '/categories',
+        tags: ['Category'],
+        operationId: 'deleteCategories',
+        summary: 'Delete all categories',
+        description: 'Delete all categories associated with the user',
+        security: [{ bearerAuth: [] }],
+        responses: {
+            200: {
+                description: 'Categories deleted',
+                content: {
+                    'application/json': {
+                        schema: DeleteCategoryResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
 }

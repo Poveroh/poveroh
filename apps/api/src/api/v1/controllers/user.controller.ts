@@ -18,7 +18,7 @@ export class UserController {
             const user = await UserHelper.getUserByEmail(email)
 
             if (!user) {
-                throw new NotFoundError('User not found')
+                throw new NotFoundError('Authenticated user not found')
             }
 
             return ResponseHelper.success(res, user)

@@ -1,7 +1,7 @@
-import { DashboardLayout } from '@poveroh/types'
+import { GetDashboardLayout } from '@poveroh/types/contracts'
 
-export const DashboardTemplate: DashboardLayout = {
-    items: [
+export const DashboardTemplate: GetDashboardLayout = {
+    layout: [
         {
             id: 'net-worth-evolution',
             colSpan: 12,

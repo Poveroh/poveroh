@@ -351,4 +351,47 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
+    registry.registerPath({
+        method: 'delete',
+        path: '/imports',
+        tags: ['Import'],
+        operationId: 'deleteImports',
+        summary: 'Delete all imports',
+        description: 'Delete all imports associated with the user',
+        security: [{ bearerAuth: [] }],
+        responses: {
+            200: {
+                description: 'Imports deleted',
+                content: {
+                    'application/json': {
+                        schema: DeleteImportResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
 }

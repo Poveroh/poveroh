@@ -297,4 +297,47 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
+    registry.registerPath({
+        method: 'delete',
+        path: '/subscriptions',
+        tags: ['Subscription'],
+        operationId: 'deleteSubscriptions',
+        summary: 'Delete all subscriptions',
+        description: 'Delete all subscriptions associated with the user',
+        security: [{ bearerAuth: [] }],
+        responses: {
+            200: {
+                description: 'Subscriptions deleted',
+                content: {
+                    'application/json': {
+                        schema: DeleteSubscriptionResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
 }
