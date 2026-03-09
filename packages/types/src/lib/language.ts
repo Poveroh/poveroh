@@ -1,7 +1,7 @@
 import { LanguageEnum } from 'src/contracts'
-import { IItem } from './item.js'
+import { Item } from './item'
 
-export const LanguageCatalog: IItem<LanguageEnum>[] = [
+export const LanguageCatalog: Item<LanguageEnum>[] = [
     { label: 'English', value: 'EN' },
     { label: 'Spanish', value: 'ES' },
     { label: 'French', value: 'FR' },

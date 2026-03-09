@@ -1,11 +1,14 @@
-export const defaultCategory = {
+import { Category } from 'src/contracts'
+
+export const defaultCategory: Category = {
     id: '',
     userId: '',
     title: '',
     description: '',
-    for: 'EXPENSES' as 'EXPENSES' | 'INCOME',
+    for: 'EXPENSES',
     logoIcon: '',
     color: '#8B5CF6',
     subcategories: [],
-    createdAt: ''
+    createdAt: '',
+    updatedAt: ''
 }

@@ -1,7 +1,7 @@
-import { IItem } from './item.js'
 import { TimezoneEnum } from 'src/contracts'
+import { Item } from './item'
 
-export const TimezoneCatalog: IItem<TimezoneEnum>[] = [
+export const TimezoneCatalog: Item<TimezoneEnum>[] = [
     { label: '(-12:00) International Date Line West', value: 'ETC_GMT_PLUS_12' },
     { label: '(-11:00) American Samoa', value: 'PACIFIC_PAGO_PAGO' },
     { label: '(-11:00) Midway Island', value: 'PACIFIC_MIDWAY' },

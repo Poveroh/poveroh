@@ -32,8 +32,3 @@ export interface IReadedTransaction {
     title: string
     originalRow?: Record<string, any>
 }
-
-export enum FileType {
-    CSV = 'CSV',
-    PDF = 'PDF'
-}

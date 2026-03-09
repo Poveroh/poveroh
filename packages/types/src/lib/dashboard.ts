@@ -15,19 +15,3 @@ export type DashboardLayoutItem = {
     minHeight?: number
     visible?: boolean
 }
-
-export type DashboardLayout = {
-    version: number
-    items: DashboardLayoutItem[]
-}
-
-export type DashboardLayoutInput = DashboardLayout
-
-export interface IDashboardLayout {
-    id: string
-    userId: string
-    version: number
-    layout: DashboardLayout
-    createdAt: string
-    updatedAt: string
-}
