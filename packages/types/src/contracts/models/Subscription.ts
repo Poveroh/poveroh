@@ -2,21 +2,25 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AppearanceModeEnum } from './AppearanceModeEnum';
+import type { CurrencyEnum } from './CurrencyEnum';
+import type { RememberPeriodEnum } from './RememberPeriodEnum';
 export type Subscription = {
     id: string;
     userId: string;
     title: string;
-    description: string | null;
+    description: string;
     amount: number;
-    currency: string;
-    appearanceMode: string;
+    currency: CurrencyEnum;
+    appearanceMode: AppearanceModeEnum;
     appearanceLogoIcon: string;
     firstPayment: string;
-    cycleNumber: string;
+    cycleNumber: number;
     cyclePeriod: string;
-    rememberPeriod: string;
-    financialAccountId: string;
+    rememberPeriod: RememberPeriodEnum;
+    financiaAccountId: string;
     isEnabled: boolean;
     createdAt: string;
+    updatedAt: string;
 };
 

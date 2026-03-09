@@ -6,7 +6,7 @@ export type DashboardLayout = {
     id: string;
     userId: string;
     version: number;
-    layout?: any;
+    layout: string;
     createdAt: string;
     updatedAt: string;
 };

@@ -6,8 +6,9 @@ export type Subcategory = {
     id: string;
     categoryId: string;
     title: string;
-    description: string | null;
+    description?: string;
     logoIcon: string;
     createdAt: string;
+    updatedAt: string;
 };
 

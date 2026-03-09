@@ -4,10 +4,7 @@
 /* eslint-disable */
 import type { CreateFinancialAccountRequest } from './CreateFinancialAccountRequest';
 export type CreateFinancialAccountMultipartRequest = {
-    data: CreateFinancialAccountRequest;
-    /**
-     * Optional file upload for the financial account logo icon
-     */
-    file?: Blob;
+    data?: CreateFinancialAccountRequest;
+    file: Array<Blob>;
 };
 

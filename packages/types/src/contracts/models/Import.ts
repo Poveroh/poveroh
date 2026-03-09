@@ -3,14 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ImportFile } from './ImportFile';
+import type { Transaction } from './Transaction';
+import type { TransactionStatusEnum } from './TransactionStatusEnum';
 export type Import = {
     id: string;
     userId: string;
     title: string;
     financialAccountId: string;
-    status: string;
-    createdAt: string;
-    transactions?: Array<any>;
+    status?: TransactionStatusEnum;
+    transactions?: Array<Transaction>;
     files?: Array<ImportFile>;
+    createdAt: string;
+    updatedAt: string;
 };
 
