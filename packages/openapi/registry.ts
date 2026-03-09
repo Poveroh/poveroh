@@ -1,14 +1,18 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import * as schemas from './schemas'
-import { registerStatusPath } from './paths/status.path'
-import { registerUserPath } from './paths/user.path'
-import { registerTransactionPath } from './paths/transaction.path'
-import { registerFinancialAccountPath } from './paths/financial-account.path'
-import { registerCategoryPath } from './paths/category.path'
-import { registerSubcategoryPath } from './paths/subcategory.path'
-import { registerSnapshotPath } from './paths/snapshot.path'
-import { registerSessionPath } from './paths/session.path'
-import { registerSubscriptionPath } from './paths/subscription.path'
+import {
+    registerCategoryPath,
+    registerDashboardPath,
+    registerFinancialAccountPath,
+    registerImportPath,
+    registerReportPath,
+    registerSnapshotPath,
+    registerStatusPath,
+    registerSubcategoryPath,
+    registerSubscriptionPath,
+    registerTransactionPath,
+    registerUserPath
+} from './paths'
 
 type OpenApiAwareSchema = {
     _def?: {
@@ -36,15 +40,17 @@ const registerAllSchemas = (registry: OpenAPIRegistry) => {
 }
 
 export const registerAllPaths = (registry: OpenAPIRegistry) => {
-    registerStatusPath(registry)
-    registerUserPath(registry)
-    registerTransactionPath(registry)
-    registerFinancialAccountPath(registry)
-    registerSubscriptionPath(registry)
     registerCategoryPath(registry)
-    registerSubcategoryPath(registry)
+    registerDashboardPath(registry)
+    registerFinancialAccountPath(registry)
+    registerImportPath(registry)
+    registerReportPath(registry)
     registerSnapshotPath(registry)
-    registerSessionPath(registry)
+    registerStatusPath(registry)
+    registerSubcategoryPath(registry)
+    registerSubscriptionPath(registry)
+    registerTransactionPath(registry)
+    registerUserPath(registry)
 }
 
 export const createOpenApiRegistry = () => {
