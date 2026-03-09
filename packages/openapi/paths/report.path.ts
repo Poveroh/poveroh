@@ -1,5 +1,9 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
-import { ErrorResponseSchema, SuccessResponseSchema, ReadQuerySchema, ImportSchema, ImportFileSchema } from '../schemas'
+import {
+    ErrorResponseSchema,
+    QueryNetWorthEvolutionFiltersSchema,
+    GetNetWorthEvolutionReportResponseSchema
+} from '../schemas'
 
 export const registerReportPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
@@ -10,14 +14,14 @@ export const registerReportPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a trend report based on the users imports',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(ImportFileSchema)
+            query: QueryNetWorthEvolutionFiltersSchema
         },
         responses: {
             200: {
                 description: 'Trend report retrieved',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(ImportSchema.array())
+                        schema: GetNetWorthEvolutionReportResponseSchema
                     }
                 }
             },

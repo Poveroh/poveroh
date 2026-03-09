@@ -1,8 +1,6 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
-    SuccessResponseSchema,
-    DashboardLayoutSchema,
     UpdateDashboardLayoutRequestSchema,
     GetDashboardLayoutResponseSchema,
     UpdateDashboardLayoutResponseSchema

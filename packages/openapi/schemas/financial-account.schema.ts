@@ -49,7 +49,6 @@ export const CreateFinancialAccountRequestSchema = FinancialAccountSchema.omit({
 /**
  * Request schema for creating a new financial account with multipart/form-data
  */
-
 export const CreateFinancialAccountMultipartRequestSchema = MultipartRequestSchema(
     CreateFinancialAccountRequestSchema
 ).openapi('CreateFinancialAccountMultipartRequest')

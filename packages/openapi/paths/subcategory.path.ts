@@ -1,12 +1,16 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
-import { ErrorResponseSchema, SuccessResponseSchema, ReadQuerySchema } from '../schemas'
 import {
-    SubcategoryFiltersSchema,
-    SubcategorySchema,
+    ErrorResponseSchema,
     SubcategoryParamsId,
     CreateSubcategoryMultipartRequestSchema,
-    UpdateSubcategoryRequestSchema
-} from '../schemas/subcategory.schema'
+    UpdateSubcategoryRequestSchema,
+    QuerySubcategoryFiltersSchema,
+    GetSubcategoryListResponseSchema,
+    GetSubcategoryResponseSchema,
+    CreateSubcategoryResponseSchema,
+    UpdateSubcategoryResponseSchema,
+    DeleteSubcategoryResponseSchema
+} from '../schemas'
 
 export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
@@ -17,14 +21,14 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all subcategories associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(SubcategoryFiltersSchema)
+            query: QuerySubcategoryFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of subcategories',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubcategorySchema.array())
+                        schema: GetSubcategoryListResponseSchema
                     }
                 }
             },
@@ -77,7 +81,7 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Subcategory found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubcategorySchema)
+                        schema: GetSubcategoryResponseSchema
                     }
                 }
             },
@@ -143,7 +147,7 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Subcategory created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubcategorySchema)
+                        schema: CreateSubcategoryResponseSchema
                     }
                 }
             },
@@ -197,7 +201,7 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Subcategory updated',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateSubcategoryResponseSchema
                     }
                 }
             },
@@ -250,7 +254,7 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Subcategory deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteSubcategoryResponseSchema
                     }
                 }
             },

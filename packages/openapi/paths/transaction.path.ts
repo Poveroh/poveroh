@@ -1,13 +1,15 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
-    SuccessResponseSchema,
-    ReadQuerySchema,
     CreateTransactionMultipartRequestSchema,
-    TransactionFiltersSchema,
+    QueryTransactionFiltersSchema,
     TransactionParamsId,
-    TransactionSchema,
-    UpdateTransactionRequestSchema
+    UpdateTransactionRequestSchema,
+    GetTransactionListResponseSchema,
+    GetTransactionResponseSchema,
+    CreateTransactionResponseSchema,
+    UpdateTransactionResponseSchema,
+    DeleteTransactionResponseSchema
 } from '../schemas'
 
 export const registerTransactionPath = (registry: OpenAPIRegistry) => {
@@ -19,14 +21,14 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all transactions associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(TransactionFiltersSchema)
+            query: QueryTransactionFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of transactions',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(TransactionSchema.array())
+                        schema: GetTransactionListResponseSchema
                     }
                 }
             },
@@ -79,7 +81,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 description: 'Transaction found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(TransactionSchema)
+                        schema: GetTransactionResponseSchema
                     }
                 }
             },
@@ -145,7 +147,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 description: 'Transaction created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(TransactionSchema)
+                        schema: CreateTransactionResponseSchema
                     }
                 }
             },
@@ -199,7 +201,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 description: 'Transaction updated',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateTransactionResponseSchema
                     }
                 }
             },
@@ -239,7 +241,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'delete',
-        path: '/financial-account/{id}',
+        path: '/transactions/{id}',
         tags: ['Transaction'],
         summary: 'Delete transaction',
         description: 'Delete an existing transaction with the provided ID',
@@ -252,7 +254,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 description: 'Transaction deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteTransactionResponseSchema
                     }
                 }
             },

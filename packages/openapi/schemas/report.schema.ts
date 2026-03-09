@@ -1,9 +1,9 @@
 import { z } from '../zod'
-import { DateFilterSchema } from './filter.schema'
+import { DateFilterSchema, ReadQuerySchema } from './filter.schema'
+import { SuccessResponseSchema } from './response.schema'
 
 /**
  * Net worth evolution schema representing the net worth of a user at a specific date
- * It includes fields for the date and the corresponding net worth value
  */
 export const NetWorthEvolutionSchema = z
     .object({
@@ -20,8 +20,16 @@ export const NetWorthEvolutionReportSchema = z
     .openapi('NetWorthEvolutionReport')
 
 /**
+ * Response schema for getting a net worth evolution report
+ */
+export const GetNetWorthEvolutionReportResponseSchema = SuccessResponseSchema(NetWorthEvolutionReportSchema).openapi(
+    'GetNetWorthEvolutionReportResponse'
+)
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
  * Net worth evolution filters schema representing the structure of filters that can be applied when querying net worth evolution data
- * It includes an optional date filter to allow for flexible querying based on specific date ranges or criteria
  */
 export const NetWorthEvolutionFiltersSchema = z
     .object({
@@ -30,3 +38,10 @@ export const NetWorthEvolutionFiltersSchema = z
     .partial()
     .catchall(z.union([z.string(), DateFilterSchema]))
     .openapi('NetWorthEvolutionFilters')
+
+/**
+ * Query schema for net worth evolution filters
+ */
+export const QueryNetWorthEvolutionFiltersSchema = ReadQuerySchema(NetWorthEvolutionFiltersSchema).openapi(
+    'QueryNetWorthEvolutionFilters'
+)

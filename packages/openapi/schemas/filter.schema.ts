@@ -30,6 +30,7 @@ export const FilterOptionsSchema = z
 /**
  * DateFilterSchema defines a schema for filtering date fields in API requests.
  * It includes optional properties for filtering records that are greater than or equal to a certain date (gte) and less than or equal to a certain date (lte).
+ * Exact dates can be specified using the gte and lte properties, allowing for flexible date range filtering in various API endpoints.
  * This schema can be used to create flexible filtering options for date fields in various API endpoints.
  */
 export const DateFilterSchema = z

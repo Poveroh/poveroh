@@ -1,4 +1,5 @@
 import { z } from '../zod'
+import { SuccessResponseSchema } from './response.schema'
 import {
     SnapshotFrequencyEnum,
     CurrencyEnum,
@@ -11,7 +12,6 @@ import {
 
 /**
  * User preferences schema representing a user's settings and preferences
- * Includes fields for snapshot frequency, preferred currency, language, date format, country, and timezone
  */
 export const UserPreferencesSchema = z
     .object({
@@ -26,7 +26,6 @@ export const UserPreferencesSchema = z
 
 /**
  * User schema representing a user in the system
- * It extends the UserPreferencesSchema to include user settings and preferences along with basic user information
  */
 export const UserSchema = z
     .object({
@@ -46,14 +45,26 @@ export const UserSchema = z
     .openapi('User')
 
 /**
+ * Response schema for getting authenticated user
+ */
+export const GetUserResponseSchema = SuccessResponseSchema(UserSchema).openapi('GetUserResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
  * Request schema for updating user information and preferences
- * It makes all fields optional to allow partial updates while still validating the structure of the data
  */
 export const UpdateUserSchemaRequest = UserSchema.partial().openapi('UpdateUserRequest')
 
 /**
+ * Response schema for updating authenticated user
+ */
+export const UpdateUserResponseSchema = SuccessResponseSchema(UserSchema).openapi('UpdateUserResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
  * User session schema representing an authenticated user session
- * Includes fields for session details such as session ID, creation and expiration timestamps, user information, and optional fields for IP address and user agent to provide context about the session
  */
 export const UserSessionSchema = z
     .object({
@@ -73,7 +84,6 @@ export const UserSessionSchema = z
 
 /**
  * User login schema representing the data required for a user to authenticate and create a session
- * Includes fields for email and password, both of which are required and validated to ensure they meet the necessary criteria for authentication (email format and minimum password length)
  */
 export const UserLoginSchema = z
     .object({

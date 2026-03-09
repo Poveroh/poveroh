@@ -1,12 +1,15 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
-    SuccessResponseSchema,
-    ReadQuerySchema,
-    ImportSchema,
-    ImportFileSchema,
     ImportParamsId,
-    CreateImportMultipartRequestSchema
+    CreateImportMultipartRequestSchema,
+    GetImportResponseSchema,
+    QueryImportFiltersSchema,
+    GetImportListResponseSchema,
+    CreateImportResponseSchema,
+    UpdateImportResponseSchema,
+    DeleteImportResponseSchema,
+    UpdateImportRequestSchema
 } from '../schemas'
 
 export const registerImportPath = (registry: OpenAPIRegistry) => {
@@ -18,14 +21,14 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all imports associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(ImportFileSchema)
+            query: QueryImportFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of imports',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(ImportSchema.array())
+                        schema: GetImportListResponseSchema
                     }
                 }
             },
@@ -78,7 +81,7 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
                 description: 'Import retrieved',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(ImportSchema)
+                        schema: GetImportResponseSchema
                     }
                 }
             },
@@ -144,7 +147,7 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
                 description: 'Import created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(ImportSchema)
+                        schema: CreateImportResponseSchema
                     }
                 }
             },
@@ -189,7 +192,69 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
                 description: 'Import completed',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateImportResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'put',
+        path: '/imports/{id}',
+        tags: ['Import'],
+        summary: 'Update import',
+        description: 'Update an existing import with the provided data',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to update'),
+            body: {
+                description: 'Import data to update',
+                required: true,
+                content: {
+                    'application/json': {
+                        schema: UpdateImportRequestSchema
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Import updated',
+                content: {
+                    'application/json': {
+                        schema: UpdateImportResponseSchema
                     }
                 }
             },
@@ -242,7 +307,7 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
                 description: 'Import deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteImportResponseSchema
                     }
                 }
             },

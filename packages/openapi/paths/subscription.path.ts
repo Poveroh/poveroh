@@ -1,15 +1,16 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
-    SuccessResponseSchema,
-    ReadQuerySchema,
-    SubscriptionFiltersSchema,
+    QuerySubscriptionFiltersSchema,
     CreateSubscriptionMultipartRequestSchema,
-    SubscriptionSchema,
     UpdateSubscriptionRequestSchema,
-    SubscriptionParamsId
+    SubscriptionParamsId,
+    GetSubscriptionListResponseSchema,
+    GetSubscriptionResponseSchema,
+    CreateSubscriptionResponseSchema,
+    UpdateSubscriptionResponseSchema,
+    DeleteSubscriptionResponseSchema
 } from '../schemas'
-import { SubcategoryParamsId } from '../schemas/subcategory.schema'
 
 export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
@@ -20,14 +21,14 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a list of all subscriptions associated with the user',
         security: [{ bearerAuth: [] }],
         request: {
-            query: ReadQuerySchema(SubscriptionFiltersSchema)
+            query: QuerySubscriptionFiltersSchema
         },
         responses: {
             200: {
                 description: 'List of subscriptions',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubscriptionSchema.array())
+                        schema: GetSubscriptionListResponseSchema
                     }
                 }
             },
@@ -73,14 +74,14 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
         description: 'Retrieve a specific subscription by its ID',
         security: [{ bearerAuth: [] }],
         request: {
-            params: SubcategoryParamsId.describe('ID of the subscription to retrieve')
+            params: SubscriptionParamsId.describe('ID of the subscription to retrieve')
         },
         responses: {
             200: {
                 description: 'Subscription found',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubscriptionSchema)
+                        schema: GetSubscriptionResponseSchema
                     }
                 }
             },
@@ -146,7 +147,7 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
                 description: 'Subscription created',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema(SubscriptionSchema)
+                        schema: CreateSubscriptionResponseSchema
                     }
                 }
             },
@@ -184,7 +185,7 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
         description: 'Update an existing subscription with the provided data',
         security: [{ bearerAuth: [] }],
         request: {
-            params: SubcategoryParamsId.describe('ID of the subscription to update'),
+            params: SubscriptionParamsId.describe('ID of the subscription to update'),
             body: {
                 description: 'Subscription data to update',
                 required: true,
@@ -200,7 +201,7 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
                 description: 'Subscription updated',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: UpdateSubscriptionResponseSchema
                     }
                 }
             },
@@ -253,7 +254,7 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
                 description: 'Subscription deleted',
                 content: {
                     'application/json': {
-                        schema: SuccessResponseSchema()
+                        schema: DeleteSubscriptionResponseSchema
                     }
                 }
             },
