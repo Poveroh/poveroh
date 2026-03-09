@@ -11,6 +11,7 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
         method: 'get',
         path: '/me',
         tags: ['User'],
+        operationId: 'getAuthenticatedUser',
         summary: 'Get authenticated user',
         description: 'Get authenticated user information and preferences',
         security: [{ bearerAuth: [] }],
@@ -61,6 +62,7 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
         method: 'patch',
         path: '/me',
         tags: ['User'],
+        operationId: 'updateAuthenticatedUser',
         summary: 'Update authenticated user',
         description:
             "Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.",

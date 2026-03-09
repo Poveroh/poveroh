@@ -10,6 +10,7 @@ export const registerSnapshotPath = (registry: OpenAPIRegistry) => {
         method: 'post',
         path: '/account-balance',
         tags: ['Snapshot'],
+        operationId: 'createSnapshotAccountBalance',
         summary: 'Create snapshot account balance',
         description: 'Create a new snapshot account balance with the provided data',
         security: [{ bearerAuth: [] }],

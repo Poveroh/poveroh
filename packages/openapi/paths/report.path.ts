@@ -10,6 +10,7 @@ export const registerReportPath = (registry: OpenAPIRegistry) => {
         method: 'get',
         path: '/report/trend',
         tags: ['Report'],
+        operationId: 'getTrendReport',
         summary: 'Get trend report',
         description: 'Retrieve a trend report based on the users imports',
         security: [{ bearerAuth: [] }],
