@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccount } from './FinancialAccount';
+import type { FinancialAccountDataResponse } from './FinancialAccountDataResponse';
 export type GetFinancialAccountListResponse = {
     /**
      * Always true for success responses
@@ -15,6 +15,6 @@ export type GetFinancialAccountListResponse = {
     /**
      * Response data
      */
-    data?: Array<FinancialAccount>;
+    data?: Array<FinancialAccountDataResponse>;
 };
 

@@ -20,10 +20,10 @@ export const StringFilterSchema = z
  */
 export const FilterOptionsSchema = z
     .object({
-        skip: z.number().int().nonnegative().optional(),
-        take: z.number().int().positive().optional(),
-        sortBy: z.string().optional(),
-        sortOrder: z.enum(['asc', 'desc']).optional()
+        skip: z.number().int().nonnegative().optional().default(0),
+        take: z.number().int().positive().optional().default(20),
+        sortBy: z.string().optional().default('createdAt'),
+        sortOrder: z.enum(['asc', 'desc']).optional().default('desc')
     })
     .openapi('FilterOptions')
 

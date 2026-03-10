@@ -30,9 +30,17 @@ export const SubscriptionSchema = z
     .openapi('Subscription')
 
 /**
+ * Response schema for getting subscription data (excluding userId and deletedAt)
+ */
+export const SubscriptionDataResponseSchema = SubscriptionSchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('SubscriptionDataResponse')
+
+/**
  * Response schema for getting a list of subscriptions
  */
-export const GetSubscriptionListResponseSchema = SuccessResponseSchema(SubscriptionSchema.array()).openapi(
+export const GetSubscriptionListResponseSchema = SuccessResponseSchema(SubscriptionDataResponseSchema.array()).openapi(
     'GetSubscriptionListResponse'
 )
 
@@ -40,7 +48,7 @@ export const GetSubscriptionListResponseSchema = SuccessResponseSchema(Subscript
  * Response schema for getting a single subscription by ID
  */
 export const GetSubscriptionResponseSchema =
-    SuccessResponseSchema(SubscriptionSchema).openapi('GetSubscriptionResponse')
+    SuccessResponseSchema(SubscriptionDataResponseSchema).openapi('GetSubscriptionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -63,7 +71,7 @@ export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(C
  * Response schema for creating a new subscription
  */
 export const CreateSubscriptionResponseSchema =
-    SuccessResponseSchema(SubscriptionSchema).openapi('CreateSubscriptionResponse')
+    SuccessResponseSchema(SubscriptionDataResponseSchema).openapi('CreateSubscriptionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

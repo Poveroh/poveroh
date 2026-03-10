@@ -42,14 +42,24 @@ export const ImportSchema = z
     .openapi('Import')
 
 /**
+ * Response schema for getting import data (excluding userId and deletedAt)
+ */
+export const ImportDataResponseSchema = ImportSchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('ImportDataResponse')
+
+/**
  * Response schema for getting a list of imports
  */
-export const GetImportListResponseSchema = SuccessResponseSchema(ImportSchema.array()).openapi('GetImportListResponse')
+export const GetImportListResponseSchema = SuccessResponseSchema(ImportDataResponseSchema.array()).openapi(
+    'GetImportListResponse'
+)
 
 /**
  * Response schema for getting a single import by ID
  */
-export const GetImportResponseSchema = SuccessResponseSchema(ImportSchema).openapi('GetImportResponse')
+export const GetImportResponseSchema = SuccessResponseSchema(ImportDataResponseSchema).openapi('GetImportResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -69,7 +79,8 @@ export const CreateImportMultipartRequestSchema =
 /**
  * Response schema for creating a new import
  */
-export const CreateImportResponseSchema = SuccessResponseSchema(ImportSchema).openapi('CreateImportResponse')
+export const CreateImportResponseSchema =
+    SuccessResponseSchema(ImportDataResponseSchema).openapi('CreateImportResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -85,7 +96,8 @@ export const UpdateImportRequestSchema = ImportSchema.partial()
 /**
  * Response schema for updating an existing import
  */
-export const UpdateImportResponseSchema = SuccessResponseSchema().openapi('UpdateImportResponse')
+export const UpdateImportResponseSchema =
+    SuccessResponseSchema(ImportDataResponseSchema).openapi('UpdateImportResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

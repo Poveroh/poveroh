@@ -146,7 +146,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Category"
+                            "$ref": "#/components/schemas/CategoryDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -172,7 +172,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Category"
+                                "$ref": "#/components/schemas/CategoryDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -247,7 +247,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Category"
+                                "$ref": "#/components/schemas/CategoryDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -278,12 +278,6 @@
                     "color": {
                         "type": "string",
                         "default": "#8B5CF6"
-                    },
-                    "subcategories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Subcategory"
-                        }
                     }
                 }
             },
@@ -369,26 +363,8 @@
                         "$ref": "#/components/schemas/StringFilter"
                     },
                     "for": {
-                        "type": "object",
-                        "properties": {
-                            "for": {
-                                "$ref": "#/components/schemas/TransactionActionEnum"
-                            }
-                        },
-                        "required": [
-                            "for"
-                        ]
+                        "$ref": "#/components/schemas/TransactionActionEnum"
                     }
-                },
-                "additionalProperties": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "$ref": "#/components/schemas/StringFilter"
-                        }
-                    ]
                 }
             },
             "FilterOptions": {
@@ -396,22 +372,26 @@
                 "properties": {
                     "skip": {
                         "type": "integer",
-                        "minimum": 0
+                        "minimum": 0,
+                        "default": 0
                     },
                     "take": {
                         "type": "integer",
                         "minimum": 0,
-                        "exclusiveMinimum": true
+                        "exclusiveMinimum": true,
+                        "default": 20
                     },
                     "sortBy": {
-                        "type": "string"
+                        "type": "string",
+                        "default": "createdAt"
                     },
                     "sortOrder": {
                         "type": "string",
                         "enum": [
                             "asc",
                             "desc"
-                        ]
+                        ],
+                        "default": "desc"
                     }
                 }
             },
@@ -1203,7 +1183,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/FinancialAccount"
+                            "$ref": "#/components/schemas/FinancialAccountDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -1229,7 +1209,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/FinancialAccount"
+                                "$ref": "#/components/schemas/FinancialAccountDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -1304,7 +1284,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/FinancialAccount"
+                                "$ref": "#/components/schemas/FinancialAccountDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -1754,7 +1734,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Import"
+                            "$ref": "#/components/schemas/ImportDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -1780,7 +1760,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Import"
+                                "$ref": "#/components/schemas/ImportDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -1840,7 +1820,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Import"
+                                "$ref": "#/components/schemas/ImportDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -1875,8 +1855,14 @@
                         "description": "Optional success message"
                     },
                     "data": {
-                        "nullable": true,
-                        "description": "Response data"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ImportDataResponse"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -2294,7 +2280,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Subcategory"
+                            "$ref": "#/components/schemas/SubcategoryDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -2320,7 +2306,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Subcategory"
+                                "$ref": "#/components/schemas/SubcategoryDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -2392,7 +2378,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Subcategory"
+                                "$ref": "#/components/schemas/SubcategoryDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -2622,7 +2608,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Subscription"
+                            "$ref": "#/components/schemas/SubscriptionDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -2648,7 +2634,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Subscription"
+                                "$ref": "#/components/schemas/SubscriptionDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -2753,7 +2739,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Subscription"
+                                "$ref": "#/components/schemas/SubscriptionDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -3049,7 +3035,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Transaction"
+                            "$ref": "#/components/schemas/TransactionDataResponse"
                         },
                         "description": "Response data"
                     }
@@ -3075,7 +3061,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Transaction"
+                                "$ref": "#/components/schemas/TransactionDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -3163,7 +3149,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/Transaction"
+                                "$ref": "#/components/schemas/TransactionDataResponse"
                             },
                             {
                                 "description": "Response data"
@@ -3674,6 +3660,471 @@
                 "required": [
                     "layout",
                     "version"
+                ]
+            },
+            "GetCategoryDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "FinancialAccountDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ImportDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TransactionStatusEnum"
+                            },
+                            {
+                                "default": "IMPORT_PENDING"
+                            }
+                        ]
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportFile"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "financialAccountId",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubcategoryDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "categoryId",
+                    "title",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "GetSubscriptionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "type": "string"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financiaAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financiaAccountId",
+                    "isEnabled",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "TransactionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "importId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "importId",
+                    "action",
+                    "status",
+                    "ignore",
+                    "createdAt",
+                    "updatedAt",
+                    "media",
+                    "amounts",
+                    "transferId",
+                    "transferHash"
+                ]
+            },
+            "CategoryDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubscriptionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "type": "string"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financiaAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financiaAccountId",
+                    "isEnabled",
+                    "createdAt",
+                    "updatedAt"
                 ]
             }
         },

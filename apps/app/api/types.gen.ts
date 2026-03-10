@@ -43,7 +43,7 @@ export type GetCategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<Category>
+    data?: Array<CategoryDataResponse>
 }
 
 export type GetCategoryResponse = {
@@ -55,7 +55,7 @@ export type GetCategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: Category & unknown
+    data?: CategoryDataResponse & unknown
 }
 
 export type CreateCategoryRequest = {
@@ -80,7 +80,7 @@ export type CreateCategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: Category & unknown
+    data?: CategoryDataResponse & unknown
 }
 
 export type UpdateCategoryRequest = {
@@ -89,7 +89,6 @@ export type UpdateCategoryRequest = {
     for?: TransactionActionEnum
     logoIcon?: string
     color?: string
-    subcategories?: Array<Subcategory>
 }
 
 export type UpdateCategoryResponse = {
@@ -135,18 +134,7 @@ export type CategoryFilters = {
     id?: CategoryParamsId
     title?: StringFilter
     description?: StringFilter
-    for?: {
-        for: TransactionActionEnum
-    }
-    [key: string]:
-        | string
-        | StringFilter
-        | CategoryParamsId
-        | StringFilter
-        | {
-              for: TransactionActionEnum
-          }
-        | undefined
+    for?: TransactionActionEnum
 }
 
 export type FilterOptions = {
@@ -743,7 +731,7 @@ export type GetFinancialAccountListResponse = {
     /**
      * Response data
      */
-    data?: Array<FinancialAccount>
+    data?: Array<FinancialAccountDataResponse>
 }
 
 export type GetFinancialAccountResponse = {
@@ -755,7 +743,7 @@ export type GetFinancialAccountResponse = {
      * Optional success message
      */
     message?: string
-    data?: FinancialAccount & unknown
+    data?: FinancialAccountDataResponse & unknown
 }
 
 export type CreateFinancialAccountRequest = {
@@ -780,7 +768,7 @@ export type CreateFinancialAccountResponse = {
      * Optional success message
      */
     message?: string
-    data?: FinancialAccount & unknown
+    data?: FinancialAccountDataResponse & unknown
 }
 
 export type UpdateFinancialAccountRequest = {
@@ -928,7 +916,7 @@ export type GetImportListResponse = {
     /**
      * Response data
      */
-    data?: Array<Import>
+    data?: Array<ImportDataResponse>
 }
 
 export type GetImportResponse = {
@@ -940,7 +928,7 @@ export type GetImportResponse = {
      * Optional success message
      */
     message?: string
-    data?: Import & unknown
+    data?: ImportDataResponse & unknown
 }
 
 export type CreateImportRequest = {
@@ -961,7 +949,7 @@ export type CreateImportResponse = {
      * Optional success message
      */
     message?: string
-    data?: Import & unknown
+    data?: ImportDataResponse & unknown
 }
 
 export type UpdateImportRequest = {
@@ -977,10 +965,7 @@ export type UpdateImportResponse = {
      * Optional success message
      */
     message?: string
-    /**
-     * Response data
-     */
-    data?: unknown
+    data?: ImportDataResponse & unknown
 }
 
 export type DeleteImportResponse = {
@@ -1127,7 +1112,7 @@ export type GetSubcategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<Subcategory>
+    data?: Array<SubcategoryDataResponse>
 }
 
 export type GetSubcategoryResponse = {
@@ -1139,7 +1124,7 @@ export type GetSubcategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: Subcategory & unknown
+    data?: SubcategoryDataResponse & unknown
 }
 
 export type CreateSubcategoryRequest = {
@@ -1163,7 +1148,7 @@ export type CreateSubcategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: Subcategory & unknown
+    data?: SubcategoryDataResponse & unknown
 }
 
 export type UpdateSubcategoryRequest = {
@@ -1261,7 +1246,7 @@ export type GetSubscriptionListResponse = {
     /**
      * Response data
      */
-    data?: Array<Subscription>
+    data?: Array<SubscriptionDataResponse>
 }
 
 export type GetSubscriptionResponse = {
@@ -1273,7 +1258,7 @@ export type GetSubscriptionResponse = {
      * Optional success message
      */
     message?: string
-    data?: Subscription & unknown
+    data?: SubscriptionDataResponse & unknown
 }
 
 export type CreateSubscriptionRequest = {
@@ -1305,7 +1290,7 @@ export type CreateSubscriptionResponse = {
      * Optional success message
      */
     message?: string
-    data?: Subscription & unknown
+    data?: SubscriptionDataResponse & unknown
 }
 
 export type UpdateSubscriptionRequest = {
@@ -1425,7 +1410,7 @@ export type GetTransactionListResponse = {
     /**
      * Response data
      */
-    data?: Array<Transaction>
+    data?: Array<TransactionDataResponse>
 }
 
 export type GetTransactionResponse = {
@@ -1437,7 +1422,7 @@ export type GetTransactionResponse = {
      * Optional success message
      */
     message?: string
-    data?: Transaction & unknown
+    data?: TransactionDataResponse & unknown
 }
 
 export type CreateTransactionRequest = {
@@ -1464,7 +1449,7 @@ export type CreateTransactionResponse = {
      * Optional success message
      */
     message?: string
-    data?: Transaction & unknown
+    data?: TransactionDataResponse & unknown
 }
 
 export type UpdateTransactionRequest = {
@@ -1637,6 +1622,118 @@ export type DashboardLayoutItem = {
 export type GetDashboardLayout = {
     layout: Array<DashboardLayoutItem>
     version: number
+}
+
+export type GetCategoryDataResponse = {
+    id: string
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type FinancialAccountDataResponse = {
+    id: string
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type ImportDataResponse = {
+    id: string
+    title: string
+    financialAccountId: string
+    status?: TransactionStatusEnum & unknown
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubcategoryDataResponse = {
+    id: string
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetSubscriptionDataResponse = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: string
+    rememberPeriod: RememberPeriodEnum
+    financiaAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+export type TransactionDataResponse = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type CategoryDataResponse = {
+    id: string
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubscriptionDataResponse = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: string
+    rememberPeriod: RememberPeriodEnum
+    financiaAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
 }
 
 export type DeleteCategoriesData = {

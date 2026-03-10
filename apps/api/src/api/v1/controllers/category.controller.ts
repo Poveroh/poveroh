@@ -1,36 +1,19 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import omit from 'lodash/omit'
-import { buildWhere } from '../../../helpers/filter.helper'
-import { MediaHelper } from '../../../helpers/media.helper'
 import { getParamString } from '../../../utils/request'
-import { CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types/contracts'
+import { CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types/contracts'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
+import { CategoryService } from '../services/category.service'
 
 export class CategoryController {
     //POST /
-    static async addCategory(req: Request, res: Response) {
+    static async createCategory(req: Request, res: Response) {
         try {
             if (!req.body) {
                 throw new BadRequestError('Data not provided')
             }
 
             const readCategory: CreateCategoryRequest = req.body
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/category/${readCategory.title}`
-                )
-                readCategory.logoIcon = filePath
-            }
-
-            const category = await prisma.category.create({
-                data: {
-                    ...readCategory,
-                    userId: req.user.id
-                }
-            })
+            const category = await CategoryService.createCategory(req.user.id, readCategory, req.file)
 
             return ResponseHelper.success(res, category)
         } catch (error) {
@@ -46,25 +29,13 @@ export class CategoryController {
             }
 
             const readCategory: UpdateCategoryRequest = req.body
-
             const id = getParamString(req.params, 'id')
 
             if (!id) {
                 throw new BadRequestError('Missing category ID in path')
             }
 
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/category/${readCategory.title}`
-                )
-                readCategory.logoIcon = filePath
-            }
-
-            const category = await prisma.category.update({
-                where: { id },
-                data: omit(readCategory, ['subcategories'])
-            })
+            await CategoryService.updateCategory(id, req.user.id, readCategory, req.file)
 
             return ResponseHelper.success(res)
         } catch (error) {
@@ -81,15 +52,43 @@ export class CategoryController {
                 throw new BadRequestError('Missing category ID in path')
             }
 
-            if (id == 'all') {
-                await prisma.subcategory.deleteMany({})
-                await prisma.category.deleteMany({})
-            } else {
-                await prisma.subcategory.deleteMany({ where: { categoryId: id } })
-                await prisma.category.delete({ where: { id } })
-            }
+            await CategoryService.deleteCategory(id)
 
             return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE
+    static async deleteAllCategories(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing category ID in path')
+            }
+
+            await CategoryService.deleteAllCategories()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id
+    static async readCategoryById(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing category ID in path')
+            }
+
+            const data = await CategoryService.getCategoryById(id)
+
+            return ResponseHelper.success(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -98,24 +97,13 @@ export class CategoryController {
     //GET /
     static async readCategories(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as CategoryFilters
+            const filters = req.query as CategoryFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const data = await CategoryService.getCategories(filters, skip, take)
 
-            const [data, total] = await Promise.all([
-                prisma.category.findMany({
-                    where,
-                    include: { subcategories: true },
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take
-                }),
-                prisma.category.count({ where })
-            ])
-
-            return ResponseHelper.success(res, { data, total })
+            return ResponseHelper.success(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

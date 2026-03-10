@@ -121,16 +121,25 @@ export const TransactionSchema = z
     .openapi('Transaction')
 
 /**
+ * Response schema for getting transaction data (excluding userId and deletedAt)
+ */
+export const TransactionDataResponseSchema = TransactionSchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('TransactionDataResponse')
+
+/**
  * Response schema for getting a list of transactions
  */
-export const GetTransactionListResponseSchema = SuccessResponseSchema(TransactionSchema.array()).openapi(
+export const GetTransactionListResponseSchema = SuccessResponseSchema(TransactionDataResponseSchema.array()).openapi(
     'GetTransactionListResponse'
 )
 
 /**
  * Response schema for getting a single transaction by ID
  */
-export const GetTransactionResponseSchema = SuccessResponseSchema(TransactionSchema).openapi('GetTransactionResponse')
+export const GetTransactionResponseSchema =
+    SuccessResponseSchema(TransactionDataResponseSchema).openapi('GetTransactionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -160,7 +169,7 @@ export const CreateTransactionMultipartRequestSchema = MultipartRequestSchema(Cr
  * Response schema for creating a new transaction
  */
 export const CreateTransactionResponseSchema =
-    SuccessResponseSchema(TransactionSchema).openapi('CreateTransactionResponse')
+    SuccessResponseSchema(TransactionDataResponseSchema).openapi('CreateTransactionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

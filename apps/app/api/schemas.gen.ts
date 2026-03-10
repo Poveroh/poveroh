@@ -107,7 +107,7 @@ export const GetCategoryListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Category'
+                $ref: '#/components/schemas/CategoryDataResponse'
             },
             description: 'Response data'
         }
@@ -130,7 +130,7 @@ export const GetCategoryResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Category'
+                    $ref: '#/components/schemas/CategoryDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -198,7 +198,7 @@ export const CreateCategoryResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Category'
+                    $ref: '#/components/schemas/CategoryDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -228,12 +228,6 @@ export const UpdateCategoryRequestSchema = {
         color: {
             type: 'string',
             default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
         }
     }
 } as const
@@ -314,24 +308,8 @@ export const CategoryFiltersSchema = {
             $ref: '#/components/schemas/StringFilter'
         },
         for: {
-            type: 'object',
-            properties: {
-                for: {
-                    $ref: '#/components/schemas/TransactionActionEnum'
-                }
-            },
-            required: ['for']
+            $ref: '#/components/schemas/TransactionActionEnum'
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            }
-        ]
     }
 } as const
 
@@ -340,19 +318,23 @@ export const FilterOptionsSchema = {
     properties: {
         skip: {
             type: 'integer',
-            minimum: 0
+            minimum: 0,
+            default: 0
         },
         take: {
             type: 'integer',
             minimum: 0,
-            exclusiveMinimum: true
+            exclusiveMinimum: true,
+            default: 20
         },
         sortBy: {
-            type: 'string'
+            type: 'string',
+            default: 'createdAt'
         },
         sortOrder: {
             type: 'string',
-            enum: ['asc', 'desc']
+            enum: ['asc', 'desc'],
+            default: 'desc'
         }
     }
 } as const
@@ -1089,7 +1071,7 @@ export const GetFinancialAccountListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/FinancialAccount'
+                $ref: '#/components/schemas/FinancialAccountDataResponse'
             },
             description: 'Response data'
         }
@@ -1112,7 +1094,7 @@ export const GetFinancialAccountResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/FinancialAccount'
+                    $ref: '#/components/schemas/FinancialAccountDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -1178,7 +1160,7 @@ export const CreateFinancialAccountResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/FinancialAccount'
+                    $ref: '#/components/schemas/FinancialAccountDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -1603,7 +1585,7 @@ export const GetImportListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Import'
+                $ref: '#/components/schemas/ImportDataResponse'
             },
             description: 'Response data'
         }
@@ -1626,7 +1608,7 @@ export const GetImportResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Import'
+                    $ref: '#/components/schemas/ImportDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -1681,7 +1663,7 @@ export const CreateImportResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Import'
+                    $ref: '#/components/schemas/ImportDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -1714,8 +1696,14 @@ export const UpdateImportResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            nullable: true,
-            description: 'Response data'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/ImportDataResponse'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success']
@@ -2100,7 +2088,7 @@ export const GetSubcategoryListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Subcategory'
+                $ref: '#/components/schemas/SubcategoryDataResponse'
             },
             description: 'Response data'
         }
@@ -2123,7 +2111,7 @@ export const GetSubcategoryResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Subcategory'
+                    $ref: '#/components/schemas/SubcategoryDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -2188,7 +2176,7 @@ export const CreateSubcategoryResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Subcategory'
+                    $ref: '#/components/schemas/SubcategoryDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -2410,7 +2398,7 @@ export const GetSubscriptionListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Subscription'
+                $ref: '#/components/schemas/SubscriptionDataResponse'
             },
             description: 'Response data'
         }
@@ -2433,7 +2421,7 @@ export const GetSubscriptionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Subscription'
+                    $ref: '#/components/schemas/SubscriptionDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -2535,7 +2523,7 @@ export const CreateSubscriptionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Subscription'
+                    $ref: '#/components/schemas/SubscriptionDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -2812,7 +2800,7 @@ export const GetTransactionListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/TransactionDataResponse'
             },
             description: 'Response data'
         }
@@ -2835,7 +2823,7 @@ export const GetTransactionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Transaction'
+                    $ref: '#/components/schemas/TransactionDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -2912,7 +2900,7 @@ export const CreateTransactionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/Transaction'
+                    $ref: '#/components/schemas/TransactionDataResponse'
                 },
                 {
                     description: 'Response data'
@@ -3390,4 +3378,441 @@ export const GetDashboardLayoutSchema = {
         }
     },
     required: ['layout', 'version']
+} as const
+
+export const GetCategoryDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Subcategory'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const FinancialAccountDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        balance: {
+            type: 'number'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        },
+        logoIcon: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const ImportDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        status: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/TransactionStatusEnum'
+                },
+                {
+                    default: 'IMPORT_PENDING'
+                }
+            ]
+        },
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Transaction'
+            }
+        },
+        files: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportFile'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'financialAccountId', 'createdAt', 'updatedAt']
+} as const
+
+export const SubcategoryDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        categoryId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const GetSubscriptionDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        appearanceMode: {
+            $ref: '#/components/schemas/AppearanceModeEnum'
+        },
+        appearanceLogoIcon: {
+            type: 'string'
+        },
+        firstPayment: {
+            type: 'string',
+            format: 'date-time'
+        },
+        cycleNumber: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            type: 'string'
+        },
+        rememberPeriod: {
+            $ref: '#/components/schemas/RememberPeriodEnum'
+        },
+        financiaAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        isEnabled: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'title',
+        'description',
+        'amount',
+        'currency',
+        'appearanceMode',
+        'appearanceLogoIcon',
+        'firstPayment',
+        'cycleNumber',
+        'cyclePeriod',
+        'rememberPeriod',
+        'financiaAccountId',
+        'isEnabled',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
+export const TransactionDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        importId: {
+            type: 'string',
+            nullable: true
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        status: {
+            $ref: '#/components/schemas/TransactionStatusEnum'
+        },
+        ignore: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        media: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/TransactionMedia'
+            }
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Amount'
+            }
+        },
+        transferId: {
+            type: 'string',
+            nullable: true
+        },
+        transferHash: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'date',
+        'title',
+        'note',
+        'icon',
+        'categoryId',
+        'subcategoryId',
+        'importId',
+        'action',
+        'status',
+        'ignore',
+        'createdAt',
+        'updatedAt',
+        'media',
+        'amounts',
+        'transferId',
+        'transferHash'
+    ]
+} as const
+
+export const CategoryDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Subcategory'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const SubscriptionDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        appearanceMode: {
+            $ref: '#/components/schemas/AppearanceModeEnum'
+        },
+        appearanceLogoIcon: {
+            type: 'string'
+        },
+        firstPayment: {
+            type: 'string',
+            format: 'date-time'
+        },
+        cycleNumber: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            type: 'string'
+        },
+        rememberPeriod: {
+            $ref: '#/components/schemas/RememberPeriodEnum'
+        },
+        financiaAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        isEnabled: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'title',
+        'description',
+        'amount',
+        'currency',
+        'appearanceMode',
+        'appearanceLogoIcon',
+        'firstPayment',
+        'cycleNumber',
+        'cyclePeriod',
+        'rememberPeriod',
+        'financiaAccountId',
+        'isEnabled',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const

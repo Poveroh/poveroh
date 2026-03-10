@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccount } from './FinancialAccount';
+import type { FinancialAccountDataResponse } from './FinancialAccountDataResponse';
 export type CreateFinancialAccountResponse = {
     /**
      * Always true for success responses
@@ -12,6 +12,6 @@ export type CreateFinancialAccountResponse = {
      * Optional success message
      */
     message?: string;
-    data?: FinancialAccount;
+    data?: FinancialAccountDataResponse;
 };
 

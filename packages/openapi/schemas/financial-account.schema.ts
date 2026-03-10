@@ -23,17 +23,26 @@ export const FinancialAccountSchema = z
     .openapi('FinancialAccount')
 
 /**
+ * Response schema for getting financial account data (excluding userId and deletedAt)
+ */
+export const FinancialAccountDataResponseSchema = FinancialAccountSchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('FinancialAccountDataResponse')
+
+/**
  * Response schema for getting a list of financial accounts
  */
-export const GetFinancialAccountListResponseSchema = SuccessResponseSchema(FinancialAccountSchema.array()).openapi(
-    'GetFinancialAccountListResponse'
-)
+export const GetFinancialAccountListResponseSchema = SuccessResponseSchema(
+    FinancialAccountDataResponseSchema.array()
+).openapi('GetFinancialAccountListResponse')
 
 /**
  * Response schema for getting a single financial account by ID
  */
-export const GetFinancialAccountResponseSchema =
-    SuccessResponseSchema(FinancialAccountSchema).openapi('GetFinancialAccountResponse')
+export const GetFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountDataResponseSchema).openapi(
+    'GetFinancialAccountResponse'
+)
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -58,7 +67,7 @@ export const CreateFinancialAccountMultipartRequestSchema = MultipartRequestSche
 /**
  * Response schema for creating a new financial account
  */
-export const CreateFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountSchema).openapi(
+export const CreateFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountDataResponseSchema).openapi(
     'CreateFinancialAccountResponse'
 )
 

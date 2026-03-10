@@ -25,16 +25,25 @@ export const CategorySchema = z
     .openapi('Category')
 
 /**
+ * Response schema for getting category data (excluding userId and deletedAt)
+ */
+export const CategoryDataResponseSchema = CategorySchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('CategoryDataResponse')
+
+/**
  * Response schema for getting a list of categories
  */
-export const GetCategoryListResponseSchema = SuccessResponseSchema(CategorySchema.array()).openapi(
+export const GetCategoryListResponseSchema = SuccessResponseSchema(CategoryDataResponseSchema.array()).openapi(
     'GetCategoryListResponse'
 )
 
 /**
  * Response schema for getting a single category by ID
  */
-export const GetCategoryResponseSchema = SuccessResponseSchema(CategorySchema).openapi('GetCategoryResponse')
+export const GetCategoryResponseSchema =
+    SuccessResponseSchema(CategoryDataResponseSchema).openapi('GetCategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -59,7 +68,8 @@ export const CreateCategoryMultipartRequestSchema = MultipartRequestSchema(Creat
 /**
  * Response schema for creating a new category
  */
-export const CreateCategoryResponseSchema = SuccessResponseSchema(CategorySchema).openapi('CreateCategoryResponse')
+export const CreateCategoryResponseSchema =
+    SuccessResponseSchema(CategoryDataResponseSchema).openapi('CreateCategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -70,6 +80,7 @@ export const UpdateCategoryRequestSchema = CategorySchema.partial()
     .omit({
         id: true,
         userId: true,
+        subcategories: true,
         createdAt: true,
         updatedAt: true,
         deletedAt: true
@@ -103,12 +114,11 @@ export const CategoryParamsId = CategorySchema.pick({
 export const CategoryFiltersSchema = z
     .object({
         id: CategoryParamsId,
-        title: StringFilterSchema.optional(),
-        description: StringFilterSchema.optional(),
-        for: CategorySchema.pick({ for: true }).optional()
+        title: StringFilterSchema,
+        description: StringFilterSchema,
+        for: TransactionActionEnum
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema]))
     .openapi('CategoryFilters')
 
 /**

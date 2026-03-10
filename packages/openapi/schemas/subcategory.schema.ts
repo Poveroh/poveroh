@@ -20,16 +20,24 @@ export const SubcategorySchema = z
     .openapi('Subcategory')
 
 /**
+ * Response schema for getting subcategory data (excluding categoryId and deletedAt)
+ */
+export const SubcategoryDataResponseSchema = SubcategorySchema.omit({
+    deletedAt: true
+}).openapi('SubcategoryDataResponse')
+
+/**
  * Response schema for getting a list of subcategories
  */
-export const GetSubcategoryListResponseSchema = SuccessResponseSchema(SubcategorySchema.array()).openapi(
+export const GetSubcategoryListResponseSchema = SuccessResponseSchema(SubcategoryDataResponseSchema.array()).openapi(
     'GetSubcategoryListResponse'
 )
 
 /**
  * Response schema for getting a single subcategory by ID
  */
-export const GetSubcategoryResponseSchema = SuccessResponseSchema(SubcategorySchema).openapi('GetSubcategoryResponse')
+export const GetSubcategoryResponseSchema =
+    SuccessResponseSchema(SubcategoryDataResponseSchema).openapi('GetSubcategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -51,7 +59,7 @@ export const CreateSubcategoryMultipartRequestSchema = MultipartRequestSchema(Cr
  * Response schema for creating a new subcategory
  */
 export const CreateSubcategoryResponseSchema =
-    SuccessResponseSchema(SubcategorySchema).openapi('CreateSubcategoryResponse')
+    SuccessResponseSchema(SubcategoryDataResponseSchema).openapi('CreateSubcategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

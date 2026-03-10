@@ -2,7 +2,7 @@ import { z } from '../zod'
 import { SuccessResponseSchema } from './response.schema'
 
 /**
- *
+ * Dashboard layout item schema representing an individual item in the dashboard layout
  */
 export const DashboardLayoutItemSchema = z
     .object({

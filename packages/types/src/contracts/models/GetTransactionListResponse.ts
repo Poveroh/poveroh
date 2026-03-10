@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Transaction } from './Transaction';
+import type { TransactionDataResponse } from './TransactionDataResponse';
 export type GetTransactionListResponse = {
     /**
      * Always true for success responses
@@ -15,6 +15,6 @@ export type GetTransactionListResponse = {
     /**
      * Response data
      */
-    data?: Array<Transaction>;
+    data?: Array<TransactionDataResponse>;
 };
 
