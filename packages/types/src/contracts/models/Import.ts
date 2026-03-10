@@ -15,5 +15,6 @@ export type Import = {
     files?: Array<ImportFile>;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

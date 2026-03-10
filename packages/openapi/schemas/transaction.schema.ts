@@ -15,7 +15,8 @@ export const TransactionMediaSchema = z
         filetype: z.string(),
         path: z.string().url(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('TransactionMedia')
 
@@ -25,7 +26,8 @@ export const TransactionMediaSchema = z
 export const CreateTransactionMediaRequestSchema = TransactionMediaSchema.omit({
     id: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateTransactionMediaRequest')
 
 export const CreateTransactionMediaMultipartRequestSchema = MultipartRequestSchema(
@@ -67,7 +69,8 @@ export const AmountSchema = z
         financialAccountId: z.string().uuid(),
         importReferenceId: z.string().nullable(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Amount')
 
@@ -77,7 +80,8 @@ export const AmountSchema = z
 export const CreateAmountRequestSchema = AmountSchema.omit({
     id: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateAmountRequest')
 
 /**
@@ -108,6 +112,7 @@ export const TransactionSchema = z
         ignore: z.boolean(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional(),
         media: z.array(TransactionMediaSchema),
         amounts: z.array(AmountSchema),
         transferId: z.string().nullable(),
@@ -139,6 +144,7 @@ export const CreateTransactionRequestSchema = TransactionSchema.omit({
     status: true,
     importId: true,
     updatedAt: true,
+    deletedAt: true,
     amounts: true,
     action: true,
     media: true,
@@ -169,6 +175,7 @@ export const UpdateTransactionRequestSchema = TransactionSchema.partial()
         status: true,
         importId: true,
         updatedAt: true,
+        deletedAt: true,
         amounts: true,
         action: true,
         media: true,

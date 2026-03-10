@@ -24,7 +24,8 @@ export const SubscriptionSchema = z
         financiaAccountId: z.string().uuid(),
         isEnabled: z.boolean(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Subscription')
 
@@ -50,7 +51,8 @@ export const CreateSubscriptionRequestSchema = SubscriptionSchema.omit({
     id: true,
     userId: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateSubscriptionRequest')
 
 export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(CreateSubscriptionRequestSchema).openapi(
@@ -73,7 +75,8 @@ export const UpdateSubscriptionRequestSchema = SubscriptionSchema.partial()
         id: true,
         userId: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        deletedAt: true
     })
     .openapi('UpdateSubscriptionRequest')
 

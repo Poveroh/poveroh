@@ -21,6 +21,7 @@ export type Transaction = {
     ignore: boolean;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
     media: Array<TransactionMedia>;
     amounts: Array<Amount>;
     transferId: string | null;

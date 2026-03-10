@@ -42,7 +42,8 @@ export const SnapshotSchema = z
         accountBalances: SnapshotAccountBalanceSchema.array(),
         assetValues: SnapshotAssetValueSchema.array(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Snapshot')
 

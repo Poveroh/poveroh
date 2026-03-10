@@ -22,5 +22,6 @@ export type Subscription = {
     isEnabled: boolean;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

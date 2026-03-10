@@ -19,7 +19,8 @@ export const CategorySchema = z
         color: z.string().default('#8B5CF6'),
         subcategories: z.array(SubcategorySchema).optional(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Category')
 
@@ -45,7 +46,8 @@ export const CreateCategoryRequestSchema = CategorySchema.omit({
     userId: true,
     subcategories: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateCategoryRequest')
 
 /**
@@ -69,7 +71,8 @@ export const UpdateCategoryRequestSchema = CategorySchema.partial()
         id: true,
         userId: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        deletedAt: true
     })
     .openapi('UpdateCategoryRequest')
 

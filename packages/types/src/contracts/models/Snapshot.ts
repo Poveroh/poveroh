@@ -16,5 +16,6 @@ export type Snapshot = {
     assetValues: Array<SnapshotAssetValue>;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

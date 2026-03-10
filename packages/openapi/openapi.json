@@ -57,6 +57,10 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
@@ -107,6 +111,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     }
@@ -1160,6 +1168,10 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
@@ -1453,6 +1465,10 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
@@ -1490,6 +1506,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     }
@@ -1536,6 +1556,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     }
@@ -1602,6 +1626,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     },
@@ -1692,6 +1720,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     }
@@ -2146,6 +2178,10 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
@@ -2542,6 +2578,10 @@
                         "format": "date-time"
                     },
                     "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
                         "type": "string",
                         "format": "date-time"
                     }

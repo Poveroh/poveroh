@@ -14,6 +14,7 @@ export type Subcategory = {
     logoIcon: string
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type Category = {
@@ -27,6 +28,7 @@ export type Category = {
     subcategories?: Array<Subcategory>
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type GetCategoryListResponse = {
@@ -726,6 +728,7 @@ export type FinancialAccount = {
     logoIcon: string
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type GetFinancialAccountListResponse = {
@@ -851,6 +854,7 @@ export type ImportFile = {
     path: string
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type TransactionMedia = {
@@ -861,6 +865,7 @@ export type TransactionMedia = {
     path: string
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type Amount = {
@@ -873,6 +878,7 @@ export type Amount = {
     importReferenceId: string | null
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type Transaction = {
@@ -890,6 +896,7 @@ export type Transaction = {
     ignore: boolean
     createdAt: string
     updatedAt: string
+    deletedAt?: string
     media: Array<TransactionMedia>
     amounts: Array<Amount>
     transferId: string | null
@@ -906,6 +913,7 @@ export type Import = {
     files?: Array<ImportFile>
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type GetImportListResponse = {
@@ -1078,6 +1086,7 @@ export type Snapshot = {
     assetValues: Array<SnapshotAssetValue>
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type CreateSnapshotAccountBalanceRequest = {
@@ -1237,6 +1246,7 @@ export type Subscription = {
     isEnabled: boolean
     createdAt: string
     updatedAt: string
+    deletedAt?: string
 }
 
 export type GetSubscriptionListResponse = {

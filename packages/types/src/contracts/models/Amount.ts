@@ -14,5 +14,6 @@ export type Amount = {
     importReferenceId: string | null;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

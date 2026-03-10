@@ -11,5 +11,6 @@ export type ImportFile = {
     path: string;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

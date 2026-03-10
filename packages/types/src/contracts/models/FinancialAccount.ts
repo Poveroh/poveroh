@@ -13,5 +13,6 @@ export type FinancialAccount = {
     logoIcon: string;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

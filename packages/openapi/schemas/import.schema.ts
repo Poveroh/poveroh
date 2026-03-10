@@ -16,7 +16,8 @@ export const ImportFileSchema = z
         filetype: FileTypeEnum,
         path: z.string(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('ImportFile')
 
@@ -35,7 +36,8 @@ export const ImportSchema = z
         transactions: z.array(TransactionSchema).optional(),
         files: z.array(ImportFileSchema).optional(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Import')
 

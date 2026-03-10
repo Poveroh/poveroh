@@ -15,5 +15,6 @@ export type Category = {
     subcategories?: Array<Subcategory>;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

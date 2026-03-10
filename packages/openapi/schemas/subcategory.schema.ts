@@ -14,7 +14,8 @@ export const SubcategorySchema = z
         description: z.string().optional(),
         logoIcon: z.string().url(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('Subcategory')
 
@@ -38,7 +39,8 @@ export const GetSubcategoryResponseSchema = SuccessResponseSchema(SubcategorySch
 export const CreateSubcategoryRequestSchema = SubcategorySchema.omit({
     id: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateSubcategoryRequest')
 
 export const CreateSubcategoryMultipartRequestSchema = MultipartRequestSchema(CreateSubcategoryRequestSchema).openapi(
@@ -61,7 +63,8 @@ export const UpdateSubcategoryRequestSchema = SubcategorySchema.partial()
         id: true,
         categoryId: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        deletedAt: true
     })
     .openapi('UpdateSubcategoryRequest')
 

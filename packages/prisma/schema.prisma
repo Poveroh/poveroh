@@ -29,6 +29,7 @@ model User {
     //Other
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @updatedAt
+    deletedAt         DateTime?          @db.Timestamptz
     transactions      Transaction[]
     transfers         Transfer[]
     subscriptions     Subscription[]
@@ -126,6 +127,7 @@ model FinancialAccount {
     logoIcon         String?
     createdAt        DateTime                 @default(now())
     updatedAt        DateTime                 @updatedAt
+    deletedAt        DateTime?                @db.Timestamptz
     subscriptions    Subscription[]
     amounts          Amount[]
     imports          Import[]
@@ -149,6 +151,7 @@ model Asset {
     currency       Currency             @default(EUR)
     createdAt      DateTime             @default(now())
     updatedAt      DateTime             @updatedAt
+    deletedAt      DateTime?            @db.Timestamptz
     marketable     MarketableAsset?
     realEstate     RealEstateAsset?
     collectible    CollectibleAsset?
@@ -246,6 +249,7 @@ model Snapshot {
     assetValues      SnapshotAssetValue[]
     createdAt        DateTime                 @default(now())
     updatedAt        DateTime                 @updatedAt
+    deletedAt        DateTime?                @db.Timestamptz
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -292,6 +296,7 @@ model Import {
     files              ImportFile[]
     createdAt          DateTime          @default(now())
     updatedAt          DateTime          @updatedAt
+    deletedAt          DateTime?         @db.Timestamptz
 
     user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
     financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
@@ -301,13 +306,14 @@ model Import {
 }
 
 model ImportFile {
-    id        String   @id @default(uuid())
+    id        String    @id @default(uuid())
     importId  String
     filename  String
     filetype  FileType
     path      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime? @db.Timestamptz
 
     import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
 
@@ -329,6 +335,7 @@ model Transaction {
     ignore        Boolean            @default(false)
     createdAt     DateTime           @default(now())
     updatedAt     DateTime           @updatedAt
+    deletedAt     DateTime?          @db.Timestamptz
     media         TransactionMedia[]
     amounts       Amount[]
 
@@ -353,14 +360,15 @@ model Transaction {
 }
 
 model Transfer {
-    id                String   @id @default(uuid())
+    id                String    @id @default(uuid())
     userId            String
     transferDate      DateTime
     note              String?
-    fromTransactionId String?  @unique
-    toTransactionId   String?  @unique
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
+    fromTransactionId String?   @unique
+    toTransactionId   String?   @unique
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    deletedAt         DateTime? @db.Timestamptz
 
     user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
     fromTransaction Transaction? @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
@@ -374,13 +382,14 @@ model Transfer {
 }
 
 model TransactionMedia {
-    id            String   @id @default(uuid())
+    id            String    @id @default(uuid())
     transactionId String
     filename      String
     filetype      String
     path          String
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime? @db.Timestamptz
 
     transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
@@ -397,6 +406,7 @@ model Amount {
     importReference    String?
     createdAt          DateTime          @default(now())
     updatedAt          DateTime          @updatedAt
+    deletedAt          DateTime?         @db.Timestamptz
 
     financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
     transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
@@ -426,6 +436,7 @@ model Subscription {
     isEnabled          Boolean
     createdAt          DateTime       @default(now())
     updatedAt          DateTime       @updatedAt
+    deletedAt          DateTime?      @db.Timestamptz
 
     user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
     financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
@@ -448,6 +459,7 @@ model Category {
     color         String            @default("#8B5CF6")
     createdAt     DateTime          @default(now())
     updatedAt     DateTime          @updatedAt
+    deletedAt     DateTime?         @db.Timestamptz
     transactions  Transaction[]
     subcategories Subcategory[]
 
@@ -465,6 +477,7 @@ model Subcategory {
     logoIcon     String
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
+    deletedAt    DateTime?     @db.Timestamptz
     transactions Transaction[]
 
     category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)

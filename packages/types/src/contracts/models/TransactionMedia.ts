@@ -10,5 +10,6 @@ export type TransactionMedia = {
     path: string;
     createdAt: string;
     updatedAt: string;
+    deletedAt?: string;
 };
 

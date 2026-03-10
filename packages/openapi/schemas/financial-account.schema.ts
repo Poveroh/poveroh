@@ -17,7 +17,8 @@ export const FinancialAccountSchema = z
         type: FinancialAccountTypeEnum,
         logoIcon: z.string(),
         createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime()
+        updatedAt: z.string().datetime(),
+        deletedAt: z.string().datetime().optional()
     })
     .openapi('FinancialAccount')
 
@@ -43,7 +44,8 @@ export const CreateFinancialAccountRequestSchema = FinancialAccountSchema.omit({
     id: true,
     userId: true,
     createdAt: true,
-    updatedAt: true
+    updatedAt: true,
+    deletedAt: true
 }).openapi('CreateFinancialAccountRequest')
 
 /**
@@ -69,7 +71,8 @@ export const UpdateFinancialAccountRequestSchema = FinancialAccountSchema.partia
     .omit({
         userId: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
+        deletedAt: true
     })
     .openapi('UpdateFinancialAccountRequest')
 

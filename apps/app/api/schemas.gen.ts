@@ -33,6 +33,10 @@ export const SubcategorySchema = {
         updatedAt: {
             type: 'string',
             format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
         }
     },
     required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
@@ -77,6 +81,10 @@ export const CategorySchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         }
@@ -1057,6 +1065,10 @@ export const FinancialAccountSchema = {
         updatedAt: {
             type: 'string',
             format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
         }
     },
     required: ['id', 'userId', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
@@ -1322,6 +1334,10 @@ export const ImportFileSchema = {
         updatedAt: {
             type: 'string',
             format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
         }
     },
     required: ['id', 'importId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
@@ -1352,6 +1368,10 @@ export const TransactionMediaSchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         }
@@ -1391,6 +1411,10 @@ export const AmountSchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         }
@@ -1458,6 +1482,10 @@ export const TransactionSchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         },
@@ -1549,6 +1577,10 @@ export const ImportSchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         }
@@ -1964,6 +1996,10 @@ export const SnapshotSchema = {
         updatedAt: {
             type: 'string',
             format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
         }
     },
     required: [
@@ -2331,6 +2367,10 @@ export const SubscriptionSchema = {
             format: 'date-time'
         },
         updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
             type: 'string',
             format: 'date-time'
         }
