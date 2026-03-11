@@ -3,8 +3,9 @@ import { bearer, customSession } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
-import { UserHelper } from '../api/v1/helpers/user.helper'
 import { DashboardTemplate } from '../api/v1/content/template/dashboard'
+import { UserService } from '../api/v1/services/user.service'
+import { DashboardService } from '../api/v1/services/dashboard.service'
 
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
@@ -43,7 +44,8 @@ export const auth = betterAuth({
     plugins: [
         bearer(),
         customSession(async ({ user, session }) => {
-            const readedUser = await UserHelper.getUserByEmail(user.email)
+            const userService = new UserService(user.id)
+            const readedUser = await userService.getUser(user.id)
 
             return {
                 user: readedUser,
@@ -83,13 +85,8 @@ export const auth = betterAuth({
                     user.surname = ''
                 },
                 after: async (user, ctx) => {
-                    await prisma.dashboardLayout.create({
-                        data: {
-                            userId: user.id,
-                            version: 1,
-                            layout: DashboardTemplate
-                        }
-                    })
+                    const dashboardService = new DashboardService(user.id)
+                    dashboardService.saveDashboardLayout(DashboardTemplate)
 
                     return
                 }

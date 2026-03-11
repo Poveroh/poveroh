@@ -438,14 +438,8 @@ export const UpdateDashboardLayoutResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/DashboardLayout'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
+            nullable: true,
+            description: 'Response data'
         }
     },
     required: ['success']
@@ -2343,7 +2337,7 @@ export const SubscriptionSchema = {
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
         },
-        financiaAccountId: {
+        financialAccountId: {
             type: 'string',
             format: 'uuid'
         },
@@ -2376,7 +2370,7 @@ export const SubscriptionSchema = {
         'cycleNumber',
         'cyclePeriod',
         'rememberPeriod',
-        'financiaAccountId',
+        'financialAccountId',
         'isEnabled',
         'createdAt',
         'updatedAt'
@@ -2466,7 +2460,7 @@ export const CreateSubscriptionRequestSchema = {
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
         },
-        financiaAccountId: {
+        financialAccountId: {
             type: 'string',
             format: 'uuid'
         },
@@ -2485,7 +2479,7 @@ export const CreateSubscriptionRequestSchema = {
         'cycleNumber',
         'cyclePeriod',
         'rememberPeriod',
-        'financiaAccountId',
+        'financialAccountId',
         'isEnabled'
     ]
 } as const
@@ -2568,7 +2562,7 @@ export const UpdateSubscriptionRequestSchema = {
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
         },
-        financiaAccountId: {
+        financialAccountId: {
             type: 'string',
             format: 'uuid'
         },
@@ -3782,7 +3776,7 @@ export const SubscriptionDataResponseSchema = {
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
         },
-        financiaAccountId: {
+        financialAccountId: {
             type: 'string',
             format: 'uuid'
         },
@@ -3810,7 +3804,7 @@ export const SubscriptionDataResponseSchema = {
         'cycleNumber',
         'cyclePeriod',
         'rememberPeriod',
-        'financiaAccountId',
+        'financialAccountId',
         'isEnabled',
         'createdAt',
         'updatedAt'

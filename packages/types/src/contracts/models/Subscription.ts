@@ -18,7 +18,7 @@ export type Subscription = {
     cycleNumber: number;
     cyclePeriod: string;
     rememberPeriod: RememberPeriodEnum;
-    financiaAccountId: string;
+    financialAccountId: string;
     isEnabled: boolean;
     createdAt: string;
     updatedAt: string;

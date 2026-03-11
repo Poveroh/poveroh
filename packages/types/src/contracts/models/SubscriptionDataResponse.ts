@@ -17,7 +17,7 @@ export type SubscriptionDataResponse = {
     cycleNumber: number;
     cyclePeriod: string;
     rememberPeriod: RememberPeriodEnum;
-    financiaAccountId: string;
+    financialAccountId: string;
     isEnabled: boolean;
     createdAt: string;
     updatedAt: string;

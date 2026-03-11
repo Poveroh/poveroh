@@ -506,14 +506,8 @@
                         "description": "Optional success message"
                     },
                     "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/DashboardLayout"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
+                        "nullable": true,
+                        "description": "Response data"
                     }
                 },
                 "required": [
@@ -2552,7 +2546,7 @@
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
                     },
-                    "financiaAccountId": {
+                    "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -2585,7 +2579,7 @@
                     "cycleNumber",
                     "cyclePeriod",
                     "rememberPeriod",
-                    "financiaAccountId",
+                    "financialAccountId",
                     "isEnabled",
                     "createdAt",
                     "updatedAt"
@@ -2680,7 +2674,7 @@
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
                     },
-                    "financiaAccountId": {
+                    "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -2699,7 +2693,7 @@
                     "cycleNumber",
                     "cyclePeriod",
                     "rememberPeriod",
-                    "financiaAccountId",
+                    "financialAccountId",
                     "isEnabled"
                 ]
             },
@@ -2785,7 +2779,7 @@
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
                     },
-                    "financiaAccountId": {
+                    "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -4093,7 +4087,7 @@
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
                     },
-                    "financiaAccountId": {
+                    "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
                     },
@@ -4121,7 +4115,7 @@
                     "cycleNumber",
                     "cyclePeriod",
                     "rememberPeriod",
-                    "financiaAccountId",
+                    "financialAccountId",
                     "isEnabled",
                     "createdAt",
                     "updatedAt"

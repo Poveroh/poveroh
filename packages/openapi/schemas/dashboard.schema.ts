@@ -56,6 +56,4 @@ export const UpdateDashboardLayoutRequestSchema = DashboardLayoutSchema.omit({
 /**
  * Response schema for updating a dashboard layout
  */
-export const UpdateDashboardLayoutResponseSchema = SuccessResponseSchema(DashboardLayoutSchema).openapi(
-    'UpdateDashboardLayoutResponse'
-)
+export const UpdateDashboardLayoutResponseSchema = SuccessResponseSchema().openapi('UpdateDashboardLayoutResponse')

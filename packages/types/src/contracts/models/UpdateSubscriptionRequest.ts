@@ -16,7 +16,7 @@ export type UpdateSubscriptionRequest = {
     cycleNumber?: number;
     cyclePeriod?: string;
     rememberPeriod?: RememberPeriodEnum;
-    financiaAccountId?: string;
+    financialAccountId?: string;
     isEnabled?: boolean;
 };
 

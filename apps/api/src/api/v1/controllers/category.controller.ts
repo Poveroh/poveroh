@@ -1,7 +1,12 @@
 import { Request, Response } from 'express'
 import { getParamString } from '../../../utils/request'
-import { CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types/contracts'
-import { BadRequestError, ResponseHelper } from '@/src/utils'
+import {
+    CategoryDataResponse,
+    CategoryFilters,
+    CreateCategoryRequest,
+    UpdateCategoryRequest
+} from '@poveroh/types/contracts'
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { CategoryService } from '../services/category.service'
 
 export class CategoryController {
@@ -13,9 +18,15 @@ export class CategoryController {
             }
 
             const readCategory: CreateCategoryRequest = req.body
-            const category = await CategoryService.createCategory(req.user.id, readCategory, req.file)
 
-            return ResponseHelper.success(res, category)
+            const categoryService = new CategoryService(req.user.id)
+            const category = await categoryService.createCategory(readCategory, req.file)
+
+            if (!category) {
+                throw new Error('Failed to create category')
+            }
+
+            return ResponseHelper.success<CategoryDataResponse>(res, category)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -35,7 +46,8 @@ export class CategoryController {
                 throw new BadRequestError('Missing category ID in path')
             }
 
-            await CategoryService.updateCategory(id, req.user.id, readCategory, req.file)
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.updateCategory(id, readCategory, req.file)
 
             return ResponseHelper.success(res)
         } catch (error) {
@@ -52,7 +64,8 @@ export class CategoryController {
                 throw new BadRequestError('Missing category ID in path')
             }
 
-            await CategoryService.deleteCategory(id)
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.deleteCategory(id)
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -63,13 +76,8 @@ export class CategoryController {
     //DELETE
     static async deleteAllCategories(req: Request, res: Response) {
         try {
-            const id = getParamString(req.params, 'id')
-
-            if (!id) {
-                throw new BadRequestError('Missing category ID in path')
-            }
-
-            await CategoryService.deleteAllCategories()
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.deleteAllCategories()
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -86,9 +94,14 @@ export class CategoryController {
                 throw new BadRequestError('Missing category ID in path')
             }
 
-            const data = await CategoryService.getCategoryById(id)
+            const categoryService = new CategoryService(req.user.id)
+            const data = await categoryService.getCategoryById(id)
 
-            return ResponseHelper.success(res, data)
+            if (!data) {
+                throw new NotFoundError('Category not found')
+            }
+
+            return ResponseHelper.success<CategoryDataResponse>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -101,9 +114,14 @@ export class CategoryController {
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const data = await CategoryService.getCategories(filters, skip, take)
+            const categoryService = new CategoryService(req.user.id)
+            const data = await categoryService.getCategories(filters, skip, take)
 
-            return ResponseHelper.success(res, data)
+            if (!data || data.length === 0) {
+                throw new NotFoundError('Category not found')
+            }
+
+            return ResponseHelper.success<CategoryDataResponse[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

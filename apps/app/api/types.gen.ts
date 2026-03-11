@@ -184,7 +184,10 @@ export type UpdateDashboardLayoutResponse = {
      * Optional success message
      */
     message?: string
-    data?: DashboardLayout & unknown
+    /**
+     * Response data
+     */
+    data?: unknown
 }
 
 export type TimezoneEnum =
@@ -1227,7 +1230,7 @@ export type Subscription = {
     cycleNumber: number
     cyclePeriod: string
     rememberPeriod: RememberPeriodEnum
-    financiaAccountId: string
+    financialAccountId: string
     isEnabled: boolean
     createdAt: string
     updatedAt: string
@@ -1272,7 +1275,7 @@ export type CreateSubscriptionRequest = {
     cycleNumber: number
     cyclePeriod: string
     rememberPeriod: RememberPeriodEnum
-    financiaAccountId: string
+    financialAccountId: string
     isEnabled: boolean
 }
 
@@ -1304,7 +1307,7 @@ export type UpdateSubscriptionRequest = {
     cycleNumber?: number
     cyclePeriod?: string
     rememberPeriod?: RememberPeriodEnum
-    financiaAccountId?: string
+    financialAccountId?: string
     isEnabled?: boolean
 }
 
@@ -1730,7 +1733,7 @@ export type SubscriptionDataResponse = {
     cycleNumber: number
     cyclePeriod: string
     rememberPeriod: RememberPeriodEnum
-    financiaAccountId: string
+    financialAccountId: string
     isEnabled: boolean
     createdAt: string
     updatedAt: string

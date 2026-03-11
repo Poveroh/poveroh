@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DashboardLayout } from './DashboardLayout';
 export type UpdateDashboardLayoutResponse = {
     /**
      * Always true for success responses
@@ -12,6 +11,9 @@ export type UpdateDashboardLayoutResponse = {
      * Optional success message
      */
     message?: string;
-    data?: DashboardLayout;
+    /**
+     * Response data
+     */
+    data?: any;
 };
 

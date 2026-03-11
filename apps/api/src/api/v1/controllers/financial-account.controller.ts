@@ -1,124 +1,125 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import { components } from '@poveroh/contracts'
-import { MediaHelper } from '../../../helpers/media.helper'
-import { buildWhere } from '../../../helpers/filter.helper'
-import logger from '../../../utils/logger'
+import {
+    CreateFinancialAccountRequest,
+    FinancialAccountDataResponse,
+    FinancialAccountFilters,
+    UpdateFinancialAccountRequest
+} from '@poveroh/types/contracts'
 import { getParamString } from '../../../utils/request'
-
-type FinancialAccount = components['schemas']['FinancialAccount']
-type FinancialAccountFilters = components['schemas']['FinancialAccountFilters']
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { FinancialAccountService } from '../services/financial-account.service'
 
 export class FinancialAccountController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async createFinancialAccount(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
-
-            let readedAccount: Omit<FinancialAccount, 'id' | 'createdAt' | 'userId'> = JSON.parse(req.body.data)
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/financial-account/${readedAccount.title}`
-                )
-                readedAccount.logoIcon = filePath
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            let account = await prisma.financialAccount.create({
-                data: { ...readedAccount, userId: req.user.id }
-            })
+            const readFinancialAccount: CreateFinancialAccountRequest = req.body
 
-            res.status(200).json(account)
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            const account = await financialAccountService.createFinancialAccount(readFinancialAccount, req.file)
+
+            return ResponseHelper.success<FinancialAccountDataResponse>(res, account)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PATCH /:id
+    static async updateFinancialAccount(req: Request, res: Response) {
         try {
-            if (!req.body.data) throw new Error('Data not provided')
-
-            let readedAccount: FinancialAccount = JSON.parse(req.body.data)
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/financial-account/${readedAccount.title}`
-                )
-                readedAccount.logoIcon = filePath
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const account = await prisma.financialAccount.update({
-                where: {
-                    id: readedAccount.id
-                },
-                data: {
-                    title: readedAccount.title,
-                    description: readedAccount.description,
-                    type: readedAccount.type,
-                    logoIcon: readedAccount.logoIcon
-                }
-            })
+            const readFinancialAccount: UpdateFinancialAccountRequest = req.body
+            const id = getParamString(req.params, 'id')
 
-            res.status(200).json(account)
+            if (!id) {
+                throw new BadRequestError('Missing financial account ID in path')
+            }
+
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            await financialAccountService.updateFinancialAccount(id, readFinancialAccount, req.file)
+
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteFinancialAccount(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing financial account ID' })
-                return
+                throw new BadRequestError('Missing financial account ID')
             }
 
-            await prisma.financialAccount.delete({
-                where: { id }
-            })
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            await financialAccountService.deleteFinancialAccount(id)
 
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE
+    static async deleteAllFinancialAccounts(req: Request, res: Response) {
+        try {
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            await financialAccountService.deleteAllFinancialAccounts()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id
+    static async readFinancialAccountById(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing financial account ID')
+            }
+
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            const data = await financialAccountService.getFinancialAccountById(id)
+
+            if (!data) {
+                throw new NotFoundError('Financial account not found')
+            }
+
+            return ResponseHelper.success<FinancialAccountDataResponse>(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readFinancialAccounts(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as FinancialAccountFilters
+            const filters = req.query as FinancialAccountFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const financialAccountService = new FinancialAccountService(req.user.id)
+            const data = await financialAccountService.getFinancialAccounts(filters, skip, take)
 
-            const whereCondition = {
-                ...where,
-                userId: req.user.id
+            if (!data || data.length === 0) {
+                throw new NotFoundError('Financial accounts not found')
             }
 
-            const [data, total] = await Promise.all([
-                prisma.financialAccount.findMany({
-                    where: whereCondition,
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take
-                }),
-                prisma.financialAccount.count({ where: whereCondition })
-            ])
-
-            res.status(200).json({ data, total })
+            return ResponseHelper.success<FinancialAccountDataResponse[]>(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

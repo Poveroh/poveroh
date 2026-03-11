@@ -429,7 +429,7 @@ model Subscription {
     appearanceMode     AppearanceMode
     appearanceLogoIcon String
     firstPayment       DateTime
-    cycleNumber        String
+    cycleNumber        Decimal
     cyclePeriod        String
     rememberPeriod     RememberPeriod
     financialAccountId String

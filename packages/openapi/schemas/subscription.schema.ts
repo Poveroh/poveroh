@@ -21,7 +21,7 @@ export const SubscriptionSchema = z
         cycleNumber: z.number(),
         cyclePeriod: z.string(),
         rememberPeriod: RememberPeriodEnum,
-        financiaAccountId: z.string().uuid(),
+        financialAccountId: z.string().uuid(),
         isEnabled: z.boolean(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),

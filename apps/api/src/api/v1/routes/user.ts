@@ -4,7 +4,7 @@ import { AuthMiddleware } from '../../../middleware/auth.middleware'
 
 const router: Router = Router()
 
-router.get('/', AuthMiddleware.isAuthenticated, UserController.getUser)
-router.put('/:id', AuthMiddleware.isAuthenticated, UserController.updateUser)
+router.get('/me', AuthMiddleware.isAuthenticated, UserController.getAuthenticatedUser)
+router.patch('/me', AuthMiddleware.isAuthenticated, UserController.updateUser)
 
 export default router

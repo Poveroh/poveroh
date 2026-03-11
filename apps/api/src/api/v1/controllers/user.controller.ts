@@ -1,62 +1,39 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
 import { ResponseHelper, BadRequestError, NotFoundError } from '../../../utils'
-import { UserHelper } from '../helpers/user.helper'
 import { getParamString } from '../../../utils/request'
-import { User } from '@poveroh/types/contracts'
+import { UpdateUserRequest, User } from '@poveroh/types/contracts'
+import { UserService } from '../services/user.service'
 
 export class UserController {
-    // GET /
-    static async getUser(req: Request, res: Response) {
+    // GET /me
+    static async getAuthenticatedUser(req: Request, res: Response) {
         try {
-            const email = req.user?.email
-
-            if (!email) {
-                throw new BadRequestError('Missing email in path')
-            }
-
-            const user = await UserHelper.getUserByEmail(email)
-
-            if (!user) {
-                throw new NotFoundError('Authenticated user not found')
-            }
-
-            return ResponseHelper.success(res, user)
-        } catch (error) {
-            return ResponseHelper.handleError(res, error)
-        }
-    }
-
-    // PUT /:id
-    static async updateUser(req: Request, res: Response) {
-        try {
-            const id = getParamString(req.params, 'id')
-            const { data } = req.body
-
-            if (!data) {
-                throw new BadRequestError('Data not provided')
-            }
-
-            if (!id) {
-                throw new BadRequestError('Missing user ID')
-            }
-
-            const parsedUser: Partial<User> = JSON.parse(data)
-
-            const user = await prisma.user.findUnique({
-                where: { id }
-            })
+            const userService = new UserService(req.user.id)
+            const user = await userService.getUser(req.user.id)
 
             if (!user) {
                 throw new NotFoundError('User not found')
             }
 
-            const updatedUser = await prisma.user.update({
-                where: { id },
-                data: parsedUser
-            })
+            return ResponseHelper.success<User>(res, user)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
 
-            return ResponseHelper.success(res, updatedUser)
+    // PATCH /me
+    static async updateUser(req: Request, res: Response) {
+        try {
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
+
+            const parsedUser: UpdateUserRequest = req.body
+
+            const userService = new UserService(req.user.id)
+            await userService.updateUser(req.user.id, parsedUser)
+
+            return ResponseHelper.success(res)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
