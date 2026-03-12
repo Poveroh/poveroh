@@ -1,5 +1,4 @@
 import Papa from 'papaparse'
-import { IReadedTransaction, IFieldMapping, TransactionAction, Currencies, IValueReturned } from '@poveroh/types'
 
 /**
  *

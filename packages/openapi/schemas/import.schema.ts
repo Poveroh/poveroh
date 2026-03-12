@@ -50,6 +50,15 @@ export const ImportDataResponseSchema = ImportSchema.omit({
 }).openapi('ImportDataResponse')
 
 /**
+ * Response schema for getting transaction data (excluding userId and deletedAt)
+ */
+export const ImportTransactionDataResponseSchema = TransactionSchema.omit({
+    userId: true,
+    importId: true,
+    deletedAt: true
+}).openapi('ImportTransactionDataResponse')
+
+/**
  * Response schema for getting a list of imports
  */
 export const GetImportListResponseSchema = SuccessResponseSchema(ImportDataResponseSchema.array()).openapi(
@@ -61,6 +70,12 @@ export const GetImportListResponseSchema = SuccessResponseSchema(ImportDataRespo
  */
 export const GetImportResponseSchema = SuccessResponseSchema(ImportDataResponseSchema).openapi('GetImportResponse')
 
+/**
+ * Response schema for getting a list of transactions for a specific import
+ */
+export const GetImportTransactionsResponseSchema = SuccessResponseSchema(
+    ImportTransactionDataResponseSchema.array()
+).openapi('GetImportTransactionsResponse')
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**

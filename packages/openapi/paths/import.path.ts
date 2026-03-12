@@ -9,7 +9,8 @@ import {
     CreateImportResponseSchema,
     UpdateImportResponseSchema,
     DeleteImportResponseSchema,
-    UpdateImportRequestSchema
+    UpdateImportRequestSchema,
+    GetImportTransactionsResponseSchema
 } from '../schemas'
 
 export const registerImportPath = (registry: OpenAPIRegistry) => {
@@ -105,6 +106,60 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
             },
             404: {
                 description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'get',
+        path: '/imports/{id}/transactions',
+        tags: ['Import'],
+        operationId: 'getImportTransactionsById',
+        summary: 'Get import transactions by ID',
+        description: 'Retrieve transactions for a specific import by its ID',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to retrieve')
+        },
+        responses: {
+            200: {
+                description: 'Import transactions retrieved',
+                content: {
+                    'application/json': {
+                        schema: GetImportTransactionsResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import transactions not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema

@@ -87,6 +87,9 @@ import type {
     GetImportsData,
     GetImportsErrors,
     GetImportsResponses,
+    GetImportTransactionsByIdData,
+    GetImportTransactionsByIdErrors,
+    GetImportTransactionsByIdResponses,
     GetRootStatusData,
     GetRootStatusErrors,
     GetRootStatusResponses,
@@ -833,4 +836,18 @@ export const updateAuthenticatedUser = <ThrowOnError extends boolean = false>(
             'Content-Type': 'application/json',
             ...options?.headers
         }
+    })
+
+/**
+ * Get import transactions by ID
+ *
+ * Retrieve transactions for a specific import by its ID
+ */
+export const getImportTransactionsById = <ThrowOnError extends boolean = false>(
+    options: Options<GetImportTransactionsByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetImportTransactionsByIdResponses, GetImportTransactionsByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports/{id}/transactions',
+        ...options
     })

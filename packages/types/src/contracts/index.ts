@@ -63,6 +63,7 @@ export type { GetFinancialAccountListResponse } from './models/GetFinancialAccou
 export type { GetFinancialAccountResponse } from './models/GetFinancialAccountResponse';
 export type { GetImportListResponse } from './models/GetImportListResponse';
 export type { GetImportResponse } from './models/GetImportResponse';
+export type { GetImportTransactionsResponse } from './models/GetImportTransactionsResponse';
 export type { GetNetWorthEvolutionReportResponse } from './models/GetNetWorthEvolutionReportResponse';
 export type { GetSubcategoryListResponse } from './models/GetSubcategoryListResponse';
 export type { GetSubcategoryResponse } from './models/GetSubcategoryResponse';
@@ -77,6 +78,7 @@ export type { ImportDataResponse } from './models/ImportDataResponse';
 export type { ImportFile } from './models/ImportFile';
 export type { ImportFilters } from './models/ImportFilters';
 export type { ImportParamsId } from './models/ImportParamsId';
+export type { ImportTransactionDataResponse } from './models/ImportTransactionDataResponse';
 export type { LanguageEnum } from './models/LanguageEnum';
 export type { NetWorthEvolution } from './models/NetWorthEvolution';
 export type { NetWorthEvolutionFilters } from './models/NetWorthEvolutionFilters';

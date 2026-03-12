@@ -32,6 +32,7 @@ import {
     getFinancialAccounts,
     getImportById,
     getImports,
+    getImportTransactionsById,
     getRootStatus,
     getStatus,
     getSubcategories,
@@ -136,6 +137,9 @@ import type {
     GetImportsData,
     GetImportsError,
     GetImportsResponse,
+    GetImportTransactionsByIdData,
+    GetImportTransactionsByIdError,
+    GetImportTransactionsByIdResponse,
     GetRootStatusData,
     GetRootStatusError,
     GetRootStatusResponse,
@@ -1379,3 +1383,30 @@ export const updateAuthenticatedUserMutation = (
     }
     return mutationOptions
 }
+
+export const getImportTransactionsByIdQueryKey = (options: Options<GetImportTransactionsByIdData>) =>
+    createQueryKey('getImportTransactionsById', options)
+
+/**
+ * Get import transactions by ID
+ *
+ * Retrieve transactions for a specific import by its ID
+ */
+export const getImportTransactionsByIdOptions = (options: Options<GetImportTransactionsByIdData>) =>
+    queryOptions<
+        GetImportTransactionsByIdResponse,
+        GetImportTransactionsByIdError,
+        GetImportTransactionsByIdResponse,
+        ReturnType<typeof getImportTransactionsByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getImportTransactionsById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getImportTransactionsByIdQueryKey(options)
+    })

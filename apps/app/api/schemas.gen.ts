@@ -3810,3 +3810,113 @@ export const SubscriptionDataResponseSchema = {
         'updatedAt'
     ]
 } as const
+
+export const ImportTransactionDataResponseSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        status: {
+            $ref: '#/components/schemas/TransactionStatusEnum'
+        },
+        ignore: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        media: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/TransactionMedia'
+            }
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Amount'
+            }
+        },
+        transferId: {
+            type: 'string',
+            nullable: true
+        },
+        transferHash: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'date',
+        'title',
+        'note',
+        'icon',
+        'categoryId',
+        'subcategoryId',
+        'action',
+        'status',
+        'ignore',
+        'createdAt',
+        'updatedAt',
+        'media',
+        'amounts',
+        'transferId',
+        'transferHash'
+    ]
+} as const
+
+export const GetImportTransactionsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            enum: [true],
+            description: 'Always true for success responses'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportTransactionDataResponse'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success']
+} as const

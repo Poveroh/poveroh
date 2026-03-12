@@ -1739,6 +1739,40 @@ export type SubscriptionDataResponse = {
     updatedAt: string
 }
 
+export type ImportTransactionDataResponse = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type GetImportTransactionsResponse = {
+    /**
+     * Always true for success responses
+     */
+    success: true
+    /**
+     * Optional success message
+     */
+    message?: string
+    /**
+     * Response data
+     */
+    data?: Array<ImportTransactionDataResponse>
+}
+
 export type DeleteCategoriesData = {
     body?: never
     path?: never
@@ -3430,3 +3464,43 @@ export type UpdateAuthenticatedUserResponses = {
 }
 
 export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
+
+export type GetImportTransactionsByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/{id}/transactions'
+}
+
+export type GetImportTransactionsByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import transactions not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetImportTransactionsByIdError = GetImportTransactionsByIdErrors[keyof GetImportTransactionsByIdErrors]
+
+export type GetImportTransactionsByIdResponses = {
+    /**
+     * Import transactions retrieved
+     */
+    200: GetImportTransactionsResponse
+}
+
+export type GetImportTransactionsByIdResponse =
+    GetImportTransactionsByIdResponses[keyof GetImportTransactionsByIdResponses]
