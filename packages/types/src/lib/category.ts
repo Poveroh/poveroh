@@ -1,4 +1,4 @@
-import { Category } from 'src/contracts'
+import { Category } from '../contracts'
 
 export const defaultCategory: Category = {
     id: '',

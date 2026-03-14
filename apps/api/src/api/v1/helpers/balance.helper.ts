@@ -1,8 +1,7 @@
 import prisma from '@poveroh/prisma'
-import { Currencies, TransactionAction } from '@poveroh/types'
-import { IAmountBase } from '@/types/transactions'
 import { Decimal } from '@prisma/client/runtime/library'
 import { RedisHelper } from './redis.helper'
+import { Amount } from '@poveroh/types/contracts'
 
 export const BalanceHelper = {
     getAccountBalance: async (financialAccountId: string, tx?: any) => {
@@ -28,11 +27,7 @@ export const BalanceHelper = {
 
         return decimalBalance
     },
-    updateAccountBalances: async (
-        amounts: IAmountBase | IAmountBase[],
-        originalAmounts?: Map<string, number>,
-        tx?: any
-    ) => {
+    updateAccountBalances: async (amounts: Amount[], originalAmounts?: Map<string, number>, tx?: any) => {
         const db = tx || prisma
         const amountsArray = Array.isArray(amounts) ? amounts : [amounts]
 
@@ -45,7 +40,7 @@ export const BalanceHelper = {
                 acc[amount.financialAccountId].push(amount)
                 return acc
             },
-            {} as Record<string, IAmountBase[]>
+            {} as Record<string, Amount[]>
         )
 
         const updatePromises = Object.entries(amountsByAccount).map(async ([accountId, accountAmounts]) => {
@@ -56,16 +51,16 @@ export const BalanceHelper = {
                 // If originalAmounts exists, revert the original amount first
                 const originalAmount = originalAmounts?.get(amount.transactionId)
                 if (originalAmount !== undefined) {
-                    if (amount.action === TransactionAction.INCOME) {
+                    if (amount.action === 'INCOME') {
                         newBalance = newBalance.sub(new Decimal(originalAmount))
-                    } else if (amount.action === TransactionAction.EXPENSES) {
+                    } else if (amount.action === 'EXPENSES') {
                         newBalance = newBalance.add(new Decimal(originalAmount))
                     }
                 }
 
-                if (amount.action === TransactionAction.INCOME) {
+                if (amount.action === 'INCOME') {
                     newBalance = newBalance.add(new Decimal(amount.amount))
-                } else if (amount.action === TransactionAction.EXPENSES) {
+                } else if (amount.action === 'EXPENSES') {
                     newBalance = newBalance.sub(new Decimal(amount.amount))
                 }
             }

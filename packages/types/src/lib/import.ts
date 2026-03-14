@@ -1,6 +1,6 @@
-import { TransactionActionEnum, CurrencyEnum } from 'src/contracts'
+import { TransactionActionEnum, CurrencyEnum } from '../contracts'
 
-export interface IFieldMapping {
+export type FieldMapping = {
     date?: string
     amount?: string
     currency?: string
@@ -12,9 +12,9 @@ export interface IFieldMapping {
     titleFallbacks?: string[]
 }
 
-export interface IValueReturned {
-    transactions: IReadedTransaction[]
-    mapping: IFieldMapping
+export type ValueReturned = {
+    transactions: ReadedTransaction[]
+    mapping: FieldMapping
     errors: string[]
     detectedStartRow?: number
     summary: {
@@ -24,7 +24,7 @@ export interface IValueReturned {
     }
 }
 
-export interface IReadedTransaction {
+export type ReadedTransaction = {
     date: string
     amount: number
     action: TransactionActionEnum

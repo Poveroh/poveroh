@@ -6,12 +6,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { BalanceHelper } from '../helpers/balance.helper'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
-import { FileType, TransactionStatus } from '@prisma/client'
+import { FileType } from '@prisma/client'
 import {
+    CreateImportRequest,
     ImportDataResponse,
     ImportFile,
     ImportFilters,
     TransactionActionEnum,
+    TransactionStatusEnum,
     TransactionDataResponse,
     TransactionFilters
 } from '@poveroh/types/contracts'
@@ -54,20 +56,20 @@ export class ImportService extends BaseService {
             importId: id,
             userId,
             status: {
-                in: [TransactionStatus.IMPORT_PENDING, TransactionStatus.IMPORT_REJECTED]
+                in: ['IMPORT_PENDING', 'IMPORT_REJECTED'] as TransactionStatusEnum[]
             }
         }
 
         return (await prisma.$transaction(async tx => {
             const approvedTransactions = (await tx.transaction.findMany({
-                where: { status: TransactionStatus.IMPORT_APPROVED, importId: id, userId },
+                where: { status: 'IMPORT_APPROVED' as TransactionStatusEnum, importId: id, userId },
                 include: { amounts: true }
             })) as TransactionWithAmounts[]
 
             await tx.transaction.updateMany({
-                where: { status: TransactionStatus.IMPORT_APPROVED, importId: id, userId },
+                where: { status: 'IMPORT_APPROVED' as TransactionStatusEnum, importId: id, userId },
                 data: {
-                    status: TransactionStatus.APPROVED
+                    status: 'APPROVED' as TransactionStatusEnum
                 }
             })
 
@@ -88,7 +90,7 @@ export class ImportService extends BaseService {
             return tx.import.update({
                 where: { id, userId },
                 data: {
-                    status: TransactionStatus.APPROVED
+                    status: 'APPROVED' as TransactionStatusEnum
                 }
             })
         })) as unknown as ImportDataResponse
@@ -106,9 +108,9 @@ export class ImportService extends BaseService {
                 userId,
                 status: {
                     in: [
-                        TransactionStatus.IMPORT_PENDING,
-                        TransactionStatus.IMPORT_REJECTED,
-                        TransactionStatus.IMPORT_APPROVED
+                        'IMPORT_PENDING' as TransactionStatusEnum,
+                        'IMPORT_REJECTED' as TransactionStatusEnum,
+                        'IMPORT_APPROVED' as TransactionStatusEnum
                     ]
                 }
             },
@@ -229,9 +231,9 @@ export class ImportService extends BaseService {
                 userId,
                 status: {
                     in: [
-                        TransactionStatus.IMPORT_PENDING,
-                        TransactionStatus.IMPORT_APPROVED,
-                        TransactionStatus.IMPORT_REJECTED
+                        'IMPORT_PENDING' as TransactionStatusEnum,
+                        'IMPORT_APPROVED' as TransactionStatusEnum,
+                        'IMPORT_REJECTED' as TransactionStatusEnum
                     ]
                 }
             },
@@ -297,12 +299,12 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Parses uploaded files, creates an import, and stores parsed transactions
-     * @param financialAccountId The financial account ID to associate with the import
+     * Creates an import with the provided payload and uploaded files
+     * @param payload The create import request payload
      * @param files The uploaded files
      * @returns The created import data response
      */
-    async parseFile(financialAccountId: string, files: Express.Multer.File[]): Promise<ImportDataResponse> {
+    async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportDataResponse> {
         const userId = this.getUserId()
         const importId = uuidv4()
         const now = new Date()
@@ -325,7 +327,11 @@ export class ImportService extends BaseService {
         const savedFiles = fileResults.map(fileResult => fileResult.filePath)
         const allTransactions = fileResults.flatMap(fileResult => fileResult.transactions)
 
-        const parsedTransactions = await ImportHelper.normalizeTransaction(userId, financialAccountId, allTransactions)
+        const parsedTransactions = await ImportHelper.normalizeTransaction(
+            userId,
+            payload.financialAccountId,
+            allTransactions
+        )
 
         const importFiles: ImportFile[] = savedFiles.map((path, idx) => ({
             id: uuidv4(),
@@ -341,9 +347,9 @@ export class ImportService extends BaseService {
             data: {
                 id: importId,
                 userId,
-                financialAccountId,
+                financialAccountId: payload.financialAccountId,
                 title: `Import at ${now.toISOString()}`,
-                status: TransactionStatus.IMPORT_PENDING,
+                status: 'IMPORT_PENDING' as TransactionStatusEnum,
                 createdAt: now
             }
         })

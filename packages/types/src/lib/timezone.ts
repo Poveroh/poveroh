@@ -1,4 +1,4 @@
-import { TimezoneEnum } from 'src/contracts'
+import { TimezoneEnum } from '../contracts'
 import { Item } from './item'
 
 export const TimezoneCatalog: Item<TimezoneEnum>[] = [
