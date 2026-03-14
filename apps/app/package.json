@@ -18,7 +18,6 @@
         "@hey-api/client-axios": "^0.9.1",
         "@hey-api/client-fetch": "^0.13.1",
         "@next/env": "16.0.1",
-        "@poveroh/contracts": "*",
         "@poveroh/schemas": "*",
         "@poveroh/types": "*",
         "@poveroh/ui": "*",

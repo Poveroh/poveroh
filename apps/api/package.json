@@ -18,7 +18,6 @@
     "description": "",
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^7.3.4",
-        "@poveroh/contracts": "*",
         "@poveroh/eslint-config": "*",
         "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",

@@ -20,7 +20,6 @@
         "@storybook/addon-docs": "^10.0.8",
         "@storybook/addon-onboarding": "^10.0.8",
         "@storybook/builder-vite": "^10.0.8",
-        "@storybook/nextjs": "^7.0.14",
         "@storybook/nextjs-vite": "^10.0.8",
         "@storybook/react-vite": "^10.0.8",
         "@types/next": "^8.0.7",

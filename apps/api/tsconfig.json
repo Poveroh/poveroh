@@ -12,8 +12,6 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./*"],
-            "@poveroh/contracts": ["../../packages/contracts/src"],
-            "@poveroh/contracts/*": ["../../packages/contracts/src/*"],
             "@poveroh/prisma": ["../../packages/prisma/src"],
             "@poveroh/prisma/*": ["../../packages/prisma/src/*"],
             "@poveroh/types": ["../../packages/types/src"],
