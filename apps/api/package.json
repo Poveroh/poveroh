@@ -8,21 +8,23 @@
         "start": "node dist/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
-        "openapi:generate-spec": "ts-node ../../packages/openapi/generate.ts",
+        "openapi:generate-spec": "npm run openapi:generate-better-auth; npm run openapi:generate-main",
+        "openapi:generate-better-auth": "tsx ../../packages/openapi/generate-better-auth.ts || true",
+        "openapi:generate-main": "ts-node ../../packages/openapi/generate.ts",
         "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ../../packages/types/src/contracts --exportModels true --exportServices false --exportCore false --useUnionTypes"
     },
     "keywords": [],
     "author": "",
     "description": "",
     "dependencies": {
-        "@poveroh/eslint-config": "*",
+        "@asteasolutions/zod-to-openapi": "^7.3.4",
         "@poveroh/contracts": "*",
+        "@poveroh/eslint-config": "*",
         "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^6.19.0",
-        "@asteasolutions/zod-to-openapi": "^7.3.4",
         "@types/swagger-ui-express": "^4.1.8",
         "bcryptjs": "^3.0.2",
         "better-auth": "^1.4.0",
@@ -68,6 +70,7 @@
         "@typescript-eslint/parser": "^8.22.0",
         "nodemon": "^3.1.9",
         "openapi-typescript": "^7.13.0",
-        "prisma": "^6.19.0"
+        "prisma": "^6.19.0",
+        "tsx": "^4.21.0"
     }
 }

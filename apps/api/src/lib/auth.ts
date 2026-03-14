@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth'
-import { bearer, customSession } from 'better-auth/plugins'
+import { bearer, customSession, openAPI } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
@@ -42,6 +42,7 @@ export const auth = betterAuth({
         provider: 'postgresql'
     }),
     plugins: [
+        openAPI(),
         bearer(),
         customSession(async ({ user, session }) => {
             const userService = new UserService(user.id)

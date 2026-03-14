@@ -3920,3 +3920,119 @@ export const GetImportTransactionsResponseSchema = {
     },
     required: ['success']
 } as const
+
+export const SessionSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        token: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time',
+            default: 'Generated at runtime'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        ipAddress: {
+            type: 'string'
+        },
+        userAgent: {
+            type: 'string'
+        },
+        userId: {
+            type: 'string'
+        }
+    },
+    required: ['expiresAt', 'token', 'createdAt', 'updatedAt', 'userId']
+} as const
+
+export const AccountSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        accountId: {
+            type: 'string'
+        },
+        providerId: {
+            type: 'string'
+        },
+        userId: {
+            type: 'string'
+        },
+        accessToken: {
+            type: 'string'
+        },
+        refreshToken: {
+            type: 'string'
+        },
+        idToken: {
+            type: 'string'
+        },
+        accessTokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        refreshTokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        scope: {
+            type: 'string'
+        },
+        password: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time',
+            default: 'Generated at runtime'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['accountId', 'providerId', 'userId', 'createdAt', 'updatedAt']
+} as const
+
+export const VerificationSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        identifier: {
+            type: 'string'
+        },
+        value: {
+            type: 'string'
+        },
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time',
+            default: 'Generated at runtime'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            default: 'Generated at runtime'
+        }
+    },
+    required: ['identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
+} as const

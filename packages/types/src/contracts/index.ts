@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export type { Account } from './models/Account';
 export type { Amount } from './models/Amount';
 export type { AmountParamsId } from './models/AmountParamsId';
 export type { AppearanceModeEnum } from './models/AppearanceModeEnum';
@@ -92,6 +93,7 @@ export type { QuerySubcategoryFilters } from './models/QuerySubcategoryFilters';
 export type { QuerySubscriptionFilters } from './models/QuerySubscriptionFilters';
 export type { QueryTransactionFilters } from './models/QueryTransactionFilters';
 export type { RememberPeriodEnum } from './models/RememberPeriodEnum';
+export type { Session } from './models/Session';
 export type { SimpleSuccessResponse } from './models/SimpleSuccessResponse';
 export type { Snapshot } from './models/Snapshot';
 export type { SnapshotAccountBalance } from './models/SnapshotAccountBalance';
@@ -137,3 +139,4 @@ export type { User } from './models/User';
 export type { UserLogin } from './models/UserLogin';
 export type { UserPreferences } from './models/UserPreferences';
 export type { UserSession } from './models/UserSession';
+export type { Verification } from './models/Verification';

@@ -17,10 +17,12 @@ type OpenApiDocument = {
         schemas?: Record<string, unknown>
         [key: string]: unknown
     }
+    security?: Array<Record<string, unknown>>
     [key: string]: unknown
 }
 
 const OPENAPI_PATH = path.resolve(__dirname, './openapi.json')
+const BETTER_AUTH_SCHEMA_PATH = path.resolve(__dirname, './better-auth-openapi.json')
 
 const readExistingOpenApi = (): OpenApiDocument => {
     if (!fs.existsSync(OPENAPI_PATH)) {
@@ -31,10 +33,30 @@ const readExistingOpenApi = (): OpenApiDocument => {
     return JSON.parse(file) as OpenApiDocument
 }
 
+const mergeTags = (
+    existing: Array<{ name: string; description?: string }> | undefined,
+    incoming: Array<{ name: string; description?: string }> | undefined
+): Array<{ name: string; description?: string }> | undefined => {
+    if (!existing?.length && !incoming?.length) return undefined
+
+    const merged = new Map<string, { name: string; description?: string }>()
+
+    for (const tag of existing ?? []) {
+        merged.set(tag.name, tag)
+    }
+
+    for (const tag of incoming ?? []) {
+        merged.set(tag.name, tag)
+    }
+
+    return Array.from(merged.values())
+}
+
 const mergeOpenApi = (existing: OpenApiDocument, generated: OpenApiDocument): OpenApiDocument => {
     return {
         ...existing,
         ...generated,
+        tags: mergeTags(existing.tags, generated.tags),
         paths: {
             ...(existing.paths ?? {}),
             ...(generated.paths ?? {})
@@ -50,7 +72,24 @@ const mergeOpenApi = (existing: OpenApiDocument, generated: OpenApiDocument): Op
     }
 }
 
-const generate = () => {
+const loadBetterAuthOpenApi = (): OpenApiDocument | null => {
+    try {
+        if (!fs.existsSync(BETTER_AUTH_SCHEMA_PATH)) {
+            return null
+        }
+
+        const file = fs.readFileSync(BETTER_AUTH_SCHEMA_PATH, 'utf8')
+        const schema = JSON.parse(file) as OpenApiDocument
+
+        console.log('✅ Loaded Better Auth OpenAPI schema from cache')
+        return schema
+    } catch (error) {
+        console.warn('⚠️  Better Auth OpenAPI schema not available:', error instanceof Error ? error.message : error)
+        return null
+    }
+}
+
+const generate = async () => {
     const registry = createOpenApiRegistry()
     const existing = readExistingOpenApi()
 
@@ -71,7 +110,19 @@ const generate = () => {
         tags: existing.tags
     })
 
-    const merged = mergeOpenApi(existing, generated as OpenApiDocument)
+    let merged = mergeOpenApi(existing, generated as OpenApiDocument)
+
+    const betterAuthSchema = await loadBetterAuthOpenApi()
+    if (betterAuthSchema) {
+        // Only merge paths and tags from Better Auth, not schemas to avoid conflicts
+        const betterAuthSubset: OpenApiDocument = {
+            paths: betterAuthSchema.paths,
+            tags: betterAuthSchema.tags
+        }
+
+        merged = mergeOpenApi(merged, betterAuthSubset)
+        console.log('✅ Merged Better Auth endpoints (paths only, preserving existing schemas)')
+    }
 
     merged.components = {
         ...(merged.components ?? {}),
@@ -92,4 +143,4 @@ const generate = () => {
     console.log(`✅ OpenAPI generated from code and merged: ${OPENAPI_PATH}`)
 }
 
-generate()
+void generate()
