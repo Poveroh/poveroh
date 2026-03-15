@@ -1,100 +1,49 @@
 'use client'
 
-import { useError } from './use-error'
-import { SubscriptionService } from '@/services/subscriptions.service'
+import { getSubscriptionsOptions } from '@/api/@tanstack/react-query.gen'
+import type { Subscription } from '@/lib/api-client'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
-import { LoadingState } from '@/types'
-import type { Subscription, SubscriptionFilters } from '@/lib/api-client'
 import { CyclePeriod } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useError } from './use-error'
 
 export const useSubscription = () => {
     const t = useTranslations()
     const { handleError } = useError()
 
-    const subscriptionService = new SubscriptionService()
-    const subscriptionStore = useSubscriptionStore()
+    const { subscriptionCacheList, setSubscriptions } = useSubscriptionStore()
 
-    const [subscriptionLoading, setSubscriptionLoading] = useState<LoadingState>({
-        add: false,
-        edit: false,
-        remove: false,
-        get: false,
-        fetch: false
+    const getSubscriptions = useQuery({
+        ...getSubscriptionsOptions(),
+        enabled: false
     })
 
-    const setLoadingFor = (key: keyof LoadingState, value: boolean) => {
-        setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
-    }
-
-    const addSubscription = async (data: Partial<Subscription>) => {
-        setLoadingFor('add', true)
-        try {
-            const res = await subscriptionService.add(data)
-            subscriptionStore.addSubscription(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding subscription')
-        } finally {
-            setLoadingFor('add', false)
+    useEffect(() => {
+        if (getSubscriptions.data) {
+            setSubscriptions(getSubscriptions.data)
         }
-    }
+    }, [getSubscriptions.data, setSubscriptions])
 
-    const editSubscription = async (id: string, data: Partial<Subscription>) => {
-        setLoadingFor('edit', true)
-        try {
-            const res = await subscriptionService.save(id, data)
-            subscriptionStore.editSubscription(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing subscription')
-        } finally {
-            setLoadingFor('edit', false)
+    useEffect(() => {
+        if (getSubscriptions.error) {
+            handleError(getSubscriptions.error)
         }
-    }
-
-    const removeSubscription = async (subscriptionId: string) => {
-        setLoadingFor('remove', true)
-        try {
-            const res = await subscriptionService.delete(subscriptionId)
-            if (!res) throw new Error('No response from server')
-            subscriptionStore.removeSubscription(subscriptionId)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error deleting subscription')
-        } finally {
-            setLoadingFor('remove', false)
-        }
-    }
-
-    const getSubscription = async (subscriptionId: string, fetchFromServer?: boolean) => {
-        setLoadingFor('get', true)
-        try {
-            if (fetchFromServer) {
-                const res = await subscriptionService.read({ id: subscriptionId } as SubscriptionFilters)
-                return res.data
-            }
-            return subscriptionStore.getSubscription(subscriptionId)
-        } catch (error) {
-            return handleError(error, 'Error fetching subscription')
-        } finally {
-            setLoadingFor('get', false)
-        }
-    }
+    }, [getSubscriptions.error, handleError])
 
     const fetchSubscriptions = async () => {
-        setLoadingFor('fetch', true)
-        try {
-            const res = await subscriptionService.read()
-            subscriptionStore.setSubscriptions(res.data)
-            return res.data
-        } catch (error) {
-            return handleError(error, 'Error fetching subscriptions')
-        } finally {
-            setLoadingFor('fetch', false)
+        const result = await getSubscriptions.refetch()
+        if (result.data) {
+            setSubscriptions(result.data)
         }
+        if (result.error) {
+            handleError(result.error)
+        }
+        return result.data ?? null
     }
+
+    const subscriptionLoading = getSubscriptions.isFetching
 
     const getNextExecutionText = (subscription: Subscription, fromDate: Date = new Date()) => {
         const now = fromDate
@@ -154,13 +103,14 @@ export const useSubscription = () => {
     }
 
     return {
-        subscriptionCacheList: subscriptionStore.subscriptionCacheList,
+        subscriptionCacheList,
         subscriptionLoading,
-        addSubscription,
-        editSubscription,
-        removeSubscription,
-        getSubscription,
-        getNextExecutionText,
-        fetchSubscriptions
+        fetchSubscriptions,
+        // addSubscription,
+        // editSubscription,
+        // removeSubscription,
+        // getSubscription,
+        getNextExecutionText
+        // fetchSubscriptions
     }
 }

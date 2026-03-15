@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IFinancialAccount, IFinancialAccountFilters, ISnapshotAccountBalance } from '@/types/api'
-
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
 
@@ -22,6 +20,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { FinancialAccount } from '@poveroh/types/contracts'
 
 export default function AccountView() {
     const t = useTranslations()
@@ -29,11 +28,11 @@ export default function AccountView() {
     const { financialAccountCacheList, fetchFinancialAccount, TYPE_LIST, financialAccountLoading } =
         useFinancialAccount()
 
-    const { openModal } = useModal<IFinancialAccount>('account')
+    const { openModal } = useModal<FinancialAccount>('account')
     const { openModal: openSnapshotModal } = useModal<ISnapshotAccountBalance>('account-snapshot')
-    const { openModal: openDeleteModal } = useDeleteModal<IFinancialAccount>()
+    const { openModal: openDeleteModal } = useDeleteModal<FinancialAccount>()
 
-    const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(financialAccountCacheList)
+    const [localAccountList, setLocalAccountList] = useState<FinancialAccount[]>(financialAccountCacheList)
 
     const [filters, setFilters] = useState<IFinancialAccountFilters>({})
 

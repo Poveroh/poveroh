@@ -9,7 +9,6 @@ import { useEffect } from 'react'
 import appConfig from '@/config'
 import { CompanyInfoBar } from '@/components/navbar/company-info-bar'
 import { RouteGuard } from '@/components/other/route-guard'
-import { OnBoardingStep } from '@poveroh/types'
 
 type DefaultAuthLayout = Readonly<{
     children: React.ReactNode
@@ -27,7 +26,7 @@ export default function AuthLayout({ children }: DefaultAuthLayout) {
     const isSignInPage = location === '/sign-in'
 
     return (
-        <RouteGuard requiredStep={[OnBoardingStep.COMPLETED]} redirectTo='/dashboard' inverse>
+        <RouteGuard requiredStep={['COMPLETED']} redirectTo='/dashboard' inverse>
             <div className='flex h-screen'>
                 <div className='flex flex-col items-center md:items-start w-full lg:w-1/2 h-full p-12'>
                     <div className='flex flex-col w-full h-full'>

@@ -78,6 +78,8 @@ import type {
     GetAuthenticatedUserData,
     GetAuthenticatedUserErrors,
     GetAuthenticatedUserResponses,
+    GetCallbackByIdData,
+    GetCallbackByIdErrors,
     GetCategoriesData,
     GetCategoriesErrors,
     GetCategoriesResponses,
@@ -114,6 +116,9 @@ import type {
     GetRootStatusData,
     GetRootStatusErrors,
     GetRootStatusResponses,
+    GetSession2Data,
+    GetSession2Errors,
+    GetSession2Responses,
     GetSessionData,
     GetSessionErrors,
     GetSessionResponses,
@@ -153,6 +158,8 @@ import type {
     ListUserSessionsData,
     ListUserSessionsErrors,
     ListUserSessionsResponses,
+    PostCallbackByIdData,
+    PostCallbackByIdErrors,
     PostGetAccessTokenData,
     PostGetAccessTokenErrors,
     PostGetAccessTokenResponses,
@@ -210,6 +217,9 @@ import type {
     UpdateImportData,
     UpdateImportErrors,
     UpdateImportResponses,
+    UpdateSessionData,
+    UpdateSessionErrors,
+    UpdateSessionResponses,
     UpdateSubcategoryData,
     UpdateSubcategoryErrors,
     UpdateSubcategoryResponses,
@@ -961,6 +971,20 @@ export const getSession = <ThrowOnError extends boolean = false>(options?: Optio
     })
 
 /**
+ * Get the current session
+ */
+export const getSession2 = <ThrowOnError extends boolean = false>(options?: Options<GetSession2Data, ThrowOnError>) =>
+    (options?.client ?? client).post<GetSession2Responses, GetSession2Errors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/get-session',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
+    })
+
+/**
  * Sign out the current user
  */
 export const signOut = <ThrowOnError extends boolean = false>(options?: Options<SignOutData, ThrowOnError>) =>
@@ -1329,4 +1353,42 @@ export const getError = <ThrowOnError extends boolean = false>(options?: Options
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/error',
         ...options
+    })
+
+export const getCallbackById = <ThrowOnError extends boolean = false>(
+    options?: Options<GetCallbackByIdData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<unknown, GetCallbackByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/callback/{id}',
+        ...options
+    })
+
+export const postCallbackById = <ThrowOnError extends boolean = false>(
+    options?: Options<PostCallbackByIdData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<unknown, PostCallbackByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/callback/{id}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
+    })
+
+/**
+ * Update the current session
+ */
+export const updateSession = <ThrowOnError extends boolean = false>(
+    options?: Options<UpdateSessionData, ThrowOnError>
+) =>
+    (options?.client ?? client).post<UpdateSessionResponses, UpdateSessionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/update-session',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
     })

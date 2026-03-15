@@ -5,9 +5,8 @@
 import type { ImportFile } from './ImportFile';
 import type { Transaction } from './Transaction';
 import type { TransactionStatusEnum } from './TransactionStatusEnum';
-export type Import = {
+export type ImportData = {
     id: string;
-    userId: string;
     title: string;
     financialAccountId: string;
     status: TransactionStatusEnum;
@@ -15,6 +14,5 @@ export type Import = {
     files?: Array<ImportFile>;
     createdAt: string;
     updatedAt: string;
-    deletedAt?: string;
 };
 

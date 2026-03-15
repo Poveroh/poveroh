@@ -123,10 +123,15 @@ export const TransactionSchema = z
 /**
  * Response schema for getting transaction data (excluding userId and deletedAt)
  */
-export const TransactionDataResponseSchema = TransactionSchema.omit({
+export const TransactionDataSchema = TransactionSchema.omit({
     userId: true,
     deletedAt: true
-}).openapi('TransactionDataResponse')
+}).openapi('TransactionData')
+
+/**
+ * Response schema for getting transaction data (excluding userId and deletedAt)
+ */
+export const TransactionDataResponseSchema = TransactionDataSchema.openapi('TransactionDataResponse')
 
 /**
  * Response schema for getting a list of transactions

@@ -1,8 +1,7 @@
 'use client'
 
 import { useUser } from '@/hooks/use-user'
-import { createContext } from 'react'
-import useSWR from 'swr'
+import { createContext, useEffect } from 'react'
 
 const AppContext = createContext({})
 
@@ -11,10 +10,15 @@ type AppContextProviderProps = {
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    const { me } = useUser()
+    const { getMe } = useUser()
     const context = {}
 
-    useSWR('auth/me', me)
+    useEffect(() => {
+        const fetchUser = async () => {
+            await getMe()
+        }
+        fetchUser()
+    }, [])
 
     return <AppContext.Provider value={context}>{children}</AppContext.Provider>
 }

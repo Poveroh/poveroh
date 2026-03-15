@@ -1668,14 +1668,7 @@
                         "format": "uuid"
                     },
                     "status": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/TransactionStatusEnum"
-                            },
-                            {
-                                "default": "IMPORT_PENDING"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
                     },
                     "transactions": {
                         "type": "array",
@@ -1707,6 +1700,7 @@
                     "userId",
                     "title",
                     "financialAccountId",
+                    "status",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -3350,18 +3344,10 @@
                         "format": "email"
                     },
                     "emailVerified": {
-                        "type": "boolean",
-                        "default": false
+                        "type": "boolean"
                     },
                     "onBoardingStep": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/OnBoardingStepEnum"
-                            },
-                            {
-                                "default": "EMAIL"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/OnBoardingStepEnum"
                     },
                     "onBoardingAt": {
                         "type": "string",
@@ -3402,6 +3388,8 @@
                     "name",
                     "surname",
                     "email",
+                    "emailVerified",
+                    "onBoardingStep",
                     "onBoardingAt",
                     "image",
                     "createdAt",
@@ -3463,18 +3451,10 @@
                         "format": "email"
                     },
                     "emailVerified": {
-                        "type": "boolean",
-                        "default": false
+                        "type": "boolean"
                     },
                     "onBoardingStep": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/OnBoardingStepEnum"
-                            },
-                            {
-                                "default": "EMAIL"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/OnBoardingStepEnum"
                     },
                     "onBoardingAt": {
                         "type": "string",
@@ -3761,14 +3741,7 @@
                         "format": "uuid"
                     },
                     "status": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/TransactionStatusEnum"
-                            },
-                            {
-                                "default": "IMPORT_PENDING"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
                     },
                     "transactions": {
                         "type": "array",
@@ -3795,6 +3768,7 @@
                     "id",
                     "title",
                     "financialAccountId",
+                    "status",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -4362,6 +4336,459 @@
                     "expiresAt",
                     "createdAt",
                     "updatedAt"
+                ]
+            },
+            "UserFormPreferencesForm": {
+                "type": "object",
+                "properties": {
+                    "preferredCurrency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "preferredLanguage": {
+                        "$ref": "#/components/schemas/LanguageEnum"
+                    },
+                    "dateFormat": {
+                        "$ref": "#/components/schemas/DateFormatEnum"
+                    },
+                    "timezone": {
+                        "$ref": "#/components/schemas/TimezoneEnum"
+                    }
+                },
+                "required": [
+                    "preferredCurrency",
+                    "preferredLanguage",
+                    "dateFormat",
+                    "timezone"
+                ]
+            },
+            "UserFormGeneralitiesForm": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    }
+                },
+                "required": [
+                    "name",
+                    "surname",
+                    "country"
+                ]
+            },
+            "UserProfileSecurityFormSchema": {
+                "type": "object",
+                "properties": {
+                    "oldPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "newPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "confirmPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "oldPassword",
+                    "newPassword",
+                    "confirmPassword"
+                ]
+            },
+            "UserProfileSecurityForm": {
+                "type": "object",
+                "properties": {
+                    "oldPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "newPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "confirmPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "oldPassword",
+                    "newPassword",
+                    "confirmPassword"
+                ]
+            },
+            "UserProfileForm": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    }
+                },
+                "required": [
+                    "name",
+                    "surname",
+                    "email",
+                    "country"
+                ]
+            },
+            "CategoryData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "FinancialAccountData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ImportData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportFile"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "financialAccountId",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubcategoryData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "categoryId",
+                    "title",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubscriptionData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "type": "string"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId",
+                    "isEnabled",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "TransactionData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "importId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "importId",
+                    "action",
+                    "status",
+                    "ignore",
+                    "createdAt",
+                    "updatedAt",
+                    "media",
+                    "amounts",
+                    "transferId",
+                    "transferHash"
                 ]
             }
         },
@@ -7841,6 +8268,41 @@
                                                     "null"
                                                 ],
                                                 "description": "Expiry date of the token"
+                                            },
+                                            "user": {
+                                                "type": [
+                                                    "object",
+                                                    "null"
+                                                ],
+                                                "properties": {
+                                                    "name": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "firstName": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "lastName": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "email": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "description": "The user object from the provider. Only available for some providers like Apple."
                                             }
                                         },
                                         "required": [
@@ -8029,6 +8491,150 @@
                     }
                 ],
                 "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "nullable": true,
+                                    "properties": {
+                                        "session": {
+                                            "$ref": "#/components/schemas/Session"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "required": [
+                                        "session",
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Get the current session",
+                "operationId": "getSession",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -9458,21 +10064,6 @@
                             }
                         },
                         "description": "Not Found. The requested resource was not found."
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity. Email already exists",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     },
                     "429": {
                         "content": {
@@ -12225,6 +12816,375 @@
                                 "schema": {
                                     "type": "string",
                                     "description": "The HTML content of the error page"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/callback/{id}": {
+            "get": {
+                "tags": [
+                    "Default"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Default"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/update-session": {
+            "post": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Update the current session",
+                "operationId": "updateSession",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "session": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Session"
+                                        }
+                                    }
                                 }
                             }
                         }

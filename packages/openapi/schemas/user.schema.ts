@@ -33,8 +33,8 @@ export const UserSchema = z
         name: z.string().min(1),
         surname: z.string().min(1),
         email: z.string().email(),
-        emailVerified: z.boolean().default(false),
-        onBoardingStep: OnBoardingStepEnum.default('EMAIL'),
+        emailVerified: z.boolean(),
+        onBoardingStep: OnBoardingStepEnum,
         onBoardingAt: z.date().nullable(),
         image: z.string().url().nullable(),
 
@@ -82,6 +82,8 @@ export const UserSessionSchema = z
     })
     .openapi('UserSession')
 
+//------------------------------------------------------------------------------------------------------------------------------
+
 /**
  * User login schema representing the data required for a user to authenticate and create a session
  */
@@ -91,3 +93,49 @@ export const UserLoginSchema = z
         password: z.string().nonempty().min(6)
     })
     .openapi('UserLogin')
+
+/**
+ * User form preferences schema representing the fields required for user onboarding preferences step
+ */
+export const UserFormPreferencesFormSchema = UserPreferencesSchema.pick({
+    preferredCurrency: true,
+    preferredLanguage: true,
+    dateFormat: true,
+    timezone: true
+}).openapi('UserFormPreferencesForm')
+
+/**
+ * User form generalities schema representing the basic information required for user onboarding generalities step
+ */
+export const UserFormGeneralitiesFormSchema = UserSchema.pick({
+    name: true,
+    surname: true,
+    country: true
+}).openapi('UserFormGeneralitiesForm')
+
+/**
+ * User profile form schema representing the fields required for updating user information in profile settings
+ */
+export const UserProfileFormSchema = UserSchema.pick({
+    name: true,
+    surname: true,
+    email: true,
+    country: true
+}).openapi('UserProfileForm')
+
+/**
+ * User profile security form schema representing the fields required for updating user password in profile settings
+ */
+export const UserProfileSecurityFormSchema = z
+    .object({
+        oldPassword: z.string().min(6),
+        newPassword: z.string().min(6),
+        confirmPassword: z.string().min(6)
+    })
+    .refine(data => data.newPassword === data.confirmPassword, {
+        path: ['confirmPassword']
+    })
+    .refine(data => data.oldPassword !== data.newPassword, {
+        path: ['newPassword']
+    })
+    .openapi('UserProfileSecurityForm')

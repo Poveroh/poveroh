@@ -8,8 +8,6 @@ import { useTranslations } from 'next-intl'
 import { Input } from '@poveroh/ui/components/input'
 import { Landmark, Search } from 'lucide-react'
 
-import { ISubscription } from '@/types/api'
-
 import { useSubscription } from '@/hooks/use-subscriptions'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
@@ -21,6 +19,7 @@ import Box from '@/components/box/box-wrapper'
 import { SubscriptionItem } from '@/components/item/subscriptions-item'
 import { Header } from '@/components/other/header-page'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { SubscriptionData } from '@poveroh/types/contracts'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
@@ -28,10 +27,10 @@ export default function SubscriptionsView() {
     const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
     const { fetchFinancialAccount } = useFinancialAccount()
 
-    const { openModal } = useModal<ISubscription>('subscription')
-    const { openModal: openDeleteModal } = useDeleteModal<ISubscription>()
+    const { openModal } = useModal<SubscriptionData>('subscription')
+    const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()
 
-    const [localSubscriptionList, setLocalSubscriptionList] = useState<ISubscription[]>(subscriptionCacheList)
+    const [localSubscriptionList, setLocalSubscriptionList] = useState<SubscriptionData[]>(subscriptionCacheList)
     const total = localSubscriptionList.reduce((sum, sub) => sum + Number(sub.amount || 0), 0)
     const subscriptionsTotal = parseFloat(total.toFixed(2))
 
@@ -105,7 +104,7 @@ export default function SubscriptionsView() {
                                 <SubscriptionItem
                                     key={item.id}
                                     subscription={item}
-                                    openEdit={(item: ISubscription) => {
+                                    openEdit={(item: SubscriptionData) => {
                                         openModal('edit', item)
                                     }}
                                     openDelete={openDeleteModal}

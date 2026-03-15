@@ -25,10 +25,15 @@ export const FinancialAccountSchema = z
 /**
  * Response schema for getting financial account data (excluding userId and deletedAt)
  */
-export const FinancialAccountDataResponseSchema = FinancialAccountSchema.omit({
+export const FinancialAccountDataSchema = FinancialAccountSchema.omit({
     userId: true,
     deletedAt: true
-}).openapi('FinancialAccountDataResponse')
+}).openapi('FinancialAccountData')
+
+/**
+ * Response schema for getting financial account data (excluding userId and deletedAt)
+ */
+export const FinancialAccountDataResponseSchema = FinancialAccountDataSchema.openapi('FinancialAccountDataResponse')
 
 /**
  * Response schema for getting a list of financial accounts

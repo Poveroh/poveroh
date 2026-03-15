@@ -27,10 +27,15 @@ export const CategorySchema = z
 /**
  * Response schema for getting category data (excluding userId and deletedAt)
  */
-export const CategoryDataResponseSchema = CategorySchema.omit({
+export const CategoryDataSchema = CategorySchema.omit({
     userId: true,
     deletedAt: true
-}).openapi('CategoryDataResponse')
+}).openapi('CategoryData')
+
+/**
+ * Response schema for getting category data (excluding userId and deletedAt)
+ */
+export const CategoryDataResponseSchema = CategoryDataSchema.openapi('CategoryDataResponse')
 
 /**
  * Response schema for getting a list of categories

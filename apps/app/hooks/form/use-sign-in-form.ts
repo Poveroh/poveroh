@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation'
 
 import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
-import { OnBoardingStep } from '@poveroh/types'
 import { UserLogin } from '@poveroh/types/contracts'
+import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
 
 export function useSignInForm() {
     const router = useRouter()
     const { signIn } = useAuth()
+    const { isAtLeast } = useOnBoardingStepOrder()
 
     const [loading, setLoading] = useState(false)
 
@@ -30,7 +31,7 @@ export function useSignInForm() {
                 const res = await signIn(user)
 
                 if (res) {
-                    if (res.onBoardingStep >= OnBoardingStep.PREFERENCES) {
+                    if (isAtLeast(res.onBoardingStep, 'PREFERENCES')) {
                         router.push('/dashboard')
                     } else {
                         router.push('/onboarding')
@@ -42,7 +43,7 @@ export function useSignInForm() {
                 setLoading(false)
             }
         },
-        [router, signIn]
+        [router, signIn, isAtLeast]
     )
 
     return {

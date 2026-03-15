@@ -32,10 +32,15 @@ export const SubscriptionSchema = z
 /**
  * Response schema for getting subscription data (excluding userId and deletedAt)
  */
-export const SubscriptionDataResponseSchema = SubscriptionSchema.omit({
+export const SubscriptionDataSchema = SubscriptionSchema.omit({
     userId: true,
     deletedAt: true
-}).openapi('SubscriptionDataResponse')
+}).openapi('SubscriptionData')
+
+/**
+ * Response schema for getting subscription data with ID (excluding userId and deletedAt)
+ */
+export const SubscriptionDataResponseSchema = SubscriptionDataSchema.openapi('SubscriptionDataResponse')
 
 /**
  * Response schema for getting a list of subscriptions

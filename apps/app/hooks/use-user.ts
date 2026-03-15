@@ -5,23 +5,20 @@ import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient, getSession } from '@/lib/auth'
 import { User } from '@poveroh/types/contracts'
-import { putUserMutation } from '@/api/@tanstack/react-query.gen'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { updateAuthenticatedUserMutation } from '@/api/@tanstack/react-query.gen'
+import { useMutation } from '@tanstack/react-query'
 import router from 'next/router'
 
 export const useUser = () => {
     const { handleError } = useError()
     const userStore = useUserStore()
-    const queryClient = useQueryClient()
 
-    const updateUserMutation = useMutation({
-        ...putUserMutation(),
+    const updateUser = useMutation({
+        ...updateAuthenticatedUserMutation(),
         onSuccess: async (_data, variables) => {
             if (!variables.body) return
 
             await userStore.updateUser(variables.body)
-
-            queryClient.invalidateQueries({ queryKey: ['getUser'] })
 
             if (variables.body.email && userStore.user.email !== variables.body.email) {
                 const res = await authClient.changeEmail({
@@ -39,7 +36,7 @@ export const useUser = () => {
         }
     })
 
-    const me = async (): Promise<User | null> => {
+    const getMe = async (): Promise<User | null> => {
         try {
             const result = await getSession()
 
@@ -74,11 +71,11 @@ export const useUser = () => {
                 revokeOtherSessions: true
             })
 
-            if (data && !error) {
-                return true
+            if (data && error) {
+                return false
             }
 
-            return false
+            return true
         } catch (error) {
             handleError(error, 'Error updating password')
             return false
@@ -87,8 +84,8 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
-        updateUserMutation,
-        me,
+        getMe,
+        updateUser,
         updatePassword
     }
 }

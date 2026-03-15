@@ -13,7 +13,7 @@ import { UserLogin } from '@poveroh/types/contracts'
 
 export const useAuth = () => {
     const { handleError } = useError()
-    const { me } = useUser()
+    const { getMe } = useUser()
 
     const userStore = useUserStore()
     const router = useRouter()
@@ -60,14 +60,12 @@ export const useAuth = () => {
 
                 userStore.setLogged(true)
 
-                const user = await me()
-
-                return user
+                return await getMe()
             } catch (error) {
                 return handleError(error, 'Login failed')
             }
         },
-        [handleError, me, userStore]
+        [handleError, getMe, userStore]
     )
 
     const signUp = useCallback(
@@ -122,7 +120,7 @@ export const useAuth = () => {
         }
     }
 
-    const isAuthenticate = useCallback(() => {
+    const isAuthenticated = useCallback(() => {
         return !!authSession.data?.session
     }, [authSession])
 
@@ -130,6 +128,6 @@ export const useAuth = () => {
         logout,
         signIn,
         signUp,
-        isAuthenticate
+        isAuthenticated
     }
 }

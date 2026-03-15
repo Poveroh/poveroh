@@ -9,7 +9,7 @@ export type ImportDataResponse = {
     id: string;
     title: string;
     financialAccountId: string;
-    status?: TransactionStatusEnum;
+    status: TransactionStatusEnum;
     transactions?: Array<Transaction>;
     files?: Array<ImportFile>;
     createdAt: string;

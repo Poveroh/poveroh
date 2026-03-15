@@ -14,8 +14,8 @@ export type User = {
     name: string;
     surname: string;
     email: string;
-    emailVerified?: boolean;
-    onBoardingStep?: OnBoardingStepEnum;
+    emailVerified: boolean;
+    onBoardingStep: OnBoardingStepEnum;
     onBoardingAt: string | null;
     image: string | null;
     createdAt: string;

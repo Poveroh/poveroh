@@ -4,15 +4,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
-import { IUser } from '@/types/api'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { useUser } from '@/hooks/use-user'
 import Divider from '../other/divider'
 import { CompanyInfoBar } from './company-info-bar'
+import { User } from '@poveroh/types/contracts'
 
 type UserPopoverContentProps = {
-    user: IUser
+    user: User
     link?: ReactNode
 }
 

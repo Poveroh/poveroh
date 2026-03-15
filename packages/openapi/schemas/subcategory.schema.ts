@@ -22,9 +22,14 @@ export const SubcategorySchema = z
 /**
  * Response schema for getting subcategory data (excluding categoryId and deletedAt)
  */
-export const SubcategoryDataResponseSchema = SubcategorySchema.omit({
+export const SubcategoryDataSchema = SubcategorySchema.omit({
     deletedAt: true
-}).openapi('SubcategoryDataResponse')
+}).openapi('SubcategoryData')
+
+/**
+ * Response schema for getting subcategory data (excluding categoryId and deletedAt)
+ */
+export const SubcategoryDataResponseSchema = SubcategoryDataSchema.openapi('SubcategoryDataResponse')
 
 /**
  * Response schema for getting a list of subcategories

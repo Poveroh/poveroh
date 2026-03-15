@@ -9,21 +9,21 @@ import { CurrencyField, SelectField } from '@/components/fields'
 import { useOnBoardingForm } from '@/hooks/form/use-onboarding-form'
 import { StepProgress } from '@/components/other/step-progress'
 import { RouteGuard } from '@/components/other/route-guard'
-import { dateFormatCatalog, languageCatalog, OnBoardingStep } from '@poveroh/types'
+import { DateFormatCatalog, LanguageCatalog, TimezoneCatalog } from '@poveroh/types'
 
 export default function OnBoardingPreferencesView() {
     const t = useTranslations()
     const { formPreferences, loading, handlePreferencesSubmit } = useOnBoardingForm()
 
     return (
-        <RouteGuard requiredStep={[OnBoardingStep.GENERALITIES, OnBoardingStep.PREFERENCES]}>
+        <RouteGuard requiredStep={['GENERALITES', 'PREFERENCES']}>
             <div className='flex flex-col space-y-14 w-full lg:w-[500px]'>
                 <div className='flex flex-col space-y-3'>
                     <h3>{t('signup.title')}</h3>
                     <p className='sub'>{t('signup.subtitle')}</p>
                 </div>
 
-                <StepProgress current={OnBoardingStep.PREFERENCES} />
+                <StepProgress current={'PREFERENCES'} />
 
                 <Form {...formPreferences}>
                     <form
@@ -46,7 +46,7 @@ export default function OnBoardingPreferencesView() {
                                 label={t('form.language.label')}
                                 placeholder={t('form.language.placeholder')}
                                 mandatory
-                                options={languageCatalog}
+                                options={LanguageCatalog}
                                 getOptionLabel={l => l.label}
                                 getOptionValue={l => l.value}
                             />
@@ -57,9 +57,20 @@ export default function OnBoardingPreferencesView() {
                                 label={t('form.dateFormat.label')}
                                 placeholder={t('form.dateFormat.placeholder')}
                                 mandatory
-                                options={dateFormatCatalog}
+                                options={DateFormatCatalog}
                                 getOptionLabel={d => d.label}
                                 getOptionValue={d => d.value}
+                            />
+
+                            <SelectField
+                                control={formPreferences.control}
+                                name='timezone'
+                                label={t('form.timezone.label')}
+                                placeholder={t('form.timezone.placeholder')}
+                                mandatory
+                                options={TimezoneCatalog}
+                                getOptionLabel={t => t.label}
+                                getOptionValue={t => t.value}
                             />
                         </div>
 

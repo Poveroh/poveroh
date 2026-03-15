@@ -1,13 +1,14 @@
 'use client'
 
 import { useUserStore } from '@/store/auth.store'
-import { OnBoardingStep } from '@poveroh/types'
+import { OnBoardingStepEnum } from '@poveroh/types/contracts'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
+import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
 
 type RouteGuardProps = {
     children: React.ReactNode
-    requiredStep?: OnBoardingStep[]
+    requiredStep?: OnBoardingStepEnum[]
     redirectTo?: string
     inverse?: boolean
 }
@@ -15,6 +16,7 @@ type RouteGuardProps = {
 export function RouteGuard({ children, requiredStep, redirectTo = '/sign-in', inverse = false }: RouteGuardProps) {
     const userStore = useUserStore()
     const router = useRouter()
+    const { isAtLeast } = useOnBoardingStepOrder()
 
     const { currentStep, logged } = useMemo(
         () => ({
@@ -29,12 +31,12 @@ export function RouteGuard({ children, requiredStep, redirectTo = '/sign-in', in
 
         if (inverse) {
             // For auth pages: if logged and step >= any of the required steps, redirect
-            return logged && requiredStep.some(step => currentStep >= step)
+            return logged && requiredStep.some(step => isAtLeast(currentStep, step))
         } else {
             // For protected pages: if not logged or step is not in the allowed range, redirect
             return !logged || !requiredStep.includes(currentStep)
         }
-    }, [logged, currentStep, requiredStep, inverse])
+    }, [logged, currentStep, requiredStep, inverse, isAtLeast])
 
     useEffect(() => {
         if (shouldRedirect) {
@@ -46,11 +48,11 @@ export function RouteGuard({ children, requiredStep, redirectTo = '/sign-in', in
         if (requiredStep === undefined) return true
 
         if (inverse) {
-            return !(logged && requiredStep.some(step => currentStep >= step))
+            return !(logged && requiredStep.some(step => isAtLeast(currentStep, step)))
         } else {
             return logged && requiredStep.includes(currentStep)
         }
-    }, [logged, currentStep, requiredStep, inverse])
+    }, [logged, currentStep, requiredStep, inverse, isAtLeast])
 
     return shouldRender ? <>{children}</> : null
 }

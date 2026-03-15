@@ -899,7 +899,7 @@ export type Import = {
     userId: string
     title: string
     financialAccountId: string
-    status?: TransactionStatusEnum & unknown
+    status: TransactionStatusEnum
     transactions?: Array<Transaction>
     files?: Array<ImportFile>
     createdAt: string
@@ -1539,8 +1539,8 @@ export type User = {
     name: string
     surname: string
     email: string
-    emailVerified?: boolean
-    onBoardingStep?: OnBoardingStepEnum & unknown
+    emailVerified: boolean
+    onBoardingStep: OnBoardingStepEnum
     onBoardingAt: string | null
     image: string | null
     createdAt: string
@@ -1571,7 +1571,7 @@ export type UpdateUserRequest = {
     surname?: string
     email?: string
     emailVerified?: boolean
-    onBoardingStep?: OnBoardingStepEnum & unknown
+    onBoardingStep?: OnBoardingStepEnum
     onBoardingAt?: string | null
     image?: string | null
     createdAt?: string
@@ -1654,7 +1654,7 @@ export type ImportDataResponse = {
     id: string
     title: string
     financialAccountId: string
-    status?: TransactionStatusEnum & unknown
+    status: TransactionStatusEnum
     transactions?: Array<Transaction>
     files?: Array<ImportFile>
     createdAt: string
@@ -1807,6 +1807,120 @@ export type Verification = {
     expiresAt: string
     createdAt: string
     updatedAt: string
+}
+
+export type UserFormPreferencesForm = {
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    timezone: TimezoneEnum
+}
+
+export type UserFormGeneralitiesForm = {
+    name: string
+    surname: string
+    country: CountriesEnum
+}
+
+export type UserProfileSecurityFormSchema = {
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+}
+
+export type UserProfileSecurityForm = {
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+}
+
+export type UserProfileForm = {
+    name: string
+    surname: string
+    email: string
+    country: CountriesEnum
+}
+
+export type CategoryData = {
+    id: string
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type FinancialAccountData = {
+    id: string
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type ImportData = {
+    id: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubcategoryData = {
+    id: string
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubscriptionData = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: string
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+export type TransactionData = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
 }
 
 export type DeleteCategoriesData = {
@@ -3692,6 +3806,68 @@ export type GetSessionResponses = {
 
 export type GetSessionResponse = GetSessionResponses[keyof GetSessionResponses]
 
+export type GetSession2Data = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/get-session'
+}
+
+export type GetSession2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetSession2Error = GetSession2Errors[keyof GetSession2Errors]
+
+export type GetSession2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        session: Session
+        user: User
+    } | null
+}
+
+export type GetSession2Response = GetSession2Responses[keyof GetSession2Responses]
+
 export type SignOutData = {
     body?: {
         [key: string]: unknown
@@ -4276,12 +4452,6 @@ export type ChangeEmailErrors = {
      * Not Found. The requested resource was not found.
      */
     404: {
-        message?: string
-    }
-    /**
-     * Unprocessable Entity. Email already exists
-     */
-    422: {
         message?: string
     }
     /**
@@ -5585,3 +5755,162 @@ export type GetErrorResponses = {
 }
 
 export type GetErrorResponse = GetErrorResponses[keyof GetErrorResponses]
+
+export type GetCallbackByIdData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/callback/{id}'
+}
+
+export type GetCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetCallbackByIdError = GetCallbackByIdErrors[keyof GetCallbackByIdErrors]
+
+export type PostCallbackByIdData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/callback/{id}'
+}
+
+export type PostCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostCallbackByIdError = PostCallbackByIdErrors[keyof PostCallbackByIdErrors]
+
+export type UpdateSessionData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/update-session'
+}
+
+export type UpdateSessionErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type UpdateSessionError = UpdateSessionErrors[keyof UpdateSessionErrors]
+
+export type UpdateSessionResponses = {
+    /**
+     * Success
+     */
+    200: {
+        session?: Session
+    }
+}
+
+export type UpdateSessionResponse = UpdateSessionResponses[keyof UpdateSessionResponses]

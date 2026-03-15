@@ -1527,14 +1527,7 @@ export const ImportSchema = {
             format: 'uuid'
         },
         status: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/TransactionStatusEnum'
-                },
-                {
-                    default: 'IMPORT_PENDING'
-                }
-            ]
+            $ref: '#/components/schemas/TransactionStatusEnum'
         },
         transactions: {
             type: 'array',
@@ -1561,7 +1554,7 @@ export const ImportSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'financialAccountId', 'createdAt', 'updatedAt']
+    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
 } as const
 
 export const GetImportListResponseSchema = {
@@ -3090,18 +3083,10 @@ export const UserSchema = {
             format: 'email'
         },
         emailVerified: {
-            type: 'boolean',
-            default: false
+            type: 'boolean'
         },
         onBoardingStep: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/OnBoardingStepEnum'
-                },
-                {
-                    default: 'EMAIL'
-                }
-            ]
+            $ref: '#/components/schemas/OnBoardingStepEnum'
         },
         onBoardingAt: {
             type: 'string',
@@ -3142,6 +3127,8 @@ export const UserSchema = {
         'name',
         'surname',
         'email',
+        'emailVerified',
+        'onBoardingStep',
         'onBoardingAt',
         'image',
         'createdAt',
@@ -3201,18 +3188,10 @@ export const UpdateUserRequestSchema = {
             format: 'email'
         },
         emailVerified: {
-            type: 'boolean',
-            default: false
+            type: 'boolean'
         },
         onBoardingStep: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/OnBoardingStepEnum'
-                },
-                {
-                    default: 'EMAIL'
-                }
-            ]
+            $ref: '#/components/schemas/OnBoardingStepEnum'
         },
         onBoardingAt: {
             type: 'string',
@@ -3465,14 +3444,7 @@ export const ImportDataResponseSchema = {
             format: 'uuid'
         },
         status: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/TransactionStatusEnum'
-                },
-                {
-                    default: 'IMPORT_PENDING'
-                }
-            ]
+            $ref: '#/components/schemas/TransactionStatusEnum'
         },
         transactions: {
             type: 'array',
@@ -3495,7 +3467,7 @@ export const ImportDataResponseSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'title', 'financialAccountId', 'createdAt', 'updatedAt']
+    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
 } as const
 
 export const SubcategoryDataResponseSchema = {
@@ -4035,4 +4007,416 @@ export const VerificationSchema = {
         }
     },
     required: ['identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
+} as const
+
+export const UserFormPreferencesFormSchema = {
+    type: 'object',
+    properties: {
+        preferredCurrency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        preferredLanguage: {
+            $ref: '#/components/schemas/LanguageEnum'
+        },
+        dateFormat: {
+            $ref: '#/components/schemas/DateFormatEnum'
+        },
+        timezone: {
+            $ref: '#/components/schemas/TimezoneEnum'
+        }
+    },
+    required: ['preferredCurrency', 'preferredLanguage', 'dateFormat', 'timezone']
+} as const
+
+export const UserFormGeneralitiesFormSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+            minLength: 1
+        },
+        surname: {
+            type: 'string',
+            minLength: 1
+        },
+        country: {
+            $ref: '#/components/schemas/CountriesEnum'
+        }
+    },
+    required: ['name', 'surname', 'country']
+} as const
+
+export const UserProfileSecurityFormSchemaSchema = {
+    type: 'object',
+    properties: {
+        oldPassword: {
+            type: 'string',
+            minLength: 6
+        },
+        newPassword: {
+            type: 'string',
+            minLength: 6
+        },
+        confirmPassword: {
+            type: 'string',
+            minLength: 6
+        }
+    },
+    required: ['oldPassword', 'newPassword', 'confirmPassword']
+} as const
+
+export const UserProfileSecurityFormSchema = {
+    type: 'object',
+    properties: {
+        oldPassword: {
+            type: 'string',
+            minLength: 6
+        },
+        newPassword: {
+            type: 'string',
+            minLength: 6
+        },
+        confirmPassword: {
+            type: 'string',
+            minLength: 6
+        }
+    },
+    required: ['oldPassword', 'newPassword', 'confirmPassword']
+} as const
+
+export const UserProfileFormSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+            minLength: 1
+        },
+        surname: {
+            type: 'string',
+            minLength: 1
+        },
+        email: {
+            type: 'string',
+            format: 'email'
+        },
+        country: {
+            $ref: '#/components/schemas/CountriesEnum'
+        }
+    },
+    required: ['name', 'surname', 'email', 'country']
+} as const
+
+export const CategoryDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Subcategory'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const FinancialAccountDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        balance: {
+            type: 'number'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        },
+        logoIcon: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const ImportDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        status: {
+            $ref: '#/components/schemas/TransactionStatusEnum'
+        },
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Transaction'
+            }
+        },
+        files: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportFile'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+} as const
+
+export const SubcategoryDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        categoryId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
+} as const
+
+export const SubscriptionDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        appearanceMode: {
+            $ref: '#/components/schemas/AppearanceModeEnum'
+        },
+        appearanceLogoIcon: {
+            type: 'string'
+        },
+        firstPayment: {
+            type: 'string',
+            format: 'date-time'
+        },
+        cycleNumber: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            type: 'string'
+        },
+        rememberPeriod: {
+            $ref: '#/components/schemas/RememberPeriodEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        isEnabled: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'title',
+        'description',
+        'amount',
+        'currency',
+        'appearanceMode',
+        'appearanceLogoIcon',
+        'firstPayment',
+        'cycleNumber',
+        'cyclePeriod',
+        'rememberPeriod',
+        'financialAccountId',
+        'isEnabled',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
+export const TransactionDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        importId: {
+            type: 'string',
+            nullable: true
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        status: {
+            $ref: '#/components/schemas/TransactionStatusEnum'
+        },
+        ignore: {
+            type: 'boolean'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        media: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/TransactionMedia'
+            }
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Amount'
+            }
+        },
+        transferId: {
+            type: 'string',
+            nullable: true
+        },
+        transferHash: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'date',
+        'title',
+        'note',
+        'icon',
+        'categoryId',
+        'subcategoryId',
+        'importId',
+        'action',
+        'status',
+        'ignore',
+        'createdAt',
+        'updatedAt',
+        'media',
+        'amounts',
+        'transferId',
+        'transferHash'
+    ]
 } as const

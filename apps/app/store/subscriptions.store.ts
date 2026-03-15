@@ -1,14 +1,14 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import type { Subscription } from '@/lib/api-client'
+import { SubscriptionData } from '@poveroh/types/contracts'
 
 type SubscriptionStore = {
-    subscriptionCacheList: Subscription[]
-    addSubscription: (subscription: Subscription) => void
-    editSubscription: (subscription: Subscription) => void
-    setSubscriptions: (subscriptions: Subscription[]) => void
+    subscriptionCacheList: SubscriptionData[]
+    addSubscription: (subscription: SubscriptionData) => void
+    editSubscription: (subscription: SubscriptionData) => void
+    setSubscriptions: (subscriptions: SubscriptionData[]) => void
     removeSubscription: (subscriptionId: string) => void
-    getSubscription: (subscriptionId: string) => Subscription | null
+    getSubscription: (subscriptionId: string) => SubscriptionData | null
 }
 
 export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({

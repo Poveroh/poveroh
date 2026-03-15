@@ -32,7 +32,7 @@ export const ImportSchema = z
         userId: z.string().uuid(),
         title: z.string(),
         financialAccountId: z.string().uuid(),
-        status: TransactionStatusEnum.default('IMPORT_PENDING'),
+        status: TransactionStatusEnum,
         transactions: z.array(TransactionSchema).optional(),
         files: z.array(ImportFileSchema).optional(),
         createdAt: z.string().datetime(),
@@ -44,10 +44,15 @@ export const ImportSchema = z
 /**
  * Response schema for getting import data (excluding userId and deletedAt)
  */
-export const ImportDataResponseSchema = ImportSchema.omit({
+export const ImportDataSchema = ImportSchema.omit({
     userId: true,
     deletedAt: true
-}).openapi('ImportDataResponse')
+}).openapi('ImportData')
+
+/**
+ * Response schema for getting import data (excluding userId and deletedAt)
+ */
+export const ImportDataResponseSchema = ImportDataSchema.openapi('ImportDataResponse')
 
 /**
  * Response schema for getting transaction data (excluding userId and deletedAt)
@@ -76,6 +81,7 @@ export const GetImportResponseSchema = SuccessResponseSchema(ImportDataResponseS
 export const GetImportTransactionsResponseSchema = SuccessResponseSchema(
     ImportTransactionDataResponseSchema.array()
 ).openapi('GetImportTransactionsResponse')
+
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**

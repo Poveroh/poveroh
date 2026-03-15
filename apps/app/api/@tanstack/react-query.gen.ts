@@ -29,6 +29,7 @@ import {
     deleteUser,
     getAccountInfo,
     getAuthenticatedUser,
+    getCallbackById,
     getCategories,
     getCategoryById,
     getDashboardLayout,
@@ -42,6 +43,7 @@ import {
     getOk,
     getRootStatus,
     getSession,
+    getSession2,
     getStatus,
     getSubcategories,
     getSubcategoryById,
@@ -55,6 +57,7 @@ import {
     listUserAccounts,
     listUserSessions,
     type Options,
+    postCallbackById,
     postGetAccessToken,
     postRefreshToken,
     postRevokeOtherSessions,
@@ -74,6 +77,7 @@ import {
     updateDashboardLayout,
     updateFinancialAccount,
     updateImport,
+    updateSession,
     updateSubcategory,
     updateSubscription,
     updateTransaction,
@@ -156,6 +160,8 @@ import type {
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
     GetAuthenticatedUserResponse,
+    GetCallbackByIdData,
+    GetCallbackByIdError,
     GetCategoriesData,
     GetCategoriesError,
     GetCategoriesResponse,
@@ -192,6 +198,9 @@ import type {
     GetRootStatusData,
     GetRootStatusError,
     GetRootStatusResponse,
+    GetSession2Data,
+    GetSession2Error,
+    GetSession2Response,
     GetSessionData,
     GetSessionError,
     GetSessionResponse,
@@ -231,6 +240,8 @@ import type {
     ListUserSessionsData,
     ListUserSessionsError,
     ListUserSessionsResponse,
+    PostCallbackByIdData,
+    PostCallbackByIdError,
     PostGetAccessTokenData,
     PostGetAccessTokenError,
     PostGetAccessTokenResponse,
@@ -288,6 +299,9 @@ import type {
     UpdateImportData,
     UpdateImportError,
     UpdateImportResponse2,
+    UpdateSessionData,
+    UpdateSessionError,
+    UpdateSessionResponse,
     UpdateSubcategoryData,
     UpdateSubcategoryError,
     UpdateSubcategoryResponse2,
@@ -1562,6 +1576,25 @@ export const getSessionOptions = (options?: Options<GetSessionData>) =>
     })
 
 /**
+ * Get the current session
+ */
+export const getSession2Mutation = (
+    options?: Partial<Options<GetSession2Data>>
+): UseMutationOptions<GetSession2Response, GetSession2Error, Options<GetSession2Data>> => {
+    const mutationOptions: UseMutationOptions<GetSession2Response, GetSession2Error, Options<GetSession2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await getSession2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
  * Sign out the current user
  */
 export const signOutMutation = (
@@ -2147,3 +2180,55 @@ export const getErrorOptions = (options?: Options<GetErrorData>) =>
         },
         queryKey: getErrorQueryKey(options)
     })
+
+export const getCallbackByIdQueryKey = (options?: Options<GetCallbackByIdData>) =>
+    createQueryKey('getCallbackById', options)
+
+export const getCallbackByIdOptions = (options?: Options<GetCallbackByIdData>) =>
+    queryOptions<unknown, GetCallbackByIdError, unknown, ReturnType<typeof getCallbackByIdQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getCallbackById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getCallbackByIdQueryKey(options)
+    })
+
+export const postCallbackByIdMutation = (
+    options?: Partial<Options<PostCallbackByIdData>>
+): UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> => {
+    const mutationOptions: UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await postCallbackById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update the current session
+ */
+export const updateSessionMutation = (
+    options?: Partial<Options<UpdateSessionData>>
+): UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> => {
+    const mutationOptions: UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateSession({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
