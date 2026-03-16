@@ -1228,7 +1228,7 @@ export type Subscription = {
     appearanceLogoIcon: string
     firstPayment: string
     cycleNumber: number
-    cyclePeriod: string
+    cyclePeriod: CyclePeriodEnum
     rememberPeriod: RememberPeriodEnum
     financialAccountId: string
     isEnabled: boolean
@@ -1273,10 +1273,9 @@ export type CreateSubscriptionRequest = {
     appearanceLogoIcon: string
     firstPayment: string
     cycleNumber: number
-    cyclePeriod: string
+    cyclePeriod: CyclePeriodEnum
     rememberPeriod: RememberPeriodEnum
     financialAccountId: string
-    isEnabled: boolean
 }
 
 export type CreateSubscriptionMultipartRequest = {
@@ -1305,7 +1304,7 @@ export type UpdateSubscriptionRequest = {
     appearanceLogoIcon?: string
     firstPayment?: string
     cycleNumber?: number
-    cyclePeriod?: string
+    cyclePeriod?: CyclePeriodEnum
     rememberPeriod?: RememberPeriodEnum
     financialAccountId?: string
     isEnabled?: boolean
@@ -1731,7 +1730,7 @@ export type SubscriptionDataResponse = {
     appearanceLogoIcon: string
     firstPayment: string
     cycleNumber: number
-    cyclePeriod: string
+    cyclePeriod: CyclePeriodEnum
     rememberPeriod: RememberPeriodEnum
     financialAccountId: string
     isEnabled: boolean
@@ -1895,7 +1894,7 @@ export type SubscriptionData = {
     appearanceLogoIcon: string
     firstPayment: string
     cycleNumber: number
-    cyclePeriod: string
+    cyclePeriod: CyclePeriodEnum
     rememberPeriod: RememberPeriodEnum
     financialAccountId: string
     isEnabled: boolean
@@ -1921,6 +1920,22 @@ export type TransactionData = {
     amounts: Array<Amount>
     transferId: string | null
     transferHash: string | null
+}
+
+export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
+
+export type SubscriptionForm = {
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
 }
 
 export type DeleteCategoriesData = {

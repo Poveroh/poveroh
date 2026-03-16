@@ -6,8 +6,7 @@ import type { AppearanceModeEnum } from './AppearanceModeEnum';
 import type { CurrencyEnum } from './CurrencyEnum';
 import type { CyclePeriodEnum } from './CyclePeriodEnum';
 import type { RememberPeriodEnum } from './RememberPeriodEnum';
-export type SubscriptionData = {
-    id: string;
+export type SubscriptionForm = {
     title: string;
     description: string;
     amount: number;
@@ -19,8 +18,5 @@ export type SubscriptionData = {
     cyclePeriod: CyclePeriodEnum;
     rememberPeriod: RememberPeriodEnum;
     financialAccountId: string;
-    isEnabled: boolean;
-    createdAt: string;
-    updatedAt: string;
 };
 

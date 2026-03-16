@@ -6,65 +6,35 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { AppearanceMode, Currencies, CyclePeriod, RememberPeriod } from '@poveroh/types'
-import { ISubscription } from '@/types/api'
-
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
+import { SubscriptionData, SubscriptionForm } from '@poveroh/types/contracts'
+import { SubscriptionFormSchema } from '@poveroh/schemas'
+import { DEFAULT_SUBSCRIPTION } from '@poveroh/types'
 
-export const useSubscriptionForm = (initialData: ISubscription | null | undefined, inEditingMode: boolean) => {
+export const useSubscriptionForm = (initialData: SubscriptionData | null, inEditingMode: boolean) => {
     const t = useTranslations()
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
     const [loading, setLoading] = useState(false)
 
-    const defaultValues =
-        initialData ||
-        ({
-            title: '',
-            description: '',
-            amount: 0,
-            currency: Currencies.EUR,
-            appearanceMode: AppearanceMode.ICON,
-            appearanceLogoIcon: iconList[0] as string,
-            firstPayment: new Date().toISOString().split('T')[0],
-            cycleNumber: '1',
-            cyclePeriod: CyclePeriod.MONTH,
-            rememberPeriod: RememberPeriod.THREE_DAYS,
-            financialAccountId: ''
-        } as Partial<ISubscription>)
-
-    const formSchema = z
-        .object({
-            title: z.string().nonempty(t('messages.errors.required')),
-            description: z.string().optional(),
-            amount: z.number().min(0),
-            currency: z.nativeEnum(Currencies),
-            appearanceMode: z.nativeEnum(AppearanceMode),
-            appearanceLogoIcon: z.string().nonempty(t('messages.errors.required')),
-            firstPayment: z.string(),
-            cycleNumber: z.string(),
-            cyclePeriod: z.nativeEnum(CyclePeriod),
-            rememberPeriod: z.nativeEnum(RememberPeriod).optional(),
-            financialAccountId: z.string().nonempty(t('messages.errors.required'))
-        })
-        .refine(
-            data => {
-                if (data.appearanceMode === AppearanceMode.LOGO) {
-                    return z.string().safeParse(data.appearanceLogoIcon).success
-                }
-                return true
-            },
-            {
-                message: t('messages.errors.url'),
-                path: ['appearanceLogoIcon']
+    const formSchema = SubscriptionFormSchema.refine(
+        data => {
+            if (data.appearanceMode === 'LOGO') {
+                return z.string().safeParse(data.appearanceLogoIcon).success
             }
-        )
+            return true
+        },
+        {
+            message: t('messages.errors.url'),
+            path: ['appearanceLogoIcon']
+        }
+    )
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<SubscriptionForm>({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultValues
+        defaultValues: initialData || DEFAULT_SUBSCRIPTION
     })
 
     useEffect(() => {
@@ -74,8 +44,8 @@ export const useSubscriptionForm = (initialData: ISubscription | null | undefine
     }, [form.formState.errors])
 
     const handleSubmit = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: Partial<ISubscription>) => Promise<void>
+        values: SubscriptionForm,
+        dataCallback: (formData: Partial<SubscriptionData>) => Promise<void>
     ) => {
         try {
             setLoading(true)

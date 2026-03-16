@@ -430,7 +430,7 @@ model Subscription {
     appearanceLogoIcon String
     firstPayment       DateTime
     cycleNumber        Decimal
-    cyclePeriod        String
+    cyclePeriod        CyclePeriod
     rememberPeriod     RememberPeriod
     financialAccountId String
     isEnabled          Boolean
@@ -721,6 +721,13 @@ enum RememberPeriod {
     FOURTEEN_DAYS
     THIRTY_DAYS
     NINETY_DAYS
+}
+
+enum CyclePeriod {
+    DAY
+    WEEK
+    MONTH
+    YEAR
 }
 
 enum AppearanceMode {

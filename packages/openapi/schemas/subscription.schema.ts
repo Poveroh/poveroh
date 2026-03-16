@@ -1,5 +1,11 @@
 import { z } from '../zod'
-import { AppearanceModeEnum, CurrencyEnum, FinancialAccountTypeEnum, RememberPeriodEnum } from './enum.schema'
+import {
+    AppearanceModeEnum,
+    CurrencyEnum,
+    CyclePeriodEnum,
+    FinancialAccountTypeEnum,
+    RememberPeriodEnum
+} from './enum.schema'
 import { ReadQuerySchema, StringFilterSchema } from './filter.schema'
 import { MultipartRequestSchema } from './media.schema'
 import { SuccessResponseSchema } from './response.schema'
@@ -19,7 +25,7 @@ export const SubscriptionSchema = z
         appearanceLogoIcon: z.string(),
         firstPayment: z.string().datetime(),
         cycleNumber: z.number(),
-        cyclePeriod: z.string(),
+        cyclePeriod: CyclePeriodEnum,
         rememberPeriod: RememberPeriodEnum,
         financialAccountId: z.string().uuid(),
         isEnabled: z.boolean(),
@@ -65,7 +71,8 @@ export const CreateSubscriptionRequestSchema = SubscriptionSchema.omit({
     userId: true,
     createdAt: true,
     updatedAt: true,
-    deletedAt: true
+    deletedAt: true,
+    isEnabled: true
 }).openapi('CreateSubscriptionRequest')
 
 export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(CreateSubscriptionRequestSchema).openapi(
@@ -133,3 +140,10 @@ export const SubscriptionFiltersSchema = z
  */
 export const QuerySubscriptionFiltersSchema =
     ReadQuerySchema(SubscriptionFiltersSchema).openapi('QuerySubscriptionFilters')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Subscription form schema representing the data structure for subscription creation and editing forms
+ */
+export const SubscriptionFormSchema = CreateSubscriptionRequestSchema.openapi('SubscriptionForm')

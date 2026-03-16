@@ -2535,7 +2535,7 @@
                         "type": "number"
                     },
                     "cyclePeriod": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
@@ -2663,7 +2663,7 @@
                         "type": "number"
                     },
                     "cyclePeriod": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
@@ -2671,9 +2671,6 @@
                     "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
-                    },
-                    "isEnabled": {
-                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -2687,8 +2684,7 @@
                     "cycleNumber",
                     "cyclePeriod",
                     "rememberPeriod",
-                    "financialAccountId",
-                    "isEnabled"
+                    "financialAccountId"
                 ]
             },
             "CreateSubscriptionMultipartRequest": {
@@ -2768,7 +2764,7 @@
                         "type": "number"
                     },
                     "cyclePeriod": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
@@ -4056,7 +4052,7 @@
                         "type": "number"
                     },
                     "cyclePeriod": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
@@ -4661,7 +4657,7 @@
                         "type": "number"
                     },
                     "cyclePeriod": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
                     },
                     "rememberPeriod": {
                         "$ref": "#/components/schemas/RememberPeriodEnum"
@@ -4789,6 +4785,68 @@
                     "amounts",
                     "transferId",
                     "transferHash"
+                ]
+            },
+            "CyclePeriodEnum": {
+                "type": "string",
+                "enum": [
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
+                ]
+            },
+            "SubscriptionForm": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId"
                 ]
             }
         },

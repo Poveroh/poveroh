@@ -9,7 +9,7 @@ import {
     CountriesEnum
 } from '../contracts'
 
-export const defaultUser: User = {
+export const DEFAULT_USER: User = {
     id: '',
     name: '',
     surname: '',

@@ -2325,7 +2325,7 @@ export const SubscriptionSchema = {
             type: 'number'
         },
         cyclePeriod: {
-            type: 'string'
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
@@ -2448,7 +2448,7 @@ export const CreateSubscriptionRequestSchema = {
             type: 'number'
         },
         cyclePeriod: {
-            type: 'string'
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
@@ -2456,9 +2456,6 @@ export const CreateSubscriptionRequestSchema = {
         financialAccountId: {
             type: 'string',
             format: 'uuid'
-        },
-        isEnabled: {
-            type: 'boolean'
         }
     },
     required: [
@@ -2472,8 +2469,7 @@ export const CreateSubscriptionRequestSchema = {
         'cycleNumber',
         'cyclePeriod',
         'rememberPeriod',
-        'financialAccountId',
-        'isEnabled'
+        'financialAccountId'
     ]
 } as const
 
@@ -2550,7 +2546,7 @@ export const UpdateSubscriptionRequestSchema = {
             type: 'number'
         },
         cyclePeriod: {
-            type: 'string'
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
@@ -3743,7 +3739,7 @@ export const SubscriptionDataResponseSchema = {
             type: 'number'
         },
         cyclePeriod: {
-            type: 'string'
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
@@ -4289,7 +4285,7 @@ export const SubscriptionDataSchema = {
             type: 'number'
         },
         cyclePeriod: {
-            type: 'string'
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         rememberPeriod: {
             $ref: '#/components/schemas/RememberPeriodEnum'
@@ -4418,5 +4414,64 @@ export const TransactionDataSchema = {
         'amounts',
         'transferId',
         'transferHash'
+    ]
+} as const
+
+export const CyclePeriodEnumSchema = {
+    type: 'string',
+    enum: ['DAY', 'WEEK', 'MONTH', 'YEAR']
+} as const
+
+export const SubscriptionFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        appearanceMode: {
+            $ref: '#/components/schemas/AppearanceModeEnum'
+        },
+        appearanceLogoIcon: {
+            type: 'string'
+        },
+        firstPayment: {
+            type: 'string',
+            format: 'date-time'
+        },
+        cycleNumber: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        rememberPeriod: {
+            $ref: '#/components/schemas/RememberPeriodEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: [
+        'title',
+        'description',
+        'amount',
+        'currency',
+        'appearanceMode',
+        'appearanceLogoIcon',
+        'firstPayment',
+        'cycleNumber',
+        'cyclePeriod',
+        'rememberPeriod',
+        'financialAccountId'
     ]
 } as const

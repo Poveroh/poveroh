@@ -1,0 +1,15 @@
+import { CreateSubscriptionRequest } from '../contracts'
+
+export const DEFAULT_SUBSCRIPTION: CreateSubscriptionRequest = {
+    title: '',
+    description: '',
+    amount: 0,
+    currency: 'EUR',
+    appearanceMode: 'ICON',
+    appearanceLogoIcon: 'coffee',
+    firstPayment: new Date().toISOString().split('T')[0]!,
+    cycleNumber: 1,
+    cyclePeriod: 'MONTH',
+    rememberPeriod: 'THREE_DAYS',
+    financialAccountId: ''
+}

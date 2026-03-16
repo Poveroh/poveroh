@@ -1,8 +1,6 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useEffect, useRef, useState } from 'react'
-import { AppearanceMode, Currencies, CyclePeriod, IBrand, RememberPeriod } from '@poveroh/types'
-import { ISubscription } from '@/types/api'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useSubscription } from '@/hooks/use-subscriptions'
 import { SubscriptionForm } from '../form/subscriptions-form'
@@ -11,14 +9,15 @@ import { Button } from '@poveroh/ui/components/button'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useModal } from '@/hooks/use-modal'
+import { SubscriptionData } from '@poveroh/types/contracts'
 
 export function SubscriptionDialog() {
     const t = useTranslations()
-    const { addSubscription, editSubscription, removeSubscription } = useSubscription()
+    const { createSubscription, editSubscription, removeSubscription } = useSubscription()
 
     const modalId = 'subscription'
-    const modalManager = useModal<ISubscription>(modalId)
-    const deleteModalManager = useDeleteModal<ISubscription>()
+    const modalManager = useModal<SubscriptionData>(modalId)
+    const deleteModalManager = useDeleteModal<SubscriptionData>()
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
     const [fromTemplate, setFromTemplate] = useState<boolean>(modalManager.inEditingMode ? false : true)
@@ -51,13 +50,13 @@ export function SubscriptionDialog() {
         setTitle(t('subscriptions.modal.newTitle'))
     }
 
-    const handleFormSubmit = async (data: FormData | Partial<ISubscription>) => {
+    const handleFormSubmit = async (data: FormData | Partial<SubscriptionData>) => {
         if (data instanceof FormData) {
             throw new Error('FormData handling not implemented for subscriptions')
         } else {
             modalManager.setLoading(true)
 
-            let res: ISubscription | null
+            let res: SubscriptionData | null
 
             // edit dialog
             if (modalManager.inEditingMode && modalManager.item) {
@@ -68,7 +67,7 @@ export function SubscriptionDialog() {
                 modalManager.closeModal()
             } else {
                 // new dialog
-                res = await addSubscription(data)
+                res = await createSubscription(data)
 
                 if (!res) return
 

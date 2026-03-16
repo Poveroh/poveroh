@@ -1,5 +1,5 @@
 import { storage } from '@/lib/storage'
-import { defaultUser } from '@poveroh/types'
+import { DEFAULT_USER } from '@poveroh/types'
 import { OnBoardingStepEnum, User } from '@poveroh/types/contracts'
 import { create } from 'zustand'
 
@@ -14,7 +14,7 @@ type UserStore = {
 }
 
 export const useUserStore = create<UserStore>(set => ({
-    user: defaultUser,
+    user: DEFAULT_USER,
     setOnBoardingStep: (newStep: OnBoardingStepEnum) => {
         set(state => ({
             user: { ...state.user, onBoardingStep: newStep }
@@ -34,6 +34,6 @@ export const useUserStore = create<UserStore>(set => ({
         set(() => ({ logged: newLoggedState }))
     },
     resetAll: () => {
-        set(() => ({ user: defaultUser, logged: false }))
+        set(() => ({ user: DEFAULT_USER, logged: false }))
     }
 }))

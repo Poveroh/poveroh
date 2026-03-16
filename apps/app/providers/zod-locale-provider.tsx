@@ -9,7 +9,7 @@ export default function ZodLocaleProvider() {
     const locale = useLocale()
 
     useEffect(() => {
-        setErrorMap((issue, ctx) => {
+        setErrorMap((issue: any, ctx: any) => {
             if (issue.code === 'invalid_type') {
                 return { message: t('messages.errors.required') }
             }

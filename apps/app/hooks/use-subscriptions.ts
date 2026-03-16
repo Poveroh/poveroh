@@ -1,116 +1,159 @@
 'use client'
 
-import { getSubscriptionsOptions } from '@/api/@tanstack/react-query.gen'
-import type { Subscription } from '@/lib/api-client'
-import { useSubscriptionStore } from '@/store/subscriptions.store'
-import { CyclePeriod } from '@poveroh/types'
-import { useTranslations } from 'next-intl'
-import { useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
+import { LoadingState } from '@/types/general'
+import { SubscriptionData } from '@poveroh/types/contracts'
 import { useError } from './use-error'
+import { useSubscriptionStore } from '@/store/subscriptions.store'
+import {
+    createSubscriptionMutation,
+    deleteSubscriptionMutation,
+    getSubscriptionByIdOptions,
+    getSubscriptionByIdQueryKey,
+    getSubscriptionsOptions,
+    getSubscriptionsQueryKey,
+    updateSubscriptionMutation
+} from '@/api/@tanstack/react-query.gen'
+
+const addCycle = (date: Date, cycleNumber: number, cyclePeriod: string): Date => {
+    const next = new Date(date)
+
+    switch ((cyclePeriod || '').toUpperCase()) {
+        case 'DAY':
+            next.setDate(next.getDate() + cycleNumber)
+            return next
+        case 'WEEK':
+            next.setDate(next.getDate() + cycleNumber * 7)
+            return next
+        case 'YEAR':
+            next.setFullYear(next.getFullYear() + cycleNumber)
+            return next
+        case 'MONTH':
+        default:
+            next.setMonth(next.getMonth() + cycleNumber)
+            return next
+    }
+}
 
 export const useSubscription = () => {
-    const t = useTranslations()
+    const queryClient = useQueryClient()
     const { handleError } = useError()
+    const subscriptionStore = useSubscriptionStore()
 
-    const { subscriptionCacheList, setSubscriptions } = useSubscriptionStore()
-
-    const getSubscriptions = useQuery({
-        ...getSubscriptionsOptions(),
-        enabled: false
+    const createMutation = useMutation({
+        ...createSubscriptionMutation(),
+        onSuccess: data => {
+            const subscription = data?.data as SubscriptionData | undefined
+            if (subscription) {
+                subscriptionStore.addSubscription(subscription)
+            }
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error adding subscription')
+        }
     })
 
-    useEffect(() => {
-        if (getSubscriptions.data) {
-            setSubscriptions(getSubscriptions.data)
-        }
-    }, [getSubscriptions.data, setSubscriptions])
+    const updateMutation = useMutation({
+        ...updateSubscriptionMutation(),
+        onSuccess: (data, variables) => {
+            const subscription = (data?.data ?? variables.body) as SubscriptionData | undefined
+            if (subscription) {
+                subscriptionStore.editSubscription(subscription)
+            }
 
-    useEffect(() => {
-        if (getSubscriptions.error) {
-            handleError(getSubscriptions.error)
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getSubscriptionByIdQueryKey({
+                    path: { id: variables.path.id }
+                })
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error updating subscription')
         }
-    }, [getSubscriptions.error, handleError])
+    })
+
+    const deleteMutation = useMutation({
+        ...deleteSubscriptionMutation(),
+        onSuccess: (_, variables) => {
+            subscriptionStore.removeSubscription(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting subscription')
+        }
+    })
 
     const fetchSubscriptions = async () => {
-        const result = await getSubscriptions.refetch()
-        if (result.data) {
-            setSubscriptions(result.data)
+        try {
+            const response = await queryClient.fetchQuery(getSubscriptionsOptions())
+
+            if (!response?.success) return []
+
+            return response?.data as SubscriptionData[]
+        } catch (error) {
+            return handleError(error, 'Error fetching subscriptions')
         }
-        if (result.error) {
-            handleError(result.error)
-        }
-        return result.data ?? null
     }
 
-    const subscriptionLoading = getSubscriptions.isFetching
+    const getSubscription = async (subscriptionId: string) => {
+        try {
+            const response = await queryClient.fetchQuery(
+                getSubscriptionByIdOptions({
+                    path: { id: subscriptionId }
+                })
+            )
 
-    const getNextExecutionText = (subscription: Subscription, fromDate: Date = new Date()) => {
-        const now = fromDate
-        const next = new Date(subscription.firstPayment)
+            if (!response?.success) return null
 
-        const cycleNumber = Number(subscription.cycleNumber)
+            return response?.data as SubscriptionData
+        } catch (error) {
+            return handleError(error, 'Error fetching subscription')
+        }
+    }
 
-        while (next < now) {
-            switch (subscription.cyclePeriod) {
-                case CyclePeriod.DAY:
-                    next.setDate(next.getDate() + cycleNumber)
-                    break
-                case CyclePeriod.WEEK:
-                    next.setDate(next.getDate() + 7 * cycleNumber)
-                    break
-                case CyclePeriod.MONTH:
-                    next.setMonth(next.getMonth() + cycleNumber)
-                    break
-                case CyclePeriod.YEAR:
-                    next.setFullYear(next.getFullYear() + cycleNumber)
-                    break
-            }
+    const getNextExecutionText = (subscription: Partial<SubscriptionData>) => {
+        if (!subscription.firstPayment) return ''
+
+        const firstPayment = new Date(subscription.firstPayment)
+        if (Number.isNaN(firstPayment.getTime())) return ''
+
+        const cycleNumber = Math.max(1, Number(subscription.cycleNumber) || 1)
+        const cyclePeriod = String(subscription.cyclePeriod || 'MONTH')
+
+        let nextExecution = new Date(firstPayment)
+        const now = new Date()
+
+        for (let i = 0; i < 500 && nextExecution < now; i++) {
+            nextExecution = addCycle(nextExecution, cycleNumber, cyclePeriod)
         }
 
-        const msDiff = next.getTime() - now.getTime()
-        const days = Math.ceil(msDiff / (1000 * 60 * 60 * 24))
+        return nextExecution.toLocaleDateString()
+    }
 
-        if (days === 0) {
-            return t('format.today')
-        }
-        if (days === 1) {
-            return t('format.tomorrow')
-        }
-        if (days < 7) {
-            return t('format.inLabel', {
-                a: days,
-                b: t('format.day').toLocaleLowerCase()
-            })
-        }
-        if (days < 30) {
-            return t('format.inLabel', {
-                a: Math.round(days / 7),
-                b: t('format.week').toLocaleLowerCase()
-            })
-        }
-        if (days < 365) {
-            return t('format.inLabel', {
-                a: Math.round(days / 30),
-                b: t('format.month').toLocaleLowerCase()
-            })
-        }
-
-        return t('format.inLabel', {
-            a: Math.round(days / 365),
-            b: t('format.year').toLocaleLowerCase()
-        })
+    const subscriptionLoading: LoadingState = {
+        create: createMutation.isPending,
+        update: updateMutation.isPending,
+        delete: deleteMutation.isPending,
+        fetch: useIsFetching({ queryKey: getSubscriptionsQueryKey() }) > 0,
+        get:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getSubscriptionById'
+                }
+            }) > 0
     }
 
     return {
-        subscriptionCacheList,
+        subscriptionCacheList: subscriptionStore.subscriptionCacheList,
         subscriptionLoading,
+        createSubscription: createMutation.mutateAsync,
+        editSubscription: updateMutation.mutateAsync,
+        removeSubscription: deleteMutation.mutateAsync,
+        getSubscription,
         fetchSubscriptions,
-        // addSubscription,
-        // editSubscription,
-        // removeSubscription,
-        // getSubscription,
         getNextExecutionText
-        // fetchSubscriptions
     }
 }

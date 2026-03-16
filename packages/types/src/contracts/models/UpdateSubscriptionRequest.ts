@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AppearanceModeEnum } from './AppearanceModeEnum';
 import type { CurrencyEnum } from './CurrencyEnum';
+import type { CyclePeriodEnum } from './CyclePeriodEnum';
 import type { RememberPeriodEnum } from './RememberPeriodEnum';
 export type UpdateSubscriptionRequest = {
     title?: string;
@@ -14,7 +15,7 @@ export type UpdateSubscriptionRequest = {
     appearanceLogoIcon?: string;
     firstPayment?: string;
     cycleNumber?: number;
-    cyclePeriod?: string;
+    cyclePeriod?: CyclePeriodEnum;
     rememberPeriod?: RememberPeriodEnum;
     financialAccountId?: string;
     isEnabled?: boolean;

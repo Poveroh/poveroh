@@ -256,6 +256,11 @@ export const RememberPeriodEnum = z
     .openapi('RememberPeriodEnum')
 
 /**
+ * Cycle period enum representing the supported cycle periods
+ */
+export const CyclePeriodEnum = z.enum(['DAY', 'WEEK', 'MONTH', 'YEAR']).openapi('CyclePeriodEnum')
+
+/**
  * Appearance mode enum representing the available branding display modes
  */
 export const AppearanceModeEnum = z.enum(['LOGO', 'ICON']).openapi('AppearanceModeEnum')
