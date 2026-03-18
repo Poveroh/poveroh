@@ -6,7 +6,7 @@ import { groupBrandByCategory } from '@/utils/brands'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { Input } from '@poveroh/ui/components/input'
 import SimpleBar from 'simplebar-react'
-import 'simplebar-react/dist/simplebar.min.css'
+import 'simplebar-react/simplebar.min.css'
 
 type FormProps = {
     dataCallback: (brand: Brand) => void

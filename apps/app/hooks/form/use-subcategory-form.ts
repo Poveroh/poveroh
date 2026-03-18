@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
 import { SubcategoryData, SubcategoryForm } from '@poveroh/types/contracts'
-import { SubcategoryFormSchema } from '@poveroh/schemas/dist/openapi/schemas'
+import { SubcategoryFormSchema } from '@poveroh/schemas'
 
 export function useSubcategoryForm(initialData: SubcategoryData | null, inEditingMode: boolean = false) {
     const { handleError } = useError()
