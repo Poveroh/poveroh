@@ -2,7 +2,7 @@
 
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query'
 
-import { client } from '../client.gen.js'
+import { client } from '../client.gen'
 import {
     changeEmail,
     changePassword,
@@ -83,7 +83,7 @@ import {
     updateTransaction,
     updateUser,
     verifyPassword
-} from '../sdk.gen.js'
+} from '../sdk.gen'
 import type {
     ChangeEmailData,
     ChangeEmailError,
@@ -317,7 +317,7 @@ import type {
     VerifyPasswordData,
     VerifyPasswordError,
     VerifyPasswordResponse
-} from '../types.gen.js'
+} from '../types.gen'
 
 /**
  * Delete all categories
@@ -867,6 +867,33 @@ export const updateImportMutation = (
     }
     return mutationOptions
 }
+
+export const getImportTransactionsByIdQueryKey = (options: Options<GetImportTransactionsByIdData>) =>
+    createQueryKey('getImportTransactionsById', options)
+
+/**
+ * Get import transactions by ID
+ *
+ * Retrieve transactions for a specific import by its ID
+ */
+export const getImportTransactionsByIdOptions = (options: Options<GetImportTransactionsByIdData>) =>
+    queryOptions<
+        GetImportTransactionsByIdResponse,
+        GetImportTransactionsByIdError,
+        GetImportTransactionsByIdResponse,
+        ReturnType<typeof getImportTransactionsByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getImportTransactionsById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getImportTransactionsByIdQueryKey(options)
+    })
 
 /**
  * Complete import
@@ -1510,33 +1537,6 @@ export const updateAuthenticatedUserMutation = (
     return mutationOptions
 }
 
-export const getImportTransactionsByIdQueryKey = (options: Options<GetImportTransactionsByIdData>) =>
-    createQueryKey('getImportTransactionsById', options)
-
-/**
- * Get import transactions by ID
- *
- * Retrieve transactions for a specific import by its ID
- */
-export const getImportTransactionsByIdOptions = (options: Options<GetImportTransactionsByIdData>) =>
-    queryOptions<
-        GetImportTransactionsByIdResponse,
-        GetImportTransactionsByIdError,
-        GetImportTransactionsByIdResponse,
-        ReturnType<typeof getImportTransactionsByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getImportTransactionsById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getImportTransactionsByIdQueryKey(options)
-    })
-
 /**
  * Sign in with a social provider
  */
@@ -1546,6 +1546,39 @@ export const socialSignInMutation = (
     const mutationOptions: UseMutationOptions<SocialSignInResponse, SocialSignInError, Options<SocialSignInData>> = {
         mutationFn: async fnOptions => {
             const { data } = await socialSignIn({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getCallbackByIdQueryKey = (options?: Options<GetCallbackByIdData>) =>
+    createQueryKey('getCallbackById', options)
+
+export const getCallbackByIdOptions = (options?: Options<GetCallbackByIdData>) =>
+    queryOptions<unknown, GetCallbackByIdError, unknown, ReturnType<typeof getCallbackByIdQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getCallbackById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getCallbackByIdQueryKey(options)
+    })
+
+export const postCallbackByIdMutation = (
+    options?: Partial<Options<PostCallbackByIdData>>
+): UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> => {
+    const mutationOptions: UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await postCallbackById({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1782,6 +1815,25 @@ export const changePasswordMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await changePassword({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update the current session
+ */
+export const updateSessionMutation = (
+    options?: Partial<Options<UpdateSessionData>>
+): UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> => {
+    const mutationOptions: UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateSession({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -2180,55 +2232,3 @@ export const getErrorOptions = (options?: Options<GetErrorData>) =>
         },
         queryKey: getErrorQueryKey(options)
     })
-
-export const getCallbackByIdQueryKey = (options?: Options<GetCallbackByIdData>) =>
-    createQueryKey('getCallbackById', options)
-
-export const getCallbackByIdOptions = (options?: Options<GetCallbackByIdData>) =>
-    queryOptions<unknown, GetCallbackByIdError, unknown, ReturnType<typeof getCallbackByIdQueryKey>>({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getCallbackById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getCallbackByIdQueryKey(options)
-    })
-
-export const postCallbackByIdMutation = (
-    options?: Partial<Options<PostCallbackByIdData>>
-): UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> => {
-    const mutationOptions: UseMutationOptions<unknown, PostCallbackByIdError, Options<PostCallbackByIdData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await postCallbackById({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Update the current session
- */
-export const updateSessionMutation = (
-    options?: Partial<Options<UpdateSessionData>>
-): UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> => {
-    const mutationOptions: UseMutationOptions<UpdateSessionResponse, UpdateSessionError, Options<UpdateSessionData>> = {
-        mutationFn: async fnOptions => {
-            const { data } = await updateSession({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}

@@ -21,9 +21,6 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 
-import { TransactionAction, FilterField, DateFilter, TransactionsFilterTypes } from '@poveroh/types'
-import { IFilterOptions, ITransaction, ITransactionFilters } from '@/types/api'
-
 import { isEmpty } from '@poveroh/utils'
 import Divider from '@/components/other/divider'
 import { Header } from '@/components/other/header-page'
@@ -40,6 +37,53 @@ import { ViewModeType } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { useConfig } from '@/hooks/use-config'
 import moment from 'moment-timezone'
+import {
+    DateFilter,
+    FilterOptions,
+    Transaction,
+    TransactionActionEnum,
+    TransactionData,
+    TransactionFilters
+} from '@/api/types.gen'
+
+//TODO: this file is getting quite big, consider splitting it into smaller components (for example the table view and the list view could be separate components, and the filter logic could also be extracted to a separate hook or component)
+//TODO: after update, review types and logics
+
+type FilterField =
+    | {
+          name: string
+          label: string
+          type: 'select'
+          options: Array<{ label: string; value: string }>
+      }
+    | {
+          name: string
+          label: string
+          type: 'text' | 'number' | 'date'
+      }
+    | {
+          fromName: string
+          toName: string
+          label: string
+          type: 'dateRange'
+      }
+
+type FlatTransactionFilters = {
+    type?: TransactionActionEnum
+    categoryId?: string
+    subcategoryId?: string
+    financialAccountId?: string
+    fromDate?: string
+    toDate?: string
+}
+
+const isDateFilter = (value: unknown): value is DateFilter => {
+    if (typeof value !== 'object' || value === null) {
+        return false
+    }
+
+    return 'gte' in value || 'lte' in value
+}
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -54,14 +98,14 @@ export default function TransactionsView() {
         groupTransactionsByDate,
         transactionLoading
     } = useTransaction()
-    const { categoryCacheList, fetchCategory, categoryLoading } = useCategory()
-    const { financialAccountCacheList, fetchFinancialAccount, financialAccountLoading } = useFinancialAccount()
+    const { categoryCacheList, fetchCategories, categoryLoading } = useCategory()
+    const { financialAccountCacheList, fetchFinancialAccounts, financialAccountLoading } = useFinancialAccount()
     const { renderDate, preferedLanguage } = useConfig()
 
-    const { openModal } = useModal<ITransaction>('transaction')
-    const { openModal: openDeleteModal } = useDeleteModal<ITransaction>()
+    const { openModal } = useModal<TransactionData>('transaction')
+    const { openModal: openDeleteModal } = useDeleteModal<TransactionData>()
 
-    const [localTransactionList, setLocalTransactionList] = useState<ITransaction[]>([])
+    const [localTransactionList, setLocalTransactionList] = useState<Transaction[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [totalCount, setTotalCount] = useState(0)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
@@ -71,14 +115,14 @@ export default function TransactionsView() {
         return (saved as ViewModeType) || 'list'
     })
 
-    const [transactionFilterSetting, setTransactionFilterSetting] = useState<IFilterOptions>({
+    const [transactionFilterSetting, setTransactionFilterSetting] = useState<FilterOptions>({
         skip: 0,
         take: 20
     })
 
     // Initialize filters from URL parameters
-    const [filters, setFilters] = useState<ITransactionFilters>(() => {
-        const params: ITransactionFilters = {}
+    const [filters, setFilters] = useState<TransactionFilters>(() => {
+        const params: TransactionFilters = {}
         const categoryId = searchParams.get('categoryId')
         const subcategoryId = searchParams.get('subcategoryId')
         const financialAccountId = searchParams.get('financialAccountId')
@@ -89,26 +133,26 @@ export default function TransactionsView() {
         if (categoryId) params.categoryId = categoryId
         if (subcategoryId) params.subcategoryId = subcategoryId
         if (financialAccountId) params.financialAccountId = financialAccountId
-        if (type) params.type = type as TransactionAction
+        if (type) params.type = type as TransactionActionEnum
         if (fromDate || toDate) {
-            params.date = {}
-            if (fromDate) params.date.gte = fromDate
-            if (toDate) params.date.lte = toDate
+            //TODO: understand why this parsing is needed and if it can be simplified, maybe by changing the backend to accept date strings in the correct format directly
+            // params.date = {}
+            // if (fromDate) params.date.gte = fromDate
+            // if (toDate) params.date.lte = toDate
         }
 
         return params
     })
 
     useEffect(() => {
-        fetchCategory()
-        fetchFinancialAccount()
+        fetchCategories()
+        fetchFinancialAccounts()
 
         if (viewMode === 'table') {
             loadTransactionsPaginated(transactionFilterSetting)
         } else {
             fetchTransaction(filters, transactionFilterSetting)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -162,25 +206,30 @@ export default function TransactionsView() {
 
         scrollContainer.addEventListener('scroll', handleScroll)
         return () => scrollContainer.removeEventListener('scroll', handleScroll)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoadingMore, viewMode, filters, transactionFilterSetting])
 
-    const updateURLParams = (newFilters: ITransactionFilters) => {
+    const updateURLParams = (newFilters: TransactionFilters) => {
         const params = new URLSearchParams()
 
-        if (newFilters.categoryId) params.set('categoryId', newFilters.categoryId)
-        if (newFilters.subcategoryId) params.set('subcategoryId', newFilters.subcategoryId)
-        if (newFilters.financialAccountId) params.set('financialAccountId', newFilters.financialAccountId)
-        if (newFilters.type) params.set('type', newFilters.type)
-        if (newFilters.date?.gte) params.set('fromDate', newFilters.date.gte)
-        if (newFilters.date?.lte) params.set('toDate', newFilters.date.lte)
+        if (typeof newFilters.categoryId === 'string') params.set('categoryId', newFilters.categoryId)
+        if (typeof newFilters.subcategoryId === 'string') params.set('subcategoryId', newFilters.subcategoryId)
+        if (typeof newFilters.financialAccountId === 'string') {
+            params.set('financialAccountId', newFilters.financialAccountId)
+        }
+        if (typeof newFilters.type === 'string') params.set('type', newFilters.type)
+
+        const dateFilter = newFilters.date
+        if (isDateFilter(dateFilter)) {
+            if (dateFilter.gte) params.set('fromDate', dateFilter.gte)
+            if (dateFilter.lte) params.set('toDate', dateFilter.lte)
+        }
 
         const queryString = params.toString()
         const newPath = queryString ? `/transactions?${queryString}` : '/transactions'
         router.replace(newPath, { scroll: false })
     }
 
-    const handleFilterChange = (newFilters: ITransactionFilters) => {
+    const handleFilterChange = (newFilters: TransactionFilters) => {
         setFilters(newFilters)
         updateURLParams(newFilters)
 
@@ -195,7 +244,7 @@ export default function TransactionsView() {
         }
     }
 
-    const loadTransactionsPaginated = async (options: IFilterOptions, filtersToUse?: ITransactionFilters) => {
+    const loadTransactionsPaginated = async (options: FilterOptions, filtersToUse?: TransactionFilters) => {
         const activeFilters = filtersToUse !== undefined ? filtersToUse : filters
 
         const optionsWithSort = {
@@ -274,9 +323,9 @@ export default function TransactionsView() {
             label: 'form.type.label',
             type: 'select',
             options: [
-                { label: 'Income', value: TransactionAction.INCOME },
-                { label: 'Expense', value: TransactionAction.EXPENSES },
-                { label: 'Transfer', value: TransactionAction.TRANSFER }
+                { label: 'Income', value: 'INCOME' },
+                { label: 'Expense', value: 'EXPENSES' },
+                { label: 'Transfer', value: 'TRANSFER' }
             ]
         },
         {
@@ -305,11 +354,11 @@ export default function TransactionsView() {
         }
     ]
 
-    const handleFlatFilterChange = (newFlatFilters: ITransactionFilters) => {
-        const newFilters: ITransactionFilters = {}
+    const handleFlatFilterChange = (newFlatFilters: FlatTransactionFilters) => {
+        const newFilters: TransactionFilters = {}
 
         if (newFlatFilters.type) {
-            newFilters.type = newFlatFilters.type as TransactionAction
+            newFilters.type = newFlatFilters.type as TransactionActionEnum
         }
         if (newFlatFilters.categoryId && newFlatFilters.categoryId !== '') {
             newFilters.categoryId = newFlatFilters.categoryId
@@ -336,8 +385,8 @@ export default function TransactionsView() {
         handleFilterChange(newFilters)
     }
 
-    const removeFilter = (key: keyof ITransactionFilters) => {
-        const newFilters: ITransactionFilters = { ...filters }
+    const removeFilter = (key: keyof TransactionFilters) => {
+        const newFilters: TransactionFilters = { ...filters }
 
         if (key === 'date') {
             delete newFilters.date
@@ -348,9 +397,11 @@ export default function TransactionsView() {
         handleFilterChange(newFilters)
     }
 
-    const getFilterLabel = (key: keyof ITransactionFilters, value: TransactionsFilterTypes) => {
+    const getFilterLabel = (key: keyof TransactionFilters, value: TransactionFilters[keyof TransactionFilters]) => {
         if (key === 'type') {
-            return value === TransactionAction.INCOME ? 'Income' : 'Expense'
+            if (value === 'INCOME') return 'Income'
+            if (value === 'EXPENSES') return 'Expense'
+            if (value === 'TRANSFER') return 'Transfer'
         }
         if (key === 'categoryId') {
             return categoryCacheList.find(c => c.id === value)?.title || String(value)
@@ -359,23 +410,26 @@ export default function TransactionsView() {
             return financialAccountCacheList.find(a => a.id === value)?.title || String(value)
         }
         if (key === 'date') {
-            const dateFilter = value as DateFilter
-            if (dateFilter.gte && dateFilter.lte) {
+            if (!isDateFilter(value)) {
+                return String(value)
+            }
+
+            if (value.gte && value.lte) {
                 return (
                     <div className='flex flex-row gap-1'>
-                        {renderDate(dateFilter.gte)}
+                        {renderDate(value.gte)}
                         <DynamicIcon name='move-right' />
-                        {renderDate(dateFilter.lte)}
+                        {renderDate(value.lte)}
                     </div>
                 )
             }
-            if (dateFilter.gte) return `From ${renderDate(dateFilter.gte)}`
-            if (dateFilter.lte) return `To ${renderDate(dateFilter.lte)}`
+            if (value.gte) return `From ${renderDate(value.gte)}`
+            if (value.lte) return `To ${renderDate(value.lte)}`
         }
         return String(value)
     }
 
-    const columns: ColumnDef<ITransaction>[] = [
+    const columns: ColumnDef<Transaction>[] = [
         {
             id: 'select',
             header: ({ table }) => (
@@ -448,8 +502,8 @@ export default function TransactionsView() {
             cell: ({ row }) => {
                 const transaction = row.original
                 const amount = transaction.amounts[0]?.amount || 0
-                const isExpense = transaction.action === TransactionAction.EXPENSES
-                const isTransfer = transaction.action === TransactionAction.TRANSFER
+                const isExpense = transaction.action === 'EXPENSES'
+                const isTransfer = transaction.action === 'TRANSFER'
 
                 return (
                     <p>
@@ -492,7 +546,7 @@ export default function TransactionsView() {
             id: 'subcategory',
             accessorFn: row => {
                 const category = categoryCacheList.find(c => c.id === row.categoryId)
-                return category?.subcategories.find(s => s.id === row.subcategoryId)?.title || ''
+                return category?.subcategories?.find(s => s.id === row.subcategoryId)?.title || ''
             },
             header: ({ column }) => {
                 return (
@@ -512,7 +566,7 @@ export default function TransactionsView() {
 
                 if (!category) return <p></p>
 
-                const subcategory = category.subcategories.find(s => s.id === transaction.subcategoryId)
+                const subcategory = category.subcategories?.find(s => s.id === transaction.subcategoryId)
 
                 if (!subcategory) return <p></p>
 
@@ -532,7 +586,7 @@ export default function TransactionsView() {
             accessorFn: row => {
                 const firstAccount =
                     financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || ''
-                if (row.action === TransactionAction.TRANSFER && row.amounts[1]) {
+                if (row.action === 'TRANSFER' && row.amounts[1]) {
                     const secondAccount =
                         financialAccountCacheList.find(a => a.id === row.amounts[1]?.financialAccountId)?.title || ''
                     return `${firstAccount} → ${secondAccount}`
@@ -557,7 +611,7 @@ export default function TransactionsView() {
                     a => a.id === transaction.amounts[0]?.financialAccountId
                 )
 
-                if (transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]) {
+                if (transaction.action === 'TRANSFER' && transaction.amounts[1]) {
                     const secondAccount = financialAccountCacheList.find(
                         a => a.id === transaction.amounts[1]?.financialAccountId
                     )
@@ -580,7 +634,7 @@ export default function TransactionsView() {
 
                 return (
                     <div onClick={e => e.stopPropagation()} className='w-fit'>
-                        <OptionsPopover<ITransaction>
+                        <OptionsPopover<Transaction>
                             data={transaction}
                             buttons={[
                                 {
@@ -619,11 +673,11 @@ export default function TransactionsView() {
                             }
                         },
                         loading:
-                            transactionLoading.fetch || categoryLoading.fetchCategory || financialAccountLoading.fetch
+                            transactionLoading.fetch || categoryLoading.fetchCategories || financialAccountLoading.fetch
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
-                        loading: transactionLoading.add
+                        loading: transactionLoading.create
                     }}
                 />
 
@@ -642,17 +696,34 @@ export default function TransactionsView() {
                                     key={key}
                                     variant='secondary'
                                     className='flex items-center gap-1'
-                                    onClick={() => removeFilter(key as keyof ITransactionFilters)}
+                                    onClick={() => removeFilter(key as keyof TransactionFilters)}
                                 >
-                                    {getFilterLabel(key as keyof ITransactionFilters, value)}
+                                    {getFilterLabel(key as keyof TransactionFilters, value)}
                                     <X />
                                 </Button>
                             ))}
                         </div>
 
-                        <FilterButton<ITransactionFilters>
+                        <FilterButton<FlatTransactionFilters>
                             fields={filterFields}
-                            filters={filters}
+                            filters={{
+                                type:
+                                    typeof filters.type === 'string'
+                                        ? (filters.type as TransactionActionEnum)
+                                        : undefined,
+                                categoryId:
+                                    typeof filters.categoryId === 'string' ? (filters.categoryId as string) : undefined,
+                                subcategoryId:
+                                    typeof filters.subcategoryId === 'string'
+                                        ? (filters.subcategoryId as string)
+                                        : undefined,
+                                financialAccountId:
+                                    typeof filters.financialAccountId === 'string'
+                                        ? (filters.financialAccountId as string)
+                                        : undefined,
+                                fromDate: isDateFilter(filters.date) ? filters.date.gte : undefined,
+                                toDate: isDateFilter(filters.date) ? filters.date.lte : undefined
+                            }}
                             onFilterChange={handleFlatFilterChange}
                         />
                     </div>
@@ -686,9 +757,9 @@ export default function TransactionsView() {
                                 .map(([date, transactions]) => {
                                     const dailyTotal = transactions.reduce((sum, transaction) => {
                                         const amount = Number(transaction.amounts[0]?.amount || 0)
-                                        if (transaction.action === TransactionAction.EXPENSES) {
+                                        if (transaction.action === 'EXPENSES') {
                                             return sum - amount
-                                        } else if (transaction.action === TransactionAction.INCOME) {
+                                        } else if (transaction.action === 'INCOME') {
                                             return sum + amount
                                         }
                                         return sum
@@ -721,7 +792,7 @@ export default function TransactionsView() {
                                                         <TransactionItem
                                                             key={transaction.id}
                                                             transaction={transaction}
-                                                            openEdit={(item: ITransaction) => {
+                                                            openEdit={(item: TransactionData) => {
                                                                 openModal('edit', item)
                                                             }}
                                                             openDelete={openDeleteModal}

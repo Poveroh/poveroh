@@ -2,30 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
 
-import { IImport } from '@/types/api'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
 import { useImport } from '../use-imports'
+import { ImportData } from '@poveroh/types/contracts'
+import { ImportDataSchema } from '@poveroh/schemas'
 
-export function useImportForm(initialData?: IImport | null, inEditingMode?: boolean) {
-    const t = useTranslations()
-
+export function useImportForm(initialData: ImportData | null) {
     const { handleError } = useError()
-    const { parseTransactionFromFile } = useImport()
+    const { createImportFromFile } = useImport()
 
     const [files, setFiles] = useState<FileList | null>(null)
     const [loading, setLoading] = useState(false)
 
-    const formSchema = z.object({
-        financialAccountId: z.string().nonempty(t('messages.errors.required'))
-    })
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<ImportData>({
+        resolver: zodResolver(ImportDataSchema),
         defaultValues: {
             financialAccountId: initialData?.financialAccountId || ''
         }
@@ -38,8 +31,8 @@ export function useImportForm(initialData?: IImport | null, inEditingMode?: bool
     }, [form.formState.errors])
 
     const handleParseForm = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: FormData) => Promise<void>
+        values: ImportData,
+        dataCallback: (formData: Partial<ImportData>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
@@ -54,10 +47,10 @@ export function useImportForm(initialData?: IImport | null, inEditingMode?: bool
                 })
             }
 
-            await parseTransactionFromFile(formData)
+            await createImportFromFile(formData)
             setLoading(false)
 
-            await dataCallback(formData)
+            await dataCallback(values, files ? Array.from(files) : [])
         } catch (error) {
             setLoading(false)
             handleError(error, 'Form error')

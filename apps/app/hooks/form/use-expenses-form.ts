@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
-import { ExpensesFormData, TransactionAction } from '@poveroh/types'
-import { ITransaction } from '@/types/api'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps, amountSchema } from '@/types/form'
 import { useConfig } from '../use-config'
+import { ExpensesFormData } from '@poveroh/types'
+import { TransactionData } from '@poveroh/types/contracts'
 
 export function useExpensesForm(props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()
@@ -23,10 +23,10 @@ export function useExpensesForm(props: TransactionFormProps) {
         ignore: false
     }
 
-    const transformExpensesData = (data: ITransaction): ExpensesFormData => {
+    const transformExpensesData = (data: TransactionData): ExpensesFormData => {
         if (!data || typeof data !== 'object') return defaultExpensesValues
 
-        const transaction = data as ITransaction
+        const transaction = data as TransactionData
 
         // Handle amounts array if present
         const amounts = transaction.amounts as
@@ -89,7 +89,7 @@ export function useExpensesForm(props: TransactionFormProps) {
     const expensesSchema = z.discriminatedUnion('multipleAmount', [amountsSchema, accountSchema])
 
     const expensesConfig: BaseTransactionFormConfig<ExpensesFormData> = {
-        type: TransactionAction.EXPENSES,
+        type: 'EXPENSES',
         defaultValues: defaultExpensesValues,
         schema: expensesSchema,
         transformInitialData: transformExpensesData

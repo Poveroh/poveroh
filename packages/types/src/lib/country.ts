@@ -1,4 +1,4 @@
-import { Item } from './item.js'
+import { Item } from './item'
 
 export type Country = Item & {
     flagUrl: string

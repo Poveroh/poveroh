@@ -19,8 +19,223 @@
             "description": "API Poveroh Production v1"
         }
     ],
+    "tags": [
+        {
+            "name": "Default",
+            "description": "Default endpoints that are included with Better Auth by default. These endpoints are not part of any plugin."
+        }
+    ],
     "components": {
         "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "emailVerified": {
+                        "type": "boolean"
+                    },
+                    "onBoardingStep": {
+                        "$ref": "#/components/schemas/OnBoardingStepEnum"
+                    },
+                    "onBoardingAt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "snapshotFrequency": {
+                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
+                    },
+                    "preferredCurrency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "preferredLanguage": {
+                        "$ref": "#/components/schemas/LanguageEnum"
+                    },
+                    "dateFormat": {
+                        "$ref": "#/components/schemas/DateFormatEnum"
+                    },
+                    "country": {
+                        "$ref": "#/components/schemas/CountriesEnum"
+                    },
+                    "timezone": {
+                        "$ref": "#/components/schemas/TimezoneEnum"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "surname",
+                    "email",
+                    "emailVerified",
+                    "onBoardingStep",
+                    "onBoardingAt",
+                    "image",
+                    "createdAt",
+                    "updatedAt",
+                    "snapshotFrequency",
+                    "preferredCurrency",
+                    "preferredLanguage",
+                    "dateFormat",
+                    "country",
+                    "timezone"
+                ]
+            },
+            "Session": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "expiresAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "default": "Generated at runtime"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ipAddress": {
+                        "type": "string"
+                    },
+                    "userAgent": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "expiresAt",
+                    "token",
+                    "createdAt",
+                    "updatedAt",
+                    "userId"
+                ]
+            },
+            "Account": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "accountId": {
+                        "type": "string"
+                    },
+                    "providerId": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "accessToken": {
+                        "type": "string"
+                    },
+                    "refreshToken": {
+                        "type": "string"
+                    },
+                    "idToken": {
+                        "type": "string"
+                    },
+                    "accessTokenExpiresAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "refreshTokenExpiresAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "default": "Generated at runtime"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "accountId",
+                    "providerId",
+                    "userId",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "Verification": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "identifier": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "expiresAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "default": "Generated at runtime"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "default": "Generated at runtime"
+                    }
+                },
+                "required": [
+                    "identifier",
+                    "value",
+                    "expiresAt",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
             "TransactionActionEnum": {
                 "type": "string",
                 "enum": [
@@ -129,6 +344,102 @@
                     "updatedAt"
                 ]
             },
+            "CategoryData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "CategoryDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "for",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
             "GetCategoryListResponse": {
                 "type": "object",
                 "properties": {
@@ -146,7 +457,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/CategoryDataResponse"
+                            "$ref": "#/components/schemas/CategoryData"
                         },
                         "description": "Response data"
                     }
@@ -172,7 +483,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/CategoryDataResponse"
+                                "$ref": "#/components/schemas/CategoryData"
                             },
                             {
                                 "description": "Response data"
@@ -247,7 +558,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/CategoryDataResponse"
+                                "$ref": "#/components/schemas/CategoryData"
                             },
                             {
                                 "description": "Response data"
@@ -406,6 +717,30 @@
                     }
                 }
             },
+            "DashboardLayoutItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "colSpan": {
+                        "type": "number"
+                    },
+                    "minHeight": {
+                        "type": "number"
+                    },
+                    "visible": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "colSpan",
+                    "minHeight"
+                ]
+            },
             "DashboardLayout": {
                 "type": "object",
                 "properties": {
@@ -442,6 +777,24 @@
                     "layout",
                     "createdAt",
                     "updatedAt"
+                ]
+            },
+            "GetDashboardLayout": {
+                "type": "object",
+                "properties": {
+                    "layout": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DashboardLayoutItem"
+                        }
+                    },
+                    "version": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "layout",
+                    "version"
                 ]
             },
             "GetDashboardLayoutResponse": {
@@ -755,6 +1108,15 @@
                     "FOURTEEN_DAYS",
                     "THIRTY_DAYS",
                     "NINETY_DAYS"
+                ]
+            },
+            "CyclePeriodEnum": {
+                "type": "string",
+                "enum": [
+                    "DAY",
+                    "WEEK",
+                    "MONTH",
+                    "YEAR"
                 ]
             },
             "AppearanceModeEnum": {
@@ -1160,6 +1522,90 @@
                     "updatedAt"
                 ]
             },
+            "FinancialAccountData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "FinancialAccountDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
             "GetFinancialAccountListResponse": {
                 "type": "object",
                 "properties": {
@@ -1177,7 +1623,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/FinancialAccountDataResponse"
+                            "$ref": "#/components/schemas/FinancialAccountData"
                         },
                         "description": "Response data"
                     }
@@ -1203,7 +1649,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/FinancialAccountDataResponse"
+                                "$ref": "#/components/schemas/FinancialAccountData"
                             },
                             {
                                 "description": "Response data"
@@ -1278,7 +1724,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/FinancialAccountDataResponse"
+                                "$ref": "#/components/schemas/FinancialAccountData"
                             },
                             {
                                 "description": "Response data"
@@ -1705,6 +2151,186 @@
                     "updatedAt"
                 ]
             },
+            "ImportData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportFile"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "financialAccountId",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ImportDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportFile"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "financialAccountId",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ImportTransactionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "action",
+                    "status",
+                    "ignore",
+                    "createdAt",
+                    "updatedAt",
+                    "media",
+                    "amounts",
+                    "transferId",
+                    "transferHash"
+                ]
+            },
             "GetImportListResponse": {
                 "type": "object",
                 "properties": {
@@ -1722,7 +2348,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ImportDataResponse"
+                            "$ref": "#/components/schemas/ImportData"
                         },
                         "description": "Response data"
                     }
@@ -1748,12 +2374,38 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/ImportDataResponse"
+                                "$ref": "#/components/schemas/ImportData"
                             },
                             {
                                 "description": "Response data"
                             }
                         ]
+                    }
+                },
+                "required": [
+                    "success"
+                ]
+            },
+            "GetImportTransactionsResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ],
+                        "description": "Always true for success responses"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportTransactionDataResponse"
+                        },
+                        "description": "Response data"
                     }
                 },
                 "required": [
@@ -1808,7 +2460,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/ImportDataResponse"
+                                "$ref": "#/components/schemas/ImportData"
                             },
                             {
                                 "description": "Response data"
@@ -1845,7 +2497,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/ImportDataResponse"
+                                "$ref": "#/components/schemas/ImportData"
                             },
                             {
                                 "description": "Response data"
@@ -2251,6 +2903,84 @@
                     "timestamp"
                 ]
             },
+            "SubcategoryData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "categoryId",
+                    "title",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubcategoryDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "categoryId",
+                    "title",
+                    "logoIcon",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
             "GetSubcategoryListResponse": {
                 "type": "object",
                 "properties": {
@@ -2268,7 +2998,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/SubcategoryDataResponse"
+                            "$ref": "#/components/schemas/SubcategoryData"
                         },
                         "description": "Response data"
                     }
@@ -2294,7 +3024,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/SubcategoryDataResponse"
+                                "$ref": "#/components/schemas/SubcategoryData"
                             },
                             {
                                 "description": "Response data"
@@ -2366,7 +3096,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/SubcategoryDataResponse"
+                                "$ref": "#/components/schemas/SubcategoryData"
                             },
                             {
                                 "description": "Response data"
@@ -2579,6 +3309,150 @@
                     "updatedAt"
                 ]
             },
+            "SubscriptionData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId",
+                    "isEnabled",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "SubscriptionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId",
+                    "isEnabled",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
             "GetSubscriptionListResponse": {
                 "type": "object",
                 "properties": {
@@ -2596,7 +3470,7 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/SubscriptionDataResponse"
+                            "$ref": "#/components/schemas/SubscriptionData"
                         },
                         "description": "Response data"
                     }
@@ -2622,7 +3496,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/SubscriptionDataResponse"
+                                "$ref": "#/components/schemas/SubscriptionData"
                             },
                             {
                                 "description": "Response data"
@@ -2671,6 +3545,9 @@
                     "financialAccountId": {
                         "type": "string",
                         "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -2684,7 +3561,8 @@
                     "cycleNumber",
                     "cyclePeriod",
                     "rememberPeriod",
-                    "financialAccountId"
+                    "financialAccountId",
+                    "isEnabled"
                 ]
             },
             "CreateSubscriptionMultipartRequest": {
@@ -2723,7 +3601,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/SubscriptionDataResponse"
+                                "$ref": "#/components/schemas/SubscriptionData"
                             },
                             {
                                 "description": "Response data"
@@ -2877,6 +3755,63 @@
                     }
                 }
             },
+            "SubscriptionForm": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "appearanceMode": {
+                        "$ref": "#/components/schemas/AppearanceModeEnum"
+                    },
+                    "appearanceLogoIcon": {
+                        "type": "string"
+                    },
+                    "firstPayment": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cycleNumber": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "rememberPeriod": {
+                        "$ref": "#/components/schemas/RememberPeriodEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "amount",
+                    "currency",
+                    "appearanceMode",
+                    "appearanceLogoIcon",
+                    "firstPayment",
+                    "cycleNumber",
+                    "cyclePeriod",
+                    "rememberPeriod",
+                    "financialAccountId",
+                    "isEnabled"
+                ]
+            },
             "CreateTransactionMediaRequest": {
                 "type": "object",
                 "properties": {
@@ -3000,6 +3935,188 @@
                 },
                 "required": [
                     "id"
+                ]
+            },
+            "TransactionData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "importId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "importId",
+                    "action",
+                    "status",
+                    "ignore",
+                    "createdAt",
+                    "updatedAt",
+                    "media",
+                    "amounts",
+                    "transferId",
+                    "transferHash"
+                ]
+            },
+            "TransactionDataResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "importId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionMedia"
+                        }
+                    },
+                    "amounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Amount"
+                        }
+                    },
+                    "transferId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "transferHash": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "importId",
+                    "action",
+                    "status",
+                    "ignore",
+                    "createdAt",
+                    "updatedAt",
+                    "media",
+                    "amounts",
+                    "transferId",
+                    "transferHash"
                 ]
             },
             "GetTransactionListResponse": {
@@ -3320,84 +4437,6 @@
                     "timezone"
                 ]
             },
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "name": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "surname": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email"
-                    },
-                    "emailVerified": {
-                        "type": "boolean"
-                    },
-                    "onBoardingStep": {
-                        "$ref": "#/components/schemas/OnBoardingStepEnum"
-                    },
-                    "onBoardingAt": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "image": {
-                        "type": "string",
-                        "nullable": true,
-                        "format": "uri"
-                    },
-                    "createdAt": {
-                        "type": "string"
-                    },
-                    "updatedAt": {
-                        "type": "string"
-                    },
-                    "snapshotFrequency": {
-                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                    },
-                    "preferredCurrency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "preferredLanguage": {
-                        "$ref": "#/components/schemas/LanguageEnum"
-                    },
-                    "dateFormat": {
-                        "$ref": "#/components/schemas/DateFormatEnum"
-                    },
-                    "country": {
-                        "$ref": "#/components/schemas/CountriesEnum"
-                    },
-                    "timezone": {
-                        "$ref": "#/components/schemas/TimezoneEnum"
-                    }
-                },
-                "required": [
-                    "id",
-                    "name",
-                    "surname",
-                    "email",
-                    "emailVerified",
-                    "onBoardingStep",
-                    "onBoardingAt",
-                    "image",
-                    "createdAt",
-                    "updatedAt",
-                    "snapshotFrequency",
-                    "preferredCurrency",
-                    "preferredLanguage",
-                    "dateFormat",
-                    "country",
-                    "timezone"
-                ]
-            },
             "GetUserResponse": {
                 "type": "object",
                 "properties": {
@@ -3590,750 +4629,6 @@
                     "password"
                 ]
             },
-            "DashboardLayoutItem": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "colSpan": {
-                        "type": "number"
-                    },
-                    "minHeight": {
-                        "type": "number"
-                    },
-                    "visible": {
-                        "type": "boolean",
-                        "default": true
-                    }
-                },
-                "required": [
-                    "id",
-                    "colSpan",
-                    "minHeight"
-                ]
-            },
-            "GetDashboardLayout": {
-                "type": "object",
-                "properties": {
-                    "layout": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/DashboardLayoutItem"
-                        }
-                    },
-                    "version": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "layout",
-                    "version"
-                ]
-            },
-            "GetCategoryDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "for": {
-                        "$ref": "#/components/schemas/TransactionActionEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "color": {
-                        "type": "string",
-                        "default": "#8B5CF6"
-                    },
-                    "subcategories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Subcategory"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "for",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "FinancialAccountDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "description",
-                    "balance",
-                    "type",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "ImportDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
-                    },
-                    "transactions": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Transaction"
-                        }
-                    },
-                    "files": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ImportFile"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "financialAccountId",
-                    "status",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "SubcategoryDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "categoryId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "logoIcon": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "categoryId",
-                    "title",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "GetSubscriptionDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "number"
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "appearanceMode": {
-                        "$ref": "#/components/schemas/AppearanceModeEnum"
-                    },
-                    "appearanceLogoIcon": {
-                        "type": "string"
-                    },
-                    "firstPayment": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "cycleNumber": {
-                        "type": "number"
-                    },
-                    "cyclePeriod": {
-                        "type": "string"
-                    },
-                    "rememberPeriod": {
-                        "$ref": "#/components/schemas/RememberPeriodEnum"
-                    },
-                    "financiaAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "isEnabled": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "description",
-                    "amount",
-                    "currency",
-                    "appearanceMode",
-                    "appearanceLogoIcon",
-                    "firstPayment",
-                    "cycleNumber",
-                    "cyclePeriod",
-                    "rememberPeriod",
-                    "financiaAccountId",
-                    "isEnabled",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "TransactionDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "note": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "categoryId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "subcategoryId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "importId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "action": {
-                        "$ref": "#/components/schemas/TransactionActionEnum"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
-                    },
-                    "ignore": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "media": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TransactionMedia"
-                        }
-                    },
-                    "amounts": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Amount"
-                        }
-                    },
-                    "transferId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "transferHash": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "id",
-                    "date",
-                    "title",
-                    "note",
-                    "icon",
-                    "categoryId",
-                    "subcategoryId",
-                    "importId",
-                    "action",
-                    "status",
-                    "ignore",
-                    "createdAt",
-                    "updatedAt",
-                    "media",
-                    "amounts",
-                    "transferId",
-                    "transferHash"
-                ]
-            },
-            "CategoryDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "for": {
-                        "$ref": "#/components/schemas/TransactionActionEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "color": {
-                        "type": "string",
-                        "default": "#8B5CF6"
-                    },
-                    "subcategories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Subcategory"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "for",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "SubscriptionDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "number"
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "appearanceMode": {
-                        "$ref": "#/components/schemas/AppearanceModeEnum"
-                    },
-                    "appearanceLogoIcon": {
-                        "type": "string"
-                    },
-                    "firstPayment": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "cycleNumber": {
-                        "type": "number"
-                    },
-                    "cyclePeriod": {
-                        "$ref": "#/components/schemas/CyclePeriodEnum"
-                    },
-                    "rememberPeriod": {
-                        "$ref": "#/components/schemas/RememberPeriodEnum"
-                    },
-                    "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "isEnabled": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "description",
-                    "amount",
-                    "currency",
-                    "appearanceMode",
-                    "appearanceLogoIcon",
-                    "firstPayment",
-                    "cycleNumber",
-                    "cyclePeriod",
-                    "rememberPeriod",
-                    "financialAccountId",
-                    "isEnabled",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "ImportTransactionDataResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "note": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "categoryId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "subcategoryId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "action": {
-                        "$ref": "#/components/schemas/TransactionActionEnum"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
-                    },
-                    "ignore": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "media": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TransactionMedia"
-                        }
-                    },
-                    "amounts": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Amount"
-                        }
-                    },
-                    "transferId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "transferHash": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "id",
-                    "date",
-                    "title",
-                    "note",
-                    "icon",
-                    "categoryId",
-                    "subcategoryId",
-                    "action",
-                    "status",
-                    "ignore",
-                    "createdAt",
-                    "updatedAt",
-                    "media",
-                    "amounts",
-                    "transferId",
-                    "transferHash"
-                ]
-            },
-            "GetImportTransactionsResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ImportTransactionDataResponse"
-                        },
-                        "description": "Response data"
-                    }
-                },
-                "required": [
-                    "success"
-                ]
-            },
-            "Session": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "expiresAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "token": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "ipAddress": {
-                        "type": "string"
-                    },
-                    "userAgent": {
-                        "type": "string"
-                    },
-                    "userId": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "expiresAt",
-                    "token",
-                    "createdAt",
-                    "updatedAt",
-                    "userId"
-                ]
-            },
-            "Account": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "accountId": {
-                        "type": "string"
-                    },
-                    "providerId": {
-                        "type": "string"
-                    },
-                    "userId": {
-                        "type": "string"
-                    },
-                    "accessToken": {
-                        "type": "string"
-                    },
-                    "refreshToken": {
-                        "type": "string"
-                    },
-                    "idToken": {
-                        "type": "string"
-                    },
-                    "accessTokenExpiresAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "refreshTokenExpiresAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "scope": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "accountId",
-                    "providerId",
-                    "userId",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "Verification": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "identifier": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    },
-                    "expiresAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
-                    }
-                },
-                "required": [
-                    "identifier",
-                    "value",
-                    "expiresAt",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
             "UserFormPreferencesForm": {
                 "type": "object",
                 "properties": {
@@ -4378,50 +4673,6 @@
                     "country"
                 ]
             },
-            "UserProfileSecurityFormSchema": {
-                "type": "object",
-                "properties": {
-                    "oldPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    },
-                    "newPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    },
-                    "confirmPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    }
-                },
-                "required": [
-                    "oldPassword",
-                    "newPassword",
-                    "confirmPassword"
-                ]
-            },
-            "UserProfileSecurityForm": {
-                "type": "object",
-                "properties": {
-                    "oldPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    },
-                    "newPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    },
-                    "confirmPassword": {
-                        "type": "string",
-                        "minLength": 6
-                    }
-                },
-                "required": [
-                    "oldPassword",
-                    "newPassword",
-                    "confirmPassword"
-                ]
-            },
             "UserProfileForm": {
                 "type": "object",
                 "properties": {
@@ -4448,13 +4699,58 @@
                     "country"
                 ]
             },
-            "CategoryData": {
+            "UserProfileSecurityForm": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "oldPassword": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 6
                     },
+                    "newPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    },
+                    "confirmPassword": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "oldPassword",
+                    "newPassword",
+                    "confirmPassword"
+                ]
+            },
+            "FinancialAccountForm": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description",
+                    "balance",
+                    "type",
+                    "logoIcon"
+                ]
+            },
+            "CategoryForm": {
+                "type": "object",
+                "properties": {
                     "title": {
                         "type": "string"
                     },
@@ -4471,127 +4767,17 @@
                     "color": {
                         "type": "string",
                         "default": "#8B5CF6"
-                    },
-                    "subcategories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Subcategory"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
                     }
                 },
                 "required": [
-                    "id",
                     "title",
                     "for",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
+                    "logoIcon"
                 ]
             },
-            "FinancialAccountData": {
+            "SubcategoryForm": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/FinancialAccountTypeEnum"
-                    },
-                    "logoIcon": {
-                        "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "description",
-                    "balance",
-                    "type",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "ImportData": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
-                    },
-                    "transactions": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Transaction"
-                        }
-                    },
-                    "files": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ImportFile"
-                        }
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "financialAccountId",
-                    "status",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "SubcategoryData": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
                     "categoryId": {
                         "type": "string",
                         "format": "uuid"
@@ -4605,103 +4791,17 @@
                     "logoIcon": {
                         "type": "string",
                         "format": "uri"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
                     }
                 },
                 "required": [
-                    "id",
                     "categoryId",
                     "title",
-                    "logoIcon",
-                    "createdAt",
-                    "updatedAt"
+                    "logoIcon"
                 ]
             },
-            "SubscriptionData": {
+            "TransactionForm": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "number"
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "appearanceMode": {
-                        "$ref": "#/components/schemas/AppearanceModeEnum"
-                    },
-                    "appearanceLogoIcon": {
-                        "type": "string"
-                    },
-                    "firstPayment": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "cycleNumber": {
-                        "type": "number"
-                    },
-                    "cyclePeriod": {
-                        "$ref": "#/components/schemas/CyclePeriodEnum"
-                    },
-                    "rememberPeriod": {
-                        "$ref": "#/components/schemas/RememberPeriodEnum"
-                    },
-                    "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "isEnabled": {
-                        "type": "boolean"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "title",
-                    "description",
-                    "amount",
-                    "currency",
-                    "appearanceMode",
-                    "appearanceLogoIcon",
-                    "firstPayment",
-                    "cycleNumber",
-                    "cyclePeriod",
-                    "rememberPeriod",
-                    "financialAccountId",
-                    "isEnabled",
-                    "createdAt",
-                    "updatedAt"
-                ]
-            },
-            "TransactionData": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "date": {
                         "type": "string",
                         "format": "date-time"
@@ -4725,18 +4825,55 @@
                         "type": "string",
                         "nullable": true
                     },
-                    "importId": {
+                    "ignore": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "date",
+                    "title",
+                    "note",
+                    "icon",
+                    "categoryId",
+                    "subcategoryId",
+                    "ignore"
+                ]
+            },
+            "SnapshotData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "snapshotDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "note": {
                         "type": "string",
                         "nullable": true
                     },
-                    "action": {
-                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    "totalCash": {
+                        "type": "number"
                     },
-                    "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                    "totalInvestments": {
+                        "type": "number"
                     },
-                    "ignore": {
-                        "type": "boolean"
+                    "totalNetWorth": {
+                        "type": "number"
+                    },
+                    "accountBalances": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SnapshotAccountBalance"
+                        }
+                    },
+                    "assetValues": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SnapshotAssetValue"
+                        }
                     },
                     "createdAt": {
                         "type": "string",
@@ -4745,108 +4882,19 @@
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
-                    },
-                    "media": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TransactionMedia"
-                        }
-                    },
-                    "amounts": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Amount"
-                        }
-                    },
-                    "transferId": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "transferHash": {
-                        "type": "string",
-                        "nullable": true
                     }
                 },
                 "required": [
                     "id",
-                    "date",
-                    "title",
+                    "snapshotDate",
                     "note",
-                    "icon",
-                    "categoryId",
-                    "subcategoryId",
-                    "importId",
-                    "action",
-                    "status",
-                    "ignore",
+                    "totalCash",
+                    "totalInvestments",
+                    "totalNetWorth",
+                    "accountBalances",
+                    "assetValues",
                     "createdAt",
-                    "updatedAt",
-                    "media",
-                    "amounts",
-                    "transferId",
-                    "transferHash"
-                ]
-            },
-            "CyclePeriodEnum": {
-                "type": "string",
-                "enum": [
-                    "DAY",
-                    "WEEK",
-                    "MONTH",
-                    "YEAR"
-                ]
-            },
-            "SubscriptionForm": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "number"
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "appearanceMode": {
-                        "$ref": "#/components/schemas/AppearanceModeEnum"
-                    },
-                    "appearanceLogoIcon": {
-                        "type": "string"
-                    },
-                    "firstPayment": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "cycleNumber": {
-                        "type": "number"
-                    },
-                    "cyclePeriod": {
-                        "$ref": "#/components/schemas/CyclePeriodEnum"
-                    },
-                    "rememberPeriod": {
-                        "$ref": "#/components/schemas/RememberPeriodEnum"
-                    },
-                    "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
-                    }
-                },
-                "required": [
-                    "title",
-                    "description",
-                    "amount",
-                    "currency",
-                    "appearanceMode",
-                    "appearanceLogoIcon",
-                    "firstPayment",
-                    "cycleNumber",
-                    "cyclePeriod",
-                    "rememberPeriod",
-                    "financialAccountId"
+                    "updatedAt"
                 ]
             }
         },
@@ -4966,14 +5014,9 @@
                     "description": "Category data to create",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateCategoryMultipartRequest"
-                            },
-                            "encoding": {
-                                "data": {
-                                    "contentType": "application/json"
-                                }
+                                "$ref": "#/components/schemas/CreateCategoryRequest"
                             }
                         }
                     }
@@ -6367,6 +6410,84 @@
                 }
             }
         },
+        "/imports/{id}/transactions": {
+            "get": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "getImportTransactionsById",
+                "summary": "Get import transactions by ID",
+                "description": "Retrieve transactions for a specific import by its ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Import transactions retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetImportTransactionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Import transactions not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/imports/complete/{id}": {
             "patch": {
                 "tags": [
@@ -6767,9 +6888,9 @@
                     "description": "Subcategory data to create",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CreateSubcategoryMultipartRequest"
+                                "$ref": "#/components/schemas/CreateSubcategoryRequest"
                             },
                             "encoding": {
                                 "data": {
@@ -8161,84 +8282,6 @@
                 }
             }
         },
-        "/imports/{id}/transactions": {
-            "get": {
-                "tags": [
-                    "Import"
-                ],
-                "operationId": "getImportTransactionsById",
-                "summary": "Get import transactions by ID",
-                "description": "Retrieve transactions for a specific import by its ID",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Import transactions retrieved",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetImportTransactionsResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Import transactions not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/sign-in/social": {
             "post": {
                 "tags": [
@@ -8437,6 +8480,236 @@
                             }
                         }
                     },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/callback/{id}": {
+            "get": {
+                "tags": [
+                    "Default"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "responses": {
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Default"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    }
+                },
+                "responses": {
                     "400": {
                         "content": {
                             "application/json": {
@@ -10263,6 +10536,145 @@
                                     "required": [
                                         "user"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Unauthorized. Due to missing or invalid authentication."
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Not Found. The requested resource was not found."
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/update-session": {
+            "post": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Update the current session",
+                "operationId": "updateSession",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "session": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/Session"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -12976,386 +13388,11 @@
                     }
                 }
             }
-        },
-        "/callback/{id}": {
-            "get": {
-                "tags": [
-                    "Default"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [],
-                "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Unauthorized. Due to missing or invalid authentication."
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Not Found. The requested resource was not found."
-                    },
-                    "429": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Default"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {}
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Unauthorized. Due to missing or invalid authentication."
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Not Found. The requested resource was not found."
-                    },
-                    "429": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
-                    }
-                }
-            }
-        },
-        "/update-session": {
-            "post": {
-                "tags": [
-                    "Default"
-                ],
-                "description": "Update the current session",
-                "operationId": "updateSession",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {}
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "session": {
-                                            "type": "object",
-                                            "$ref": "#/components/schemas/Session"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Bad Request. Usually due to missing parameters, or invalid parameters."
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Unauthorized. Due to missing or invalid authentication."
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Forbidden. You do not have permission to access this resource or to perform this action."
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Not Found. The requested resource was not found."
-                    },
-                    "429": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later."
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error. This is a problem with the server that you cannot fix."
-                    }
-                }
-            }
         }
     },
     "security": [
         {
             "bearerAuth": []
-        }
-    ],
-    "tags": [
-        {
-            "name": "Default",
-            "description": "Default endpoints that are included with Better Auth by default. These endpoints are not part of any plugin."
         }
     ]
 }

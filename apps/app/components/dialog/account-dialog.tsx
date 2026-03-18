@@ -1,8 +1,7 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { AppearanceMode } from '@poveroh/types'
-import { IFinancialAccount } from '@/types/api'
+import { FinancialAccountData } from '@poveroh/types/contracts'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'
@@ -12,29 +11,46 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export function AccountDialog() {
     const t = useTranslations()
-    const { addFinancialAccount, editFinancialAccount, removeFinancialAccount } = useFinancialAccount()
+    const { createFinancialAccount, updateFinancialAccount, deleteFinancialAccount } = useFinancialAccount()
 
     const modalId = 'account'
-    const modalManager = useModal<IFinancialAccount>(modalId)
-    const deleteModalManager = useDeleteModal<IFinancialAccount>()
+    const modalManager = useModal<FinancialAccountData>(modalId)
+    const deleteModalManager = useDeleteModal<FinancialAccountData>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<IFinancialAccount>) => {
+    const handleFormSubmit = async (data: FormData | Partial<FinancialAccountData>) => {
         modalManager.setLoading(true)
 
-        let res: IFinancialAccount | null
+        let res: FinancialAccountData | null
 
         // edit dialog
         if (modalManager.inEditingMode && modalManager.item) {
-            res = await editFinancialAccount(modalManager.item.id, data)
+            const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+
+            const response = await updateFinancialAccount({
+                path: { id: modalManager.item.id },
+                body
+            })
+
+            res = (response?.data as FinancialAccountData | undefined) ?? null
 
             if (!res) return
 
             modalManager.closeModal()
         } else {
             // new dialog
-            res = await addFinancialAccount(data)
+            const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+            const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
+
+            const response = await createFinancialAccount({
+                body: {
+                    data: bodyData,
+                    file: files as Array<Blob | File>
+                }
+            })
+
+            res = (response?.data as FinancialAccountData | undefined) ?? null
 
             if (!res) return
 
@@ -60,11 +76,13 @@ export function AccountDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await removeFinancialAccount(deleteModalManager.item.id)
+        const res = await deleteFinancialAccount({
+            path: { id: deleteModalManager.item.id }
+        })
 
         deleteModalManager.setLoading(false)
 
-        if (res) {
+        if (res?.success) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
@@ -75,7 +93,7 @@ export function AccountDialog() {
 
     return (
         <>
-            <Modal<IFinancialAccount>
+            <Modal<FinancialAccountData>
                 modalId={modalId}
                 open={modalManager.isOpen}
                 title={
@@ -86,7 +104,7 @@ export function AccountDialog() {
                 decoration={{
                     iconLogo: {
                         name: modalManager.item?.logoIcon ?? '',
-                        mode: AppearanceMode.LOGO,
+                        mode: 'LOGO',
                         circled: false
                     }
                 }}
@@ -101,7 +119,7 @@ export function AccountDialog() {
                 <div className='flex flex-col space-y-6 w-full'>
                     <AccountForm
                         ref={formRef}
-                        initialData={modalManager.item}
+                        initialData={modalManager.item ?? null}
                         inEditingMode={modalManager.inEditingMode}
                         dataCallback={handleFormSubmit}
                     />

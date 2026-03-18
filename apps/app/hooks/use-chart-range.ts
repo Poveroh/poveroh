@@ -3,7 +3,7 @@
 import { useChartRangeStore } from '@/store/chart-range.store'
 import { useCallback, useMemo } from 'react'
 import { ChartRange } from '@poveroh/types'
-import { INetWorthEvolutionDataPoint, INetWorthEvolutionFilters } from '@/types/api'
+import { NetWorthEvolution, NetWorthEvolutionFilters } from '@poveroh/types/contracts'
 
 type ChartRangeOption = {
     value: ChartRange
@@ -104,7 +104,7 @@ export const useChartRange = () => {
     const options = useMemo(() => chartRangeOptions, [])
 
     const filterDataPoints = useCallback(
-        (dataPoints: INetWorthEvolutionDataPoint[]) => {
+        (dataPoints: NetWorthEvolution[]) => {
             if (!dataPoints.length) return dataPoints
 
             const latestTimestamp = dataPoints.reduce((max, point) => {
@@ -133,7 +133,7 @@ export const useChartRange = () => {
     )
 
     const getRangeFilter = useCallback(
-        (endDate?: Date): INetWorthEvolutionFilters | undefined => {
+        (endDate?: Date): NetWorthEvolutionFilters | undefined => {
             if (range === 'ALL') {
                 return undefined
             }

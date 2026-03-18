@@ -1,46 +1,26 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
 import { useError } from '@/hooks/use-error'
-import { ISnapshotAccountBalance } from '@/types/api'
+import { SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { SnapshotAccountBalanceSchema } from '@poveroh/schemas'
 
 export const useAccountBalanceSnapshotForm = (
-    initialData: ISnapshotAccountBalance | null | undefined,
+    initialData: SnapshotAccountBalance | null | undefined,
     inEditingMode: boolean,
     initialAccountId?: string
 ) => {
-    const t = useTranslations()
     const { handleError } = useError()
 
     const [loading, setLoading] = useState(false)
 
-    const formSchema = useMemo(
-        () =>
-            z.object({
-                accountId: z.string().nonempty(t('messages.errors.required')),
-                snapshotDate: z.string().nonempty(t('messages.errors.required')),
-                balance: z
-                    .number({
-                        required_error: t('messages.errors.required'),
-                        invalid_type_error: t('messages.errors.required')
-                    })
-                    .min(0),
-                note: z.string().optional().nullable()
-            }),
-        [t]
-    )
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<SnapshotAccountBalance>({
+        resolver: zodResolver(SnapshotAccountBalanceSchema),
         defaultValues: {
             accountId: initialAccountId ?? '',
-            snapshotDate: new Date().toISOString(),
-            balance: 0,
-            note: ''
+            balance: 0
         }
     })
 
@@ -51,13 +31,13 @@ export const useAccountBalanceSnapshotForm = (
     }, [form.formState.errors])
 
     const handleSubmit = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: Partial<ISnapshotAccountBalance>) => Promise<void>
+        values: SnapshotAccountBalance,
+        dataCallback: (formData: Partial<SnapshotAccountBalance>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

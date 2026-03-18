@@ -1,90 +1,156 @@
 'use client'
 
-import { TransactionStatus } from '@poveroh/types'
-import { IFilterOptions, IImport, IImportsFilters, ITransaction } from '@/types/api'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { FilterOptions, ImportFilters } from '@/api/types.gen'
+import type { Import, Transaction } from '@/lib/api-client'
 import { useError } from './use-error'
-import { ImportService } from '@/services/import.service'
 import { useImportStore } from '@/store/imports.store'
 import { useState } from 'react'
 import logger from '@/lib/logger'
+import { axiosInstance } from '@/lib/api-client'
+import {
+    completeImportMutation,
+    createImportMutation,
+    deleteTransactionMutation,
+    deleteImportMutation,
+    getImportTransactionsByIdOptions,
+    getImportsOptions,
+    updateTransactionMutation
+} from '@/api/@tanstack/react-query.gen'
+import { TransactionData } from '@poveroh/types/contracts'
 
 type ImportLoadingState = {
-    fetchImport: boolean
-    removeImport: boolean
-    appendImport: boolean
+    fetchImports: boolean
+    deleteImport: boolean
+    appendImports: boolean
     completeImport: boolean
-    readPendingTransaction: boolean
-    editPendingTransaction: boolean
-    removePendingTransaction: boolean
-    parseTransactionFromFile: boolean
+    getImportTransactions: boolean
+    updatePendingTransaction: boolean
+    deletePendingTransaction: boolean
+    createImportFromFile: boolean
 }
 
 export const useImport = () => {
+    const queryClient = useQueryClient()
     const { handleError } = useError()
 
-    const importService = new ImportService()
     const importStore = useImportStore()
 
     const [importLoading, setImportLoading] = useState<ImportLoadingState>({
-        fetchImport: false,
-        removeImport: false,
-        appendImport: false,
+        fetchImports: false,
+        deleteImport: false,
+        appendImports: false,
         completeImport: false,
-        readPendingTransaction: false,
-        editPendingTransaction: false,
-        removePendingTransaction: false,
-        parseTransactionFromFile: false
+        getImportTransactions: false,
+        updatePendingTransaction: false,
+        deletePendingTransaction: false,
+        createImportFromFile: false
+    })
+
+    const createImportMutationHook = useMutation({
+        ...createImportMutation(),
+        onError: error => {
+            handleError(error, 'Error parsing transaction from file')
+        }
+    })
+
+    const deleteImportMutationHook = useMutation({
+        ...deleteImportMutation(),
+        onSuccess: (_, variables) => {
+            importStore.removeImport(variables.path.id)
+        },
+        onError: error => {
+            handleError(error, 'Error deleting import')
+        }
+    })
+
+    const completeImportMutationHook = useMutation({
+        ...completeImportMutation(),
+        onSuccess: data => {
+            const completedImport = data?.data as Import | undefined
+            if (completedImport) {
+                importStore.editImport(completedImport)
+            }
+        },
+        onError: error => {
+            handleError(error, 'Error saving import')
+        }
+    })
+
+    const updatePendingTransactionMutationHook = useMutation({
+        ...updateTransactionMutation(),
+        onError: error => {
+            handleError(error, 'Error editing transaction')
+        }
+    })
+
+    const deletePendingTransactionMutationHook = useMutation({
+        ...deleteTransactionMutation(),
+        onError: error => {
+            handleError(error, 'Error deleting transaction')
+        }
     })
 
     const setLoadingFor = (key: keyof ImportLoadingState, value: boolean) => {
         setImportLoading(prev => ({ ...prev, [key]: value }))
     }
 
-    const fetchImport = async (filters?: IImportsFilters, options?: IFilterOptions) => {
-        setLoadingFor('fetchImport', true)
+    const fetchImports = async (filters?: ImportFilters, options?: FilterOptions) => {
+        setLoadingFor('fetchImports', true)
         try {
-            const res = await importService.read<IImport[], IImportsFilters>(filters, options)
-            importStore.setImports(res.data)
-            return res.data
+            const response = await queryClient.fetchQuery(
+                getImportsOptions({
+                    query: {
+                        filter: filters,
+                        options
+                    }
+                })
+            )
+
+            if (!response?.success) return []
+
+            const data = (response?.data ?? []) as Import[]
+            importStore.setImports(data)
+
+            return data
         } catch (error) {
-            handleError(error, 'Error fetching imports')
+            return handleError(error, 'Error fetching imports')
         } finally {
-            setLoadingFor('fetchImport', false)
+            setLoadingFor('fetchImports', false)
         }
     }
 
-    const appendImport = async (imports: IImport[]) => {
-        setLoadingFor('appendImport', true)
+    const appendImports = async (imports: Import[]) => {
+        setLoadingFor('appendImports', true)
         try {
             importStore.addImport(imports)
             return imports
         } catch (error) {
             return handleError(error, 'Error appending imports')
         } finally {
-            setLoadingFor('appendImport', false)
+            setLoadingFor('appendImports', false)
         }
     }
 
-    const removeImport = async (importId: string) => {
-        setLoadingFor('removeImport', true)
+    const deleteImport = async (importId: string) => {
+        setLoadingFor('deleteImport', true)
         try {
-            const res = await importService.delete(importId)
-            if (!res) throw new Error('No response from server')
-            importStore.removeImport(importId)
-            return res
+            return await deleteImportMutationHook.mutateAsync({
+                path: { id: importId }
+            })
         } catch (error) {
             return handleError(error, 'Error deleting import')
         } finally {
-            setLoadingFor('removeImport', false)
+            setLoadingFor('deleteImport', false)
         }
     }
 
     const completeImport = async (id: string) => {
         setLoadingFor('completeImport', true)
         try {
-            const res = await importService.complete(id)
-            importStore.editImport(res)
-            return res
+            return await completeImportMutationHook.mutateAsync({
+                path: { id }
+            })
         } catch (error) {
             return handleError(error, 'Error saving import')
         } finally {
@@ -92,60 +158,111 @@ export const useImport = () => {
         }
     }
 
-    const readPendingTransaction = async (id: string) => {
-        setLoadingFor('readPendingTransaction', true)
+    const getImportTransactions = async (id: string) => {
+        setLoadingFor('getImportTransactions', true)
         try {
-            return await importService.readTransaction(id)
+            const response = await queryClient.fetchQuery(
+                getImportTransactionsByIdOptions({
+                    path: { id }
+                })
+            )
+
+            if (!response?.success) return null
+
+            return (response?.data ?? []) as Transaction[]
         } catch (error) {
             return handleError(error, 'Error reading pending transactions')
         } finally {
-            setLoadingFor('readPendingTransaction', false)
+            setLoadingFor('getImportTransactions', false)
         }
     }
 
-    const editPendingTransaction = async (id: string, data: FormData) => {
-        setLoadingFor('editPendingTransaction', true)
+    const updatePendingTransaction = async (id: string, data: FormData) => {
+        setLoadingFor('updatePendingTransaction', true)
         try {
-            return await importService.saveTransaction(id, data)
+            const payload = JSON.parse(String(data.get('data') || '[]')) as TransactionData[]
+
+            if (payload.length === 0) return null
+
+            const updatedTransactions = await Promise.all(
+                payload.map(async transaction => {
+                    const transactionId = transaction.id || id
+                    if (!transactionId) {
+                        throw new Error('Missing transaction ID')
+                    }
+
+                    const response = await updatePendingTransactionMutationHook.mutateAsync({
+                        path: { id: transactionId },
+                        body: transaction
+                    })
+
+                    const updated = (response?.data ?? transaction) as TransactionData
+                    importStore.updatePendingTransaction(updated)
+                    return updated
+                })
+            )
+
+            return id ? updatedTransactions[0] : updatedTransactions
         } catch (error) {
             return handleError(error, 'Error editing transaction')
         } finally {
-            setLoadingFor('editPendingTransaction', false)
+            setLoadingFor('updatePendingTransaction', false)
         }
     }
 
-    const removePendingTransaction = async (transactionId: string) => {
-        setLoadingFor('removePendingTransaction', true)
+    const deletePendingTransaction = async (transactionId: string) => {
+        setLoadingFor('deletePendingTransaction', true)
         try {
-            const res = await importService.deleteTransaction(transactionId)
+            const response = await deletePendingTransactionMutationHook.mutateAsync({
+                path: { id: transactionId }
+            })
 
-            if (!res) {
-                throw new Error('No response from server')
-            }
+            importStore.removePendingTransaction(transactionId)
 
-            return res
+            return response
         } catch (error) {
             return handleError(error, 'Error deleting transaction')
         } finally {
-            setLoadingFor('removePendingTransaction', false)
+            setLoadingFor('deletePendingTransaction', false)
         }
     }
 
-    const parseTransactionFromFile = async (data: FormData) => {
-        setLoadingFor('parseTransactionFromFile', true)
+    const createImportFromFile = async (data: FormData) => {
+        setLoadingFor('createImportFromFile', true)
         try {
-            const importData = await importService.readFile(data)
-            importStore.setPendingTransactions(importData.transactions)
-            appendImport([importData])
+            const financialAccountId = String(data.get('financialAccountId') || '')
+            const files = data.getAll('files').filter(item => item instanceof File)
+
+            const response = await createImportMutationHook.mutateAsync({
+                body: {
+                    data: {
+                        financialAccountId
+                    },
+                    file: files as Array<Blob | File>
+                }
+            })
+
+            const importData = (response?.data ?? null) as Import | null
+            if (!importData) return null
+
+            const transactions = await getImportTransactions(importData.id)
+            const hydratedImport = {
+                ...importData,
+                transactions: transactions ?? []
+            }
+
+            importStore.setPendingTransactions(hydratedImport.transactions)
+            await appendImports([hydratedImport])
+
             return importData
         } catch (error) {
             return handleError(error, 'Error parsing transaction from file')
         } finally {
-            setLoadingFor('parseTransactionFromFile', false)
+            setLoadingFor('createImportFromFile', false)
         }
     }
 
-    const handleApproveTransaction = async (transactionId: string, newValue: TransactionStatus) => {
+    const handleApproveTransaction = async (transactionId: string, newValue: 'IMPORT_APPROVED' | 'IMPORT_REJECTED') => {
         logger.debug('Toggle approve transaction:', transactionId)
 
         const transaction = importStore.pendingTransactions.find(t => t.id === transactionId)
@@ -162,7 +279,7 @@ export const useImport = () => {
         const formData = new FormData()
         formData.append('data', JSON.stringify([transaction]))
 
-        editPendingTransaction(transactionId, formData)
+        updatePendingTransaction(transactionId, formData)
 
         importStore.updatePendingTransaction(transaction)
     }
@@ -177,22 +294,22 @@ export const useImport = () => {
 
         logger.debug(`Setting all transactions to ${approveAll ? 'approved' : 'rejected'}`)
 
-        const newTransactionStatus = approveAll ? TransactionStatus.IMPORT_APPROVED : TransactionStatus.IMPORT_REJECTED
+        const newTransactionStatus = approveAll ? 'IMPORT_APPROVED' : 'IMPORT_REJECTED'
 
         const updatedTransactions = importStore.pendingTransactions.map(item => ({
             ...item,
-            status: newTransactionStatus
+            status: newTransactionStatus as Transaction['status']
         }))
 
         const formData = new FormData()
         formData.append('data', JSON.stringify(updatedTransactions))
 
-        editPendingTransaction('', formData)
+        updatePendingTransaction('', formData)
 
-        importStore.setPendingTransactions(updatedTransactions)
+        importStore.setPendingTransactions(updatedTransactions as Transaction[])
     }
 
-    const handleEditTransaction = (transaction: ITransaction) => {
+    const handleEditTransaction = (transaction: Transaction) => {
         logger.debug('Edit transaction:', transaction)
 
         importStore.updatePendingTransaction(transaction)
@@ -206,7 +323,7 @@ export const useImport = () => {
 
     const importTemplates = async (action: string) => {
         try {
-            await importService.importTemplates(action)
+            await axiosInstance.post('/imports/template', { action })
             logger.debug('Template import successful for action:', action)
             return true
         } catch (error) {
@@ -218,14 +335,14 @@ export const useImport = () => {
     return {
         importLoading,
         importStore,
-        fetchImport,
-        removeImport,
-        appendImport,
+        fetchImports,
+        deleteImport,
+        appendImports,
         completeImport,
-        readPendingTransaction,
-        editPendingTransaction,
-        removePendingTransaction,
-        parseTransactionFromFile,
+        getImportTransactions,
+        updatePendingTransaction,
+        deletePendingTransaction,
+        createImportFromFile,
         handleApproveTransaction,
         handleAllApproveTransactions,
         handleEditTransaction,

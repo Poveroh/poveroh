@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { defineConfig } from '@hey-api/openapi-ts'
 
 export default defineConfig({

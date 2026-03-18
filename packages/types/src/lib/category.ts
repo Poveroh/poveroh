@@ -1,5 +1,7 @@
 import { Category } from '../contracts'
 
+export type CategoryModelMode = 'category' | 'subcategory'
+
 export const defaultCategory: Category = {
     id: '',
     userId: '',

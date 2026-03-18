@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { setErrorMap } from 'zod'
+import { setErrorMap, ZodIssueCode } from 'zod'
 import { useTranslations, useLocale } from 'next-intl'
 
 export default function ZodLocaleProvider() {
@@ -9,23 +9,23 @@ export default function ZodLocaleProvider() {
     const locale = useLocale()
 
     useEffect(() => {
-        setErrorMap((issue: any, ctx: any) => {
-            if (issue.code === 'invalid_type') {
+        setErrorMap(((issue: any, _ctx: any) => {
+            if (issue.code === ZodIssueCode.invalid_type) {
                 return { message: t('messages.errors.required') }
             }
 
-            if (issue.code === 'invalid_string') {
-                if (issue.validation === 'email') return { message: t('messages.errors.email') }
-                return { message: ctx.defaultError }
+            if (issue.code === ZodIssueCode.invalid_format) {
+                if (issue.format === 'email') return { message: t('messages.errors.email') }
+                return { message: _ctx.defaultError }
             }
 
-            if (issue.code === 'too_small') {
-                const min = (issue as any).minimum ?? 0
+            if (issue.code === ZodIssueCode.too_small) {
+                const min = issue.minimum ?? 0
                 return { message: t('messages.errors.passwordAtLeastChar', { a: min }) }
             }
 
-            return { message: ctx.defaultError }
-        })
+            return { message: _ctx.defaultError }
+        }) as any)
     }, [t, locale])
 
     return null

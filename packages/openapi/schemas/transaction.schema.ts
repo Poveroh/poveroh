@@ -122,6 +122,8 @@ export const TransactionSchema = z
 
 /**
  * Response schema for getting transaction data (excluding userId and deletedAt)
+ * This is the real Dto used for responses, while TransactionSchema is the completed one
+ * similar to Schema in DB
  */
 export const TransactionDataSchema = TransactionSchema.omit({
     userId: true,
@@ -242,3 +244,10 @@ export const TransactionFiltersSchema = z
  */
 export const QueryTransactionFiltersSchema =
     ReadQuerySchema(TransactionFiltersSchema).openapi('QueryTransactionFilters')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Transaction form schema representing the data structure for transaction creation and editing forms
+ */
+export const TransactionFormSchema = CreateTransactionRequestSchema.openapi('TransactionForm')

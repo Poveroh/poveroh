@@ -4,8 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
-import { ITransaction } from '@/types/api'
-
+import { TransactionData } from '@poveroh/types/contracts'
 /**
  * Custom hook for managing base transaction form state and operations.
  *
@@ -39,7 +38,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
     }
 
     const form = useForm<T>({
-        resolver: zodResolver(config.schema),
+        resolver: zodResolver(config.schema as never),
         defaultValues: getInitialValues() as DefaultValues<T>,
         mode: 'onBlur'
     })
@@ -49,7 +48,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
         try {
             let localTransaction: T = { ...values }
             if (props.initialData && config.transformInitialData && props.inEditingMode) {
-                const transformInitialData = config.transformInitialData(props.initialData as ITransaction)
+                const transformInitialData = config.transformInitialData(props.initialData as TransactionData)
                 localTransaction = { ...transformInitialData, ...localTransaction }
             }
 

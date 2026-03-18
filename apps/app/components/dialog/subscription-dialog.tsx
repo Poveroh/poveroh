@@ -9,11 +9,12 @@ import { Button } from '@poveroh/ui/components/button'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useModal } from '@/hooks/use-modal'
-import { SubscriptionData } from '@poveroh/types/contracts'
+import { CreateSubscriptionRequest, SubscriptionData } from '@poveroh/types/contracts'
+import { Brand } from '@poveroh/types'
 
 export function SubscriptionDialog() {
     const t = useTranslations()
-    const { createSubscription, editSubscription, removeSubscription } = useSubscription()
+    const { createSubscription, updateSubscription, deleteSubscription } = useSubscription()
 
     const modalId = 'subscription'
     const modalManager = useModal<SubscriptionData>(modalId)
@@ -21,7 +22,6 @@ export function SubscriptionDialog() {
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
     const [fromTemplate, setFromTemplate] = useState<boolean>(modalManager.inEditingMode ? false : true)
-    const [localSubscription, setLocalSubscription] = useState(modalManager.item)
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -31,7 +31,6 @@ export function SubscriptionDialog() {
 
     useEffect(() => {
         if (modalManager.inEditingMode && modalManager.item) {
-            setLocalSubscription(modalManager.item)
             setTitle(modalManager.item.title)
             setMode('editor')
         }
@@ -46,68 +45,75 @@ export function SubscriptionDialog() {
     const clearUp = () => {
         setMode('template')
         setFromTemplate(true)
-        setLocalSubscription(undefined)
         setTitle(t('subscriptions.modal.newTitle'))
     }
 
-    const handleFormSubmit = async (data: FormData | Partial<SubscriptionData>) => {
-        if (data instanceof FormData) {
-            throw new Error('FormData handling not implemented for subscriptions')
-        } else {
-            modalManager.setLoading(true)
+    const handleFormSubmit = async (data: Partial<SubscriptionData>) => {
+        modalManager.setLoading(true)
 
-            let res: SubscriptionData | null
+        // edit dialog
+        if (modalManager.inEditingMode && modalManager.item) {
+            const response = await updateSubscription({
+                path: { id: modalManager.item.id },
+                body: data
+            })
 
-            // edit dialog
-            if (modalManager.inEditingMode && modalManager.item) {
-                res = await editSubscription(modalManager.item.id, data)
-
-                if (!res) return
-
-                modalManager.closeModal()
-            } else {
-                // new dialog
-                res = await createSubscription(data)
-
-                if (!res) return
-
-                if (modalManager.keepAdding.checked) {
-                    formRef.current?.reset()
-                    clearUp()
-                } else {
-                    modalManager.closeModal()
-                }
+            if (!response.success) {
+                modalManager.setLoading(false)
+                return
             }
 
-            toast.success(
-                t('messages.successfully', {
-                    a: res.title,
-                    b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-                })
-            )
+            modalManager.closeModal()
+        } else {
+            // new dialog
+            const response = await createSubscription({
+                body: {
+                    data: data as CreateSubscriptionRequest,
+                    file: []
+                }
+            })
 
-            modalManager.setLoading(false)
+            if (!response?.success || !response.data) {
+                modalManager.setLoading(false)
+                return
+            }
+
+            if (modalManager.keepAdding.checked) {
+                formRef.current?.reset()
+                clearUp()
+            } else {
+                modalManager.closeModal()
+            }
         }
+
+        toast.success(
+            t('messages.successfully', {
+                a: data.title!,
+                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
+            })
+        )
+
+        modalManager.setLoading(false)
     }
 
-    const onTemplateSelected = (brand: IBrand) => {
-        setLocalSubscription({
-            id: '',
-            userId: '',
-            createdAt: new Date().toISOString(),
-            title: brand.name,
-            description: '',
-            amount: 0,
-            currency: Currencies.USD,
-            appearanceMode: AppearanceMode.LOGO,
-            appearanceLogoIcon: brand.logo,
-            firstPayment: new Date().toISOString(),
-            cycleNumber: '1',
-            cyclePeriod: CyclePeriod.MONTH,
-            rememberPeriod: RememberPeriod.SAME_DAY,
-            financialAccountId: '',
-            isEnabled: true
-        })
+    const onTemplateSelected = (brand: Brand) => {
+        // setLocalSubscription({
+        //     id: '',
+        //     createdAt: new Date().toISOString(),
+        //     updatedAt: new Date().toISOString(),
+        //     title: brand.name,
+        //     description: '',
+        //     amount: 0,
+        //     currency: 'USD',
+        //     appearanceMode: 'LOGO',
+        //     appearanceLogoIcon: brand.logo,
+        //     firstPayment: new Date().toISOString(),
+        //     cycleNumber: 1,
+        //     cyclePeriod: 'MONTH',
+        //     rememberPeriod: 'SAME_DAY',
+        //     financialAccountId: '',
+        //     isEnabled: true
+        // })
         setTitle(brand.name)
         setFromTemplate(true)
         setMode('editor')
@@ -117,10 +123,12 @@ export function SubscriptionDialog() {
         if (!deleteModalManager.item) return
 
         deleteModalManager.setLoading(true)
-        const res = await removeSubscription(deleteModalManager.item.id)
+        const res = await deleteSubscription({
+            path: { id: deleteModalManager.item.id }
+        })
         deleteModalManager.setLoading(false)
 
-        if (res) {
+        if (res?.success) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
@@ -137,8 +145,8 @@ export function SubscriptionDialog() {
                 title={title}
                 decoration={{
                     iconLogo: {
-                        name: localSubscription?.appearanceLogoIcon || '',
-                        mode: localSubscription?.appearanceMode || AppearanceMode.LOGO,
+                        name: modalManager.item?.appearanceLogoIcon || '',
+                        mode: modalManager.item?.appearanceMode || 'LOGO',
                         circled: true
                     },
                     contentHeight: 'h-[60vh]'
@@ -171,7 +179,7 @@ export function SubscriptionDialog() {
                         <SubscriptionForm
                             ref={formRef}
                             fromTemplate={fromTemplate}
-                            initialData={localSubscription}
+                            initialData={modalManager.item ?? null}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
                         />

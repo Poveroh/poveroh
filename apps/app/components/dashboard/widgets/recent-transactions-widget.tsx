@@ -7,14 +7,14 @@ import BoxHeader from '@/components/box/box-header'
 import { Button } from '@poveroh/ui/components/button'
 import { PlusIcon } from 'lucide-react'
 import { useModal } from '@/hooks/use-modal'
-import { ITransaction } from '@/types/api'
+import { TransactionData } from '@poveroh/types/contracts'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
 import { TransactionItem } from '@/components/item/transaction-item'
 import { useTransaction } from '@/hooks/use-transaction'
 
 export const RecentTransactionsWidget = () => {
     const t = useTranslations()
-    const { openModal } = useModal<ITransaction>('transaction')
+    const { openModal } = useModal<TransactionData>('transaction')
 
     const { transactionCacheList, fetchTransaction } = useTransaction()
 
@@ -61,7 +61,7 @@ export const RecentTransactionsWidget = () => {
                                 showOptions={false}
                                 key={transaction.id}
                                 transaction={transaction}
-                                openEdit={(item: ITransaction) => {
+                                openEdit={item => {
                                     openModal('edit', item)
                                 }}
                             />

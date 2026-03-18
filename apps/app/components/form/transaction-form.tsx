@@ -1,6 +1,5 @@
 import { IncomeForm } from '../form/transactions/income-form'
 import { useRef, useState } from 'react'
-import { IItem } from '@poveroh/types'
 import { TransferForm } from '../form/transactions/transfer-form'
 import { useTransaction } from '@/hooks/use-transaction'
 import { ExpensesForm } from '../form/transactions/expenses-form'
@@ -35,7 +34,7 @@ export const TransactionForm = forwardRef<FormRef, TransactionFormProps>((props:
         <div className='flex flex-col space-y-6 w-full'>
             <Tabs defaultValue={currentAction} value={currentAction} onValueChange={setCurrentAction}>
                 <TabsList className='grid w-full grid-cols-3'>
-                    {getActionList().map((item: IItem) => (
+                    {getActionList().map(item => (
                         <TabsTrigger key={item.value} value={item.value.toString()}>
                             {item.label}
                         </TabsTrigger>

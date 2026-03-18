@@ -150,8 +150,8 @@ export const useSubscription = () => {
         subscriptionCacheList: subscriptionStore.subscriptionCacheList,
         subscriptionLoading,
         createSubscription: createMutation.mutateAsync,
-        editSubscription: updateMutation.mutateAsync,
-        removeSubscription: deleteMutation.mutateAsync,
+        updateSubscription: updateMutation.mutateAsync,
+        deleteSubscription: deleteMutation.mutateAsync,
         getSubscription,
         fetchSubscriptions,
         getNextExecutionText

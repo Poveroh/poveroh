@@ -2,17 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Subcategory } from './Subcategory';
 import type { TransactionActionEnum } from './TransactionActionEnum';
-export type GetCategoryDataResponse = {
-    id: string;
+export type CategoryForm = {
     title: string;
     description?: string;
     for: TransactionActionEnum;
     logoIcon: string;
     color?: string;
-    subcategories?: Array<Subcategory>;
-    createdAt: string;
-    updatedAt: string;
 };
 

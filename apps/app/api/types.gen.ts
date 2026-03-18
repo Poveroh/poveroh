@@ -4,6 +4,61 @@ export type ClientOptions = {
     baseUrl: 'http://localhost:3001/v1' | 'http://api.poveroh.local/v1' | 'http://api.poveroh.com/v1' | (string & {})
 }
 
+export type User = {
+    id: string
+    name: string
+    surname: string
+    email: string
+    emailVerified: boolean
+    onBoardingStep: OnBoardingStepEnum
+    onBoardingAt: string | null
+    image: string | null
+    createdAt: string
+    updatedAt: string
+    snapshotFrequency: SnapshotFrequencyEnum
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    country: CountriesEnum
+    timezone: TimezoneEnum
+}
+
+export type Session = {
+    id?: string
+    expiresAt: string
+    token: string
+    createdAt: string
+    updatedAt: string
+    ipAddress?: string
+    userAgent?: string
+    userId: string
+}
+
+export type Account = {
+    id?: string
+    accountId: string
+    providerId: string
+    userId: string
+    accessToken?: string
+    refreshToken?: string
+    idToken?: string
+    accessTokenExpiresAt?: string
+    refreshTokenExpiresAt?: string
+    scope?: string
+    password?: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type Verification = {
+    id?: string
+    identifier: string
+    value: string
+    expiresAt: string
+    createdAt: string
+    updatedAt: string
+}
+
 export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER'
 
 export type Subcategory = {
@@ -31,6 +86,30 @@ export type Category = {
     deletedAt?: string
 }
 
+export type CategoryData = {
+    id: string
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type CategoryDataResponse = {
+    id: string
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
 export type GetCategoryListResponse = {
     /**
      * Always true for success responses
@@ -43,7 +122,7 @@ export type GetCategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<CategoryDataResponse>
+    data?: Array<CategoryData>
 }
 
 export type GetCategoryResponse = {
@@ -55,7 +134,7 @@ export type GetCategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: CategoryDataResponse & unknown
+    data?: CategoryData & unknown
 }
 
 export type CreateCategoryRequest = {
@@ -80,7 +159,7 @@ export type CreateCategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: CategoryDataResponse & unknown
+    data?: CategoryData & unknown
 }
 
 export type UpdateCategoryRequest = {
@@ -149,6 +228,13 @@ export type QueryCategoryFilters = {
     options?: FilterOptions
 }
 
+export type DashboardLayoutItem = {
+    id: string
+    colSpan: number
+    minHeight: number
+    visible?: boolean
+}
+
 export type DashboardLayout = {
     id: string
     userId: string
@@ -156,6 +242,11 @@ export type DashboardLayout = {
     layout: Array<DashboardLayoutItem>
     createdAt: string
     updatedAt: string
+}
+
+export type GetDashboardLayout = {
+    layout: Array<DashboardLayoutItem>
+    version: number
 }
 
 export type GetDashboardLayoutResponse = {
@@ -399,6 +490,8 @@ export type RememberPeriodEnum =
     | 'FOURTEEN_DAYS'
     | 'THIRTY_DAYS'
     | 'NINETY_DAYS'
+
+export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
 export type AppearanceModeEnum = 'LOGO' | 'ICON'
 
@@ -722,6 +815,28 @@ export type FinancialAccount = {
     deletedAt?: string
 }
 
+export type FinancialAccountData = {
+    id: string
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type FinancialAccountDataResponse = {
+    id: string
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
 export type GetFinancialAccountListResponse = {
     /**
      * Always true for success responses
@@ -734,7 +849,7 @@ export type GetFinancialAccountListResponse = {
     /**
      * Response data
      */
-    data?: Array<FinancialAccountDataResponse>
+    data?: Array<FinancialAccountData>
 }
 
 export type GetFinancialAccountResponse = {
@@ -746,7 +861,7 @@ export type GetFinancialAccountResponse = {
      * Optional success message
      */
     message?: string
-    data?: FinancialAccountDataResponse & unknown
+    data?: FinancialAccountData & unknown
 }
 
 export type CreateFinancialAccountRequest = {
@@ -771,7 +886,7 @@ export type CreateFinancialAccountResponse = {
      * Optional success message
      */
     message?: string
-    data?: FinancialAccountDataResponse & unknown
+    data?: FinancialAccountData & unknown
 }
 
 export type UpdateFinancialAccountRequest = {
@@ -907,6 +1022,47 @@ export type Import = {
     deletedAt?: string
 }
 
+export type ImportData = {
+    id: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}
+
+export type ImportDataResponse = {
+    id: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}
+
+export type ImportTransactionDataResponse = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
 export type GetImportListResponse = {
     /**
      * Always true for success responses
@@ -919,7 +1075,7 @@ export type GetImportListResponse = {
     /**
      * Response data
      */
-    data?: Array<ImportDataResponse>
+    data?: Array<ImportData>
 }
 
 export type GetImportResponse = {
@@ -931,7 +1087,22 @@ export type GetImportResponse = {
      * Optional success message
      */
     message?: string
-    data?: ImportDataResponse & unknown
+    data?: ImportData & unknown
+}
+
+export type GetImportTransactionsResponse = {
+    /**
+     * Always true for success responses
+     */
+    success: true
+    /**
+     * Optional success message
+     */
+    message?: string
+    /**
+     * Response data
+     */
+    data?: Array<ImportTransactionDataResponse>
 }
 
 export type CreateImportRequest = {
@@ -952,7 +1123,7 @@ export type CreateImportResponse = {
      * Optional success message
      */
     message?: string
-    data?: ImportDataResponse & unknown
+    data?: ImportData & unknown
 }
 
 export type UpdateImportRequest = {
@@ -968,7 +1139,7 @@ export type UpdateImportResponse = {
      * Optional success message
      */
     message?: string
-    data?: ImportDataResponse & unknown
+    data?: ImportData & unknown
 }
 
 export type DeleteImportResponse = {
@@ -1103,6 +1274,26 @@ export type StatusResponse = {
     timestamp: string
 }
 
+export type SubcategoryData = {
+    id: string
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubcategoryDataResponse = {
+    id: string
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
 export type GetSubcategoryListResponse = {
     /**
      * Always true for success responses
@@ -1115,7 +1306,7 @@ export type GetSubcategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<SubcategoryDataResponse>
+    data?: Array<SubcategoryData>
 }
 
 export type GetSubcategoryResponse = {
@@ -1127,7 +1318,7 @@ export type GetSubcategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: SubcategoryDataResponse & unknown
+    data?: SubcategoryData & unknown
 }
 
 export type CreateSubcategoryRequest = {
@@ -1151,7 +1342,7 @@ export type CreateSubcategoryResponse = {
      * Optional success message
      */
     message?: string
-    data?: SubcategoryDataResponse & unknown
+    data?: SubcategoryData & unknown
 }
 
 export type UpdateSubcategoryRequest = {
@@ -1237,6 +1428,42 @@ export type Subscription = {
     deletedAt?: string
 }
 
+export type SubscriptionData = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+export type SubscriptionDataResponse = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+}
+
 export type GetSubscriptionListResponse = {
     /**
      * Always true for success responses
@@ -1249,7 +1476,7 @@ export type GetSubscriptionListResponse = {
     /**
      * Response data
      */
-    data?: Array<SubscriptionDataResponse>
+    data?: Array<SubscriptionData>
 }
 
 export type GetSubscriptionResponse = {
@@ -1261,7 +1488,7 @@ export type GetSubscriptionResponse = {
      * Optional success message
      */
     message?: string
-    data?: SubscriptionDataResponse & unknown
+    data?: SubscriptionData & unknown
 }
 
 export type CreateSubscriptionRequest = {
@@ -1276,6 +1503,7 @@ export type CreateSubscriptionRequest = {
     cyclePeriod: CyclePeriodEnum
     rememberPeriod: RememberPeriodEnum
     financialAccountId: string
+    isEnabled: boolean
 }
 
 export type CreateSubscriptionMultipartRequest = {
@@ -1292,7 +1520,7 @@ export type CreateSubscriptionResponse = {
      * Optional success message
      */
     message?: string
-    data?: SubscriptionDataResponse & unknown
+    data?: SubscriptionData & unknown
 }
 
 export type UpdateSubscriptionRequest = {
@@ -1364,6 +1592,21 @@ export type QuerySubscriptionFilters = {
     options?: FilterOptions
 }
 
+export type SubscriptionForm = {
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+}
+
 export type CreateTransactionMediaRequest = {
     transactionId: string
     filename: string
@@ -1398,6 +1641,46 @@ export type CreateAmountRequest = {
 
 export type AmountParamsId = {
     id: string
+}
+
+export type TransactionData = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type TransactionDataResponse = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
 }
 
 export type GetTransactionListResponse = {
@@ -1533,25 +1816,6 @@ export type UserPreferences = {
     timezone: TimezoneEnum
 }
 
-export type User = {
-    id: string
-    name: string
-    surname: string
-    email: string
-    emailVerified: boolean
-    onBoardingStep: OnBoardingStepEnum
-    onBoardingAt: string | null
-    image: string | null
-    createdAt: string
-    updatedAt: string
-    snapshotFrequency: SnapshotFrequencyEnum
-    preferredCurrency: CurrencyEnum
-    preferredLanguage: LanguageEnum
-    dateFormat: DateFormatEnum
-    country: CountriesEnum
-    timezone: TimezoneEnum
-}
-
 export type GetUserResponse = {
     /**
      * Always true for success responses
@@ -1614,200 +1878,6 @@ export type UserLogin = {
     password: string
 }
 
-export type DashboardLayoutItem = {
-    id: string
-    colSpan: number
-    minHeight: number
-    visible?: boolean
-}
-
-export type GetDashboardLayout = {
-    layout: Array<DashboardLayoutItem>
-    version: number
-}
-
-export type GetCategoryDataResponse = {
-    id: string
-    title: string
-    description?: string
-    for: TransactionActionEnum
-    logoIcon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-}
-
-export type FinancialAccountDataResponse = {
-    id: string
-    title: string
-    description: string
-    balance: number
-    type: FinancialAccountTypeEnum
-    logoIcon: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type ImportDataResponse = {
-    id: string
-    title: string
-    financialAccountId: string
-    status: TransactionStatusEnum
-    transactions?: Array<Transaction>
-    files?: Array<ImportFile>
-    createdAt: string
-    updatedAt: string
-}
-
-export type SubcategoryDataResponse = {
-    id: string
-    categoryId: string
-    title: string
-    description?: string
-    logoIcon: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type GetSubscriptionDataResponse = {
-    id: string
-    title: string
-    description: string
-    amount: number
-    currency: CurrencyEnum
-    appearanceMode: AppearanceModeEnum
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: number
-    cyclePeriod: string
-    rememberPeriod: RememberPeriodEnum
-    financiaAccountId: string
-    isEnabled: boolean
-    createdAt: string
-    updatedAt: string
-}
-
-export type TransactionDataResponse = {
-    id: string
-    date: string
-    title: string
-    note: string | null
-    icon: string | null
-    categoryId: string | null
-    subcategoryId: string | null
-    importId: string | null
-    action: TransactionActionEnum
-    status: TransactionStatusEnum
-    ignore: boolean
-    createdAt: string
-    updatedAt: string
-    media: Array<TransactionMedia>
-    amounts: Array<Amount>
-    transferId: string | null
-    transferHash: string | null
-}
-
-export type CategoryDataResponse = {
-    id: string
-    title: string
-    description?: string
-    for: TransactionActionEnum
-    logoIcon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-}
-
-export type SubscriptionDataResponse = {
-    id: string
-    title: string
-    description: string
-    amount: number
-    currency: CurrencyEnum
-    appearanceMode: AppearanceModeEnum
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: number
-    cyclePeriod: CyclePeriodEnum
-    rememberPeriod: RememberPeriodEnum
-    financialAccountId: string
-    isEnabled: boolean
-    createdAt: string
-    updatedAt: string
-}
-
-export type ImportTransactionDataResponse = {
-    id: string
-    date: string
-    title: string
-    note: string | null
-    icon: string | null
-    categoryId: string | null
-    subcategoryId: string | null
-    action: TransactionActionEnum
-    status: TransactionStatusEnum
-    ignore: boolean
-    createdAt: string
-    updatedAt: string
-    media: Array<TransactionMedia>
-    amounts: Array<Amount>
-    transferId: string | null
-    transferHash: string | null
-}
-
-export type GetImportTransactionsResponse = {
-    /**
-     * Always true for success responses
-     */
-    success: true
-    /**
-     * Optional success message
-     */
-    message?: string
-    /**
-     * Response data
-     */
-    data?: Array<ImportTransactionDataResponse>
-}
-
-export type Session = {
-    id?: string
-    expiresAt: string
-    token: string
-    createdAt: string
-    updatedAt: string
-    ipAddress?: string
-    userAgent?: string
-    userId: string
-}
-
-export type Account = {
-    id?: string
-    accountId: string
-    providerId: string
-    userId: string
-    accessToken?: string
-    refreshToken?: string
-    idToken?: string
-    accessTokenExpiresAt?: string
-    refreshTokenExpiresAt?: string
-    scope?: string
-    password?: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type Verification = {
-    id?: string
-    identifier: string
-    value: string
-    expiresAt: string
-    createdAt: string
-    updatedAt: string
-}
-
 export type UserFormPreferencesForm = {
     preferredCurrency: CurrencyEnum
     preferredLanguage: LanguageEnum
@@ -1821,10 +1891,11 @@ export type UserFormGeneralitiesForm = {
     country: CountriesEnum
 }
 
-export type UserProfileSecurityFormSchema = {
-    oldPassword: string
-    newPassword: string
-    confirmPassword: string
+export type UserProfileForm = {
+    name: string
+    surname: string
+    email: string
+    country: CountriesEnum
 }
 
 export type UserProfileSecurityForm = {
@@ -1833,109 +1904,50 @@ export type UserProfileSecurityForm = {
     confirmPassword: string
 }
 
-export type UserProfileForm = {
-    name: string
-    surname: string
-    email: string
-    country: CountriesEnum
-}
-
-export type CategoryData = {
-    id: string
-    title: string
-    description?: string
-    for: TransactionActionEnum
-    logoIcon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-}
-
-export type FinancialAccountData = {
-    id: string
+export type FinancialAccountForm = {
     title: string
     description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
-    createdAt: string
-    updatedAt: string
 }
 
-export type ImportData = {
-    id: string
+export type CategoryForm = {
     title: string
-    financialAccountId: string
-    status: TransactionStatusEnum
-    transactions?: Array<Transaction>
-    files?: Array<ImportFile>
-    createdAt: string
-    updatedAt: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
 }
 
-export type SubcategoryData = {
-    id: string
+export type SubcategoryForm = {
     categoryId: string
     title: string
     description?: string
     logoIcon: string
-    createdAt: string
-    updatedAt: string
 }
 
-export type SubscriptionData = {
-    id: string
-    title: string
-    description: string
-    amount: number
-    currency: CurrencyEnum
-    appearanceMode: AppearanceModeEnum
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: number
-    cyclePeriod: CyclePeriodEnum
-    rememberPeriod: RememberPeriodEnum
-    financialAccountId: string
-    isEnabled: boolean
-    createdAt: string
-    updatedAt: string
-}
-
-export type TransactionData = {
-    id: string
+export type TransactionForm = {
     date: string
     title: string
     note: string | null
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
-    importId: string | null
-    action: TransactionActionEnum
-    status: TransactionStatusEnum
     ignore: boolean
-    createdAt: string
-    updatedAt: string
-    media: Array<TransactionMedia>
-    amounts: Array<Amount>
-    transferId: string | null
-    transferHash: string | null
 }
 
-export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
-
-export type SubscriptionForm = {
-    title: string
-    description: string
-    amount: number
-    currency: CurrencyEnum
-    appearanceMode: AppearanceModeEnum
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: number
-    cyclePeriod: CyclePeriodEnum
-    rememberPeriod: RememberPeriodEnum
-    financialAccountId: string
+export type SnapshotData = {
+    id: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    accountBalances: Array<SnapshotAccountBalance>
+    assetValues: Array<SnapshotAssetValue>
+    createdAt: string
+    updatedAt: string
 }
 
 export type DeleteCategoriesData = {
@@ -2015,7 +2027,7 @@ export type CreateCategoryData = {
     /**
      * Category data to create
      */
-    body: CreateCategoryMultipartRequest
+    body: CreateCategoryRequest
     path?: never
     query?: never
     url: '/categories'
@@ -2702,6 +2714,46 @@ export type UpdateImportResponses = {
 
 export type UpdateImportResponse2 = UpdateImportResponses[keyof UpdateImportResponses]
 
+export type GetImportTransactionsByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/{id}/transactions'
+}
+
+export type GetImportTransactionsByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import transactions not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetImportTransactionsByIdError = GetImportTransactionsByIdErrors[keyof GetImportTransactionsByIdErrors]
+
+export type GetImportTransactionsByIdResponses = {
+    /**
+     * Import transactions retrieved
+     */
+    200: GetImportTransactionsResponse
+}
+
+export type GetImportTransactionsByIdResponse =
+    GetImportTransactionsByIdResponses[keyof GetImportTransactionsByIdResponses]
+
 export type CompleteImportData = {
     body?: never
     path: {
@@ -2946,7 +2998,7 @@ export type CreateSubcategoryData = {
     /**
      * Subcategory data to create
      */
-    body: CreateSubcategoryMultipartRequest
+    body: CreateSubcategoryRequest
     path?: never
     query?: never
     url: '/subcategories'
@@ -3630,46 +3682,6 @@ export type UpdateAuthenticatedUserResponses = {
 
 export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
 
-export type GetImportTransactionsByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/imports/{id}/transactions'
-}
-
-export type GetImportTransactionsByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Import transactions not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetImportTransactionsByIdError = GetImportTransactionsByIdErrors[keyof GetImportTransactionsByIdErrors]
-
-export type GetImportTransactionsByIdResponses = {
-    /**
-     * Import transactions retrieved
-     */
-    200: GetImportTransactionsResponse
-}
-
-export type GetImportTransactionsByIdResponse =
-    GetImportTransactionsByIdResponses[keyof GetImportTransactionsByIdResponses]
-
 export type SocialSignInData = {
     body: {
         /**
@@ -3760,6 +3772,104 @@ export type SocialSignInResponses = {
 }
 
 export type SocialSignInResponse = SocialSignInResponses[keyof SocialSignInResponses]
+
+export type GetCallbackByIdData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/callback/{id}'
+}
+
+export type GetCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetCallbackByIdError = GetCallbackByIdErrors[keyof GetCallbackByIdErrors]
+
+export type PostCallbackByIdData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/callback/{id}'
+}
+
+export type PostCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostCallbackByIdError = PostCallbackByIdErrors[keyof PostCallbackByIdErrors]
 
 export type GetSessionData = {
     body?: never
@@ -4608,6 +4718,67 @@ export type ChangePasswordResponses = {
 }
 
 export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses]
+
+export type UpdateSessionData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/update-session'
+}
+
+export type UpdateSessionErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type UpdateSessionError = UpdateSessionErrors[keyof UpdateSessionErrors]
+
+export type UpdateSessionResponses = {
+    /**
+     * Success
+     */
+    200: {
+        session?: Session
+    }
+}
+
+export type UpdateSessionResponse = UpdateSessionResponses[keyof UpdateSessionResponses]
 
 export type UpdateUserData = {
     body?: {
@@ -5770,162 +5941,3 @@ export type GetErrorResponses = {
 }
 
 export type GetErrorResponse = GetErrorResponses[keyof GetErrorResponses]
-
-export type GetCallbackByIdData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/callback/{id}'
-}
-
-export type GetCallbackByIdErrors = {
-    /**
-     * Bad Request. Usually due to missing parameters, or invalid parameters.
-     */
-    400: {
-        message: string
-    }
-    /**
-     * Unauthorized. Due to missing or invalid authentication.
-     */
-    401: {
-        message: string
-    }
-    /**
-     * Forbidden. You do not have permission to access this resource or to perform this action.
-     */
-    403: {
-        message?: string
-    }
-    /**
-     * Not Found. The requested resource was not found.
-     */
-    404: {
-        message?: string
-    }
-    /**
-     * Too Many Requests. You have exceeded the rate limit. Try again later.
-     */
-    429: {
-        message?: string
-    }
-    /**
-     * Internal Server Error. This is a problem with the server that you cannot fix.
-     */
-    500: {
-        message?: string
-    }
-}
-
-export type GetCallbackByIdError = GetCallbackByIdErrors[keyof GetCallbackByIdErrors]
-
-export type PostCallbackByIdData = {
-    body?: {
-        [key: string]: unknown
-    }
-    path?: never
-    query?: never
-    url: '/callback/{id}'
-}
-
-export type PostCallbackByIdErrors = {
-    /**
-     * Bad Request. Usually due to missing parameters, or invalid parameters.
-     */
-    400: {
-        message: string
-    }
-    /**
-     * Unauthorized. Due to missing or invalid authentication.
-     */
-    401: {
-        message: string
-    }
-    /**
-     * Forbidden. You do not have permission to access this resource or to perform this action.
-     */
-    403: {
-        message?: string
-    }
-    /**
-     * Not Found. The requested resource was not found.
-     */
-    404: {
-        message?: string
-    }
-    /**
-     * Too Many Requests. You have exceeded the rate limit. Try again later.
-     */
-    429: {
-        message?: string
-    }
-    /**
-     * Internal Server Error. This is a problem with the server that you cannot fix.
-     */
-    500: {
-        message?: string
-    }
-}
-
-export type PostCallbackByIdError = PostCallbackByIdErrors[keyof PostCallbackByIdErrors]
-
-export type UpdateSessionData = {
-    body?: {
-        [key: string]: unknown
-    }
-    path?: never
-    query?: never
-    url: '/update-session'
-}
-
-export type UpdateSessionErrors = {
-    /**
-     * Bad Request. Usually due to missing parameters, or invalid parameters.
-     */
-    400: {
-        message: string
-    }
-    /**
-     * Unauthorized. Due to missing or invalid authentication.
-     */
-    401: {
-        message: string
-    }
-    /**
-     * Forbidden. You do not have permission to access this resource or to perform this action.
-     */
-    403: {
-        message?: string
-    }
-    /**
-     * Not Found. The requested resource was not found.
-     */
-    404: {
-        message?: string
-    }
-    /**
-     * Too Many Requests. You have exceeded the rate limit. Try again later.
-     */
-    429: {
-        message?: string
-    }
-    /**
-     * Internal Server Error. This is a problem with the server that you cannot fix.
-     */
-    500: {
-        message?: string
-    }
-}
-
-export type UpdateSessionError = UpdateSessionErrors[keyof UpdateSessionErrors]
-
-export type UpdateSessionResponses = {
-    /**
-     * Success
-     */
-    200: {
-        session?: Session
-    }
-}
-
-export type UpdateSessionResponse = UpdateSessionResponses[keyof UpdateSessionResponses]

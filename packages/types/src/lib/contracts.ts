@@ -1,1 +1,1 @@
-export * as Contracts from '../contracts/index.js'
+export * as Contracts from '../contracts/index'

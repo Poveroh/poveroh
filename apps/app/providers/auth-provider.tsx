@@ -17,13 +17,13 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isInitialized, setIsInitialized] = useState(false)
     const { logout } = useAuth()
-    const { me } = useUser()
+    const { getMe } = useUser()
     const logoutRef = useRef(logout)
 
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                await me()
+                await getMe()
             } catch (error) {
                 console.error('Failed to initialize auth:', error)
             } finally {
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         initializeAuth()
-    }, [me])
+    }, [getMe])
 
     useEffect(() => {
         logoutRef.current = logout

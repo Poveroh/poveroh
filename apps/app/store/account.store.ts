@@ -1,14 +1,14 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import type { FinancialAccount } from '@/lib/api-client'
+import { FinancialAccountData } from '@poveroh/types/contracts'
 
 type FinancialAccountStore = {
-    financialAccountCacheList: FinancialAccount[]
-    addFinancialAccount: (account: FinancialAccount) => void
-    editFinancialAccount: (account: FinancialAccount) => void
-    setFinancialAccounts: (accounts: FinancialAccount[]) => void
+    financialAccountCacheList: FinancialAccountData[]
+    addFinancialAccount: (account: FinancialAccountData) => void
+    editFinancialAccount: (account: FinancialAccountData) => void
+    setFinancialAccounts: (accounts: FinancialAccountData[]) => void
     removeFinancialAccount: (financialAccountId: string) => void
-    getFinancialAccount: (financialAccountId: string) => FinancialAccount | null
+    getFinancialAccount: (financialAccountId: string) => FinancialAccountData | null
 }
 
 export const useFinancialAccountStore = create<FinancialAccountStore>((set, get) => ({

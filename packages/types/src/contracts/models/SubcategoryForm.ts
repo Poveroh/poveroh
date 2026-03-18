@@ -2,9 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserProfileSecurityFormSchema = {
-    oldPassword: string;
-    newPassword: string;
-    confirmPassword: string;
+export type SubcategoryForm = {
+    categoryId: string;
+    title: string;
+    description?: string;
+    logoIcon: string;
 };
 

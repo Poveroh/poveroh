@@ -21,20 +21,17 @@ export const SubcategorySchema = z
 
 /**
  * Response schema for getting subcategory data (excluding categoryId and deletedAt)
+ * This is the real Dto used for responses, while SubcategorySchema is the completed one
+ * similar to Schema in DB
  */
 export const SubcategoryDataSchema = SubcategorySchema.omit({
     deletedAt: true
 }).openapi('SubcategoryData')
 
 /**
- * Response schema for getting subcategory data (excluding categoryId and deletedAt)
- */
-export const SubcategoryDataResponseSchema = SubcategoryDataSchema.openapi('SubcategoryDataResponse')
-
-/**
  * Response schema for getting a list of subcategories
  */
-export const GetSubcategoryListResponseSchema = SuccessResponseSchema(SubcategoryDataResponseSchema.array()).openapi(
+export const GetSubcategoryListResponseSchema = SuccessResponseSchema(SubcategoryDataSchema.array()).openapi(
     'GetSubcategoryListResponse'
 )
 
@@ -42,7 +39,7 @@ export const GetSubcategoryListResponseSchema = SuccessResponseSchema(Subcategor
  * Response schema for getting a single subcategory by ID
  */
 export const GetSubcategoryResponseSchema =
-    SuccessResponseSchema(SubcategoryDataResponseSchema).openapi('GetSubcategoryResponse')
+    SuccessResponseSchema(SubcategoryDataSchema).openapi('GetSubcategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -56,15 +53,11 @@ export const CreateSubcategoryRequestSchema = SubcategorySchema.omit({
     deletedAt: true
 }).openapi('CreateSubcategoryRequest')
 
-export const CreateSubcategoryMultipartRequestSchema = MultipartRequestSchema(CreateSubcategoryRequestSchema).openapi(
-    'CreateSubcategoryMultipartRequest'
-)
-
 /**
  * Response schema for creating a new subcategory
  */
 export const CreateSubcategoryResponseSchema =
-    SuccessResponseSchema(SubcategoryDataResponseSchema).openapi('CreateSubcategoryResponse')
+    SuccessResponseSchema(SubcategoryDataSchema).openapi('CreateSubcategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -121,3 +114,10 @@ export const SubcategoryFiltersSchema = z
  */
 export const QuerySubcategoryFiltersSchema =
     ReadQuerySchema(SubcategoryFiltersSchema).openapi('QuerySubcategoryFilters')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Subcategory form schema representing the data structure for subcategory creation and editing forms
+ */
+export const SubcategoryFormSchema = CreateSubcategoryRequestSchema.openapi('SubcategoryForm')

@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubscriptionDataResponse } from './SubscriptionDataResponse';
+import type { SubscriptionData } from './SubscriptionData';
 export type CreateSubscriptionResponse = {
     /**
      * Always true for success responses
@@ -12,6 +12,6 @@ export type CreateSubscriptionResponse = {
      * Optional success message
      */
     message?: string;
-    data?: SubscriptionDataResponse;
+    data?: SubscriptionData;
 };
 

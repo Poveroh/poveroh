@@ -43,16 +43,13 @@ export const ImportSchema = z
 
 /**
  * Response schema for getting import data (excluding userId and deletedAt)
+ * This is the real Dto used for responses, while ImportSchema is the completed one
+ * similar to Schema in DB
  */
 export const ImportDataSchema = ImportSchema.omit({
     userId: true,
     deletedAt: true
 }).openapi('ImportData')
-
-/**
- * Response schema for getting import data (excluding userId and deletedAt)
- */
-export const ImportDataResponseSchema = ImportDataSchema.openapi('ImportDataResponse')
 
 /**
  * Response schema for getting transaction data (excluding userId and deletedAt)
@@ -66,14 +63,14 @@ export const ImportTransactionDataResponseSchema = TransactionSchema.omit({
 /**
  * Response schema for getting a list of imports
  */
-export const GetImportListResponseSchema = SuccessResponseSchema(ImportDataResponseSchema.array()).openapi(
+export const GetImportListResponseSchema = SuccessResponseSchema(ImportDataSchema.array()).openapi(
     'GetImportListResponse'
 )
 
 /**
  * Response schema for getting a single import by ID
  */
-export const GetImportResponseSchema = SuccessResponseSchema(ImportDataResponseSchema).openapi('GetImportResponse')
+export const GetImportResponseSchema = SuccessResponseSchema(ImportDataSchema).openapi('GetImportResponse')
 
 /**
  * Response schema for getting a list of transactions for a specific import
@@ -100,8 +97,7 @@ export const CreateImportMultipartRequestSchema =
 /**
  * Response schema for creating a new import
  */
-export const CreateImportResponseSchema =
-    SuccessResponseSchema(ImportDataResponseSchema).openapi('CreateImportResponse')
+export const CreateImportResponseSchema = SuccessResponseSchema(ImportDataSchema).openapi('CreateImportResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -117,8 +113,7 @@ export const UpdateImportRequestSchema = ImportSchema.partial()
 /**
  * Response schema for updating an existing import
  */
-export const UpdateImportResponseSchema =
-    SuccessResponseSchema(ImportDataResponseSchema).openapi('UpdateImportResponse')
+export const UpdateImportResponseSchema = SuccessResponseSchema(ImportDataSchema).openapi('UpdateImportResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

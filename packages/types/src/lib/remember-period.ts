@@ -1,4 +1,4 @@
-import { RememberPeriodEnum } from 'src/contracts'
+import { RememberPeriodEnum } from '../contracts'
 import { Item } from './item'
 
 export const RememberPeriodCatalog: Item<RememberPeriodEnum>[] = [

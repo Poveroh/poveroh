@@ -2,14 +2,14 @@ import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
     SubcategoryParamsId,
-    CreateSubcategoryMultipartRequestSchema,
     UpdateSubcategoryRequestSchema,
     QuerySubcategoryFiltersSchema,
     GetSubcategoryListResponseSchema,
     GetSubcategoryResponseSchema,
     CreateSubcategoryResponseSchema,
     UpdateSubcategoryResponseSchema,
-    DeleteSubcategoryResponseSchema
+    DeleteSubcategoryResponseSchema,
+    CreateSubcategoryRequestSchema
 } from '../schemas'
 
 export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
@@ -134,8 +134,8 @@ export const registerSubcategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Subcategory data to create',
                 required: true,
                 content: {
-                    'multipart/form-data': {
-                        schema: CreateSubcategoryMultipartRequestSchema,
+                    'application/json': {
+                        schema: CreateSubcategoryRequestSchema,
                         encoding: {
                             data: {
                                 contentType: 'application/json'

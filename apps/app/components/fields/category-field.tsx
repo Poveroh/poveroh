@@ -2,8 +2,8 @@ import { FieldValues, Path } from 'react-hook-form'
 import { CategoryFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { ICategory } from '@/types/api'
 import { useCategory } from '@/hooks/use-category'
+import { CategoryData } from '@poveroh/types/contracts'
 
 export function CategoryField<T extends FieldValues = FieldValues>({
     control,
@@ -30,10 +30,12 @@ export function CategoryField<T extends FieldValues = FieldValues>({
             disabled={disabled}
             mandatory={mandatory}
             options={categoryCacheList}
-            getOptionLabel={(item: ICategory) => item.title}
-            getOptionValue={(item: ICategory) => item.id}
+            getOptionLabel={(item: CategoryData) => item.title}
+            getOptionValue={(item: CategoryData) => item.id}
             onValueChange={onValueChange}
-            renderOptionContent={(item: ICategory) => createIconContent(item.logoIcon, item.title, { type: 'dynamic' })}
+            renderOptionContent={(item: CategoryData) =>
+                createIconContent(item.logoIcon, item.title, { type: 'dynamic' })
+            }
         />
     )
 }

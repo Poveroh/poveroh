@@ -80,7 +80,7 @@ export {
     updateTransaction,
     updateUser,
     verifyPassword
-} from './sdk.gen.js'
+} from './sdk.gen'
 export type {
     Account,
     Amount,
@@ -91,6 +91,7 @@ export type {
     CategoryData,
     CategoryDataResponse,
     CategoryFilters,
+    CategoryForm,
     CategoryParamsId,
     ChangeEmailData,
     ChangeEmailError,
@@ -251,6 +252,7 @@ export type {
     FinancialAccountData,
     FinancialAccountDataResponse,
     FinancialAccountFilters,
+    FinancialAccountForm,
     FinancialAccountParamsId,
     FinancialAccountTypeEnum,
     GetAccountInfoData,
@@ -276,7 +278,6 @@ export type {
     GetCategoryByIdErrors,
     GetCategoryByIdResponse,
     GetCategoryByIdResponses,
-    GetCategoryDataResponse,
     GetCategoryListResponse,
     GetCategoryResponse,
     GetDashboardLayout,
@@ -369,7 +370,6 @@ export type {
     GetSubscriptionByIdErrors,
     GetSubscriptionByIdResponse,
     GetSubscriptionByIdResponses,
-    GetSubscriptionDataResponse,
     GetSubscriptionListResponse,
     GetSubscriptionResponse,
     GetSubscriptionsData,
@@ -508,6 +508,7 @@ export type {
     Snapshot,
     SnapshotAccountBalance,
     SnapshotAssetValue,
+    SnapshotData,
     SnapshotFrequencyEnum,
     SocialSignInData,
     SocialSignInError,
@@ -520,6 +521,7 @@ export type {
     SubcategoryData,
     SubcategoryDataResponse,
     SubcategoryFilters,
+    SubcategoryForm,
     SubcategoryParamsId,
     Subscription,
     SubscriptionData,
@@ -533,6 +535,7 @@ export type {
     TransactionData,
     TransactionDataResponse,
     TransactionFilters,
+    TransactionForm,
     TransactionMedia,
     TransactionMediaFilters,
     TransactionMediaParamsId,
@@ -611,7 +614,6 @@ export type {
     UserPreferences,
     UserProfileForm,
     UserProfileSecurityForm,
-    UserProfileSecurityFormSchema,
     UserSession,
     Verification,
     VerifyPasswordData,
@@ -619,4 +621,4 @@ export type {
     VerifyPasswordErrors,
     VerifyPasswordResponse,
     VerifyPasswordResponses
-} from './types.gen.js'
+} from './types.gen'

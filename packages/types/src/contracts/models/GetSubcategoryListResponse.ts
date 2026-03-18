@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubcategoryDataResponse } from './SubcategoryDataResponse';
+import type { SubcategoryData } from './SubcategoryData';
 export type GetSubcategoryListResponse = {
     /**
      * Always true for success responses
@@ -15,6 +15,6 @@ export type GetSubcategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<SubcategoryDataResponse>;
+    data?: Array<SubcategoryData>;
 };
 

@@ -1,30 +1,48 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
-import { SnapshotService } from '@/services/snapshot.service'
-import { ISnapshotAccountBalance } from '@/types/api'
+import { createSnapshotAccountBalanceMutation } from '@/api/@tanstack/react-query.gen'
+import { CreateSnapshotAccountBalanceRequest } from '@/api/types.gen'
+import type { Snapshot } from '@/lib/api-client'
+
+type SnapshotLoadingState = {
+    createSnapshotAccountBalance: boolean
+}
 
 export const useSnapshot = () => {
     const { handleError } = useError()
-    const snapshotService = new SnapshotService()
 
-    const [loading, setLoading] = useState(false)
+    const [snapshotLoading, setSnapshotLoading] = useState<SnapshotLoadingState>({
+        createSnapshotAccountBalance: false
+    })
 
-    const addAccountBalanceSnapshot = async (data: Partial<ISnapshotAccountBalance>) => {
-        setLoading(true)
+    const createSnapshotAccountBalanceMutationHook = useMutation({
+        ...createSnapshotAccountBalanceMutation(),
+        onError: error => {
+            handleError(error, 'Error saving snapshot')
+        }
+    })
+
+    const createSnapshotAccountBalance = async (data: Partial<CreateSnapshotAccountBalanceRequest>) => {
+        setSnapshotLoading(prev => ({ ...prev, createSnapshotAccountBalance: true }))
         try {
-            return await snapshotService.addAccountBalanceSnapshot(data)
+            const response = await createSnapshotAccountBalanceMutationHook.mutateAsync({
+                body: data as any
+            })
+
+            return (response?.data ?? null) as Snapshot | null
         } catch (error) {
             handleError(error, 'Error saving snapshot')
             return null
         } finally {
-            setLoading(false)
+            setSnapshotLoading(prev => ({ ...prev, createSnapshotAccountBalance: false }))
         }
     }
 
     return {
-        loading,
-        addAccountBalanceSnapshot
+        snapshotLoading,
+        createSnapshotAccountBalance
     }
 }

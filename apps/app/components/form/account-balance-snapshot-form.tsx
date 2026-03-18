@@ -5,20 +5,18 @@ import { useTranslations } from 'next-intl'
 import { Form } from '@poveroh/ui/components/form'
 import { AccountField } from '../fields/account-field'
 import { AmountField } from '../fields/amount-field'
-import { DateField } from '../fields/date-field'
-import { NoteField } from '../fields/note-field'
 import { FormProps, FormRef } from '@/types'
 import { useAccountBalanceSnapshotForm } from '@/hooks/form/use-account-balance-snapshot-form'
-import { ISnapshotAccountBalance } from '@/types/api'
+import { SnapshotAccountBalance } from '@poveroh/types/contracts'
 
 export const AccountBalanceSnapshotForm = forwardRef<
     FormRef,
-    FormProps<ISnapshotAccountBalance> & {
+    FormProps<SnapshotAccountBalance> & {
         initialAccountId?: string
     }
 >(
     (
-        props: FormProps<ISnapshotAccountBalance> & {
+        props: FormProps<SnapshotAccountBalance> & {
             initialAccountId?: string
         },
         ref
@@ -39,9 +37,7 @@ export const AccountBalanceSnapshotForm = forwardRef<
             reset: () => {
                 form.reset({
                     accountId: initialData?.accountId ?? '',
-                    snapshotDate: new Date().toISOString(),
-                    balance: 0,
-                    note: ''
+                    balance: 0
                 })
             }
         }))
@@ -64,8 +60,6 @@ export const AccountBalanceSnapshotForm = forwardRef<
                             mandatory
                         />
 
-                        <DateField control={form.control} name='snapshotDate' label={t('form.date.label')} mandatory />
-
                         <AmountField
                             control={form.control}
                             name='balance'
@@ -74,13 +68,6 @@ export const AccountBalanceSnapshotForm = forwardRef<
                             mandatory
                             min={0}
                             step='0.01'
-                        />
-
-                        <NoteField
-                            control={form.control}
-                            name='note'
-                            label={t('form.note.label')}
-                            placeholder={t('form.note.placeholder')}
                         />
                     </div>
                 </form>

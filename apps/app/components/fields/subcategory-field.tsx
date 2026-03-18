@@ -2,7 +2,7 @@ import { FieldValues, Path } from 'react-hook-form'
 import { SubcategoryFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { ISubcategory } from '@/types/api'
+import { SubcategoryData } from '@poveroh/types/contracts'
 
 export function SubcategoryField<T extends FieldValues = FieldValues>({
     control,
@@ -28,9 +28,9 @@ export function SubcategoryField<T extends FieldValues = FieldValues>({
             disabled={disabled}
             mandatory={mandatory}
             options={subcategories || []}
-            getOptionLabel={(item: ISubcategory) => item.title}
-            getOptionValue={(item: ISubcategory) => item.id}
-            renderOptionContent={(item: ISubcategory) =>
+            getOptionLabel={(item: SubcategoryData) => item.title}
+            getOptionValue={(item: SubcategoryData) => item.id}
+            renderOptionContent={(item: SubcategoryData) =>
                 createIconContent(item.logoIcon, item.title, { type: 'dynamic' })
             }
         />

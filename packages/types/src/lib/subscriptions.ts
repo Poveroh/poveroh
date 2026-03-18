@@ -4,6 +4,7 @@ export const DEFAULT_SUBSCRIPTION: CreateSubscriptionRequest = {
     title: '',
     description: '',
     amount: 0,
+    isEnabled: true,
     currency: 'EUR',
     appearanceMode: 'ICON',
     appearanceLogoIcon: 'coffee',

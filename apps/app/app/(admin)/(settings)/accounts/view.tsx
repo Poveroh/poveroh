@@ -20,32 +20,37 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { FinancialAccount } from '@poveroh/types/contracts'
+import { FinancialAccountData, FinancialAccountTypeEnum, SnapshotAccountBalance } from '@poveroh/types/contracts'
+
+type AccountFilters = {
+    title?: { contains?: string }
+    description?: { contains?: string }
+    type?: FinancialAccountTypeEnum
+}
 
 export default function AccountView() {
     const t = useTranslations()
 
-    const { financialAccountCacheList, fetchFinancialAccount, TYPE_LIST, financialAccountLoading } =
+    const { financialAccountCacheList, fetchFinancialAccounts, TYPE_LIST, financialAccountLoading } =
         useFinancialAccount()
 
-    const { openModal } = useModal<FinancialAccount>('account')
-    const { openModal: openSnapshotModal } = useModal<ISnapshotAccountBalance>('account-snapshot')
-    const { openModal: openDeleteModal } = useDeleteModal<FinancialAccount>()
+    const { openModal } = useModal<FinancialAccountData>('account')
+    const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
+    const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
 
-    const [localAccountList, setLocalAccountList] = useState<FinancialAccount[]>(financialAccountCacheList)
+    const [localAccountList, setLocalAccountList] = useState<FinancialAccountData[]>(financialAccountCacheList)
 
-    const [filters, setFilters] = useState<IFinancialAccountFilters>({})
+    const [filters, setFilters] = useState<AccountFilters>({})
 
     useEffect(() => {
-        fetchFinancialAccount()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchFinancialAccounts()
     }, [])
 
     useEffect(() => {
         setLocalAccountList(financialAccountCacheList)
     }, [financialAccountCacheList])
 
-    const onFilter = (filter: IFinancialAccountFilters = {}) => {
+    const onFilter = (filter: AccountFilters = {}) => {
         const updatedFilter = { ...filter }
 
         const filteredList = financialAccountCacheList.filter(account => {
@@ -66,8 +71,8 @@ export default function AccountView() {
         setLocalAccountList(filteredList)
     }
 
-    const removeFilter = (key: keyof IFinancialAccountFilters) => {
-        const newFilters: IFinancialAccountFilters = { ...filters }
+    const removeFilter = (key: keyof AccountFilters) => {
+        const newFilters: AccountFilters = { ...filters }
         delete newFilters[key]
 
         if (key === 'title' || key === 'description') {
@@ -80,7 +85,7 @@ export default function AccountView() {
     const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const textToSearch = event.target.value
 
-        const newFilters: IFinancialAccountFilters = {
+        const newFilters: AccountFilters = {
             ...filters,
             title: textToSearch ? { contains: textToSearch } : undefined,
             description: textToSearch ? { contains: textToSearch } : undefined
@@ -101,18 +106,18 @@ export default function AccountView() {
                         { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchFinancialAccount(true),
+                        onClick: fetchFinancialAccounts,
                         loading: financialAccountLoading.fetch
                     }}
                     addAction={{
                         onClick: () => {
                             openModal('create')
                         },
-                        loading: financialAccountLoading.add
+                        loading: financialAccountLoading.create
                     }}
                     onDeleteAll={{
                         onClick: () => {},
-                        loading: financialAccountLoading.remove
+                        loading: financialAccountLoading.delete
                     }}
                 />
 
@@ -137,7 +142,7 @@ export default function AccountView() {
                                     key={key}
                                     variant='secondary'
                                     className='flex items-center gap-1'
-                                    onClick={() => removeFilter(key as keyof IFinancialAccountFilters)}
+                                    onClick={() => removeFilter(key as keyof AccountFilters)}
                                 >
                                     {item.label}
                                     <X />
@@ -146,7 +151,7 @@ export default function AccountView() {
                         })}
                     </div>
 
-                    <FilterButton<IFinancialAccountFilters>
+                    <FilterButton<AccountFilters>
                         fields={[
                             {
                                 name: 'type',
@@ -166,7 +171,7 @@ export default function AccountView() {
                                 <AccountItem
                                     key={account.id}
                                     account={account}
-                                    openEdit={(item: IFinancialAccount) => {
+                                    openEdit={(item: FinancialAccountData) => {
                                         openModal('edit', item)
                                     }}
                                     openDelete={openDeleteModal}

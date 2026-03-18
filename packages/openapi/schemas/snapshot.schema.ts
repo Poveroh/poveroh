@@ -47,6 +47,14 @@ export const SnapshotSchema = z
     })
     .openapi('Snapshot')
 
+/**
+ * Snapshot schema representing a financial snapshot of a user's accounts and assets at a specific point in time
+ */
+export const SnapshotDataSchema = SnapshotSchema.omit({
+    userId: true,
+    deletedAt: true
+}).openapi('SnapshotData')
+
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**

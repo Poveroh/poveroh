@@ -1,6 +1,5 @@
 import { useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
-import type { Import } from '@/lib/api-client'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UploadForm } from '../form/transactions/upload-form'
 import { useImport } from '@/hooks/use-imports'
@@ -18,23 +17,24 @@ import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { cn } from '@poveroh/ui/lib/utils'
+import { ImportData } from '@poveroh/types/contracts'
 
 export function ImportDrawer() {
     const t = useTranslations()
 
-    const { completeImport, removeImport, importStore } = useImport()
+    const { completeImport, deleteImport, importStore } = useImport()
 
-    const drawerManager = useDrawer<IImport>()
-    const deleteModalManager = useDeleteModal<IImport>()
+    const drawerManager = useDrawer<ImportData>()
+    const deleteModalManager = useDeleteModal<ImportData>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [localImports, setLocalImports] = useState<IImport | undefined>(drawerManager.item)
+    const [localImports, setLocalImports] = useState<ImportData | undefined>(drawerManager.item)
 
-    const handleFormSubmit = async (data: IImport) => {
+    const handleFormSubmit = async (data: ImportData) => {
         drawerManager.setLoading(true)
 
-        const res: IImport | null = await completeImport(data.id)
+        const res = await completeImport(data.id)
 
         if (!res) {
             drawerManager.setLoading(false)
@@ -43,12 +43,12 @@ export function ImportDrawer() {
 
         toast.success(
             t('messages.successfully', {
-                a: res.title,
+                a: data.title,
                 b: t(drawerManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )
 
-        setLocalImports(res)
+        setLocalImports(data)
 
         drawerManager.setLoading(false)
 
@@ -60,7 +60,7 @@ export function ImportDrawer() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await removeImport(deleteModalManager.item.id)
+        const res = await deleteImport(deleteModalManager.item.id)
 
         deleteModalManager.setLoading(false)
 

@@ -1,4 +1,4 @@
-import { LanguageEnum } from 'src/contracts'
+import { LanguageEnum } from '../contracts'
 import { Item } from './item'
 
 export const LanguageCatalog: Item<LanguageEnum>[] = [

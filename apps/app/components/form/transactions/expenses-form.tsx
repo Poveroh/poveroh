@@ -2,7 +2,6 @@
 
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
-import { IFinancialAccount } from '@/types/api'
 import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
@@ -23,6 +22,7 @@ import {
 import { useFinancialAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 import { useExpensesForm } from '@/hooks/form/use-expenses-form'
+import { FinancialAccountData } from '@poveroh/types/contracts'
 
 export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
@@ -186,7 +186,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {financialAccountCacheList.map((item: IFinancialAccount) => (
+                                                    {financialAccountCacheList.map((item: FinancialAccountData) => (
                                                         <SelectItem key={item.id} value={item.id}>
                                                             <div className='flex items-center flex-row space-x-4'>
                                                                 <BrandIcon icon={item.logoIcon} size='sm' />

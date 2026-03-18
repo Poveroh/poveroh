@@ -1,8 +1,13 @@
-import { DashboardLayout } from '@poveroh/types'
+import { DashboardLayoutItem } from '@poveroh/types'
 
-export const DASHBOARD_DEFAULT_LAYOUT: DashboardLayout = {
+type DashboardDefaultLayout = {
+    version: number
+    widgets: DashboardLayoutItem[]
+}
+
+export const DASHBOARD_DEFAULT_LAYOUT: DashboardDefaultLayout = {
     version: 1,
-    items: [
+    widgets: [
         { id: 'kpi-row', colSpan: 12, minHeight: 140, visible: true },
         { id: 'liquidity-evolution', colSpan: 12, minHeight: 360, visible: true },
         { id: 'income-expense-month', colSpan: 12, minHeight: 360, visible: true },

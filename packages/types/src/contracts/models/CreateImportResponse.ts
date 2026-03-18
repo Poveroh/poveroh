@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ImportDataResponse } from './ImportDataResponse';
+import type { ImportData } from './ImportData';
 export type CreateImportResponse = {
     /**
      * Always true for success responses
@@ -12,6 +12,6 @@ export type CreateImportResponse = {
      * Optional success message
      */
     message?: string;
-    data?: ImportDataResponse;
+    data?: ImportData;
 };
 

@@ -1,20 +1,31 @@
 'use client'
 
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useError } from '@/hooks/use-error'
-import { INetWorthEvolutionFilters } from '@/types/api'
-import { ReportService } from '@/services/report.service'
+import { getTrendReportOptions } from '@/api/@tanstack/react-query.gen'
+import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@/api/types.gen'
 
 export const useReport = () => {
     const { handleError } = useError()
-    const reportService = new ReportService()
+    const queryClient = useQueryClient()
 
     const [loading, setLoading] = useState(false)
 
-    const getNetWorthEvolution = async (filter?: INetWorthEvolutionFilters) => {
+    const getNetWorthEvolution = async (filter?: NetWorthEvolutionFilters): Promise<NetWorthEvolutionReport | null> => {
         setLoading(true)
         try {
-            return await reportService.getNetWorthEvolution(filter)
+            const response = await queryClient.fetchQuery(
+                getTrendReportOptions({
+                    query: { filter }
+                })
+            )
+
+            if (!response?.success || !response.data) {
+                return null
+            }
+
+            return response.data as NetWorthEvolutionReport
         } catch (error) {
             handleError(error, 'Error fetching net worth evolution')
             return null

@@ -4,14 +4,14 @@ import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { useReport } from '@/hooks/use-report'
-import { INetWorthEvolutionReport } from '@/types/api'
 import { NetWorthEvolutionChart } from '../charts/net-worth-evolution-chart'
 import { useChartRange } from '@/hooks/use-chart-range'
 import { ChartRangeSelect } from '../../fields/chart-range-select'
+import { NetWorthEvolutionReport } from '@poveroh/types/contracts'
 
 export const NetWorthEvolutionWidget = () => {
     const [isLive] = useState(false)
-    const [data, setData] = useState<INetWorthEvolutionReport | null>(null)
+    const [data, setData] = useState<NetWorthEvolutionReport | null>(null)
     const t = useTranslations('widget.net-worth-evolution')
 
     const { getNetWorthEvolution } = useReport()
@@ -25,23 +25,21 @@ export const NetWorthEvolutionWidget = () => {
         }
 
         fetchData()
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [range])
 
     const formatCurrency = (value: number) =>
         value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
 
     const comparison = useMemo(() => {
-        if (!data?.dataPoints?.length) return null
+        if (!data?.evolution?.length) return null
 
-        const latest = data.dataPoints[data.dataPoints.length - 1]
-        const reference = data.dataPoints[0]
+        const latest = data.evolution[data.evolution.length - 1]
+        const reference = data.evolution[0]
 
         if (!latest || !reference) return null
 
-        const delta = latest.totalNetWorth - reference.totalNetWorth
-        const deltaPct = reference.totalNetWorth ? (delta / reference.totalNetWorth) * 100 : 0
+        const delta = latest.netWorth - reference.netWorth
+        const deltaPct = reference.netWorth ? (delta / reference.netWorth) * 100 : 0
 
         return {
             delta,
@@ -64,7 +62,7 @@ export const NetWorthEvolutionWidget = () => {
                                 </div>
                             )}
                         </div>
-                        <h2>$ {data ? data.totalNetWorth.toFixed(2) : '0.00'}</h2>
+                        <h2>$ {data ? data.currentNetWorth.toFixed(2) : '0.00'}</h2>
                         {comparison && (
                             <div className='flex items-center gap-2 text-sm'>
                                 <span className={comparison.isPositive ? 'text-emerald-500' : 'text-red-500'}>
@@ -78,7 +76,7 @@ export const NetWorthEvolutionWidget = () => {
                     </div>
                     <ChartRangeSelect />
                 </div>
-                <NetWorthEvolutionChart dataPoints={data ? data.dataPoints : []} />
+                <NetWorthEvolutionChart dataPoints={data ? data.evolution : []} />
             </div>
         </Box>
     )

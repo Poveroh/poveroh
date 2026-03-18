@@ -2,14 +2,14 @@ import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
     ErrorResponseSchema,
     CategoryParamsId,
-    CreateCategoryMultipartRequestSchema,
     UpdateCategoryRequestSchema,
     QueryCategoryFiltersSchema,
     GetCategoryListResponseSchema,
     GetCategoryResponseSchema,
     UpdateCategoryResponseSchema,
     DeleteCategoryResponseSchema,
-    CreateCategoryResponseSchema
+    CreateCategoryResponseSchema,
+    CreateCategoryRequestSchema
 } from '../schemas'
 
 export const registerCategoryPath = (registry: OpenAPIRegistry) => {
@@ -134,13 +134,8 @@ export const registerCategoryPath = (registry: OpenAPIRegistry) => {
                 description: 'Category data to create',
                 required: true,
                 content: {
-                    'multipart/form-data': {
-                        schema: CreateCategoryMultipartRequestSchema,
-                        encoding: {
-                            data: {
-                                contentType: 'application/json'
-                            }
-                        }
+                    'application/json': {
+                        schema: CreateCategoryRequestSchema
                     }
                 }
             }

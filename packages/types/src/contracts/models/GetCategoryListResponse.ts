@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CategoryDataResponse } from './CategoryDataResponse';
+import type { CategoryData } from './CategoryData';
 export type GetCategoryListResponse = {
     /**
      * Always true for success responses
@@ -15,6 +15,6 @@ export type GetCategoryListResponse = {
     /**
      * Response data
      */
-    data?: Array<CategoryDataResponse>;
+    data?: Array<CategoryData>;
 };
 

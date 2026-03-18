@@ -7,8 +7,26 @@ import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
 import { ListFilter } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { FilterField } from '@poveroh/types'
 import Divider from '../other/divider'
+
+type FilterField =
+    | {
+          name: string
+          label: string
+          type: 'select'
+          options: Array<{ label: string; value: string }>
+      }
+    | {
+          name: string
+          label: string
+          type: 'text' | 'number' | 'date'
+      }
+    | {
+          fromName: string
+          toName: string
+          label: string
+          type: 'dateRange'
+      }
 
 type FilterButtonProps<T> = {
     fields: FilterField[]

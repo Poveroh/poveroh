@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl'
 
 import { Upload } from 'lucide-react'
 
-import { IImport } from '@/types/api'
-
 import { useImport } from '@/hooks/use-imports'
 import Box from '@/components/box/box-wrapper'
 import { ImportsItem } from '@/components/item/imports-item'
@@ -15,33 +13,34 @@ import { Header } from '@/components/other/header-page'
 import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { ImportData } from '@poveroh/types/contracts'
 
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importStore, importLoading, fetchImport, readPendingTransaction } = useImport()
+    const { importStore, importLoading, fetchImports, getImportTransactions } = useImport()
 
-    const { openDrawer } = useDrawer<IImport>()
-    const { openModal: openDeleteModal } = useDeleteModal<IImport>()
+    const { openDrawer } = useDrawer<ImportData>()
+    const { openModal: openDeleteModal } = useDeleteModal<ImportData>()
 
-    const [localImports, setLocalImports] = useState<IImport[]>([])
+    const [localImports, setLocalImports] = useState<ImportData[]>([])
 
     useEffect(() => {
-        fetchImport()
+        fetchImports()
     }, [])
 
     useEffect(() => {
         setLocalImports(importStore.importCacheList)
     }, [importStore.importCacheList])
 
-    const handleItemToItEdit = async (item: IImport) => {
-        const readedTransactions = await readPendingTransaction(item.id)
+    const handleItemToItEdit = async (item: ImportData) => {
+        const readedTransactions = await getImportTransactions(item.id)
 
         if (!readedTransactions) {
             return
         }
 
-        const itemToEdit: IImport = {
+        const itemToEdit: ImportData = {
             ...item,
             transactions: readedTransactions
         }
@@ -63,17 +62,17 @@ export default function ImportsView() {
                     ]}
                     fetchAction={{
                         onClick: () => {
-                            fetchImport()
+                            fetchImports()
                         },
-                        loading: importLoading.fetchImport
+                        loading: importLoading.fetchImports
                     }}
                     addAction={{
                         onClick: () => openDrawer('create'),
-                        loading: importLoading.appendImport
+                        loading: importLoading.appendImports
                     }}
                     onDeleteAll={{
                         onClick: openDeleteModal,
-                        loading: importLoading.removeImport
+                        loading: importLoading.deleteImport
                     }}
                 />
 

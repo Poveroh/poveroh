@@ -24,6 +24,8 @@ export const FinancialAccountSchema = z
 
 /**
  * Response schema for getting financial account data (excluding userId and deletedAt)
+ * This is the real Dto used for responses, while FinancialAccountSchema is the completed one
+ * similar to Schema in DB
  */
 export const FinancialAccountDataSchema = FinancialAccountSchema.omit({
     userId: true,
@@ -31,23 +33,17 @@ export const FinancialAccountDataSchema = FinancialAccountSchema.omit({
 }).openapi('FinancialAccountData')
 
 /**
- * Response schema for getting financial account data (excluding userId and deletedAt)
- */
-export const FinancialAccountDataResponseSchema = FinancialAccountDataSchema.openapi('FinancialAccountDataResponse')
-
-/**
  * Response schema for getting a list of financial accounts
  */
-export const GetFinancialAccountListResponseSchema = SuccessResponseSchema(
-    FinancialAccountDataResponseSchema.array()
-).openapi('GetFinancialAccountListResponse')
+export const GetFinancialAccountListResponseSchema = SuccessResponseSchema(FinancialAccountDataSchema.array()).openapi(
+    'GetFinancialAccountListResponse'
+)
 
 /**
  * Response schema for getting a single financial account by ID
  */
-export const GetFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountDataResponseSchema).openapi(
-    'GetFinancialAccountResponse'
-)
+export const GetFinancialAccountResponseSchema =
+    SuccessResponseSchema(FinancialAccountDataSchema).openapi('GetFinancialAccountResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -72,7 +68,7 @@ export const CreateFinancialAccountMultipartRequestSchema = MultipartRequestSche
 /**
  * Response schema for creating a new financial account
  */
-export const CreateFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountDataResponseSchema).openapi(
+export const CreateFinancialAccountResponseSchema = SuccessResponseSchema(FinancialAccountDataSchema).openapi(
     'CreateFinancialAccountResponse'
 )
 
@@ -130,3 +126,8 @@ export const FinancialAccountFiltersSchema = z
  */
 export const QueryFinancialAccountFiltersSchema =
     ReadQuerySchema(FinancialAccountFiltersSchema).openapi('QueryFinancialAccountFilters')
+
+/**
+ * Financial account form schema representing the data structure for financial account creation and editing forms
+ */
+export const FinancialAccountFormSchema = CreateFinancialAccountRequestSchema.openapi('FinancialAccountForm')

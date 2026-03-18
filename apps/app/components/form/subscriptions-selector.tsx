@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { GroupedBrands, IBrand } from '@poveroh/types'
+import { Brand, GroupedBrands } from '@poveroh/types'
 import { useEffect, useMemo, useState } from 'react'
 import { CardHorizontal } from '../card/card-horizontal'
 import { groupBrandByCategory } from '@/utils/brands'
@@ -9,13 +9,13 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 
 type FormProps = {
-    dataCallback: (brand: IBrand) => void
+    dataCallback: (brand: Brand) => void
     closeDialog: () => void
 }
 
 type CardListProps = {
-    brandList: IBrand[]
-    dataCallback: (brand: IBrand) => void
+    brandList: Brand[]
+    dataCallback: (brand: Brand) => void
 }
 
 const CardList = ({ brandList, dataCallback }: CardListProps) => {
@@ -37,7 +37,7 @@ const CardList = ({ brandList, dataCallback }: CardListProps) => {
 export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
     const t = useTranslations()
 
-    const [brands, setBrands] = useState<IBrand[]>([])
+    const [brands, setBrands] = useState<Brand[]>([])
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [activeTab, setActiveTab] = useState<string>('')
 
@@ -45,7 +45,7 @@ export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
         const loadBrands = async () => {
             try {
                 const res = await fetch('/brands/brands.json')
-                const data: IBrand[] = await res.json()
+                const data: Brand[] = await res.json()
                 setBrands(data)
             } catch (error) {
                 console.error('Failed to load brands:', error)
@@ -57,7 +57,7 @@ export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
 
     const groupedBrands: GroupedBrands = useMemo(() => groupBrandByCategory(brands), [brands])
 
-    const filteredBrands: IBrand[] = useMemo(() => {
+    const filteredBrands: Brand[] = useMemo(() => {
         if (!searchQuery) return brands
         const query = searchQuery.toLowerCase()
         return brands.filter(brand => brand.name.toLowerCase().includes(query))

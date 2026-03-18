@@ -37,6 +37,8 @@ export const SubscriptionSchema = z
 
 /**
  * Response schema for getting subscription data (excluding userId and deletedAt)
+ * This is the real Dto used for responses, while SubscriptionSchema is the completed one
+ * similar to Schema in DB
  */
 export const SubscriptionDataSchema = SubscriptionSchema.omit({
     userId: true,
@@ -44,14 +46,9 @@ export const SubscriptionDataSchema = SubscriptionSchema.omit({
 }).openapi('SubscriptionData')
 
 /**
- * Response schema for getting subscription data with ID (excluding userId and deletedAt)
- */
-export const SubscriptionDataResponseSchema = SubscriptionDataSchema.openapi('SubscriptionDataResponse')
-
-/**
  * Response schema for getting a list of subscriptions
  */
-export const GetSubscriptionListResponseSchema = SuccessResponseSchema(SubscriptionDataResponseSchema.array()).openapi(
+export const GetSubscriptionListResponseSchema = SuccessResponseSchema(SubscriptionDataSchema.array()).openapi(
     'GetSubscriptionListResponse'
 )
 
@@ -59,7 +56,7 @@ export const GetSubscriptionListResponseSchema = SuccessResponseSchema(Subscript
  * Response schema for getting a single subscription by ID
  */
 export const GetSubscriptionResponseSchema =
-    SuccessResponseSchema(SubscriptionDataResponseSchema).openapi('GetSubscriptionResponse')
+    SuccessResponseSchema(SubscriptionDataSchema).openapi('GetSubscriptionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -71,8 +68,7 @@ export const CreateSubscriptionRequestSchema = SubscriptionSchema.omit({
     userId: true,
     createdAt: true,
     updatedAt: true,
-    deletedAt: true,
-    isEnabled: true
+    deletedAt: true
 }).openapi('CreateSubscriptionRequest')
 
 export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(CreateSubscriptionRequestSchema).openapi(
@@ -83,7 +79,7 @@ export const CreateSubscriptionMultipartRequestSchema = MultipartRequestSchema(C
  * Response schema for creating a new subscription
  */
 export const CreateSubscriptionResponseSchema =
-    SuccessResponseSchema(SubscriptionDataResponseSchema).openapi('CreateSubscriptionResponse')
+    SuccessResponseSchema(SubscriptionDataSchema).openapi('CreateSubscriptionResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

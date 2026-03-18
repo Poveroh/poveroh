@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
 
-import { ISubcategory } from '@/types/api'
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
+import { SubcategoryData, SubcategoryForm } from '@poveroh/types/contracts'
+import { SubcategoryFormSchema } from '@poveroh/schemas/dist/openapi/schemas'
 
-export function useSubcategoryForm(initialData?: ISubcategory | null, inEditingMode: boolean = false) {
-    const t = useTranslations()
+export function useSubcategoryForm(initialData: SubcategoryData | null, inEditingMode: boolean = false) {
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
@@ -22,19 +20,8 @@ export function useSubcategoryForm(initialData?: ISubcategory | null, inEditingM
         categoryId: initialData?.categoryId || ''
     }
 
-    const formSchema = z.object({
-        title: z.string().nonempty(t('messages.errors.required')),
-        description: z
-            .string()
-            .optional()
-            .nullable()
-            .transform(val => val || ''),
-        logoIcon: z.string().nonempty(t('messages.errors.required')),
-        categoryId: z.string()
-    })
-
     const form = useForm({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(SubcategoryFormSchema),
         defaultValues: defaultValues
     })
 
@@ -49,13 +36,13 @@ export function useSubcategoryForm(initialData?: ISubcategory | null, inEditingM
     }, [initialData, form])
 
     const handleSubmit = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: Partial<ISubcategory>) => Promise<void>
+        values: SubcategoryForm,
+        dataCallback: (formData: Partial<SubcategoryData>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

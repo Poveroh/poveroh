@@ -2,18 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
 
-import { FinancialAccountType } from '@poveroh/types'
-import { IFinancialAccount } from '@/types/api'
+import { FinancialAccountData, FinancialAccountForm } from '@poveroh/types/contracts'
 
 import { useError } from '@/hooks/use-error'
+import { FinancialAccountFormSchema } from '@poveroh/schemas'
 
-export const useFinancialAccountForm = (initialData: IFinancialAccount | null | undefined, inEditingMode: boolean) => {
-    const t = useTranslations()
-
+export const useFinancialAccountForm = (initialData: FinancialAccountData | null, inEditingMode: boolean) => {
     const { handleError } = useError()
 
     const [file, setFile] = useState<FileList | null>(null)
@@ -22,17 +18,11 @@ export const useFinancialAccountForm = (initialData: IFinancialAccount | null | 
     const defaultValues = initialData || {
         title: '',
         description: '',
-        type: FinancialAccountType.BANK_ACCOUNT
+        type: 'BANK_ACCOUNT'
     }
 
-    const formSchema = z.object({
-        title: z.string().nonempty(t('messages.errors.required')),
-        description: z.string(),
-        type: z.enum(Object.values(FinancialAccountType) as [FinancialAccountType, ...FinancialAccountType[]])
-    })
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<FinancialAccountForm>({
+        resolver: zodResolver(FinancialAccountFormSchema),
         defaultValues: defaultValues
     })
 
@@ -43,20 +33,15 @@ export const useFinancialAccountForm = (initialData: IFinancialAccount | null | 
     }, [form.formState.errors])
 
     const handleSubmit = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: FormData) => Promise<void>
+        values: FinancialAccountForm,
+        dataCallback: (formData: Partial<FinancialAccountForm>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
-            const formData = new FormData()
 
-            formData.append('data', JSON.stringify(inEditingMode ? { ...initialData, ...values } : values))
+            const payload = inEditingMode ? { ...initialData, ...values } : values
 
-            if (file && file[0]) {
-                formData.append('file', file[0])
-            }
-
-            await dataCallback(formData)
+            await dataCallback(payload, file ? Array.from(file) : [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

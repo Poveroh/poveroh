@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { IncomeFormData, TransactionAction } from '@poveroh/types'
-import { ITransaction } from '@/types/api'
+import { IncomeFormData } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps, amountSchema } from '@/types/form'
 import { useConfig } from '../use-config'
+import { TransactionData } from '@poveroh/types/contracts'
 
 export function useIncomeForm(props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()
@@ -20,10 +20,10 @@ export function useIncomeForm(props: TransactionFormProps) {
         ignore: false
     }
 
-    const transformIncomeData = (data: ITransaction): IncomeFormData => {
+    const transformIncomeData = (data: TransactionData): IncomeFormData => {
         if (!data || typeof data !== 'object') return defaultIncomeValues
 
-        const transaction = data as ITransaction
+        const transaction = data as TransactionData
 
         // Handle amounts array - Income data comes with amounts structure like Expenses
         const amounts = transaction.amounts as
@@ -63,7 +63,7 @@ export function useIncomeForm(props: TransactionFormProps) {
     })
 
     const incomeConfig: BaseTransactionFormConfig<IncomeFormData> = {
-        type: TransactionAction.INCOME,
+        type: 'INCOME',
         defaultValues: defaultIncomeValues,
         schema: incomeSchema,
         transformInitialData: transformIncomeData

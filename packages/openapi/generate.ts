@@ -21,6 +21,8 @@ type OpenApiDocument = {
     [key: string]: unknown
 }
 
+type OpenApiComponents = NonNullable<OpenApiDocument['components']>
+
 const OPENAPI_PATH = path.resolve(__dirname, './openapi.json')
 const BETTER_AUTH_SCHEMA_PATH = path.resolve(__dirname, './better-auth-openapi.json')
 
@@ -72,6 +74,32 @@ const mergeOpenApi = (existing: OpenApiDocument, generated: OpenApiDocument): Op
     }
 }
 
+const mergeMissingComponents = (
+    target: OpenApiDocument,
+    source: OpenApiDocument,
+    componentKey: keyof OpenApiComponents
+): OpenApiDocument => {
+    const sourceComponent = source.components?.[componentKey] as Record<string, unknown> | undefined
+
+    if (!sourceComponent) {
+        return target
+    }
+
+    const targetComponents = (target.components ?? {}) as OpenApiComponents
+    const targetComponent = (targetComponents[componentKey] as Record<string, unknown> | undefined) ?? {}
+
+    return {
+        ...target,
+        components: {
+            ...targetComponents,
+            [componentKey]: {
+                ...sourceComponent,
+                ...targetComponent
+            }
+        }
+    }
+}
+
 const loadBetterAuthOpenApi = (): OpenApiDocument | null => {
     try {
         if (!fs.existsSync(BETTER_AUTH_SCHEMA_PATH)) {
@@ -114,14 +142,17 @@ const generate = async () => {
 
     const betterAuthSchema = await loadBetterAuthOpenApi()
     if (betterAuthSchema) {
-        // Only merge paths and tags from Better Auth, not schemas to avoid conflicts
+        // Merge Better Auth paths/tags and backfill only missing components to keep refs valid.
         const betterAuthSubset: OpenApiDocument = {
             paths: betterAuthSchema.paths,
             tags: betterAuthSchema.tags
         }
 
         merged = mergeOpenApi(merged, betterAuthSubset)
-        console.log('✅ Merged Better Auth endpoints (paths only, preserving existing schemas)')
+        merged = mergeMissingComponents(merged, betterAuthSchema, 'schemas')
+        merged = mergeMissingComponents(merged, betterAuthSchema, 'securitySchemes')
+
+        console.log('✅ Merged Better Auth endpoints and backfilled missing components')
     }
 
     merged.components = {

@@ -1,20 +1,20 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import type { Import, Transaction } from '@/lib/api-client'
+import { ImportData, TransactionData } from '@poveroh/types/contracts'
 
 type ImportStore = {
-    importCacheList: Import[]
-    currentImport: Import | null
-    pendingTransactions: Transaction[]
-    addImport: (importItems: Import[]) => void
-    editImport: (importItem: Import) => void
-    setImports: (imports: Import[]) => void
+    importCacheList: ImportData[]
+    currentImport: ImportData | null
+    pendingTransactions: TransactionData[]
+    addImport: (importItems: ImportData[]) => void
+    editImport: (importItem: ImportData) => void
+    setImports: (imports: ImportData[]) => void
     removeImport: (importId: string) => void
-    getImport: (importId: string) => Import | null
-    setCurrentImport: (importItem: Import | null) => void
+    getImport: (importId: string) => ImportData | null
+    setCurrentImport: (importItem: ImportData | null) => void
     cleanCurrentImports: () => void
-    setPendingTransactions: (transactions: Transaction[]) => void
-    updatePendingTransaction: (transaction: Transaction) => void
+    setPendingTransactions: (transactions: TransactionData[]) => void
+    updatePendingTransaction: (transaction: TransactionData) => void
     removePendingTransaction: (transactionId: string) => void
 }
 

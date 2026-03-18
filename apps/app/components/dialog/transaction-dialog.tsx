@@ -1,37 +1,43 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { AppearanceMode } from '@poveroh/types'
-import { ITransaction } from '@/types/api'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useTransaction } from '@/hooks/use-transaction'
 import { TransactionForm } from '../form/transaction-form'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
+import { TransactionData } from '@poveroh/types/contracts'
 
 export function TransactionDialog() {
     const t = useTranslations()
 
-    const { addTransaction, editTransaction, removeTransaction } = useTransaction()
+    const { createTransaction, updateTransaction, deleteTransaction } = useTransaction()
 
     const modalId = 'transaction'
-    const modalManager = useModal<ITransaction>(modalId)
-    const deleteModalManager = useDeleteModal<ITransaction>()
+    const modalManager = useModal<TransactionData>(modalId)
+    const deleteModalManager = useDeleteModal<TransactionData>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<ITransaction>) => {
+    const handleFormSubmit = async (data: FormData | Partial<TransactionData>) => {
         if (modalManager.loading) return // Prevent multiple submissions
 
         modalManager.setLoading(true)
 
         try {
-            let res: ITransaction | null
+            let res: TransactionData | null
 
             // edit dialog
             if (modalManager.inEditingMode && modalManager.item) {
-                res = await editTransaction(modalManager.item.id, data as FormData)
+                const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+
+                const response = await updateTransaction({
+                    path: { id: modalManager.item.id },
+                    body
+                })
+
+                res = (response?.data as TransactionData | undefined) ?? null
 
                 if (!res) {
                     modalManager.setLoading(false)
@@ -41,7 +47,17 @@ export function TransactionDialog() {
                 modalManager.closeModal()
             } else {
                 // new dialog
-                res = await addTransaction(data as FormData)
+                const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+                const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
+
+                const response = await createTransaction({
+                    body: {
+                        data: bodyData,
+                        file: files as Array<Blob | File>
+                    }
+                })
+
+                res = (response?.data as TransactionData | undefined) ?? null
 
                 if (!res) {
                     modalManager.setLoading(false)
@@ -75,9 +91,11 @@ export function TransactionDialog() {
         deleteModalManager.setLoading(true)
 
         try {
-            const res = await removeTransaction(deleteModalManager.item.id)
+            const res = await deleteTransaction({
+                path: { id: deleteModalManager.item.id }
+            })
 
-            if (res) {
+            if (res?.success) {
                 deleteModalManager.closeModal()
 
                 if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
@@ -101,7 +119,7 @@ export function TransactionDialog() {
 
     return (
         <>
-            <Modal<ITransaction>
+            <Modal<TransactionData>
                 modalId={modalId}
                 open={modalManager.isOpen}
                 title={
@@ -114,7 +132,7 @@ export function TransactionDialog() {
                         ? {
                               iconLogo: {
                                   name: modalManager.item.icon,
-                                  mode: AppearanceMode.ICON,
+                                  mode: 'ICON',
                                   circled: true
                               }
                           }
@@ -137,7 +155,7 @@ export function TransactionDialog() {
                 {modalManager.isOpen && (
                     <TransactionForm
                         ref={formRef}
-                        initialData={modalManager.item ?? undefined}
+                        initialData={modalManager.item ?? null}
                         inputStyle='contained'
                         inEditingMode={modalManager.inEditingMode || false}
                         dataCallback={handleFormSubmit}
@@ -147,7 +165,7 @@ export function TransactionDialog() {
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('accounts.modal.deleteDescription')}
+                description={t('transactions.modal.deleteDescription')}
                 loading={deleteModalManager.loading}
                 open={deleteModalManager.isOpen}
                 closeDialog={deleteModalManager.closeModal}

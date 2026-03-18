@@ -18,5 +18,6 @@ export type SubscriptionForm = {
     cyclePeriod: CyclePeriodEnum;
     rememberPeriod: RememberPeriodEnum;
     financialAccountId: string;
+    isEnabled: boolean;
 };
 

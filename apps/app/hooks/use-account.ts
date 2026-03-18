@@ -1,122 +1,130 @@
 'use client'
 
-import { FinancialAccountService } from '@/services/account.service'
+import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
+import { LoadingState } from '@/types/general'
 import { useFinancialAccountStore } from '@/store/account.store'
-import { FinancialAccountType } from '@poveroh/types'
-import { IFinancialAccount, IFinancialAccountFilters } from '@/types/api'
 import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
-import { useState } from 'react'
-import { LoadingState } from '@/types/general'
+import {
+    createFinancialAccountMutation,
+    deleteFinancialAccountMutation,
+    getFinancialAccountByIdOptions,
+    getFinancialAccountByIdQueryKey,
+    getFinancialAccountsOptions,
+    getFinancialAccountsQueryKey,
+    updateFinancialAccountMutation
+} from '@/api/@tanstack/react-query.gen'
+import { FinancialAccountData } from '@poveroh/types/contracts'
 
 export const useFinancialAccount = () => {
+    const queryClient = useQueryClient()
     const t = useTranslations()
     const { handleError } = useError()
-
-    const financialAccountService = new FinancialAccountService()
     const financialAccountStore = useFinancialAccountStore()
 
-    const [financialAccountLoading, setFinancialAccountLoading] = useState<LoadingState>({
-        add: false,
-        edit: false,
-        remove: false,
-        get: false,
-        fetch: false
+    const createMutation = useMutation({
+        ...createFinancialAccountMutation(),
+        onSuccess: data => {
+            const financialAccount = data?.data as FinancialAccountData | undefined
+            if (financialAccount) {
+                financialAccountStore.addFinancialAccount(financialAccount)
+            }
+            queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error creating financial account')
+        }
     })
 
-    const setFinancialAccountLoadingFor = (key: keyof LoadingState, value: boolean) => {
-        setFinancialAccountLoading(prev => ({ ...prev, [key]: value }))
-    }
+    const updateMutation = useMutation({
+        ...updateFinancialAccountMutation(),
+        onSuccess: (data, variables) => {
+            const financialAccount = (data?.data ?? variables.body) as FinancialAccountData | undefined
+            if (financialAccount) {
+                financialAccountStore.editFinancialAccount(financialAccount)
+            }
 
-    const addFinancialAccount = async (data: FormData | Partial<IFinancialAccount>) => {
-        setFinancialAccountLoadingFor('add', true)
-        try {
-            const res = await financialAccountService.add(data)
-            financialAccountStore.addFinancialAccount(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding ')
-        } finally {
-            setFinancialAccountLoadingFor('add', false)
-        }
-    }
-
-    const editFinancialAccount = async (id: string, data: FormData | Partial<IFinancialAccount>) => {
-        setFinancialAccountLoadingFor('edit', true)
-        try {
-            const res = await financialAccountService.save(id, data)
-            financialAccountStore.editFinancialAccount(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing ')
-        } finally {
-            setFinancialAccountLoadingFor('edit', false)
-        }
-    }
-
-    const removeFinancialAccount = async (financialAccountId: string) => {
-        setFinancialAccountLoadingFor('remove', true)
-        try {
-            const res = await financialAccountService.delete(financialAccountId)
-            if (!res) throw new Error('No response from server')
-            financialAccountStore.removeFinancialAccount(financialAccountId)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error deleting ')
-        } finally {
-            setFinancialAccountLoadingFor('remove', false)
-        }
-    }
-
-    const getFinancialAccount = async (financialAccountId: string, fetchFromServer?: boolean) => {
-        setFinancialAccountLoadingFor('get', true)
-        try {
-            if (fetchFromServer) {
-                const res = await financialAccountService.read<IFinancialAccount | null, IFinancialAccountFilters>({
-                    id: financialAccountId
+            queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getFinancialAccountByIdQueryKey({
+                    path: { id: variables.path.id }
                 })
-                return res.data
-            }
-            return financialAccountStore.getFinancialAccount(financialAccountId)
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error updating financial account')
+        }
+    })
+
+    const deleteMutation = useMutation({
+        ...deleteFinancialAccountMutation(),
+        onSuccess: (_, variables) => {
+            financialAccountStore.removeFinancialAccount(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting financial account')
+        }
+    })
+
+    const fetchFinancialAccounts = async () => {
+        try {
+            const response = await queryClient.fetchQuery(getFinancialAccountsOptions())
+
+            if (!response?.success) return []
+
+            return (response?.data ?? []) as FinancialAccountData[]
         } catch (error) {
-            return handleError(error, 'Error fetching ')
-        } finally {
-            setFinancialAccountLoadingFor('get', false)
+            return handleError(error, 'Error fetching financial accounts')
         }
     }
 
-    const fetchFinancialAccount = async (forceRefresh = false) => {
-        setFinancialAccountLoadingFor('fetch', true)
+    const getFinancialAccount = async (financialAccountId: string) => {
         try {
-            if (financialAccountStore.financialAccountCacheList.length > 0 && !forceRefresh) {
-                return financialAccountStore.financialAccountCacheList
-            }
-            const res = await financialAccountService.read<IFinancialAccount[], IFinancialAccountFilters>()
-            financialAccountStore.setFinancialAccounts(res.data)
-            return res.data
+            const response = await queryClient.fetchQuery(
+                getFinancialAccountByIdOptions({
+                    path: { id: financialAccountId }
+                })
+            )
+
+            if (!response?.success) return null
+
+            return (response?.data ?? null) as FinancialAccountData | null
         } catch (error) {
-            return handleError(error, 'Error fetching s')
-        } finally {
-            setFinancialAccountLoadingFor('fetch', false)
+            return handleError(error, 'Error fetching financial account')
         }
+    }
+
+    const financialAccountLoading: LoadingState = {
+        create: createMutation.isPending,
+        update: updateMutation.isPending,
+        delete: deleteMutation.isPending,
+        fetch: useIsFetching({ queryKey: getFinancialAccountsQueryKey() }) > 0,
+        get:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getFinancialAccountById'
+                }
+            }) > 0
     }
 
     const TYPE_LIST = [
-        { value: FinancialAccountType.ONLINE_BANK, label: t('accounts.types.online') },
-        { value: FinancialAccountType.BANK_ACCOUNT, label: t('accounts.types.bank') },
-        { value: FinancialAccountType.CIRCUIT, label: t('accounts.types.circuit') },
-        { value: FinancialAccountType.DEPOSIT_BANK, label: t('accounts.types.deposit') },
-        { value: FinancialAccountType.BROKER, label: t('accounts.types.broker') }
+        { value: 'ONLINE_BANK', label: t('accounts.types.online') },
+        { value: 'BANK_ACCOUNT', label: t('accounts.types.bank') },
+        { value: 'CIRCUIT', label: t('accounts.types.circuit') },
+        { value: 'DEPOSIT_BANK', label: t('accounts.types.deposit') },
+        { value: 'BROKER', label: t('accounts.types.broker') }
     ]
 
     return {
         financialAccountCacheList: financialAccountStore.financialAccountCacheList,
         financialAccountLoading,
-        addFinancialAccount,
-        editFinancialAccount,
-        removeFinancialAccount,
+        createFinancialAccount: createMutation.mutateAsync,
+        updateFinancialAccount: updateMutation.mutateAsync,
+        deleteFinancialAccount: deleteMutation.mutateAsync,
         getFinancialAccount,
-        fetchFinancialAccount,
+        fetchFinancialAccounts,
         TYPE_LIST
     }
 }

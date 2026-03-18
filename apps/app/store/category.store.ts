@@ -1,21 +1,21 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import type { Category, Subcategory } from '@/lib/api-client'
+import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
 
 type CategoryStore = {
-    categoryCacheList: Category[]
-    addCategory: (category: Category) => void
-    editCategory: (category: Category) => void
-    setCategory: (category: Category[]) => void
+    categoryCacheList: CategoryData[]
+    addCategory: (category: CategoryData) => void
+    editCategory: (category: CategoryData) => void
+    setCategory: (category: CategoryData[]) => void
     removeCategory: (categoryId: string) => void
-    getCategory: (categoryId: string) => Category | null
+    getCategory: (categoryId: string) => CategoryData | null
     clearCategory: () => void
 
     // --- Subcategory Actions ---
-    addSubcategory: (subcategory: Subcategory) => void
-    editSubcategory: (subcategory: Subcategory) => void
+    addSubcategory: (subcategory: SubcategoryData) => void
+    editSubcategory: (subcategory: SubcategoryData) => void
     removeSubcategory: (subcategoryId: string) => void
-    getSubcategory: (subcategoryId: string) => Subcategory | null
+    getSubcategory: (subcategoryId: string) => SubcategoryData | null
 }
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({
@@ -75,8 +75,8 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
 
             const list = cloneDeep(state.categoryCacheList)
 
-            list.at(index)?.subcategories.push(subcategory)
-            list.at(index)?.subcategories.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+            list.at(index)?.subcategories?.push(subcategory)
+            list.at(index)?.subcategories?.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
 
             return { categoryCacheList: list }
         })
@@ -92,9 +92,10 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
 
             const list = cloneDeep(state.categoryCacheList)
 
-            const indexSub = list.at(indexCat)?.subcategories.findIndex(sub => sub.id === subcategory.id)
+            const indexSub = list.at(indexCat)?.subcategories?.findIndex(sub => sub.id === subcategory.id)
 
-            if (indexSub === undefined || indexSub === -1 || !list[indexCat]) {
+            //TODO: understand why this can be undefined
+            if (indexSub === undefined || indexSub === -1 || !list[indexCat] || !list[indexCat].subcategories) {
                 return state
             }
 
@@ -107,13 +108,13 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     removeSubcategory: subcategoryId => {
         set(state => {
             const updated = state.categoryCacheList.map(category => {
-                const hasSub = category.subcategories.some(sub => sub.id === subcategoryId)
+                const hasSub = category.subcategories?.some(sub => sub.id === subcategoryId)
                 if (!hasSub) return category
 
                 return {
                     ...category,
                     subcategories: category.subcategories
-                        .filter(sub => sub.id !== subcategoryId)
+                        ?.filter(sub => sub.id !== subcategoryId)
                         .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
                 }
             })
@@ -125,6 +126,6 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     getSubcategory: subcategoryId => {
         const arr = get().categoryCacheList
 
-        return arr.flatMap(x => x.subcategories).find(x => x.id === subcategoryId) || null
+        return arr.flatMap(x => x.subcategories || []).find(x => x.id === subcategoryId) || null
     }
 }))

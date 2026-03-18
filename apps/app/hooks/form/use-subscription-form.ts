@@ -45,14 +45,14 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null, inEdit
 
     const handleSubmit = async (
         values: SubscriptionForm,
-        dataCallback: (formData: Partial<SubscriptionData>) => Promise<void>
+        dataCallback: (formData: Partial<SubscriptionData>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
             values.firstPayment = new Date(values.firstPayment).toISOString()
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

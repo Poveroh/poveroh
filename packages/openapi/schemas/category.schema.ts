@@ -1,7 +1,6 @@
 import { z } from '../zod'
 import { TransactionActionEnum } from './enum.schema'
 import { ReadQuerySchema, StringFilterSchema } from './filter.schema'
-import { MultipartRequestSchema } from './media.schema'
 import { SuccessResponseSchema } from './response.schema'
 import { SubcategorySchema } from './subcategory.schema'
 
@@ -26,6 +25,8 @@ export const CategorySchema = z
 
 /**
  * Response schema for getting category data (excluding userId and deletedAt)
+ * This is the real Dto used for responses, while CategorySchema is the completed one
+ * similar to Schema in DB
  */
 export const CategoryDataSchema = CategorySchema.omit({
     userId: true,
@@ -33,22 +34,16 @@ export const CategoryDataSchema = CategorySchema.omit({
 }).openapi('CategoryData')
 
 /**
- * Response schema for getting category data (excluding userId and deletedAt)
- */
-export const CategoryDataResponseSchema = CategoryDataSchema.openapi('CategoryDataResponse')
-
-/**
  * Response schema for getting a list of categories
  */
-export const GetCategoryListResponseSchema = SuccessResponseSchema(CategoryDataResponseSchema.array()).openapi(
+export const GetCategoryListResponseSchema = SuccessResponseSchema(CategoryDataSchema.array()).openapi(
     'GetCategoryListResponse'
 )
 
 /**
  * Response schema for getting a single category by ID
  */
-export const GetCategoryResponseSchema =
-    SuccessResponseSchema(CategoryDataResponseSchema).openapi('GetCategoryResponse')
+export const GetCategoryResponseSchema = SuccessResponseSchema(CategoryDataSchema).openapi('GetCategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -65,16 +60,9 @@ export const CreateCategoryRequestSchema = CategorySchema.omit({
 }).openapi('CreateCategoryRequest')
 
 /**
- * Request schema for creating a new category with multipart/form-data
- */
-export const CreateCategoryMultipartRequestSchema = MultipartRequestSchema(CreateCategoryRequestSchema).openapi(
-    'CreateCategoryMultipartRequest'
-)
-/**
  * Response schema for creating a new category
  */
-export const CreateCategoryResponseSchema =
-    SuccessResponseSchema(CategoryDataResponseSchema).openapi('CreateCategoryResponse')
+export const CreateCategoryResponseSchema = SuccessResponseSchema(CategoryDataSchema).openapi('CreateCategoryResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -130,3 +118,10 @@ export const CategoryFiltersSchema = z
  * Query schema for category filters
  */
 export const QueryCategoryFiltersSchema = ReadQuerySchema(CategoryFiltersSchema).openapi('QueryCategoryFilters')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Category form schema representing the data structure for category creation and editing forms
+ */
+export const CategoryFormSchema = CreateCategoryRequestSchema.openapi('CategoryForm')
