@@ -5,6 +5,7 @@ export default defineConfig({
     client: '@hey-api/client-axios',
     input: '../../packages/openapi/openapi.json',
     output: {
+        importFileExtension: null,
         path: './api'
     },
     plugins: [
