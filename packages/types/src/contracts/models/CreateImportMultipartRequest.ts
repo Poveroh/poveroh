@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateImportRequest } from './CreateImportRequest';
+import type { CreateImportRequest } from './CreateImportRequest'
 export type CreateImportMultipartRequest = {
-    data?: CreateImportRequest;
-    file: Array<Blob>;
-};
-
+    data?: CreateImportRequest
+    file: Array<Blob>
+}

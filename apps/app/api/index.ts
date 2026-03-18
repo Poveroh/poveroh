@@ -80,7 +80,7 @@ export {
     updateTransaction,
     updateUser,
     verifyPassword
-} from './sdk.gen'
+} from './sdk.gen.js'
 export type {
     Account,
     Amount,
@@ -621,4 +621,4 @@ export type {
     VerifyPasswordErrors,
     VerifyPasswordResponse,
     VerifyPasswordResponses
-} from './types.gen'
+} from './types.gen.js'

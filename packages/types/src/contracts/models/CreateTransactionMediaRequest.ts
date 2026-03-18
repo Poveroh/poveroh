@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateTransactionMediaRequest = {
-    transactionId: string;
-    filename: string;
-    filetype: string;
-    path: string;
-};
-
+    transactionId: string
+    filename: string
+    filetype: string
+    path: string
+}

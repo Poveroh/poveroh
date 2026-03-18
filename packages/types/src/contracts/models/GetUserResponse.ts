@@ -2,16 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { User } from './User';
+import type { User } from './User'
 export type GetUserResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
-    data?: User;
-};
-
+    message?: string
+    data?: User
+}

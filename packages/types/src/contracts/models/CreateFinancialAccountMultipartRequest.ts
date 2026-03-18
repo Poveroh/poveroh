@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateFinancialAccountRequest } from './CreateFinancialAccountRequest';
+import type { CreateFinancialAccountRequest } from './CreateFinancialAccountRequest'
 export type CreateFinancialAccountMultipartRequest = {
-    data?: CreateFinancialAccountRequest;
-    file: Array<Blob>;
-};
-
+    data?: CreateFinancialAccountRequest
+    file: Array<Blob>
+}

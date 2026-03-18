@@ -6,14 +6,13 @@ export type ErrorResponse = {
     /**
      * Always false for error responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Error message describing what went wrong
      */
-    message: string;
+    message: string
     /**
      * Optional additional error details or context
      */
-    error?: any;
-};
-
+    error?: any
+}

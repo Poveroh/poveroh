@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateTransactionMediaRequest } from './CreateTransactionMediaRequest';
+import type { CreateTransactionMediaRequest } from './CreateTransactionMediaRequest'
 export type CreateTransactionMediaMultipartRequest = {
-    data?: CreateTransactionMediaRequest;
-    file: Array<Blob>;
-};
-
+    data?: CreateTransactionMediaRequest
+    file: Array<Blob>
+}

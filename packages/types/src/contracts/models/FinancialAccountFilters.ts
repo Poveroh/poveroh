@@ -2,6 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum';
-import type { StringFilter } from './StringFilter';
-export type FinancialAccountFilters = Record<string, (string | StringFilter | FinancialAccountTypeEnum)>;
+import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum'
+import type { StringFilter } from './StringFilter'
+export type FinancialAccountFilters = Record<string, string | StringFilter | FinancialAccountTypeEnum>

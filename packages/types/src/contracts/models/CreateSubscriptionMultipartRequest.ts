@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateSubscriptionRequest } from './CreateSubscriptionRequest';
+import type { CreateSubscriptionRequest } from './CreateSubscriptionRequest'
 export type CreateSubscriptionMultipartRequest = {
-    data?: CreateSubscriptionRequest;
-    file: Array<Blob>;
-};
-
+    data?: CreateSubscriptionRequest
+    file: Array<Blob>
+}

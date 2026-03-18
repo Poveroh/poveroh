@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UserProfileSecurityForm = {
-    oldPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-};
-
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+}

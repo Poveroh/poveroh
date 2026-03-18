@@ -6,14 +6,13 @@ export type UpdateSubcategoryResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
+    message?: string
     /**
      * Response data
      */
-    data?: any;
-};
-
+    data?: any
+}

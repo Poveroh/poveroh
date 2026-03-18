@@ -2,7 +2,7 @@
 
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query'
 
-import { client } from '../client.gen'
+import { client } from '../client.gen.js'
 import {
     changeEmail,
     changePassword,
@@ -83,7 +83,7 @@ import {
     updateTransaction,
     updateUser,
     verifyPassword
-} from '../sdk.gen'
+} from '../sdk.gen.js'
 import type {
     ChangeEmailData,
     ChangeEmailError,
@@ -317,7 +317,7 @@ import type {
     VerifyPasswordData,
     VerifyPasswordError,
     VerifyPasswordResponse
-} from '../types.gen'
+} from '../types.gen.js'
 
 /**
  * Delete all categories

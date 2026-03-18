@@ -2,4 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER';
+export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER'

@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateSnapshotAccountBalanceRequest = {
-    balance: string;
-    snapshotDate: string;
-    accountId: string;
-    note: string;
-};
-
+    balance: string
+    snapshotDate: string
+    accountId: string
+    note: string
+}

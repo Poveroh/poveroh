@@ -3,6 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type FinancialAccountParamsId = {
-    id: string;
-};
-
+    id: string
+}

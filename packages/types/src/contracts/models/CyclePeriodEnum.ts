@@ -2,4 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'

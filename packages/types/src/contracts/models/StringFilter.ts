@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type StringFilter = {
-    equals?: string;
-    contains?: string;
-};
-
+    equals?: string
+    contains?: string
+}

@@ -2,19 +2,18 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CategoryData } from './CategoryData';
+import type { CategoryData } from './CategoryData'
 export type GetCategoryListResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
+    message?: string
     /**
      * Response data
      */
-    data?: Array<CategoryData>;
-};
-
+    data?: Array<CategoryData>
+}

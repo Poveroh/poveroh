@@ -3,6 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ImportParamsId = {
-    id: string;
-};
-
+    id: string
+}

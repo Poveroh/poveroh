@@ -3,12 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateTransactionRequest = {
-    date: string;
-    title: string;
-    note: string | null;
-    icon: string | null;
-    categoryId: string | null;
-    subcategoryId: string | null;
-    ignore: boolean;
-};
-
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    ignore: boolean
+}

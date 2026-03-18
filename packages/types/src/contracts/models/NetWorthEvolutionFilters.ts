@@ -2,5 +2,5 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { DateFilter } from './DateFilter';
-export type NetWorthEvolutionFilters = Record<string, (string | DateFilter)>;
+import type { DateFilter } from './DateFilter'
+export type NetWorthEvolutionFilters = Record<string, string | DateFilter>

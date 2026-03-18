@@ -2,13 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CategoryParamsId } from './CategoryParamsId';
-import type { StringFilter } from './StringFilter';
-import type { TransactionActionEnum } from './TransactionActionEnum';
+import type { CategoryParamsId } from './CategoryParamsId'
+import type { StringFilter } from './StringFilter'
+import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CategoryFilters = {
-    id?: CategoryParamsId;
-    title?: StringFilter;
-    description?: StringFilter;
-    for?: TransactionActionEnum;
-};
-
+    id?: CategoryParamsId
+    title?: StringFilter
+    description?: StringFilter
+    for?: TransactionActionEnum
+}

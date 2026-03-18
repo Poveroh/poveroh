@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SnapshotAccountBalance = {
-    id: string;
-    snapshotId: string;
-    accountId: string;
-    balance: number;
-};
-
+    id: string
+    snapshotId: string
+    accountId: string
+    balance: number
+}

@@ -3,6 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type TransactionMediaParamsId = {
-    id: string;
-};
-
+    id: string
+}

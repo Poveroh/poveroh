@@ -2,16 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TransactionDataResponse } from './TransactionDataResponse';
+import type { TransactionDataResponse } from './TransactionDataResponse'
 export type CreateTransactionResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
-    data?: TransactionDataResponse;
-};
-
+    message?: string
+    data?: TransactionDataResponse
+}

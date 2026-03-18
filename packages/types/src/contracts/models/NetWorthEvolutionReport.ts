@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { NetWorthEvolution } from './NetWorthEvolution';
+import type { NetWorthEvolution } from './NetWorthEvolution'
 export type NetWorthEvolutionReport = {
-    currentNetWorth: number;
-    evolution: Array<NetWorthEvolution>;
-};
-
+    currentNetWorth: number
+    evolution: Array<NetWorthEvolution>
+}

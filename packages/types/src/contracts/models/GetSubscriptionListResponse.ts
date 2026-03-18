@@ -2,19 +2,18 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubscriptionData } from './SubscriptionData';
+import type { SubscriptionData } from './SubscriptionData'
 export type GetSubscriptionListResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
+    message?: string
     /**
      * Response data
      */
-    data?: Array<SubscriptionData>;
-};
-
+    data?: Array<SubscriptionData>
+}

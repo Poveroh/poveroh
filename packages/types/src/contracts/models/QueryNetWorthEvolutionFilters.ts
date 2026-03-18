@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FilterOptions } from './FilterOptions';
-import type { NetWorthEvolutionFilters } from './NetWorthEvolutionFilters';
+import type { FilterOptions } from './FilterOptions'
+import type { NetWorthEvolutionFilters } from './NetWorthEvolutionFilters'
 export type QueryNetWorthEvolutionFilters = {
-    filter?: NetWorthEvolutionFilters;
-    options?: FilterOptions;
-};
-
+    filter?: NetWorthEvolutionFilters
+    options?: FilterOptions
+}

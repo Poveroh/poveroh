@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateSubcategoryRequest = {
-    categoryId: string;
-    title: string;
-    description?: string;
-    logoIcon: string;
-};
-
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+}

@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type DashboardLayoutItem = {
-    id: string;
-    colSpan: number;
-    minHeight: number;
-    visible?: boolean;
-};
-
+    id: string
+    colSpan: number
+    minHeight: number
+    visible?: boolean
+}

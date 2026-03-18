@@ -2,15 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FileTypeEnum } from './FileTypeEnum';
+import type { FileTypeEnum } from './FileTypeEnum'
 export type ImportFile = {
-    id: string;
-    importId: string;
-    filename: string;
-    filetype: FileTypeEnum;
-    path: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt?: string;
-};
-
+    id: string
+    importId: string
+    filename: string
+    filetype: FileTypeEnum
+    path: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
