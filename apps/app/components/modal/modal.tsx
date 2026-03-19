@@ -3,7 +3,7 @@
 import { Dialog, DialogContent } from '@poveroh/ui/components/dialog'
 import { ModalFooter } from './modal-footer'
 import SimpleBar from 'simplebar-react'
-import 'simplebar-react/simplebar.min.css'
+import 'simplebar-react/dist/simplebar.min.css'
 import { cn } from '@poveroh/ui/lib/utils'
 import { useEffect, useState } from 'react'
 import {
