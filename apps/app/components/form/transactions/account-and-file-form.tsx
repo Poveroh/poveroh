@@ -5,7 +5,7 @@ import { AccountField, FileUploadField } from '@/components/fields'
 import { useImportForm } from '@/hooks/form/use-import-form'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProps, FormRef } from '@/types/form'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 
 export const AccountAndFileForm = forwardRef<FormRef, FormProps<ImportData>>((props: FormProps<ImportData>, ref) => {
     const { initialData, dataCallback } = props

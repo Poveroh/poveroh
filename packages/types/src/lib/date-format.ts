@@ -1,5 +1,5 @@
-import { DateFormatEnum } from '../contracts'
-import { Item } from './item'
+import { DateFormatEnum } from './contracts.js'
+import { Item } from './item.js'
 
 export const DateFormatCatalog: Item<DateFormatEnum>[] = [
     { label: 'DD/MM/YYYY', value: 'DD_MM_YYYY' },

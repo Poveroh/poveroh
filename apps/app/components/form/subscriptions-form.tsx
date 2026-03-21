@@ -17,7 +17,7 @@ import {
 import { Form } from '@poveroh/ui/components/form'
 import { FormProps, FormRef } from '@/types'
 import { useUtils } from '@/hooks/use-utils'
-import { SubscriptionData } from '@poveroh/types/contracts'
+import { SubscriptionData } from '@poveroh/types'
 import { CyclePeriodCatalog, RememberPeriodCatalog } from '@poveroh/types'
 
 type SubscriptionFormProps = FormProps<SubscriptionData> & {

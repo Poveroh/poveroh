@@ -19,7 +19,7 @@ import Box from '@/components/box/box-wrapper'
 import { SubscriptionItem } from '@/components/item/subscriptions-item'
 import { Header } from '@/components/other/header-page'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { SubscriptionData } from '@poveroh/types/contracts'
+import { SubscriptionData } from '@poveroh/types'
 
 export default function SubscriptionsView() {
     const t = useTranslations()

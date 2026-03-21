@@ -1,4 +1,4 @@
-import type { User } from '@poveroh/types/contracts'
+import type { User } from '@poveroh/types'
 
 declare module 'better-auth/react' {
     export interface Session {

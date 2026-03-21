@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserProfileSecurityFormSchema } from '@poveroh/schemas'
-import { UserProfileSecurityForm } from '@poveroh/types/contracts'
+import { UserProfileSecurityForm } from '@poveroh/types'
 
 export const useProfileSecurityForm = () => {
     const t = useTranslations()

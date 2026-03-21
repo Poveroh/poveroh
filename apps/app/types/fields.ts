@@ -1,7 +1,7 @@
 import type { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
 import type { InputVariantStyle } from '@poveroh/types'
 import type { ReactNode } from 'react'
-import { FinancialAccountData, SubcategoryData } from '@poveroh/types/contracts'
+import { FinancialAccountData, SubcategoryData } from '@poveroh/types'
 
 // =============================================================================
 // BASE FIELD TYPES

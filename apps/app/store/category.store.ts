@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 
 type CategoryStore = {
     categoryCacheList: CategoryData[]

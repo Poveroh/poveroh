@@ -11,7 +11,7 @@
         "openapi:generate-spec": "npm run openapi:generate-better-auth; npm run openapi:generate-main",
         "openapi:generate-better-auth": "tsx ../../packages/openapi/generate-better-auth.ts || true",
         "openapi:generate-main": "ts-node ../../packages/openapi/generate.ts",
-        "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ../../packages/types/src/contracts --exportModels true --exportServices false --exportCore false --useUnionTypes"
+        "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ../../packages/contracts/src/ --exportModels true --exportServices false --exportCore false --useUnionTypes"
     },
     "keywords": [],
     "author": "",

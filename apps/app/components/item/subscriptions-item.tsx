@@ -6,7 +6,7 @@ import { useSubscription } from '@/hooks/use-subscriptions'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { FinancialAccountData, SubscriptionData } from '@poveroh/types/contracts'
+import { FinancialAccountData, SubscriptionData } from '@poveroh/types'
 
 type SubscriptionItemProps = {
     subscription: SubscriptionData

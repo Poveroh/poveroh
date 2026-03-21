@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/use-error'
-import { SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { SnapshotAccountBalance } from '@poveroh/types'
 import { SnapshotAccountBalanceSchema } from '@poveroh/schemas'
 
 export const useAccountBalanceSnapshotForm = (

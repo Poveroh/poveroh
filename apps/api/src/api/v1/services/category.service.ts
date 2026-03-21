@@ -1,11 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
-import {
-    CategoryFilters,
-    CreateCategoryRequest,
-    CategoryDataResponse,
-    UpdateCategoryRequest
-} from '@poveroh/types/contracts'
+import { CategoryFilters, CreateCategoryRequest, CategoryDataResponse, UpdateCategoryRequest } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**

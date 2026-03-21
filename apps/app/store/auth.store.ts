@@ -1,6 +1,6 @@
 import { storage } from '@/lib/storage'
 import { DEFAULT_USER } from '@poveroh/types'
-import { OnBoardingStepEnum, User } from '@poveroh/types/contracts'
+import { OnBoardingStepEnum, User } from '@poveroh/types'
 import { create } from 'zustand'
 
 type UserStore = {

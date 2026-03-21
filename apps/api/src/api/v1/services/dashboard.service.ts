@@ -1,6 +1,6 @@
 import { NotFoundError } from '@/src/utils'
 import prisma from '@poveroh/prisma'
-import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types/contracts'
+import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**

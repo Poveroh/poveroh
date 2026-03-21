@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ResponseHelper, BadRequestError, NotFoundError } from '../../../utils'
 import { getParamString } from '../../../utils/request'
-import { UpdateUserRequest, User } from '@poveroh/types/contracts'
+import { UpdateUserRequest, User } from '@poveroh/types'
 import { UserService } from '../services/user.service'
 
 export class UserController {

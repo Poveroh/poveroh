@@ -1,4 +1,4 @@
-import { AppearanceModeEnum } from '@poveroh/types/contracts'
+import { AppearanceModeEnum } from '@poveroh/types'
 
 export type ModalBaseProps = {
     open: boolean

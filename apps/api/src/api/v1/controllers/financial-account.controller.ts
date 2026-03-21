@@ -4,7 +4,7 @@ import {
     FinancialAccountDataResponse,
     FinancialAccountFilters,
     UpdateFinancialAccountRequest
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { FinancialAccountService } from '../services/financial-account.service'

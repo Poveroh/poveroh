@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 
 type FinancialAccountStore = {
     financialAccountCacheList: FinancialAccountData[]

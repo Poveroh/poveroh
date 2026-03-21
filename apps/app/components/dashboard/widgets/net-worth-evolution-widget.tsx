@@ -7,7 +7,7 @@ import { useReport } from '@/hooks/use-report'
 import { NetWorthEvolutionChart } from '../charts/net-worth-evolution-chart'
 import { useChartRange } from '@/hooks/use-chart-range'
 import { ChartRangeSelect } from '../../fields/chart-range-select'
-import { NetWorthEvolutionReport } from '@poveroh/types/contracts'
+import { NetWorthEvolutionReport } from '@poveroh/types'
 
 export const NetWorthEvolutionWidget = () => {
     const [isLive] = useState(false)

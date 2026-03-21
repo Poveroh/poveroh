@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/hooks/use-auth'
 import { useUserStore } from '@/store/auth.store'
-import { OnBoardingStepEnum, UserLogin } from '@poveroh/types/contracts'
+import { OnBoardingStepEnum, UserLogin } from '@poveroh/types'
 import { UserLoginSchema } from '@poveroh/schemas'
 
 export function useSignUpForm() {

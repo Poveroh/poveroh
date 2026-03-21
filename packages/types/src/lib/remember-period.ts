@@ -1,5 +1,5 @@
-import { RememberPeriodEnum } from '../contracts'
-import { Item } from './item'
+import { RememberPeriodEnum } from './contracts.js'
+import { Item } from './item.js'
 
 export const RememberPeriodCatalog: Item<RememberPeriodEnum>[] = [
     { label: 'reminderPeriod.same_day', value: 'SAME_DAY' },

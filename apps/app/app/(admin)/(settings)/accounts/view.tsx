@@ -20,7 +20,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { FinancialAccountData, FinancialAccountTypeEnum, SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { FinancialAccountData, FinancialAccountTypeEnum, SnapshotAccountBalance } from '@poveroh/types'
 
 type AccountFilters = {
     title?: { contains?: string }

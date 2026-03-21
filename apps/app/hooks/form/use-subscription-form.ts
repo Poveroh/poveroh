@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
-import { SubscriptionData, SubscriptionForm } from '@poveroh/types/contracts'
+import { SubscriptionData, SubscriptionForm } from '@poveroh/types'
 import { SubscriptionFormSchema } from '@poveroh/schemas'
 import { DEFAULT_SUBSCRIPTION } from '@poveroh/types'
 

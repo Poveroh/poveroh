@@ -16,7 +16,7 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
 import { Pencil } from 'lucide-react'
-import { CategoryData } from '@poveroh/types/contracts'
+import { CategoryData } from '@poveroh/types'
 import { Item } from '@poveroh/types'
 
 export const CategoryForm = forwardRef<FormRef, FormProps<CategoryData>>((props: FormProps<CategoryData>, ref) => {

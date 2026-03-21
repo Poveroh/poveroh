@@ -7,7 +7,7 @@ import { TransactionForm } from '../form/transaction-form'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
-import { TransactionData } from '@poveroh/types/contracts'
+import { TransactionData } from '@poveroh/types'
 
 export function TransactionDialog() {
     const t = useTranslations()

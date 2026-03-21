@@ -1,4 +1,4 @@
-import { Category } from '../contracts'
+import { Category } from './contracts.js'
 
 export type CategoryModelMode = 'category' | 'subcategory'
 

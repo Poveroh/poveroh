@@ -6,7 +6,7 @@ import {
     SubscriptionDataResponse,
     SubscriptionFilters,
     UpdateSubscriptionRequest
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 
 /**
  * Service class for managing subscriptions, including creating, updating, deleting, and retrieving subscriptions for the authenticated user

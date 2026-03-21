@@ -3,7 +3,7 @@ import { CategoryFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { useCategory } from '@/hooks/use-category'
-import { CategoryData } from '@poveroh/types/contracts'
+import { CategoryData } from '@poveroh/types'
 
 export function CategoryField<T extends FieldValues = FieldValues>({
     control,

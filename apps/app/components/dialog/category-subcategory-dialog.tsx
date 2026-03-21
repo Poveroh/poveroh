@@ -10,7 +10,7 @@ import { SubcategoryForm } from '../form/subcategory-form'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
-import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 
 type CategorySubcategoryDialogProps = {
     mode: 'category' | 'subcategory'

@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { useUser } from '@/hooks/use-user'
 import Divider from '../other/divider'
 import { CompanyInfoBar } from './company-info-bar'
-import { User } from '@poveroh/types/contracts'
+import { User } from '@poveroh/types'
 
 type UserPopoverContentProps = {
     user: User

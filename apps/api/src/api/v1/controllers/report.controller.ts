@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { NetWorthEvolutionFilters } from '@poveroh/types/contracts'
+import { NetWorthEvolutionFilters } from '@poveroh/types'
 import { ResponseHelper } from '@/src/utils'
 import { ReportService } from '../services/report.service'
 

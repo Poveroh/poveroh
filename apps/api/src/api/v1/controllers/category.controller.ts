@@ -1,11 +1,6 @@
 import { Request, Response } from 'express'
 import { getParamString } from '../../../utils/request'
-import {
-    CategoryDataResponse,
-    CategoryFilters,
-    CreateCategoryRequest,
-    UpdateCategoryRequest
-} from '@poveroh/types/contracts'
+import { CategoryDataResponse, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { CategoryService } from '../services/category.service'
 

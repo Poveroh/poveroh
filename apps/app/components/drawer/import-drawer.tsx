@@ -17,7 +17,7 @@ import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { cn } from '@poveroh/ui/lib/utils'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 
 export function ImportDrawer() {
     const t = useTranslations()

@@ -1,4 +1,4 @@
-import { TransactionActionEnum, CurrencyEnum } from '../contracts'
+import { TransactionActionEnum, CurrencyEnum } from './contracts.js'
 
 export type FieldMapping = {
     date?: string

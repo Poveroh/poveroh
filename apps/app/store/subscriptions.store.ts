@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { SubscriptionData } from '@poveroh/types/contracts'
+import { SubscriptionData } from '@poveroh/types'
 
 type SubscriptionStore = {
     subscriptionCacheList: SubscriptionData[]

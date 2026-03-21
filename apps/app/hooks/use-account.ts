@@ -14,7 +14,7 @@ import {
     getFinancialAccountsQueryKey,
     updateFinancialAccountMutation
 } from '@/api/@tanstack/react-query.gen'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 
 export const useFinancialAccount = () => {
     const queryClient = useQueryClient()

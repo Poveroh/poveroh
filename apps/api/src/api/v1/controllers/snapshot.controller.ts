@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types/contracts'
+import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
 import { SnapshotService } from '../services/snapshot.service'

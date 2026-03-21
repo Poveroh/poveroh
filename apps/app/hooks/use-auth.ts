@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useError } from './use-error'
 import { useUser } from './use-user'
-import { UserLogin } from '@poveroh/types/contracts'
+import { UserLogin } from '@poveroh/types'
 
 export const useAuth = () => {
     const { handleError } = useError()

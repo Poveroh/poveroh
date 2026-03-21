@@ -6,7 +6,7 @@ import { CategorySubcategoryFieldProps } from '@/types'
 import { FieldValues, Path } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
 import { useCategory } from '@/hooks/use-category'
-import { SubcategoryData } from '@poveroh/types/contracts'
+import { SubcategoryData } from '@poveroh/types'
 
 export function CategorySubcategoryField<T extends FieldValues = FieldValues>(props: CategorySubcategoryFieldProps<T>) {
     const t = useTranslations()

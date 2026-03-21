@@ -1,6 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types/contracts'
+import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**

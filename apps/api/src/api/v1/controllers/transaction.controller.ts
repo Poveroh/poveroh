@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { QueryTransactionFilters } from '@poveroh/types/contracts'
+import { QueryTransactionFilters } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { TransactionService } from '../services/transaction.service'

@@ -1,7 +1,7 @@
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { cn } from '@poveroh/ui/lib/utils'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 
 type ImportsItemProps = {
     imports: ImportData

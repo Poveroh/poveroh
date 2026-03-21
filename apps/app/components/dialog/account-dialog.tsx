@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'

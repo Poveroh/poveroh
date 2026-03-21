@@ -23,7 +23,7 @@
         "@poveroh/ui": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^6.4.1",
-        "@tanstack/react-query": "^5.90.21",
+        "@tanstack/react-query": "^5.94.4",
         "@tanstack/react-table": "^8.21.3",
         "axios": "^1.13.5",
         "better-auth": "^1.4.0",

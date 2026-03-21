@@ -1,5 +1,5 @@
 import { FieldMapping, ReadedTransaction, ValueReturned } from '@poveroh/types'
-import { CurrencyEnum } from '@poveroh/types/contracts'
+import { CurrencyEnum } from '@poveroh/types'
 import Papa from 'papaparse'
 
 /**

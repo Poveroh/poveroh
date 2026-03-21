@@ -3,7 +3,7 @@
 import { useChartRangeStore } from '@/store/chart-range.store'
 import { useCallback, useMemo } from 'react'
 import { ChartRange } from '@poveroh/types'
-import { NetWorthEvolution, NetWorthEvolutionFilters } from '@poveroh/types/contracts'
+import { NetWorthEvolution, NetWorthEvolutionFilters } from '@poveroh/types'
 
 type ChartRangeOption = {
     value: ChartRange

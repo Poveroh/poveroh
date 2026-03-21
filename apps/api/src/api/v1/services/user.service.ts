@@ -1,6 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { NotFoundError } from '@/src/utils'
-import { UpdateUserRequest, User } from '@poveroh/types/contracts'
+import { UpdateUserRequest, User } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**

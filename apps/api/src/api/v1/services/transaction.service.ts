@@ -2,12 +2,7 @@ import prisma from '@poveroh/prisma'
 import { TransactionStatus } from '@prisma/client'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { TransactionHelper } from '../helpers/transaction.helper'
-import {
-    FilterOptions,
-    QueryTransactionFilters,
-    TransactionDataResponse,
-    TransactionFilters
-} from '@poveroh/types/contracts'
+import { FilterOptions, QueryTransactionFilters, TransactionDataResponse, TransactionFilters } from '@poveroh/types'
 import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
 

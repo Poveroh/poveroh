@@ -5,7 +5,7 @@ import { useUserStore } from '@/store/auth.store'
 import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/navigation'
 import { UserFormGeneralitiesFormSchema, UserFormPreferencesFormSchema } from '@poveroh/schemas'
-import { UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types/contracts'
+import { UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types'
 
 export function useOnBoardingForm() {
     const userStore = useUserStore()

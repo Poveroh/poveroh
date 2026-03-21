@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserFormPreferencesFormSchema } from '@poveroh/schemas'
-import { UserFormPreferencesForm } from '@poveroh/types/contracts'
+import { UserFormPreferencesForm } from '@poveroh/types'
 
 export const usePreferencesForm = () => {
     const t = useTranslations()

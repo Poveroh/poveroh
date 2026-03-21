@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { iconList } from '@/components/icon'
 import { useError } from '@/hooks/use-error'
 import { useTransaction } from '@/hooks/use-transaction'
-import { CategoryData, CategoryForm } from '@poveroh/types/contracts'
+import { CategoryData, CategoryForm } from '@poveroh/types'
 import { CategoryFormSchema } from '@poveroh/schemas'
 
 export const useCategoryForm = (initialData: CategoryData | null, inEditingMode: boolean = false) => {

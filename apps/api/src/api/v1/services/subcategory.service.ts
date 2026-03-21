@@ -6,7 +6,7 @@ import {
     SubcategoryDataResponse,
     SubcategoryFilters,
     UpdateSubcategoryRequest
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 import { CategoryService } from './category.service'
 
 /**

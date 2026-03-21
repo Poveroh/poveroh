@@ -1,4 +1,4 @@
-import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 import DynamicIcon from '../icon/dynamic-icon'
 
 type CategoryBadgeProps =

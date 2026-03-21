@@ -2,7 +2,7 @@ import { TransactionFormProps } from '@/types/form'
 import { useExpensesForm } from './use-expenses-form'
 import { useIncomeForm } from './use-income-form'
 import { useTransferForm } from './use-transfer-form'
-import { TransactionActionEnum } from '@poveroh/types/contracts'
+import { TransactionActionEnum } from '@poveroh/types'
 
 export function useTransactionForm(type: TransactionActionEnum, props: TransactionFormProps) {
     if (type === 'EXPENSES') {

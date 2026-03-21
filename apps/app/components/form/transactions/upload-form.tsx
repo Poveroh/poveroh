@@ -5,7 +5,7 @@ import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { TransactionsApprovalList } from '@/components/other/transactions-approval-list'
 import { AccountAndFileForm } from './account-and-file-form'
 import { FormRef } from '@/types'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 
 type FormProps = {
     initialData?: ImportData

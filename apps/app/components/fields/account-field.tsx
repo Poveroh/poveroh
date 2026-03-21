@@ -4,7 +4,7 @@ import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 
 export function AccountField<T extends FieldValues = FieldValues>({
     form,

@@ -1,7 +1,7 @@
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { CategoryBadge } from './category-badge'
-import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 import { CategoryModelMode } from '@poveroh/types'
 
 type CategoryItemProps = {

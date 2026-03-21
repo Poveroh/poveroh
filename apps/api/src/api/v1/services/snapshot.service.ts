@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { CreateSnapshotAccountBalanceRequest, Snapshot, SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { CreateSnapshotAccountBalanceRequest, Snapshot, SnapshotAccountBalance } from '@poveroh/types'
 import { NotFoundError } from '@/src/utils'
 import { RedisHelper } from '../helpers/redis.helper'
 import { recalculateSubsequentSnapshots } from '../helpers/snapshot.helper'

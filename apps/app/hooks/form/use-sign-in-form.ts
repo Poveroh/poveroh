@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
-import { UserLogin } from '@poveroh/types/contracts'
+import { UserLogin } from '@poveroh/types'
 import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
 
 export function useSignInForm() {

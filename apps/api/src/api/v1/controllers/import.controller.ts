@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateImportRequest, ImportFilters, TransactionFilters, UpdateImportRequest } from '@poveroh/types/contracts'
+import { CreateImportRequest, ImportFilters, TransactionFilters, UpdateImportRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { ImportService } from '../services/import.service'

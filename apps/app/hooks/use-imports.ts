@@ -17,7 +17,7 @@ import {
     getImportsOptions,
     updateTransactionMutation
 } from '@/api/@tanstack/react-query.gen'
-import { TransactionData } from '@poveroh/types/contracts'
+import { TransactionData } from '@poveroh/types'
 
 type ImportLoadingState = {
     fetchImports: boolean

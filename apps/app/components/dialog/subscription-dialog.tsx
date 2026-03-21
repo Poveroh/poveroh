@@ -9,7 +9,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useModal } from '@/hooks/use-modal'
-import { CreateSubscriptionRequest, SubscriptionData } from '@poveroh/types/contracts'
+import { CreateSubscriptionRequest, SubscriptionData } from '@poveroh/types'
 import { Brand } from '@poveroh/types'
 
 export function SubscriptionDialog() {

@@ -578,3 +578,25 @@ export const CountriesEnum = z
         'ZIMBABWE'
     ])
     .openapi('CountriesEnum')
+
+/**
+ * Dashboard widget enum representing the available dashboard widget types, which are used to identify the widgets in the dashboard layout and rendering logic
+ */
+export const DashboardWidgetEnum = z
+    .enum([
+        'net-worth-evolution',
+        'kpi-row',
+        'liquidity-evolution',
+        'income-expense-month',
+        'month-comparison',
+        'category-trend',
+        'account-balances',
+        'expense-macro-distribution',
+        'recent-transactions'
+    ])
+    .openapi('DashboardWidgetEnum')
+
+/**
+ * Col span enum representing the allowed column spans for dashboard widgets, where 12 is full width, 6 is half width, 4 is one third, and 3 is one quarter
+ */
+export const ColSpanEnum = z.enum(['12', '6', '4', '3']).openapi('ColSpanEnum')

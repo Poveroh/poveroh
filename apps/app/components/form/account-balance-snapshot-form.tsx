@@ -7,7 +7,7 @@ import { AccountField } from '../fields/account-field'
 import { AmountField } from '../fields/amount-field'
 import { FormProps, FormRef } from '@/types'
 import { useAccountBalanceSnapshotForm } from '@/hooks/form/use-account-balance-snapshot-form'
-import { SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { SnapshotAccountBalance } from '@poveroh/types'
 
 export const AccountBalanceSnapshotForm = forwardRef<
     FormRef,

@@ -634,11 +634,10 @@ export const DashboardLayoutItemSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string',
-            format: 'uuid'
+            $ref: '#/components/schemas/DashboardWidgetEnum'
         },
         colSpan: {
-            type: 'number'
+            $ref: '#/components/schemas/ColSpanEnum'
         },
         minHeight: {
             type: 'number'
@@ -4507,4 +4506,24 @@ export const SnapshotDataSchema = {
         'createdAt',
         'updatedAt'
     ]
+} as const
+
+export const DashboardWidgetEnumSchema = {
+    type: 'string',
+    enum: [
+        'net-worth-evolution',
+        'kpi-row',
+        'liquidity-evolution',
+        'income-expense-month',
+        'month-comparison',
+        'category-trend',
+        'account-balances',
+        'expense-macro-distribution',
+        'recent-transactions'
+    ]
+} as const
+
+export const ColSpanEnumSchema = {
+    type: 'string',
+    enum: ['12', '6', '4', '3']
 } as const

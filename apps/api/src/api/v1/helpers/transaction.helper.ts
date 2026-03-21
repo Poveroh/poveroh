@@ -3,7 +3,7 @@ import { Prisma, Currency, TransactionAction as PrismaTransactionAction } from '
 import moment from 'moment-timezone'
 import { ExpensesFormData, FormMode, IncomeFormData, TransferFormData } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
-import { Transaction, TransactionActionEnum } from '@poveroh/types/contracts'
+import { Transaction, TransactionActionEnum } from '@poveroh/types'
 
 //TODO - complete files
 

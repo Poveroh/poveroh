@@ -1,5 +1,5 @@
-import { TimezoneEnum } from '../contracts'
-import { Item } from './item'
+import { TimezoneEnum } from './contracts.js'
+import { Item } from './item.js'
 
 export const TimezoneCatalog: Item<TimezoneEnum>[] = [
     { label: '(-12:00) International Date Line West', value: 'ETC_GMT_PLUS_12' },

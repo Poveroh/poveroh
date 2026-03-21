@@ -16,7 +16,7 @@ import {
     TransactionStatusEnum,
     TransactionDataResponse,
     TransactionFilters
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
 

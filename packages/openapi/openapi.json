@@ -721,11 +721,10 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "format": "uuid"
+                        "$ref": "#/components/schemas/DashboardWidgetEnum"
                     },
                     "colSpan": {
-                        "type": "number"
+                        "$ref": "#/components/schemas/ColSpanEnum"
                     },
                     "minHeight": {
                         "type": "number"
@@ -4895,6 +4894,29 @@
                     "assetValues",
                     "createdAt",
                     "updatedAt"
+                ]
+            },
+            "DashboardWidgetEnum": {
+                "type": "string",
+                "enum": [
+                    "net-worth-evolution",
+                    "kpi-row",
+                    "liquidity-evolution",
+                    "income-expense-month",
+                    "month-comparison",
+                    "category-trend",
+                    "account-balances",
+                    "expense-macro-distribution",
+                    "recent-transactions"
+                ]
+            },
+            "ColSpanEnum": {
+                "type": "string",
+                "enum": [
+                    "12",
+                    "6",
+                    "4",
+                    "3"
                 ]
             }
         },

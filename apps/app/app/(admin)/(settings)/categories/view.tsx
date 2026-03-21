@@ -19,7 +19,7 @@ import SkeletonItem from '@/components/skeleton/skeleton-item'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { CategoryData, SubcategoryData } from '@poveroh/types/contracts'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 import { CategoryModelMode } from '@poveroh/types'
 
 export default function CategoryView() {

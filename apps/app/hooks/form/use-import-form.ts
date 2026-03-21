@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
 import { useImport } from '../use-imports'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 import { ImportDataSchema } from '@poveroh/schemas'
 
 export function useImportForm(initialData: ImportData | null) {

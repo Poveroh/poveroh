@@ -4,7 +4,7 @@ import {
     SubcategoryDataResponse,
     SubcategoryFilters,
     UpdateSubcategoryRequest
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { SubcategoryService } from '../services/subcategory.service'

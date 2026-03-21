@@ -3,7 +3,7 @@
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, TooltipProps } from 'recharts'
 import { ChartContainer, ChartTooltip } from '@poveroh/ui/components/chart'
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { NetWorthEvolution } from '@poveroh/types/contracts'
+import { NetWorthEvolution } from '@poveroh/types'
 
 type NetWorthEvolutionChartProps = {
     dataPoints: NetWorthEvolution[]

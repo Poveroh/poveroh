@@ -229,8 +229,8 @@ export type QueryCategoryFilters = {
 }
 
 export type DashboardLayoutItem = {
-    id: string
-    colSpan: number
+    id: DashboardWidgetEnum
+    colSpan: ColSpanEnum
     minHeight: number
     visible?: boolean
 }
@@ -1949,6 +1949,19 @@ export type SnapshotData = {
     createdAt: string
     updatedAt: string
 }
+
+export type DashboardWidgetEnum =
+    | 'net-worth-evolution'
+    | 'kpi-row'
+    | 'liquidity-evolution'
+    | 'income-expense-month'
+    | 'month-comparison'
+    | 'category-trend'
+    | 'account-balances'
+    | 'expense-macro-distribution'
+    | 'recent-transactions'
+
+export type ColSpanEnum = '12' | '6' | '4' | '3'
 
 export type DeleteCategoriesData = {
     body?: never

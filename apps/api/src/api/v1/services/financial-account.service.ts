@@ -5,7 +5,7 @@ import {
     FinancialAccountDataResponse,
     FinancialAccountFilters,
     UpdateFinancialAccountRequest
-} from '@poveroh/types/contracts'
+} from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**

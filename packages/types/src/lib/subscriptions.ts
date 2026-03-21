@@ -1,4 +1,4 @@
-import { CreateSubscriptionRequest } from '../contracts'
+import { CreateSubscriptionRequest } from './contracts.js'
 
 export const DEFAULT_SUBSCRIPTION: CreateSubscriptionRequest = {
     title: '',

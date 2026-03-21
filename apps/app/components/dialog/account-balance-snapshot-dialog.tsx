@@ -7,7 +7,7 @@ import Modal from '@/components/modal/modal'
 import { AccountBalanceSnapshotForm } from '@/components/form/account-balance-snapshot-form'
 import { useSnapshot } from '@/hooks/use-snapshot'
 import { useModal } from '@/hooks/use-modal'
-import { SnapshotAccountBalance } from '@poveroh/types/contracts'
+import { SnapshotAccountBalance } from '@poveroh/types'
 import { CreateSnapshotAccountBalanceRequest } from '@/lib/api-client'
 
 export function AccountBalanceSnapshotDialog() {

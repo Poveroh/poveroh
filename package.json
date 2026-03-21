@@ -3,10 +3,11 @@
     "private": true,
     "scripts": {
         "build": "npm run build:packages && turbo build",
-        "build:packages": "npm run build:types && npm run build:prisma && npm run build:utils && npm run build:schemas",
+        "build:packages": "npm run build:contracts && npm run build:types && npm run build:prisma && npm run build:utils && npm run build:schemas",
         "build:types": "cd packages/types && npm run build",
         "build:prisma": "cd packages/prisma && npm run build",
         "build:utils": "cd packages/utils && npm run build",
+        "build:contracts": "cd packages/contracts && npm run build",
         "build:schemas": "cd packages/schemas && npm run build",
         "build:storybook": "turbo build --filter=storybook",
         "build:api": "turbo build --filter=api",
@@ -29,7 +30,7 @@
         "prisma:migrate": "cd ./packages/prisma && npx prisma migrate dev",
         "prisma:deploy": "cd ./packages/prisma && npx prisma migrate deploy",
         "prisma:studio": "cd ./packages/prisma && npx prisma studio",
-        "openapi:generate": "npm run openapi:generate-api && npm run openapi:generate-client",
+        "openapi:generate": "npm run openapi:generate-api && npm run openapi:generate-client && npm run build:packages",
         "openapi:generate-api": "cd ./apps/api && npm run openapi:generate",
         "openapi:generate-client": "cd ./apps/app && npm run openapi:generate",
         "openapi:generate-server": "npm run openapi:generate-api",
@@ -76,6 +77,7 @@
         "packages/*"
     ],
     "dependencies": {
+        "@tanstack/react-query": "^5.94.5",
         "csv-parser": "^3.2.0",
         "prettier": "^3.2.5",
         "typescript": "5.5.4"

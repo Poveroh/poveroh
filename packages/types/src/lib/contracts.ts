@@ -1,1 +1,1 @@
-export * as Contracts from '../contracts/index'
+export * from '@poveroh/contracts'

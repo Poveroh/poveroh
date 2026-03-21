@@ -1,4 +1,4 @@
-import { OnBoardingStepEnum } from '@poveroh/types/contracts'
+import { OnBoardingStepEnum } from '@poveroh/types'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { useTranslations } from 'next-intl'
 import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'

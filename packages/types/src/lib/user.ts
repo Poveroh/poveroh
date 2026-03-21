@@ -7,7 +7,7 @@ import {
     DateFormatEnum,
     OnBoardingStepEnum,
     CountriesEnum
-} from '../contracts'
+} from './contracts.js'
 
 export const DEFAULT_USER: User = {
     id: '',

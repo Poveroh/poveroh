@@ -8,7 +8,7 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { OptionsPopover } from '../navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
 import { useTranslations } from 'next-intl'
-import { TransactionData } from '@poveroh/types/contracts'
+import { TransactionData } from '@poveroh/types'
 
 type TransactionItemProps = {
     transaction: TransactionData

@@ -13,7 +13,7 @@ import { Header } from '@/components/other/header-page'
 import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { ImportData } from '@poveroh/types/contracts'
+import { ImportData } from '@poveroh/types'
 
 export default function ImportsView() {
     const t = useTranslations()

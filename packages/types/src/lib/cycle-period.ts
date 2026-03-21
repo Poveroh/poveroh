@@ -1,5 +1,5 @@
-import { CyclePeriodEnum } from '../contracts'
-import { Item } from './item'
+import { CyclePeriodEnum } from './contracts.js'
+import { Item } from './item.js'
 
 export const CyclePeriodCatalog: Item<CyclePeriodEnum>[] = [
     { label: 'format.day', value: 'DAY' },

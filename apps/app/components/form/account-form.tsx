@@ -10,7 +10,7 @@ import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { FormProps, FormRef } from '@/types'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 import { Item } from '@poveroh/types'
 
 export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(

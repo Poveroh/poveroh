@@ -1,5 +1,5 @@
-import { CurrencyEnum } from '../contracts/index'
-import { Item } from './item'
+import { CurrencyEnum } from './contracts.js'
+import { Item } from './item.js'
 
 export const CurrencyCatalog: Item<CurrencyEnum>[] = [
     { label: 'USD', value: 'USD' },

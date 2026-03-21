@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types/contracts'
+import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
 import { DashboardService } from '../services/dashboard.service'
 

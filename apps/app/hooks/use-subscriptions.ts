@@ -2,7 +2,7 @@
 
 import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
 import { LoadingState } from '@/types/general'
-import { SubscriptionData } from '@poveroh/types/contracts'
+import { SubscriptionData } from '@poveroh/types'
 import { useError } from './use-error'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
 import {

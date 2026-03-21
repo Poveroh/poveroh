@@ -1,6 +1,6 @@
 import appConfig from '@/config'
 import { createAuthClient } from 'better-auth/react'
-import type { UserSession } from '@poveroh/types/contracts'
+import type { UserSession } from '@poveroh/types'
 import { authToken } from './auth-token'
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient({

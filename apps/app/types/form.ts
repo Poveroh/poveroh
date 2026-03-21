@@ -3,7 +3,7 @@ import { InputVariantStyle } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
 import { FieldValues } from 'react-hook-form'
-import { TransactionActionEnum, TransactionData } from '@poveroh/types/contracts'
+import { TransactionActionEnum, TransactionData } from '@poveroh/types'
 
 type AmountSchemaErrors = {
     required_error: string

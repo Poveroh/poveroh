@@ -3,7 +3,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { ExtraButton } from '@/types/options'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 
 type AccountItemProps = {
     account: FinancialAccountData

@@ -1,4 +1,5 @@
 import { z } from '../zod'
+import { ColSpanEnum, DashboardWidgetEnum } from './enum.schema'
 import { SuccessResponseSchema } from './response.schema'
 
 /**
@@ -6,8 +7,8 @@ import { SuccessResponseSchema } from './response.schema'
  */
 export const DashboardLayoutItemSchema = z
     .object({
-        id: z.string().uuid(),
-        colSpan: z.number(),
+        id: DashboardWidgetEnum,
+        colSpan: ColSpanEnum,
         minHeight: z.number(),
         visible: z.boolean().default(true)
     })

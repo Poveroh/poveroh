@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { FinancialAccountData, FinancialAccountForm } from '@poveroh/types/contracts'
+import { FinancialAccountData, FinancialAccountForm } from '@poveroh/types'
 
 import { useError } from '@/hooks/use-error'
 import { FinancialAccountFormSchema } from '@poveroh/schemas'

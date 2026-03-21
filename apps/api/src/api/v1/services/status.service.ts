@@ -1,4 +1,4 @@
-import { StatusResponse } from '@poveroh/types/contracts'
+import { StatusResponse } from '@poveroh/types'
 
 /**
  * Service class for providing health status information

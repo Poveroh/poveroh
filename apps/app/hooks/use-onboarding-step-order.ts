@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { OnBoardingStepEnum } from '@poveroh/types/contracts'
+import { OnBoardingStepEnum } from '@poveroh/types'
 
 export function useOnBoardingStepOrder() {
     const ONBOARDING_ORDER: readonly OnBoardingStepEnum[] = ['EMAIL', 'GENERALITES', 'PREFERENCES', 'COMPLETED']

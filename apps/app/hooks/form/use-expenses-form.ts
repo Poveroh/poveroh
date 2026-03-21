@@ -4,7 +4,7 @@ import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps, amountSchema } from '@/types/form'
 import { useConfig } from '../use-config'
 import { ExpensesFormData } from '@poveroh/types'
-import { TransactionData } from '@poveroh/types/contracts'
+import { TransactionData } from '@poveroh/types'
 
 export function useExpensesForm(props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()

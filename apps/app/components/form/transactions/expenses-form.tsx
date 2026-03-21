@@ -22,7 +22,7 @@ import {
 import { useFinancialAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 import { useExpensesForm } from '@/hooks/form/use-expenses-form'
-import { FinancialAccountData } from '@poveroh/types/contracts'
+import { FinancialAccountData } from '@poveroh/types'
 
 export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props

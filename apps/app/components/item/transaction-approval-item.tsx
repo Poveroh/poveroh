@@ -23,7 +23,7 @@ import {
     AlertDialogTrigger
 } from '@poveroh/ui/components/alert-dialog'
 import { useImport } from '@/hooks/use-imports'
-import { CategoryData, TransactionData, TransactionStatusEnum } from '@poveroh/types/contracts'
+import { CategoryData, TransactionData, TransactionStatusEnum } from '@poveroh/types'
 
 type TransactionItemProps = {
     transaction: TransactionData

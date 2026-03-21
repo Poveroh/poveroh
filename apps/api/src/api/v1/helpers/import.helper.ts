@@ -3,7 +3,7 @@ import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
 import CategoryTemplate from '../content/template/category'
 import { ReadedTransaction } from '@poveroh/types'
-import { Transaction } from '@poveroh/types/contracts'
+import { Transaction } from '@poveroh/types'
 
 export const ImportHelper = {
     /**

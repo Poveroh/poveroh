@@ -1,7 +1,7 @@
 'use client'
 
 import { useUserStore } from '@/store/auth.store'
-import { OnBoardingStepEnum } from '@poveroh/types/contracts'
+import { OnBoardingStepEnum } from '@poveroh/types'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'

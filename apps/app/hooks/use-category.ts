@@ -20,7 +20,7 @@ import {
     updateCategoryMutation,
     updateSubcategoryMutation
 } from '@/api/@tanstack/react-query.gen'
-import { CategoryData } from '@poveroh/types/contracts'
+import { CategoryData } from '@poveroh/types'
 
 type CategoryLoadingState = {
     createCategory: boolean
