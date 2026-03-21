@@ -1,30 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import { IUser } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
+import { UserProfileFormSchema } from '@poveroh/schemas'
+import { UserProfileForm } from '@poveroh/types'
 
 export const useProfileForm = () => {
     const t = useTranslations()
 
-    const { user, saveUser } = useUser()
-    const [loading, setLoading] = useState(false)
-
-    const formSchema = z.object({
-        name: z.string().nonempty(t('messages.errors.required')),
-        surname: z.string().nonempty(t('messages.errors.required')),
-        email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
-        country: z.string().nonempty(t('messages.errors.required'))
-    })
+    const { user, updateUser } = useUser()
 
     const form = useForm({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(UserProfileFormSchema),
         defaultValues: {
             name: user?.name ?? '',
             surname: user?.surname ?? '',
@@ -43,13 +35,15 @@ export const useProfileForm = () => {
             })
             console.log('Form reset with user data')
         }
-    }, [user])
+    }, [user, form])
 
-    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
+    const handleSubmit = async (values: UserProfileForm) => {
+        if (updateUser.isPending) return
 
         try {
-            const res = await saveUser(values as Partial<IUser>)
+            const res = await updateUser.mutateAsync({
+                body: values
+            })
 
             if (res) {
                 toast.success(t('form.messages.userSavedSuccess'))
@@ -57,14 +51,12 @@ export const useProfileForm = () => {
         } catch (error) {
             console.error('Error updating profile:', error)
         }
-
-        setLoading(false)
     }
 
     return {
         form,
         user,
-        loading,
+        loading: updateUser.isPending,
         handleSubmit
     }
 }

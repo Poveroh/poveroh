@@ -1,6 +1,6 @@
-import { INavItem } from '@/types/navbar'
+import { NavItem } from '@/types/navbar'
 
-export const BASE_NAV_CONFIG: INavItem[] = [
+export const BASE_NAV_CONFIG: NavItem[] = [
     {
         title: 'transactions.title',
         href: '/transactions',
@@ -19,8 +19,8 @@ export const BASE_NAV_CONFIG: INavItem[] = [
     }
 ]
 
-export function getNavConfig(): INavItem[] {
-    function filterItems(items: INavItem[]): INavItem[] {
+export function getNavConfig(): NavItem[] {
+    function filterItems(items: NavItem[]): NavItem[] {
         return items
             .filter(item => item.show && item.visibility?.header)
             .map(item => ({

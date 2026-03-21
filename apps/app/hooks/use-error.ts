@@ -1,7 +1,7 @@
 import { toast } from '@poveroh/ui/components/sonner'
 
-export const useError = () => {
-    const handleError = (error: unknown, fallbackMessage: string) => {
+export const useError = <T>() => {
+    const handleError = (error: T, fallbackMessage: string) => {
         const msg = error instanceof Error ? error.message : fallbackMessage
 
         toast.error(msg)

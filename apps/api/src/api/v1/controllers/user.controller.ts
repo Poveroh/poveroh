@@ -1,67 +1,41 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import logger from '../../../utils/logger'
-import { IUser } from '@poveroh/types'
-import { UserHelper } from '../helpers/user.helper'
+import { ResponseHelper, BadRequestError, NotFoundError } from '../../../utils'
 import { getParamString } from '../../../utils/request'
+import { UpdateUserRequest, User } from '@poveroh/types'
+import { UserService } from '../services/user.service'
 
 export class UserController {
-    // GET /
-    static async read(req: Request, res: Response) {
+    // GET /me
+    static async getAuthenticatedUser(req: Request, res: Response) {
         try {
-            const email = getParamString(req.params, 'email')
-
-            if (!email) {
-                res.status(400).json({ message: 'Missing email in path' })
-                return
-            }
-
-            const user = await UserHelper.getUser(email)
+            const userService = new UserService(req.user.id)
+            const user = await userService.getUser(req.user.id)
 
             if (!user) {
-                res.status(404).json({ message: 'User not found' })
-                return
+                throw new NotFoundError('User not found')
             }
 
-            res.status(200).json(user)
+            return ResponseHelper.success<User>(res, user)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    // PUT /:id
-    static async save(req: Request, res: Response) {
+    // PATCH /me
+    static async updateUser(req: Request, res: Response) {
         try {
-            const id = getParamString(req.params, 'id')
-            const { data } = req.body
-
-            if (!data) throw new Error('Data not provided')
-            if (!id) {
-                res.status(400).json({ message: 'Missing user ID' })
-                return
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const parsedUser: Partial<IUser> = JSON.parse(data)
+            const parsedUser: UpdateUserRequest = req.body
 
-            const user = await prisma.user.findUnique({
-                where: { id }
-            })
+            const userService = new UserService(req.user.id)
+            await userService.updateUser(req.user.id, parsedUser)
 
-            if (!user) {
-                res.status(404).json({ message: 'User not found' })
-                return
-            }
-
-            const updatedUser = await prisma.user.update({
-                where: { id },
-                data: parsedUser
-            })
-
-            res.status(200).json(updatedUser)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'Failed to update user', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

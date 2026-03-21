@@ -1,4 +1,4 @@
-import { AppearanceMode } from '@poveroh/types'
+import { AppearanceModeEnum } from '@poveroh/types'
 
 export type ModalBaseProps = {
     open: boolean
@@ -10,7 +10,7 @@ export type DecorationProps = {
     contentHeight?: string
     iconLogo: {
         name: string
-        mode: AppearanceMode
+        mode: AppearanceModeEnum
         circled?: boolean
     }
 }

@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
-import { AppearanceMode, CategoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
+import type { Category, Subcategory } from '@/lib/api-client'
 import Modal from '@/components/modal/modal'
 import { CategoryForm } from '../form/category-form'
 import { useCategory } from '@/hooks/use-category'
@@ -10,35 +10,42 @@ import { SubcategoryForm } from '../form/subcategory-form'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 
 type CategorySubcategoryDialogProps = {
-    mode: CategoryModelMode
+    mode: 'category' | 'subcategory'
 }
 
 export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogProps) {
     const t = useTranslations()
 
-    const { editCategory, addCategory, removeSubcategory, removeCategory, addSubcategory, editSubcategory } =
+    const { updateCategory, createCategory, deleteSubcategory, deleteCategory, createSubcategory, updateSubcategory } =
         useCategory()
 
     const modalId = mode === 'category' ? 'category-dialog' : 'subcategory-dialog'
-    const modalManager = useModal<ICategory | ISubcategory>(modalId)
-    const deleteModalManager = useDeleteModal<ICategory | ISubcategory>()
+    const modalManager = useModal<CategoryData | SubcategoryData>(modalId)
+    const deleteModalManager = useDeleteModal<CategoryData | SubcategoryData>()
 
     const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<ICategory | ISubcategory>) => {
+    const handleFormSubmit = async (data: FormData | Partial<CategoryData | SubcategoryData>) => {
         modalManager.setLoading(true)
-        let res: ICategory | ISubcategory | null = null
 
         const isSubcategory = mode === 'subcategory'
         const isEdit = modalManager.inEditingMode && modalManager.item
 
-        if (isSubcategory) {
-            res = isEdit ? await editSubcategory(modalManager.item!.id, data) : await addSubcategory(data)
-        } else {
-            res = isEdit ? await editCategory(modalManager.item!.id, data) : await addCategory(data)
-        }
+        const res = isSubcategory
+            ? isEdit
+                ? await updateSubcategory(modalManager.item!.id, data as Partial<SubcategoryData>)
+                : await createSubcategory(data as Partial<SubcategoryData>)
+            : isEdit
+              ? await updateCategory(modalManager.item!.id, data as Partial<CategoryData>)
+              : await createCategory(data as Partial<CategoryData>)
+
+        const titleFromData =
+            data instanceof FormData
+                ? (data.get('title')?.toString() ?? '')
+                : ((data as Partial<CategoryData | SubcategoryData> | undefined)?.title ?? '')
 
         if (!res) {
             modalManager.setLoading(false)
@@ -53,7 +60,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
 
         toast.success(
             t('messages.successfully', {
-                a: res.title,
+                a: modalManager.item?.title ?? titleFromData,
                 b: t(isEdit ? 'messages.saved' : 'messages.uploaded')
             })
         )
@@ -67,8 +74,8 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
 
         const res =
             mode === 'category'
-                ? await removeCategory(deleteModalManager.item.id)
-                : await removeSubcategory(deleteModalManager.item.id)
+                ? await deleteCategory(deleteModalManager.item.id)
+                : await deleteSubcategory(deleteModalManager.item.id)
 
         deleteModalManager.setLoading(false)
 
@@ -83,7 +90,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
 
     return (
         <>
-            <Modal<ICategory | ISubcategory>
+            <Modal<CategoryData | SubcategoryData>
                 modalId={modalId}
                 open={modalManager.isOpen}
                 title={
@@ -94,7 +101,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                 decoration={{
                     iconLogo: {
                         name: modalManager.item?.logoIcon ?? '',
-                        mode: AppearanceMode.ICON,
+                        mode: 'LOGO',
                         circled: true
                     }
                 }}
@@ -110,7 +117,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                     {mode == 'category' && (
                         <CategoryForm
                             ref={formRef}
-                            initialData={modalManager.item as ICategory}
+                            initialData={modalManager.item as Category}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
                         />
@@ -118,7 +125,7 @@ export function CategorySubcategoryDialog({ mode }: CategorySubcategoryDialogPro
                     {mode == 'subcategory' && (
                         <SubcategoryForm
                             ref={formRef}
-                            initialData={modalManager.item as ISubcategory}
+                            initialData={modalManager.item as Subcategory}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
                         />

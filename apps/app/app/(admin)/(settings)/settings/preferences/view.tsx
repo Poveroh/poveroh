@@ -9,9 +9,9 @@ import { Form } from '@poveroh/ui/components/form'
 
 import Box from '@/components/box/box-wrapper'
 import { CurrencyField, SelectField } from '@/components/fields'
-import { languageCatalog, dateFormatCatalog, timezoneCatalog } from '@poveroh/types'
 import { usePreferencesForm } from '@/hooks/form/use-preferences-form'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { LanguageCatalog, DateFormatCatalog, TimezoneCatalog } from '@poveroh/types'
 
 export default function PreferencesView() {
     const t = useTranslations()
@@ -40,7 +40,7 @@ export default function PreferencesView() {
                                 label={t('form.language.label')}
                                 placeholder={t('form.language.placeholder')}
                                 mandatory
-                                options={languageCatalog}
+                                options={LanguageCatalog}
                                 getOptionLabel={l => l.label}
                                 getOptionValue={l => l.value}
                             />
@@ -51,7 +51,7 @@ export default function PreferencesView() {
                                 label={t('form.dateFormat.label')}
                                 placeholder={t('form.dateFormat.placeholder')}
                                 mandatory
-                                options={dateFormatCatalog}
+                                options={DateFormatCatalog}
                                 getOptionLabel={d => d.label}
                                 getOptionValue={d => d.value}
                             />
@@ -62,7 +62,7 @@ export default function PreferencesView() {
                                 label={t('form.timezone.label')}
                                 placeholder={t('form.timezone.placeholder')}
                                 mandatory
-                                options={timezoneCatalog}
+                                options={TimezoneCatalog}
                                 getOptionLabel={tz => tz.label}
                                 getOptionValue={tz => tz.value}
                             />

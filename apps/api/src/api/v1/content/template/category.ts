@@ -1,15 +1,16 @@
-import { ICategory, TransactionAction } from '@poveroh/types'
+import { Category } from '@poveroh/types'
 
-export const CategoryTemplate: ICategory[] = [
+export const CategoryTemplate: Category[] = [
     {
         id: '',
         userId: '',
         title: 'Salary - Wage',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'briefcase',
         color: '#34D399',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -17,7 +18,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Monthly salary',
                 description: undefined,
                 logoIcon: 'calendar-check',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -25,7 +27,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Pension',
                 description: undefined,
                 logoIcon: 'landmark',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -34,10 +37,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Bonuses and Extras',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'gift',
         color: '#86EFAC',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -45,7 +49,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Company bonus',
                 description: undefined,
                 logoIcon: 'award',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -53,7 +58,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Performance bonus',
                 description: undefined,
                 logoIcon: 'trophy',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -62,10 +68,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Investment Income',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'trending-up',
         color: '#60A5FA',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -73,7 +80,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Bank interest',
                 description: undefined,
                 logoIcon: 'piggy-bank',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -81,7 +89,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Stock-ETF dividends',
                 description: undefined,
                 logoIcon: 'trending-up',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -89,7 +98,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Bond coupons',
                 description: undefined,
                 logoIcon: 'receipt',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -97,7 +107,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Rental income',
                 description: undefined,
                 logoIcon: 'house',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -105,7 +116,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Crypto-trading gains',
                 description: undefined,
                 logoIcon: 'bitcoin',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -114,10 +126,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Refunds',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'arrow-left-right',
         color: '#2DD4BF',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -125,7 +138,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Tax refund',
                 description: undefined,
                 logoIcon: 'file-text',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -133,7 +147,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Insurance refund',
                 description: undefined,
                 logoIcon: 'shield-check',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -141,7 +156,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Purchase return',
                 description: undefined,
                 logoIcon: 'package',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -149,7 +165,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Medical reimbursement',
                 description: undefined,
                 logoIcon: 'heart-pulse',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -157,7 +174,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Loan reimbursement',
                 description: undefined,
                 logoIcon: 'landmark',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -166,10 +184,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Gifts Received',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'heart-handshake',
         color: '#FB7185',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -177,7 +196,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Gift',
                 description: undefined,
                 logoIcon: 'gift',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -186,10 +206,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Housing and Utilities',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'house',
         color: '#8B5CF6',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -197,7 +218,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Rent - Mortgage',
                 description: undefined,
                 logoIcon: 'key',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -205,7 +227,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Utilities',
                 description: undefined,
                 logoIcon: 'zap',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -213,7 +236,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Internet - Phone',
                 description: undefined,
                 logoIcon: 'wifi',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -221,7 +245,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Condo fees',
                 description: undefined,
                 logoIcon: 'building-2',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -229,7 +254,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Maintenance',
                 description: undefined,
                 logoIcon: 'wrench',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -238,10 +264,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Transportation',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'car',
         color: '#60A5FA',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -249,7 +276,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Fuel',
                 description: undefined,
                 logoIcon: 'fuel',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -257,7 +285,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Public transport',
                 description: undefined,
                 logoIcon: 'bus',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -265,7 +294,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Taxi - Uber',
                 description: undefined,
                 logoIcon: 'car-front',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -273,7 +303,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Parking',
                 description: undefined,
                 logoIcon: 'circle-parking',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -281,7 +312,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Car maintenance',
                 description: undefined,
                 logoIcon: 'wrench',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -290,10 +322,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Groceries',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'shopping-cart',
         color: '#34D399',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -301,7 +334,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Food',
                 description: undefined,
                 logoIcon: 'apple',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -309,7 +343,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Household products',
                 description: undefined,
                 logoIcon: 'spray-can',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -317,7 +352,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Personal care',
                 description: undefined,
                 logoIcon: 'droplets',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -326,10 +362,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Restaurants and Bars',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'utensils',
         color: '#FB923C',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -337,7 +374,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Restaurants',
                 description: undefined,
                 logoIcon: 'utensils-crossed',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -345,7 +383,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Bars - Coffee',
                 description: undefined,
                 logoIcon: 'coffee',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -353,7 +392,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Delivery',
                 description: undefined,
                 logoIcon: 'bike',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -362,10 +402,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Health',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'heart-pulse',
         color: '#F87171',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -373,7 +414,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Doctor visits',
                 description: undefined,
                 logoIcon: 'stethoscope',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -381,7 +423,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Medications',
                 description: undefined,
                 logoIcon: 'pill',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -389,7 +432,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Gym',
                 description: undefined,
                 logoIcon: 'dumbbell',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -397,7 +441,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Hairdresser - Beauty',
                 description: undefined,
                 logoIcon: 'scissors',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -406,10 +451,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Entertainment',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'popcorn',
         color: '#C084FC',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -417,7 +463,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Outings - Cinema',
                 description: undefined,
                 logoIcon: 'clapperboard',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -425,7 +472,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Travel',
                 description: undefined,
                 logoIcon: 'plane',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -433,7 +481,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Hobbies',
                 description: undefined,
                 logoIcon: 'palette',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -442,10 +491,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Shopping',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'shirt',
         color: '#FB7185',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -453,7 +503,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Clothes',
                 description: undefined,
                 logoIcon: 'shirt',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -461,7 +512,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Shoes',
                 description: undefined,
                 logoIcon: 'footprints',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -469,7 +521,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Accessories',
                 description: undefined,
                 logoIcon: 'watch',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -477,7 +530,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'E-commerce',
                 description: undefined,
                 logoIcon: 'shopping-bag',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -486,10 +540,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Subscriptions and Services',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'tv',
         color: '#A78BFA',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -497,7 +552,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Streaming',
                 description: undefined,
                 logoIcon: 'tv',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -505,7 +561,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Gym - Fitness',
                 description: undefined,
                 logoIcon: 'dumbbell',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -513,7 +570,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Software - App',
                 description: undefined,
                 logoIcon: 'laptop',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -522,10 +580,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Taxes and Insurance',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'shield',
         color: '#FBBF24',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -533,7 +592,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Taxes',
                 description: undefined,
                 logoIcon: 'receipt',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -541,7 +601,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Insurance',
                 description: undefined,
                 logoIcon: 'shield-check',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -549,7 +610,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Fees',
                 description: undefined,
                 logoIcon: 'triangle-alert',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -558,10 +620,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Gifts and Donations',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'hand-heart',
         color: '#FB7185',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -569,7 +632,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Gifts',
                 description: undefined,
                 logoIcon: 'gift',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -577,7 +641,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Charity',
                 description: undefined,
                 logoIcon: 'hand-coins',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -586,10 +651,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Loans',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'landmark',
         color: '#0EA5E9',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -597,7 +663,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Loan disbursement',
                 description: undefined,
                 logoIcon: 'arrow-up-right',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -605,7 +672,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Loan repayment',
                 description: undefined,
                 logoIcon: 'arrow-down-left',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -614,10 +682,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Transfer Between Accounts',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'arrow-left-right',
         color: '#2DD4BF',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -625,7 +694,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Between my accounts',
                 description: undefined,
                 logoIcon: 'arrow-left-right',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -633,7 +703,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Cash withdrawal-deposit',
                 description: undefined,
                 logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -641,7 +712,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Investments',
                 description: undefined,
                 logoIcon: 'piggy-bank',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -650,10 +722,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Transfer Between Accounts',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'arrow-left-right',
         color: '#2DD4BF',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -661,7 +734,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Between my accounts',
                 description: undefined,
                 logoIcon: 'arrow-left-right',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             },
             {
                 id: '',
@@ -669,7 +743,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Cash deposit',
                 description: undefined,
                 logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -678,10 +753,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Generic',
         description: undefined,
-        for: TransactionAction.INCOME,
+        for: 'INCOME',
         logoIcon: 'arrow-left-right',
         color: '#F472B6',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -689,7 +765,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Generic',
                 description: undefined,
                 logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     },
@@ -698,10 +775,11 @@ export const CategoryTemplate: ICategory[] = [
         userId: '',
         title: 'Generic',
         description: undefined,
-        for: TransactionAction.EXPENSES,
+        for: 'EXPENSES',
         logoIcon: 'arrow-left-right',
         color: '#F472B6',
         createdAt: '2026-01-03T00:00:00.000Z',
+        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
                 id: '',
@@ -709,7 +787,8 @@ export const CategoryTemplate: ICategory[] = [
                 title: 'Generic',
                 description: undefined,
                 logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z'
+                createdAt: '2026-01-03T00:00:00.000Z',
+                updatedAt: '2026-01-03T00:00:00.000Z'
             }
         ]
     }

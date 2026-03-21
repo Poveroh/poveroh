@@ -4,7 +4,7 @@ import { DashboardController } from '../controllers/dashboard.controller'
 
 const router: Router = Router()
 
-router.get('/', AuthMiddleware.isAuthenticated, DashboardController.read)
-router.put('/', AuthMiddleware.isAuthenticated, DashboardController.save)
+router.get('/', AuthMiddleware.isAuthenticated, DashboardController.getDashboard)
+router.put('/', AuthMiddleware.isAuthenticated, DashboardController.updateDashboard)
 
 export default router

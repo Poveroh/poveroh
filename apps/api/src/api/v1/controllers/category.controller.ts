@@ -1,124 +1,124 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import { ICategory, ICategoryFilters } from '@poveroh/types'
-import omit from 'lodash/omit'
-import { buildWhere } from '../../../helpers/filter.helper'
-import { MediaHelper } from '../../../helpers/media.helper'
-import logger from '../../../utils/logger'
 import { getParamString } from '../../../utils/request'
+import { CategoryDataResponse, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { CategoryService } from '../services/category.service'
 
 export class CategoryController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async createCategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
-
-            const readCategory: Omit<ICategory, 'id' | 'createdAt' | 'subcategories'> = req.body
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/category/${readCategory.title}`
-                )
-                readCategory.logoIcon = filePath
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const category = await prisma.category.create({
-                data: {
-                    ...readCategory,
-                    userId: req.user.id
-                }
-            })
+            const readCategory: CreateCategoryRequest = req.body
 
-            res.status(200).json(category)
+            const categoryService = new CategoryService(req.user.id)
+            const category = await categoryService.createCategory(readCategory, req.file)
+
+            if (!category) {
+                throw new Error('Failed to create category')
+            }
+
+            return ResponseHelper.success<CategoryDataResponse>(res, category)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PATCH /:id
+    static async updateCategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
 
-            const readCategory: ICategory = req.body
+            const readCategory: UpdateCategoryRequest = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing category ID in path' })
-                return
+                throw new BadRequestError('Missing category ID in path')
             }
 
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/category/${readCategory.title}`
-                )
-                readCategory.logoIcon = filePath
-            }
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.updateCategory(id, readCategory, req.file)
 
-            const category = await prisma.category.update({
-                where: { id },
-                data: omit(readCategory, ['subcategories'])
-            })
-
-            res.status(200).json(category)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteCategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing category ID in path' })
-                return
+                throw new BadRequestError('Missing category ID in path')
             }
 
-            if (id == 'all') {
-                await prisma.subcategory.deleteMany({})
-                await prisma.category.deleteMany({})
-            } else {
-                await prisma.subcategory.deleteMany({ where: { categoryId: id } })
-                await prisma.category.delete({ where: { id } })
-            }
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.deleteCategory(id)
 
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE
+    static async deleteAllCategories(req: Request, res: Response) {
+        try {
+            const categoryService = new CategoryService(req.user.id)
+            await categoryService.deleteAllCategories()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id
+    static async readCategoryById(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing category ID in path')
+            }
+
+            const categoryService = new CategoryService(req.user.id)
+            const data = await categoryService.getCategoryById(id)
+
+            if (!data) {
+                throw new NotFoundError('Category not found')
+            }
+
+            return ResponseHelper.success<CategoryDataResponse>(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readCategories(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ICategoryFilters
+            const filters = req.query as CategoryFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const categoryService = new CategoryService(req.user.id)
+            const data = await categoryService.getCategories(filters, skip, take)
 
-            const [data, total] = await Promise.all([
-                prisma.category.findMany({
-                    where,
-                    include: { subcategories: true },
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take
-                }),
-                prisma.category.count({ where })
-            ])
+            if (!data || data.length === 0) {
+                throw new NotFoundError('Category not found')
+            }
 
-            res.status(200).json({ data, total })
+            return ResponseHelper.success<CategoryDataResponse[]>(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

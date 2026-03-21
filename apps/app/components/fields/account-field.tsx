@@ -2,9 +2,9 @@ import { FieldValues, Path } from 'react-hook-form'
 import { AccountFieldProps } from '@/types'
 import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
-import { IFinancialAccount } from '@poveroh/types'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
+import { FinancialAccountData } from '@poveroh/types'
 
 export function AccountField<T extends FieldValues = FieldValues>({
     form,
@@ -19,7 +19,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
     excludeIds = []
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
-    const { financialAccountCacheList, fetchFinancialAccount } = useFinancialAccount()
+    const { financialAccountCacheList, fetchFinancialAccounts } = useFinancialAccount()
 
     const [localAccountCacheList, setLocalAccountCacheList] = useState(financialAccountCacheList)
 
@@ -41,15 +41,15 @@ export function AccountField<T extends FieldValues = FieldValues>({
             disabled={disabled}
             mandatory={mandatory}
             options={localAccountCacheList}
-            getOptionLabel={(item: IFinancialAccount) => item.title}
-            getOptionValue={(item: IFinancialAccount) => item.id}
-            getOptionDisabled={(item: IFinancialAccount) => excludeIds.includes(item.id)}
+            getOptionLabel={(item: FinancialAccountData) => item.title}
+            getOptionValue={(item: FinancialAccountData) => item.id}
+            getOptionDisabled={(item: FinancialAccountData) => excludeIds.includes(item.id)}
             onOpenChange={() => {
                 if (financialAccountCacheList.length === 0) {
-                    fetchFinancialAccount(true)
+                    fetchFinancialAccounts()
                 }
             }}
-            renderOptionContent={(item: IFinancialAccount) =>
+            renderOptionContent={(item: FinancialAccountData) =>
                 createIconContent(item.logoIcon, item.title, { type: 'brand' })
             }
         />

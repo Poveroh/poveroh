@@ -4,8 +4,6 @@ import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 import { useWatch } from 'react-hook-form'
 
-import { ICategory, IItem } from '@poveroh/types'
-
 import { Form } from '@poveroh/ui/components/form'
 import { TextField } from '@/components/fields/text-field'
 import { NoteField } from '@/components/fields/note-field'
@@ -18,8 +16,10 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
 import { Pencil } from 'lucide-react'
+import { CategoryData } from '@poveroh/types'
+import { Item } from '@poveroh/types'
 
-export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: FormProps<ICategory>, ref) => {
+export const CategoryForm = forwardRef<FormRef, FormProps<CategoryData>>((props: FormProps<CategoryData>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
@@ -99,8 +99,8 @@ export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: Fo
                         placeholder={t('form.type.placeholder')}
                         mandatory={true}
                         options={actionList}
-                        getOptionLabel={(item: IItem) => item.label}
-                        getOptionValue={(item: IItem) => item.value.toString()}
+                        getOptionLabel={(item: Item) => item.label}
+                        getOptionValue={(item: Item) => item.value.toString()}
                     />
                 </div>
             </form>

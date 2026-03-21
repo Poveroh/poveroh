@@ -1,8 +1,9 @@
 import { z } from 'zod'
-import { ITransaction, TransactionAction, TransferFormData } from '@poveroh/types'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { TransactionFormProps, amountSchema, BaseTransactionFormConfig } from '@/types/form'
 import { useConfig } from '../use-config'
+import { TransferFormData } from '@poveroh/types'
+import { TransactionData } from '@poveroh/types'
 
 export function useTransferForm(props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()
@@ -18,10 +19,10 @@ export function useTransferForm(props: TransactionFormProps) {
         ignore: false
     }
 
-    const transformTransferData = (data: ITransaction): TransferFormData => {
+    const transformTransferData = (data: TransactionData): TransferFormData => {
         if (!data || typeof data !== 'object') return defaultTransferValues
 
-        const transaction = data as ITransaction
+        const transaction = data as TransactionData
 
         console.log('🔍 transformTransferData - Raw data:', data)
 
@@ -71,7 +72,7 @@ export function useTransferForm(props: TransactionFormProps) {
         })
 
     const transferConfig: BaseTransactionFormConfig<TransferFormData> = {
-        type: TransactionAction.TRANSFER,
+        type: 'TRANSFER',
         defaultValues: defaultTransferValues,
         schema: transferSchema,
         transformInitialData: transformTransferData

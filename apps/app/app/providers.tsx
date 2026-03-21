@@ -8,27 +8,32 @@ import { Toaster } from '@poveroh/ui/components/sonner'
 import { TooltipProvider } from '@poveroh/ui/components/tooltip'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import ZodLocaleProvider from '@/providers/zod-locale-provider'
+import { ServerProvider } from '@/providers/server-provider'
 
 export async function Providers({ children }: { children: React.ReactNode }) {
     const messages = await getMessages()
 
     return (
         <NextIntlClientProvider messages={messages}>
+            <ZodLocaleProvider />
             <ThemeProviders>
-                <AuthProvider>
-                    <AppContextProvider>
-                        <ModalContextProvider>
-                            <DrawerContextProvider>
-                                <DeleteModalContextProvider>
-                                    <TooltipProvider>
-                                        <Toaster richColors />
-                                        {children}
-                                    </TooltipProvider>
-                                </DeleteModalContextProvider>
-                            </DrawerContextProvider>
-                        </ModalContextProvider>
-                    </AppContextProvider>
-                </AuthProvider>
+                <ServerProvider>
+                    <AuthProvider>
+                        <AppContextProvider>
+                            <ModalContextProvider>
+                                <DrawerContextProvider>
+                                    <DeleteModalContextProvider>
+                                        <TooltipProvider>
+                                            <Toaster richColors />
+                                            {children}
+                                        </TooltipProvider>
+                                    </DeleteModalContextProvider>
+                                </DrawerContextProvider>
+                            </ModalContextProvider>
+                        </AppContextProvider>
+                    </AuthProvider>
+                </ServerProvider>
             </ThemeProviders>
         </NextIntlClientProvider>
     )

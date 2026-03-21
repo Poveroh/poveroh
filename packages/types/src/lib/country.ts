@@ -1,5 +1,5 @@
-import { IItem } from './item.js'
+import { Item } from './item.js'
 
-export interface ICountry extends IItem {
+export type Country = Item & {
     flagUrl: string
 }

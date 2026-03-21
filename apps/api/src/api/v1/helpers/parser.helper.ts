@@ -1,5 +1,6 @@
+import { FieldMapping, ReadedTransaction, ValueReturned } from '@poveroh/types'
+import { CurrencyEnum } from '@poveroh/types'
 import Papa from 'papaparse'
-import { IReadedTransaction, IFieldMapping, TransactionAction, Currencies, IValueReturned } from '@poveroh/types'
 
 /**
  *
@@ -11,6 +12,25 @@ import { IReadedTransaction, IFieldMapping, TransactionAction, Currencies, IValu
  * Enhanced with fallback field search when primary fields are empty.
  */
 class HowIParsedYourDataAlgorithm {
+    private currencyCodes: CurrencyEnum[] = [
+        'USD',
+        'EUR',
+        'GBP',
+        'JPY',
+        'CNY',
+        'INR',
+        'AUD',
+        'CAD',
+        'CHF',
+        'SEK',
+        'NZD',
+        'MXN',
+        'SGD',
+        'HKD',
+        'NOK',
+        'KRW',
+        'TRY'
+    ]
     private datePatterns = [
         // ISO formats
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
@@ -41,7 +61,7 @@ class HowIParsedYourDataAlgorithm {
         /^"-?\d+[.,]?\d*"$/
     ]
 
-    private currencyCodePattern = new RegExp(Object.values(Currencies).join('|'), 'i')
+    private currencyCodePattern = new RegExp(this.currencyCodes.join('|'), 'i')
 
     private currencyPatterns = [this.currencyCodePattern, /€|\$|£|¥|₹|₽/]
 
@@ -310,8 +330,8 @@ class HowIParsedYourDataAlgorithm {
         'differenza'
     ]
 
-    private detectFields(headers: string[], sampleRows: Record<string, any>[]): IFieldMapping {
-        const mapping: IFieldMapping = { confidence: 0 }
+    private detectFields(headers: string[], sampleRows: Record<string, any>[]): FieldMapping {
+        const mapping: FieldMapping = { confidence: 0 }
         const scores = {
             date: new Map<string, number>(),
             amount: new Map<string, number>(),
@@ -570,29 +590,19 @@ class HowIParsedYourDataAlgorithm {
         row: Record<string, any>,
         currencyField?: string,
         currencyFallbacks?: string[]
-    ): Currencies {
+    ): CurrencyEnum {
         // Try primary currency field first
         if (currencyField && row[currencyField]) {
-            const currency = String(row[currencyField])
-                .trim()
-                .replace(/[^A-Z€$£¥₹₽]/g, '')
-            if (this.isLikelyCurrency(currency)) {
-                const match = Currencies[currency as keyof typeof Currencies]
-                if (match) return match
-            }
+            const currency = this.normalizeCurrency(String(row[currencyField]))
+            if (currency) return currency
         }
 
         // Try fallback fields
         if (currencyFallbacks) {
             for (const fallbackField of currencyFallbacks) {
                 if (row[fallbackField]) {
-                    const currency = String(row[fallbackField])
-                        .trim()
-                        .replace(/[^A-Z€$£¥₹₽]/g, '')
-                    if (this.isLikelyCurrency(currency)) {
-                        const match = Currencies[currency as keyof typeof Currencies]
-                        if (match) return match
-                    }
+                    const currency = this.normalizeCurrency(String(row[fallbackField]))
+                    if (currency) return currency
                 }
             }
         }
@@ -602,14 +612,34 @@ class HowIParsedYourDataAlgorithm {
             if (value && this.isLikelyCurrency(String(value))) {
                 const match = String(value).match(/EUR|USD|GBP|JPY|CHF|CAD|AUD|€|\$|£|¥|₹|₽/i)
                 if (match) {
-                    const cleaned = match[0].toUpperCase().replace(/[^A-Z€$£¥₹₽]/g, '')
-                    const matchCurrency = Currencies[cleaned as keyof typeof Currencies]
-                    if (matchCurrency) return matchCurrency
+                    const normalized = this.normalizeCurrency(match[0])
+                    if (normalized) return normalized
                 }
             }
         }
 
-        return Currencies.UNKNOWN
+        return 'UNKNOWN' as CurrencyEnum
+    }
+
+    private normalizeCurrency(value: string): CurrencyEnum | null {
+        const cleaned = value
+            .trim()
+            .toUpperCase()
+            .replace(/[^A-Z€$£¥₹₽]/g, '')
+        if (!cleaned) return null
+
+        const symbolMap: Record<string, CurrencyEnum> = {
+            '€': 'EUR',
+            $: 'USD',
+            '£': 'GBP',
+            '¥': 'JPY',
+            '₹': 'INR'
+        }
+
+        if (symbolMap[cleaned]) return symbolMap[cleaned]
+        if (this.currencyCodes.includes(cleaned as CurrencyEnum)) return cleaned as CurrencyEnum
+
+        return null
     }
 
     private findDataTableStart(csvData: string): {
@@ -699,14 +729,14 @@ class HowIParsedYourDataAlgorithm {
     }
 
     public parseCSV(csvData: string): Promise<{
-        transactions: IReadedTransaction[]
-        mapping: IFieldMapping
+        transactions: ReadedTransaction[]
+        mapping: FieldMapping
         errors: string[]
         detectedStartRow?: number
     }> {
         return new Promise(resolve => {
             const errors: string[] = []
-            const transactions: IReadedTransaction[] = []
+            const transactions: ReadedTransaction[] = []
 
             const { startRow, headers } = this.findDataTableStart(csvData)
 
@@ -789,7 +819,7 @@ class HowIParsedYourDataAlgorithm {
                                 transactions.push({
                                     date: this.parseDate(dateValue).toISOString(),
                                     amount: Math.abs(amount),
-                                    action: amount >= 0 ? TransactionAction.INCOME : TransactionAction.EXPENSES,
+                                    action: amount >= 0 ? 'INCOME' : 'EXPENSES',
                                     currency,
                                     title,
                                     originalRow: row
@@ -822,16 +852,14 @@ class HowIParsedYourDataAlgorithm {
         })
     }
 
-    public async parseCSVFile(fileContent: string): Promise<IValueReturned> {
+    public async parseCSVFile(fileContent: string): Promise<ValueReturned> {
         const result = await this.parseCSV(fileContent)
 
         const summary = {
             totalTransactions: result.transactions.length,
-            totalIncome: result.transactions
-                .filter(t => t.action === TransactionAction.INCOME)
-                .reduce((sum, t) => sum + t.amount, 0),
+            totalIncome: result.transactions.filter(t => t.action === 'INCOME').reduce((sum, t) => sum + t.amount, 0),
             totalExpenses: result.transactions
-                .filter(t => t.action === TransactionAction.EXPENSES)
+                .filter(t => t.action === 'EXPENSES')
                 .reduce((sum, t) => sum + t.amount, 0)
         }
 

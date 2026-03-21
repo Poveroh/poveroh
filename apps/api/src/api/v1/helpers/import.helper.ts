@@ -1,8 +1,9 @@
 import prisma from '@poveroh/prisma'
-import { TransactionStatus, ITransaction, IReadedTransaction } from '@poveroh/types'
 import { nowAsISOString } from '@poveroh/utils'
 import { v4 as uuidv4 } from 'uuid'
 import CategoryTemplate from '../content/template/category'
+import { ReadedTransaction } from '@poveroh/types'
+import { Transaction } from '@poveroh/types'
 
 export const ImportHelper = {
     /**
@@ -20,9 +21,9 @@ export const ImportHelper = {
     async normalizeTransaction(
         userId: string,
         financialAccountId: string,
-        rawTransactions: IReadedTransaction[]
-    ): Promise<ITransaction[]> {
-        const transactions: ITransaction[] = []
+        rawTransactions: ReadedTransaction[]
+    ): Promise<Transaction[]> {
+        const transactions: Transaction[] = []
 
         for (const rawTransaction of rawTransactions) {
             const transactionId = uuidv4()
@@ -58,28 +59,31 @@ export const ImportHelper = {
                 id: transactionId,
                 userId: userId,
                 createdAt: nowAsISOString(),
-                status: TransactionStatus.IMPORT_PENDING,
-                importId: undefined,
+                status: 'IMPORT_PENDING',
+                importId: null,
                 updatedAt: nowAsISOString(),
                 amounts: [
-                    {
-                        id: uuidv4(),
-                        createdAt: nowAsISOString(),
-                        transactionId: transactionId,
-                        amount: rawTransaction.amount,
-                        currency: rawTransaction.currency,
-                        action: rawTransaction.action,
-                        financialAccountId: financialAccountId
-                    }
+                    //TODO: optimize this by creating the amounts in batch after creating all transactions, to avoid multiple DB calls in a loop. This will require to change the structure of the code a bit, maybe by first creating all transactions without amounts, then creating all amounts with the correct transactionId.
+                    // {
+                    //     id: uuidv4(),
+                    //     createdAt: nowAsISOString(),
+                    //     transactionId: transactionId,
+                    //     amount: rawTransaction.amount,
+                    //     currency: rawTransaction.currency,
+                    //     action: rawTransaction.action,
+                    //     financialAccountId: financialAccountId,
+                    //     updatedAt: nowAsISOString(),
+                    //     deletedAt: ''
+                    // }
                 ],
-                media: undefined,
-                transferId: undefined,
-                transferHash: undefined,
+                media: [],
+                transferId: null,
+                transferHash: null,
                 title: similarTransaction?.title || matchingSubscription?.title || rawTransaction.title,
                 action: rawTransaction.action,
-                categoryId: similarTransaction?.categoryId || undefined,
-                subcategoryId: similarTransaction?.subcategoryId || undefined,
-                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || undefined,
+                categoryId: similarTransaction?.categoryId || null,
+                subcategoryId: similarTransaction?.subcategoryId || null,
+                icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || null,
                 date: rawTransaction.date,
                 note: similarTransaction?.note || '',
                 ignore: false
@@ -102,16 +106,17 @@ export const ImportHelper = {
                     }
                 })
 
-                for (const subcategory of category.subcategories) {
-                    await prisma.subcategory.create({
-                        data: {
-                            categoryId: newCategory.id,
-                            title: subcategory.title,
-                            description: subcategory.description,
-                            logoIcon: subcategory.logoIcon
-                        }
-                    })
-                }
+                //TODO: add subcategories to the template and uncomment this code to import them as well
+                // for (const subcategory of category.subcategories) {
+                //     await prisma.subcategory.create({
+                //         data: {
+                //             categoryId: newCategory.id,
+                //             title: subcategory.title,
+                //             description: subcategory.description,
+                //             logoIcon: subcategory.logoIcon
+                //         }
+                //     })
+                // }
             }
 
             return true

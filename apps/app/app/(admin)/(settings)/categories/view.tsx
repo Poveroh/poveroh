@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react'
 import { isEmpty } from '@poveroh/utils'
 import { useTranslations } from 'next-intl'
 
-import { CategoryModelMode, ICategory, ISubcategory, TransactionAction } from '@poveroh/types'
-
 import Box from '@/components/box/box-wrapper'
 
 import { Input } from '@poveroh/ui/components/input'
@@ -21,22 +19,24 @@ import SkeletonItem from '@/components/skeleton/skeleton-item'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
+import { CategoryModelMode } from '@poveroh/types'
 
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryLoading, fetchCategory, importTemplates, clearCategories } = useCategory()
+    const { categoryCacheList, categoryLoading, fetchCategories, importTemplates, deleteCategories } = useCategory()
 
-    const categoryModal = useModal<ICategory | ISubcategory>('category-dialog')
-    const subcategoryModal = useModal<ICategory | ISubcategory>('subcategory-dialog')
-    const { openModal: openDeleteModal } = useDeleteModal<ICategory | ISubcategory>()
+    const categoryModal = useModal<CategoryData | SubcategoryData>('category-dialog')
+    const subcategoryModal = useModal<CategoryData | SubcategoryData>('subcategory-dialog')
+    const { openModal: openDeleteModal } = useDeleteModal<CategoryData | SubcategoryData>()
 
     const [dialogModel, setDialogModel] = useState<CategoryModelMode>('category')
-    const [localCategoryList, setLocalCategoryList] = useState<ICategory[]>(categoryCacheList)
+    const [localCategoryList, setLocalCategoryList] = useState<CategoryData[]>(categoryCacheList)
     const [activeTab, setActiveTab] = useState('expenses')
 
     useEffect(() => {
-        fetchCategory(true)
+        fetchCategories(true)
     }, [])
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function CategoryView() {
 
         const filteredList = categoryCacheList
             .map(category => {
-                const matchingSubcategories = category.subcategories.filter(
+                const matchingSubcategories = category.subcategories?.filter(
                     subcategory =>
                         subcategory.title.toLowerCase().includes(textToSearch) ||
                         subcategory.description?.toLowerCase().includes(textToSearch)
@@ -62,17 +62,20 @@ export default function CategoryView() {
                 if (
                     category.title.toLowerCase().includes(textToSearch) ||
                     category.description?.toLowerCase().includes(textToSearch) ||
-                    matchingSubcategories.length > 0
+                    (matchingSubcategories && matchingSubcategories.length > 0)
                 ) {
                     return {
                         ...category,
-                        subcategories: matchingSubcategories.length > 0 ? matchingSubcategories : category.subcategories
+                        subcategories:
+                            matchingSubcategories && matchingSubcategories.length > 0
+                                ? matchingSubcategories
+                                : category.subcategories
                     }
                 }
 
                 return null
             })
-            .filter(Boolean) as ICategory[]
+            .filter(Boolean) as CategoryData[]
 
         setLocalCategoryList(filteredList)
     }
@@ -95,13 +98,13 @@ export default function CategoryView() {
                         { label: t('categories.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchCategory(true),
-                        loading: categoryLoading.fetchCategory
+                        onClick: () => fetchCategories(true),
+                        loading: categoryLoading.fetchCategories
                     }}
                     addAction={[
                         {
                             onClick: () => openNew('category'),
-                            loading: categoryLoading.addCategory,
+                            loading: categoryLoading.createCategory,
                             label: t('categories.modal.newTitle'),
                             icon: <List />
                         },
@@ -109,7 +112,7 @@ export default function CategoryView() {
                             ? [
                                   {
                                       onClick: () => openNew('subcategory'),
-                                      loading: categoryLoading.addSubcategory,
+                                      loading: categoryLoading.createSubcategory,
                                       label: t('subcategories.modal.newTitle'),
                                       icon: <ListTree />
                                   }
@@ -117,8 +120,8 @@ export default function CategoryView() {
                             : [])
                     ]}
                     onDeleteAll={{
-                        onClick: () => clearCategories(),
-                        loading: categoryLoading.clearCategories,
+                        onClick: () => deleteCategories(),
+                        loading: categoryLoading.deleteCategories,
                         disabled: localCategoryList.length === 0
                     }}
                 />
@@ -144,27 +147,21 @@ export default function CategoryView() {
                         </Tabs>
                     </div>
                 </div>
-                {!categoryLoading.fetchCategory && localCategoryList.length > 0 ? (
+                {!categoryLoading.fetchCategories && localCategoryList.length > 0 ? (
                     <Tabs defaultValue={activeTab} value={activeTab} className='p-0'>
                         {['expenses', 'income'].map(tab => (
                             <TabsContent key={tab} value={tab} className='m-0'>
                                 <Box>
                                     <>
                                         {localCategoryList
-                                            .filter(
-                                                x =>
-                                                    x.for ===
-                                                    (tab === 'expenses'
-                                                        ? TransactionAction.EXPENSES
-                                                        : TransactionAction.INCOME)
-                                            )
+                                            .filter(x => x.for === (tab === 'expenses' ? 'EXPENSES' : 'INCOME'))
                                             .map(category => (
                                                 <CategoryItem
                                                     key={category.id}
                                                     category={category}
                                                     openEdit={(
                                                         mode: CategoryModelMode,
-                                                        item: ICategory | ISubcategory
+                                                        item: CategoryData | SubcategoryData
                                                     ) => {
                                                         setDialogModel(mode)
                                                         const manager =
@@ -173,7 +170,7 @@ export default function CategoryView() {
                                                     }}
                                                     openDelete={(
                                                         mode: CategoryModelMode,
-                                                        item: ICategory | ISubcategory
+                                                        item: CategoryData | SubcategoryData
                                                     ) => {
                                                         setDialogModel(mode)
                                                         openDeleteModal(item)
@@ -187,7 +184,7 @@ export default function CategoryView() {
                     </Tabs>
                 ) : (
                     <>
-                        {categoryLoading.fetchCategory ? (
+                        {categoryLoading.fetchCategories ? (
                             <SkeletonItem repeat={5} />
                         ) : (
                             <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>

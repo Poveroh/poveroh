@@ -5,9 +5,11 @@ import { SubscriptionController } from '../controllers/subscription.controller'
 
 const router: Router = Router()
 
-router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), SubscriptionController.add)
-router.get('/', AuthMiddleware.isAuthenticated, SubscriptionController.read)
-router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), SubscriptionController.save)
-router.delete('/:id', AuthMiddleware.isAuthenticated, SubscriptionController.delete)
+router.get('/', AuthMiddleware.isAuthenticated, SubscriptionController.readSubscriptions)
+router.get('/:id', AuthMiddleware.isAuthenticated, SubscriptionController.readSubscriptionById)
+router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), SubscriptionController.createSubscription)
+router.patch('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), SubscriptionController.updateSubscription)
+router.delete('/:id', AuthMiddleware.isAuthenticated, SubscriptionController.deleteSubscription)
+router.delete('/', AuthMiddleware.isAuthenticated, SubscriptionController.deleteAllSubscriptions)
 
 export default router

@@ -5,9 +5,11 @@ import { TransactionController } from '../controllers/transaction.controller'
 
 const router: Router = Router()
 
-router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.add)
-router.get('/', AuthMiddleware.isAuthenticated, TransactionController.read)
-router.put('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.save)
-router.delete('/:id', AuthMiddleware.isAuthenticated, TransactionController.delete)
+router.get('/', AuthMiddleware.isAuthenticated, TransactionController.readTransactions)
+router.get('/:id', AuthMiddleware.isAuthenticated, TransactionController.readTransactionById)
+router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.createTransaction)
+router.patch('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.updateTransaction)
+router.delete('/:id', AuthMiddleware.isAuthenticated, TransactionController.deleteTransaction)
+router.delete('/', AuthMiddleware.isAuthenticated, TransactionController.deleteAllTransactions)
 
 export default router

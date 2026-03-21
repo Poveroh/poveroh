@@ -1,21 +1,11 @@
 import prisma from '@poveroh/prisma'
-import { Prisma } from '@prisma/client'
+import { Prisma, Currency, TransactionAction as PrismaTransactionAction } from '@prisma/client'
 import moment from 'moment-timezone'
-import {
-    Currencies,
-    ExpensesFormData,
-    FormMode,
-    IAmount,
-    IAmountBase,
-    IncomeFormData,
-    ITransaction,
-    ITransactionBase,
-    TransactionAction,
-    TransactionStatus,
-    TransferFormData
-} from '@poveroh/types'
+import { ExpensesFormData, FormMode, IncomeFormData, TransferFormData } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
-import { TransactionWithAmounts } from '@/types/transactions'
+import { Transaction, TransactionActionEnum } from '@poveroh/types'
+
+//TODO - complete files
 
 /**
  * Transaction Helper - Handles all transaction operations including creation and updating of transactions
@@ -32,18 +22,18 @@ export const TransactionHelper = {
     async handleTransaction(action: string, data: FormMode, userId: string, transactionId?: string) {
         // Validate inputs
         this.validateTransactionAction(action)
-        this.validateTransactionData(data, action as TransactionAction)
+        this.validateTransactionData(data, action as TransactionActionEnum)
 
         if (!userId) {
             throw new Error('User ID is required')
         }
 
         switch (action) {
-            case TransactionAction.TRANSFER:
+            case 'TRANSFER':
                 return this.handleTransferTransaction(data as TransferFormData, userId, transactionId)
-            case TransactionAction.INCOME:
+            case 'INCOME':
                 return this.handleIncomeTransaction(data as IncomeFormData, userId, transactionId)
-            case TransactionAction.EXPENSES:
+            case 'EXPENSES':
                 return this.handleExpensesTransaction(data as ExpensesFormData, userId, transactionId)
             default:
                 throw new Error(`Invalid transaction action: ${action}`)
@@ -51,13 +41,14 @@ export const TransactionHelper = {
     },
 
     validateTransactionAction(action: string): void {
-        const validActions = Object.values(TransactionAction)
-        if (!validActions.includes(action as TransactionAction)) {
-            throw new Error(`Invalid transaction action: ${action}. Valid actions are: ${validActions.join(', ')}`)
-        }
+        //TODO: move this validation to a middleware or a higher level in the call stack
+        // const validActions = Object.values(TransactionActionEnum)
+        // if (!validActions.includes(action as TransactionActionEnum)) {
+        //     throw new Error(`Invalid transaction action: ${action}. Valid actions are: ${validActions.join(', ')}`)
+        // }
     },
 
-    validateTransactionData(data: FormMode, action: TransactionAction): void {
+    validateTransactionData(data: FormMode, action: TransactionActionEnum): void {
         if (!data.title || data.title.trim().length === 0) {
             throw new Error('Transaction title is required')
         }
@@ -74,7 +65,7 @@ export const TransactionHelper = {
 
         // Action-specific validation
         switch (action) {
-            case TransactionAction.TRANSFER:
+            case 'TRANSFER':
                 const transferData = data as TransferFormData
                 if (!transferData.from || !transferData.to) {
                     throw new Error('Both source and destination accounts are required for transfers')
@@ -87,7 +78,7 @@ export const TransactionHelper = {
                 }
                 break
 
-            case TransactionAction.INCOME:
+            case 'INCOME':
                 const incomeData = data as IncomeFormData
                 if (!incomeData.financialAccountId) {
                     throw new Error('Financial account is required for income transactions')
@@ -100,7 +91,7 @@ export const TransactionHelper = {
                 }
                 break
 
-            case TransactionAction.EXPENSES:
+            case 'EXPENSES':
                 const expensesData = data as ExpensesFormData
                 if (!expensesData.categoryId) {
                     throw new Error('Category is required for expense transactions')
@@ -161,7 +152,7 @@ export const TransactionHelper = {
 
                         await tx.transaction.update({
                             where: { id: transactionId },
-                            data: await this.normalizeTransaction(TransactionAction.TRANSFER, data, userId)
+                            data: await this.normalizeTransaction('TRANSFER', data, userId)
                         })
 
                         // Delete existing amounts and create new ones
@@ -174,20 +165,20 @@ export const TransactionHelper = {
                                 transactionId: transaction.id,
                                 amount: data.amount,
                                 currency: data.currency,
-                                action: TransactionAction.EXPENSES,
+                                action: 'EXPENSES',
                                 financialAccountId: data.from
                             }),
                             this.createAmountData({
                                 transactionId: transaction.id,
                                 amount: data.amount,
                                 currency: data.currency,
-                                action: TransactionAction.INCOME,
+                                action: 'INCOME',
                                 financialAccountId: data.to
                             })
                         ]
 
                         await tx.amount.createMany({
-                            data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                            data: amountsData
                         })
 
                         // If multiple amounts, update balances for each
@@ -202,7 +193,7 @@ export const TransactionHelper = {
                 )
             } else {
                 const normalizedData = {
-                    ...(await this.normalizeTransaction(TransactionAction.TRANSFER, data, userId)),
+                    ...(await this.normalizeTransaction('TRANSFER', data, userId)),
                     userId: userId
                 }
 
@@ -218,14 +209,14 @@ export const TransactionHelper = {
                                 transactionId: transactions[0].id,
                                 amount: data.amount,
                                 currency: data.currency,
-                                action: TransactionAction.EXPENSES,
+                                action: 'EXPENSES',
                                 financialAccountId: data.from
                             }),
                             this.createAmountData({
                                 transactionId: transactions[1].id,
                                 amount: data.amount,
                                 currency: data.currency,
-                                action: TransactionAction.INCOME,
+                                action: 'INCOME',
                                 financialAccountId: data.to
                             })
                         ]
@@ -234,7 +225,7 @@ export const TransactionHelper = {
                             data: amountsData
                         })
 
-                        // If multiple amounts, update balances for each
+                        // Update balances for each amount
                         for (let i = 0; i < amountsData.length; i++) {
                             await BalanceHelper.updateAccountBalances(amountsData[i], undefined, tx)
                         }
@@ -295,20 +286,20 @@ export const TransactionHelper = {
                                 id: transactionId,
                                 userId: userId
                             },
-                            data: await this.normalizeTransaction(TransactionAction.INCOME, data, userId)
+                            data: await this.normalizeTransaction('INCOME', data, userId)
                         })
 
                         const amountData = this.createAmountData({
                             transactionId,
                             amount: data.amount,
                             currency: data.currency,
-                            action: TransactionAction.INCOME,
+                            action: 'INCOME',
                             financialAccountId: data.financialAccountId
                         })
 
                         await tx.amount.update({
                             where: { id: existingTransaction.amounts[0].id },
-                            data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
+                            data: amountData
                         })
 
                         const originalAmountsMap = new Map([
@@ -322,7 +313,7 @@ export const TransactionHelper = {
                 )
             } else {
                 // Create flow: create new transaction and amount
-                const normalizedData = await this.normalizeTransaction(TransactionAction.INCOME, data, userId)
+                const normalizedData = await this.normalizeTransaction('INCOME', data, userId)
                 await prisma.$transaction(
                     async tx => {
                         const transaction = await tx.transaction.create({
@@ -336,12 +327,12 @@ export const TransactionHelper = {
                             transactionId: transaction.id,
                             amount: data.amount,
                             currency: data.currency,
-                            action: TransactionAction.INCOME,
+                            action: 'INCOME',
                             financialAccountId: data.financialAccountId
                         })
 
                         await tx.amount.create({
-                            data: { ...amountData, action: amountData.action as 'EXPENSES' | 'INCOME' }
+                            data: amountData
                         })
 
                         await BalanceHelper.updateAccountBalances(amountData, undefined, tx)
@@ -383,7 +374,7 @@ export const TransactionHelper = {
                         // Edit flow: update transaction and replace amounts
                         const transaction = await tx.transaction.update({
                             where: { id: transactionId },
-                            data: await this.normalizeTransaction(TransactionAction.EXPENSES, data, userId)
+                            data: await this.normalizeTransaction('EXPENSES', data, userId)
                         })
 
                         // Delete existing amounts
@@ -395,7 +386,7 @@ export const TransactionHelper = {
                         const amountsData = this.buildExpensesAmounts(transaction.id, data)
                         if (amountsData.length > 0) {
                             await tx.amount.createMany({
-                                data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                                data: amountsData
                             })
                         }
 
@@ -414,7 +405,7 @@ export const TransactionHelper = {
                 )
             } else {
                 // Create flow: create new transaction and amounts
-                const normalizedData = await this.normalizeTransaction(TransactionAction.EXPENSES, data, userId)
+                const normalizedData = await this.normalizeTransaction('EXPENSES', data, userId)
                 await prisma.$transaction(
                     async tx => {
                         const transaction = await tx.transaction.create({
@@ -427,11 +418,11 @@ export const TransactionHelper = {
                         const amountsData = this.buildExpensesAmounts(transaction.id, data)
                         if (amountsData.length > 0) {
                             await tx.amount.createMany({
-                                data: amountsData.map(a => ({ ...a, action: a.action as 'EXPENSES' | 'INCOME' }))
+                                data: amountsData
                             })
                         }
 
-                        // If multiple amounts, update balances for each
+                        // Update balances for each amount
                         for (let i = 0; i < amountsData.length; i++) {
                             await BalanceHelper.updateAccountBalances(amountsData[i], undefined, tx)
                         }
@@ -450,8 +441,8 @@ export const TransactionHelper = {
         }
     },
 
-    buildExpensesAmounts(transactionId: string, data: ExpensesFormData): IAmountBase[] {
-        const amountsData: IAmountBase[] = []
+    buildExpensesAmounts(transactionId: string, data: ExpensesFormData) {
+        const amountsData = []
 
         // Handle multiple amounts from split expenses
         if (data.amounts && data.amounts.length > 0) {
@@ -461,7 +452,7 @@ export const TransactionHelper = {
                         transactionId,
                         amount: element.amount,
                         currency: data.currency,
-                        action: TransactionAction.EXPENSES,
+                        action: 'EXPENSES',
                         financialAccountId: element.financialAccountId
                     })
                 )
@@ -475,7 +466,7 @@ export const TransactionHelper = {
                     transactionId,
                     amount: data.totalAmount,
                     currency: data.currency,
-                    action: TransactionAction.EXPENSES,
+                    action: 'EXPENSES',
                     financialAccountId: data.totalFinancialAccountId
                 })
             )
@@ -526,7 +517,7 @@ export const TransactionHelper = {
             throw new Error(`Transfer transactions not found for transfer id ${transferId}`)
         }
 
-        const transaction: ITransaction = {
+        const transaction = {
             id: transferId,
             date: transfer.transferDate.toISOString(),
             note: transfer.note,
@@ -535,57 +526,53 @@ export const TransactionHelper = {
                 ...transfer.fromTransaction.amounts.map(a => ({
                     ...a,
                     amount: a.amount.toNumber(),
-                    currency: a.currency as Currencies,
-                    action: a.action as TransactionAction,
+                    currency: a.currency,
+                    action: a.action,
                     importReference: a.importReference || undefined,
                     createdAt: a.createdAt.toISOString()
                 })),
                 ...transfer.toTransaction.amounts.map(a => ({
                     ...a,
                     amount: a.amount.toNumber(),
-                    currency: a.currency as Currencies,
-                    action: a.action as TransactionAction,
+                    currency: a.currency,
+                    action: a.action,
                     importReference: a.importReference || undefined,
                     createdAt: a.createdAt.toISOString()
                 }))
             ],
             transferId: transfer.id,
             title: transfer.fromTransaction.title,
-            action: TransactionAction.TRANSFER,
+            action: 'TRANSFER',
             createdAt: transfer.transferDate.toISOString(),
             updatedAt: transfer.transferDate.toISOString(),
-            status: TransactionStatus.APPROVED,
+            status: 'APPROVED',
             ignore: false
         }
 
         return transaction
     },
 
-    async normalizeTransaction(
-        action: TransactionAction,
-        transaction: FormMode,
-        userId: string
-    ): Promise<ITransactionBase> {
-        const baseData: ITransactionBase = {
+    async normalizeTransaction(action: 'INCOME' | 'EXPENSES' | 'TRANSFER', transaction: FormMode, userId: string) {
+        const baseData = {
             title: transaction.title,
-            action: action,
+            action: action as PrismaTransactionAction,
             date: new Date(transaction.date).toISOString(),
             note: transaction.note,
             ignore: transaction.ignore || false,
-            categoryId: undefined,
-            subcategoryId: undefined
+            categoryId: null,
+            subcategoryId: null
         }
 
         switch (action) {
-            case TransactionAction.TRANSFER:
+            case 'TRANSFER':
                 return baseData
-            case TransactionAction.INCOME:
-            case TransactionAction.EXPENSES:
+            case 'INCOME':
+            case 'EXPENSES':
                 const categoryData = transaction as IncomeFormData | ExpensesFormData
                 return {
                     ...baseData,
-                    categoryId: categoryData.categoryId,
-                    subcategoryId: categoryData.subcategoryId
+                    categoryId: categoryData.categoryId || null,
+                    subcategoryId: categoryData.subcategoryId || null
                 }
             default:
                 throw new Error(`Invalid transaction action: ${action}`)
@@ -601,18 +588,18 @@ export const TransactionHelper = {
                   transactionId: string
                   amount: number
                   currency: string
-                  action: TransactionAction
+                  action: 'INCOME' | 'EXPENSES' | 'TRANSFER'
                   financialAccountId: string
               }
-    ): IAmountBase {
+    ): any {
         // If dbAmount is provided, convert from DB object
         if ('dbAmount' in params) {
             const dbAmount = params.dbAmount
             return {
                 transactionId: dbAmount.transactionId,
                 amount: typeof dbAmount.amount === 'number' ? dbAmount.amount : dbAmount.amount.toNumber(),
-                currency: dbAmount.currency as Currencies,
-                action: dbAmount.action as TransactionAction,
+                currency: dbAmount.currency,
+                action: dbAmount.action,
                 financialAccountId: dbAmount.financialAccountId
             }
         }
@@ -629,8 +616,8 @@ export const TransactionHelper = {
         return {
             transactionId,
             amount,
-            currency: currency as Currencies,
-            action,
+            currency: currency as Currency,
+            action: action as 'INCOME' | 'EXPENSES' | 'TRANSFER',
             financialAccountId
         }
     },
@@ -638,13 +625,13 @@ export const TransactionHelper = {
      * Merges TRANSFER transactions that share the same transferId into a single transaction object.
      * The merged transaction will contain both amounts (INCOME and EXPENSES).
      */
-    mergeTransferTransactions(transactions: TransactionWithAmounts[]): TransactionWithAmounts[] {
-        const transferMap = new Map<string, TransactionWithAmounts>()
-        const result: TransactionWithAmounts[] = []
+    mergeTransferTransactions(transactions: any[]): any[] {
+        const transferMap = new Map<string, any>()
+        const result: any[] = []
 
         for (const transaction of transactions) {
             // If it's not a TRANSFER or has no transferId, add it as-is
-            if (transaction.action !== TransactionAction.TRANSFER || !transaction.transferId) {
+            if (transaction.action !== 'TRANSFER' || !transaction.transferId) {
                 result.push(transaction)
                 continue
             }

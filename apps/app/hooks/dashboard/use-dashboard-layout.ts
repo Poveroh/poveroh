@@ -1,9 +1,16 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { DashboardLayout } from '@poveroh/types'
-import { DashboardService } from '@/services/dashboard.service'
+import { useQueryClient } from '@tanstack/react-query'
+import { DashboardLayoutItem } from '@poveroh/types'
 import { DASHBOARD_DEFAULT_LAYOUT } from '@/components/dashboard/layout'
+import { getDashboardLayoutOptions, getDashboardLayoutQueryKey } from '@/api/@tanstack/react-query.gen'
+import { updateDashboardLayout } from '@/api/sdk.gen'
+import type { DashboardLayoutItem as ApiDashboardLayoutItem } from '@/api/types.gen'
+
+type DashboardLayout = {
+    items: DashboardLayoutItem[]
+}
 
 type UseDashboardLayout = {
     layout: DashboardLayout
@@ -12,8 +19,15 @@ type UseDashboardLayout = {
 }
 
 export const useDashboardLayout = (): UseDashboardLayout => {
-    const service = useMemo(() => new DashboardService(), [])
-    const [layout, setLayout] = useState<DashboardLayout>(DASHBOARD_DEFAULT_LAYOUT)
+    const queryClient = useQueryClient()
+    const defaultLayout = useMemo<DashboardLayout>(
+        () => ({
+            items: DASHBOARD_DEFAULT_LAYOUT.widgets
+        }),
+        []
+    )
+    const [layout, setLayout] = useState<DashboardLayout>(defaultLayout)
+    const [layoutVersion, setLayoutVersion] = useState<number>(DASHBOARD_DEFAULT_LAYOUT.version)
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -21,18 +35,25 @@ export const useDashboardLayout = (): UseDashboardLayout => {
 
         const load = async () => {
             try {
-                const stored = await service.readLayout()
+                const response = await queryClient.fetchQuery(getDashboardLayoutOptions())
                 if (!active) return
 
-                if (stored?.layout) {
-                    setLayout(stored.layout)
+                if (response?.success && response.data?.layout) {
+                    setLayout({ items: response.data.layout as DashboardLayoutItem[] })
+                    setLayoutVersion(response.data.version)
                 } else {
-                    setLayout(DASHBOARD_DEFAULT_LAYOUT)
-                    await service.saveLayout(DASHBOARD_DEFAULT_LAYOUT)
+                    setLayout(defaultLayout)
+                    await updateDashboardLayout({
+                        body: {
+                            version: DASHBOARD_DEFAULT_LAYOUT.version,
+                            layout: DASHBOARD_DEFAULT_LAYOUT.widgets as ApiDashboardLayoutItem[]
+                        },
+                        throwOnError: true
+                    })
                 }
             } catch {
                 if (active) {
-                    setLayout(DASHBOARD_DEFAULT_LAYOUT)
+                    setLayout(defaultLayout)
                 }
             } finally {
                 if (active) {
@@ -46,14 +67,21 @@ export const useDashboardLayout = (): UseDashboardLayout => {
         return () => {
             active = false
         }
-    }, [service])
+    }, [defaultLayout, queryClient])
 
     const saveLayout = useCallback(
         async (next: DashboardLayout) => {
             setLayout(next)
-            await service.saveLayout(next)
+            await updateDashboardLayout({
+                body: {
+                    version: layoutVersion,
+                    layout: next.items as ApiDashboardLayoutItem[]
+                },
+                throwOnError: true
+            })
+            queryClient.invalidateQueries({ queryKey: getDashboardLayoutQueryKey() })
         },
-        [service]
+        [layoutVersion, queryClient]
     )
 
     return { layout, isLoading, saveLayout }

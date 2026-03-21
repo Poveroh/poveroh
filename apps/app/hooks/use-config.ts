@@ -1,17 +1,17 @@
 'use client'
 
 import { useUserStore } from '@/store/auth.store'
-import { Currencies, DateFormat, Language, Timezone } from '@poveroh/types'
 import moment from 'moment-timezone'
 import 'moment/locale/it'
 import 'moment/locale/en-gb'
+import { DateFormatEnum, LanguageEnum, TimezoneEnum } from '@poveroh/types'
 
 // Convert Timezone enum to IANA timezone identifier
-function toIanaTimezone(timezone: Timezone): string {
+function toIanaTimezone(timezone: TimezoneEnum): string {
     switch (timezone) {
-        case Timezone.ETC_UTC:
+        case 'ETC_UTC':
             return 'UTC'
-        case Timezone.ETC_GMT_PLUS_12:
+        case 'ETC_GMT_PLUS_12':
             return 'Etc/GMT+12'
         default:
             return timezone
@@ -27,38 +27,12 @@ function toIanaTimezone(timezone: Timezone): string {
     }
 }
 
-// Map DateFormat enum to moment.js format strings
-function getMomentFormat(format: DateFormat): string {
-    switch (format) {
-        case DateFormat.DD_MM_YYYY:
-            return 'DD/MM/YYYY'
-        case DateFormat.MM_DD_YYYY:
-            return 'MM/DD/YYYY'
-        case DateFormat.YYYY_MM_DD:
-            return 'YYYY/MM/DD'
-        case DateFormat.DD_MM_YY:
-            return 'DD/MM/YY'
-        case DateFormat.MM_DD_YY:
-            return 'MM/DD/YY'
-        case DateFormat.YY_MM_DD:
-            return 'YY/MM/DD'
-        case DateFormat.DD_MMMM_YYYY:
-            return 'DD MMMM YYYY'
-        case DateFormat.MMMM_DD_YYYY:
-            return 'MMMM DD, YYYY'
-        case DateFormat.YYYY_MMMM_DD:
-            return 'YYYY MMMM DD'
-        default:
-            return 'DD/MM/YYYY'
-    }
-}
-
 // Map Language enum to moment.js locale
-function getMomentLocale(language: Language): string {
+function getMomentLocale(language: LanguageEnum): string {
     switch (language) {
-        case Language.IT:
+        case 'IT':
             return 'it'
-        case Language.EN:
+        case 'EN':
             return 'en-gb'
         default:
             return 'en-gb'
@@ -68,20 +42,19 @@ function getMomentLocale(language: Language): string {
 export const useConfig = () => {
     const userStore = useUserStore()
 
-    const timezone = toIanaTimezone(userStore.user.timezone || Timezone.EUROPE_ROME)
-    const locale = getMomentLocale(userStore.user.preferredLanguage || Language.EN)
+    const timezone = toIanaTimezone(userStore.user.timezone || 'EUROPE/ROME')
+    const locale = getMomentLocale(userStore.user.preferredLanguage || 'EN')
 
-    function renderDate(date: string | Date, format?: DateFormat) {
-        const actualFormat = format || userStore.user.dateFormat || DateFormat.DD_MM_YYYY
-        const momentFormat = getMomentFormat(actualFormat)
+    function renderDate(date: string | Date, format?: DateFormatEnum) {
+        const actualFormat = format || userStore.user.dateFormat || 'DD/MM/YYYY'
 
-        return moment(date).tz(timezone).locale(locale).format(momentFormat)
+        return moment(date).tz(timezone).locale(locale).format(actualFormat)
     }
 
     return {
-        preferedCurrency: userStore.user.preferredCurrency || Currencies.EUR,
-        preferedLanguage: (userStore.user.preferredLanguage || Language.EN).toLowerCase(),
-        dateFormat: userStore.user.dateFormat || DateFormat.DD_MM_YYYY,
+        preferedCurrency: userStore.user.preferredCurrency || 'EUR',
+        preferedLanguage: (userStore.user.preferredLanguage || 'EN').toLowerCase(),
+        dateFormat: userStore.user.dateFormat || 'DD/MM/YYYY',
         country: userStore.user.country || 'italy',
         timezone,
         renderDate

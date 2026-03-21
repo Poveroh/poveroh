@@ -1,6 +1,6 @@
 import { LogLevel } from '@poveroh/types'
 
-export interface IApiConfig {
+export type ApiConfig = {
     PORT: string
     JWT_SECRET: string
     LOG_LEVEL: LogLevel

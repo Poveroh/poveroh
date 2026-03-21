@@ -1,33 +1,54 @@
 'use client'
 
-import { UserService } from '@/services/user.service'
 import { useUserStore } from '@/store/auth.store'
-import { IUser, normalizeToIUser } from '@poveroh/types'
 import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
-import { authClient } from '@/lib/auth'
-import { useRouter } from 'next/navigation'
+import { authClient, getSession } from '@/lib/auth'
+import { User } from '@poveroh/types'
+import { updateAuthenticatedUserMutation } from '@/api/@tanstack/react-query.gen'
+import { useMutation } from '@tanstack/react-query'
+import router from 'next/router'
 
 export const useUser = () => {
     const { handleError } = useError()
-    const userService = new UserService()
     const userStore = useUserStore()
 
-    const router = useRouter()
+    const updateUser = useMutation({
+        ...updateAuthenticatedUserMutation(),
+        onSuccess: async (_data, variables) => {
+            if (!variables.body) return
 
-    const me = async (): Promise<IUser | null> => {
+            await userStore.updateUser(variables.body)
+
+            if (variables.body.email && userStore.user.email !== variables.body.email) {
+                const res = await authClient.changeEmail({
+                    newEmail: variables.body.email,
+                    callbackURL: '/logout'
+                })
+
+                if (res.data?.status) {
+                    router.push('/logout')
+                }
+            }
+        },
+        onError: error => {
+            handleError(error, 'Error saving user data')
+        }
+    })
+
+    const getMe = async (): Promise<User | null> => {
         try {
-            const result = await authClient.getSession()
+            const result = await getSession()
 
             if (result.error) {
                 throw new Error(result.error.message || 'Login failed')
             }
 
-            if (result.data && result.data.user) {
-                const normalizedUser = normalizeToIUser(result.data.user)
-                userStore.setUser(normalizedUser)
+            if (result.data?.user) {
+                const user: User = result.data.user
+                userStore.setUser(user)
                 userStore.setLogged(true)
-                return normalizedUser
+                return user
             } else {
                 userStore.setLogged(false)
                 return null
@@ -36,31 +57,6 @@ export const useUser = () => {
             userStore.setLogged(false)
             handleError(error, 'Error fetching user')
             return null
-        }
-    }
-
-    const saveUser = async (userToSave: Partial<IUser>) => {
-        try {
-            const formData = new FormData()
-            formData.append('data', JSON.stringify(userToSave))
-
-            await userService.save(userStore.user.id, formData)
-            await userStore.updateUser(userToSave)
-
-            if (userToSave.email && userStore.user.email != userToSave.email) {
-                const res = await authClient.changeEmail({
-                    newEmail: userToSave.email,
-                    callbackURL: '/logout'
-                })
-
-                if (res.data?.status as boolean) {
-                    router.push('/logout')
-                }
-            }
-
-            return true
-        } catch (error) {
-            return handleError(error, 'Error saving user data')
         }
     }
 
@@ -75,11 +71,11 @@ export const useUser = () => {
                 revokeOtherSessions: true
             })
 
-            if (data && !error) {
-                return true
+            if (data && error) {
+                return false
             }
 
-            return false
+            return true
         } catch (error) {
             handleError(error, 'Error updating password')
             return false
@@ -88,8 +84,8 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
-        me,
-        saveUser,
+        getMe,
+        updateUser,
         updatePassword
     }
 }

@@ -2,11 +2,11 @@
 
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, TooltipProps } from 'recharts'
 import { ChartContainer, ChartTooltip } from '@poveroh/ui/components/chart'
-import { INetWorthEvolutionDataPoint } from '@poveroh/types'
 import { TrendingUp, TrendingDown } from 'lucide-react'
+import { NetWorthEvolution } from '@poveroh/types'
 
 type NetWorthEvolutionChartProps = {
-    dataPoints: INetWorthEvolutionDataPoint[]
+    dataPoints: NetWorthEvolution[]
 }
 
 const formatCurrency = (value: number) =>
@@ -18,15 +18,15 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
             label: 'Data',
             color: 'hsl(var(--chart-1-color))'
         },
-        totalNetWorth: {
+        netWorth: {
             label: 'Patrimonio netto totale',
             color: 'hsl(var(--chart-2-color))'
         }
     }
     const chartData = dataPoints.map((point, index) => {
         const previous = index > 0 ? dataPoints[index - 1] : null
-        const delta = previous ? point.totalNetWorth - previous.totalNetWorth : 0
-        const deltaPct = previous && previous.totalNetWorth !== 0 ? (delta / previous.totalNetWorth) * 100 : 0
+        const delta = previous ? point.netWorth - previous.netWorth : 0
+        const deltaPct = previous && previous.netWorth !== 0 ? (delta / previous.netWorth) * 100 : 0
 
         return {
             ...point,
@@ -41,7 +41,7 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
             return null
         }
 
-        const point = payload[0]?.payload as INetWorthEvolutionDataPoint & {
+        const point = payload[0]?.payload as NetWorthEvolution & {
             delta?: number
             deltaPct?: number
         }
@@ -64,7 +64,7 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
                     <span className={isPositive ? 'text-emerald-500' : 'text-red-500'} aria-hidden='true'>
                         {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                     </span>
-                    <span className='text-foreground'>{formatCurrency(point.totalNetWorth)}</span>
+                    <span className='text-foreground'>{formatCurrency(point.netWorth)}</span>
                     <span className={isPositive ? 'text-emerald-500' : 'text-red-500'}>
                         {`${deltaSign}${formatCurrency(Math.abs(delta))} (${deltaSign}${Math.abs(deltaPct).toFixed(1)}%)`}
                     </span>

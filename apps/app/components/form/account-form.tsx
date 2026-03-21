@@ -3,8 +3,6 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { IFinancialAccount, IItem } from '@poveroh/types'
-
 import { Form } from '@poveroh/ui/components/form'
 
 import { useFinancialAccount } from '@/hooks/use-account'
@@ -12,9 +10,11 @@ import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { FormProps, FormRef } from '@/types'
+import { FinancialAccountData } from '@poveroh/types'
+import { Item } from '@poveroh/types'
 
-export const AccountForm = forwardRef<FormRef, FormProps<IFinancialAccount>>(
-    (props: FormProps<IFinancialAccount>, ref) => {
+export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(
+    (props: FormProps<FinancialAccountData>, ref) => {
         const { initialData, inEditingMode, dataCallback } = props
 
         const t = useTranslations()
@@ -49,8 +49,8 @@ export const AccountForm = forwardRef<FormRef, FormProps<IFinancialAccount>>(
                             label={t('form.type.label')}
                             options={TYPE_LIST}
                             placeholder={t('form.type.placeholder')}
-                            getOptionLabel={(item: IItem) => item.label}
-                            getOptionValue={(item: IItem) => item.value}
+                            getOptionLabel={(item: Item) => item.label}
+                            getOptionValue={(item: Item) => item.value}
                         />
 
                         <FileUploadField

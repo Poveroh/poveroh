@@ -1,110 +1,129 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import { ISubcategory, ISubcategoryFilters } from '@poveroh/types'
-import { buildWhere } from '../../../helpers/filter.helper'
-import { MediaHelper } from '../../../helpers/media.helper'
-import logger from '../../../utils/logger'
+import {
+    CreateSubcategoryRequest,
+    SubcategoryDataResponse,
+    SubcategoryFilters,
+    UpdateSubcategoryRequest
+} from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { SubcategoryService } from '../services/subcategory.service'
 
 export class SubcategoryController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async createSubcategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
-
-            const readedSubcategory: Omit<ISubcategory, 'id' | 'createdAt'> = req.body
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/subcategory/${readedSubcategory.title}`
-                )
-                readedSubcategory.logoIcon = filePath
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const subcategory = await prisma.subcategory.create({
-                data: readedSubcategory
-            })
+            const subcategoryPayload: CreateSubcategoryRequest = req.body
 
-            res.status(200).json(subcategory)
+            const subcategoryService = new SubcategoryService(req.user.id)
+            const subcategory = await subcategoryService.createSubcategory(subcategoryPayload, req.file)
+
+            if (!subcategory) {
+                throw new Error('Failed to create subcategory')
+            }
+
+            return ResponseHelper.success(res, subcategory)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PATCH /:id
+    static async updateSubcategory(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
 
-            const readedSubcategory: ISubcategory = req.body
+            const subcategoryPayload: UpdateSubcategoryRequest = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing subcategory ID in path' })
-                return
+                throw new BadRequestError('Missing subcategory ID in path')
             }
 
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/subcategory/${readedSubcategory.title}`
-                )
-                readedSubcategory.logoIcon = filePath
-            }
+            const subcategoryService = new SubcategoryService(req.user.id)
+            await subcategoryService.updateSubcategory(id, subcategoryPayload, req.file)
 
-            const subcategory = await prisma.subcategory.update({
-                where: { id },
-                data: readedSubcategory
-            })
-
-            res.status(200).json(subcategory)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteSubcategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing subcategory ID in path' })
-                return
+                throw new BadRequestError('Missing subcategory ID in path')
             }
 
-            await prisma.subcategory.delete({ where: { id } })
+            const subcategoryService = new SubcategoryService(req.user.id)
+            await subcategoryService.deleteSubcategory(id)
 
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE /
+    static async deleteAllSubcategories(req: Request, res: Response) {
+        try {
+            const subcategoryService = new SubcategoryService(req.user.id)
+            await subcategoryService.deleteAllSubcategories()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id
+    static async readSubcategoryById(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing subcategory ID in path')
+            }
+
+            const subcategoryService = new SubcategoryService(req.user.id)
+            const data = await subcategoryService.getSubcategoryById(id)
+
+            if (!data) {
+                throw new NotFoundError('Subcategory not found')
+            }
+
+            return ResponseHelper.success<SubcategoryDataResponse>(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readSubcategories(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ISubcategoryFilters
+            const filters = req.query as unknown as SubcategoryFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const subcategoryService = new SubcategoryService(req.user.id)
+            const data = await subcategoryService.getSubcategories(filters, skip, take)
 
-            const data = await prisma.subcategory.findMany({
-                where,
-                orderBy: { createdAt: 'desc' },
-                skip,
-                take
-            })
+            if (!data || data.length === 0) {
+                throw new NotFoundError('Subcategory not found')
+            }
 
-            res.status(200).json(data)
+            return ResponseHelper.success<SubcategoryDataResponse[]>(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

@@ -7,14 +7,15 @@ import Modal from '@/components/modal/modal'
 import { AccountBalanceSnapshotForm } from '@/components/form/account-balance-snapshot-form'
 import { useSnapshot } from '@/hooks/use-snapshot'
 import { useModal } from '@/hooks/use-modal'
-import { ISnapshotAccountBalance } from '@poveroh/types'
+import { SnapshotAccountBalance } from '@poveroh/types'
+import { CreateSnapshotAccountBalanceRequest } from '@/lib/api-client'
 
 export function AccountBalanceSnapshotDialog() {
     const t = useTranslations()
-    const { addAccountBalanceSnapshot } = useSnapshot()
+    const { createSnapshotAccountBalance } = useSnapshot()
 
     const modalId = 'account-snapshot'
-    const modalManager = useModal<ISnapshotAccountBalance>(modalId)
+    const modalManager = useModal<SnapshotAccountBalance>(modalId)
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -25,10 +26,10 @@ export function AccountBalanceSnapshotDialog() {
         }
     }
 
-    const handleSubmit = async (data: FormData | Partial<ISnapshotAccountBalance>) => {
+    const handleSubmit = async (data: FormData | Partial<SnapshotAccountBalance>) => {
         modalManager.setLoading(true)
 
-        const res = await addAccountBalanceSnapshot(data as Partial<ISnapshotAccountBalance>)
+        const res = await createSnapshotAccountBalance(data as Partial<CreateSnapshotAccountBalanceRequest>)
 
         if (!res) return
 
@@ -55,7 +56,7 @@ export function AccountBalanceSnapshotDialog() {
             <div className='flex flex-col space-y-6 w-full'>
                 <AccountBalanceSnapshotForm
                     ref={formRef}
-                    initialData={modalManager.item}
+                    initialData={modalManager.item ?? null}
                     initialAccountId={modalManager.preConfig?.accountId}
                     inEditingMode={modalManager.inEditingMode}
                     dataCallback={handleSubmit}

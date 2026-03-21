@@ -1,27 +1,23 @@
-import { IItem } from './item.js'
+import { CurrencyEnum } from './contracts.js'
+import { Item } from './item.js'
 
-export enum Currencies {
-    USD = 'USD',
-    EUR = 'EUR',
-    GBP = 'GBP',
-    JPY = 'JPY',
-    CNY = 'CNY',
-    INR = 'INR',
-    AUD = 'AUD',
-    CAD = 'CAD',
-    CHF = 'CHF',
-    SEK = 'SEK',
-    NZD = 'NZD',
-    MXN = 'MXN',
-    SGD = 'SGD',
-    HKD = 'HKD',
-    NOK = 'NOK',
-    KRW = 'KRW',
-    TRY = 'TRY',
-    UNKNOWN = 'UNKNOWN'
-}
-
-export const currencyCatalog: IItem[] = Object.values(Currencies).map(currency => ({
-    label: currency,
-    value: currency
-}))
+export const CurrencyCatalog: Item<CurrencyEnum>[] = [
+    { label: 'USD', value: 'USD' },
+    { label: 'EUR', value: 'EUR' },
+    { label: 'GBP', value: 'GBP' },
+    { label: 'JPY', value: 'JPY' },
+    { label: 'CNY', value: 'CNY' },
+    { label: 'INR', value: 'INR' },
+    { label: 'AUD', value: 'AUD' },
+    { label: 'CAD', value: 'CAD' },
+    { label: 'CHF', value: 'CHF' },
+    { label: 'SEK', value: 'SEK' },
+    { label: 'NZD', value: 'NZD' },
+    { label: 'MXN', value: 'MXN' },
+    { label: 'SGD', value: 'SGD' },
+    { label: 'HKD', value: 'HKD' },
+    { label: 'NOK', value: 'NOK' },
+    { label: 'KRW', value: 'KRW' },
+    { label: 'TRY', value: 'TRY' },
+    { label: 'UNKNOWN', value: 'UNKNOWN' }
+]

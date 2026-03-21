@@ -3,8 +3,6 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { CyclePeriod, ISubscription, RememberPeriod } from '@poveroh/types'
-
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
 import {
     TextField,
@@ -18,8 +16,11 @@ import {
 } from '../fields'
 import { Form } from '@poveroh/ui/components/form'
 import { FormProps, FormRef } from '@/types'
+import { useUtils } from '@/hooks/use-utils'
+import { SubscriptionData } from '@poveroh/types'
+import { CyclePeriodCatalog, RememberPeriodCatalog } from '@poveroh/types'
 
-type SubscriptionFormProps = FormProps<ISubscription> & {
+type SubscriptionFormProps = FormProps<SubscriptionData> & {
     fromTemplate?: boolean
 }
 
@@ -27,6 +28,7 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
     const { initialData, inEditingMode, fromTemplate, dataCallback } = props
 
     const t = useTranslations()
+    const { renderItemsLabel } = useUtils()
     const { form, icon, handleIconChange, handleSubmit } = useSubscriptionForm(initialData, inEditingMode)
 
     useImperativeHandle(ref, () => ({
@@ -94,10 +96,7 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                             name='cyclePeriod'
                             label={t('form.cycle_period.label')}
                             mandatory={true}
-                            options={Object.values(CyclePeriod).map(period => ({
-                                label: t(`format.${period.toLowerCase()}`),
-                                value: period
-                            }))}
+                            options={renderItemsLabel(CyclePeriodCatalog)}
                             getOptionLabel={option => option.label}
                             getOptionValue={option => option.value}
                         />
@@ -125,10 +124,7 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                         name='rememberPeriod'
                         label={t('form.remember_period.label')}
                         mandatory={false}
-                        options={Object.values(RememberPeriod).map(period => ({
-                            label: t(`reminderPeriod.${period.toLowerCase()}`),
-                            value: period
-                        }))}
+                        options={renderItemsLabel(RememberPeriodCatalog)}
                         getOptionLabel={option => option.label}
                         getOptionValue={option => option.value}
                     />

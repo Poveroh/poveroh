@@ -1,7 +1,7 @@
-import { IFilterOptions } from '@poveroh/types'
+import type { FilterOptions } from '@/lib/api-client'
 import qs from 'qs'
 
-export function buildFilters<F = unknown>(filters?: F, options?: IFilterOptions) {
+export function buildFilters<F = unknown>(filters?: F, options?: FilterOptions) {
     const queryObject: Record<string, unknown> = {}
 
     if (filters) queryObject.filter = filters

@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/use-auth'
 import { useUser } from '@/hooks/use-user'
 import { authClient } from '@/lib/auth'
+import { SESSION_CHECK_INTERVAL } from '@poveroh/types'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 type AuthContextType = {
@@ -13,18 +14,16 @@ const AuthContext = createContext<AuthContextType>({
     isInitialized: false
 })
 
-const SESSION_CHECK_INTERVAL = 60 * 1000
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isInitialized, setIsInitialized] = useState(false)
     const { logout } = useAuth()
-    const { me } = useUser()
+    const { getMe } = useUser()
     const logoutRef = useRef(logout)
 
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                await me()
+                await getMe()
             } catch (error) {
                 console.error('Failed to initialize auth:', error)
             } finally {
@@ -33,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         initializeAuth()
-    }, [])
+    }, [getMe])
 
     useEffect(() => {
         logoutRef.current = logout
@@ -66,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         const intervalId = setInterval(verifySession, SESSION_CHECK_INTERVAL)
-        verifySession() // catch stale sessions immediately
+        verifySession()
 
         return () => {
             isMounted = false

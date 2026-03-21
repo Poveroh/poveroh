@@ -1,7 +1,7 @@
 export type LoadingState = {
-    add: boolean
-    edit: boolean
-    remove: boolean
+    create: boolean
+    update: boolean
+    delete: boolean
     get: boolean
     fetch: boolean
 }
