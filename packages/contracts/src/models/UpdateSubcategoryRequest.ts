@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UpdateSubcategoryRequest = {
-    title?: string;
-    description?: string;
-    logoIcon?: string;
-};
-
+    title?: string
+    description?: string
+    logoIcon?: string
+}

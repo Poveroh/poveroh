@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FilterOptions } from './FilterOptions';
-import type { SubscriptionFilters } from './SubscriptionFilters';
+import type { FilterOptions } from './FilterOptions'
+import type { SubscriptionFilters } from './SubscriptionFilters'
 export type QuerySubscriptionFilters = {
-    filter?: SubscriptionFilters;
-    options?: FilterOptions;
-};
-
+    filter?: SubscriptionFilters
+    options?: FilterOptions
+}

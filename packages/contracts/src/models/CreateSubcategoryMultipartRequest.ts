@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateSubcategoryRequest } from './CreateSubcategoryRequest';
+import type { CreateSubcategoryRequest } from './CreateSubcategoryRequest'
 export type CreateSubcategoryMultipartRequest = {
-    data?: CreateSubcategoryRequest;
-    file: Array<Blob>;
-};
-
+    data?: CreateSubcategoryRequest
+    file: Array<Blob>
+}

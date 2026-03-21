@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FilterOptions } from './FilterOptions';
-import type { TransactionFilters } from './TransactionFilters';
+import type { FilterOptions } from './FilterOptions'
+import type { TransactionFilters } from './TransactionFilters'
 export type QueryTransactionFilters = {
-    filter?: TransactionFilters;
-    options?: FilterOptions;
-};
-
+    filter?: TransactionFilters
+    options?: FilterOptions
+}

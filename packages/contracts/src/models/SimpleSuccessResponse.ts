@@ -6,10 +6,9 @@ export type SimpleSuccessResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
-};
-
+    message?: string
+}

@@ -2,20 +2,19 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SnapshotAccountBalance } from './SnapshotAccountBalance';
-import type { SnapshotAssetValue } from './SnapshotAssetValue';
+import type { SnapshotAccountBalance } from './SnapshotAccountBalance'
+import type { SnapshotAssetValue } from './SnapshotAssetValue'
 export type Snapshot = {
-    id: string;
-    userId: string;
-    snapshotDate: string;
-    note: string | null;
-    totalCash: number;
-    totalInvestments: number;
-    totalNetWorth: number;
-    accountBalances: Array<SnapshotAccountBalance>;
-    assetValues: Array<SnapshotAssetValue>;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt?: string;
-};
-
+    id: string
+    userId: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    accountBalances: Array<SnapshotAccountBalance>
+    assetValues: Array<SnapshotAssetValue>
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}

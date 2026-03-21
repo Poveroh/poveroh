@@ -2,13 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum';
+import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum'
 export type UpdateFinancialAccountRequest = {
-    id?: string;
-    title?: string;
-    description?: string;
-    balance?: number;
-    type?: FinancialAccountTypeEnum;
-    logoIcon?: string;
-};
-
+    id?: string
+    title?: string
+    description?: string
+    balance?: number
+    type?: FinancialAccountTypeEnum
+    logoIcon?: string
+}

@@ -2,16 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { SubcategoryData } from './SubcategoryData';
+import type { SubcategoryData } from './SubcategoryData'
 export type GetSubcategoryResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
-    data?: SubcategoryData;
-};
-
+    message?: string
+    data?: SubcategoryData
+}

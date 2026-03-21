@@ -2,11 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CountriesEnum } from './CountriesEnum';
+import type { CountriesEnum } from './CountriesEnum'
 export type UserProfileForm = {
-    name: string;
-    surname: string;
-    email: string;
-    country: CountriesEnum;
-};
-
+    name: string
+    surname: string
+    email: string
+    country: CountriesEnum
+}

@@ -2,16 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FinancialAccountData } from './FinancialAccountData';
+import type { FinancialAccountData } from './FinancialAccountData'
 export type GetFinancialAccountResponse = {
     /**
      * Always true for success responses
      */
-    success: boolean;
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string;
-    data?: FinancialAccountData;
-};
-
+    message?: string
+    data?: FinancialAccountData
+}

@@ -2,17 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ImportFile } from './ImportFile';
-import type { Transaction } from './Transaction';
-import type { TransactionStatusEnum } from './TransactionStatusEnum';
+import type { ImportFile } from './ImportFile'
+import type { Transaction } from './Transaction'
+import type { TransactionStatusEnum } from './TransactionStatusEnum'
 export type ImportData = {
-    id: string;
-    title: string;
-    financialAccountId: string;
-    status: TransactionStatusEnum;
-    transactions?: Array<Transaction>;
-    files?: Array<ImportFile>;
-    createdAt: string;
-    updatedAt: string;
-};
-
+    id: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}

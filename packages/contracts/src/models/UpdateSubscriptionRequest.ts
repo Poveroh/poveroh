@@ -2,22 +2,21 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AppearanceModeEnum } from './AppearanceModeEnum';
-import type { CurrencyEnum } from './CurrencyEnum';
-import type { CyclePeriodEnum } from './CyclePeriodEnum';
-import type { RememberPeriodEnum } from './RememberPeriodEnum';
+import type { AppearanceModeEnum } from './AppearanceModeEnum'
+import type { CurrencyEnum } from './CurrencyEnum'
+import type { CyclePeriodEnum } from './CyclePeriodEnum'
+import type { RememberPeriodEnum } from './RememberPeriodEnum'
 export type UpdateSubscriptionRequest = {
-    title?: string;
-    description?: string;
-    amount?: number;
-    currency?: CurrencyEnum;
-    appearanceMode?: AppearanceModeEnum;
-    appearanceLogoIcon?: string;
-    firstPayment?: string;
-    cycleNumber?: number;
-    cyclePeriod?: CyclePeriodEnum;
-    rememberPeriod?: RememberPeriodEnum;
-    financialAccountId?: string;
-    isEnabled?: boolean;
-};
-
+    title?: string
+    description?: string
+    amount?: number
+    currency?: CurrencyEnum
+    appearanceMode?: AppearanceModeEnum
+    appearanceLogoIcon?: string
+    firstPayment?: string
+    cycleNumber?: number
+    cyclePeriod?: CyclePeriodEnum
+    rememberPeriod?: RememberPeriodEnum
+    financialAccountId?: string
+    isEnabled?: boolean
+}

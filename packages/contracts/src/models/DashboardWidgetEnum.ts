@@ -2,4 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DashboardWidgetEnum = 'net-worth-evolution' | 'kpi-row' | 'liquidity-evolution' | 'income-expense-month' | 'month-comparison' | 'category-trend' | 'account-balances' | 'expense-macro-distribution' | 'recent-transactions';
+export type DashboardWidgetEnum =
+    | 'net-worth-evolution'
+    | 'kpi-row'
+    | 'liquidity-evolution'
+    | 'income-expense-month'
+    | 'month-comparison'
+    | 'category-trend'
+    | 'account-balances'
+    | 'expense-macro-distribution'
+    | 'recent-transactions'

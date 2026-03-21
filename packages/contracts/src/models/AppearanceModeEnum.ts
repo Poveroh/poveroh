@@ -2,4 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type AppearanceModeEnum = 'LOGO' | 'ICON';
+export type AppearanceModeEnum = 'LOGO' | 'ICON'

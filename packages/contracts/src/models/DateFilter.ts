@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type DateFilter = {
-    gte?: string;
-    lte?: string;
-};
-
+    gte?: string
+    lte?: string
+}

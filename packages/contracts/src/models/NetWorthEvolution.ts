@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type NetWorthEvolution = {
-    date: string;
-    netWorth: number;
-};
-
+    date: string
+    netWorth: number
+}

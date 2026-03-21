@@ -2,14 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CurrencyEnum } from './CurrencyEnum';
-import type { TransactionActionEnum } from './TransactionActionEnum';
+import type { CurrencyEnum } from './CurrencyEnum'
+import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CreateAmountRequest = {
-    transactionId: string;
-    amount: number;
-    currency: CurrencyEnum;
-    action: TransactionActionEnum;
-    financialAccountId: string;
-    importReferenceId: string | null;
-};
-
+    transactionId: string
+    amount: number
+    currency: CurrencyEnum
+    action: TransactionActionEnum
+    financialAccountId: string
+    importReferenceId: string | null
+}

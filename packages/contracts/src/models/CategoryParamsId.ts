@@ -3,6 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CategoryParamsId = {
-    id: string;
-};
-
+    id: string
+}
