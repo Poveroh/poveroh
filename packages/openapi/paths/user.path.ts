@@ -9,7 +9,7 @@ import {
 export const registerUserPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
         method: 'get',
-        path: '/me',
+        path: '/user/me',
         tags: ['User'],
         operationId: 'getAuthenticatedUser',
         summary: 'Get authenticated user',
@@ -60,7 +60,7 @@ export const registerUserPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'patch',
-        path: '/me',
+        path: '/user/me',
         tags: ['User'],
         operationId: 'updateAuthenticatedUser',
         summary: 'Update authenticated user',

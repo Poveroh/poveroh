@@ -5882,3 +5882,78 @@ export type GetErrorResponses = {
 }
 
 export type GetErrorResponse = GetErrorResponses[keyof GetErrorResponses]
+
+export type GetAuthenticatedUser2Data = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/user/me'
+}
+
+export type GetAuthenticatedUser2Errors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAuthenticatedUser2Error = GetAuthenticatedUser2Errors[keyof GetAuthenticatedUser2Errors]
+
+export type GetAuthenticatedUser2Responses = {
+    /**
+     * User found
+     */
+    200: GetUserResponse
+}
+
+export type GetAuthenticatedUser2Response = GetAuthenticatedUser2Responses[keyof GetAuthenticatedUser2Responses]
+
+export type UpdateAuthenticatedUser2Data = {
+    body?: UpdateUserRequest
+    path?: never
+    query?: never
+    url: '/user/me'
+}
+
+export type UpdateAuthenticatedUser2Errors = {
+    /**
+     * Invalid request body
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateAuthenticatedUser2Error = UpdateAuthenticatedUser2Errors[keyof UpdateAuthenticatedUser2Errors]
+
+export type UpdateAuthenticatedUser2Responses = {
+    /**
+     * User updated
+     */
+    200: UpdateUserResponse
+}
+
+export type UpdateAuthenticatedUser2Response =
+    UpdateAuthenticatedUser2Responses[keyof UpdateAuthenticatedUser2Responses]

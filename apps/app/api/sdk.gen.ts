@@ -75,6 +75,9 @@ import type {
     GetAccountInfoData,
     GetAccountInfoErrors,
     GetAccountInfoResponses,
+    GetAuthenticatedUser2Data,
+    GetAuthenticatedUser2Errors,
+    GetAuthenticatedUser2Responses,
     GetAuthenticatedUserData,
     GetAuthenticatedUserErrors,
     GetAuthenticatedUserResponses,
@@ -202,6 +205,9 @@ import type {
     SocialSignInData,
     SocialSignInErrors,
     SocialSignInResponses,
+    UpdateAuthenticatedUser2Data,
+    UpdateAuthenticatedUser2Errors,
+    UpdateAuthenticatedUser2Responses,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserErrors,
     UpdateAuthenticatedUserResponses,
@@ -1389,4 +1395,36 @@ export const getError = <ThrowOnError extends boolean = false>(options?: Options
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/error',
         ...options
+    })
+
+/**
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
+ */
+export const getAuthenticatedUser2 = <ThrowOnError extends boolean = false>(
+    options?: Options<GetAuthenticatedUser2Data, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetAuthenticatedUser2Responses, GetAuthenticatedUser2Errors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user/me',
+        ...options
+    })
+
+/**
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
+ */
+export const updateAuthenticatedUser2 = <ThrowOnError extends boolean = false>(
+    options?: Options<UpdateAuthenticatedUser2Data, ThrowOnError>
+) =>
+    (options?.client ?? client).patch<UpdateAuthenticatedUser2Responses, UpdateAuthenticatedUser2Errors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user/me',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
     })

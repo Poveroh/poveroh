@@ -29,6 +29,7 @@ import {
     deleteUser,
     getAccountInfo,
     getAuthenticatedUser,
+    getAuthenticatedUser2,
     getCallbackById,
     getCategories,
     getCategoryById,
@@ -73,6 +74,7 @@ import {
     signUpWithEmailAndPassword,
     socialSignIn,
     updateAuthenticatedUser,
+    updateAuthenticatedUser2,
     updateCategory,
     updateDashboardLayout,
     updateFinancialAccount,
@@ -157,6 +159,9 @@ import type {
     GetAccountInfoData,
     GetAccountInfoError,
     GetAccountInfoResponse,
+    GetAuthenticatedUser2Data,
+    GetAuthenticatedUser2Error,
+    GetAuthenticatedUser2Response,
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
     GetAuthenticatedUserResponse,
@@ -284,6 +289,9 @@ import type {
     SocialSignInData,
     SocialSignInError,
     SocialSignInResponse,
+    UpdateAuthenticatedUser2Data,
+    UpdateAuthenticatedUser2Error,
+    UpdateAuthenticatedUser2Response,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserError,
     UpdateAuthenticatedUserResponse,
@@ -2232,3 +2240,59 @@ export const getErrorOptions = (options?: Options<GetErrorData>) =>
         },
         queryKey: getErrorQueryKey(options)
     })
+
+export const getAuthenticatedUser2QueryKey = (options?: Options<GetAuthenticatedUser2Data>) =>
+    createQueryKey('getAuthenticatedUser2', options)
+
+/**
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
+ */
+export const getAuthenticatedUser2Options = (options?: Options<GetAuthenticatedUser2Data>) =>
+    queryOptions<
+        GetAuthenticatedUser2Response,
+        GetAuthenticatedUser2Error,
+        GetAuthenticatedUser2Response,
+        ReturnType<typeof getAuthenticatedUser2QueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthenticatedUser2({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthenticatedUser2QueryKey(options)
+    })
+
+/**
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
+ */
+export const updateAuthenticatedUser2Mutation = (
+    options?: Partial<Options<UpdateAuthenticatedUser2Data>>
+): UseMutationOptions<
+    UpdateAuthenticatedUser2Response,
+    UpdateAuthenticatedUser2Error,
+    Options<UpdateAuthenticatedUser2Data>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateAuthenticatedUser2Response,
+        UpdateAuthenticatedUser2Error,
+        Options<UpdateAuthenticatedUser2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateAuthenticatedUser2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
