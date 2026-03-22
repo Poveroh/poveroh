@@ -105,6 +105,7 @@ const prefixBetterAuthPaths = (schema: OpenApiDocument, prefix: string): OpenApi
 
     const prefixedPaths: Record<string, unknown> = {}
     for (const [path, value] of Object.entries(schema.paths)) {
+        console.log(`🔀 Prefixing Better Auth path: ${path} -> ${prefix}${path}`)
         prefixedPaths[`${prefix}${path}`] = value
     }
 
