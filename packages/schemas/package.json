@@ -4,6 +4,9 @@
     "private": true,
     "main": "dist/schemas/src/index.js",
     "types": "dist/schemas/src/index.d.ts",
+    "dependencies": {
+        "@poveroh/openapi": "*"
+    },
     "scripts": {
         "build": "npx tsc",
         "clean": "rm -rf .turbo && rm -rf node_modules"
