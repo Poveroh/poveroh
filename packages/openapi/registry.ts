@@ -40,17 +40,17 @@ const registerAllSchemas = (registry: OpenAPIRegistry) => {
 }
 
 export const registerAllPaths = (registry: OpenAPIRegistry) => {
+    registerStatusPath(registry)
+    registerUserPath(registry)
     registerCategoryPath(registry)
-    registerDashboardPath(registry)
+    registerSubcategoryPath(registry)
+    registerTransactionPath(registry)
+    registerSubscriptionPath(registry)
     registerFinancialAccountPath(registry)
     registerImportPath(registry)
-    registerReportPath(registry)
+    registerDashboardPath(registry)
     registerSnapshotPath(registry)
-    registerStatusPath(registry)
-    registerSubcategoryPath(registry)
-    registerSubscriptionPath(registry)
-    registerTransactionPath(registry)
-    registerUserPath(registry)
+    registerReportPath(registry)
 }
 
 export const createOpenApiRegistry = () => {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import {
     CreateSubscriptionRequest,
-    SubscriptionDataResponse,
+    SubscriptionData,
     SubscriptionFilters,
     UpdateSubscriptionRequest
 } from '@poveroh/types'
@@ -101,7 +101,7 @@ export class SubscriptionController {
                 throw new NotFoundError('Subscription not found')
             }
 
-            return ResponseHelper.success<SubscriptionDataResponse>(res, data)
+            return ResponseHelper.success<SubscriptionData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -121,7 +121,7 @@ export class SubscriptionController {
                 throw new NotFoundError('Subscription not found')
             }
 
-            return ResponseHelper.success<SubscriptionDataResponse[]>(res, data)
+            return ResponseHelper.success<SubscriptionData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

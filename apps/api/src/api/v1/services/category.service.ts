@@ -1,6 +1,6 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { CategoryFilters, CreateCategoryRequest, CategoryDataResponse, UpdateCategoryRequest } from '@poveroh/types'
+import { CategoryFilters, CreateCategoryRequest, CategoryData, UpdateCategoryRequest } from '@poveroh/types'
 import { BaseService } from './base.service'
 
 /**
@@ -23,7 +23,7 @@ export class CategoryService extends BaseService {
      * @param file An optional logo file for the category
      * @returns The created category data response
      */
-    async createCategory(payload: CreateCategoryRequest, file?: Express.Multer.File): Promise<CategoryDataResponse> {
+    async createCategory(payload: CreateCategoryRequest, file?: Express.Multer.File): Promise<CategoryData> {
         const userId = this.getUserId()
 
         const generatedId = crypto.randomUUID()
@@ -38,7 +38,7 @@ export class CategoryService extends BaseService {
                 ...payload,
                 userId
             }
-        })) as unknown as CategoryDataResponse
+        })) as unknown as CategoryData
     }
 
     /**
@@ -109,13 +109,13 @@ export class CategoryService extends BaseService {
      * @param id The ID of the category to retrieve
      * @returns The category data response with its subcategories, or null if not found
      */
-    async getCategoryById(id: string): Promise<CategoryDataResponse | null> {
+    async getCategoryById(id: string): Promise<CategoryData | null> {
         const userId = this.getUserId()
 
         return (await prisma.category.findMany({
             where: { id, userId, deletedAt: null },
             include: { subcategories: true }
-        })) as unknown as CategoryDataResponse | null
+        })) as unknown as CategoryData | null
     }
 
     /**
@@ -126,7 +126,7 @@ export class CategoryService extends BaseService {
      * @param take The number of categories to take for pagination
      * @returns An object containing the list of category data responses
      */
-    async getCategories(filters: CategoryFilters, skip: number, take: number): Promise<CategoryDataResponse[]> {
+    async getCategories(filters: CategoryFilters, skip: number, take: number): Promise<CategoryData[]> {
         const userId = this.getUserId()
 
         const where = {
@@ -141,7 +141,7 @@ export class CategoryService extends BaseService {
             orderBy: { createdAt: 'desc' },
             skip,
             take
-        })) as unknown as CategoryDataResponse[]
+        })) as unknown as CategoryData[]
     }
 
     /**

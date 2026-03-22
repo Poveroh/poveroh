@@ -8,7 +8,7 @@ import {
 export const registerReportPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
         method: 'get',
-        path: '/report/trend',
+        path: '/reports/trend',
         tags: ['Report'],
         operationId: 'getTrendReport',
         summary: 'Get trend report',

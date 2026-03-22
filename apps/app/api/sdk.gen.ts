@@ -255,6 +255,52 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 }
 
 /**
+ * Healthcheck
+ */
+export const getRootStatus = <ThrowOnError extends boolean = false>(
+    options?: Options<GetRootStatusData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetRootStatusResponses, GetRootStatusErrors, ThrowOnError>({ url: '/', ...options })
+
+/**
+ * Healthcheck
+ */
+export const getStatus = <ThrowOnError extends boolean = false>(options?: Options<GetStatusData, ThrowOnError>) =>
+    (options?.client ?? client).get<GetStatusResponses, GetStatusErrors, ThrowOnError>({ url: '/status', ...options })
+
+/**
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
+ */
+export const getAuthenticatedUser = <ThrowOnError extends boolean = false>(
+    options?: Options<GetAuthenticatedUserData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetAuthenticatedUserResponses, GetAuthenticatedUserErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/me',
+        ...options
+    })
+
+/**
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
+ */
+export const updateAuthenticatedUser = <ThrowOnError extends boolean = false>(
+    options?: Options<UpdateAuthenticatedUserData, ThrowOnError>
+) =>
+    (options?.client ?? client).patch<UpdateAuthenticatedUserResponses, UpdateAuthenticatedUserErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/me',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
+    })
+
+/**
  * Delete all categories
  *
  * Delete all categories associated with the user
@@ -347,30 +393,276 @@ export const updateCategory = <ThrowOnError extends boolean = false>(
     })
 
 /**
- * Get dashboard layout
+ * Delete all subcategories
  *
- * Retrieve a specific dashboard layout
+ * Delete all subcategories associated with the user
  */
-export const getDashboardLayout = <ThrowOnError extends boolean = false>(
-    options?: Options<GetDashboardLayoutData, ThrowOnError>
+export const deleteSubcategories = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteSubcategoriesData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<GetDashboardLayoutResponses, GetDashboardLayoutErrors, ThrowOnError>({
+    (options?.client ?? client).delete<DeleteSubcategoriesResponses, DeleteSubcategoriesErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/dashboard',
+        url: '/subcategories',
         ...options
     })
 
 /**
- * Update dashboard layout
+ * Get all subcategories
  *
- * Update a specific dashboard layout
+ * Retrieve a list of all subcategories associated with the user
  */
-export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateDashboardLayoutData, ThrowOnError>
+export const getSubcategories = <ThrowOnError extends boolean = false>(
+    options?: Options<GetSubcategoriesData, ThrowOnError>
 ) =>
-    (options.client ?? client).put<UpdateDashboardLayoutResponses, UpdateDashboardLayoutErrors, ThrowOnError>({
+    (options?.client ?? client).get<GetSubcategoriesResponses, GetSubcategoriesErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/dashboard',
+        url: '/subcategories',
+        ...options
+    })
+
+/**
+ * Create subcategory
+ *
+ * Create a new subcategory with the provided data
+ */
+export const createSubcategory = <ThrowOnError extends boolean = false>(
+    options: Options<CreateSubcategoryData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateSubcategoryResponses, CreateSubcategoryErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subcategories',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete subcategory
+ *
+ * Delete an existing subcategory with the provided ID
+ */
+export const deleteSubcategory = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteSubcategoryData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<DeleteSubcategoryResponses, DeleteSubcategoryErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subcategories/{id}',
+        ...options
+    })
+
+/**
+ * Get subcategory by ID
+ *
+ * Retrieve a specific subcategory by its ID
+ */
+export const getSubcategoryById = <ThrowOnError extends boolean = false>(
+    options: Options<GetSubcategoryByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetSubcategoryByIdResponses, GetSubcategoryByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subcategories/{id}',
+        ...options
+    })
+
+/**
+ * Update subcategory
+ *
+ * Update an existing subcategory with the provided data
+ */
+export const updateSubcategory = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateSubcategoryData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateSubcategoryResponses, UpdateSubcategoryErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subcategories/{id}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete all transactions
+ *
+ * Delete all transactions associated with the user
+ */
+export const deleteTransactions = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteTransactionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteTransactionsResponses, DeleteTransactionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions',
+        ...options
+    })
+
+/**
+ * Get all transactions
+ *
+ * Retrieve a list of all transactions associated with the user
+ */
+export const getTransactions = <ThrowOnError extends boolean = false>(
+    options?: Options<GetTransactionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetTransactionsResponses, GetTransactionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions',
+        ...options
+    })
+
+/**
+ * Create transaction
+ *
+ * Create a new transaction with the provided data
+ */
+export const createTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<CreateTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateTransactionResponses, CreateTransactionErrors, ThrowOnError>({
+        ...formDataBodySerializer,
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions',
+        ...options,
+        headers: {
+            'Content-Type': null,
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete transaction
+ *
+ * Delete an existing transaction with the provided ID
+ */
+export const deleteTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<DeleteTransactionResponses, DeleteTransactionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions/{id}',
+        ...options
+    })
+
+/**
+ * Get transaction by ID
+ *
+ * Retrieve a specific transaction by its ID
+ */
+export const getTransactionById = <ThrowOnError extends boolean = false>(
+    options: Options<GetTransactionByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetTransactionByIdResponses, GetTransactionByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions/{id}',
+        ...options
+    })
+
+/**
+ * Update transaction
+ *
+ * Update an existing transaction with the provided data
+ */
+export const updateTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateTransactionResponses, UpdateTransactionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/transactions/{id}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete all subscriptions
+ *
+ * Delete all subscriptions associated with the user
+ */
+export const deleteSubscriptions = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteSubscriptionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteSubscriptionsResponses, DeleteSubscriptionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions',
+        ...options
+    })
+
+/**
+ * Get all subscriptions
+ *
+ * Retrieve a list of all subscriptions associated with the user
+ */
+export const getSubscriptions = <ThrowOnError extends boolean = false>(
+    options?: Options<GetSubscriptionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetSubscriptionsResponses, GetSubscriptionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions',
+        ...options
+    })
+
+/**
+ * Create subscription
+ *
+ * Create a new subscription with the provided data
+ */
+export const createSubscription = <ThrowOnError extends boolean = false>(
+    options: Options<CreateSubscriptionData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateSubscriptionResponses, CreateSubscriptionErrors, ThrowOnError>({
+        ...formDataBodySerializer,
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions',
+        ...options,
+        headers: {
+            'Content-Type': null,
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete subscription
+ *
+ * Delete an existing subscription with the provided ID
+ */
+export const deleteSubscription = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteSubscriptionData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<DeleteSubscriptionResponses, DeleteSubscriptionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions/{id}',
+        ...options
+    })
+
+/**
+ * Get subscription by ID
+ *
+ * Retrieve a specific subscription by its ID
+ */
+export const getSubscriptionById = <ThrowOnError extends boolean = false>(
+    options: Options<GetSubscriptionByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetSubscriptionByIdResponses, GetSubscriptionByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions/{id}',
+        ...options
+    })
+
+/**
+ * Update subscription
+ *
+ * Update an existing subscription with the provided data
+ */
+export const updateSubscription = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateSubscriptionData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateSubscriptionResponses, UpdateSubscriptionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/subscriptions/{id}',
         ...options,
         headers: {
             'Content-Type': 'application/json',
@@ -388,7 +680,7 @@ export const deleteFinancialAccounts = <ThrowOnError extends boolean = false>(
 ) =>
     (options?.client ?? client).delete<DeleteFinancialAccountsResponses, DeleteFinancialAccountsErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account',
+        url: '/financial-accounts',
         ...options
     })
 
@@ -402,7 +694,7 @@ export const getFinancialAccounts = <ThrowOnError extends boolean = false>(
 ) =>
     (options?.client ?? client).get<GetFinancialAccountsResponses, GetFinancialAccountsErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account',
+        url: '/financial-accounts',
         ...options
     })
 
@@ -417,12 +709,26 @@ export const createFinancialAccount = <ThrowOnError extends boolean = false>(
     (options.client ?? client).post<CreateFinancialAccountResponses, CreateFinancialAccountErrors, ThrowOnError>({
         ...formDataBodySerializer,
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account',
+        url: '/financial-accounts',
         ...options,
         headers: {
             'Content-Type': null,
             ...options.headers
         }
+    })
+
+/**
+ * Delete financial account
+ *
+ * Delete an existing financial account with the provided ID
+ */
+export const deleteFinancialAccount = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteFinancialAccountData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<DeleteFinancialAccountResponses, DeleteFinancialAccountErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/financial-accounts/{id}',
+        ...options
     })
 
 /**
@@ -440,20 +746,6 @@ export const getFinancialAccountById = <ThrowOnError extends boolean = false>(
     })
 
 /**
- * Delete financial account
- *
- * Delete an existing financial account with the provided ID
- */
-export const deleteFinancialAccount = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteFinancialAccountData, ThrowOnError>
-) =>
-    (options.client ?? client).delete<DeleteFinancialAccountResponses, DeleteFinancialAccountErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account/{id}',
-        ...options
-    })
-
-/**
  * Update financial account
  *
  * Update an existing financial account with the provided data
@@ -463,7 +755,7 @@ export const updateFinancialAccount = <ThrowOnError extends boolean = false>(
 ) =>
     (options.client ?? client).patch<UpdateFinancialAccountResponses, UpdateFinancialAccountErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/financial-account/{id}',
+        url: '/financial-accounts/{id}',
         ...options,
         headers: {
             'Content-Type': 'application/json',
@@ -585,17 +877,35 @@ export const completeImport = <ThrowOnError extends boolean = false>(
     })
 
 /**
- * Get trend report
+ * Get dashboard layout
  *
- * Retrieve a trend report based on the users imports
+ * Retrieve a specific dashboard layout
  */
-export const getTrendReport = <ThrowOnError extends boolean = false>(
-    options?: Options<GetTrendReportData, ThrowOnError>
+export const getDashboardLayout = <ThrowOnError extends boolean = false>(
+    options?: Options<GetDashboardLayoutData, ThrowOnError>
 ) =>
-    (options?.client ?? client).get<GetTrendReportResponses, GetTrendReportErrors, ThrowOnError>({
+    (options?.client ?? client).get<GetDashboardLayoutResponses, GetDashboardLayoutErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/report/trend',
+        url: '/dashboard',
         ...options
+    })
+
+/**
+ * Update dashboard layout
+ *
+ * Update a specific dashboard layout
+ */
+export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateDashboardLayoutData, ThrowOnError>
+) =>
+    (options.client ?? client).put<UpdateDashboardLayoutResponses, UpdateDashboardLayoutErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/dashboard',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     })
 
 /**
@@ -612,7 +922,7 @@ export const createSnapshotAccountBalance = <ThrowOnError extends boolean = fals
         ThrowOnError
     >({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/account-balance',
+        url: '/account-balances',
         ...options,
         headers: {
             'Content-Type': 'application/json',
@@ -621,327 +931,17 @@ export const createSnapshotAccountBalance = <ThrowOnError extends boolean = fals
     })
 
 /**
- * Healthcheck
- */
-export const getRootStatus = <ThrowOnError extends boolean = false>(
-    options?: Options<GetRootStatusData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetRootStatusResponses, GetRootStatusErrors, ThrowOnError>({ url: '/', ...options })
-
-/**
- * Healthcheck
- */
-export const getStatus = <ThrowOnError extends boolean = false>(options?: Options<GetStatusData, ThrowOnError>) =>
-    (options?.client ?? client).get<GetStatusResponses, GetStatusErrors, ThrowOnError>({ url: '/status', ...options })
-
-/**
- * Delete all subcategories
+ * Get trend report
  *
- * Delete all subcategories associated with the user
+ * Retrieve a trend report based on the users imports
  */
-export const deleteSubcategories = <ThrowOnError extends boolean = false>(
-    options?: Options<DeleteSubcategoriesData, ThrowOnError>
+export const getTrendReport = <ThrowOnError extends boolean = false>(
+    options?: Options<GetTrendReportData, ThrowOnError>
 ) =>
-    (options?.client ?? client).delete<DeleteSubcategoriesResponses, DeleteSubcategoriesErrors, ThrowOnError>({
+    (options?.client ?? client).get<GetTrendReportResponses, GetTrendReportErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories',
+        url: '/reports/trend',
         ...options
-    })
-
-/**
- * Get all subcategories
- *
- * Retrieve a list of all subcategories associated with the user
- */
-export const getSubcategories = <ThrowOnError extends boolean = false>(
-    options?: Options<GetSubcategoriesData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetSubcategoriesResponses, GetSubcategoriesErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories',
-        ...options
-    })
-
-/**
- * Create subcategory
- *
- * Create a new subcategory with the provided data
- */
-export const createSubcategory = <ThrowOnError extends boolean = false>(
-    options: Options<CreateSubcategoryData, ThrowOnError>
-) =>
-    (options.client ?? client).post<CreateSubcategoryResponses, CreateSubcategoryErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Delete subcategory
- *
- * Delete an existing subcategory with the provided ID
- */
-export const deleteSubcategory = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteSubcategoryData, ThrowOnError>
-) =>
-    (options.client ?? client).delete<DeleteSubcategoryResponses, DeleteSubcategoryErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories/{id}',
-        ...options
-    })
-
-/**
- * Get subcategory by ID
- *
- * Retrieve a specific subcategory by its ID
- */
-export const getSubcategoryById = <ThrowOnError extends boolean = false>(
-    options: Options<GetSubcategoryByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).get<GetSubcategoryByIdResponses, GetSubcategoryByIdErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories/{id}',
-        ...options
-    })
-
-/**
- * Update subcategory
- *
- * Update an existing subcategory with the provided data
- */
-export const updateSubcategory = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateSubcategoryData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<UpdateSubcategoryResponses, UpdateSubcategoryErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subcategories/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Delete all subscriptions
- *
- * Delete all subscriptions associated with the user
- */
-export const deleteSubscriptions = <ThrowOnError extends boolean = false>(
-    options?: Options<DeleteSubscriptionsData, ThrowOnError>
-) =>
-    (options?.client ?? client).delete<DeleteSubscriptionsResponses, DeleteSubscriptionsErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions',
-        ...options
-    })
-
-/**
- * Get all subscriptions
- *
- * Retrieve a list of all subscriptions associated with the user
- */
-export const getSubscriptions = <ThrowOnError extends boolean = false>(
-    options?: Options<GetSubscriptionsData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetSubscriptionsResponses, GetSubscriptionsErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions',
-        ...options
-    })
-
-/**
- * Create subscription
- *
- * Create a new subscription with the provided data
- */
-export const createSubscription = <ThrowOnError extends boolean = false>(
-    options: Options<CreateSubscriptionData, ThrowOnError>
-) =>
-    (options.client ?? client).post<CreateSubscriptionResponses, CreateSubscriptionErrors, ThrowOnError>({
-        ...formDataBodySerializer,
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions',
-        ...options,
-        headers: {
-            'Content-Type': null,
-            ...options.headers
-        }
-    })
-
-/**
- * Delete subscription
- *
- * Delete an existing subscription with the provided ID
- */
-export const deleteSubscription = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteSubscriptionData, ThrowOnError>
-) =>
-    (options.client ?? client).delete<DeleteSubscriptionResponses, DeleteSubscriptionErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions/{id}',
-        ...options
-    })
-
-/**
- * Get subscription by ID
- *
- * Retrieve a specific subscription by its ID
- */
-export const getSubscriptionById = <ThrowOnError extends boolean = false>(
-    options: Options<GetSubscriptionByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).get<GetSubscriptionByIdResponses, GetSubscriptionByIdErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions/{id}',
-        ...options
-    })
-
-/**
- * Update subscription
- *
- * Update an existing subscription with the provided data
- */
-export const updateSubscription = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateSubscriptionData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<UpdateSubscriptionResponses, UpdateSubscriptionErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/subscriptions/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Delete all transactions
- *
- * Delete all transactions associated with the user
- */
-export const deleteTransactions = <ThrowOnError extends boolean = false>(
-    options?: Options<DeleteTransactionsData, ThrowOnError>
-) =>
-    (options?.client ?? client).delete<DeleteTransactionsResponses, DeleteTransactionsErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions',
-        ...options
-    })
-
-/**
- * Get all transactions
- *
- * Retrieve a list of all transactions associated with the user
- */
-export const getTransactions = <ThrowOnError extends boolean = false>(
-    options?: Options<GetTransactionsData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetTransactionsResponses, GetTransactionsErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions',
-        ...options
-    })
-
-/**
- * Create transaction
- *
- * Create a new transaction with the provided data
- */
-export const createTransaction = <ThrowOnError extends boolean = false>(
-    options: Options<CreateTransactionData, ThrowOnError>
-) =>
-    (options.client ?? client).post<CreateTransactionResponses, CreateTransactionErrors, ThrowOnError>({
-        ...formDataBodySerializer,
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions',
-        ...options,
-        headers: {
-            'Content-Type': null,
-            ...options.headers
-        }
-    })
-
-/**
- * Delete transaction
- *
- * Delete an existing transaction with the provided ID
- */
-export const deleteTransaction = <ThrowOnError extends boolean = false>(
-    options: Options<DeleteTransactionData, ThrowOnError>
-) =>
-    (options.client ?? client).delete<DeleteTransactionResponses, DeleteTransactionErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions/{id}',
-        ...options
-    })
-
-/**
- * Get transaction by ID
- *
- * Retrieve a specific transaction by its ID
- */
-export const getTransactionById = <ThrowOnError extends boolean = false>(
-    options: Options<GetTransactionByIdData, ThrowOnError>
-) =>
-    (options.client ?? client).get<GetTransactionByIdResponses, GetTransactionByIdErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions/{id}',
-        ...options
-    })
-
-/**
- * Update transaction
- *
- * Update an existing transaction with the provided data
- */
-export const updateTransaction = <ThrowOnError extends boolean = false>(
-    options: Options<UpdateTransactionData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<UpdateTransactionResponses, UpdateTransactionErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/transactions/{id}',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Get authenticated user
- *
- * Get authenticated user information and preferences
- */
-export const getAuthenticatedUser = <ThrowOnError extends boolean = false>(
-    options?: Options<GetAuthenticatedUserData, ThrowOnError>
-) =>
-    (options?.client ?? client).get<GetAuthenticatedUserResponses, GetAuthenticatedUserErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/me',
-        ...options
-    })
-
-/**
- * Update authenticated user
- *
- * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
- */
-export const updateAuthenticatedUser = <ThrowOnError extends boolean = false>(
-    options?: Options<UpdateAuthenticatedUserData, ThrowOnError>
-) =>
-    (options?.client ?? client).patch<UpdateAuthenticatedUserResponses, UpdateAuthenticatedUserErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/me',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options?.headers
-        }
     })
 
 /**

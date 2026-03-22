@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import {
     CreateFinancialAccountRequest,
-    FinancialAccountDataResponse,
+    FinancialAccountData,
     FinancialAccountFilters,
     UpdateFinancialAccountRequest
 } from '@poveroh/types'
@@ -22,7 +22,7 @@ export class FinancialAccountController {
             const financialAccountService = new FinancialAccountService(req.user.id)
             const account = await financialAccountService.createFinancialAccount(readFinancialAccount, req.file)
 
-            return ResponseHelper.success<FinancialAccountDataResponse>(res, account)
+            return ResponseHelper.success<FinancialAccountData>(res, account)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -97,7 +97,7 @@ export class FinancialAccountController {
                 throw new NotFoundError('Financial account not found')
             }
 
-            return ResponseHelper.success<FinancialAccountDataResponse>(res, data)
+            return ResponseHelper.success<FinancialAccountData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -117,7 +117,7 @@ export class FinancialAccountController {
                 throw new NotFoundError('Financial accounts not found')
             }
 
-            return ResponseHelper.success<FinancialAccountDataResponse[]>(res, data)
+            return ResponseHelper.success<FinancialAccountData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

@@ -28,7 +28,6 @@ export const registerStatusPath = (registry: OpenAPIRegistry) => {
             }
         }
     })
-
     registry.registerPath({
         method: 'get',
         path: '/status',

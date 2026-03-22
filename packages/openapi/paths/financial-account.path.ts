@@ -15,7 +15,7 @@ import {
 export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
         method: 'get',
-        path: '/financial-account',
+        path: '/financial-accounts',
         tags: ['Financial Account'],
         operationId: 'getFinancialAccounts',
         summary: 'Get all financial accounts',
@@ -123,7 +123,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'post',
-        path: '/financial-account',
+        path: '/financial-accounts',
         tags: ['Financial Account'],
         operationId: 'createFinancialAccount',
         summary: 'Create financial account',
@@ -182,7 +182,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'patch',
-        path: '/financial-account/{id}',
+        path: '/financial-accounts/{id}',
         tags: ['Financial Account'],
         operationId: 'updateFinancialAccount',
         summary: 'Update financial account',
@@ -245,7 +245,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'delete',
-        path: '/financial-account/{id}',
+        path: '/financial-accounts/{id}',
         tags: ['Financial Account'],
         operationId: 'deleteFinancialAccount',
         summary: 'Delete financial account',
@@ -299,7 +299,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
     })
     registry.registerPath({
         method: 'delete',
-        path: '/financial-account',
+        path: '/financial-accounts',
         tags: ['Financial Account'],
         operationId: 'deleteFinancialAccounts',
         summary: 'Delete all financial accounts',

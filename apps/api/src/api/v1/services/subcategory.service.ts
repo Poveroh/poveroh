@@ -1,12 +1,7 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { BaseService } from './base.service'
-import {
-    CreateSubcategoryRequest,
-    SubcategoryDataResponse,
-    SubcategoryFilters,
-    UpdateSubcategoryRequest
-} from '@poveroh/types'
+import { CreateSubcategoryRequest, SubcategoryData, SubcategoryFilters, UpdateSubcategoryRequest } from '@poveroh/types'
 import { CategoryService } from './category.service'
 
 /**
@@ -28,10 +23,7 @@ export class SubcategoryService extends BaseService {
      * @param file An optional logo file for the subcategory
      * @returns The created subcategory data response
      */
-    async createSubcategory(
-        payload: CreateSubcategoryRequest,
-        file?: Express.Multer.File
-    ): Promise<SubcategoryDataResponse> {
+    async createSubcategory(payload: CreateSubcategoryRequest, file?: Express.Multer.File): Promise<SubcategoryData> {
         const generatedId = crypto.randomUUID()
 
         if (file) {
@@ -47,7 +39,7 @@ export class SubcategoryService extends BaseService {
 
         return (await prisma.subcategory.create({
             data: { ...payload, id: generatedId }
-        })) as unknown as SubcategoryDataResponse
+        })) as unknown as SubcategoryData
     }
 
     /**
@@ -111,7 +103,7 @@ export class SubcategoryService extends BaseService {
      * @param id The ID of the subcategory to retrieve
      * @returns The subcategory data response if found, or null if not found
      */
-    async getSubcategoryById(id: string): Promise<SubcategoryDataResponse | null> {
+    async getSubcategoryById(id: string): Promise<SubcategoryData | null> {
         const userId = this.getUserId()
 
         return (await prisma.subcategory.findFirst({
@@ -120,7 +112,7 @@ export class SubcategoryService extends BaseService {
                 category: { userId },
                 deletedAt: null
             }
-        })) as unknown as SubcategoryDataResponse | null
+        })) as unknown as SubcategoryData | null
     }
 
     /**
@@ -130,11 +122,7 @@ export class SubcategoryService extends BaseService {
      * @param take The number of subcategories to take for pagination
      * @returns The list of subcategory data responses
      */
-    async getSubcategories(
-        filters: SubcategoryFilters,
-        skip: number,
-        take: number
-    ): Promise<SubcategoryDataResponse[]> {
+    async getSubcategories(filters: SubcategoryFilters, skip: number, take: number): Promise<SubcategoryData[]> {
         const userId = this.getUserId()
 
         const where = {
@@ -148,6 +136,6 @@ export class SubcategoryService extends BaseService {
             orderBy: { createdAt: 'desc' },
             skip,
             take
-        })) as unknown as SubcategoryDataResponse[]
+        })) as unknown as SubcategoryData[]
     }
 }

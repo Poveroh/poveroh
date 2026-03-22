@@ -1,10 +1,5 @@
 import { Request, Response } from 'express'
-import {
-    CreateSubcategoryRequest,
-    SubcategoryDataResponse,
-    SubcategoryFilters,
-    UpdateSubcategoryRequest
-} from '@poveroh/types'
+import { CreateSubcategoryRequest, SubcategoryData, SubcategoryFilters, UpdateSubcategoryRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { SubcategoryService } from '../services/subcategory.service'
@@ -101,7 +96,7 @@ export class SubcategoryController {
                 throw new NotFoundError('Subcategory not found')
             }
 
-            return ResponseHelper.success<SubcategoryDataResponse>(res, data)
+            return ResponseHelper.success<SubcategoryData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -121,7 +116,7 @@ export class SubcategoryController {
                 throw new NotFoundError('Subcategory not found')
             }
 
-            return ResponseHelper.success<SubcategoryDataResponse[]>(res, data)
+            return ResponseHelper.success<SubcategoryData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

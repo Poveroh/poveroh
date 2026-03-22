@@ -8,7 +8,7 @@ import {
 export const registerSnapshotPath = (registry: OpenAPIRegistry) => {
     registry.registerPath({
         method: 'post',
-        path: '/account-balance',
+        path: '/account-balances',
         tags: ['Snapshot'],
         operationId: 'createSnapshotAccountBalance',
         summary: 'Create snapshot account balance',

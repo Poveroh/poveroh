@@ -98,18 +98,6 @@ export type CategoryData = {
     updatedAt: string
 }
 
-export type CategoryDataResponse = {
-    id: string
-    title: string
-    description?: string
-    for: TransactionActionEnum
-    logoIcon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-}
-
 export type GetCategoryListResponse = {
     /**
      * Always true for success responses
@@ -143,11 +131,6 @@ export type CreateCategoryRequest = {
     for: TransactionActionEnum
     logoIcon: string
     color?: string
-}
-
-export type CreateCategoryMultipartRequest = {
-    data?: CreateCategoryRequest
-    file: Array<Blob | File>
 }
 
 export type CreateCategoryResponse = {
@@ -227,6 +210,27 @@ export type QueryCategoryFilters = {
     filter?: CategoryFilters
     options?: FilterOptions
 }
+
+export type CategoryForm = {
+    title: string
+    description?: string
+    for: TransactionActionEnum
+    logoIcon: string
+    color?: string
+}
+
+export type DashboardWidgetEnum =
+    | 'net-worth-evolution'
+    | 'kpi-row'
+    | 'liquidity-evolution'
+    | 'income-expense-month'
+    | 'month-comparison'
+    | 'category-trend'
+    | 'account-balances'
+    | 'expense-macro-distribution'
+    | 'recent-transactions'
+
+export type ColSpanEnum = '12' | '6' | '4' | '3'
 
 export type DashboardLayoutItem = {
     id: DashboardWidgetEnum
@@ -826,17 +830,6 @@ export type FinancialAccountData = {
     updatedAt: string
 }
 
-export type FinancialAccountDataResponse = {
-    id: string
-    title: string
-    description: string
-    balance: number
-    type: FinancialAccountTypeEnum
-    logoIcon: string
-    createdAt: string
-    updatedAt: string
-}
-
 export type GetFinancialAccountListResponse = {
     /**
      * Always true for success responses
@@ -952,6 +945,14 @@ export type QueryFinancialAccountFilters = {
     options?: FilterOptions
 }
 
+export type FinancialAccountForm = {
+    title: string
+    description: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+}
+
 export type ImportFile = {
     id: string
     importId: string
@@ -1023,17 +1024,6 @@ export type Import = {
 }
 
 export type ImportData = {
-    id: string
-    title: string
-    financialAccountId: string
-    status: TransactionStatusEnum
-    transactions?: Array<Transaction>
-    files?: Array<ImportFile>
-    createdAt: string
-    updatedAt: string
-}
-
-export type ImportDataResponse = {
     id: string
     title: string
     financialAccountId: string
@@ -1248,6 +1238,19 @@ export type Snapshot = {
     deletedAt?: string
 }
 
+export type SnapshotData = {
+    id: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    accountBalances: Array<SnapshotAccountBalance>
+    assetValues: Array<SnapshotAssetValue>
+    createdAt: string
+    updatedAt: string
+}
+
 export type CreateSnapshotAccountBalanceRequest = {
     balance: string
     snapshotDate: string
@@ -1275,16 +1278,6 @@ export type StatusResponse = {
 }
 
 export type SubcategoryData = {
-    id: string
-    categoryId: string
-    title: string
-    description?: string
-    logoIcon: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type SubcategoryDataResponse = {
     id: string
     categoryId: string
     title: string
@@ -1326,11 +1319,6 @@ export type CreateSubcategoryRequest = {
     title: string
     description?: string
     logoIcon: string
-}
-
-export type CreateSubcategoryMultipartRequest = {
-    data?: CreateSubcategoryRequest
-    file: Array<Blob | File>
 }
 
 export type CreateSubcategoryResponse = {
@@ -1408,6 +1396,13 @@ export type QuerySubcategoryFilters = {
     options?: FilterOptions
 }
 
+export type SubcategoryForm = {
+    categoryId: string
+    title: string
+    description?: string
+    logoIcon: string
+}
+
 export type Subscription = {
     id: string
     userId: string
@@ -1429,24 +1424,6 @@ export type Subscription = {
 }
 
 export type SubscriptionData = {
-    id: string
-    title: string
-    description: string
-    amount: number
-    currency: CurrencyEnum
-    appearanceMode: AppearanceModeEnum
-    appearanceLogoIcon: string
-    firstPayment: string
-    cycleNumber: number
-    cyclePeriod: CyclePeriodEnum
-    rememberPeriod: RememberPeriodEnum
-    financialAccountId: string
-    isEnabled: boolean
-    createdAt: string
-    updatedAt: string
-}
-
-export type SubscriptionDataResponse = {
     id: string
     title: string
     description: string
@@ -1807,6 +1784,16 @@ export type QueryTransactionFilters = {
     options?: FilterOptions
 }
 
+export type TransactionForm = {
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    ignore: boolean
+}
+
 export type UserPreferences = {
     snapshotFrequency: SnapshotFrequencyEnum
     preferredCurrency: CurrencyEnum
@@ -1904,64 +1891,129 @@ export type UserProfileSecurityForm = {
     confirmPassword: string
 }
 
-export type FinancialAccountForm = {
-    title: string
-    description: string
-    balance: number
-    type: FinancialAccountTypeEnum
-    logoIcon: string
+export type GetRootStatusData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/'
 }
 
-export type CategoryForm = {
-    title: string
-    description?: string
-    for: TransactionActionEnum
-    logoIcon: string
-    color?: string
+export type GetRootStatusErrors = {
+    /**
+     * Error
+     */
+    500: ErrorResponse
 }
 
-export type SubcategoryForm = {
-    categoryId: string
-    title: string
-    description?: string
-    logoIcon: string
+export type GetRootStatusError = GetRootStatusErrors[keyof GetRootStatusErrors]
+
+export type GetRootStatusResponses = {
+    /**
+     * OK
+     */
+    200: StatusResponse
 }
 
-export type TransactionForm = {
-    date: string
-    title: string
-    note: string | null
-    icon: string | null
-    categoryId: string | null
-    subcategoryId: string | null
-    ignore: boolean
+export type GetRootStatusResponse = GetRootStatusResponses[keyof GetRootStatusResponses]
+
+export type GetStatusData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/status'
 }
 
-export type SnapshotData = {
-    id: string
-    snapshotDate: string
-    note: string | null
-    totalCash: number
-    totalInvestments: number
-    totalNetWorth: number
-    accountBalances: Array<SnapshotAccountBalance>
-    assetValues: Array<SnapshotAssetValue>
-    createdAt: string
-    updatedAt: string
+export type GetStatusErrors = {
+    /**
+     * Error
+     */
+    500: ErrorResponse
 }
 
-export type DashboardWidgetEnum =
-    | 'net-worth-evolution'
-    | 'kpi-row'
-    | 'liquidity-evolution'
-    | 'income-expense-month'
-    | 'month-comparison'
-    | 'category-trend'
-    | 'account-balances'
-    | 'expense-macro-distribution'
-    | 'recent-transactions'
+export type GetStatusError = GetStatusErrors[keyof GetStatusErrors]
 
-export type ColSpanEnum = '12' | '6' | '4' | '3'
+export type GetStatusResponses = {
+    /**
+     * OK
+     */
+    200: StatusResponse
+}
+
+export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses]
+
+export type GetAuthenticatedUserData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/me'
+}
+
+export type GetAuthenticatedUserErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAuthenticatedUserError = GetAuthenticatedUserErrors[keyof GetAuthenticatedUserErrors]
+
+export type GetAuthenticatedUserResponses = {
+    /**
+     * User found
+     */
+    200: GetUserResponse
+}
+
+export type GetAuthenticatedUserResponse = GetAuthenticatedUserResponses[keyof GetAuthenticatedUserResponses]
+
+export type UpdateAuthenticatedUserData = {
+    body?: UpdateUserRequest
+    path?: never
+    query?: never
+    url: '/me'
+}
+
+export type UpdateAuthenticatedUserErrors = {
+    /**
+     * Invalid request body
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateAuthenticatedUserError = UpdateAuthenticatedUserErrors[keyof UpdateAuthenticatedUserErrors]
+
+export type UpdateAuthenticatedUserResponses = {
+    /**
+     * User updated
+     */
+    200: UpdateUserResponse
+}
+
+export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
 
 export type DeleteCategoriesData = {
     body?: never
@@ -2192,14 +2244,14 @@ export type UpdateCategoryResponses = {
 
 export type UpdateCategoryResponse2 = UpdateCategoryResponses[keyof UpdateCategoryResponses]
 
-export type GetDashboardLayoutData = {
+export type DeleteSubcategoriesData = {
     body?: never
     path?: never
     query?: never
-    url: '/dashboard'
+    url: '/subcategories'
 }
 
-export type GetDashboardLayoutErrors = {
+export type DeleteSubcategoriesErrors = {
     /**
      * Invalid request
      */
@@ -2209,7 +2261,43 @@ export type GetDashboardLayoutErrors = {
      */
     401: ErrorResponse
     /**
-     * Dashboard layout not found
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteSubcategoriesError = DeleteSubcategoriesErrors[keyof DeleteSubcategoriesErrors]
+
+export type DeleteSubcategoriesResponses = {
+    /**
+     * Subcategories deleted
+     */
+    200: DeleteSubcategoryResponse
+}
+
+export type DeleteSubcategoriesResponse = DeleteSubcategoriesResponses[keyof DeleteSubcategoriesResponses]
+
+export type GetSubcategoriesData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: SubcategoryFilters
+        options?: FilterOptions
+    }
+    url: '/subcategories'
+}
+
+export type GetSubcategoriesErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subcategory not found
      */
     404: ErrorResponse
     /**
@@ -2218,28 +2306,28 @@ export type GetDashboardLayoutErrors = {
     500: ErrorResponse
 }
 
-export type GetDashboardLayoutError = GetDashboardLayoutErrors[keyof GetDashboardLayoutErrors]
+export type GetSubcategoriesError = GetSubcategoriesErrors[keyof GetSubcategoriesErrors]
 
-export type GetDashboardLayoutResponses = {
+export type GetSubcategoriesResponses = {
     /**
-     * Dashboard layout found
+     * List of subcategories
      */
-    200: GetDashboardLayoutResponse
+    200: GetSubcategoryListResponse
 }
 
-export type GetDashboardLayoutResponse2 = GetDashboardLayoutResponses[keyof GetDashboardLayoutResponses]
+export type GetSubcategoriesResponse = GetSubcategoriesResponses[keyof GetSubcategoriesResponses]
 
-export type UpdateDashboardLayoutData = {
+export type CreateSubcategoryData = {
     /**
-     * Dashboard layout data to update
+     * Subcategory data to create
      */
-    body: UpdateDashboardLayoutRequest
+    body: CreateSubcategoryRequest
     path?: never
     query?: never
-    url: '/dashboard'
+    url: '/subcategories'
 }
 
-export type UpdateDashboardLayoutErrors = {
+export type CreateSubcategoryErrors = {
     /**
      * Invalid request
      */
@@ -2249,7 +2337,42 @@ export type UpdateDashboardLayoutErrors = {
      */
     401: ErrorResponse
     /**
-     * Dashboard layout not found
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateSubcategoryError = CreateSubcategoryErrors[keyof CreateSubcategoryErrors]
+
+export type CreateSubcategoryResponses = {
+    /**
+     * Subcategory created
+     */
+    200: CreateSubcategoryResponse
+}
+
+export type CreateSubcategoryResponse2 = CreateSubcategoryResponses[keyof CreateSubcategoryResponses]
+
+export type DeleteSubcategoryData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subcategories/{id}'
+}
+
+export type DeleteSubcategoryErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subcategory not found
      */
     404: ErrorResponse
     /**
@@ -2258,22 +2381,561 @@ export type UpdateDashboardLayoutErrors = {
     500: ErrorResponse
 }
 
-export type UpdateDashboardLayoutError = UpdateDashboardLayoutErrors[keyof UpdateDashboardLayoutErrors]
+export type DeleteSubcategoryError = DeleteSubcategoryErrors[keyof DeleteSubcategoryErrors]
 
-export type UpdateDashboardLayoutResponses = {
+export type DeleteSubcategoryResponses = {
     /**
-     * Dashboard layout updated successfully
+     * Subcategory deleted
      */
-    200: UpdateDashboardLayoutResponse
+    200: DeleteSubcategoryResponse
 }
 
-export type UpdateDashboardLayoutResponse2 = UpdateDashboardLayoutResponses[keyof UpdateDashboardLayoutResponses]
+export type DeleteSubcategoryResponse2 = DeleteSubcategoryResponses[keyof DeleteSubcategoryResponses]
+
+export type GetSubcategoryByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subcategories/{id}'
+}
+
+export type GetSubcategoryByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subcategory not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetSubcategoryByIdError = GetSubcategoryByIdErrors[keyof GetSubcategoryByIdErrors]
+
+export type GetSubcategoryByIdResponses = {
+    /**
+     * Subcategory found
+     */
+    200: GetSubcategoryResponse
+}
+
+export type GetSubcategoryByIdResponse = GetSubcategoryByIdResponses[keyof GetSubcategoryByIdResponses]
+
+export type UpdateSubcategoryData = {
+    /**
+     * Subcategory data to update
+     */
+    body: UpdateSubcategoryRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subcategories/{id}'
+}
+
+export type UpdateSubcategoryErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subcategory not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateSubcategoryError = UpdateSubcategoryErrors[keyof UpdateSubcategoryErrors]
+
+export type UpdateSubcategoryResponses = {
+    /**
+     * Subcategory updated
+     */
+    200: UpdateSubcategoryResponse
+}
+
+export type UpdateSubcategoryResponse2 = UpdateSubcategoryResponses[keyof UpdateSubcategoryResponses]
+
+export type DeleteTransactionsData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/transactions'
+}
+
+export type DeleteTransactionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteTransactionsError = DeleteTransactionsErrors[keyof DeleteTransactionsErrors]
+
+export type DeleteTransactionsResponses = {
+    /**
+     * Transactions deleted
+     */
+    200: DeleteTransactionResponse
+}
+
+export type DeleteTransactionsResponse = DeleteTransactionsResponses[keyof DeleteTransactionsResponses]
+
+export type GetTransactionsData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: TransactionFilters
+        options?: FilterOptions
+    }
+    url: '/transactions'
+}
+
+export type GetTransactionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Transaction not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetTransactionsError = GetTransactionsErrors[keyof GetTransactionsErrors]
+
+export type GetTransactionsResponses = {
+    /**
+     * List of transactions
+     */
+    200: GetTransactionListResponse
+}
+
+export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses]
+
+export type CreateTransactionData = {
+    /**
+     * Transaction data to create
+     */
+    body: CreateTransactionMultipartRequest
+    path?: never
+    query?: never
+    url: '/transactions'
+}
+
+export type CreateTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateTransactionError = CreateTransactionErrors[keyof CreateTransactionErrors]
+
+export type CreateTransactionResponses = {
+    /**
+     * Transaction created
+     */
+    200: CreateTransactionResponse
+}
+
+export type CreateTransactionResponse2 = CreateTransactionResponses[keyof CreateTransactionResponses]
+
+export type DeleteTransactionData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/transactions/{id}'
+}
+
+export type DeleteTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteTransactionError = DeleteTransactionErrors[keyof DeleteTransactionErrors]
+
+export type DeleteTransactionResponses = {
+    /**
+     * Transaction deleted
+     */
+    200: DeleteTransactionResponse
+}
+
+export type DeleteTransactionResponse2 = DeleteTransactionResponses[keyof DeleteTransactionResponses]
+
+export type GetTransactionByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/transactions/{id}'
+}
+
+export type GetTransactionByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Transaction not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetTransactionByIdError = GetTransactionByIdErrors[keyof GetTransactionByIdErrors]
+
+export type GetTransactionByIdResponses = {
+    /**
+     * Transaction found
+     */
+    200: GetTransactionResponse
+}
+
+export type GetTransactionByIdResponse = GetTransactionByIdResponses[keyof GetTransactionByIdResponses]
+
+export type UpdateTransactionData = {
+    /**
+     * Transaction data to update
+     */
+    body: UpdateTransactionRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/transactions/{id}'
+}
+
+export type UpdateTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateTransactionError = UpdateTransactionErrors[keyof UpdateTransactionErrors]
+
+export type UpdateTransactionResponses = {
+    /**
+     * Transaction updated
+     */
+    200: UpdateTransactionResponse
+}
+
+export type UpdateTransactionResponse2 = UpdateTransactionResponses[keyof UpdateTransactionResponses]
+
+export type DeleteSubscriptionsData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/subscriptions'
+}
+
+export type DeleteSubscriptionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteSubscriptionsError = DeleteSubscriptionsErrors[keyof DeleteSubscriptionsErrors]
+
+export type DeleteSubscriptionsResponses = {
+    /**
+     * Subscriptions deleted
+     */
+    200: DeleteSubscriptionResponse
+}
+
+export type DeleteSubscriptionsResponse = DeleteSubscriptionsResponses[keyof DeleteSubscriptionsResponses]
+
+export type GetSubscriptionsData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: SubscriptionFilters
+        options?: FilterOptions
+    }
+    url: '/subscriptions'
+}
+
+export type GetSubscriptionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subscription not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetSubscriptionsError = GetSubscriptionsErrors[keyof GetSubscriptionsErrors]
+
+export type GetSubscriptionsResponses = {
+    /**
+     * List of subscriptions
+     */
+    200: GetSubscriptionListResponse
+}
+
+export type GetSubscriptionsResponse = GetSubscriptionsResponses[keyof GetSubscriptionsResponses]
+
+export type CreateSubscriptionData = {
+    /**
+     * Subscription data to create
+     */
+    body: CreateSubscriptionMultipartRequest
+    path?: never
+    query?: never
+    url: '/subscriptions'
+}
+
+export type CreateSubscriptionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateSubscriptionError = CreateSubscriptionErrors[keyof CreateSubscriptionErrors]
+
+export type CreateSubscriptionResponses = {
+    /**
+     * Subscription created
+     */
+    200: CreateSubscriptionResponse
+}
+
+export type CreateSubscriptionResponse2 = CreateSubscriptionResponses[keyof CreateSubscriptionResponses]
+
+export type DeleteSubscriptionData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subscriptions/{id}'
+}
+
+export type DeleteSubscriptionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subscription not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteSubscriptionError = DeleteSubscriptionErrors[keyof DeleteSubscriptionErrors]
+
+export type DeleteSubscriptionResponses = {
+    /**
+     * Subscription deleted
+     */
+    200: DeleteSubscriptionResponse
+}
+
+export type DeleteSubscriptionResponse2 = DeleteSubscriptionResponses[keyof DeleteSubscriptionResponses]
+
+export type GetSubscriptionByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subscriptions/{id}'
+}
+
+export type GetSubscriptionByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Subscription not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetSubscriptionByIdError = GetSubscriptionByIdErrors[keyof GetSubscriptionByIdErrors]
+
+export type GetSubscriptionByIdResponses = {
+    /**
+     * Subscription found
+     */
+    200: GetSubscriptionResponse
+}
+
+export type GetSubscriptionByIdResponse = GetSubscriptionByIdResponses[keyof GetSubscriptionByIdResponses]
+
+export type UpdateSubscriptionData = {
+    /**
+     * Subscription data to update
+     */
+    body: UpdateSubscriptionRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/subscriptions/{id}'
+}
+
+export type UpdateSubscriptionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateSubscriptionError = UpdateSubscriptionErrors[keyof UpdateSubscriptionErrors]
+
+export type UpdateSubscriptionResponses = {
+    /**
+     * Subscription updated
+     */
+    200: UpdateSubscriptionResponse
+}
+
+export type UpdateSubscriptionResponse2 = UpdateSubscriptionResponses[keyof UpdateSubscriptionResponses]
 
 export type DeleteFinancialAccountsData = {
     body?: never
     path?: never
     query?: never
-    url: '/financial-account'
+    url: '/financial-accounts'
 }
 
 export type DeleteFinancialAccountsErrors = {
@@ -2309,7 +2971,7 @@ export type GetFinancialAccountsData = {
         filter?: FinancialAccountFilters
         options?: FilterOptions
     }
-    url: '/financial-account'
+    url: '/financial-accounts'
 }
 
 export type GetFinancialAccountsErrors = {
@@ -2349,7 +3011,7 @@ export type CreateFinancialAccountData = {
     body: CreateFinancialAccountMultipartRequest
     path?: never
     query?: never
-    url: '/financial-account'
+    url: '/financial-accounts'
 }
 
 export type CreateFinancialAccountErrors = {
@@ -2377,6 +3039,45 @@ export type CreateFinancialAccountResponses = {
 }
 
 export type CreateFinancialAccountResponse2 = CreateFinancialAccountResponses[keyof CreateFinancialAccountResponses]
+
+export type DeleteFinancialAccountData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/financial-accounts/{id}'
+}
+
+export type DeleteFinancialAccountErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteFinancialAccountError = DeleteFinancialAccountErrors[keyof DeleteFinancialAccountErrors]
+
+export type DeleteFinancialAccountResponses = {
+    /**
+     * Financial account deleted
+     */
+    200: DeleteFinancialAccountResponse
+}
+
+export type DeleteFinancialAccountResponse2 = DeleteFinancialAccountResponses[keyof DeleteFinancialAccountResponses]
 
 export type GetFinancialAccountByIdData = {
     body?: never
@@ -2417,45 +3118,6 @@ export type GetFinancialAccountByIdResponses = {
 
 export type GetFinancialAccountByIdResponse = GetFinancialAccountByIdResponses[keyof GetFinancialAccountByIdResponses]
 
-export type DeleteFinancialAccountData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/financial-account/{id}'
-}
-
-export type DeleteFinancialAccountErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteFinancialAccountError = DeleteFinancialAccountErrors[keyof DeleteFinancialAccountErrors]
-
-export type DeleteFinancialAccountResponses = {
-    /**
-     * Financial account deleted
-     */
-    200: DeleteFinancialAccountResponse
-}
-
-export type DeleteFinancialAccountResponse2 = DeleteFinancialAccountResponses[keyof DeleteFinancialAccountResponses]
-
 export type UpdateFinancialAccountData = {
     /**
      * Financial account data to update
@@ -2465,7 +3127,7 @@ export type UpdateFinancialAccountData = {
         id: string
     }
     query?: never
-    url: '/financial-account/{id}'
+    url: '/financial-accounts/{id}'
 }
 
 export type UpdateFinancialAccountErrors = {
@@ -2806,6 +3468,121 @@ export type CompleteImportResponses = {
 
 export type CompleteImportResponse = CompleteImportResponses[keyof CompleteImportResponses]
 
+export type GetDashboardLayoutData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/dashboard'
+}
+
+export type GetDashboardLayoutErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Dashboard layout not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetDashboardLayoutError = GetDashboardLayoutErrors[keyof GetDashboardLayoutErrors]
+
+export type GetDashboardLayoutResponses = {
+    /**
+     * Dashboard layout found
+     */
+    200: GetDashboardLayoutResponse
+}
+
+export type GetDashboardLayoutResponse2 = GetDashboardLayoutResponses[keyof GetDashboardLayoutResponses]
+
+export type UpdateDashboardLayoutData = {
+    /**
+     * Dashboard layout data to update
+     */
+    body: UpdateDashboardLayoutRequest
+    path?: never
+    query?: never
+    url: '/dashboard'
+}
+
+export type UpdateDashboardLayoutErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Dashboard layout not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateDashboardLayoutError = UpdateDashboardLayoutErrors[keyof UpdateDashboardLayoutErrors]
+
+export type UpdateDashboardLayoutResponses = {
+    /**
+     * Dashboard layout updated successfully
+     */
+    200: UpdateDashboardLayoutResponse
+}
+
+export type UpdateDashboardLayoutResponse2 = UpdateDashboardLayoutResponses[keyof UpdateDashboardLayoutResponses]
+
+export type CreateSnapshotAccountBalanceData = {
+    /**
+     * Snapshot account balance data to create
+     */
+    body: CreateSnapshotAccountBalanceRequest
+    path?: never
+    query?: never
+    url: '/account-balances'
+}
+
+export type CreateSnapshotAccountBalanceErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateSnapshotAccountBalanceError =
+    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
+
+export type CreateSnapshotAccountBalanceResponses = {
+    /**
+     * Snapshot account balance created
+     */
+    200: CreateSnapshotAccountBalanceResponse
+}
+
+export type CreateSnapshotAccountBalanceResponse2 =
+    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
+
 export type GetTrendReportData = {
     body?: never
     path?: never
@@ -2813,7 +3590,7 @@ export type GetTrendReportData = {
         filter?: NetWorthEvolutionFilters
         options?: FilterOptions
     }
-    url: '/report/trend'
+    url: '/reports/trend'
 }
 
 export type GetTrendReportErrors = {
@@ -2845,855 +3622,6 @@ export type GetTrendReportResponses = {
 }
 
 export type GetTrendReportResponse = GetTrendReportResponses[keyof GetTrendReportResponses]
-
-export type CreateSnapshotAccountBalanceData = {
-    /**
-     * Snapshot account balance data to create
-     */
-    body: CreateSnapshotAccountBalanceRequest
-    path?: never
-    query?: never
-    url: '/account-balance'
-}
-
-export type CreateSnapshotAccountBalanceErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSnapshotAccountBalanceError =
-    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
-
-export type CreateSnapshotAccountBalanceResponses = {
-    /**
-     * Snapshot account balance created
-     */
-    200: CreateSnapshotAccountBalanceResponse
-}
-
-export type CreateSnapshotAccountBalanceResponse2 =
-    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
-
-export type GetRootStatusData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/'
-}
-
-export type GetRootStatusErrors = {
-    /**
-     * Error
-     */
-    500: ErrorResponse
-}
-
-export type GetRootStatusError = GetRootStatusErrors[keyof GetRootStatusErrors]
-
-export type GetRootStatusResponses = {
-    /**
-     * OK
-     */
-    200: StatusResponse
-}
-
-export type GetRootStatusResponse = GetRootStatusResponses[keyof GetRootStatusResponses]
-
-export type GetStatusData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/status'
-}
-
-export type GetStatusErrors = {
-    /**
-     * Error
-     */
-    500: ErrorResponse
-}
-
-export type GetStatusError = GetStatusErrors[keyof GetStatusErrors]
-
-export type GetStatusResponses = {
-    /**
-     * OK
-     */
-    200: StatusResponse
-}
-
-export type GetStatusResponse = GetStatusResponses[keyof GetStatusResponses]
-
-export type DeleteSubcategoriesData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/subcategories'
-}
-
-export type DeleteSubcategoriesErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteSubcategoriesError = DeleteSubcategoriesErrors[keyof DeleteSubcategoriesErrors]
-
-export type DeleteSubcategoriesResponses = {
-    /**
-     * Subcategories deleted
-     */
-    200: DeleteSubcategoryResponse
-}
-
-export type DeleteSubcategoriesResponse = DeleteSubcategoriesResponses[keyof DeleteSubcategoriesResponses]
-
-export type GetSubcategoriesData = {
-    body?: never
-    path?: never
-    query?: {
-        filter?: SubcategoryFilters
-        options?: FilterOptions
-    }
-    url: '/subcategories'
-}
-
-export type GetSubcategoriesErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subcategory not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetSubcategoriesError = GetSubcategoriesErrors[keyof GetSubcategoriesErrors]
-
-export type GetSubcategoriesResponses = {
-    /**
-     * List of subcategories
-     */
-    200: GetSubcategoryListResponse
-}
-
-export type GetSubcategoriesResponse = GetSubcategoriesResponses[keyof GetSubcategoriesResponses]
-
-export type CreateSubcategoryData = {
-    /**
-     * Subcategory data to create
-     */
-    body: CreateSubcategoryRequest
-    path?: never
-    query?: never
-    url: '/subcategories'
-}
-
-export type CreateSubcategoryErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSubcategoryError = CreateSubcategoryErrors[keyof CreateSubcategoryErrors]
-
-export type CreateSubcategoryResponses = {
-    /**
-     * Subcategory created
-     */
-    200: CreateSubcategoryResponse
-}
-
-export type CreateSubcategoryResponse2 = CreateSubcategoryResponses[keyof CreateSubcategoryResponses]
-
-export type DeleteSubcategoryData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subcategories/{id}'
-}
-
-export type DeleteSubcategoryErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subcategory not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteSubcategoryError = DeleteSubcategoryErrors[keyof DeleteSubcategoryErrors]
-
-export type DeleteSubcategoryResponses = {
-    /**
-     * Subcategory deleted
-     */
-    200: DeleteSubcategoryResponse
-}
-
-export type DeleteSubcategoryResponse2 = DeleteSubcategoryResponses[keyof DeleteSubcategoryResponses]
-
-export type GetSubcategoryByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subcategories/{id}'
-}
-
-export type GetSubcategoryByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subcategory not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetSubcategoryByIdError = GetSubcategoryByIdErrors[keyof GetSubcategoryByIdErrors]
-
-export type GetSubcategoryByIdResponses = {
-    /**
-     * Subcategory found
-     */
-    200: GetSubcategoryResponse
-}
-
-export type GetSubcategoryByIdResponse = GetSubcategoryByIdResponses[keyof GetSubcategoryByIdResponses]
-
-export type UpdateSubcategoryData = {
-    /**
-     * Subcategory data to update
-     */
-    body: UpdateSubcategoryRequest
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subcategories/{id}'
-}
-
-export type UpdateSubcategoryErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subcategory not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type UpdateSubcategoryError = UpdateSubcategoryErrors[keyof UpdateSubcategoryErrors]
-
-export type UpdateSubcategoryResponses = {
-    /**
-     * Subcategory updated
-     */
-    200: UpdateSubcategoryResponse
-}
-
-export type UpdateSubcategoryResponse2 = UpdateSubcategoryResponses[keyof UpdateSubcategoryResponses]
-
-export type DeleteSubscriptionsData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/subscriptions'
-}
-
-export type DeleteSubscriptionsErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteSubscriptionsError = DeleteSubscriptionsErrors[keyof DeleteSubscriptionsErrors]
-
-export type DeleteSubscriptionsResponses = {
-    /**
-     * Subscriptions deleted
-     */
-    200: DeleteSubscriptionResponse
-}
-
-export type DeleteSubscriptionsResponse = DeleteSubscriptionsResponses[keyof DeleteSubscriptionsResponses]
-
-export type GetSubscriptionsData = {
-    body?: never
-    path?: never
-    query?: {
-        filter?: SubscriptionFilters
-        options?: FilterOptions
-    }
-    url: '/subscriptions'
-}
-
-export type GetSubscriptionsErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subscription not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetSubscriptionsError = GetSubscriptionsErrors[keyof GetSubscriptionsErrors]
-
-export type GetSubscriptionsResponses = {
-    /**
-     * List of subscriptions
-     */
-    200: GetSubscriptionListResponse
-}
-
-export type GetSubscriptionsResponse = GetSubscriptionsResponses[keyof GetSubscriptionsResponses]
-
-export type CreateSubscriptionData = {
-    /**
-     * Subscription data to create
-     */
-    body: CreateSubscriptionMultipartRequest
-    path?: never
-    query?: never
-    url: '/subscriptions'
-}
-
-export type CreateSubscriptionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSubscriptionError = CreateSubscriptionErrors[keyof CreateSubscriptionErrors]
-
-export type CreateSubscriptionResponses = {
-    /**
-     * Subscription created
-     */
-    200: CreateSubscriptionResponse
-}
-
-export type CreateSubscriptionResponse2 = CreateSubscriptionResponses[keyof CreateSubscriptionResponses]
-
-export type DeleteSubscriptionData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subscriptions/{id}'
-}
-
-export type DeleteSubscriptionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subscription not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteSubscriptionError = DeleteSubscriptionErrors[keyof DeleteSubscriptionErrors]
-
-export type DeleteSubscriptionResponses = {
-    /**
-     * Subscription deleted
-     */
-    200: DeleteSubscriptionResponse
-}
-
-export type DeleteSubscriptionResponse2 = DeleteSubscriptionResponses[keyof DeleteSubscriptionResponses]
-
-export type GetSubscriptionByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subscriptions/{id}'
-}
-
-export type GetSubscriptionByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Subscription not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetSubscriptionByIdError = GetSubscriptionByIdErrors[keyof GetSubscriptionByIdErrors]
-
-export type GetSubscriptionByIdResponses = {
-    /**
-     * Subscription found
-     */
-    200: GetSubscriptionResponse
-}
-
-export type GetSubscriptionByIdResponse = GetSubscriptionByIdResponses[keyof GetSubscriptionByIdResponses]
-
-export type UpdateSubscriptionData = {
-    /**
-     * Subscription data to update
-     */
-    body: UpdateSubscriptionRequest
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/subscriptions/{id}'
-}
-
-export type UpdateSubscriptionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type UpdateSubscriptionError = UpdateSubscriptionErrors[keyof UpdateSubscriptionErrors]
-
-export type UpdateSubscriptionResponses = {
-    /**
-     * Subscription updated
-     */
-    200: UpdateSubscriptionResponse
-}
-
-export type UpdateSubscriptionResponse2 = UpdateSubscriptionResponses[keyof UpdateSubscriptionResponses]
-
-export type DeleteTransactionsData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/transactions'
-}
-
-export type DeleteTransactionsErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteTransactionsError = DeleteTransactionsErrors[keyof DeleteTransactionsErrors]
-
-export type DeleteTransactionsResponses = {
-    /**
-     * Transactions deleted
-     */
-    200: DeleteTransactionResponse
-}
-
-export type DeleteTransactionsResponse = DeleteTransactionsResponses[keyof DeleteTransactionsResponses]
-
-export type GetTransactionsData = {
-    body?: never
-    path?: never
-    query?: {
-        filter?: TransactionFilters
-        options?: FilterOptions
-    }
-    url: '/transactions'
-}
-
-export type GetTransactionsErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Transaction not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetTransactionsError = GetTransactionsErrors[keyof GetTransactionsErrors]
-
-export type GetTransactionsResponses = {
-    /**
-     * List of transactions
-     */
-    200: GetTransactionListResponse
-}
-
-export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses]
-
-export type CreateTransactionData = {
-    /**
-     * Transaction data to create
-     */
-    body: CreateTransactionMultipartRequest
-    path?: never
-    query?: never
-    url: '/transactions'
-}
-
-export type CreateTransactionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateTransactionError = CreateTransactionErrors[keyof CreateTransactionErrors]
-
-export type CreateTransactionResponses = {
-    /**
-     * Transaction created
-     */
-    200: CreateTransactionResponse
-}
-
-export type CreateTransactionResponse2 = CreateTransactionResponses[keyof CreateTransactionResponses]
-
-export type DeleteTransactionData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/transactions/{id}'
-}
-
-export type DeleteTransactionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type DeleteTransactionError = DeleteTransactionErrors[keyof DeleteTransactionErrors]
-
-export type DeleteTransactionResponses = {
-    /**
-     * Transaction deleted
-     */
-    200: DeleteTransactionResponse
-}
-
-export type DeleteTransactionResponse2 = DeleteTransactionResponses[keyof DeleteTransactionResponses]
-
-export type GetTransactionByIdData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/transactions/{id}'
-}
-
-export type GetTransactionByIdErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Transaction not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetTransactionByIdError = GetTransactionByIdErrors[keyof GetTransactionByIdErrors]
-
-export type GetTransactionByIdResponses = {
-    /**
-     * Transaction found
-     */
-    200: GetTransactionResponse
-}
-
-export type GetTransactionByIdResponse = GetTransactionByIdResponses[keyof GetTransactionByIdResponses]
-
-export type UpdateTransactionData = {
-    /**
-     * Transaction data to update
-     */
-    body: UpdateTransactionRequest
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/transactions/{id}'
-}
-
-export type UpdateTransactionErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Financial account not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type UpdateTransactionError = UpdateTransactionErrors[keyof UpdateTransactionErrors]
-
-export type UpdateTransactionResponses = {
-    /**
-     * Transaction updated
-     */
-    200: UpdateTransactionResponse
-}
-
-export type UpdateTransactionResponse2 = UpdateTransactionResponses[keyof UpdateTransactionResponses]
-
-export type GetAuthenticatedUserData = {
-    body?: never
-    path?: never
-    query?: never
-    url: '/me'
-}
-
-export type GetAuthenticatedUserErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Authenticated user not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type GetAuthenticatedUserError = GetAuthenticatedUserErrors[keyof GetAuthenticatedUserErrors]
-
-export type GetAuthenticatedUserResponses = {
-    /**
-     * User found
-     */
-    200: GetUserResponse
-}
-
-export type GetAuthenticatedUserResponse = GetAuthenticatedUserResponses[keyof GetAuthenticatedUserResponses]
-
-export type UpdateAuthenticatedUserData = {
-    body?: UpdateUserRequest
-    path?: never
-    query?: never
-    url: '/me'
-}
-
-export type UpdateAuthenticatedUserErrors = {
-    /**
-     * Invalid request body
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Authenticated user not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type UpdateAuthenticatedUserError = UpdateAuthenticatedUserErrors[keyof UpdateAuthenticatedUserErrors]
-
-export type UpdateAuthenticatedUserResponses = {
-    /**
-     * User updated
-     */
-    200: UpdateUserResponse
-}
-
-export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
 
 export type SocialSignInData = {
     body: {

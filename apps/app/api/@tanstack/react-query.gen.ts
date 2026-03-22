@@ -319,31 +319,6 @@ import type {
     VerifyPasswordResponse
 } from '../types.gen'
 
-/**
- * Delete all categories
- *
- * Delete all categories associated with the user
- */
-export const deleteCategoriesMutation = (
-    options?: Partial<Options<DeleteCategoriesData>>
-): UseMutationOptions<DeleteCategoriesResponse, DeleteCategoriesError, Options<DeleteCategoriesData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteCategoriesResponse,
-        DeleteCategoriesError,
-        Options<DeleteCategoriesData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteCategories({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
         _id: string
@@ -381,6 +356,130 @@ const createQueryKey = <TOptions extends Options>(
         params.query = options.query
     }
     return [params]
+}
+
+export const getRootStatusQueryKey = (options?: Options<GetRootStatusData>) => createQueryKey('getRootStatus', options)
+
+/**
+ * Healthcheck
+ */
+export const getRootStatusOptions = (options?: Options<GetRootStatusData>) =>
+    queryOptions<
+        GetRootStatusResponse,
+        GetRootStatusError,
+        GetRootStatusResponse,
+        ReturnType<typeof getRootStatusQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getRootStatus({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getRootStatusQueryKey(options)
+    })
+
+export const getStatusQueryKey = (options?: Options<GetStatusData>) => createQueryKey('getStatus', options)
+
+/**
+ * Healthcheck
+ */
+export const getStatusOptions = (options?: Options<GetStatusData>) =>
+    queryOptions<GetStatusResponse, GetStatusError, GetStatusResponse, ReturnType<typeof getStatusQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getStatus({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getStatusQueryKey(options)
+    })
+
+export const getAuthenticatedUserQueryKey = (options?: Options<GetAuthenticatedUserData>) =>
+    createQueryKey('getAuthenticatedUser', options)
+
+/**
+ * Get authenticated user
+ *
+ * Get authenticated user information and preferences
+ */
+export const getAuthenticatedUserOptions = (options?: Options<GetAuthenticatedUserData>) =>
+    queryOptions<
+        GetAuthenticatedUserResponse,
+        GetAuthenticatedUserError,
+        GetAuthenticatedUserResponse,
+        ReturnType<typeof getAuthenticatedUserQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthenticatedUser({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthenticatedUserQueryKey(options)
+    })
+
+/**
+ * Update authenticated user
+ *
+ * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
+ */
+export const updateAuthenticatedUserMutation = (
+    options?: Partial<Options<UpdateAuthenticatedUserData>>
+): UseMutationOptions<
+    UpdateAuthenticatedUserResponse,
+    UpdateAuthenticatedUserError,
+    Options<UpdateAuthenticatedUserData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateAuthenticatedUserResponse,
+        UpdateAuthenticatedUserError,
+        Options<UpdateAuthenticatedUserData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateAuthenticatedUser({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all categories
+ *
+ * Delete all categories associated with the user
+ */
+export const deleteCategoriesMutation = (
+    options?: Partial<Options<DeleteCategoriesData>>
+): UseMutationOptions<DeleteCategoriesResponse, DeleteCategoriesError, Options<DeleteCategoriesData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteCategoriesResponse,
+        DeleteCategoriesError,
+        Options<DeleteCategoriesData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteCategories({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
 }
 
 export const getCategoriesQueryKey = (options?: Options<GetCategoriesData>) => createQueryKey('getCategories', options)
@@ -511,23 +610,48 @@ export const updateCategoryMutation = (
     return mutationOptions
 }
 
-export const getDashboardLayoutQueryKey = (options?: Options<GetDashboardLayoutData>) =>
-    createQueryKey('getDashboardLayout', options)
+/**
+ * Delete all subcategories
+ *
+ * Delete all subcategories associated with the user
+ */
+export const deleteSubcategoriesMutation = (
+    options?: Partial<Options<DeleteSubcategoriesData>>
+): UseMutationOptions<DeleteSubcategoriesResponse, DeleteSubcategoriesError, Options<DeleteSubcategoriesData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubcategoriesResponse,
+        DeleteSubcategoriesError,
+        Options<DeleteSubcategoriesData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubcategories({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getSubcategoriesQueryKey = (options?: Options<GetSubcategoriesData>) =>
+    createQueryKey('getSubcategories', options)
 
 /**
- * Get dashboard layout
+ * Get all subcategories
  *
- * Retrieve a specific dashboard layout
+ * Retrieve a list of all subcategories associated with the user
  */
-export const getDashboardLayoutOptions = (options?: Options<GetDashboardLayoutData>) =>
+export const getSubcategoriesOptions = (options?: Options<GetSubcategoriesData>) =>
     queryOptions<
-        GetDashboardLayoutResponse2,
-        GetDashboardLayoutError,
-        GetDashboardLayoutResponse2,
-        ReturnType<typeof getDashboardLayoutQueryKey>
+        GetSubcategoriesResponse,
+        GetSubcategoriesError,
+        GetSubcategoriesResponse,
+        ReturnType<typeof getSubcategoriesQueryKey>
     >({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getDashboardLayout({
+            const { data } = await getSubcategories({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -535,28 +659,409 @@ export const getDashboardLayoutOptions = (options?: Options<GetDashboardLayoutDa
             })
             return data
         },
-        queryKey: getDashboardLayoutQueryKey(options)
+        queryKey: getSubcategoriesQueryKey(options)
     })
 
 /**
- * Update dashboard layout
+ * Create subcategory
  *
- * Update a specific dashboard layout
+ * Create a new subcategory with the provided data
  */
-export const updateDashboardLayoutMutation = (
-    options?: Partial<Options<UpdateDashboardLayoutData>>
-): UseMutationOptions<
-    UpdateDashboardLayoutResponse2,
-    UpdateDashboardLayoutError,
-    Options<UpdateDashboardLayoutData>
-> => {
+export const createSubcategoryMutation = (
+    options?: Partial<Options<CreateSubcategoryData>>
+): UseMutationOptions<CreateSubcategoryResponse2, CreateSubcategoryError, Options<CreateSubcategoryData>> => {
     const mutationOptions: UseMutationOptions<
-        UpdateDashboardLayoutResponse2,
-        UpdateDashboardLayoutError,
-        Options<UpdateDashboardLayoutData>
+        CreateSubcategoryResponse2,
+        CreateSubcategoryError,
+        Options<CreateSubcategoryData>
     > = {
         mutationFn: async fnOptions => {
-            const { data } = await updateDashboardLayout({
+            const { data } = await createSubcategory({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete subcategory
+ *
+ * Delete an existing subcategory with the provided ID
+ */
+export const deleteSubcategoryMutation = (
+    options?: Partial<Options<DeleteSubcategoryData>>
+): UseMutationOptions<DeleteSubcategoryResponse2, DeleteSubcategoryError, Options<DeleteSubcategoryData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubcategoryResponse2,
+        DeleteSubcategoryError,
+        Options<DeleteSubcategoryData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubcategory({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getSubcategoryByIdQueryKey = (options: Options<GetSubcategoryByIdData>) =>
+    createQueryKey('getSubcategoryById', options)
+
+/**
+ * Get subcategory by ID
+ *
+ * Retrieve a specific subcategory by its ID
+ */
+export const getSubcategoryByIdOptions = (options: Options<GetSubcategoryByIdData>) =>
+    queryOptions<
+        GetSubcategoryByIdResponse,
+        GetSubcategoryByIdError,
+        GetSubcategoryByIdResponse,
+        ReturnType<typeof getSubcategoryByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getSubcategoryById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getSubcategoryByIdQueryKey(options)
+    })
+
+/**
+ * Update subcategory
+ *
+ * Update an existing subcategory with the provided data
+ */
+export const updateSubcategoryMutation = (
+    options?: Partial<Options<UpdateSubcategoryData>>
+): UseMutationOptions<UpdateSubcategoryResponse2, UpdateSubcategoryError, Options<UpdateSubcategoryData>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateSubcategoryResponse2,
+        UpdateSubcategoryError,
+        Options<UpdateSubcategoryData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateSubcategory({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all transactions
+ *
+ * Delete all transactions associated with the user
+ */
+export const deleteTransactionsMutation = (
+    options?: Partial<Options<DeleteTransactionsData>>
+): UseMutationOptions<DeleteTransactionsResponse, DeleteTransactionsError, Options<DeleteTransactionsData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteTransactionsResponse,
+        DeleteTransactionsError,
+        Options<DeleteTransactionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteTransactions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getTransactionsQueryKey = (options?: Options<GetTransactionsData>) =>
+    createQueryKey('getTransactions', options)
+
+/**
+ * Get all transactions
+ *
+ * Retrieve a list of all transactions associated with the user
+ */
+export const getTransactionsOptions = (options?: Options<GetTransactionsData>) =>
+    queryOptions<
+        GetTransactionsResponse,
+        GetTransactionsError,
+        GetTransactionsResponse,
+        ReturnType<typeof getTransactionsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getTransactions({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getTransactionsQueryKey(options)
+    })
+
+/**
+ * Create transaction
+ *
+ * Create a new transaction with the provided data
+ */
+export const createTransactionMutation = (
+    options?: Partial<Options<CreateTransactionData>>
+): UseMutationOptions<CreateTransactionResponse2, CreateTransactionError, Options<CreateTransactionData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateTransactionResponse2,
+        CreateTransactionError,
+        Options<CreateTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete transaction
+ *
+ * Delete an existing transaction with the provided ID
+ */
+export const deleteTransactionMutation = (
+    options?: Partial<Options<DeleteTransactionData>>
+): UseMutationOptions<DeleteTransactionResponse2, DeleteTransactionError, Options<DeleteTransactionData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteTransactionResponse2,
+        DeleteTransactionError,
+        Options<DeleteTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getTransactionByIdQueryKey = (options: Options<GetTransactionByIdData>) =>
+    createQueryKey('getTransactionById', options)
+
+/**
+ * Get transaction by ID
+ *
+ * Retrieve a specific transaction by its ID
+ */
+export const getTransactionByIdOptions = (options: Options<GetTransactionByIdData>) =>
+    queryOptions<
+        GetTransactionByIdResponse,
+        GetTransactionByIdError,
+        GetTransactionByIdResponse,
+        ReturnType<typeof getTransactionByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getTransactionById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getTransactionByIdQueryKey(options)
+    })
+
+/**
+ * Update transaction
+ *
+ * Update an existing transaction with the provided data
+ */
+export const updateTransactionMutation = (
+    options?: Partial<Options<UpdateTransactionData>>
+): UseMutationOptions<UpdateTransactionResponse2, UpdateTransactionError, Options<UpdateTransactionData>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateTransactionResponse2,
+        UpdateTransactionError,
+        Options<UpdateTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all subscriptions
+ *
+ * Delete all subscriptions associated with the user
+ */
+export const deleteSubscriptionsMutation = (
+    options?: Partial<Options<DeleteSubscriptionsData>>
+): UseMutationOptions<DeleteSubscriptionsResponse, DeleteSubscriptionsError, Options<DeleteSubscriptionsData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubscriptionsResponse,
+        DeleteSubscriptionsError,
+        Options<DeleteSubscriptionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubscriptions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getSubscriptionsQueryKey = (options?: Options<GetSubscriptionsData>) =>
+    createQueryKey('getSubscriptions', options)
+
+/**
+ * Get all subscriptions
+ *
+ * Retrieve a list of all subscriptions associated with the user
+ */
+export const getSubscriptionsOptions = (options?: Options<GetSubscriptionsData>) =>
+    queryOptions<
+        GetSubscriptionsResponse,
+        GetSubscriptionsError,
+        GetSubscriptionsResponse,
+        ReturnType<typeof getSubscriptionsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getSubscriptions({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getSubscriptionsQueryKey(options)
+    })
+
+/**
+ * Create subscription
+ *
+ * Create a new subscription with the provided data
+ */
+export const createSubscriptionMutation = (
+    options?: Partial<Options<CreateSubscriptionData>>
+): UseMutationOptions<CreateSubscriptionResponse2, CreateSubscriptionError, Options<CreateSubscriptionData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateSubscriptionResponse2,
+        CreateSubscriptionError,
+        Options<CreateSubscriptionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createSubscription({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete subscription
+ *
+ * Delete an existing subscription with the provided ID
+ */
+export const deleteSubscriptionMutation = (
+    options?: Partial<Options<DeleteSubscriptionData>>
+): UseMutationOptions<DeleteSubscriptionResponse2, DeleteSubscriptionError, Options<DeleteSubscriptionData>> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteSubscriptionResponse2,
+        DeleteSubscriptionError,
+        Options<DeleteSubscriptionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteSubscription({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getSubscriptionByIdQueryKey = (options: Options<GetSubscriptionByIdData>) =>
+    createQueryKey('getSubscriptionById', options)
+
+/**
+ * Get subscription by ID
+ *
+ * Retrieve a specific subscription by its ID
+ */
+export const getSubscriptionByIdOptions = (options: Options<GetSubscriptionByIdData>) =>
+    queryOptions<
+        GetSubscriptionByIdResponse,
+        GetSubscriptionByIdError,
+        GetSubscriptionByIdResponse,
+        ReturnType<typeof getSubscriptionByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getSubscriptionById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getSubscriptionByIdQueryKey(options)
+    })
+
+/**
+ * Update subscription
+ *
+ * Update an existing subscription with the provided data
+ */
+export const updateSubscriptionMutation = (
+    options?: Partial<Options<UpdateSubscriptionData>>
+): UseMutationOptions<UpdateSubscriptionResponse2, UpdateSubscriptionError, Options<UpdateSubscriptionData>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateSubscriptionResponse2,
+        UpdateSubscriptionError,
+        Options<UpdateSubscriptionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateSubscription({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -652,33 +1157,6 @@ export const createFinancialAccountMutation = (
     return mutationOptions
 }
 
-export const getFinancialAccountByIdQueryKey = (options: Options<GetFinancialAccountByIdData>) =>
-    createQueryKey('getFinancialAccountById', options)
-
-/**
- * Get financial account by ID
- *
- * Retrieve a specific financial account by its ID
- */
-export const getFinancialAccountByIdOptions = (options: Options<GetFinancialAccountByIdData>) =>
-    queryOptions<
-        GetFinancialAccountByIdResponse,
-        GetFinancialAccountByIdError,
-        GetFinancialAccountByIdResponse,
-        ReturnType<typeof getFinancialAccountByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getFinancialAccountById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getFinancialAccountByIdQueryKey(options)
-    })
-
 /**
  * Delete financial account
  *
@@ -707,6 +1185,33 @@ export const deleteFinancialAccountMutation = (
     }
     return mutationOptions
 }
+
+export const getFinancialAccountByIdQueryKey = (options: Options<GetFinancialAccountByIdData>) =>
+    createQueryKey('getFinancialAccountById', options)
+
+/**
+ * Get financial account by ID
+ *
+ * Retrieve a specific financial account by its ID
+ */
+export const getFinancialAccountByIdOptions = (options: Options<GetFinancialAccountByIdData>) =>
+    queryOptions<
+        GetFinancialAccountByIdResponse,
+        GetFinancialAccountByIdError,
+        GetFinancialAccountByIdResponse,
+        ReturnType<typeof getFinancialAccountByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getFinancialAccountById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getFinancialAccountByIdQueryKey(options)
+    })
 
 /**
  * Update financial account
@@ -920,23 +1425,23 @@ export const completeImportMutation = (
     return mutationOptions
 }
 
-export const getTrendReportQueryKey = (options?: Options<GetTrendReportData>) =>
-    createQueryKey('getTrendReport', options)
+export const getDashboardLayoutQueryKey = (options?: Options<GetDashboardLayoutData>) =>
+    createQueryKey('getDashboardLayout', options)
 
 /**
- * Get trend report
+ * Get dashboard layout
  *
- * Retrieve a trend report based on the users imports
+ * Retrieve a specific dashboard layout
  */
-export const getTrendReportOptions = (options?: Options<GetTrendReportData>) =>
+export const getDashboardLayoutOptions = (options?: Options<GetDashboardLayoutData>) =>
     queryOptions<
-        GetTrendReportResponse,
-        GetTrendReportError,
-        GetTrendReportResponse,
-        ReturnType<typeof getTrendReportQueryKey>
+        GetDashboardLayoutResponse2,
+        GetDashboardLayoutError,
+        GetDashboardLayoutResponse2,
+        ReturnType<typeof getDashboardLayoutQueryKey>
     >({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTrendReport({
+            const { data } = await getDashboardLayout({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -944,8 +1449,37 @@ export const getTrendReportOptions = (options?: Options<GetTrendReportData>) =>
             })
             return data
         },
-        queryKey: getTrendReportQueryKey(options)
+        queryKey: getDashboardLayoutQueryKey(options)
     })
+
+/**
+ * Update dashboard layout
+ *
+ * Update a specific dashboard layout
+ */
+export const updateDashboardLayoutMutation = (
+    options?: Partial<Options<UpdateDashboardLayoutData>>
+): UseMutationOptions<
+    UpdateDashboardLayoutResponse2,
+    UpdateDashboardLayoutError,
+    Options<UpdateDashboardLayoutData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateDashboardLayoutResponse2,
+        UpdateDashboardLayoutError,
+        Options<UpdateDashboardLayoutData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateDashboardLayout({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
 
 /**
  * Create snapshot account balance
@@ -976,20 +1510,23 @@ export const createSnapshotAccountBalanceMutation = (
     return mutationOptions
 }
 
-export const getRootStatusQueryKey = (options?: Options<GetRootStatusData>) => createQueryKey('getRootStatus', options)
+export const getTrendReportQueryKey = (options?: Options<GetTrendReportData>) =>
+    createQueryKey('getTrendReport', options)
 
 /**
- * Healthcheck
+ * Get trend report
+ *
+ * Retrieve a trend report based on the users imports
  */
-export const getRootStatusOptions = (options?: Options<GetRootStatusData>) =>
+export const getTrendReportOptions = (options?: Options<GetTrendReportData>) =>
     queryOptions<
-        GetRootStatusResponse,
-        GetRootStatusError,
-        GetRootStatusResponse,
-        ReturnType<typeof getRootStatusQueryKey>
+        GetTrendReportResponse,
+        GetTrendReportError,
+        GetTrendReportResponse,
+        ReturnType<typeof getTrendReportQueryKey>
     >({
         queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getRootStatus({
+            const { data } = await getTrendReport({
                 ...options,
                 ...queryKey[0],
                 signal,
@@ -997,545 +1534,8 @@ export const getRootStatusOptions = (options?: Options<GetRootStatusData>) =>
             })
             return data
         },
-        queryKey: getRootStatusQueryKey(options)
+        queryKey: getTrendReportQueryKey(options)
     })
-
-export const getStatusQueryKey = (options?: Options<GetStatusData>) => createQueryKey('getStatus', options)
-
-/**
- * Healthcheck
- */
-export const getStatusOptions = (options?: Options<GetStatusData>) =>
-    queryOptions<GetStatusResponse, GetStatusError, GetStatusResponse, ReturnType<typeof getStatusQueryKey>>({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getStatus({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getStatusQueryKey(options)
-    })
-
-/**
- * Delete all subcategories
- *
- * Delete all subcategories associated with the user
- */
-export const deleteSubcategoriesMutation = (
-    options?: Partial<Options<DeleteSubcategoriesData>>
-): UseMutationOptions<DeleteSubcategoriesResponse, DeleteSubcategoriesError, Options<DeleteSubcategoriesData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteSubcategoriesResponse,
-        DeleteSubcategoriesError,
-        Options<DeleteSubcategoriesData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteSubcategories({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getSubcategoriesQueryKey = (options?: Options<GetSubcategoriesData>) =>
-    createQueryKey('getSubcategories', options)
-
-/**
- * Get all subcategories
- *
- * Retrieve a list of all subcategories associated with the user
- */
-export const getSubcategoriesOptions = (options?: Options<GetSubcategoriesData>) =>
-    queryOptions<
-        GetSubcategoriesResponse,
-        GetSubcategoriesError,
-        GetSubcategoriesResponse,
-        ReturnType<typeof getSubcategoriesQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSubcategories({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getSubcategoriesQueryKey(options)
-    })
-
-/**
- * Create subcategory
- *
- * Create a new subcategory with the provided data
- */
-export const createSubcategoryMutation = (
-    options?: Partial<Options<CreateSubcategoryData>>
-): UseMutationOptions<CreateSubcategoryResponse2, CreateSubcategoryError, Options<CreateSubcategoryData>> => {
-    const mutationOptions: UseMutationOptions<
-        CreateSubcategoryResponse2,
-        CreateSubcategoryError,
-        Options<CreateSubcategoryData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createSubcategory({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete subcategory
- *
- * Delete an existing subcategory with the provided ID
- */
-export const deleteSubcategoryMutation = (
-    options?: Partial<Options<DeleteSubcategoryData>>
-): UseMutationOptions<DeleteSubcategoryResponse2, DeleteSubcategoryError, Options<DeleteSubcategoryData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteSubcategoryResponse2,
-        DeleteSubcategoryError,
-        Options<DeleteSubcategoryData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteSubcategory({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getSubcategoryByIdQueryKey = (options: Options<GetSubcategoryByIdData>) =>
-    createQueryKey('getSubcategoryById', options)
-
-/**
- * Get subcategory by ID
- *
- * Retrieve a specific subcategory by its ID
- */
-export const getSubcategoryByIdOptions = (options: Options<GetSubcategoryByIdData>) =>
-    queryOptions<
-        GetSubcategoryByIdResponse,
-        GetSubcategoryByIdError,
-        GetSubcategoryByIdResponse,
-        ReturnType<typeof getSubcategoryByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSubcategoryById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getSubcategoryByIdQueryKey(options)
-    })
-
-/**
- * Update subcategory
- *
- * Update an existing subcategory with the provided data
- */
-export const updateSubcategoryMutation = (
-    options?: Partial<Options<UpdateSubcategoryData>>
-): UseMutationOptions<UpdateSubcategoryResponse2, UpdateSubcategoryError, Options<UpdateSubcategoryData>> => {
-    const mutationOptions: UseMutationOptions<
-        UpdateSubcategoryResponse2,
-        UpdateSubcategoryError,
-        Options<UpdateSubcategoryData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await updateSubcategory({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete all subscriptions
- *
- * Delete all subscriptions associated with the user
- */
-export const deleteSubscriptionsMutation = (
-    options?: Partial<Options<DeleteSubscriptionsData>>
-): UseMutationOptions<DeleteSubscriptionsResponse, DeleteSubscriptionsError, Options<DeleteSubscriptionsData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteSubscriptionsResponse,
-        DeleteSubscriptionsError,
-        Options<DeleteSubscriptionsData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteSubscriptions({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getSubscriptionsQueryKey = (options?: Options<GetSubscriptionsData>) =>
-    createQueryKey('getSubscriptions', options)
-
-/**
- * Get all subscriptions
- *
- * Retrieve a list of all subscriptions associated with the user
- */
-export const getSubscriptionsOptions = (options?: Options<GetSubscriptionsData>) =>
-    queryOptions<
-        GetSubscriptionsResponse,
-        GetSubscriptionsError,
-        GetSubscriptionsResponse,
-        ReturnType<typeof getSubscriptionsQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSubscriptions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getSubscriptionsQueryKey(options)
-    })
-
-/**
- * Create subscription
- *
- * Create a new subscription with the provided data
- */
-export const createSubscriptionMutation = (
-    options?: Partial<Options<CreateSubscriptionData>>
-): UseMutationOptions<CreateSubscriptionResponse2, CreateSubscriptionError, Options<CreateSubscriptionData>> => {
-    const mutationOptions: UseMutationOptions<
-        CreateSubscriptionResponse2,
-        CreateSubscriptionError,
-        Options<CreateSubscriptionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createSubscription({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete subscription
- *
- * Delete an existing subscription with the provided ID
- */
-export const deleteSubscriptionMutation = (
-    options?: Partial<Options<DeleteSubscriptionData>>
-): UseMutationOptions<DeleteSubscriptionResponse2, DeleteSubscriptionError, Options<DeleteSubscriptionData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteSubscriptionResponse2,
-        DeleteSubscriptionError,
-        Options<DeleteSubscriptionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteSubscription({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getSubscriptionByIdQueryKey = (options: Options<GetSubscriptionByIdData>) =>
-    createQueryKey('getSubscriptionById', options)
-
-/**
- * Get subscription by ID
- *
- * Retrieve a specific subscription by its ID
- */
-export const getSubscriptionByIdOptions = (options: Options<GetSubscriptionByIdData>) =>
-    queryOptions<
-        GetSubscriptionByIdResponse,
-        GetSubscriptionByIdError,
-        GetSubscriptionByIdResponse,
-        ReturnType<typeof getSubscriptionByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getSubscriptionById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getSubscriptionByIdQueryKey(options)
-    })
-
-/**
- * Update subscription
- *
- * Update an existing subscription with the provided data
- */
-export const updateSubscriptionMutation = (
-    options?: Partial<Options<UpdateSubscriptionData>>
-): UseMutationOptions<UpdateSubscriptionResponse2, UpdateSubscriptionError, Options<UpdateSubscriptionData>> => {
-    const mutationOptions: UseMutationOptions<
-        UpdateSubscriptionResponse2,
-        UpdateSubscriptionError,
-        Options<UpdateSubscriptionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await updateSubscription({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete all transactions
- *
- * Delete all transactions associated with the user
- */
-export const deleteTransactionsMutation = (
-    options?: Partial<Options<DeleteTransactionsData>>
-): UseMutationOptions<DeleteTransactionsResponse, DeleteTransactionsError, Options<DeleteTransactionsData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteTransactionsResponse,
-        DeleteTransactionsError,
-        Options<DeleteTransactionsData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteTransactions({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getTransactionsQueryKey = (options?: Options<GetTransactionsData>) =>
-    createQueryKey('getTransactions', options)
-
-/**
- * Get all transactions
- *
- * Retrieve a list of all transactions associated with the user
- */
-export const getTransactionsOptions = (options?: Options<GetTransactionsData>) =>
-    queryOptions<
-        GetTransactionsResponse,
-        GetTransactionsError,
-        GetTransactionsResponse,
-        ReturnType<typeof getTransactionsQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTransactions({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getTransactionsQueryKey(options)
-    })
-
-/**
- * Create transaction
- *
- * Create a new transaction with the provided data
- */
-export const createTransactionMutation = (
-    options?: Partial<Options<CreateTransactionData>>
-): UseMutationOptions<CreateTransactionResponse2, CreateTransactionError, Options<CreateTransactionData>> => {
-    const mutationOptions: UseMutationOptions<
-        CreateTransactionResponse2,
-        CreateTransactionError,
-        Options<CreateTransactionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createTransaction({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Delete transaction
- *
- * Delete an existing transaction with the provided ID
- */
-export const deleteTransactionMutation = (
-    options?: Partial<Options<DeleteTransactionData>>
-): UseMutationOptions<DeleteTransactionResponse2, DeleteTransactionError, Options<DeleteTransactionData>> => {
-    const mutationOptions: UseMutationOptions<
-        DeleteTransactionResponse2,
-        DeleteTransactionError,
-        Options<DeleteTransactionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await deleteTransaction({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getTransactionByIdQueryKey = (options: Options<GetTransactionByIdData>) =>
-    createQueryKey('getTransactionById', options)
-
-/**
- * Get transaction by ID
- *
- * Retrieve a specific transaction by its ID
- */
-export const getTransactionByIdOptions = (options: Options<GetTransactionByIdData>) =>
-    queryOptions<
-        GetTransactionByIdResponse,
-        GetTransactionByIdError,
-        GetTransactionByIdResponse,
-        ReturnType<typeof getTransactionByIdQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getTransactionById({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getTransactionByIdQueryKey(options)
-    })
-
-/**
- * Update transaction
- *
- * Update an existing transaction with the provided data
- */
-export const updateTransactionMutation = (
-    options?: Partial<Options<UpdateTransactionData>>
-): UseMutationOptions<UpdateTransactionResponse2, UpdateTransactionError, Options<UpdateTransactionData>> => {
-    const mutationOptions: UseMutationOptions<
-        UpdateTransactionResponse2,
-        UpdateTransactionError,
-        Options<UpdateTransactionData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await updateTransaction({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-export const getAuthenticatedUserQueryKey = (options?: Options<GetAuthenticatedUserData>) =>
-    createQueryKey('getAuthenticatedUser', options)
-
-/**
- * Get authenticated user
- *
- * Get authenticated user information and preferences
- */
-export const getAuthenticatedUserOptions = (options?: Options<GetAuthenticatedUserData>) =>
-    queryOptions<
-        GetAuthenticatedUserResponse,
-        GetAuthenticatedUserError,
-        GetAuthenticatedUserResponse,
-        ReturnType<typeof getAuthenticatedUserQueryKey>
-    >({
-        queryFn: async ({ queryKey, signal }) => {
-            const { data } = await getAuthenticatedUser({
-                ...options,
-                ...queryKey[0],
-                signal,
-                throwOnError: true
-            })
-            return data
-        },
-        queryKey: getAuthenticatedUserQueryKey(options)
-    })
-
-/**
- * Update authenticated user
- *
- * Updates the authenticated user's profile. Email changes require verification and may be subject to additional security checks.
- */
-export const updateAuthenticatedUserMutation = (
-    options?: Partial<Options<UpdateAuthenticatedUserData>>
-): UseMutationOptions<
-    UpdateAuthenticatedUserResponse,
-    UpdateAuthenticatedUserError,
-    Options<UpdateAuthenticatedUserData>
-> => {
-    const mutationOptions: UseMutationOptions<
-        UpdateAuthenticatedUserResponse,
-        UpdateAuthenticatedUserError,
-        Options<UpdateAuthenticatedUserData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await updateAuthenticatedUser({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
 
 /**
  * Sign in with a social provider

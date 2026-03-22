@@ -2,7 +2,7 @@ import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
 import {
     CreateFinancialAccountRequest,
-    FinancialAccountDataResponse,
+    FinancialAccountData,
     FinancialAccountFilters,
     UpdateFinancialAccountRequest
 } from '@poveroh/types'
@@ -31,7 +31,7 @@ export class FinancialAccountService extends BaseService {
     async createFinancialAccount(
         payload: CreateFinancialAccountRequest,
         file?: Express.Multer.File
-    ): Promise<FinancialAccountDataResponse> {
+    ): Promise<FinancialAccountData> {
         const userId = this.getUserId()
 
         const generatedId = crypto.randomUUID()
@@ -42,7 +42,7 @@ export class FinancialAccountService extends BaseService {
 
         return (await prisma.financialAccount.create({
             data: { ...payload, userId, id: generatedId }
-        })) as unknown as FinancialAccountDataResponse
+        })) as unknown as FinancialAccountData
     }
 
     /**
@@ -101,12 +101,12 @@ export class FinancialAccountService extends BaseService {
      * @param id The ID of the financial account to retrieve
      * @returns The financial account data response if found, or null if not found
      */
-    async getFinancialAccountById(id: string): Promise<FinancialAccountDataResponse | null> {
+    async getFinancialAccountById(id: string): Promise<FinancialAccountData | null> {
         const userId = this.getUserId()
 
         return (await prisma.financialAccount.findMany({
             where: { id, userId, deletedAt: null }
-        })) as unknown as FinancialAccountDataResponse | null
+        })) as unknown as FinancialAccountData | null
     }
 
     /**
@@ -120,7 +120,7 @@ export class FinancialAccountService extends BaseService {
         filters: FinancialAccountFilters,
         skip: number,
         take: number
-    ): Promise<FinancialAccountDataResponse[]> {
+    ): Promise<FinancialAccountData[]> {
         const userId = this.getUserId()
 
         const whereCondition = {
@@ -134,6 +134,6 @@ export class FinancialAccountService extends BaseService {
             orderBy: { createdAt: 'desc' },
             skip,
             take
-        })) as unknown as FinancialAccountDataResponse[]
+        })) as unknown as FinancialAccountData[]
     }
 }

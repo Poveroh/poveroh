@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { getParamString } from '../../../utils/request'
-import { CategoryDataResponse, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
+import { CategoryData, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { CategoryService } from '../services/category.service'
 
@@ -21,7 +21,7 @@ export class CategoryController {
                 throw new Error('Failed to create category')
             }
 
-            return ResponseHelper.success<CategoryDataResponse>(res, category)
+            return ResponseHelper.success<CategoryData>(res, category)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -96,7 +96,7 @@ export class CategoryController {
                 throw new NotFoundError('Category not found')
             }
 
-            return ResponseHelper.success<CategoryDataResponse>(res, data)
+            return ResponseHelper.success<CategoryData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
@@ -116,7 +116,7 @@ export class CategoryController {
                 throw new NotFoundError('Category not found')
             }
 
-            return ResponseHelper.success<CategoryDataResponse[]>(res, data)
+            return ResponseHelper.success<CategoryData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

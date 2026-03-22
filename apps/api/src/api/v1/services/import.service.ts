@@ -9,7 +9,7 @@ import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import { FileType } from '@prisma/client'
 import {
     CreateImportRequest,
-    ImportDataResponse,
+    ImportData,
     ImportFile,
     ImportFilters,
     TransactionActionEnum,
@@ -50,7 +50,7 @@ export class ImportService extends BaseService {
      * @param id The ID of the import to complete
      * @returns The updated import data response
      */
-    async completeImport(id: string): Promise<ImportDataResponse> {
+    async completeImport(id: string): Promise<ImportData> {
         const userId = this.getUserId()
         const deletePattern = {
             importId: id,
@@ -93,7 +93,7 @@ export class ImportService extends BaseService {
                     status: 'APPROVED' as TransactionStatusEnum
                 }
             })
-        })) as unknown as ImportDataResponse
+        })) as unknown as ImportData
     }
 
     /**
@@ -157,12 +157,12 @@ export class ImportService extends BaseService {
      * @param id The ID of the import to retrieve
      * @returns The import data response if found, or null if not found
      */
-    async getImportById(id: string): Promise<ImportDataResponse | null> {
+    async getImportById(id: string): Promise<ImportData | null> {
         const userId = this.getUserId()
         return (await prisma.import.findFirst({
             where: { id, userId },
             include: { files: true }
-        })) as unknown as ImportDataResponse | null
+        })) as unknown as ImportData | null
     }
 
     /**
@@ -171,12 +171,12 @@ export class ImportService extends BaseService {
      * @param payload The payload to update the import with
      * @returns The updated import data response
      */
-    async updateImport(id: string, payload: Record<string, unknown>): Promise<ImportDataResponse> {
+    async updateImport(id: string, payload: Record<string, unknown>): Promise<ImportData> {
         const userId = this.getUserId()
         return (await prisma.import.update({
             where: { id, userId },
             data: payload
-        })) as unknown as ImportDataResponse
+        })) as unknown as ImportData
     }
 
     /**
@@ -190,7 +190,7 @@ export class ImportService extends BaseService {
         filters: ImportFilters,
         skip: number,
         take: number
-    ): Promise<{ data: ImportDataResponse[]; total: number }> {
+    ): Promise<{ data: ImportData[]; total: number }> {
         const userId = this.getUserId()
         const where = {
             ...buildWhere(filters),
@@ -209,7 +209,7 @@ export class ImportService extends BaseService {
         ])
 
         return {
-            data: data as unknown as ImportDataResponse[],
+            data: data as unknown as ImportData[],
             total
         }
     }
@@ -304,7 +304,7 @@ export class ImportService extends BaseService {
      * @param files The uploaded files
      * @returns The created import data response
      */
-    async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportDataResponse> {
+    async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportData> {
         const userId = this.getUserId()
         const importId = uuidv4()
         const now = new Date()
@@ -383,7 +383,7 @@ export class ImportService extends BaseService {
                 ...(imports as unknown as Record<string, unknown>),
                 files: importFiles,
                 transactions: parsedTransactions
-            } as unknown as ImportDataResponse)
+            } as unknown as ImportData)
         }
     }
 

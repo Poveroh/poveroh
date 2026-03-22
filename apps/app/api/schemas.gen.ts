@@ -329,48 +329,6 @@ export const CategoryDataSchema = {
     required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
 } as const
 
-export const CategoryDataResponseSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            format: 'uri'
-        },
-        color: {
-            type: 'string',
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
-} as const
-
 export const GetCategoryListResponseSchema = {
     type: 'object',
     properties: {
@@ -442,24 +400,6 @@ export const CreateCategoryRequestSchema = {
         }
     },
     required: ['title', 'for', 'logoIcon']
-} as const
-
-export const CreateCategoryMultipartRequestSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateCategoryRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
 } as const
 
 export const CreateCategoryResponseSchema = {
@@ -628,6 +568,50 @@ export const QueryCategoryFiltersSchema = {
             $ref: '#/components/schemas/FilterOptions'
         }
     }
+} as const
+
+export const CategoryFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        }
+    },
+    required: ['title', 'for', 'logoIcon']
+} as const
+
+export const DashboardWidgetEnumSchema = {
+    type: 'string',
+    enum: [
+        'net-worth-evolution',
+        'kpi-row',
+        'liquidity-evolution',
+        'income-expense-month',
+        'month-comparison',
+        'category-trend',
+        'account-balances',
+        'expense-macro-distribution',
+        'recent-transactions'
+    ]
+} as const
+
+export const ColSpanEnumSchema = {
+    type: 'string',
+    enum: ['12', '6', '4', '3']
 } as const
 
 export const DashboardLayoutItemSchema = {
@@ -1404,40 +1388,6 @@ export const FinancialAccountDataSchema = {
     required: ['id', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
 } as const
 
-export const FinancialAccountDataResponseSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        balance: {
-            type: 'number'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
-} as const
-
 export const GetFinancialAccountListResponseSchema = {
     type: 'object',
     properties: {
@@ -1670,6 +1620,28 @@ export const QueryFinancialAccountFiltersSchema = {
             $ref: '#/components/schemas/FilterOptions'
         }
     }
+} as const
+
+export const FinancialAccountFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        balance: {
+            type: 'number'
+        },
+        type: {
+            $ref: '#/components/schemas/FinancialAccountTypeEnum'
+        },
+        logoIcon: {
+            type: 'string'
+        }
+    },
+    required: ['title', 'description', 'balance', 'type', 'logoIcon']
 } as const
 
 export const ImportFileSchema = {
@@ -1946,47 +1918,6 @@ export const ImportSchema = {
 } as const
 
 export const ImportDataSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        transactions: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Transaction'
-            }
-        },
-        files: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportFile'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
-} as const
-
-export const ImportDataResponseSchema = {
     type: 'object',
     properties: {
         id: {
@@ -2572,6 +2503,65 @@ export const SnapshotSchema = {
     ]
 } as const
 
+export const SnapshotDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        snapshotDate: {
+            type: 'string',
+            format: 'date-time'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        totalCash: {
+            type: 'number'
+        },
+        totalInvestments: {
+            type: 'number'
+        },
+        totalNetWorth: {
+            type: 'number'
+        },
+        accountBalances: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/SnapshotAccountBalance'
+            }
+        },
+        assetValues: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/SnapshotAssetValue'
+            }
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'snapshotDate',
+        'note',
+        'totalCash',
+        'totalInvestments',
+        'totalNetWorth',
+        'accountBalances',
+        'assetValues',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
 export const CreateSnapshotAccountBalanceRequestSchema = {
     type: 'object',
     properties: {
@@ -2673,39 +2663,6 @@ export const SubcategoryDataSchema = {
     required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
 } as const
 
-export const SubcategoryDataResponseSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        logoIcon: {
-            type: 'string',
-            format: 'uri'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
-} as const
-
 export const GetSubcategoryListResponseSchema = {
     type: 'object',
     properties: {
@@ -2774,24 +2731,6 @@ export const CreateSubcategoryRequestSchema = {
         }
     },
     required: ['categoryId', 'title', 'logoIcon']
-} as const
-
-export const CreateSubcategoryMultipartRequestSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateSubcategoryRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
 } as const
 
 export const CreateSubcategoryResponseSchema = {
@@ -2934,6 +2873,27 @@ export const QuerySubcategoryFiltersSchema = {
     }
 } as const
 
+export const SubcategoryFormSchema = {
+    type: 'object',
+    properties: {
+        categoryId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string',
+            format: 'uri'
+        }
+    },
+    required: ['categoryId', 'title', 'logoIcon']
+} as const
+
 export const SubscriptionSchema = {
     type: 'object',
     properties: {
@@ -3017,79 +2977,6 @@ export const SubscriptionSchema = {
 } as const
 
 export const SubscriptionDataSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number'
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number'
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        isEnabled: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'title',
-        'description',
-        'amount',
-        'currency',
-        'appearanceMode',
-        'appearanceLogoIcon',
-        'firstPayment',
-        'cycleNumber',
-        'cyclePeriod',
-        'rememberPeriod',
-        'financialAccountId',
-        'isEnabled',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const SubscriptionDataResponseSchema = {
     type: 'object',
     properties: {
         id: {
@@ -4072,6 +3959,39 @@ export const QueryTransactionFiltersSchema = {
     }
 } as const
 
+export const TransactionFormSchema = {
+    type: 'object',
+    properties: {
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        ignore: {
+            type: 'boolean'
+        }
+    },
+    required: ['date', 'title', 'note', 'icon', 'categoryId', 'subcategoryId', 'ignore']
+} as const
+
 export const UserPreferencesSchema = {
     type: 'object',
     properties: {
@@ -4347,183 +4267,4 @@ export const UserProfileSecurityFormSchema = {
         }
     },
     required: ['oldPassword', 'newPassword', 'confirmPassword']
-} as const
-
-export const FinancialAccountFormSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        balance: {
-            type: 'number'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string'
-        }
-    },
-    required: ['title', 'description', 'balance', 'type', 'logoIcon']
-} as const
-
-export const CategoryFormSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            format: 'uri'
-        },
-        color: {
-            type: 'string',
-            default: '#8B5CF6'
-        }
-    },
-    required: ['title', 'for', 'logoIcon']
-} as const
-
-export const SubcategoryFormSchema = {
-    type: 'object',
-    properties: {
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        description: {
-            type: 'string'
-        },
-        logoIcon: {
-            type: 'string',
-            format: 'uri'
-        }
-    },
-    required: ['categoryId', 'title', 'logoIcon']
-} as const
-
-export const TransactionFormSchema = {
-    type: 'object',
-    properties: {
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        title: {
-            type: 'string'
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        ignore: {
-            type: 'boolean'
-        }
-    },
-    required: ['date', 'title', 'note', 'icon', 'categoryId', 'subcategoryId', 'ignore']
-} as const
-
-export const SnapshotDataSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        totalCash: {
-            type: 'number'
-        },
-        totalInvestments: {
-            type: 'number'
-        },
-        totalNetWorth: {
-            type: 'number'
-        },
-        accountBalances: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAccountBalance'
-            }
-        },
-        assetValues: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAssetValue'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'snapshotDate',
-        'note',
-        'totalCash',
-        'totalInvestments',
-        'totalNetWorth',
-        'accountBalances',
-        'assetValues',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const DashboardWidgetEnumSchema = {
-    type: 'string',
-    enum: [
-        'net-worth-evolution',
-        'kpi-row',
-        'liquidity-evolution',
-        'income-expense-month',
-        'month-comparison',
-        'category-trend',
-        'account-balances',
-        'expense-macro-distribution',
-        'recent-transactions'
-    ]
-} as const
-
-export const ColSpanEnumSchema = {
-    type: 'string',
-    enum: ['12', '6', '4', '3']
 } as const

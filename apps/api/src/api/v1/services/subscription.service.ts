@@ -3,7 +3,7 @@ import { buildWhere } from '../../../helpers/filter.helper'
 import { BaseService } from './base.service'
 import {
     CreateSubscriptionRequest,
-    SubscriptionDataResponse,
+    SubscriptionData,
     SubscriptionFilters,
     UpdateSubscriptionRequest
 } from '@poveroh/types'
@@ -30,7 +30,7 @@ export class SubscriptionService extends BaseService {
     async createSubscription(
         payload: CreateSubscriptionRequest,
         file?: Express.Multer.File
-    ): Promise<SubscriptionDataResponse> {
+    ): Promise<SubscriptionData> {
         const userId = this.getUserId()
 
         const generatedId = crypto.randomUUID()
@@ -45,7 +45,7 @@ export class SubscriptionService extends BaseService {
                 id: generatedId,
                 userId
             }
-        })) as unknown as SubscriptionDataResponse
+        })) as unknown as SubscriptionData
     }
 
     /**
@@ -104,12 +104,12 @@ export class SubscriptionService extends BaseService {
      * @param id The ID of the subscription to retrieve
      * @returns The subscription data response if found, or null if not found
      */
-    async getSubscriptionById(id: string): Promise<SubscriptionDataResponse | null> {
+    async getSubscriptionById(id: string): Promise<SubscriptionData | null> {
         const userId = this.getUserId()
 
         return (await prisma.subscription.findFirst({
             where: { id, userId, deletedAt: null }
-        })) as unknown as SubscriptionDataResponse | null
+        })) as unknown as SubscriptionData | null
     }
 
     /**
@@ -119,11 +119,7 @@ export class SubscriptionService extends BaseService {
      * @param take The number of subscriptions to take for pagination
      * @returns An object containing the subscription data and the total count
      */
-    async getSubscriptions(
-        filters: SubscriptionFilters,
-        skip: number,
-        take: number
-    ): Promise<SubscriptionDataResponse[]> {
+    async getSubscriptions(filters: SubscriptionFilters, skip: number, take: number): Promise<SubscriptionData[]> {
         const userId = this.getUserId()
 
         const where = {
@@ -137,6 +133,6 @@ export class SubscriptionService extends BaseService {
             orderBy: { createdAt: 'desc' },
             skip,
             take
-        })) as unknown as SubscriptionDataResponse[]
+        })) as unknown as SubscriptionData[]
     }
 }
