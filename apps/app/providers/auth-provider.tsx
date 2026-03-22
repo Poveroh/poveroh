@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         initializeAuth()
-    }, [getMe])
+    }, [])
 
     useEffect(() => {
         logoutRef.current = logout
