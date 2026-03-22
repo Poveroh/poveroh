@@ -5,7 +5,9 @@ import { queryOptions, type UseMutationOptions } from '@tanstack/react-query'
 import { client } from '../client.gen'
 import {
     changeEmail,
+    changeEmail2,
     changePassword,
+    changePassword2,
     completeImport,
     createCategory,
     createFinancialAccount,
@@ -27,9 +29,16 @@ import {
     deleteTransaction,
     deleteTransactions,
     deleteUser,
+    deleteUser2,
     getAccountInfo,
+    getAuthAccountInfo,
+    getAuthCallbackById,
+    getAuthDeleteUserCallback,
     getAuthenticatedUser,
     getAuthenticatedUser2,
+    getAuthError,
+    getAuthOk,
+    getAuthVerifyEmail,
     getCallbackById,
     getCategories,
     getCategoryById,
@@ -45,6 +54,8 @@ import {
     getRootStatus,
     getSession,
     getSession2,
+    getSession3,
+    getSession4,
     getStatus,
     getSubcategories,
     getSubcategoryById,
@@ -55,9 +66,19 @@ import {
     getTrendReport,
     getVerifyEmail,
     linkSocialAccount,
+    linkSocialAccount2,
     listUserAccounts,
+    listUserAccounts2,
     listUserSessions,
+    listUserSessions2,
     type Options,
+    postAuthCallbackById,
+    postAuthGetAccessToken,
+    postAuthRefreshToken,
+    postAuthRevokeOtherSessions,
+    postAuthRevokeSession,
+    postAuthRevokeSessions,
+    postAuthUnlinkAccount,
     postCallbackById,
     postGetAccessToken,
     postRefreshToken,
@@ -66,13 +87,21 @@ import {
     postRevokeSessions,
     postUnlinkAccount,
     requestPasswordReset,
+    requestPasswordReset2,
     resetPassword,
+    resetPassword2,
     resetPasswordCallback,
+    resetPasswordCallback2,
     sendVerificationEmail,
+    sendVerificationEmail2,
     signInEmail,
+    signInEmail2,
     signOut,
+    signOut2,
     signUpWithEmailAndPassword,
+    signUpWithEmailAndPassword2,
     socialSignIn,
+    socialSignIn2,
     updateAuthenticatedUser,
     updateAuthenticatedUser2,
     updateCategory,
@@ -80,16 +109,25 @@ import {
     updateFinancialAccount,
     updateImport,
     updateSession,
+    updateSession2,
     updateSubcategory,
     updateSubscription,
     updateTransaction,
     updateUser,
-    verifyPassword
+    updateUser2,
+    verifyPassword,
+    verifyPassword2
 } from '../sdk.gen'
 import type {
+    ChangeEmail2Data,
+    ChangeEmail2Error,
+    ChangeEmail2Response,
     ChangeEmailData,
     ChangeEmailError,
     ChangeEmailResponse,
+    ChangePassword2Data,
+    ChangePassword2Error,
+    ChangePassword2Response,
     ChangePasswordData,
     ChangePasswordError,
     ChangePasswordResponse,
@@ -153,18 +191,38 @@ import type {
     DeleteTransactionsData,
     DeleteTransactionsError,
     DeleteTransactionsResponse,
+    DeleteUser2Data,
+    DeleteUser2Error,
+    DeleteUser2Response,
     DeleteUserData,
     DeleteUserError,
     DeleteUserResponse,
     GetAccountInfoData,
     GetAccountInfoError,
     GetAccountInfoResponse,
+    GetAuthAccountInfoData,
+    GetAuthAccountInfoError,
+    GetAuthAccountInfoResponse,
+    GetAuthCallbackByIdData,
+    GetAuthCallbackByIdError,
+    GetAuthDeleteUserCallbackData,
+    GetAuthDeleteUserCallbackError,
+    GetAuthDeleteUserCallbackResponse,
     GetAuthenticatedUser2Data,
     GetAuthenticatedUser2Error,
     GetAuthenticatedUser2Response,
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
     GetAuthenticatedUserResponse,
+    GetAuthErrorData,
+    GetAuthErrorError,
+    GetAuthErrorResponse,
+    GetAuthOkData,
+    GetAuthOkError,
+    GetAuthOkResponse,
+    GetAuthVerifyEmailData,
+    GetAuthVerifyEmailError,
+    GetAuthVerifyEmailResponse,
     GetCallbackByIdData,
     GetCallbackByIdError,
     GetCategoriesData,
@@ -206,6 +264,12 @@ import type {
     GetSession2Data,
     GetSession2Error,
     GetSession2Response,
+    GetSession3Data,
+    GetSession3Error,
+    GetSession3Response,
+    GetSession4Data,
+    GetSession4Error,
+    GetSession4Response,
     GetSessionData,
     GetSessionError,
     GetSessionResponse,
@@ -236,15 +300,44 @@ import type {
     GetVerifyEmailData,
     GetVerifyEmailError,
     GetVerifyEmailResponse,
+    LinkSocialAccount2Data,
+    LinkSocialAccount2Error,
+    LinkSocialAccount2Response,
     LinkSocialAccountData,
     LinkSocialAccountError,
     LinkSocialAccountResponse,
+    ListUserAccounts2Data,
+    ListUserAccounts2Error,
+    ListUserAccounts2Response,
     ListUserAccountsData,
     ListUserAccountsError,
     ListUserAccountsResponse,
+    ListUserSessions2Data,
+    ListUserSessions2Error,
+    ListUserSessions2Response,
     ListUserSessionsData,
     ListUserSessionsError,
     ListUserSessionsResponse,
+    PostAuthCallbackByIdData,
+    PostAuthCallbackByIdError,
+    PostAuthGetAccessTokenData,
+    PostAuthGetAccessTokenError,
+    PostAuthGetAccessTokenResponse,
+    PostAuthRefreshTokenData,
+    PostAuthRefreshTokenError,
+    PostAuthRefreshTokenResponse,
+    PostAuthRevokeOtherSessionsData,
+    PostAuthRevokeOtherSessionsError,
+    PostAuthRevokeOtherSessionsResponse,
+    PostAuthRevokeSessionData,
+    PostAuthRevokeSessionError,
+    PostAuthRevokeSessionResponse,
+    PostAuthRevokeSessionsData,
+    PostAuthRevokeSessionsError,
+    PostAuthRevokeSessionsResponse,
+    PostAuthUnlinkAccountData,
+    PostAuthUnlinkAccountError,
+    PostAuthUnlinkAccountResponse,
     PostCallbackByIdData,
     PostCallbackByIdError,
     PostGetAccessTokenData,
@@ -265,27 +358,51 @@ import type {
     PostUnlinkAccountData,
     PostUnlinkAccountError,
     PostUnlinkAccountResponse,
+    RequestPasswordReset2Data,
+    RequestPasswordReset2Error,
+    RequestPasswordReset2Response,
     RequestPasswordResetData,
     RequestPasswordResetError,
     RequestPasswordResetResponse,
+    ResetPassword2Data,
+    ResetPassword2Error,
+    ResetPassword2Response,
+    ResetPasswordCallback2Data,
+    ResetPasswordCallback2Error,
+    ResetPasswordCallback2Response,
     ResetPasswordCallbackData,
     ResetPasswordCallbackError,
     ResetPasswordCallbackResponse,
     ResetPasswordData,
     ResetPasswordError,
     ResetPasswordResponse,
+    SendVerificationEmail2Data,
+    SendVerificationEmail2Error,
+    SendVerificationEmail2Response,
     SendVerificationEmailData,
     SendVerificationEmailError,
     SendVerificationEmailResponse,
+    SignInEmail2Data,
+    SignInEmail2Error,
+    SignInEmail2Response,
     SignInEmailData,
     SignInEmailError,
     SignInEmailResponse,
+    SignOut2Data,
+    SignOut2Error,
+    SignOut2Response,
     SignOutData,
     SignOutError,
     SignOutResponse,
+    SignUpWithEmailAndPassword2Data,
+    SignUpWithEmailAndPassword2Error,
+    SignUpWithEmailAndPassword2Response,
     SignUpWithEmailAndPasswordData,
     SignUpWithEmailAndPasswordError,
     SignUpWithEmailAndPasswordResponse,
+    SocialSignIn2Data,
+    SocialSignIn2Error,
+    SocialSignIn2Response,
     SocialSignInData,
     SocialSignInError,
     SocialSignInResponse,
@@ -307,6 +424,9 @@ import type {
     UpdateImportData,
     UpdateImportError,
     UpdateImportResponse2,
+    UpdateSession2Data,
+    UpdateSession2Error,
+    UpdateSession2Response,
     UpdateSessionData,
     UpdateSessionError,
     UpdateSessionResponse,
@@ -319,9 +439,15 @@ import type {
     UpdateTransactionData,
     UpdateTransactionError,
     UpdateTransactionResponse2,
+    UpdateUser2Data,
+    UpdateUser2Error,
+    UpdateUser2Response,
     UpdateUserData,
     UpdateUserError,
     UpdateUserResponse2,
+    VerifyPassword2Data,
+    VerifyPassword2Error,
+    VerifyPassword2Response,
     VerifyPasswordData,
     VerifyPasswordError,
     VerifyPasswordResponse
@@ -2296,3 +2422,732 @@ export const updateAuthenticatedUser2Mutation = (
     }
     return mutationOptions
 }
+
+/**
+ * Sign in with a social provider
+ */
+export const socialSignIn2Mutation = (
+    options?: Partial<Options<SocialSignIn2Data>>
+): UseMutationOptions<SocialSignIn2Response, SocialSignIn2Error, Options<SocialSignIn2Data>> => {
+    const mutationOptions: UseMutationOptions<SocialSignIn2Response, SocialSignIn2Error, Options<SocialSignIn2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await socialSignIn2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAuthCallbackByIdQueryKey = (options?: Options<GetAuthCallbackByIdData>) =>
+    createQueryKey('getAuthCallbackById', options)
+
+export const getAuthCallbackByIdOptions = (options?: Options<GetAuthCallbackByIdData>) =>
+    queryOptions<unknown, GetAuthCallbackByIdError, unknown, ReturnType<typeof getAuthCallbackByIdQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthCallbackById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthCallbackByIdQueryKey(options)
+    })
+
+export const postAuthCallbackByIdMutation = (
+    options?: Partial<Options<PostAuthCallbackByIdData>>
+): UseMutationOptions<unknown, PostAuthCallbackByIdError, Options<PostAuthCallbackByIdData>> => {
+    const mutationOptions: UseMutationOptions<unknown, PostAuthCallbackByIdError, Options<PostAuthCallbackByIdData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthCallbackById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getSession3QueryKey = (options?: Options<GetSession3Data>) => createQueryKey('getSession3', options)
+
+/**
+ * Get the current session
+ */
+export const getSession3Options = (options?: Options<GetSession3Data>) =>
+    queryOptions<GetSession3Response, GetSession3Error, GetSession3Response, ReturnType<typeof getSession3QueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getSession3({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getSession3QueryKey(options)
+    })
+
+/**
+ * Get the current session
+ */
+export const getSession4Mutation = (
+    options?: Partial<Options<GetSession4Data>>
+): UseMutationOptions<GetSession4Response, GetSession4Error, Options<GetSession4Data>> => {
+    const mutationOptions: UseMutationOptions<GetSession4Response, GetSession4Error, Options<GetSession4Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await getSession4({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Sign out the current user
+ */
+export const signOut2Mutation = (
+    options?: Partial<Options<SignOut2Data>>
+): UseMutationOptions<SignOut2Response, SignOut2Error, Options<SignOut2Data>> => {
+    const mutationOptions: UseMutationOptions<SignOut2Response, SignOut2Error, Options<SignOut2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await signOut2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Sign up a user using email and password
+ */
+export const signUpWithEmailAndPassword2Mutation = (
+    options?: Partial<Options<SignUpWithEmailAndPassword2Data>>
+): UseMutationOptions<
+    SignUpWithEmailAndPassword2Response,
+    SignUpWithEmailAndPassword2Error,
+    Options<SignUpWithEmailAndPassword2Data>
+> => {
+    const mutationOptions: UseMutationOptions<
+        SignUpWithEmailAndPassword2Response,
+        SignUpWithEmailAndPassword2Error,
+        Options<SignUpWithEmailAndPassword2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await signUpWithEmailAndPassword2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Sign in with email and password
+ */
+export const signInEmail2Mutation = (
+    options?: Partial<Options<SignInEmail2Data>>
+): UseMutationOptions<SignInEmail2Response, SignInEmail2Error, Options<SignInEmail2Data>> => {
+    const mutationOptions: UseMutationOptions<SignInEmail2Response, SignInEmail2Error, Options<SignInEmail2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await signInEmail2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Reset the password for a user
+ */
+export const resetPassword2Mutation = (
+    options?: Partial<Options<ResetPassword2Data>>
+): UseMutationOptions<ResetPassword2Response, ResetPassword2Error, Options<ResetPassword2Data>> => {
+    const mutationOptions: UseMutationOptions<
+        ResetPassword2Response,
+        ResetPassword2Error,
+        Options<ResetPassword2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await resetPassword2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Verify the current user's password
+ */
+export const verifyPassword2Mutation = (
+    options?: Partial<Options<VerifyPassword2Data>>
+): UseMutationOptions<VerifyPassword2Response, VerifyPassword2Error, Options<VerifyPassword2Data>> => {
+    const mutationOptions: UseMutationOptions<
+        VerifyPassword2Response,
+        VerifyPassword2Error,
+        Options<VerifyPassword2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await verifyPassword2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAuthVerifyEmailQueryKey = (options: Options<GetAuthVerifyEmailData>) =>
+    createQueryKey('getAuthVerifyEmail', options)
+
+/**
+ * Verify the email of the user
+ */
+export const getAuthVerifyEmailOptions = (options: Options<GetAuthVerifyEmailData>) =>
+    queryOptions<
+        GetAuthVerifyEmailResponse,
+        GetAuthVerifyEmailError,
+        GetAuthVerifyEmailResponse,
+        ReturnType<typeof getAuthVerifyEmailQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthVerifyEmail({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthVerifyEmailQueryKey(options)
+    })
+
+/**
+ * Send a verification email to the user
+ */
+export const sendVerificationEmail2Mutation = (
+    options?: Partial<Options<SendVerificationEmail2Data>>
+): UseMutationOptions<
+    SendVerificationEmail2Response,
+    SendVerificationEmail2Error,
+    Options<SendVerificationEmail2Data>
+> => {
+    const mutationOptions: UseMutationOptions<
+        SendVerificationEmail2Response,
+        SendVerificationEmail2Error,
+        Options<SendVerificationEmail2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await sendVerificationEmail2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const changeEmail2Mutation = (
+    options?: Partial<Options<ChangeEmail2Data>>
+): UseMutationOptions<ChangeEmail2Response, ChangeEmail2Error, Options<ChangeEmail2Data>> => {
+    const mutationOptions: UseMutationOptions<ChangeEmail2Response, ChangeEmail2Error, Options<ChangeEmail2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await changeEmail2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Change the password of the user
+ */
+export const changePassword2Mutation = (
+    options?: Partial<Options<ChangePassword2Data>>
+): UseMutationOptions<ChangePassword2Response, ChangePassword2Error, Options<ChangePassword2Data>> => {
+    const mutationOptions: UseMutationOptions<
+        ChangePassword2Response,
+        ChangePassword2Error,
+        Options<ChangePassword2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await changePassword2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update the current session
+ */
+export const updateSession2Mutation = (
+    options?: Partial<Options<UpdateSession2Data>>
+): UseMutationOptions<UpdateSession2Response, UpdateSession2Error, Options<UpdateSession2Data>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateSession2Response,
+        UpdateSession2Error,
+        Options<UpdateSession2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateSession2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update the current user
+ */
+export const updateUser2Mutation = (
+    options?: Partial<Options<UpdateUser2Data>>
+): UseMutationOptions<UpdateUser2Response, UpdateUser2Error, Options<UpdateUser2Data>> => {
+    const mutationOptions: UseMutationOptions<UpdateUser2Response, UpdateUser2Error, Options<UpdateUser2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateUser2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete the user
+ */
+export const deleteUser2Mutation = (
+    options?: Partial<Options<DeleteUser2Data>>
+): UseMutationOptions<DeleteUser2Response, DeleteUser2Error, Options<DeleteUser2Data>> => {
+    const mutationOptions: UseMutationOptions<DeleteUser2Response, DeleteUser2Error, Options<DeleteUser2Data>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteUser2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Send a password reset email to the user
+ */
+export const requestPasswordReset2Mutation = (
+    options?: Partial<Options<RequestPasswordReset2Data>>
+): UseMutationOptions<
+    RequestPasswordReset2Response,
+    RequestPasswordReset2Error,
+    Options<RequestPasswordReset2Data>
+> => {
+    const mutationOptions: UseMutationOptions<
+        RequestPasswordReset2Response,
+        RequestPasswordReset2Error,
+        Options<RequestPasswordReset2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await requestPasswordReset2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const resetPasswordCallback2QueryKey = (options: Options<ResetPasswordCallback2Data>) =>
+    createQueryKey('resetPasswordCallback2', options)
+
+/**
+ * Redirects the user to the callback URL with the token
+ */
+export const resetPasswordCallback2Options = (options: Options<ResetPasswordCallback2Data>) =>
+    queryOptions<
+        ResetPasswordCallback2Response,
+        ResetPasswordCallback2Error,
+        ResetPasswordCallback2Response,
+        ReturnType<typeof resetPasswordCallback2QueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await resetPasswordCallback2({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: resetPasswordCallback2QueryKey(options)
+    })
+
+export const listUserSessions2QueryKey = (options?: Options<ListUserSessions2Data>) =>
+    createQueryKey('listUserSessions2', options)
+
+/**
+ * List all active sessions for the user
+ */
+export const listUserSessions2Options = (options?: Options<ListUserSessions2Data>) =>
+    queryOptions<
+        ListUserSessions2Response,
+        ListUserSessions2Error,
+        ListUserSessions2Response,
+        ReturnType<typeof listUserSessions2QueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await listUserSessions2({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: listUserSessions2QueryKey(options)
+    })
+
+/**
+ * Revoke a single session
+ */
+export const postAuthRevokeSessionMutation = (
+    options?: Partial<Options<PostAuthRevokeSessionData>>
+): UseMutationOptions<
+    PostAuthRevokeSessionResponse,
+    PostAuthRevokeSessionError,
+    Options<PostAuthRevokeSessionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthRevokeSessionResponse,
+        PostAuthRevokeSessionError,
+        Options<PostAuthRevokeSessionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthRevokeSession({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Revoke all sessions for the user
+ */
+export const postAuthRevokeSessionsMutation = (
+    options?: Partial<Options<PostAuthRevokeSessionsData>>
+): UseMutationOptions<
+    PostAuthRevokeSessionsResponse,
+    PostAuthRevokeSessionsError,
+    Options<PostAuthRevokeSessionsData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthRevokeSessionsResponse,
+        PostAuthRevokeSessionsError,
+        Options<PostAuthRevokeSessionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthRevokeSessions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Revoke all other sessions for the user except the current one
+ */
+export const postAuthRevokeOtherSessionsMutation = (
+    options?: Partial<Options<PostAuthRevokeOtherSessionsData>>
+): UseMutationOptions<
+    PostAuthRevokeOtherSessionsResponse,
+    PostAuthRevokeOtherSessionsError,
+    Options<PostAuthRevokeOtherSessionsData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthRevokeOtherSessionsResponse,
+        PostAuthRevokeOtherSessionsError,
+        Options<PostAuthRevokeOtherSessionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthRevokeOtherSessions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Link a social account to the user
+ */
+export const linkSocialAccount2Mutation = (
+    options?: Partial<Options<LinkSocialAccount2Data>>
+): UseMutationOptions<LinkSocialAccount2Response, LinkSocialAccount2Error, Options<LinkSocialAccount2Data>> => {
+    const mutationOptions: UseMutationOptions<
+        LinkSocialAccount2Response,
+        LinkSocialAccount2Error,
+        Options<LinkSocialAccount2Data>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await linkSocialAccount2({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const listUserAccounts2QueryKey = (options?: Options<ListUserAccounts2Data>) =>
+    createQueryKey('listUserAccounts2', options)
+
+/**
+ * List all accounts linked to the user
+ */
+export const listUserAccounts2Options = (options?: Options<ListUserAccounts2Data>) =>
+    queryOptions<
+        ListUserAccounts2Response,
+        ListUserAccounts2Error,
+        ListUserAccounts2Response,
+        ReturnType<typeof listUserAccounts2QueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await listUserAccounts2({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: listUserAccounts2QueryKey(options)
+    })
+
+export const getAuthDeleteUserCallbackQueryKey = (options?: Options<GetAuthDeleteUserCallbackData>) =>
+    createQueryKey('getAuthDeleteUserCallback', options)
+
+/**
+ * Callback to complete user deletion with verification token
+ */
+export const getAuthDeleteUserCallbackOptions = (options?: Options<GetAuthDeleteUserCallbackData>) =>
+    queryOptions<
+        GetAuthDeleteUserCallbackResponse,
+        GetAuthDeleteUserCallbackError,
+        GetAuthDeleteUserCallbackResponse,
+        ReturnType<typeof getAuthDeleteUserCallbackQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthDeleteUserCallback({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthDeleteUserCallbackQueryKey(options)
+    })
+
+/**
+ * Unlink an account
+ */
+export const postAuthUnlinkAccountMutation = (
+    options?: Partial<Options<PostAuthUnlinkAccountData>>
+): UseMutationOptions<
+    PostAuthUnlinkAccountResponse,
+    PostAuthUnlinkAccountError,
+    Options<PostAuthUnlinkAccountData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthUnlinkAccountResponse,
+        PostAuthUnlinkAccountError,
+        Options<PostAuthUnlinkAccountData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthUnlinkAccount({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Refresh the access token using a refresh token
+ */
+export const postAuthRefreshTokenMutation = (
+    options?: Partial<Options<PostAuthRefreshTokenData>>
+): UseMutationOptions<PostAuthRefreshTokenResponse, PostAuthRefreshTokenError, Options<PostAuthRefreshTokenData>> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthRefreshTokenResponse,
+        PostAuthRefreshTokenError,
+        Options<PostAuthRefreshTokenData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthRefreshToken({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Get a valid access token, doing a refresh if needed
+ */
+export const postAuthGetAccessTokenMutation = (
+    options?: Partial<Options<PostAuthGetAccessTokenData>>
+): UseMutationOptions<
+    PostAuthGetAccessTokenResponse,
+    PostAuthGetAccessTokenError,
+    Options<PostAuthGetAccessTokenData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        PostAuthGetAccessTokenResponse,
+        PostAuthGetAccessTokenError,
+        Options<PostAuthGetAccessTokenData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await postAuthGetAccessToken({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAuthAccountInfoQueryKey = (options?: Options<GetAuthAccountInfoData>) =>
+    createQueryKey('getAuthAccountInfo', options)
+
+/**
+ * Get the account info provided by the provider
+ */
+export const getAuthAccountInfoOptions = (options?: Options<GetAuthAccountInfoData>) =>
+    queryOptions<
+        GetAuthAccountInfoResponse,
+        GetAuthAccountInfoError,
+        GetAuthAccountInfoResponse,
+        ReturnType<typeof getAuthAccountInfoQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthAccountInfo({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthAccountInfoQueryKey(options)
+    })
+
+export const getAuthOkQueryKey = (options?: Options<GetAuthOkData>) => createQueryKey('getAuthOk', options)
+
+/**
+ * Check if the API is working
+ */
+export const getAuthOkOptions = (options?: Options<GetAuthOkData>) =>
+    queryOptions<GetAuthOkResponse, GetAuthOkError, GetAuthOkResponse, ReturnType<typeof getAuthOkQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthOk({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthOkQueryKey(options)
+    })
+
+export const getAuthErrorQueryKey = (options?: Options<GetAuthErrorData>) => createQueryKey('getAuthError', options)
+
+/**
+ * Displays an error page
+ */
+export const getAuthErrorOptions = (options?: Options<GetAuthErrorData>) =>
+    queryOptions<
+        GetAuthErrorResponse,
+        GetAuthErrorError,
+        GetAuthErrorResponse,
+        ReturnType<typeof getAuthErrorQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthError({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthErrorQueryKey(options)
+    })

@@ -100,6 +100,17 @@ const mergeMissingComponents = (
     }
 }
 
+const prefixBetterAuthPaths = (schema: OpenApiDocument, prefix: string): OpenApiDocument => {
+    if (!schema.paths) return schema
+
+    const prefixedPaths: Record<string, unknown> = {}
+    for (const [path, value] of Object.entries(schema.paths)) {
+        prefixedPaths[`${prefix}${path}`] = value
+    }
+
+    return { ...schema, paths: prefixedPaths }
+}
+
 const loadBetterAuthOpenApi = (): OpenApiDocument | null => {
     try {
         if (!fs.existsSync(BETTER_AUTH_SCHEMA_PATH)) {
@@ -108,9 +119,10 @@ const loadBetterAuthOpenApi = (): OpenApiDocument | null => {
 
         const file = fs.readFileSync(BETTER_AUTH_SCHEMA_PATH, 'utf8')
         const schema = JSON.parse(file) as OpenApiDocument
+        const prefixed = prefixBetterAuthPaths(schema, '/auth')
 
         console.log('✅ Loaded Better Auth OpenAPI schema from cache')
-        return schema
+        return prefixed
     } catch (error) {
         console.warn('⚠️  Better Auth OpenAPI schema not available:', error instanceof Error ? error.message : error)
         return null

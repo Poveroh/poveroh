@@ -5957,3 +5957,2267 @@ export type UpdateAuthenticatedUser2Responses = {
 
 export type UpdateAuthenticatedUser2Response =
     UpdateAuthenticatedUser2Responses[keyof UpdateAuthenticatedUser2Responses]
+
+export type SocialSignIn2Data = {
+    body: {
+        /**
+         * Callback URL to redirect to after the user has signed in
+         */
+        callbackURL?: unknown
+        newUserCallbackURL?: unknown
+        /**
+         * Callback URL to redirect to if an error happens
+         */
+        errorCallbackURL?: unknown
+        provider: string
+        /**
+         * Disable automatic redirection to the provider. Useful for handling the redirection yourself
+         */
+        disableRedirect?: unknown
+        idToken?: unknown
+        /**
+         * Array of scopes to request from the provider. This will override the default scopes passed.
+         */
+        scopes?: unknown
+        /**
+         * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider
+         */
+        requestSignUp?: unknown
+        /**
+         * The login hint to use for the authorization code request
+         */
+        loginHint?: unknown
+        additionalData?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/sign-in/social'
+}
+
+export type SocialSignIn2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type SocialSignIn2Error = SocialSignIn2Errors[keyof SocialSignIn2Errors]
+
+export type SocialSignIn2Responses = {
+    /**
+     * Session response when idToken is provided
+     */
+    200: {
+        token: string
+        user: User
+        url?: string
+        redirect: false
+    }
+}
+
+export type SocialSignIn2Response = SocialSignIn2Responses[keyof SocialSignIn2Responses]
+
+export type GetAuthCallbackByIdData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/callback/{id}'
+}
+
+export type GetAuthCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthCallbackByIdError = GetAuthCallbackByIdErrors[keyof GetAuthCallbackByIdErrors]
+
+export type PostAuthCallbackByIdData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/callback/{id}'
+}
+
+export type PostAuthCallbackByIdErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthCallbackByIdError = PostAuthCallbackByIdErrors[keyof PostAuthCallbackByIdErrors]
+
+export type GetSession3Data = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/get-session'
+}
+
+export type GetSession3Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetSession3Error = GetSession3Errors[keyof GetSession3Errors]
+
+export type GetSession3Responses = {
+    /**
+     * Success
+     */
+    200: {
+        session: Session
+        user: User
+    } | null
+}
+
+export type GetSession3Response = GetSession3Responses[keyof GetSession3Responses]
+
+export type GetSession4Data = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/get-session'
+}
+
+export type GetSession4Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetSession4Error = GetSession4Errors[keyof GetSession4Errors]
+
+export type GetSession4Responses = {
+    /**
+     * Success
+     */
+    200: {
+        session: Session
+        user: User
+    } | null
+}
+
+export type GetSession4Response = GetSession4Responses[keyof GetSession4Responses]
+
+export type SignOut2Data = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/sign-out'
+}
+
+export type SignOut2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type SignOut2Error = SignOut2Errors[keyof SignOut2Errors]
+
+export type SignOut2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        success?: boolean
+    }
+}
+
+export type SignOut2Response = SignOut2Responses[keyof SignOut2Responses]
+
+export type SignUpWithEmailAndPassword2Data = {
+    body?: {
+        /**
+         * The name of the user
+         */
+        name: string
+        /**
+         * The email of the user
+         */
+        email: string
+        /**
+         * The password of the user
+         */
+        password: string
+        /**
+         * The profile image URL of the user
+         */
+        image?: string
+        /**
+         * The URL to use for email verification callback
+         */
+        callbackURL?: string
+        /**
+         * If this is false, the session will not be remembered. Default is `true`.
+         */
+        rememberMe?: boolean
+    }
+    path?: never
+    query?: never
+    url: '/auth/sign-up/email'
+}
+
+export type SignUpWithEmailAndPassword2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Unprocessable Entity. User already exists or failed to create user.
+     */
+    422: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type SignUpWithEmailAndPassword2Error =
+    SignUpWithEmailAndPassword2Errors[keyof SignUpWithEmailAndPassword2Errors]
+
+export type SignUpWithEmailAndPassword2Responses = {
+    /**
+     * Successfully created user
+     */
+    200: {
+        /**
+         * Authentication token for the session
+         */
+        token?: string | null
+        user: {
+            /**
+             * The unique identifier of the user
+             */
+            id: string
+            /**
+             * The email address of the user
+             */
+            email: string
+            /**
+             * The name of the user
+             */
+            name: string
+            /**
+             * The profile image URL of the user
+             */
+            image?: string | null
+            /**
+             * Whether the email has been verified
+             */
+            emailVerified: boolean
+            /**
+             * When the user was created
+             */
+            createdAt: string
+            /**
+             * When the user was last updated
+             */
+            updatedAt: string
+        }
+    }
+}
+
+export type SignUpWithEmailAndPassword2Response =
+    SignUpWithEmailAndPassword2Responses[keyof SignUpWithEmailAndPassword2Responses]
+
+export type SignInEmail2Data = {
+    body: {
+        /**
+         * Email of the user
+         */
+        email: string
+        /**
+         * Password of the user
+         */
+        password: string
+        /**
+         * Callback URL to use as a redirect for email verification
+         */
+        callbackURL?: unknown
+        /**
+         * If this is false, the session will not be remembered. Default is `true`.
+         */
+        rememberMe?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/sign-in/email'
+}
+
+export type SignInEmail2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type SignInEmail2Error = SignInEmail2Errors[keyof SignInEmail2Errors]
+
+export type SignInEmail2Responses = {
+    /**
+     * Session response when idToken is provided
+     */
+    200: {
+        redirect: false
+        /**
+         * Session token
+         */
+        token: string
+        url?: string | null
+        user: User
+    }
+}
+
+export type SignInEmail2Response = SignInEmail2Responses[keyof SignInEmail2Responses]
+
+export type ResetPassword2Data = {
+    body: {
+        /**
+         * The new password to set
+         */
+        newPassword: string
+        /**
+         * The token to reset the password
+         */
+        token?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/reset-password'
+}
+
+export type ResetPassword2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ResetPassword2Error = ResetPassword2Errors[keyof ResetPassword2Errors]
+
+export type ResetPassword2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        status?: boolean
+    }
+}
+
+export type ResetPassword2Response = ResetPassword2Responses[keyof ResetPassword2Responses]
+
+export type VerifyPassword2Data = {
+    body: {
+        /**
+         * The password to verify
+         */
+        password: string
+    }
+    path?: never
+    query?: never
+    url: '/auth/verify-password'
+}
+
+export type VerifyPassword2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type VerifyPassword2Error = VerifyPassword2Errors[keyof VerifyPassword2Errors]
+
+export type VerifyPassword2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        status?: boolean
+    }
+}
+
+export type VerifyPassword2Response = VerifyPassword2Responses[keyof VerifyPassword2Responses]
+
+export type GetAuthVerifyEmailData = {
+    body?: never
+    path?: never
+    query: {
+        /**
+         * The token to verify the email
+         */
+        token: string
+        /**
+         * The URL to redirect to after email verification
+         */
+        callbackURL?: string
+    }
+    url: '/auth/verify-email'
+}
+
+export type GetAuthVerifyEmailErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthVerifyEmailError = GetAuthVerifyEmailErrors[keyof GetAuthVerifyEmailErrors]
+
+export type GetAuthVerifyEmailResponses = {
+    /**
+     * Success
+     */
+    200: {
+        user: User
+        /**
+         * Indicates if the email was verified successfully
+         */
+        status: boolean
+    }
+}
+
+export type GetAuthVerifyEmailResponse = GetAuthVerifyEmailResponses[keyof GetAuthVerifyEmailResponses]
+
+export type SendVerificationEmail2Data = {
+    body?: {
+        /**
+         * The email to send the verification email to
+         */
+        email: string
+        /**
+         * The URL to use for email verification callback
+         */
+        callbackURL?: string | null
+    }
+    path?: never
+    query?: never
+    url: '/auth/send-verification-email'
+}
+
+export type SendVerificationEmail2Errors = {
+    /**
+     * Bad Request
+     */
+    400: {
+        /**
+         * Error message
+         */
+        message?: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type SendVerificationEmail2Error = SendVerificationEmail2Errors[keyof SendVerificationEmail2Errors]
+
+export type SendVerificationEmail2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        /**
+         * Indicates if the email was sent successfully
+         */
+        status?: boolean
+    }
+}
+
+export type SendVerificationEmail2Response = SendVerificationEmail2Responses[keyof SendVerificationEmail2Responses]
+
+export type ChangeEmail2Data = {
+    body: {
+        /**
+         * The new email address to set must be a valid email address
+         */
+        newEmail: string
+        /**
+         * The URL to redirect to after email verification
+         */
+        callbackURL?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/change-email'
+}
+
+export type ChangeEmail2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ChangeEmail2Error = ChangeEmail2Errors[keyof ChangeEmail2Errors]
+
+export type ChangeEmail2Responses = {
+    /**
+     * Email change request processed successfully
+     */
+    200: {
+        user?: User
+        /**
+         * Indicates if the request was successful
+         */
+        status: boolean
+        /**
+         * Status message of the email change process
+         */
+        message?: 'Email updated' | 'Verification email sent'
+    }
+}
+
+export type ChangeEmail2Response = ChangeEmail2Responses[keyof ChangeEmail2Responses]
+
+export type ChangePassword2Data = {
+    body: {
+        /**
+         * The new password to set
+         */
+        newPassword: string
+        /**
+         * The current password is required
+         */
+        currentPassword: string
+        /**
+         * Must be a boolean value
+         */
+        revokeOtherSessions?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/change-password'
+}
+
+export type ChangePassword2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ChangePassword2Error = ChangePassword2Errors[keyof ChangePassword2Errors]
+
+export type ChangePassword2Responses = {
+    /**
+     * Password successfully changed
+     */
+    200: {
+        /**
+         * New session token if other sessions were revoked
+         */
+        token?: string | null
+        user: {
+            /**
+             * The unique identifier of the user
+             */
+            id: string
+            /**
+             * The email address of the user
+             */
+            email: string
+            /**
+             * The name of the user
+             */
+            name: string
+            /**
+             * The profile image URL of the user
+             */
+            image?: string | null
+            /**
+             * Whether the email has been verified
+             */
+            emailVerified: boolean
+            /**
+             * When the user was created
+             */
+            createdAt: string
+            /**
+             * When the user was last updated
+             */
+            updatedAt: string
+        }
+    }
+}
+
+export type ChangePassword2Response = ChangePassword2Responses[keyof ChangePassword2Responses]
+
+export type UpdateSession2Data = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/update-session'
+}
+
+export type UpdateSession2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type UpdateSession2Error = UpdateSession2Errors[keyof UpdateSession2Errors]
+
+export type UpdateSession2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        session?: Session
+    }
+}
+
+export type UpdateSession2Response = UpdateSession2Responses[keyof UpdateSession2Responses]
+
+export type UpdateUser2Data = {
+    body?: {
+        /**
+         * The name of the user
+         */
+        name?: string
+        /**
+         * The image of the user
+         */
+        image?: string | null
+    }
+    path?: never
+    query?: never
+    url: '/auth/update-user'
+}
+
+export type UpdateUser2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type UpdateUser2Error = UpdateUser2Errors[keyof UpdateUser2Errors]
+
+export type UpdateUser2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        user?: User
+    }
+}
+
+export type UpdateUser2Response = UpdateUser2Responses[keyof UpdateUser2Responses]
+
+export type DeleteUser2Data = {
+    body?: {
+        /**
+         * The callback URL to redirect to after the user is deleted
+         */
+        callbackURL?: string
+        /**
+         * The user's password. Required if session is not fresh
+         */
+        password?: string
+        /**
+         * The deletion verification token
+         */
+        token?: string
+    }
+    path?: never
+    query?: never
+    url: '/auth/delete-user'
+}
+
+export type DeleteUser2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type DeleteUser2Error = DeleteUser2Errors[keyof DeleteUser2Errors]
+
+export type DeleteUser2Responses = {
+    /**
+     * User deletion processed successfully
+     */
+    200: {
+        /**
+         * Indicates if the operation was successful
+         */
+        success: boolean
+        /**
+         * Status message of the deletion process
+         */
+        message: 'User deleted' | 'Verification email sent'
+    }
+}
+
+export type DeleteUser2Response = DeleteUser2Responses[keyof DeleteUser2Responses]
+
+export type RequestPasswordReset2Data = {
+    body: {
+        /**
+         * The email address of the user to send a password reset email to
+         */
+        email: string
+        /**
+         * The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN
+         */
+        redirectTo?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/request-password-reset'
+}
+
+export type RequestPasswordReset2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type RequestPasswordReset2Error = RequestPasswordReset2Errors[keyof RequestPasswordReset2Errors]
+
+export type RequestPasswordReset2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        status?: boolean
+        message?: string
+    }
+}
+
+export type RequestPasswordReset2Response = RequestPasswordReset2Responses[keyof RequestPasswordReset2Responses]
+
+export type ResetPasswordCallback2Data = {
+    body?: never
+    path: {
+        /**
+         * The token to reset the password
+         */
+        token: string
+    }
+    query: {
+        /**
+         * The URL to redirect the user to reset their password
+         */
+        callbackURL: string
+    }
+    url: '/auth/reset-password/{token}'
+}
+
+export type ResetPasswordCallback2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ResetPasswordCallback2Error = ResetPasswordCallback2Errors[keyof ResetPasswordCallback2Errors]
+
+export type ResetPasswordCallback2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        token?: string
+    }
+}
+
+export type ResetPasswordCallback2Response = ResetPasswordCallback2Responses[keyof ResetPasswordCallback2Responses]
+
+export type ListUserSessions2Data = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/list-sessions'
+}
+
+export type ListUserSessions2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ListUserSessions2Error = ListUserSessions2Errors[keyof ListUserSessions2Errors]
+
+export type ListUserSessions2Responses = {
+    /**
+     * Success
+     */
+    200: Array<Session>
+}
+
+export type ListUserSessions2Response = ListUserSessions2Responses[keyof ListUserSessions2Responses]
+
+export type PostAuthRevokeSessionData = {
+    body?: {
+        /**
+         * The token to revoke
+         */
+        token: string
+    }
+    path?: never
+    query?: never
+    url: '/auth/revoke-session'
+}
+
+export type PostAuthRevokeSessionErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthRevokeSessionError = PostAuthRevokeSessionErrors[keyof PostAuthRevokeSessionErrors]
+
+export type PostAuthRevokeSessionResponses = {
+    /**
+     * Success
+     */
+    200: {
+        /**
+         * Indicates if the session was revoked successfully
+         */
+        status: boolean
+    }
+}
+
+export type PostAuthRevokeSessionResponse = PostAuthRevokeSessionResponses[keyof PostAuthRevokeSessionResponses]
+
+export type PostAuthRevokeSessionsData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/revoke-sessions'
+}
+
+export type PostAuthRevokeSessionsErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthRevokeSessionsError = PostAuthRevokeSessionsErrors[keyof PostAuthRevokeSessionsErrors]
+
+export type PostAuthRevokeSessionsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        /**
+         * Indicates if all sessions were revoked successfully
+         */
+        status: boolean
+    }
+}
+
+export type PostAuthRevokeSessionsResponse = PostAuthRevokeSessionsResponses[keyof PostAuthRevokeSessionsResponses]
+
+export type PostAuthRevokeOtherSessionsData = {
+    body?: {
+        [key: string]: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/revoke-other-sessions'
+}
+
+export type PostAuthRevokeOtherSessionsErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthRevokeOtherSessionsError =
+    PostAuthRevokeOtherSessionsErrors[keyof PostAuthRevokeOtherSessionsErrors]
+
+export type PostAuthRevokeOtherSessionsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        /**
+         * Indicates if all other sessions were revoked successfully
+         */
+        status: boolean
+    }
+}
+
+export type PostAuthRevokeOtherSessionsResponse =
+    PostAuthRevokeOtherSessionsResponses[keyof PostAuthRevokeOtherSessionsResponses]
+
+export type LinkSocialAccount2Data = {
+    body: {
+        /**
+         * The URL to redirect to after the user has signed in
+         */
+        callbackURL?: unknown
+        provider: string
+        idToken?: unknown
+        requestSignUp?: unknown
+        /**
+         * Additional scopes to request from the provider
+         */
+        scopes?: unknown
+        /**
+         * The URL to redirect to if there is an error during the link process
+         */
+        errorCallbackURL?: unknown
+        /**
+         * Disable automatic redirection to the provider. Useful for handling the redirection yourself
+         */
+        disableRedirect?: unknown
+        additionalData?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/link-social'
+}
+
+export type LinkSocialAccount2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type LinkSocialAccount2Error = LinkSocialAccount2Errors[keyof LinkSocialAccount2Errors]
+
+export type LinkSocialAccount2Responses = {
+    /**
+     * Success
+     */
+    200: {
+        /**
+         * The authorization URL to redirect the user to
+         */
+        url?: string
+        /**
+         * Indicates if the user should be redirected to the authorization URL
+         */
+        redirect: boolean
+        status?: boolean
+    }
+}
+
+export type LinkSocialAccount2Response = LinkSocialAccount2Responses[keyof LinkSocialAccount2Responses]
+
+export type ListUserAccounts2Data = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/list-accounts'
+}
+
+export type ListUserAccounts2Errors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type ListUserAccounts2Error = ListUserAccounts2Errors[keyof ListUserAccounts2Errors]
+
+export type ListUserAccounts2Responses = {
+    /**
+     * Success
+     */
+    200: Array<{
+        id: string
+        providerId: string
+        createdAt: string
+        updatedAt: string
+        accountId: string
+        userId: string
+        scopes: Array<string>
+    }>
+}
+
+export type ListUserAccounts2Response = ListUserAccounts2Responses[keyof ListUserAccounts2Responses]
+
+export type GetAuthDeleteUserCallbackData = {
+    body?: never
+    path?: never
+    query?: {
+        /**
+         * The token to verify the deletion request
+         */
+        token?: string
+        /**
+         * The URL to redirect to after deletion
+         */
+        callbackURL?: unknown
+    }
+    url: '/auth/delete-user/callback'
+}
+
+export type GetAuthDeleteUserCallbackErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthDeleteUserCallbackError = GetAuthDeleteUserCallbackErrors[keyof GetAuthDeleteUserCallbackErrors]
+
+export type GetAuthDeleteUserCallbackResponses = {
+    /**
+     * User successfully deleted
+     */
+    200: {
+        /**
+         * Indicates if the deletion was successful
+         */
+        success: boolean
+        /**
+         * Confirmation message
+         */
+        message: 'User deleted'
+    }
+}
+
+export type GetAuthDeleteUserCallbackResponse =
+    GetAuthDeleteUserCallbackResponses[keyof GetAuthDeleteUserCallbackResponses]
+
+export type PostAuthUnlinkAccountData = {
+    body: {
+        providerId: string
+        accountId?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/unlink-account'
+}
+
+export type PostAuthUnlinkAccountErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthUnlinkAccountError = PostAuthUnlinkAccountErrors[keyof PostAuthUnlinkAccountErrors]
+
+export type PostAuthUnlinkAccountResponses = {
+    /**
+     * Success
+     */
+    200: {
+        status?: boolean
+    }
+}
+
+export type PostAuthUnlinkAccountResponse = PostAuthUnlinkAccountResponses[keyof PostAuthUnlinkAccountResponses]
+
+export type PostAuthRefreshTokenData = {
+    body: {
+        /**
+         * The provider ID for the OAuth provider
+         */
+        providerId: string
+        /**
+         * The account ID associated with the refresh token
+         */
+        accountId?: unknown
+        /**
+         * The user ID associated with the account
+         */
+        userId?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/refresh-token'
+}
+
+export type PostAuthRefreshTokenErrors = {
+    /**
+     * Invalid refresh token or provider configuration
+     */
+    400: unknown
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthRefreshTokenError = PostAuthRefreshTokenErrors[keyof PostAuthRefreshTokenErrors]
+
+export type PostAuthRefreshTokenResponses = {
+    /**
+     * Access token refreshed successfully
+     */
+    200: {
+        tokenType?: string
+        idToken?: string
+        accessToken?: string
+        refreshToken?: string
+        accessTokenExpiresAt?: string
+        refreshTokenExpiresAt?: string
+    }
+}
+
+export type PostAuthRefreshTokenResponse = PostAuthRefreshTokenResponses[keyof PostAuthRefreshTokenResponses]
+
+export type PostAuthGetAccessTokenData = {
+    body: {
+        /**
+         * The provider ID for the OAuth provider
+         */
+        providerId: string
+        /**
+         * The account ID associated with the refresh token
+         */
+        accountId?: unknown
+        /**
+         * The user ID associated with the account
+         */
+        userId?: unknown
+    }
+    path?: never
+    query?: never
+    url: '/auth/get-access-token'
+}
+
+export type PostAuthGetAccessTokenErrors = {
+    /**
+     * Invalid refresh token or provider configuration
+     */
+    400: unknown
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type PostAuthGetAccessTokenError = PostAuthGetAccessTokenErrors[keyof PostAuthGetAccessTokenErrors]
+
+export type PostAuthGetAccessTokenResponses = {
+    /**
+     * A Valid access token
+     */
+    200: {
+        tokenType?: string
+        idToken?: string
+        accessToken?: string
+        accessTokenExpiresAt?: string
+    }
+}
+
+export type PostAuthGetAccessTokenResponse = PostAuthGetAccessTokenResponses[keyof PostAuthGetAccessTokenResponses]
+
+export type GetAuthAccountInfoData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/account-info'
+}
+
+export type GetAuthAccountInfoErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthAccountInfoError = GetAuthAccountInfoErrors[keyof GetAuthAccountInfoErrors]
+
+export type GetAuthAccountInfoResponses = {
+    /**
+     * Success
+     */
+    200: {
+        user: {
+            id: string
+            name?: string
+            email?: string
+            image?: string
+            emailVerified: boolean
+        }
+        data: {
+            [key: string]: unknown
+        }
+    }
+}
+
+export type GetAuthAccountInfoResponse = GetAuthAccountInfoResponses[keyof GetAuthAccountInfoResponses]
+
+export type GetAuthOkData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/ok'
+}
+
+export type GetAuthOkErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthOkError = GetAuthOkErrors[keyof GetAuthOkErrors]
+
+export type GetAuthOkResponses = {
+    /**
+     * API is working
+     */
+    200: {
+        /**
+         * Indicates if the API is working
+         */
+        ok: boolean
+    }
+}
+
+export type GetAuthOkResponse = GetAuthOkResponses[keyof GetAuthOkResponses]
+
+export type GetAuthErrorData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/auth/error'
+}
+
+export type GetAuthErrorErrors = {
+    /**
+     * Bad Request. Usually due to missing parameters, or invalid parameters.
+     */
+    400: {
+        message: string
+    }
+    /**
+     * Unauthorized. Due to missing or invalid authentication.
+     */
+    401: {
+        message: string
+    }
+    /**
+     * Forbidden. You do not have permission to access this resource or to perform this action.
+     */
+    403: {
+        message?: string
+    }
+    /**
+     * Not Found. The requested resource was not found.
+     */
+    404: {
+        message?: string
+    }
+    /**
+     * Too Many Requests. You have exceeded the rate limit. Try again later.
+     */
+    429: {
+        message?: string
+    }
+    /**
+     * Internal Server Error. This is a problem with the server that you cannot fix.
+     */
+    500: {
+        message?: string
+    }
+}
+
+export type GetAuthErrorError = GetAuthErrorErrors[keyof GetAuthErrorErrors]
+
+export type GetAuthErrorResponses = {
+    /**
+     * The HTML content of the error page
+     */
+    200: string
+}
+
+export type GetAuthErrorResponse = GetAuthErrorResponses[keyof GetAuthErrorResponses]
