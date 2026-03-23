@@ -5,15 +5,15 @@
 import type { ImportTransactionDataResponse } from './ImportTransactionDataResponse'
 export type GetImportTransactionsResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<ImportTransactionDataResponse>
+    data: Array<ImportTransactionDataResponse>
 }

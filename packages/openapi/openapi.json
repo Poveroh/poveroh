@@ -397,10 +397,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -415,7 +412,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetCategoryResponse": {
@@ -423,10 +422,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -444,7 +440,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateCategoryRequest": {
@@ -479,10 +477,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -500,7 +495,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateCategoryRequest": {
@@ -530,10 +527,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -545,7 +539,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "DeleteCategoryResponse": {
@@ -553,10 +548,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -568,7 +560,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "CategoryParamsId": {
@@ -784,10 +777,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -805,7 +795,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateDashboardLayoutRequest": {
@@ -831,10 +823,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -846,7 +835,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "TimezoneEnum": {
@@ -1551,10 +1541,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -1569,7 +1556,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetFinancialAccountResponse": {
@@ -1577,10 +1566,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -1598,7 +1584,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateFinancialAccountRequest": {
@@ -1652,10 +1640,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -1673,7 +1658,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateFinancialAccountRequest": {
@@ -1705,10 +1692,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -1720,7 +1704,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "DeleteFinancialAccountResponse": {
@@ -1728,10 +1713,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -1743,7 +1725,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "FinancialAccountParamsId": {
@@ -2256,10 +2239,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2274,7 +2254,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetImportResponse": {
@@ -2282,10 +2264,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2303,7 +2282,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetImportTransactionsResponse": {
@@ -2311,10 +2292,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2329,7 +2307,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateImportRequest": {
@@ -2368,10 +2348,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2389,7 +2366,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateImportRequest": {
@@ -2405,10 +2384,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2426,7 +2402,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "DeleteImportResponse": {
@@ -2434,10 +2412,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2449,7 +2424,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "ImportParamsId": {
@@ -2545,10 +2521,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2566,7 +2539,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "NetWorthEvolutionFilters": {
@@ -2603,10 +2578,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2614,7 +2586,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "SnapshotAccountBalance": {
@@ -2833,10 +2806,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2854,7 +2824,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "StatusResponse": {
@@ -2925,10 +2897,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2943,7 +2912,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetSubcategoryResponse": {
@@ -2951,10 +2922,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -2972,7 +2940,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateSubcategoryRequest": {
@@ -3004,10 +2974,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3025,7 +2992,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateSubcategoryRequest": {
@@ -3048,10 +3017,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3063,7 +3029,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "DeleteSubcategoryResponse": {
@@ -3071,10 +3038,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3086,7 +3050,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "SubcategoryParamsId": {
@@ -3330,10 +3295,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3348,7 +3310,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetSubscriptionResponse": {
@@ -3356,10 +3320,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3377,7 +3338,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateSubscriptionRequest": {
@@ -3461,10 +3424,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3482,7 +3442,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateSubscriptionRequest": {
@@ -3533,10 +3495,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3548,7 +3507,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "DeleteSubscriptionResponse": {
@@ -3556,10 +3516,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -3571,7 +3528,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "SubscriptionParamsId": {
@@ -3996,10 +3954,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4008,13 +3963,15 @@
                     "data": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/TransactionDataResponse"
+                            "$ref": "#/components/schemas/TransactionData"
                         },
                         "description": "Response data"
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "GetTransactionResponse": {
@@ -4022,10 +3979,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4034,7 +3988,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/TransactionDataResponse"
+                                "$ref": "#/components/schemas/TransactionData"
                             },
                             {
                                 "description": "Response data"
@@ -4043,7 +3997,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "CreateTransactionRequest": {
@@ -4110,10 +4066,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4122,7 +4075,7 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/TransactionDataResponse"
+                                "$ref": "#/components/schemas/TransactionData"
                             },
                             {
                                 "description": "Response data"
@@ -4131,7 +4084,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateTransactionRequest": {
@@ -4170,10 +4125,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4185,7 +4137,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "DeleteTransactionResponse": {
@@ -4193,10 +4146,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4208,7 +4158,8 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message"
                 ]
             },
             "TransactionParamsId": {
@@ -4354,10 +4305,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4375,7 +4323,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UpdateUserRequest": {
@@ -4443,10 +4393,7 @@
                 "properties": {
                     "success": {
                         "type": "boolean",
-                        "enum": [
-                            true
-                        ],
-                        "description": "Always true for success responses"
+                        "description": "Indicates if the request was successful"
                     },
                     "message": {
                         "type": "string",
@@ -4464,7 +4411,9 @@
                     }
                 },
                 "required": [
-                    "success"
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "UserSession": {

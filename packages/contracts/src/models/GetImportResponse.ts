@@ -5,12 +5,12 @@
 import type { ImportData } from './ImportData'
 export type GetImportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: ImportData
+    message: string
+    data: ImportData
 }

@@ -5,12 +5,12 @@
 import type { SubscriptionData } from './SubscriptionData'
 export type CreateSubscriptionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubscriptionData
+    message: string
+    data: SubscriptionData
 }

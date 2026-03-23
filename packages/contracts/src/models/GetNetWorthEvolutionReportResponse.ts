@@ -5,12 +5,12 @@
 import type { NetWorthEvolutionReport } from './NetWorthEvolutionReport'
 export type GetNetWorthEvolutionReportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: NetWorthEvolutionReport
+    message: string
+    data: NetWorthEvolutionReport
 }

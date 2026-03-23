@@ -5,12 +5,12 @@
 import type { CategoryData } from './CategoryData'
 export type CreateCategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: CategoryData
+    message: string
+    data: CategoryData
 }

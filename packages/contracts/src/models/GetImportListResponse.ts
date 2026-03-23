@@ -5,15 +5,15 @@
 import type { ImportData } from './ImportData'
 export type GetImportListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<ImportData>
+    data: Array<ImportData>
 }

@@ -5,12 +5,12 @@
 import type { GetDashboardLayout } from './GetDashboardLayout'
 export type GetDashboardLayoutResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: GetDashboardLayout
+    message: string
+    data: GetDashboardLayout
 }

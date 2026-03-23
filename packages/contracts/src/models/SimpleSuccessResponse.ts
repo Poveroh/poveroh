@@ -4,11 +4,11 @@
 /* eslint-disable */
 export type SimpleSuccessResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
 }

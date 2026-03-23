@@ -5,15 +5,15 @@
 import type { SubscriptionData } from './SubscriptionData'
 export type GetSubscriptionListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<SubscriptionData>
+    data: Array<SubscriptionData>
 }

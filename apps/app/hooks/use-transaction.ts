@@ -1,14 +1,13 @@
 'use client'
 
+import { toast } from '@poveroh/ui/components/sonner'
 import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTransactionStore } from '@/store/transaction.store'
-import { FilterOptions, TransactionFilters } from '@/api/types.gen'
-import type { Transaction } from '@/lib/api-client'
-import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
 import { LoadingState } from '@/types/general'
 import { useCategory } from './use-category'
 import { useFinancialAccount } from './use-account'
+import { useUtils } from './use-utils'
 import {
     createTransactionMutation,
     deleteTransactionMutation,
@@ -18,16 +17,19 @@ import {
     getTransactionsQueryKey,
     updateTransactionMutation
 } from '@/api/@tanstack/react-query.gen'
-
-type GroupedTransactions = Record<string, Transaction[]>
-type ActionItem = {
-    value: 'INCOME' | 'EXPENSES' | 'TRANSFER'
-    label: string
-}
+import {
+    GroupedTransactions,
+    TransactionActionCatalog,
+    TransactionData,
+    FilterOptions,
+    TransactionFilters
+} from '@poveroh/types'
+import { useTranslations } from 'next-intl'
 
 export const useTransaction = () => {
     const queryClient = useQueryClient()
     const t = useTranslations()
+    const { renderItemsLabel } = useUtils()
     const { handleError } = useError()
     const { fetchCategories } = useCategory()
     const { fetchFinancialAccounts } = useFinancialAccount()
@@ -37,10 +39,15 @@ export const useTransaction = () => {
     const createMutation = useMutation({
         ...createTransactionMutation(),
         onSuccess: data => {
-            const transaction = data?.data as Transaction | undefined
+            if (data.message && !data.success) {
+                toast.error(t(data.message))
+            }
+
+            const transaction = data?.data
             if (transaction) {
                 transactionStore.addTransaction(transaction)
             }
+
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
         },
         onError: error => {
@@ -51,9 +58,8 @@ export const useTransaction = () => {
     const updateMutation = useMutation({
         ...updateTransactionMutation(),
         onSuccess: (data, variables) => {
-            const transaction = (data?.data ?? variables.body) as Transaction | undefined
-            if (transaction) {
-                transactionStore.editTransaction(transaction)
+            if (data.message && !data.success) {
+                toast.error(t(data.message))
             }
 
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
@@ -87,9 +93,9 @@ export const useTransaction = () => {
                 })
             )
 
-            if (!response?.success) return null
+            if (!response?.success || !response?.data) return null
 
-            return (response?.data ?? null) as Transaction | null
+            return response?.data
         } catch (error) {
             return handleError(error, 'Error fetching transaction')
         }
@@ -108,10 +114,6 @@ export const useTransaction = () => {
                 await fetchFinancialAccounts()
             }
 
-            if (transactionStore.transactionCacheList.length > 0 && !forceFetch) {
-                return transactionStore.transactionCacheList
-            }
-
             const response = await queryClient.fetchQuery(
                 getTransactionsOptions({
                     query: {
@@ -121,33 +123,30 @@ export const useTransaction = () => {
                 })
             )
 
-            const data = (response?.data ?? []) as Transaction[]
-
             if (append) {
-                transactionStore.appendTransactions(data)
+                transactionStore.appendTransactions(response.data)
             } else {
-                transactionStore.setTransactions(data)
+                transactionStore.setTransactions(response.data)
             }
 
-            return data
+            return response.data
         } catch (error) {
             return handleError(error, 'Error fetching transactions')
         }
     }
 
-    const getActionList = (excludeInternal?: boolean): ActionItem[] => {
-        const actionList = [
-            { value: 'INCOME' as const, label: t('transactions.action.income') },
-            { value: 'EXPENSES' as const, label: t('transactions.action.expenses') },
-            { value: 'TRANSFER' as const, label: t('transactions.action.internalTransfer') }
-        ]
-        return excludeInternal ? actionList.filter(({ value }) => value !== 'TRANSFER') : actionList
+    const getActionList = (excludeInternal?: boolean) => {
+        const actionList = excludeInternal
+            ? TransactionActionCatalog.filter(({ value }) => value !== 'TRANSFER')
+            : TransactionActionCatalog
+
+        return renderItemsLabel(actionList)
     }
 
     const fetchTransactionPaginated = async (
         filters?: TransactionFilters,
         options?: FilterOptions
-    ): Promise<{ data: Transaction[]; total: number } | null> => {
+    ): Promise<{ data: TransactionData[]; total: number } | null> => {
         try {
             const response = await queryClient.fetchQuery(
                 getTransactionsOptions({
@@ -158,8 +157,9 @@ export const useTransaction = () => {
                 })
             )
 
-            const data = (response?.data ?? []) as Transaction[]
-            const total = Number((response as { total?: number } | undefined)?.total ?? data.length)
+            const responsePayload = response?.data as unknown as { data: TransactionData[]; total: number } | undefined
+            const data = responsePayload?.data ?? []
+            const total = Number(responsePayload?.total ?? data.length)
 
             transactionStore.setTransactions(data)
 
@@ -169,7 +169,7 @@ export const useTransaction = () => {
         }
     }
 
-    const groupTransactionsByDate = (transactions: Transaction[]): GroupedTransactions => {
+    const groupTransactionsByDate = (transactions: TransactionData[]): GroupedTransactions => {
         return transactions.reduce((acc, transaction) => {
             const dateKey = transaction.date.slice(0, 10)
             if (!acc[dateKey]) {

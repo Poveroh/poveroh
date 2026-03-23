@@ -5,12 +5,12 @@
 import type { User } from './User'
 export type UpdateUserResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: User
+    message: string
+    data: User
 }

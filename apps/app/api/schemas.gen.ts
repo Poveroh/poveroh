@@ -334,8 +334,7 @@ export const GetCategoryListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -349,7 +348,7 @@ export const GetCategoryListResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetCategoryResponseSchema = {
@@ -357,8 +356,7 @@ export const GetCategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -375,7 +373,7 @@ export const GetCategoryResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateCategoryRequestSchema = {
@@ -407,8 +405,7 @@ export const CreateCategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -425,7 +422,7 @@ export const CreateCategoryResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateCategoryRequestSchema = {
@@ -456,8 +453,7 @@ export const UpdateCategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -468,7 +464,7 @@ export const UpdateCategoryResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const DeleteCategoryResponseSchema = {
@@ -476,8 +472,7 @@ export const DeleteCategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -488,7 +483,7 @@ export const DeleteCategoryResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const CategoryParamsIdSchema = {
@@ -687,8 +682,7 @@ export const GetDashboardLayoutResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -705,7 +699,7 @@ export const GetDashboardLayoutResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateDashboardLayoutRequestSchema = {
@@ -729,8 +723,7 @@ export const UpdateDashboardLayoutResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -741,7 +734,7 @@ export const UpdateDashboardLayoutResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const TimezoneEnumSchema = {
@@ -1393,8 +1386,7 @@ export const GetFinancialAccountListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -1408,7 +1400,7 @@ export const GetFinancialAccountListResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetFinancialAccountResponseSchema = {
@@ -1416,8 +1408,7 @@ export const GetFinancialAccountResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -1434,7 +1425,7 @@ export const GetFinancialAccountResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateFinancialAccountRequestSchema = {
@@ -1482,8 +1473,7 @@ export const CreateFinancialAccountResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -1500,7 +1490,7 @@ export const CreateFinancialAccountResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateFinancialAccountRequestSchema = {
@@ -1533,8 +1523,7 @@ export const UpdateFinancialAccountResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -1545,7 +1534,7 @@ export const UpdateFinancialAccountResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const DeleteFinancialAccountResponseSchema = {
@@ -1553,8 +1542,7 @@ export const DeleteFinancialAccountResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -1565,7 +1553,7 @@ export const DeleteFinancialAccountResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const FinancialAccountParamsIdSchema = {
@@ -2050,8 +2038,7 @@ export const GetImportListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2065,7 +2052,7 @@ export const GetImportListResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetImportResponseSchema = {
@@ -2073,8 +2060,7 @@ export const GetImportResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2091,7 +2077,7 @@ export const GetImportResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetImportTransactionsResponseSchema = {
@@ -2099,8 +2085,7 @@ export const GetImportTransactionsResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2114,7 +2099,7 @@ export const GetImportTransactionsResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateImportRequestSchema = {
@@ -2151,8 +2136,7 @@ export const CreateImportResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2169,7 +2153,7 @@ export const CreateImportResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateImportRequestSchema = {
@@ -2186,8 +2170,7 @@ export const UpdateImportResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2204,7 +2187,7 @@ export const UpdateImportResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const DeleteImportResponseSchema = {
@@ -2212,8 +2195,7 @@ export const DeleteImportResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2224,7 +2206,7 @@ export const DeleteImportResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const ImportParamsIdSchema = {
@@ -2317,8 +2299,7 @@ export const GetNetWorthEvolutionReportResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2335,7 +2316,7 @@ export const GetNetWorthEvolutionReportResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const NetWorthEvolutionFiltersSchema = {
@@ -2374,15 +2355,14 @@ export const SimpleSuccessResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
             description: 'Optional success message'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const SnapshotAccountBalanceSchema = {
@@ -2589,8 +2569,7 @@ export const CreateSnapshotAccountBalanceResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2607,7 +2586,7 @@ export const CreateSnapshotAccountBalanceResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const StatusResponseSchema = {
@@ -2668,8 +2647,7 @@ export const GetSubcategoryListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2683,7 +2661,7 @@ export const GetSubcategoryListResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetSubcategoryResponseSchema = {
@@ -2691,8 +2669,7 @@ export const GetSubcategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2709,7 +2686,7 @@ export const GetSubcategoryResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateSubcategoryRequestSchema = {
@@ -2738,8 +2715,7 @@ export const CreateSubcategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2756,7 +2732,7 @@ export const CreateSubcategoryResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateSubcategoryRequestSchema = {
@@ -2780,8 +2756,7 @@ export const UpdateSubcategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2792,7 +2767,7 @@ export const UpdateSubcategoryResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const DeleteSubcategoryResponseSchema = {
@@ -2800,8 +2775,7 @@ export const DeleteSubcategoryResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -2812,7 +2786,7 @@ export const DeleteSubcategoryResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const SubcategoryParamsIdSchema = {
@@ -3054,8 +3028,7 @@ export const GetSubscriptionListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3069,7 +3042,7 @@ export const GetSubscriptionListResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetSubscriptionResponseSchema = {
@@ -3077,8 +3050,7 @@ export const GetSubscriptionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3095,7 +3067,7 @@ export const GetSubscriptionResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateSubscriptionRequestSchema = {
@@ -3179,8 +3151,7 @@ export const CreateSubscriptionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3197,7 +3168,7 @@ export const CreateSubscriptionResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateSubscriptionRequestSchema = {
@@ -3249,8 +3220,7 @@ export const UpdateSubscriptionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3261,7 +3231,7 @@ export const UpdateSubscriptionResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const DeleteSubscriptionResponseSchema = {
@@ -3269,8 +3239,7 @@ export const DeleteSubscriptionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3281,7 +3250,7 @@ export const DeleteSubscriptionResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const SubscriptionParamsIdSchema = {
@@ -3698,8 +3667,7 @@ export const GetTransactionListResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3708,12 +3676,12 @@ export const GetTransactionListResponseSchema = {
         data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/TransactionDataResponse'
+                $ref: '#/components/schemas/TransactionData'
             },
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const GetTransactionResponseSchema = {
@@ -3721,8 +3689,7 @@ export const GetTransactionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3731,7 +3698,7 @@ export const GetTransactionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/TransactionDataResponse'
+                    $ref: '#/components/schemas/TransactionData'
                 },
                 {
                     description: 'Response data'
@@ -3739,7 +3706,7 @@ export const GetTransactionResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const CreateTransactionRequestSchema = {
@@ -3798,8 +3765,7 @@ export const CreateTransactionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3808,7 +3774,7 @@ export const CreateTransactionResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/TransactionDataResponse'
+                    $ref: '#/components/schemas/TransactionData'
                 },
                 {
                     description: 'Response data'
@@ -3816,7 +3782,7 @@ export const CreateTransactionResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateTransactionRequestSchema = {
@@ -3856,8 +3822,7 @@ export const UpdateTransactionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3868,7 +3833,7 @@ export const UpdateTransactionResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const DeleteTransactionResponseSchema = {
@@ -3876,8 +3841,7 @@ export const DeleteTransactionResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -3888,7 +3852,7 @@ export const DeleteTransactionResponseSchema = {
             description: 'Response data'
         }
     },
-    required: ['success']
+    required: ['success', 'message']
 } as const
 
 export const TransactionParamsIdSchema = {
@@ -4022,8 +3986,7 @@ export const GetUserResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -4040,7 +4003,7 @@ export const GetUserResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UpdateUserRequestSchema = {
@@ -4109,8 +4072,7 @@ export const UpdateUserResponseSchema = {
     properties: {
         success: {
             type: 'boolean',
-            enum: [true],
-            description: 'Always true for success responses'
+            description: 'Indicates if the request was successful'
         },
         message: {
             type: 'string',
@@ -4127,7 +4089,7 @@ export const UpdateUserResponseSchema = {
             ]
         }
     },
-    required: ['success']
+    required: ['success', 'message', 'data']
 } as const
 
 export const UserSessionSchema = {

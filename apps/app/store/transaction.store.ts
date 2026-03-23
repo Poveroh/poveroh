@@ -1,15 +1,15 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import type { Transaction } from '@/lib/api-client'
+import { TransactionData } from '@poveroh/types'
 
 type TransactionStore = {
-    transactionCacheList: Transaction[]
-    addTransaction: (transaction: Transaction) => void
-    appendTransactions: (transactions: Transaction[]) => void
-    editTransaction: (transaction: Transaction) => void
-    setTransactions: (transactions: Transaction[]) => void
+    transactionCacheList: TransactionData[]
+    addTransaction: (transaction: TransactionData) => void
+    appendTransactions: (transactions: TransactionData[]) => void
+    editTransaction: (transaction: TransactionData) => void
+    setTransactions: (transactions: TransactionData[]) => void
     removeTransaction: (transactionId: string) => void
-    getTransaction: (transactionId: string) => Transaction | null
+    getTransaction: (transactionId: string) => TransactionData | null
 }
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({

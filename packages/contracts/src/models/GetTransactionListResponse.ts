@@ -2,18 +2,18 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TransactionDataResponse } from './TransactionDataResponse'
+import type { TransactionData } from './TransactionData'
 export type GetTransactionListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<TransactionDataResponse>
+    data: Array<TransactionData>
 }

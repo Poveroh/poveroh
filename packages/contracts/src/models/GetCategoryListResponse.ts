@@ -5,15 +5,15 @@
 import type { CategoryData } from './CategoryData'
 export type GetCategoryListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<CategoryData>
+    data: Array<CategoryData>
 }

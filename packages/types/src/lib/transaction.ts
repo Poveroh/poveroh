@@ -1,3 +1,5 @@
+import { TransactionData } from './contracts.js'
+
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
 export type ExpensesFormData = {
@@ -38,3 +40,5 @@ export type TransferFormData = {
 }
 
 export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
+
+export type GroupedTransactions = Record<string, TransactionData[]>

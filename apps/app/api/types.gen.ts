@@ -100,29 +100,29 @@ export type CategoryData = {
 
 export type GetCategoryListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<CategoryData>
+    data: Array<CategoryData>
 }
 
 export type GetCategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: CategoryData & unknown
+    message: string
+    data: CategoryData & unknown
 }
 
 export type CreateCategoryRequest = {
@@ -135,14 +135,14 @@ export type CreateCategoryRequest = {
 
 export type CreateCategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: CategoryData & unknown
+    message: string
+    data: CategoryData & unknown
 }
 
 export type UpdateCategoryRequest = {
@@ -155,13 +155,13 @@ export type UpdateCategoryRequest = {
 
 export type UpdateCategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -170,13 +170,13 @@ export type UpdateCategoryResponse = {
 
 export type DeleteCategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -255,14 +255,14 @@ export type GetDashboardLayout = {
 
 export type GetDashboardLayoutResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: GetDashboardLayout & unknown
+    message: string
+    data: GetDashboardLayout & unknown
 }
 
 export type UpdateDashboardLayoutRequest = {
@@ -272,13 +272,13 @@ export type UpdateDashboardLayoutRequest = {
 
 export type UpdateDashboardLayoutResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -832,29 +832,29 @@ export type FinancialAccountData = {
 
 export type GetFinancialAccountListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<FinancialAccountData>
+    data: Array<FinancialAccountData>
 }
 
 export type GetFinancialAccountResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: FinancialAccountData & unknown
+    message: string
+    data: FinancialAccountData & unknown
 }
 
 export type CreateFinancialAccountRequest = {
@@ -872,14 +872,14 @@ export type CreateFinancialAccountMultipartRequest = {
 
 export type CreateFinancialAccountResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: FinancialAccountData & unknown
+    message: string
+    data: FinancialAccountData & unknown
 }
 
 export type UpdateFinancialAccountRequest = {
@@ -893,13 +893,13 @@ export type UpdateFinancialAccountRequest = {
 
 export type UpdateFinancialAccountResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -908,13 +908,13 @@ export type UpdateFinancialAccountResponse = {
 
 export type DeleteFinancialAccountResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1055,44 +1055,44 @@ export type ImportTransactionDataResponse = {
 
 export type GetImportListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<ImportData>
+    data: Array<ImportData>
 }
 
 export type GetImportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: ImportData & unknown
+    message: string
+    data: ImportData & unknown
 }
 
 export type GetImportTransactionsResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<ImportTransactionDataResponse>
+    data: Array<ImportTransactionDataResponse>
 }
 
 export type CreateImportRequest = {
@@ -1106,14 +1106,14 @@ export type CreateImportMultipartRequest = {
 
 export type CreateImportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: ImportData & unknown
+    message: string
+    data: ImportData & unknown
 }
 
 export type UpdateImportRequest = {
@@ -1122,25 +1122,25 @@ export type UpdateImportRequest = {
 
 export type UpdateImportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: ImportData & unknown
+    message: string
+    data: ImportData & unknown
 }
 
 export type DeleteImportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1176,14 +1176,14 @@ export type NetWorthEvolutionReport = {
 
 export type GetNetWorthEvolutionReportResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: NetWorthEvolutionReport & unknown
+    message: string
+    data: NetWorthEvolutionReport & unknown
 }
 
 export type NetWorthEvolutionFilters = {
@@ -1198,13 +1198,13 @@ export type QueryNetWorthEvolutionFilters = {
 
 export type SimpleSuccessResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
 }
 
 export type SnapshotAccountBalance = {
@@ -1260,14 +1260,14 @@ export type CreateSnapshotAccountBalanceRequest = {
 
 export type CreateSnapshotAccountBalanceResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: Snapshot & unknown
+    message: string
+    data: Snapshot & unknown
 }
 
 export type StatusResponse = {
@@ -1289,29 +1289,29 @@ export type SubcategoryData = {
 
 export type GetSubcategoryListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<SubcategoryData>
+    data: Array<SubcategoryData>
 }
 
 export type GetSubcategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubcategoryData & unknown
+    message: string
+    data: SubcategoryData & unknown
 }
 
 export type CreateSubcategoryRequest = {
@@ -1323,14 +1323,14 @@ export type CreateSubcategoryRequest = {
 
 export type CreateSubcategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubcategoryData & unknown
+    message: string
+    data: SubcategoryData & unknown
 }
 
 export type UpdateSubcategoryRequest = {
@@ -1341,13 +1341,13 @@ export type UpdateSubcategoryRequest = {
 
 export type UpdateSubcategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1356,13 +1356,13 @@ export type UpdateSubcategoryResponse = {
 
 export type DeleteSubcategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1443,29 +1443,29 @@ export type SubscriptionData = {
 
 export type GetSubscriptionListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<SubscriptionData>
+    data: Array<SubscriptionData>
 }
 
 export type GetSubscriptionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubscriptionData & unknown
+    message: string
+    data: SubscriptionData & unknown
 }
 
 export type CreateSubscriptionRequest = {
@@ -1490,14 +1490,14 @@ export type CreateSubscriptionMultipartRequest = {
 
 export type CreateSubscriptionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubscriptionData & unknown
+    message: string
+    data: SubscriptionData & unknown
 }
 
 export type UpdateSubscriptionRequest = {
@@ -1517,13 +1517,13 @@ export type UpdateSubscriptionRequest = {
 
 export type UpdateSubscriptionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1532,13 +1532,13 @@ export type UpdateSubscriptionResponse = {
 
 export type DeleteSubscriptionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1662,29 +1662,29 @@ export type TransactionDataResponse = {
 
 export type GetTransactionListResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
-    data?: Array<TransactionDataResponse>
+    data: Array<TransactionData>
 }
 
 export type GetTransactionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: TransactionDataResponse & unknown
+    message: string
+    data: TransactionData & unknown
 }
 
 export type CreateTransactionRequest = {
@@ -1704,14 +1704,14 @@ export type CreateTransactionMultipartRequest = {
 
 export type CreateTransactionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: TransactionDataResponse & unknown
+    message: string
+    data: TransactionData & unknown
 }
 
 export type UpdateTransactionRequest = {
@@ -1726,13 +1726,13 @@ export type UpdateTransactionRequest = {
 
 export type UpdateTransactionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1741,13 +1741,13 @@ export type UpdateTransactionResponse = {
 
 export type DeleteTransactionResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
+    message: string
     /**
      * Response data
      */
@@ -1805,14 +1805,14 @@ export type UserPreferences = {
 
 export type GetUserResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: User & unknown
+    message: string
+    data: User & unknown
 }
 
 export type UpdateUserRequest = {
@@ -1836,14 +1836,14 @@ export type UpdateUserRequest = {
 
 export type UpdateUserResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
-    success: true
+    success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: User & unknown
+    message: string
+    data: User & unknown
 }
 
 export type UserSession = {

@@ -5,12 +5,12 @@
 import type { SubcategoryData } from './SubcategoryData'
 export type GetSubcategoryResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: SubcategoryData
+    message: string
+    data: SubcategoryData
 }

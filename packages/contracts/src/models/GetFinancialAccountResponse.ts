@@ -5,12 +5,12 @@
 import type { FinancialAccountData } from './FinancialAccountData'
 export type GetFinancialAccountResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: FinancialAccountData
+    message: string
+    data: FinancialAccountData
 }

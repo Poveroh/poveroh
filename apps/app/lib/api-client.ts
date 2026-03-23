@@ -3,6 +3,26 @@ import appConfig from '@/config'
 import { authToken } from '@/lib/auth-token'
 import axios, { type AxiosRequestConfig } from 'axios'
 
+const querySerializer = (params: Record<string, unknown>): string => {
+    const parts: string[] = []
+
+    const serialize = (value: unknown, prefix: string) => {
+        if (value === undefined || value === null) return
+        if (Array.isArray(value)) {
+            value.forEach(item => serialize(item, `${prefix}[]`))
+        } else if (typeof value === 'object') {
+            Object.entries(value as Record<string, unknown>).forEach(([key, val]) => {
+                serialize(val, `${prefix}[${key}]`)
+            })
+        } else {
+            parts.push(`${encodeURIComponent(prefix)}=${encodeURIComponent(String(value))}`)
+        }
+    }
+
+    Object.entries(params).forEach(([key, value]) => serialize(value, key))
+    return parts.join('&')
+}
+
 /**
  * Configure axios instance with authentication
  *
@@ -39,6 +59,7 @@ axiosInstance.interceptors.response.use(response => {
 
 client.setConfig({
     baseUrl: appConfig.apiUrl + '/v1',
+    querySerializer,
     fetch: async (url: string | URL | Request, init?: RequestInit) => {
         const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url
 

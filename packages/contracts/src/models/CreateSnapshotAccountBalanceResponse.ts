@@ -5,12 +5,12 @@
 import type { Snapshot } from './Snapshot'
 export type CreateSnapshotAccountBalanceResponse = {
     /**
-     * Always true for success responses
+     * Indicates if the request was successful
      */
     success: boolean
     /**
      * Optional success message
      */
-    message?: string
-    data?: Snapshot
+    message: string
+    data: Snapshot
 }
