@@ -4,7 +4,7 @@ import type { UserSession } from '@poveroh/types'
 import { authToken } from './auth-token'
 
 export const authClient: ReturnType<typeof createAuthClient> = createAuthClient({
-    baseURL: appConfig.apiUrl + '/auth',
+    baseURL: appConfig.apiUrl + '/v1/auth',
     fetchOptions: {
         credentials: 'include',
         auth: {
