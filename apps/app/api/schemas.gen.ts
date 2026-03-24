@@ -3895,19 +3895,6 @@ export const TransactionFiltersSchema = {
         date: {
             $ref: '#/components/schemas/DateFilter'
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            },
-            {
-                $ref: '#/components/schemas/TransactionActionEnum'
-            }
-        ]
     }
 } as const
 

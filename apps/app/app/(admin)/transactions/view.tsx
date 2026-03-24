@@ -37,53 +37,8 @@ import { ViewModeType } from '@/types'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { useConfig } from '@/hooks/use-config'
 import moment from 'moment-timezone'
-import {
-    DateFilter,
-    FilterOptions,
-    Transaction,
-    TransactionActionEnum,
-    TransactionData,
-    TransactionFilters
-} from '@/api/types.gen'
-
-//TODO: this file is getting quite big, consider splitting it into smaller components (for example the table view and the list view could be separate components, and the filter logic could also be extracted to a separate hook or component)
-//TODO: after update, review types and logics
-
-type FilterField =
-    | {
-          name: string
-          label: string
-          type: 'select'
-          options: Array<{ label: string; value: string }>
-      }
-    | {
-          name: string
-          label: string
-          type: 'text' | 'number' | 'date'
-      }
-    | {
-          fromName: string
-          toName: string
-          label: string
-          type: 'dateRange'
-      }
-
-type FlatTransactionFilters = {
-    type?: TransactionActionEnum
-    categoryId?: string
-    subcategoryId?: string
-    financialAccountId?: string
-    fromDate?: string
-    toDate?: string
-}
-
-const isDateFilter = (value: unknown): value is DateFilter => {
-    if (typeof value !== 'object' || value === null) {
-        return false
-    }
-
-    return 'gte' in value || 'lte' in value
-}
+import { FilterField, FilterOptions, TransactionActionEnum, TransactionData, TransactionFilters } from '@poveroh/types'
+import { isDateFilter } from '@/utils/filter'
 
 export default function TransactionsView() {
     const t = useTranslations()
@@ -105,7 +60,7 @@ export default function TransactionsView() {
     const { openModal } = useModal<TransactionData>('transaction')
     const { openModal: openDeleteModal } = useDeleteModal<TransactionData>()
 
-    const [localTransactionList, setLocalTransactionList] = useState<Transaction[]>([])
+    const [localTransactionList, setLocalTransactionList] = useState<TransactionData[]>([])
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [totalCount, setTotalCount] = useState(0)
     const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([])
@@ -122,23 +77,23 @@ export default function TransactionsView() {
 
     // Initialize filters from URL parameters
     const [filters, setFilters] = useState<TransactionFilters>(() => {
-        const params: TransactionFilters = {}
         const categoryId = searchParams.get('categoryId')
         const subcategoryId = searchParams.get('subcategoryId')
         const financialAccountId = searchParams.get('financialAccountId')
-        const type = searchParams.get('type')
+        const action = searchParams.get('action')
         const fromDate = searchParams.get('fromDate')
         const toDate = searchParams.get('toDate')
+
+        const params: TransactionFilters = {}
 
         if (categoryId) params.categoryId = categoryId
         if (subcategoryId) params.subcategoryId = subcategoryId
         if (financialAccountId) params.financialAccountId = financialAccountId
-        if (type) params.type = type as TransactionActionEnum
+        if (action) params.action = action as TransactionActionEnum
         if (fromDate || toDate) {
-            //TODO: understand why this parsing is needed and if it can be simplified, maybe by changing the backend to accept date strings in the correct format directly
-            // params.date = {}
-            // if (fromDate) params.date.gte = fromDate
-            // if (toDate) params.date.lte = toDate
+            params.date = {}
+            if (fromDate) params.date.gte = fromDate
+            if (toDate) params.date.lte = toDate
         }
 
         return params
@@ -172,7 +127,6 @@ export default function TransactionsView() {
         }
     }
 
-    // Infinite scroll: automatically load more transactions when you reach the bottom
     useEffect(() => {
         let scrollContainer: HTMLElement | Window = mainDivRef.current?.closest('.overflow-y-auto') as HTMLElement
 
@@ -216,7 +170,7 @@ export default function TransactionsView() {
         if (typeof newFilters.financialAccountId === 'string') {
             params.set('financialAccountId', newFilters.financialAccountId)
         }
-        if (typeof newFilters.type === 'string') params.set('type', newFilters.type)
+        if (typeof newFilters.action === 'string') params.set('action', newFilters.action)
 
         const dateFilter = newFilters.date
         if (isDateFilter(dateFilter)) {
@@ -354,11 +308,11 @@ export default function TransactionsView() {
         }
     ]
 
-    const handleFlatFilterChange = (newFlatFilters: FlatTransactionFilters) => {
+    const handleFlatFilterChange = (newFlatFilters: TransactionFilters) => {
         const newFilters: TransactionFilters = {}
 
-        if (newFlatFilters.type) {
-            newFilters.type = newFlatFilters.type as TransactionActionEnum
+        if (newFlatFilters.action) {
+            newFilters.action = newFlatFilters.action
         }
         if (newFlatFilters.categoryId && newFlatFilters.categoryId !== '') {
             newFilters.categoryId = newFlatFilters.categoryId
@@ -369,14 +323,14 @@ export default function TransactionsView() {
         if (newFlatFilters.financialAccountId && newFlatFilters.financialAccountId !== '') {
             newFilters.financialAccountId = newFlatFilters.financialAccountId
         }
-        if (newFlatFilters.fromDate && newFlatFilters.fromDate !== '') {
-            const fromDate = typeof newFlatFilters.fromDate === 'string' ? newFlatFilters.fromDate : undefined
+        if (newFlatFilters.date?.gte && newFlatFilters.date.gte !== '') {
+            const fromDate = typeof newFlatFilters.date.gte === 'string' ? newFlatFilters.date.gte : undefined
             if (fromDate) {
                 newFilters.date = { ...newFilters.date, gte: fromDate }
             }
         }
-        if (newFlatFilters.toDate && newFlatFilters.toDate !== '') {
-            const toDate = typeof newFlatFilters.toDate === 'string' ? newFlatFilters.toDate : undefined
+        if (newFlatFilters.date?.lte && newFlatFilters.date.lte !== '') {
+            const toDate = typeof newFlatFilters.date.lte === 'string' ? newFlatFilters.date.lte : undefined
             if (toDate) {
                 newFilters.date = { ...newFilters.date, lte: toDate }
             }
@@ -398,7 +352,7 @@ export default function TransactionsView() {
     }
 
     const getFilterLabel = (key: keyof TransactionFilters, value: TransactionFilters[keyof TransactionFilters]) => {
-        if (key === 'type') {
+        if (key === 'action') {
             if (value === 'INCOME') return 'Income'
             if (value === 'EXPENSES') return 'Expense'
             if (value === 'TRANSFER') return 'Transfer'
@@ -429,7 +383,7 @@ export default function TransactionsView() {
         return String(value)
     }
 
-    const columns: ColumnDef<Transaction>[] = [
+    const columns: ColumnDef<TransactionData>[] = [
         {
             id: 'select',
             header: ({ table }) => (
@@ -634,7 +588,7 @@ export default function TransactionsView() {
 
                 return (
                     <div onClick={e => e.stopPropagation()} className='w-fit'>
-                        <OptionsPopover<Transaction>
+                        <OptionsPopover<TransactionData>
                             data={transaction}
                             buttons={[
                                 {
@@ -704,12 +658,12 @@ export default function TransactionsView() {
                             ))}
                         </div>
 
-                        <FilterButton<FlatTransactionFilters>
+                        <FilterButton<TransactionFilters>
                             fields={filterFields}
                             filters={{
-                                type:
-                                    typeof filters.type === 'string'
-                                        ? (filters.type as TransactionActionEnum)
+                                action:
+                                    typeof filters.action === 'string'
+                                        ? (filters.action as TransactionActionEnum)
                                         : undefined,
                                 categoryId:
                                     typeof filters.categoryId === 'string' ? (filters.categoryId as string) : undefined,
@@ -721,8 +675,16 @@ export default function TransactionsView() {
                                     typeof filters.financialAccountId === 'string'
                                         ? (filters.financialAccountId as string)
                                         : undefined,
-                                fromDate: isDateFilter(filters.date) ? filters.date.gte : undefined,
-                                toDate: isDateFilter(filters.date) ? filters.date.lte : undefined
+                                date: {
+                                    gte:
+                                        isDateFilter(filters.date) && typeof filters.date.gte === 'string'
+                                            ? filters.date.gte
+                                            : undefined,
+                                    lte:
+                                        isDateFilter(filters.date) && typeof filters.date.lte === 'string'
+                                            ? filters.date.lte
+                                            : undefined
+                                }
                             }}
                             onFilterChange={handleFlatFilterChange}
                         />

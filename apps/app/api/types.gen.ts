@@ -1767,16 +1767,6 @@ export type TransactionFilters = {
     subcategoryId?: string
     financialAccountId?: string
     date?: DateFilter
-    [key: string]:
-        | string
-        | StringFilter
-        | TransactionActionEnum
-        | TransactionParamsId
-        | StringFilter
-        | TransactionActionEnum
-        | string
-        | DateFilter
-        | undefined
 }
 
 export type QueryTransactionFilters = {

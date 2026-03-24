@@ -1,4 +1,5 @@
 import { TransactionData } from './contracts.js'
+import { Item } from './item.js'
 
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
@@ -42,3 +43,22 @@ export type TransferFormData = {
 export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
 
 export type GroupedTransactions = Record<string, TransactionData[]>
+
+export type FilterField =
+    | {
+          name: string
+          label: string
+          type: 'text' | 'date'
+      }
+    | {
+          name: string
+          label: string
+          type: 'select'
+          options: Item[]
+      }
+    | {
+          fromName: string
+          toName: string
+          label: string
+          type: 'dateRange'
+      }

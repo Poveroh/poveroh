@@ -231,7 +231,6 @@ export const TransactionFiltersSchema = z
         date: DateFilterSchema
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema, TransactionActionEnum]))
     .openapi('TransactionFilters')
 
 /**
