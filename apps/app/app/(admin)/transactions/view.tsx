@@ -54,7 +54,7 @@ export default function TransactionsView() {
         transactionLoading
     } = useTransaction()
     const { categoryCacheList, fetchCategories, categoryLoading } = useCategory()
-    const { financialAccountCacheList, fetchFinancialAccounts, financialAccountLoading } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
     const { renderDate, preferedLanguage } = useConfig()
 
     const { openModal } = useModal<TransactionData>('transaction')
@@ -101,7 +101,6 @@ export default function TransactionsView() {
 
     useEffect(() => {
         fetchCategories()
-        fetchFinancialAccounts()
 
         if (viewMode === 'table') {
             loadTransactionsPaginated(transactionFilterSetting)
@@ -291,15 +290,15 @@ export default function TransactionsView() {
                 value: cat.id
             }))
         },
-        {
-            name: 'financialAccountId',
-            label: 'form.account.label',
-            type: 'select',
-            options: financialAccountCacheList.map(acc => ({
-                label: acc.title,
-                value: acc.id
-            }))
-        },
+        // {
+        //     name: 'financialAccountId',
+        //     label: 'form.account.label',
+        //     type: 'select',
+        //     options: financialAccountCacheList.map(acc => ({
+        //         label: acc.title,
+        //         value: acc.id
+        //     }))
+        // },
         {
             fromName: 'fromDate',
             toName: 'toDate',
@@ -361,7 +360,7 @@ export default function TransactionsView() {
             return categoryCacheList.find(c => c.id === value)?.title || String(value)
         }
         if (key === 'financialAccountId') {
-            return financialAccountCacheList.find(a => a.id === value)?.title || String(value)
+            return accountQuery.data?.data.find(a => a.id === value)?.title || String(value)
         }
         if (key === 'date') {
             if (!isDateFilter(value)) {
@@ -539,10 +538,10 @@ export default function TransactionsView() {
             id: 'account',
             accessorFn: row => {
                 const firstAccount =
-                    financialAccountCacheList.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || ''
+                    accountQuery.data?.data.find(a => a.id === row.amounts[0]?.financialAccountId)?.title || ''
                 if (row.action === 'TRANSFER' && row.amounts[1]) {
                     const secondAccount =
-                        financialAccountCacheList.find(a => a.id === row.amounts[1]?.financialAccountId)?.title || ''
+                        accountQuery.data?.data.find(a => a.id === row.amounts[1]?.financialAccountId)?.title || ''
                     return `${firstAccount} → ${secondAccount}`
                 }
                 return firstAccount
@@ -561,12 +560,12 @@ export default function TransactionsView() {
             },
             cell: ({ row }) => {
                 const transaction = row.original
-                const firstAccount = financialAccountCacheList.find(
+                const firstAccount = accountQuery.data?.data.find(
                     a => a.id === transaction.amounts[0]?.financialAccountId
                 )
 
                 if (transaction.action === 'TRANSFER' && transaction.amounts[1]) {
-                    const secondAccount = financialAccountCacheList.find(
+                    const secondAccount = accountQuery.data?.data.find(
                         a => a.id === transaction.amounts[1]?.financialAccountId
                     )
                     return (
@@ -626,8 +625,7 @@ export default function TransactionsView() {
                                 fetchTransaction(filters, transactionFilterSetting, false, true)
                             }
                         },
-                        loading:
-                            transactionLoading.fetch || categoryLoading.fetchCategories || financialAccountLoading.fetch
+                        loading: transactionLoading.fetch || categoryLoading.fetchCategories || accountQuery.isLoading
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
@@ -809,7 +807,7 @@ export default function TransactionsView() {
                                                 </p>
                                             </div>
                                         </div>
-                                        {(financialAccountCacheList.length == 0 || categoryCacheList.length == 0) && (
+                                        {(accountQuery.data?.data.length == 0 || categoryCacheList.length == 0) && (
                                             <>
                                                 <Divider />
                                                 <div className='flex flex-col items-center space-y-8 justify-center'>

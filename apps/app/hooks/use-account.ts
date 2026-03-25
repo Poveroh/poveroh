@@ -1,9 +1,7 @@
 'use client'
 
-import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
-import { LoadingState } from '@/types/general'
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import { useFinancialAccountStore } from '@/store/account.store'
-import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
 import {
     createFinancialAccountMutation,
@@ -14,13 +12,31 @@ import {
     getFinancialAccountsQueryKey,
     updateFinancialAccountMutation
 } from '@/api/@tanstack/react-query.gen'
-import { FinancialAccountData } from '@poveroh/types'
+import { ACCOUNT_TYPE_CATALOG, FinancialAccountData, FinancialAccountFilters } from '@poveroh/types'
+import { useUtils } from './use-utils'
+import { useMemo } from 'react'
+import { useFilters } from './use-filters'
 
 export const useFinancialAccount = () => {
     const queryClient = useQueryClient()
-    const t = useTranslations()
+    const { renderItemsLabel } = useUtils()
     const { handleError } = useError()
     const financialAccountStore = useFinancialAccountStore()
+
+    const filters = useFilters<FinancialAccountFilters>(text => ({
+        title: { contains: text },
+        description: { contains: text }
+    }))
+
+    const [accountQuery] = useQueries({
+        queries: [
+            {
+                ...getFinancialAccountsOptions(
+                    filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined
+                )
+            }
+        ]
+    })
 
     const createMutation = useMutation({
         ...createFinancialAccountMutation(),
@@ -67,19 +83,7 @@ export const useFinancialAccount = () => {
         }
     })
 
-    const fetchFinancialAccounts = async () => {
-        try {
-            const response = await queryClient.fetchQuery(getFinancialAccountsOptions())
-
-            if (!response?.success) return []
-
-            return (response?.data ?? []) as FinancialAccountData[]
-        } catch (error) {
-            return handleError(error, 'Error fetching financial accounts')
-        }
-    }
-
-    const getFinancialAccount = async (financialAccountId: string) => {
+    const getFinancialAccountById = async (financialAccountId: string) => {
         try {
             const response = await queryClient.fetchQuery(
                 getFinancialAccountByIdOptions({
@@ -95,36 +99,13 @@ export const useFinancialAccount = () => {
         }
     }
 
-    const financialAccountLoading: LoadingState = {
-        create: createMutation.isPending,
-        update: updateMutation.isPending,
-        delete: deleteMutation.isPending,
-        fetch: useIsFetching({ queryKey: getFinancialAccountsQueryKey() }) > 0,
-        get:
-            useIsFetching({
-                predicate: query => {
-                    const key = query.queryKey?.[0] as { _id?: string } | undefined
-                    return key?._id === 'getFinancialAccountById'
-                }
-            }) > 0
-    }
-
-    const TYPE_LIST = [
-        { value: 'ONLINE_BANK', label: t('accounts.types.online') },
-        { value: 'BANK_ACCOUNT', label: t('accounts.types.bank') },
-        { value: 'CIRCUIT', label: t('accounts.types.circuit') },
-        { value: 'DEPOSIT_BANK', label: t('accounts.types.deposit') },
-        { value: 'BROKER', label: t('accounts.types.broker') }
-    ]
-
     return {
-        financialAccountCacheList: financialAccountStore.financialAccountCacheList,
-        financialAccountLoading,
-        createFinancialAccount: createMutation.mutateAsync,
-        updateFinancialAccount: updateMutation.mutateAsync,
-        deleteFinancialAccount: deleteMutation.mutateAsync,
-        getFinancialAccount,
-        fetchFinancialAccounts,
-        TYPE_LIST
+        ...filters,
+        accountQuery,
+        createMutation,
+        updateMutation,
+        deleteMutation,
+        getFinancialAccountById,
+        ACCOUNT_TYPE_CATALOG: useMemo(() => renderItemsLabel(ACCOUNT_TYPE_CATALOG), [])
     }
 }

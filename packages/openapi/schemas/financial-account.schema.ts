@@ -113,12 +113,11 @@ export const FinancialAccountParamsId = FinancialAccountSchema.pick({
 export const FinancialAccountFiltersSchema = z
     .object({
         id: FinancialAccountParamsId,
-        title: StringFilterSchema.optional(),
-        description: StringFilterSchema.optional(),
-        type: FinancialAccountTypeEnum.optional()
+        title: StringFilterSchema,
+        description: StringFilterSchema,
+        type: FinancialAccountTypeEnum
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema, FinancialAccountTypeEnum]))
     .openapi('FinancialAccountFilters')
 
 /**

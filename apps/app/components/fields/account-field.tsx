@@ -19,17 +19,7 @@ export function AccountField<T extends FieldValues = FieldValues>({
     excludeIds = []
 }: AccountFieldProps<T>) {
     const { createIconContent } = useFieldIcon()
-    const { financialAccountCacheList, fetchFinancialAccounts } = useFinancialAccount()
-
-    const [localAccountCacheList, setLocalAccountCacheList] = useState(financialAccountCacheList)
-
-    useEffect(() => {
-        setLocalAccountCacheList(financialAccountCacheList)
-
-        if (value && financialAccountCacheList.some(acc => acc.id === value)) {
-            form?.setValue(name, value as T[Path<T>])
-        }
-    }, [financialAccountCacheList, form, name, value])
+    const { accountQuery } = useFinancialAccount()
 
     return (
         <SelectField
@@ -40,15 +30,10 @@ export function AccountField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={localAccountCacheList}
+            options={accountQuery.data?.data || []}
             getOptionLabel={(item: FinancialAccountData) => item.title}
             getOptionValue={(item: FinancialAccountData) => item.id}
             getOptionDisabled={(item: FinancialAccountData) => excludeIds.includes(item.id)}
-            onOpenChange={() => {
-                if (financialAccountCacheList.length === 0) {
-                    fetchFinancialAccounts()
-                }
-            }}
             renderOptionContent={(item: FinancialAccountData) =>
                 createIconContent(item.logoIcon, item.title, { type: 'brand' })
             }

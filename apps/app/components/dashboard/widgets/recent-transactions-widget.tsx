@@ -34,7 +34,7 @@ export const RecentTransactionsWidget = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const data = useMemo(() => transactionCacheList.slice(0, 5), [transactionCacheList])
+    const data: TransactionData[] = [] // useMemo(() => transactionCacheList.slice(0, 5), [transactionCacheList])
 
     return (
         <>

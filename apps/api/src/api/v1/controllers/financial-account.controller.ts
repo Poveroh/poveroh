@@ -106,9 +106,10 @@ export class FinancialAccountController {
     //GET /
     static async readFinancialAccounts(req: Request, res: Response) {
         try {
-            const filters = req.query as FinancialAccountFilters
-            const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take) || 20
+            const filters = (req.query.filter || {}) as FinancialAccountFilters
+            const options = (req.query.options || {}) as any
+            const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
+            const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 
             const financialAccountService = new FinancialAccountService(req.user.id)
             const data = await financialAccountService.getFinancialAccounts(filters, skip, take)

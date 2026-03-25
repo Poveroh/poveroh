@@ -25,7 +25,7 @@ export default function SubscriptionsView() {
     const t = useTranslations()
 
     const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
-    const { fetchFinancialAccounts } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
 
     const { openModal } = useModal<SubscriptionData>('subscription')
     const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()
@@ -36,7 +36,6 @@ export default function SubscriptionsView() {
 
     useEffect(() => {
         fetchSubscriptions()
-        fetchFinancialAccounts()
     }, [])
 
     useEffect(() => {

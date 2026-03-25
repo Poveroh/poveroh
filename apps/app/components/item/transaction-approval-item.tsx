@@ -37,7 +37,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
     const t = useTranslations()
 
     const { getCategory } = useCategory()
-    const { getFinancialAccount } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
     const { updatePendingTransaction, deletePendingTransaction } = useImport()
 
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -69,7 +69,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         }
 
         fetchData()
-    }, [transaction, getFinancialAccount, getCategory])
+    }, [transaction, getCategory])
 
     const handleEditTransaction = async (data: FormData | Partial<TransactionData>) => {
         // For now, we only handle FormData case since updatePendingTransaction expects FormData

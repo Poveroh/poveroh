@@ -930,14 +930,6 @@ export type FinancialAccountFilters = {
     title?: StringFilter
     description?: StringFilter
     type?: FinancialAccountTypeEnum
-    [key: string]:
-        | string
-        | StringFilter
-        | FinancialAccountTypeEnum
-        | FinancialAccountParamsId
-        | StringFilter
-        | FinancialAccountTypeEnum
-        | undefined
 }
 
 export type QueryFinancialAccountFilters = {

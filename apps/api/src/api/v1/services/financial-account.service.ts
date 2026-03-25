@@ -105,7 +105,8 @@ export class FinancialAccountService extends BaseService {
         const userId = this.getUserId()
 
         return (await prisma.financialAccount.findMany({
-            where: { id, userId, deletedAt: null }
+            where: { id, userId, deletedAt: null },
+            omit: { userId: true, deletedAt: true }
         })) as unknown as FinancialAccountData | null
     }
 
@@ -131,6 +132,7 @@ export class FinancialAccountService extends BaseService {
 
         return (await prisma.financialAccount.findMany({
             where: whereCondition,
+            omit: { userId: true, deletedAt: true },
             orderBy: { createdAt: 'desc' },
             skip,
             take

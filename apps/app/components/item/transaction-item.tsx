@@ -26,7 +26,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
     openEdit
 }) => {
     const t = useTranslations()
-    const { financialAccountCacheList } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
 
     const isClickingRef = useRef(false)
@@ -53,10 +53,10 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
         }
 
         // Get accounts from cache instead of async calls
-        const fromAccount = financialAccountCacheList.find(acc => acc.id === amount.financialAccountId) || null
+        const fromAccount = accountQuery.data?.data.find(acc => acc.id === amount.financialAccountId) || null
         const toAccount =
             transaction.action === 'TRANSFER' && transaction.amounts[1]
-                ? financialAccountCacheList.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
+                ? accountQuery.data?.data.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
                 : null
 
         // Get category from cache instead of async calls
@@ -72,7 +72,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
             // currencySymbol: icons[amount.currency]?.symbol || '',
             isExpense: transaction.action === 'EXPENSES'
         }
-    }, [transaction, financialAccountCacheList, categoryCacheList])
+    }, [transaction, accountQuery.data?.data, categoryCacheList])
 
     const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 

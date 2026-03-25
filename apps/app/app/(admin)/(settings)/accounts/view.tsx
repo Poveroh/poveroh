@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -20,79 +19,25 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { FinancialAccountData, FinancialAccountTypeEnum, SnapshotAccountBalance } from '@poveroh/types'
-
-type AccountFilters = {
-    title?: { contains?: string }
-    description?: { contains?: string }
-    type?: FinancialAccountTypeEnum
-}
+import { FinancialAccountData, FinancialAccountFilters, SnapshotAccountBalance } from '@poveroh/types'
 
 export default function AccountView() {
     const t = useTranslations()
 
-    const { financialAccountCacheList, fetchFinancialAccounts, TYPE_LIST, financialAccountLoading } =
-        useFinancialAccount()
+    const {
+        accountQuery,
+        createMutation,
+        deleteMutation,
+        ACCOUNT_TYPE_CATALOG,
+        filters,
+        updateFilters,
+        removeFilter,
+        onSearch
+    } = useFinancialAccount()
 
     const { openModal } = useModal<FinancialAccountData>('account')
     const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
     const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
-
-    const [localAccountList, setLocalAccountList] = useState<FinancialAccountData[]>(financialAccountCacheList)
-
-    const [filters, setFilters] = useState<AccountFilters>({})
-
-    useEffect(() => {
-        fetchFinancialAccounts()
-    }, [])
-
-    useEffect(() => {
-        setLocalAccountList(financialAccountCacheList)
-    }, [financialAccountCacheList])
-
-    const onFilter = (filter: AccountFilters = {}) => {
-        const updatedFilter = { ...filter }
-
-        const filteredList = financialAccountCacheList.filter(account => {
-            const titleMatch = updatedFilter.title?.contains
-                ? account.title?.toLowerCase().includes(updatedFilter.title.contains.toLowerCase())
-                : true
-
-            const descriptionMatch = updatedFilter.description?.contains
-                ? account.description?.toLowerCase().includes(updatedFilter.description.contains.toLowerCase())
-                : true
-
-            const typeMatch = updatedFilter.type ? account.type === updatedFilter.type : true
-
-            return titleMatch && descriptionMatch && typeMatch
-        })
-
-        setFilters(updatedFilter)
-        setLocalAccountList(filteredList)
-    }
-
-    const removeFilter = (key: keyof AccountFilters) => {
-        const newFilters: AccountFilters = { ...filters }
-        delete newFilters[key]
-
-        if (key === 'title' || key === 'description') {
-            delete newFilters[key]
-        }
-
-        onFilter(newFilters)
-    }
-
-    const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
-
-        const newFilters: AccountFilters = {
-            ...filters,
-            title: textToSearch ? { contains: textToSearch } : undefined,
-            description: textToSearch ? { contains: textToSearch } : undefined
-        }
-
-        onFilter(newFilters)
-    }
 
     return (
         <>
@@ -106,18 +51,18 @@ export default function AccountView() {
                         { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{
-                        onClick: fetchFinancialAccounts,
-                        loading: financialAccountLoading.fetch
+                        onClick: accountQuery.refetch,
+                        loading: accountQuery.isPending
                     }}
                     addAction={{
                         onClick: () => {
                             openModal('create')
                         },
-                        loading: financialAccountLoading.create
+                        loading: createMutation.isPending
                     }}
                     onDeleteAll={{
                         onClick: () => {},
-                        loading: financialAccountLoading.delete
+                        loading: deleteMutation.isPending
                     }}
                 />
 
@@ -133,7 +78,7 @@ export default function AccountView() {
                         {Object.entries(filters).map(([key, value]) => {
                             if (!value) return null
 
-                            const item = TYPE_LIST.find(x => x.value == value)
+                            const item = ACCOUNT_TYPE_CATALOG.find(x => x.value == value)
 
                             if (!item) return
 
@@ -142,7 +87,7 @@ export default function AccountView() {
                                     key={key}
                                     variant='secondary'
                                     className='flex items-center gap-1'
-                                    onClick={() => removeFilter(key as keyof AccountFilters)}
+                                    onClick={() => removeFilter(key as keyof FinancialAccountFilters)}
                                 >
                                     {item.label}
                                     <X />
@@ -151,23 +96,23 @@ export default function AccountView() {
                         })}
                     </div>
 
-                    <FilterButton<AccountFilters>
+                    <FilterButton<FinancialAccountFilters>
                         fields={[
                             {
                                 name: 'type',
                                 label: 'form.type.label',
                                 type: 'select',
-                                options: TYPE_LIST
+                                options: ACCOUNT_TYPE_CATALOG
                             }
                         ]}
                         filters={filters}
-                        onFilterChange={onFilter}
+                        onFilterChange={updateFilters}
                     />
                 </div>
-                {!financialAccountLoading.fetch && localAccountList.length > 0 ? (
+                {!accountQuery.isPending && accountQuery.data?.success ? (
                     <Box>
                         <>
-                            {localAccountList.map(account => (
+                            {accountQuery.data?.data.map(account => (
                                 <AccountItem
                                     key={account.id}
                                     account={account}
@@ -190,7 +135,7 @@ export default function AccountView() {
                     </Box>
                 ) : (
                     <>
-                        {financialAccountLoading.fetch ? (
+                        {accountQuery.isPending ? (
                             <SkeletonItem repeat={5} />
                         ) : (
                             <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
@@ -205,7 +150,7 @@ export default function AccountView() {
                 )}
             </PageWrapper>
 
-            <AccountDialog></AccountDialog>
+            <AccountDialog />
             <AccountBalanceSnapshotDialog />
         </>
     )

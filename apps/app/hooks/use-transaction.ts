@@ -32,7 +32,7 @@ export const useTransaction = () => {
     const { renderItemsLabel } = useUtils()
     const { handleError } = useError()
     const { fetchCategories } = useCategory()
-    const { fetchFinancialAccounts } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
 
     const transactionStore = useTransactionStore()
 
@@ -111,7 +111,7 @@ export const useTransaction = () => {
         try {
             if (prefetchCategoryAndAccount) {
                 await fetchCategories()
-                await fetchFinancialAccounts()
+                await accountQuery.refetch()
             }
 
             const response = await queryClient.fetchQuery(

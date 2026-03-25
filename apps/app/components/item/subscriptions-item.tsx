@@ -17,14 +17,14 @@ type SubscriptionItemProps = {
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
     const t = useTranslations()
     const { getNextExecutionText } = useSubscription()
-    const { getFinancialAccount } = useFinancialAccount()
+    const { getFinancialAccountById } = useFinancialAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
     const [account, setAccount] = useState<FinancialAccountData | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getFinancialAccount(subscription.financialAccountId)
+            const account = await getFinancialAccountById(subscription.financialAccountId)
             setAccount(account)
         }
         fetchData()

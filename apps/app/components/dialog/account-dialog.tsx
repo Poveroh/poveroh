@@ -11,7 +11,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 
 export function AccountDialog() {
     const t = useTranslations()
-    const { createFinancialAccount, updateFinancialAccount, deleteFinancialAccount } = useFinancialAccount()
+    const { createMutation, updateMutation, deleteMutation } = useFinancialAccount()
 
     const modalId = 'account'
     const modalManager = useModal<FinancialAccountData>(modalId)
@@ -28,7 +28,7 @@ export function AccountDialog() {
         if (modalManager.inEditingMode && modalManager.item) {
             const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
 
-            const response = await updateFinancialAccount({
+            const response = await updateMutation.mutateAsync({
                 path: { id: modalManager.item.id },
                 body
             })
@@ -43,7 +43,7 @@ export function AccountDialog() {
             const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
             const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
 
-            const response = await createFinancialAccount({
+            const response = await createMutation.mutateAsync({
                 body: {
                     data: bodyData,
                     file: files as Array<Blob | File>
@@ -76,7 +76,7 @@ export function AccountDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await deleteFinancialAccount({
+        const res = await deleteMutation.mutateAsync({
             path: { id: deleteModalManager.item.id }
         })
 

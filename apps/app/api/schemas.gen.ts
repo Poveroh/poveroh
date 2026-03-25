@@ -1582,19 +1582,6 @@ export const FinancialAccountFiltersSchema = {
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            },
-            {
-                $ref: '#/components/schemas/FinancialAccountTypeEnum'
-            }
-        ]
     }
 } as const
 

@@ -310,7 +310,11 @@
             }
         }
     },
-
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome back, {a}!",
+        "subtitle": "Here's a summary of your financial activity."
+    },
     "widget": {
         "trend": "Trend",
         "net-worth-evolution": {
@@ -427,7 +431,11 @@
             "bank": "Bank account",
             "circuit": "Circuit",
             "deposit": "Deposit account",
-            "broker": "Broker"
+            "broker": "Broker",
+            "wallet": "Wallet",
+            "cash": "Cash",
+            "creditCard": "Credit card",
+            "other": "Other"
         }
     },
     "categories": {

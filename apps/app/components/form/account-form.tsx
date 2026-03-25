@@ -18,7 +18,7 @@ export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(
         const { initialData, inEditingMode, dataCallback } = props
 
         const t = useTranslations()
-        const { TYPE_LIST } = useFinancialAccount()
+        const { ACCOUNT_TYPE_CATALOG } = useFinancialAccount()
         const { form, setFile, handleSubmit } = useFinancialAccountForm(initialData, inEditingMode)
 
         useImperativeHandle(ref, () => ({
@@ -47,7 +47,7 @@ export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(
                             control={form.control}
                             name='type'
                             label={t('form.type.label')}
-                            options={TYPE_LIST}
+                            options={ACCOUNT_TYPE_CATALOG}
                             placeholder={t('form.type.placeholder')}
                             getOptionLabel={(item: Item) => item.label}
                             getOptionValue={(item: Item) => item.value}

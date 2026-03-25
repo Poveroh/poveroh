@@ -63,6 +63,7 @@ export class TransactionService extends BaseService {
         const userId = this.getUserId()
         return (await prisma.transaction.findFirst({
             where: { id, userId },
+            omit: { userId: true, deletedAt: true },
             include: { amounts: true, media: true }
         })) as unknown as TransactionDataResponse | null
     }
@@ -120,6 +121,7 @@ export class TransactionService extends BaseService {
         const queryOptions: any = {
             where,
             include: { amounts: true },
+            omit: { userId: true, deletedAt: true },
             orderBy,
             skip: sortInMemory ? 0 : skip
         }

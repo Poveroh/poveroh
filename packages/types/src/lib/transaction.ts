@@ -1,4 +1,4 @@
-import { TransactionData } from './contracts.js'
+import { FinancialAccountTypeEnum, TransactionData } from './contracts.js'
 import { Item } from './item.js'
 
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
@@ -62,3 +62,15 @@ export type FilterField =
           label: string
           type: 'dateRange'
       }
+
+export const ACCOUNT_TYPE_CATALOG: Item<FinancialAccountTypeEnum>[] = [
+    { value: 'ONLINE_BANK', label: 'accounts.types.online' },
+    { value: 'BANK_ACCOUNT', label: 'accounts.types.bank' },
+    { value: 'CIRCUIT', label: 'accounts.types.circuit' },
+    { value: 'DEPOSIT_BANK', label: 'accounts.types.deposit' },
+    { value: 'BROKER', label: 'accounts.types.broker' },
+    { value: 'WALLET', label: 'accounts.types.wallet' },
+    { value: 'CASH', label: 'accounts.types.cash' },
+    { value: 'CREDIT_CARD', label: 'accounts.types.creditCard' },
+    { value: 'OTHER', label: 'accounts.types.other' }
+]

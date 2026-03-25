@@ -14,9 +14,9 @@ type AccountItemProps = {
 
 export function AccountItem({ account, buttons, openDelete, openEdit }: AccountItemProps) {
     const t = useTranslations()
-    const { TYPE_LIST } = useFinancialAccount()
+    const { ACCOUNT_TYPE_CATALOG } = useFinancialAccount()
 
-    const type = TYPE_LIST.find(tp => tp.value == account.type)
+    const type = ACCOUNT_TYPE_CATALOG.find(tp => tp.value == account.type)
 
     return (
         <div
