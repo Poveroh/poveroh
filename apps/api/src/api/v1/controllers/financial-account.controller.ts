@@ -114,10 +114,6 @@ export class FinancialAccountController {
             const financialAccountService = new FinancialAccountService(req.user.id)
             const data = await financialAccountService.getFinancialAccounts(filters, skip, take)
 
-            if (!data || data.length === 0) {
-                throw new NotFoundError('Financial accounts not found')
-            }
-
             return ResponseHelper.success<FinancialAccountData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)

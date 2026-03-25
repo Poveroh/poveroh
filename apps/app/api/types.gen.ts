@@ -928,7 +928,6 @@ export type FinancialAccountParamsId = {
 export type FinancialAccountFilters = {
     id?: FinancialAccountParamsId
     title?: StringFilter
-    description?: StringFilter
     type?: FinancialAccountTypeEnum
 }
 

@@ -109,29 +109,27 @@ export default function AccountView() {
                         onFilterChange={updateFilters}
                     />
                 </div>
-                {!accountQuery.isPending && accountQuery.data?.success ? (
+                {!accountQuery.isPending && accountQuery.data && accountQuery.data?.data.length > 0 ? (
                     <Box>
-                        <>
-                            {accountQuery.data?.data.map(account => (
-                                <AccountItem
-                                    key={account.id}
-                                    account={account}
-                                    openEdit={(item: FinancialAccountData) => {
-                                        openModal('edit', item)
-                                    }}
-                                    openDelete={openDeleteModal}
-                                    buttons={[
-                                        {
-                                            onClick: x => {
-                                                openSnapshotModal('create', undefined, { accountId: x.id })
-                                            },
-                                            label: t('accounts.snapshot.button'),
-                                            icon: 'calendar-plus'
-                                        }
-                                    ]}
-                                />
-                            ))}
-                        </>
+                        {accountQuery.data?.data.map(account => (
+                            <AccountItem
+                                key={account.id}
+                                account={account}
+                                openEdit={(item: FinancialAccountData) => {
+                                    openModal('edit', item)
+                                }}
+                                openDelete={openDeleteModal}
+                                buttons={[
+                                    {
+                                        onClick: x => {
+                                            openSnapshotModal('create', undefined, { accountId: x.id })
+                                        },
+                                        label: t('accounts.snapshot.button'),
+                                        icon: 'calendar-plus'
+                                    }
+                                ]}
+                            />
+                        ))}
                     </Box>
                 ) : (
                     <>

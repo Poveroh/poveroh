@@ -1,9 +1,7 @@
 export function buildWhere<T extends Record<string, any>>(filters: T): any {
     if (Array.isArray(filters)) return { id: { in: filters } }
 
-    const { search, ...rest } = filters
-
-    const andConditions = Object.entries(rest).map(([key, value]) => {
+    const andConditions = Object.entries(filters).map(([key, value]) => {
         if (value === undefined) return null
 
         if (typeof value === 'object' && value !== null) {
@@ -24,18 +22,42 @@ export function buildWhere<T extends Record<string, any>>(filters: T): any {
         return { [key]: value }
     })
 
-    const searchConditions =
-        search && typeof search === 'string'
-            ? {
-                  OR: [
-                      { title: { contains: search, mode: 'insensitive' } },
-                      { description: { contains: search, mode: 'insensitive' } },
-                      { note: { contains: search, mode: 'insensitive' } }
-                  ]
-              }
-            : {}
+    return Object.assign({}, ...andConditions.filter(Boolean))
+}
 
-    return {
-        AND: [...andConditions.filter(Boolean), searchConditions]
+type GenericFilter = Record<string, any>
+
+export function buildWhere2<T extends GenericFilter>(filters: T, orKeys: (keyof T)[]) {
+    const andConditions: any[] = []
+    const orConditions: any[] = []
+
+    for (const key in filters) {
+        const value = filters[key]
+        if (value === undefined) continue
+
+        const isStringFilter =
+            typeof value === 'object' &&
+            value !== null &&
+            ('contains' in value || 'startsWith' in value || 'endsWith' in value)
+
+        const condition = isStringFilter ? { [key]: { ...value, mode: 'insensitive' } } : { [key]: value }
+
+        if (orKeys.includes(key)) {
+            orConditions.push(condition)
+        } else {
+            andConditions.push(condition)
+        }
     }
+
+    const where: any = {}
+
+    if (andConditions.length > 0) {
+        where.AND = andConditions
+    }
+
+    if (orConditions.length > 0) {
+        where.OR = orConditions
+    }
+
+    return where
 }

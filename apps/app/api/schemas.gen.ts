@@ -1576,9 +1576,6 @@ export const FinancialAccountFiltersSchema = {
         title: {
             $ref: '#/components/schemas/StringFilter'
         },
-        description: {
-            $ref: '#/components/schemas/StringFilter'
-        },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         }

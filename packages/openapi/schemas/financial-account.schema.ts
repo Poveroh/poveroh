@@ -114,7 +114,6 @@ export const FinancialAccountFiltersSchema = z
     .object({
         id: FinancialAccountParamsId,
         title: StringFilterSchema,
-        description: StringFilterSchema,
         type: FinancialAccountTypeEnum
     })
     .partial()

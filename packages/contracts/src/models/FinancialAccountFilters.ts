@@ -8,6 +8,5 @@ import type { StringFilter } from './StringFilter'
 export type FinancialAccountFilters = {
     id?: FinancialAccountParamsId
     title?: StringFilter
-    description?: StringFilter
     type?: FinancialAccountTypeEnum
 }
