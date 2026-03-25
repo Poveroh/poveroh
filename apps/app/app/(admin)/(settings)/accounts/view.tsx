@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@poveroh/ui/components/button'
@@ -30,6 +31,7 @@ export default function AccountView() {
         deleteMutation,
         ACCOUNT_TYPE_CATALOG,
         filters,
+        activeFilters,
         updateFilters,
         removeFilter,
         onSearch
@@ -38,6 +40,60 @@ export default function AccountView() {
     const { openModal } = useModal<FinancialAccountData>('account')
     const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
     const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
+
+    const pageContent = useMemo(() => {
+        if (accountQuery.isPending) {
+            return <SkeletonItem repeat={5} />
+        }
+
+        if (accountQuery.data && accountQuery.data?.data.length > 0) {
+            return (
+                <Box>
+                    {accountQuery.data?.data.map(account => (
+                        <AccountItem
+                            key={account.id}
+                            account={account}
+                            openEdit={(item: FinancialAccountData) => {
+                                openModal('edit', item)
+                            }}
+                            openDelete={openDeleteModal}
+                            buttons={[
+                                {
+                                    onClick: x => {
+                                        openSnapshotModal('create', undefined, { accountId: x.id })
+                                    },
+                                    label: t('accounts.snapshot.button'),
+                                    icon: 'calendar-plus'
+                                }
+                            ]}
+                        />
+                    ))}
+                </Box>
+            )
+        }
+
+        if (Object.keys(activeFilters).length > 0) {
+            return (
+                <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                    <Search />
+                    <div className='flex flex-col items-center space-y-2 justify-center'>
+                        <h4>{t('accounts.noResults.title')}</h4>
+                        <p>{t('accounts.noResults.subtitle')}</p>
+                    </div>
+                </div>
+            )
+        }
+
+        return (
+            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                <Landmark />
+                <div className='flex flex-col items-center space-y-2 justify-center'>
+                    <h4>{t('accounts.empty.title')}</h4>
+                    <p>{t('accounts.empty.subtitle')}</p>
+                </div>
+            </div>
+        )
+    }, [accountQuery.isPending, accountQuery.data, activeFilters])
 
     return (
         <>
@@ -80,7 +136,7 @@ export default function AccountView() {
 
                             const item = ACCOUNT_TYPE_CATALOG.find(x => x.value == value)
 
-                            if (!item) return
+                            if (!item) return null
 
                             return (
                                 <Button
@@ -109,43 +165,8 @@ export default function AccountView() {
                         onFilterChange={updateFilters}
                     />
                 </div>
-                {!accountQuery.isPending && accountQuery.data && accountQuery.data?.data.length > 0 ? (
-                    <Box>
-                        {accountQuery.data?.data.map(account => (
-                            <AccountItem
-                                key={account.id}
-                                account={account}
-                                openEdit={(item: FinancialAccountData) => {
-                                    openModal('edit', item)
-                                }}
-                                openDelete={openDeleteModal}
-                                buttons={[
-                                    {
-                                        onClick: x => {
-                                            openSnapshotModal('create', undefined, { accountId: x.id })
-                                        },
-                                        label: t('accounts.snapshot.button'),
-                                        icon: 'calendar-plus'
-                                    }
-                                ]}
-                            />
-                        ))}
-                    </Box>
-                ) : (
-                    <>
-                        {accountQuery.isPending ? (
-                            <SkeletonItem repeat={5} />
-                        ) : (
-                            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                                <Landmark />
-                                <div className='flex flex-col items-center space-y-2 justify-center'>
-                                    <h4>{t('accounts.empty.title')}</h4>
-                                    <p>{t('accounts.empty.subtitle')}</p>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
+
+                {pageContent}
             </PageWrapper>
 
             <AccountDialog />

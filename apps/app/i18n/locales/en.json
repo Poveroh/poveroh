@@ -421,6 +421,10 @@
             "title": "It all begins with account",
             "subtitle": "Click the + Add button to create a new one"
         },
+        "noResults": {
+            "title": "No matching results.",
+            "subtitle": "No results found. Try adjusting your search terms."
+        },
         "modal": {
             "newTitle": "New account",
             "editTitle": "Edit {a}",
