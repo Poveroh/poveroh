@@ -33,7 +33,8 @@ export const useFinancialAccount = () => {
             {
                 ...getFinancialAccountsOptions(
                     filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined
-                )
+                ),
+                staleTime: Infinity
             }
         ]
     })
