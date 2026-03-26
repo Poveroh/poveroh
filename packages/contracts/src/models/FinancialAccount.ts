@@ -7,7 +7,6 @@ export type FinancialAccount = {
     id: string
     userId: string
     title: string
-    description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string

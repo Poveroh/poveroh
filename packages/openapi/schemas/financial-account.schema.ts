@@ -12,7 +12,6 @@ export const FinancialAccountSchema = z
         id: z.string().uuid(),
         userId: z.string().uuid(),
         title: z.string(),
-        description: z.string(),
         balance: z.number(),
         type: FinancialAccountTypeEnum,
         logoIcon: z.string(),

@@ -7,6 +7,7 @@ export type ModalBaseProps = {
 
 export type DecorationProps = {
     dialogHeight?: string
+    dialogWidth?: string
     contentHeight?: string
     iconLogo: {
         name: string

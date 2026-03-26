@@ -1457,9 +1457,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "balance": {
                         "type": "number"
                     },
@@ -1486,7 +1483,6 @@
                     "id",
                     "userId",
                     "title",
-                    "description",
                     "balance",
                     "type",
                     "logoIcon",
@@ -1502,9 +1498,6 @@
                         "format": "uuid"
                     },
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "balance": {
@@ -1528,7 +1521,6 @@
                 "required": [
                     "id",
                     "title",
-                    "description",
                     "balance",
                     "type",
                     "logoIcon",
@@ -1595,9 +1587,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "balance": {
                         "type": "number"
                     },
@@ -1610,7 +1599,6 @@
                 },
                 "required": [
                     "title",
-                    "description",
                     "balance",
                     "type",
                     "logoIcon"
@@ -1671,9 +1659,6 @@
                         "format": "uuid"
                     },
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "balance": {
@@ -1772,9 +1757,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "balance": {
                         "type": "number"
                     },
@@ -1787,7 +1769,6 @@
                 },
                 "required": [
                     "title",
-                    "description",
                     "balance",
                     "type",
                     "logoIcon"

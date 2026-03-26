@@ -34,21 +34,21 @@ export function ModalFooter<T>(props: ModalFooterProps) {
                         </Button>
                     )}
                     {keepAdding.visibility && (
-                        <div className='items-top flex space-x-2'>
+                        <div className='items-top flex space-x-2 items-center cursor-pointer'>
                             <Checkbox
                                 id='keepAdding'
                                 checked={keepAdding.checked}
+                                className='cursor-pointer'
                                 onChange={() => setKeepAddingChecked()}
                             />
                             <div className='grid gap-1.5 leading-none cursor-pointer'>
                                 <label
                                     htmlFor='keepAdding'
-                                    className='text-sm font-medium leading-none'
+                                    className='text-sm font-medium leading-none cursor-pointer'
                                     onClick={() => setKeepAddingChecked()}
                                 >
                                     {t('modal.continueInsert.label')}
                                 </label>
-                                <p className='text-sm text-muted-foreground'>{t('modal.continueInsert.subtitle')}</p>
                             </div>
                         </div>
                     )}

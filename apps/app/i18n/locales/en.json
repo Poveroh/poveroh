@@ -8,7 +8,7 @@
             "title": "Want to delete {a}?"
         },
         "continueInsert": {
-            "label": "Keep adding",
+            "label": "Create more",
             "subtitle": "Keeps modal open for adding more items."
         },
         "confirmationDialog": {

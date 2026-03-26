@@ -810,7 +810,6 @@ export type FinancialAccount = {
     id: string
     userId: string
     title: string
-    description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
@@ -822,7 +821,6 @@ export type FinancialAccount = {
 export type FinancialAccountData = {
     id: string
     title: string
-    description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
@@ -859,7 +857,6 @@ export type GetFinancialAccountResponse = {
 
 export type CreateFinancialAccountRequest = {
     title: string
-    description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
@@ -885,7 +882,6 @@ export type CreateFinancialAccountResponse = {
 export type UpdateFinancialAccountRequest = {
     id?: string
     title?: string
-    description?: string
     balance?: number
     type?: FinancialAccountTypeEnum
     logoIcon?: string
@@ -938,7 +934,6 @@ export type QueryFinancialAccountFilters = {
 
 export type FinancialAccountForm = {
     title: string
-    description: string
     balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string

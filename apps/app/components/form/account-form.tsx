@@ -41,8 +41,6 @@ export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(
                     <div className='flex flex-col space-y-6'>
                         <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
 
-                        <TextField control={form.control} name='description' label={t('form.description.label')} />
-
                         <SelectField
                             control={form.control}
                             name='type'
@@ -51,6 +49,7 @@ export const AccountForm = forwardRef<FormRef, FormProps<FinancialAccountData>>(
                             placeholder={t('form.type.placeholder')}
                             getOptionLabel={(item: Item) => item.label}
                             getOptionValue={(item: Item) => item.value}
+                            mandatory
                         />
 
                         <FileUploadField

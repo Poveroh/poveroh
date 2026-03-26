@@ -1319,9 +1319,6 @@ export const FinancialAccountSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         balance: {
             type: 'number'
         },
@@ -1344,7 +1341,7 @@ export const FinancialAccountSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'userId', 'title', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
 } as const
 
 export const FinancialAccountDataSchema = {
@@ -1355,9 +1352,6 @@ export const FinancialAccountDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         balance: {
@@ -1378,7 +1372,7 @@ export const FinancialAccountDataSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'title', 'description', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'title', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
 } as const
 
 export const GetFinancialAccountListResponseSchema = {
@@ -1434,9 +1428,6 @@ export const CreateFinancialAccountRequestSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         balance: {
             type: 'number'
         },
@@ -1447,7 +1438,7 @@ export const CreateFinancialAccountRequestSchema = {
             type: 'string'
         }
     },
-    required: ['title', 'description', 'balance', 'type', 'logoIcon']
+    required: ['title', 'balance', 'type', 'logoIcon']
 } as const
 
 export const CreateFinancialAccountMultipartRequestSchema = {
@@ -1501,9 +1492,6 @@ export const UpdateFinancialAccountRequestSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         balance: {
@@ -1600,9 +1588,6 @@ export const FinancialAccountFormSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         balance: {
             type: 'number'
         },
@@ -1613,7 +1598,7 @@ export const FinancialAccountFormSchema = {
             type: 'string'
         }
     },
-    required: ['title', 'description', 'balance', 'type', 'logoIcon']
+    required: ['title', 'balance', 'type', 'logoIcon']
 } as const
 
 export const ImportFileSchema = {

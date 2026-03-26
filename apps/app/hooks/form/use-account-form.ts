@@ -15,10 +15,11 @@ export const useFinancialAccountForm = (initialData: FinancialAccountData | null
     const [file, setFile] = useState<FileList | null>(null)
     const [loading, setLoading] = useState(false)
 
-    const defaultValues = initialData || {
+    const defaultValues: FinancialAccountForm = initialData || {
         title: '',
-        description: '',
-        type: 'BANK_ACCOUNT'
+        type: 'BANK_ACCOUNT',
+        balance: 0,
+        logoIcon: ''
     }
 
     const form = useForm<FinancialAccountForm>({
