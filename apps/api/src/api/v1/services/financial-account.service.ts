@@ -34,7 +34,7 @@ export class FinancialAccountService extends BaseService {
     ): Promise<FinancialAccountData> {
         const userId = this.getUserId()
 
-        const generatedId = crypto.randomUUID()
+        const generatedId = crypto.randomUUID() as string
 
         if (file) {
             payload.logoIcon = await this.saveFile(generatedId, file)
