@@ -1,10 +1,12 @@
 import path from 'path'
 import config from '../utils/environment'
-import { isLocalStorageMode, uploadClient } from '../utils/storage'
+import { isLocalStorageMode, getUploadClient } from '../utils/storage'
 
 export const MediaHelper = {
     async handleUpload(file: Express.Multer.File, filePath: string): Promise<string> {
         filePath = path.join(filePath, file.originalname)
+
+        const uploadClient = getUploadClient()
 
         await uploadClient.uploadFile(filePath, file.buffer)
 

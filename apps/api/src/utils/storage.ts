@@ -59,4 +59,11 @@ function readConfig() {
     return config
 }
 
-export const uploadClient = new BeyCloud(storageMode, readConfig())
+let _uploadClient: BeyCloud | null = null
+
+export function getUploadClient(): BeyCloud {
+    if (!_uploadClient) {
+        _uploadClient = new BeyCloud(storageMode, readConfig())
+    }
+    return _uploadClient
+}
