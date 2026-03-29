@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { BalanceHelper } from '../helpers/balance.helper'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
-import { FileType } from '@prisma/client'
 import {
     CreateImportRequest,
     ImportData,
@@ -337,7 +336,7 @@ export class ImportService extends BaseService {
             id: uuidv4(),
             importId,
             filename: files[idx]?.originalname || '',
-            filetype: FileType.CSV,
+            filetype: 'CSV',
             path,
             createdAt: now.toISOString(),
             updatedAt: now.toISOString()

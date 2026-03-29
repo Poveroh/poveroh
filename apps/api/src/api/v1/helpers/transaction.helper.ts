@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { Prisma, Currency, TransactionAction as PrismaTransactionAction } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import moment from 'moment-timezone'
 import { ExpensesFormData, FormMode, IncomeFormData, TransferFormData } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
@@ -555,7 +555,7 @@ export const TransactionHelper = {
     async normalizeTransaction(action: 'INCOME' | 'EXPENSES' | 'TRANSFER', transaction: FormMode, userId: string) {
         const baseData = {
             title: transaction.title,
-            action: action as PrismaTransactionAction,
+            action: action,
             date: new Date(transaction.date).toISOString(),
             note: transaction.note,
             ignore: transaction.ignore || false,
@@ -616,7 +616,7 @@ export const TransactionHelper = {
         return {
             transactionId,
             amount,
-            currency: currency as Currency,
+            currency: currency,
             action: action as 'INCOME' | 'EXPENSES' | 'TRANSFER',
             financialAccountId
         }

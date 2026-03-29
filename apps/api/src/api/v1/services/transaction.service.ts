@@ -1,5 +1,4 @@
 import prisma from '@poveroh/prisma'
-import { TransactionStatus } from '@prisma/client'
 import { buildWhere } from '../../../helpers/filter.helper'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { FilterOptions, QueryTransactionFilters, TransactionDataResponse, TransactionFilters } from '@poveroh/types'
@@ -91,7 +90,7 @@ export class TransactionService extends BaseService {
         const where = {
             ...buildWhere(genericFilters),
             userId,
-            status: TransactionStatus.APPROVED,
+            status: 'APPROVED',
             ...(type && { action: type }),
             ...(financialAccountId && {
                 amounts: {
