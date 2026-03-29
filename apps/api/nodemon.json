@@ -2,5 +2,5 @@
     "watch": ["src"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "node --inspect=9229 -r tsx/cjs ./src/index.ts"
+    "exec": "node --inspect=9229 -r dotenv/config -r tsx/cjs ./src/index.ts"
 }
