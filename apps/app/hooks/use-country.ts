@@ -1,11 +1,11 @@
+import { Country } from '@poveroh/types'
 import { useEffect, useState, useMemo } from 'react'
-import { ICountry } from '@poveroh/types'
 
 // Cache countries globally to avoid re-fetching
-let countriesCache: ICountry[] | null = null
-let countriesPromise: Promise<ICountry[]> | null = null
+let countriesCache: Country[] | null = null
+let countriesPromise: Promise<Country[]> | null = null
 
-async function fetchCountries(): Promise<ICountry[]> {
+async function fetchCountries(): Promise<Country[]> {
     if (countriesCache) {
         return countriesCache
     }
@@ -20,7 +20,7 @@ async function fetchCountries(): Promise<ICountry[]> {
 }
 
 export function useCountry() {
-    const [countries, setCountries] = useState<ICountry[]>(() => countriesCache || [])
+    const [countries, setCountries] = useState<Country[]>(() => countriesCache || [])
     const [loading, setLoading] = useState(!countriesCache)
 
     useEffect(() => {

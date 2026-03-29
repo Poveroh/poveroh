@@ -8,7 +8,7 @@ import {
     navigationMenuTriggerStyle
 } from '@poveroh/ui/components/navigation-menu'
 import { getNavConfig } from '@/config/nav-config'
-import { INavItem } from '@/types/navbar'
+import { NavItem } from '@/types/navbar'
 import { cn } from '@poveroh/ui/lib/utils'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
@@ -25,7 +25,7 @@ export function NavigationBar({ orientation = 'horizontal' }: NavigationBarProps
     const navConfig = getNavConfig()
     const pathname = usePathname()
 
-    const renderDropdownContent = (items: INavItem[], gridClass: string = 'w-[300px]') => (
+    const renderDropdownContent = (items: NavItem[], gridClass: string = 'w-[300px]') => (
         <ul className={cn('grid gap-xxs', gridClass)}>
             {items
                 .filter(item => item.show)

@@ -1,156 +1,175 @@
 'use client'
 
-import { TransactionService } from '@/services/transaction.service'
+import { toast } from '@poveroh/ui/components/sonner'
+import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTransactionStore } from '@/store/transaction.store'
-import {
-    GroupedTransactions,
-    IFilterOptions,
-    IItem,
-    ITransaction,
-    ITransactionFilters,
-    TransactionAction
-} from '@poveroh/types'
-import { useTranslations } from 'next-intl'
 import { useError } from './use-error'
-import { useState } from 'react'
 import { LoadingState } from '@/types/general'
 import { useCategory } from './use-category'
 import { useFinancialAccount } from './use-account'
+import { useUtils } from './use-utils'
+import {
+    createTransactionMutation,
+    deleteTransactionMutation,
+    getTransactionByIdOptions,
+    getTransactionByIdQueryKey,
+    getTransactionsOptions,
+    getTransactionsQueryKey,
+    updateTransactionMutation
+} from '@/api/@tanstack/react-query.gen'
+import {
+    GroupedTransactions,
+    TransactionActionCatalog,
+    TransactionData,
+    FilterOptions,
+    TransactionFilters
+} from '@poveroh/types'
+import { useTranslations } from 'next-intl'
 
 export const useTransaction = () => {
+    const queryClient = useQueryClient()
     const t = useTranslations()
+    const { renderItemsLabel } = useUtils()
     const { handleError } = useError()
-    const { fetchCategory } = useCategory()
-    const { fetchFinancialAccount } = useFinancialAccount()
+    const { fetchCategories } = useCategory()
+    const { accountQuery } = useFinancialAccount()
 
-    const transactionService = new TransactionService()
     const transactionStore = useTransactionStore()
 
-    const [transactionLoading, setTransactionLoading] = useState<LoadingState>({
-        add: false,
-        edit: false,
-        remove: false,
-        get: false,
-        fetch: false
-    })
-
-    const setLoadingFor = (key: keyof LoadingState, value: boolean) => {
-        setTransactionLoading(prev => ({ ...prev, [key]: value }))
-    }
-
-    const addTransaction = async (data: FormData) => {
-        setLoadingFor('add', true)
-        try {
-            const res = await transactionService.add(data)
-            transactionStore.addTransaction(res)
-
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding transaction')
-        } finally {
-            setLoadingFor('add', false)
-        }
-    }
-
-    const editTransaction = async (id: string, data: FormData) => {
-        setLoadingFor('edit', true)
-        try {
-            const res = await transactionService.save(id, data)
-            transactionStore.editTransaction(res)
-
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing transaction')
-        } finally {
-            setLoadingFor('edit', false)
-        }
-    }
-
-    const removeTransaction = async (transactionId: string) => {
-        setLoadingFor('remove', true)
-        try {
-            const res = await transactionService.delete(transactionId)
-
-            if (!res) {
-                throw new Error('No response from server')
+    const createMutation = useMutation({
+        ...createTransactionMutation(),
+        onSuccess: data => {
+            if (data.message && !data.success) {
+                toast.error(t(data.message))
             }
 
-            transactionStore.removeTransaction(transactionId)
+            const transaction = data?.data
+            if (transaction) {
+                transactionStore.addTransaction(transaction)
+            }
 
-            return res
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error creating transaction')
+        }
+    })
+
+    const updateMutation = useMutation({
+        ...updateTransactionMutation(),
+        onSuccess: (data, variables) => {
+            if (data.message && !data.success) {
+                toast.error(t(data.message))
+            }
+
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getTransactionByIdQueryKey({
+                    path: { id: variables.path.id }
+                })
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error updating transaction')
+        }
+    })
+
+    const deleteMutation = useMutation({
+        ...deleteTransactionMutation(),
+        onSuccess: (_, variables) => {
+            transactionStore.removeTransaction(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting transaction')
+        }
+    })
+
+    const getTransaction = async (transactionId: string) => {
+        try {
+            const response = await queryClient.fetchQuery(
+                getTransactionByIdOptions({
+                    path: { id: transactionId }
+                })
+            )
+
+            if (!response?.success || !response?.data) return null
+
+            return response?.data
         } catch (error) {
-            return handleError(error, 'Error deleting transaction')
-        } finally {
-            setLoadingFor('remove', false)
+            return handleError(error, 'Error fetching transaction')
         }
-    }
-
-    const getTransaction = async (transactionId: string, fetchFromServer?: boolean) => {
-        if (fetchFromServer) {
-            const res = await transactionService.read<ITransaction | null, ITransactionFilters>({ id: transactionId })
-            return res.data
-        }
-        return transactionStore.getTransaction(transactionId)
     }
 
     const fetchTransaction = async (
-        filters?: ITransactionFilters,
-        options?: IFilterOptions,
+        filters?: TransactionFilters,
+        options?: FilterOptions,
         append?: boolean,
         forceFetch?: boolean,
         prefetchCategoryAndAccount?: boolean
     ) => {
-        setLoadingFor('fetch', true)
         try {
             if (prefetchCategoryAndAccount) {
-                await fetchCategory()
-                await fetchFinancialAccount()
+                await fetchCategories()
+                await accountQuery.refetch()
             }
-            if (transactionStore.transactionCacheList.length > 0 && !forceFetch) {
-                return transactionStore.transactionCacheList
-            }
-            const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
+
+            const response = await queryClient.fetchQuery(
+                getTransactionsOptions({
+                    query: {
+                        filter: filters,
+                        options
+                    }
+                })
+            )
 
             if (append) {
-                transactionStore.appendTransactions(res.data)
+                transactionStore.appendTransactions(response.data)
             } else {
-                transactionStore.setTransactions(res.data)
+                transactionStore.setTransactions(response.data)
             }
 
-            return res.data
+            return response.data
         } catch (error) {
             return handleError(error, 'Error fetching transactions')
-        } finally {
-            setLoadingFor('fetch', false)
         }
     }
 
-    const getActionList = (excludeInternal?: boolean): IItem[] => {
-        const actionList = [
-            { value: TransactionAction.INCOME, label: t('transactions.action.income') },
-            { value: TransactionAction.EXPENSES, label: t('transactions.action.expenses') },
-            { value: TransactionAction.TRANSFER, label: t('transactions.action.internalTransfer') }
-        ]
-        return excludeInternal ? actionList.filter(({ value }) => value !== TransactionAction.TRANSFER) : actionList
+    const getActionList = (excludeInternal?: boolean) => {
+        const actionList = excludeInternal
+            ? TransactionActionCatalog.filter(({ value }) => value !== 'TRANSFER')
+            : TransactionActionCatalog
+
+        return renderItemsLabel(actionList)
     }
 
     const fetchTransactionPaginated = async (
-        filters?: ITransactionFilters,
-        options?: IFilterOptions
-    ): Promise<{ data: ITransaction[]; total: number } | null> => {
-        setLoadingFor('fetch', true)
+        filters?: TransactionFilters,
+        options?: FilterOptions
+    ): Promise<{ data: TransactionData[]; total: number } | null> => {
         try {
-            const res = await transactionService.read<ITransaction[], ITransactionFilters>(filters, options)
-            transactionStore.setTransactions(res.data)
-            return res
+            const response = await queryClient.fetchQuery(
+                getTransactionsOptions({
+                    query: {
+                        filter: filters,
+                        options
+                    }
+                })
+            )
+
+            const responsePayload = response?.data as unknown as { data: TransactionData[]; total: number } | undefined
+            const data = responsePayload?.data ?? []
+            const total = Number(responsePayload?.total ?? data.length)
+
+            transactionStore.setTransactions(data)
+
+            return { data, total }
         } catch (error) {
             return handleError(error, 'Error fetching transactions')
-        } finally {
-            setLoadingFor('fetch', false)
         }
     }
 
-    const groupTransactionsByDate = (transactions: ITransaction[]): GroupedTransactions => {
+    const groupTransactionsByDate = (transactions: TransactionData[]): GroupedTransactions => {
         return transactions.reduce((acc, transaction) => {
             const dateKey = transaction.date.slice(0, 10)
             if (!acc[dateKey]) {
@@ -161,12 +180,26 @@ export const useTransaction = () => {
         }, {} as GroupedTransactions)
     }
 
+    const transactionLoading: LoadingState = {
+        create: createMutation.isPending,
+        update: updateMutation.isPending,
+        delete: deleteMutation.isPending,
+        fetch: useIsFetching({ queryKey: getTransactionsQueryKey() }) > 0,
+        get:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getTransactionById'
+                }
+            }) > 0
+    }
+
     return {
         transactionCacheList: transactionStore.transactionCacheList,
         transactionLoading,
-        addTransaction,
-        editTransaction,
-        removeTransaction,
+        createTransaction: createMutation.mutateAsync,
+        updateTransaction: updateMutation.mutateAsync,
+        deleteTransaction: deleteMutation.mutateAsync,
         getTransaction,
         fetchTransaction,
         fetchTransactionPaginated,

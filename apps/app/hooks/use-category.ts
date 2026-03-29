@@ -1,223 +1,291 @@
 'use client'
 
-import { CategoryService, SubcategoryService } from '@/services/category.service'
+import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCategoryStore } from '@/store/category.store'
-import { ICategory, ICategoryFilters, ISubcategory } from '@poveroh/types'
+import type { Category, Subcategory } from '@/lib/api-client'
 import { useError } from './use-error'
-import { useState } from 'react'
 import { useImport } from './use-imports'
+import {
+    createCategoryMutation,
+    createSubcategoryMutation,
+    deleteCategoriesMutation,
+    deleteCategoryMutation,
+    deleteSubcategoryMutation,
+    getCategoriesOptions,
+    getCategoriesQueryKey,
+    getCategoryByIdOptions,
+    getCategoryByIdQueryKey,
+    getSubcategoryByIdOptions,
+    getSubcategoryByIdQueryKey,
+    updateCategoryMutation,
+    updateSubcategoryMutation
+} from '@/api/@tanstack/react-query.gen'
+import { CategoryData } from '@poveroh/types'
 
-type categoryLoadingState = {
-    addCategory: boolean
-    editCategory: boolean
-    removeCategory: boolean
-    clearCategories: boolean
+type CategoryLoadingState = {
+    createCategory: boolean
+    updateCategory: boolean
+    deleteCategory: boolean
+    deleteCategories: boolean
     getCategory: boolean
-    fetchCategory: boolean
-    addSubcategory: boolean
-    editSubcategory: boolean
-    removeSubcategory: boolean
+    fetchCategories: boolean
+    createSubcategory: boolean
+    updateSubcategory: boolean
+    deleteSubcategory: boolean
     getSubcategory: boolean
 }
 
 export const useCategory = () => {
+    const queryClient = useQueryClient()
     const { handleError } = useError()
     const { importTemplates: importFromTemplate } = useImport()
-
-    const categoryService = new CategoryService()
-    const subcategoryService = new SubcategoryService()
     const categoryStore = useCategoryStore()
 
-    const [categoryLoading, setCategoryLoading] = useState<categoryLoadingState>({
-        addCategory: false,
-        editCategory: false,
-        removeCategory: false,
-        clearCategories: false,
-        getCategory: false,
-        fetchCategory: false,
-        addSubcategory: false,
-        editSubcategory: false,
-        removeSubcategory: false,
-        getSubcategory: false
+    const createCategoryMutationHook = useMutation({
+        ...createCategoryMutation(),
+        onSuccess: data => {
+            const category = data?.data as Category | undefined
+            if (category) {
+                categoryStore.addCategory(category)
+            }
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error adding category')
+        }
     })
 
-    const setCategoryLoadingFor = (key: keyof categoryLoadingState, value: boolean) => {
-        setCategoryLoading(prev => ({ ...prev, [key]: value }))
-    }
-
-    // Category
-    const addCategory = async (data: FormData | Partial<ICategory>) => {
-        setCategoryLoadingFor('addCategory', true)
-        try {
-            const res = await categoryService.add(data)
-            categoryStore.addCategory(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding category')
-        } finally {
-            setCategoryLoadingFor('addCategory', false)
-        }
-    }
-
-    const editCategory = async (id: string, data: FormData | Partial<ICategory>) => {
-        setCategoryLoadingFor('editCategory', true)
-        try {
-            const res = await categoryService.save(id, data)
-            categoryStore.editCategory(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing category')
-        } finally {
-            setCategoryLoadingFor('editCategory', false)
-        }
-    }
-
-    const removeCategory = async (categoryId: string) => {
-        setCategoryLoadingFor('removeCategory', true)
-        try {
-            const res = await categoryService.delete(categoryId)
-            if (!res) {
-                throw new Error('No response from server')
+    const updateCategoryMutationHook = useMutation({
+        ...updateCategoryMutation(),
+        onSuccess: (data, variables) => {
+            const category = (data?.data ?? variables.body) as Category | undefined
+            if (category) {
+                categoryStore.editCategory(category)
             }
-            categoryStore.removeCategory(categoryId)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error deleting category')
-        } finally {
-            setCategoryLoadingFor('removeCategory', false)
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getCategoryByIdQueryKey({ path: { id: variables.path.id } })
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error editing category')
         }
+    })
+
+    const deleteCategoryMutationHook = useMutation({
+        ...deleteCategoryMutation(),
+        onSuccess: (_, variables) => {
+            categoryStore.removeCategory(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting category')
+        }
+    })
+
+    const deleteCategoriesMutationHook = useMutation({
+        ...deleteCategoriesMutation(),
+        onSuccess: () => {
+            categoryStore.clearCategory()
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error clearing all categories')
+        }
+    })
+
+    const createSubcategoryMutationHook = useMutation({
+        ...createSubcategoryMutation(),
+        onSuccess: data => {
+            const subcategory = data?.data as Subcategory | undefined
+            if (subcategory) {
+                categoryStore.addSubcategory(subcategory)
+            }
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error adding subcategory')
+        }
+    })
+
+    const updateSubcategoryMutationHook = useMutation({
+        ...updateSubcategoryMutation(),
+        onSuccess: (data, variables) => {
+            const subcategory = (data?.data ?? variables.body) as Subcategory | undefined
+            if (subcategory) {
+                categoryStore.editSubcategory(subcategory)
+            }
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getSubcategoryByIdQueryKey({ path: { id: variables.path.id } })
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error editing subcategory')
+        }
+    })
+
+    const deleteSubcategoryMutationHook = useMutation({
+        ...deleteSubcategoryMutation(),
+        onSuccess: (_, variables) => {
+            categoryStore.removeSubcategory(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting subcategory')
+        }
+    })
+
+    const createCategory = async (data: FormData | Partial<CategoryData>) => {
+        const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+
+        return createCategoryMutationHook.mutateAsync({
+            body: bodyData
+        })
     }
 
-    const getCategory = async (categoryId: string, fetchFromServer?: boolean) => {
-        setCategoryLoadingFor('getCategory', true)
+    const updateCategory = async (id: string, data: Partial<Category>) => {
+        const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+
+        return updateCategoryMutationHook.mutateAsync({
+            path: { id },
+            body: bodyData
+        })
+    }
+
+    const deleteCategory = async (categoryId: string) => {
+        return deleteCategoryMutationHook.mutateAsync({
+            path: { id: categoryId }
+        })
+    }
+
+    const getCategory = async (categoryId: string) => {
         try {
-            if (fetchFromServer) {
-                const res = await categoryService.read<ICategory | null, ICategoryFilters>({ id: categoryId })
-                return res.data
-            }
-            return categoryStore.getCategory(categoryId)
+            const response = await queryClient.fetchQuery(
+                getCategoryByIdOptions({
+                    path: { id: categoryId }
+                })
+            )
+
+            if (!response?.success) return null
+
+            return (response?.data ?? null) as Category | null
         } catch (error) {
             return handleError(error, 'Error fetching category')
-        } finally {
-            setCategoryLoadingFor('getCategory', false)
         }
     }
 
-    // Subcategory methods
-    const addSubcategory = async (data: FormData | Partial<ISubcategory>) => {
-        setCategoryLoadingFor('addSubcategory', true)
+    const getSubcategory = async (subcategoryId: string) => {
         try {
-            const res = await subcategoryService.add(data)
-            categoryStore.addSubcategory(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding subcategory')
-        } finally {
-            setCategoryLoadingFor('addSubcategory', false)
-        }
-    }
+            const response = await queryClient.fetchQuery(
+                getSubcategoryByIdOptions({
+                    path: { id: subcategoryId }
+                })
+            )
 
-    const editSubcategory = async (id: string, data: FormData | Partial<ISubcategory>) => {
-        setCategoryLoadingFor('editSubcategory', true)
-        try {
-            const res = await subcategoryService.save(id, data)
-            categoryStore.editSubcategory(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing subcategory')
-        } finally {
-            setCategoryLoadingFor('editSubcategory', false)
-        }
-    }
+            if (!response?.success) return null
 
-    const removeSubcategory = async (subcategoryId: string) => {
-        setCategoryLoadingFor('removeSubcategory', true)
-        try {
-            const res = await subcategoryService.delete(subcategoryId)
-            if (!res) {
-                throw new Error('No response from server')
-            }
-            categoryStore.removeSubcategory(subcategoryId)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error deleting subcategory')
-        } finally {
-            setCategoryLoadingFor('removeSubcategory', false)
-        }
-    }
-
-    const getSubcategory = async (subcategoryId: string, fetchFromServer?: boolean) => {
-        setCategoryLoadingFor('getSubcategory', true)
-        try {
-            if (fetchFromServer) {
-                const res = await subcategoryService.read<ICategory | null, ICategoryFilters>({ id: subcategoryId })
-                return res.data
-            }
-            return categoryStore.getSubcategory(subcategoryId)
+            return (response?.data ?? null) as Subcategory | null
         } catch (error) {
             return handleError(error, 'Error fetching subcategory')
-        } finally {
-            setCategoryLoadingFor('getSubcategory', false)
         }
     }
 
-    const fetchCategory = async (forceRefresh = false) => {
-        setCategoryLoadingFor('fetchCategory', true)
+    const fetchCategories = async (forceRefresh = false) => {
         try {
             if (categoryStore.categoryCacheList.length > 0 && !forceRefresh) {
                 return categoryStore.categoryCacheList
             }
-            const res = await categoryService.read<ICategory[], ICategoryFilters>()
-            categoryStore.setCategory(res.data)
-            return res.data
+
+            const response = await queryClient.fetchQuery(getCategoriesOptions())
+
+            if (!response?.success) return []
+
+            const data = (response?.data ?? []) as Category[]
+            categoryStore.setCategory(data)
+
+            return data
         } catch (error) {
             return handleError(error, 'Error fetching categories')
-        } finally {
-            setCategoryLoadingFor('fetchCategory', false)
         }
     }
 
-    const clearCategories = async () => {
-        setCategoryLoadingFor('clearCategories', true)
-        try {
-            const res = await categoryService.clear()
-            categoryStore.clearCategory()
-            return res
-        } catch (error) {
-            return handleError(error, 'Error clearing all categories')
-        } finally {
-            setCategoryLoadingFor('clearCategories', false)
-        }
+    const createSubcategory = async (data: FormData | Partial<Subcategory>) => {
+        const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+        return createSubcategoryMutationHook.mutateAsync({
+            body: bodyData
+        })
+    }
+
+    const updateSubcategory = async (id: string, data: FormData | Partial<Subcategory>) => {
+        const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+
+        return updateSubcategoryMutationHook.mutateAsync({
+            path: { id },
+            body: bodyData
+        })
+    }
+
+    const deleteSubcategory = async (subcategoryId: string) => {
+        return deleteSubcategoryMutationHook.mutateAsync({
+            path: { id: subcategoryId }
+        })
+    }
+
+    const deleteCategories = async () => {
+        return deleteCategoriesMutationHook.mutateAsync({})
     }
 
     const importTemplates = async () => {
-        setCategoryLoadingFor('fetchCategory', true)
         try {
             const res = await importFromTemplate('categories')
             if (res) {
-                await fetchCategory(true)
+                await fetchCategories(true)
             }
             return res
         } catch (error) {
             return handleError(error, 'Error importing categories from template')
-        } finally {
-            setCategoryLoadingFor('fetchCategory', false)
         }
+    }
+
+    const categoryLoading: CategoryLoadingState = {
+        createCategory: createCategoryMutationHook.isPending,
+        updateCategory: updateCategoryMutationHook.isPending,
+        deleteCategory: deleteCategoryMutationHook.isPending,
+        deleteCategories: deleteCategoriesMutationHook.isPending,
+        getCategory:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getCategoryById'
+                }
+            }) > 0,
+        fetchCategories: useIsFetching({ queryKey: getCategoriesQueryKey() }) > 0,
+        createSubcategory: createSubcategoryMutationHook.isPending,
+        updateSubcategory: updateSubcategoryMutationHook.isPending,
+        deleteSubcategory: deleteSubcategoryMutationHook.isPending,
+        getSubcategory:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getSubcategoryById'
+                }
+            }) > 0
     }
 
     return {
         categoryCacheList: categoryStore.categoryCacheList,
         categoryLoading,
-        addCategory,
-        editCategory,
-        removeCategory,
+        createCategory,
+        updateCategory,
+        deleteCategory,
         getCategory,
-        fetchCategory,
-        addSubcategory,
-        editSubcategory,
-        removeSubcategory,
+        fetchCategories,
+        createSubcategory,
+        updateSubcategory,
+        deleteSubcategory,
         getSubcategory,
         importTemplates,
-        clearCategories
+        deleteCategories
     }
 }

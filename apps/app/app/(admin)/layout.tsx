@@ -2,7 +2,6 @@
 
 import NavBar from '@/components/navbar/navbar'
 import { RouteGuard } from '@/components/other/route-guard'
-import { OnBoardingStep } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
 import { usePathname } from 'next/navigation'
 
@@ -22,7 +21,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     ].some(path => pathname.startsWith(path))
 
     return (
-        <RouteGuard requiredStep={[OnBoardingStep.COMPLETED]} redirectTo='/onboarding'>
+        <RouteGuard requiredStep={['COMPLETED']} redirectTo='/onboarding'>
             <div className='grid grid-rows-[auto_1fr] h-screen overflow-hidden'>
                 <NavBar />
                 <div className={isSettings ? 'h-full overflow-hidden' : 'overflow-y-auto'}>

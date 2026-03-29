@@ -1,10 +1,10 @@
-export interface ISidebarItem {
+export type SidebarItem = {
     title: string
     href: string
     icon: string
 }
 
-export interface ISidebarSection {
+export type SidebarSection = {
     title: string
-    items: ISidebarItem[]
+    items: SidebarItem[]
 }

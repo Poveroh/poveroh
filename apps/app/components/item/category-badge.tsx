@@ -1,15 +1,15 @@
+import { CategoryData, SubcategoryData } from '@poveroh/types'
 import DynamicIcon from '../icon/dynamic-icon'
-import { ICategory, ISubcategory } from '@poveroh/types'
 
 type CategoryBadgeProps =
     | {
-          category: ICategory
+          category: CategoryData
           compact?: boolean
           variant?: 'category'
       }
     | {
           variant: 'subcategory'
-          subcategory: ISubcategory
+          subcategory: SubcategoryData
           color?: string
           compact?: boolean
           showConnector?: boolean

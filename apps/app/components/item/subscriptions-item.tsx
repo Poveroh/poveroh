@@ -1,5 +1,4 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { AppearanceMode, IFinancialAccount, ISubscription } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import DynamicIcon from '../icon/dynamic-icon'
 import icons from 'currency-icons'
@@ -7,24 +6,25 @@ import { useSubscription } from '@/hooks/use-subscriptions'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { FinancialAccountData, SubscriptionData } from '@poveroh/types'
 
 type SubscriptionItemProps = {
-    subscription: ISubscription
-    openDelete: (item: ISubscription) => void
-    openEdit: (item: ISubscription) => void
+    subscription: SubscriptionData
+    openDelete: (item: SubscriptionData) => void
+    openEdit: (item: SubscriptionData) => void
 }
 
 export function SubscriptionItem({ subscription, openDelete, openEdit }: SubscriptionItemProps) {
     const t = useTranslations()
     const { getNextExecutionText } = useSubscription()
-    const { getFinancialAccount } = useFinancialAccount()
+    const { getFinancialAccountById } = useFinancialAccount()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
-    const [account, setAccount] = useState<IFinancialAccount | null>(null)
+    const [account, setAccount] = useState<FinancialAccountData | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const account = await getFinancialAccount(subscription.financialAccountId)
+            const account = await getFinancialAccountById(subscription.financialAccountId)
             setAccount(account)
         }
         fetchData()
@@ -38,7 +38,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
             <div className='flex flex-row items-center space-x-5'>
                 <div className='flex items-center justify-center h-[40px] w-[40px]'>
                     {(() => {
-                        if (subscription.appearanceMode == AppearanceMode.LOGO) {
+                        if (subscription.appearanceMode == 'LOGO') {
                             return <BrandIcon circled icon={subscription.appearanceLogoIcon} />
                         } else {
                             return (
@@ -66,7 +66,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
                     </div>
                     <p className='sub'>{getNextExecutionText(subscription)}</p>
                 </div>
-                <OptionsPopover<ISubscription>
+                <OptionsPopover<SubscriptionData>
                     data={subscription}
                     buttons={[
                         {

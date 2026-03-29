@@ -1,9 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
-
-import { IFinancialAccount, IFinancialAccountFilters, ISnapshotAccountBalance } from '@poveroh/types'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
@@ -22,73 +20,80 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { FinancialAccountData, FinancialAccountFilters, SnapshotAccountBalance } from '@poveroh/types'
 
 export default function AccountView() {
     const t = useTranslations()
 
-    const { financialAccountCacheList, fetchFinancialAccount, TYPE_LIST, financialAccountLoading } =
-        useFinancialAccount()
+    const {
+        accountQuery,
+        createMutation,
+        deleteMutation,
+        ACCOUNT_TYPE_CATALOG,
+        filters,
+        activeFilters,
+        updateFilters,
+        removeFilter,
+        onSearch
+    } = useFinancialAccount()
 
-    const { openModal } = useModal<IFinancialAccount>('account')
-    const { openModal: openSnapshotModal } = useModal<ISnapshotAccountBalance>('account-snapshot')
-    const { openModal: openDeleteModal } = useDeleteModal<IFinancialAccount>()
+    const { openModal } = useModal<FinancialAccountData>('account')
+    const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
+    const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
 
-    const [localAccountList, setLocalAccountList] = useState<IFinancialAccount[]>(financialAccountCacheList)
-
-    const [filters, setFilters] = useState<IFinancialAccountFilters>({})
-
-    useEffect(() => {
-        fetchFinancialAccount()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    useEffect(() => {
-        setLocalAccountList(financialAccountCacheList)
-    }, [financialAccountCacheList])
-
-    const onFilter = (filter: IFinancialAccountFilters = {}) => {
-        const updatedFilter = { ...filter }
-
-        const filteredList = financialAccountCacheList.filter(account => {
-            const titleMatch = updatedFilter.title?.contains
-                ? account.title?.toLowerCase().includes(updatedFilter.title.contains.toLowerCase())
-                : true
-
-            const descriptionMatch = updatedFilter.description?.contains
-                ? account.description?.toLowerCase().includes(updatedFilter.description.contains.toLowerCase())
-                : true
-
-            const typeMatch = updatedFilter.type ? account.type === updatedFilter.type : true
-
-            return titleMatch && descriptionMatch && typeMatch
-        })
-
-        setFilters(updatedFilter)
-        setLocalAccountList(filteredList)
-    }
-
-    const removeFilter = (key: keyof IFinancialAccountFilters) => {
-        const newFilters: IFinancialAccountFilters = { ...filters }
-        delete newFilters[key]
-
-        if (key === 'title' || key === 'description') {
-            delete newFilters[key]
+    const pageContent = useMemo(() => {
+        if (accountQuery.isPending) {
+            return <SkeletonItem repeat={5} />
         }
 
-        onFilter(newFilters)
-    }
-
-    const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
-
-        const newFilters: IFinancialAccountFilters = {
-            ...filters,
-            title: textToSearch ? { contains: textToSearch } : undefined,
-            description: textToSearch ? { contains: textToSearch } : undefined
+        if (accountQuery.data && accountQuery.data?.data.length > 0) {
+            return (
+                <Box>
+                    {accountQuery.data?.data.map(account => (
+                        <AccountItem
+                            key={account.id}
+                            account={account}
+                            openEdit={(item: FinancialAccountData) => {
+                                openModal('edit', item)
+                            }}
+                            openDelete={openDeleteModal}
+                            buttons={[
+                                {
+                                    onClick: x => {
+                                        openSnapshotModal('create', undefined, { accountId: x.id })
+                                    },
+                                    label: t('accounts.snapshot.button'),
+                                    icon: 'calendar-plus'
+                                }
+                            ]}
+                        />
+                    ))}
+                </Box>
+            )
         }
 
-        onFilter(newFilters)
-    }
+        if (Object.keys(activeFilters).length > 0) {
+            return (
+                <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                    <Search />
+                    <div className='flex flex-col items-center space-y-2 justify-center'>
+                        <h4>{t('accounts.noResults.title')}</h4>
+                        <p>{t('accounts.noResults.subtitle')}</p>
+                    </div>
+                </div>
+            )
+        }
+
+        return (
+            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                <Landmark />
+                <div className='flex flex-col items-center space-y-2 justify-center'>
+                    <h4>{t('accounts.empty.title')}</h4>
+                    <p>{t('accounts.empty.subtitle')}</p>
+                </div>
+            </div>
+        )
+    }, [accountQuery.isPending, accountQuery.data, activeFilters])
 
     return (
         <>
@@ -102,18 +107,18 @@ export default function AccountView() {
                         { label: t('settings.manage.account.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchFinancialAccount(true),
-                        loading: financialAccountLoading.fetch
+                        onClick: accountQuery.refetch,
+                        loading: accountQuery.isPending
                     }}
                     addAction={{
                         onClick: () => {
                             openModal('create')
                         },
-                        loading: financialAccountLoading.add
+                        loading: createMutation.isPending
                     }}
                     onDeleteAll={{
                         onClick: () => {},
-                        loading: financialAccountLoading.remove
+                        loading: deleteMutation.isPending
                     }}
                 />
 
@@ -129,16 +134,16 @@ export default function AccountView() {
                         {Object.entries(filters).map(([key, value]) => {
                             if (!value) return null
 
-                            const item = TYPE_LIST.find(x => x.value == value)
+                            const item = ACCOUNT_TYPE_CATALOG.find(x => x.value == value)
 
-                            if (!item) return
+                            if (!item) return null
 
                             return (
                                 <Button
                                     key={key}
                                     variant='secondary'
                                     className='flex items-center gap-1'
-                                    onClick={() => removeFilter(key as keyof IFinancialAccountFilters)}
+                                    onClick={() => removeFilter(key as keyof FinancialAccountFilters)}
                                 >
                                     {item.label}
                                     <X />
@@ -147,61 +152,24 @@ export default function AccountView() {
                         })}
                     </div>
 
-                    <FilterButton<IFinancialAccountFilters>
+                    <FilterButton<FinancialAccountFilters>
                         fields={[
                             {
                                 name: 'type',
                                 label: 'form.type.label',
                                 type: 'select',
-                                options: TYPE_LIST
+                                options: ACCOUNT_TYPE_CATALOG
                             }
                         ]}
                         filters={filters}
-                        onFilterChange={onFilter}
+                        onFilterChange={updateFilters}
                     />
                 </div>
-                {!financialAccountLoading.fetch && localAccountList.length > 0 ? (
-                    <Box>
-                        <>
-                            {localAccountList.map(account => (
-                                <AccountItem
-                                    key={account.id}
-                                    account={account}
-                                    openEdit={(item: IFinancialAccount) => {
-                                        openModal('edit', item)
-                                    }}
-                                    openDelete={openDeleteModal}
-                                    buttons={[
-                                        {
-                                            onClick: x => {
-                                                openSnapshotModal('create', undefined, { accountId: x.id })
-                                            },
-                                            label: t('accounts.snapshot.button'),
-                                            icon: 'calendar-plus'
-                                        }
-                                    ]}
-                                />
-                            ))}
-                        </>
-                    </Box>
-                ) : (
-                    <>
-                        {financialAccountLoading.fetch ? (
-                            <SkeletonItem repeat={5} />
-                        ) : (
-                            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                                <Landmark />
-                                <div className='flex flex-col items-center space-y-2 justify-center'>
-                                    <h4>{t('accounts.empty.title')}</h4>
-                                    <p>{t('accounts.empty.subtitle')}</p>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
+
+                {pageContent}
             </PageWrapper>
 
-            <AccountDialog></AccountDialog>
+            <AccountDialog />
             <AccountBalanceSnapshotDialog />
         </>
     )

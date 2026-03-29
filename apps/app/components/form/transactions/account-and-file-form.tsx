@@ -1,23 +1,17 @@
 import { useTranslations } from 'next-intl'
 
-import { IImport } from '@poveroh/types'
-
 import { Form } from '@poveroh/ui/components/form'
 import { AccountField, FileUploadField } from '@/components/fields'
 import { useImportForm } from '@/hooks/form/use-import-form'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProps, FormRef } from '@/types/form'
+import { ImportData } from '@poveroh/types'
 
-export const AccountAndFileForm = forwardRef<
-    FormRef,
-    FormProps<IImport> & {
-        dataCallback: (data: IImport) => Promise<void>
-    }
->((props: FormProps<IImport>, ref) => {
-    const { initialData, inEditingMode, dataCallback } = props
+export const AccountAndFileForm = forwardRef<FormRef, FormProps<ImportData>>((props: FormProps<ImportData>, ref) => {
+    const { initialData, dataCallback } = props
 
     const t = useTranslations()
-    const { form, handleParseForm, files, setFiles } = useImportForm(initialData, inEditingMode)
+    const { form, handleParseForm, files, setFiles } = useImportForm(initialData)
 
     useImperativeHandle(ref, () => ({
         submit: () => {

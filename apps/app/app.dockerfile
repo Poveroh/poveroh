@@ -20,6 +20,10 @@ WORKDIR /app
 RUN corepack enable
 RUN npx turbo build --filter=@poveroh/types
 RUN npx turbo build --filter=@poveroh/utils
+
+ARG NEXT_PUBLIC_API_URL
+RUN echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" > apps/app/.env
+
 RUN npx turbo build
 
 FROM base AS runner

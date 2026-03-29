@@ -9,7 +9,6 @@ import { TextField } from '@/components/fields'
 import { useOnBoardingForm } from '@/hooks/form/use-onboarding-form'
 import { StepProgress } from '@/components/other/step-progress'
 import { RouteGuard } from '@/components/other/route-guard'
-import { OnBoardingStep } from '@poveroh/types'
 import { CountryField } from '@/components/fields/country-field'
 
 export default function OnBoardingView() {
@@ -17,14 +16,14 @@ export default function OnBoardingView() {
     const { formGeneralities, loading, handleGeneralitiesSubmit } = useOnBoardingForm()
 
     return (
-        <RouteGuard requiredStep={[OnBoardingStep.GENERALITIES, OnBoardingStep.PREFERENCES]}>
+        <RouteGuard requiredStep={['GENERALITES', 'PREFERENCES']}>
             <div className='flex flex-col space-y-14 w-full lg:w-[500px]'>
                 <div className='flex flex-col space-y-3'>
                     <h3>{t('signup.title')}</h3>
                     <p className='sub'>{t('signup.subtitle')}</p>
                 </div>
 
-                <StepProgress current={OnBoardingStep.GENERALITIES} />
+                <StepProgress current={'GENERALITES'} />
 
                 <Form {...formGeneralities}>
                     <form

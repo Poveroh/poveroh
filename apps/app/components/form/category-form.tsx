@@ -1,10 +1,8 @@
 'use client'
 
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { useWatch } from 'react-hook-form'
-
-import { ICategory, IItem } from '@poveroh/types'
 
 import { Form } from '@poveroh/ui/components/form'
 import { TextField } from '@/components/fields/text-field'
@@ -18,8 +16,10 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
 import { Pencil } from 'lucide-react'
+import { CategoryData } from '@poveroh/types'
+import { Item } from '@poveroh/types'
 
-export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: FormProps<ICategory>, ref) => {
+export const CategoryForm = forwardRef<FormRef, FormProps<CategoryData>>((props: FormProps<CategoryData>, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
@@ -37,6 +37,48 @@ export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: Fo
         }
     }))
 
+    const IconForm = useMemo(() => {
+        return (
+            <div className='flex flex-row space-x-7'>
+                <div
+                    className='relative p-5 w-fit h-fit rounded-full'
+                    style={{ backgroundColor: `${color}20`, color: color }}
+                >
+                    <DynamicIcon name={logoIcon} className='w-5 h-5' />
+
+                    <div className='absolute bottom-[-8px] right-[-8px]'>
+                        <Popover>
+                            <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
+                                <Button size='icon' variant='secondary' className='rounded-full w-7 h-7'>
+                                    <Pencil className='w-2 h-2' />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent align='end' className='w-[40rem] max-h-[600px] overflow-y-auto'>
+                                <div className='flex flex-col space-y-6'>
+                                    <ColorField
+                                        control={form.control}
+                                        name='color'
+                                        label={t('form.color.label')}
+                                        mandatory={true}
+                                    />
+
+                                    <IconField
+                                        label={t('form.icon.label')}
+                                        selectedIcon={icon}
+                                        onIconChange={handleIconChange}
+                                        mandatory={!inEditingMode}
+                                    />
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                </div>
+
+                <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
+            </div>
+        )
+    }, [color, logoIcon, icon, inEditingMode, handleIconChange])
+
     return (
         <Form {...form}>
             <form
@@ -46,43 +88,7 @@ export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: Fo
                 }}
             >
                 <div className='flex flex-col space-y-6'>
-                    <div className='flex flex-row space-x-7'>
-                        <div
-                            className='relative p-5 w-fit h-fit rounded-full'
-                            style={{ backgroundColor: `${color}20`, color: color }}
-                        >
-                            <DynamicIcon name={logoIcon} className='w-5 h-5' />
-
-                            <div className='absolute bottom-[-8px] right-[-8px]'>
-                                <Popover>
-                                    <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
-                                        <Button size='icon' variant='secondary' className='rounded-full w-7 h-7'>
-                                            <Pencil className='w-2 h-2' />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent align='end' className='w-[40rem] max-h-[600px] overflow-y-auto'>
-                                        <div className='flex flex-col space-y-6'>
-                                            <ColorField
-                                                control={form.control}
-                                                name='color'
-                                                label={t('form.color.label')}
-                                                mandatory={true}
-                                            />
-
-                                            <IconField
-                                                label={t('form.icon.label')}
-                                                selectedIcon={icon}
-                                                onIconChange={handleIconChange}
-                                                mandatory={!inEditingMode}
-                                            />
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                        </div>
-
-                        <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
-                    </div>
+                    {IconForm}
 
                     <NoteField
                         control={form.control}
@@ -99,8 +105,8 @@ export const CategoryForm = forwardRef<FormRef, FormProps<ICategory>>((props: Fo
                         placeholder={t('form.type.placeholder')}
                         mandatory={true}
                         options={actionList}
-                        getOptionLabel={(item: IItem) => item.label}
-                        getOptionValue={(item: IItem) => item.value.toString()}
+                        getOptionLabel={(item: Item) => item.label}
+                        getOptionValue={(item: Item) => item.value.toString()}
                     />
                 </div>
             </form>

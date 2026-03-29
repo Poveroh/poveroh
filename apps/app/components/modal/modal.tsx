@@ -82,7 +82,13 @@ export default function Modal<T>(props: ModalProps) {
     return (
         <>
             <Dialog defaultOpen={true} open={props.open} onOpenChange={handleOpenChange}>
-                <DialogContent className={cn('sm:max-w-[30vw] max-h-[90vh]', props.decoration?.dialogHeight)}>
+                <DialogContent
+                    className={cn(
+                        'sm:w-[600px] max-w-none max-h-[90vh]',
+                        props.decoration?.dialogWidth,
+                        props.decoration?.dialogHeight
+                    )}
+                >
                     <ModalHeader {...props} />
                     <div className={cn('flex flex-grow items-start overflow-y-auto', props.decoration?.contentHeight)}>
                         <SimpleBar className='w-full h-full'>{props.children}</SimpleBar>

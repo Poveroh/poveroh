@@ -1,167 +1,159 @@
 'use client'
 
+import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
+import { LoadingState } from '@/types/general'
+import { SubscriptionData } from '@poveroh/types'
 import { useError } from './use-error'
-import { SubscriptionService } from '@/services/subscriptions.service'
 import { useSubscriptionStore } from '@/store/subscriptions.store'
-import { LoadingState } from '@/types'
-import { CyclePeriod, ISubscription, ISubscriptionFilters } from '@poveroh/types'
-import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import {
+    createSubscriptionMutation,
+    deleteSubscriptionMutation,
+    getSubscriptionByIdOptions,
+    getSubscriptionByIdQueryKey,
+    getSubscriptionsOptions,
+    getSubscriptionsQueryKey,
+    updateSubscriptionMutation
+} from '@/api/@tanstack/react-query.gen'
+
+const addCycle = (date: Date, cycleNumber: number, cyclePeriod: string): Date => {
+    const next = new Date(date)
+
+    switch ((cyclePeriod || '').toUpperCase()) {
+        case 'DAY':
+            next.setDate(next.getDate() + cycleNumber)
+            return next
+        case 'WEEK':
+            next.setDate(next.getDate() + cycleNumber * 7)
+            return next
+        case 'YEAR':
+            next.setFullYear(next.getFullYear() + cycleNumber)
+            return next
+        case 'MONTH':
+        default:
+            next.setMonth(next.getMonth() + cycleNumber)
+            return next
+    }
+}
 
 export const useSubscription = () => {
-    const t = useTranslations()
+    const queryClient = useQueryClient()
     const { handleError } = useError()
-
-    const subscriptionService = new SubscriptionService()
     const subscriptionStore = useSubscriptionStore()
 
-    const [subscriptionLoading, setSubscriptionLoading] = useState<LoadingState>({
-        add: false,
-        edit: false,
-        remove: false,
-        get: false,
-        fetch: false
+    const createMutation = useMutation({
+        ...createSubscriptionMutation(),
+        onSuccess: data => {
+            const subscription = data?.data as SubscriptionData | undefined
+            if (subscription) {
+                subscriptionStore.addSubscription(subscription)
+            }
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error adding subscription')
+        }
     })
 
-    const setLoadingFor = (key: keyof LoadingState, value: boolean) => {
-        setSubscriptionLoading(prev => ({ ...prev, [key]: value }))
-    }
-
-    const addSubscription = async (data: Partial<ISubscription>) => {
-        setLoadingFor('add', true)
-        try {
-            const res = await subscriptionService.add(data)
-            subscriptionStore.addSubscription(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error adding subscription')
-        } finally {
-            setLoadingFor('add', false)
-        }
-    }
-
-    const editSubscription = async (id: string, data: Partial<ISubscription>) => {
-        setLoadingFor('edit', true)
-        try {
-            const res = await subscriptionService.save(id, data)
-            subscriptionStore.editSubscription(res)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error editing subscription')
-        } finally {
-            setLoadingFor('edit', false)
-        }
-    }
-
-    const removeSubscription = async (subscriptionId: string) => {
-        setLoadingFor('remove', true)
-        try {
-            const res = await subscriptionService.delete(subscriptionId)
-            if (!res) throw new Error('No response from server')
-            subscriptionStore.removeSubscription(subscriptionId)
-            return res
-        } catch (error) {
-            return handleError(error, 'Error deleting subscription')
-        } finally {
-            setLoadingFor('remove', false)
-        }
-    }
-
-    const getSubscription = async (subscriptionId: string, fetchFromServer?: boolean) => {
-        setLoadingFor('get', true)
-        try {
-            if (fetchFromServer) {
-                const res = await subscriptionService.read<ISubscription | null, ISubscriptionFilters>({
-                    id: subscriptionId
-                })
-                return res.data
+    const updateMutation = useMutation({
+        ...updateSubscriptionMutation(),
+        onSuccess: (data, variables) => {
+            const subscription = (data?.data ?? variables.body) as SubscriptionData | undefined
+            if (subscription) {
+                subscriptionStore.editSubscription(subscription)
             }
-            return subscriptionStore.getSubscription(subscriptionId)
-        } catch (error) {
-            return handleError(error, 'Error fetching subscription')
-        } finally {
-            setLoadingFor('get', false)
+
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+            queryClient.invalidateQueries({
+                queryKey: getSubscriptionByIdQueryKey({
+                    path: { id: variables.path.id }
+                })
+            })
+        },
+        onError: error => {
+            handleError(error, 'Error updating subscription')
         }
-    }
+    })
+
+    const deleteMutation = useMutation({
+        ...deleteSubscriptionMutation(),
+        onSuccess: (_, variables) => {
+            subscriptionStore.removeSubscription(variables.path.id)
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting subscription')
+        }
+    })
 
     const fetchSubscriptions = async () => {
-        setLoadingFor('fetch', true)
         try {
-            const res = await subscriptionService.read<ISubscription[], ISubscriptionFilters>()
-            subscriptionStore.setSubscriptions(res.data)
-            return res.data
+            const response = await queryClient.fetchQuery(getSubscriptionsOptions())
+
+            if (!response?.success) return []
+
+            return response?.data as SubscriptionData[]
         } catch (error) {
             return handleError(error, 'Error fetching subscriptions')
-        } finally {
-            setLoadingFor('fetch', false)
         }
     }
 
-    const getNextExecutionText = (subscription: ISubscription, fromDate: Date = new Date()) => {
-        const now = fromDate
-        const next = new Date(subscription.firstPayment)
+    const getSubscription = async (subscriptionId: string) => {
+        try {
+            const response = await queryClient.fetchQuery(
+                getSubscriptionByIdOptions({
+                    path: { id: subscriptionId }
+                })
+            )
 
-        const cycleNumber = Number(subscription.cycleNumber)
+            if (!response?.success) return null
 
-        while (next < now) {
-            switch (subscription.cyclePeriod) {
-                case CyclePeriod.DAY:
-                    next.setDate(next.getDate() + cycleNumber)
-                    break
-                case CyclePeriod.WEEK:
-                    next.setDate(next.getDate() + 7 * cycleNumber)
-                    break
-                case CyclePeriod.MONTH:
-                    next.setMonth(next.getMonth() + cycleNumber)
-                    break
-                case CyclePeriod.YEAR:
-                    next.setFullYear(next.getFullYear() + cycleNumber)
-                    break
-            }
+            return response?.data as SubscriptionData
+        } catch (error) {
+            return handleError(error, 'Error fetching subscription')
         }
+    }
 
-        const msDiff = next.getTime() - now.getTime()
-        const days = Math.ceil(msDiff / (1000 * 60 * 60 * 24))
+    const getNextExecutionText = (subscription: Partial<SubscriptionData>) => {
+        if (!subscription.firstPayment) return ''
 
-        if (days === 0) {
-            return t('format.today')
-        }
-        if (days === 1) {
-            return t('format.tomorrow')
-        }
-        if (days < 7) {
-            return t('format.inLabel', {
-                a: days,
-                b: t('format.day').toLocaleLowerCase()
-            })
-        }
-        if (days < 30) {
-            return t('format.inLabel', {
-                a: Math.round(days / 7),
-                b: t('format.week').toLocaleLowerCase()
-            })
-        }
-        if (days < 365) {
-            return t('format.inLabel', {
-                a: Math.round(days / 30),
-                b: t('format.month').toLocaleLowerCase()
-            })
+        const firstPayment = new Date(subscription.firstPayment)
+        if (Number.isNaN(firstPayment.getTime())) return ''
+
+        const cycleNumber = Math.max(1, Number(subscription.cycleNumber) || 1)
+        const cyclePeriod = String(subscription.cyclePeriod || 'MONTH')
+
+        let nextExecution = new Date(firstPayment)
+        const now = new Date()
+
+        for (let i = 0; i < 500 && nextExecution < now; i++) {
+            nextExecution = addCycle(nextExecution, cycleNumber, cyclePeriod)
         }
 
-        return t('format.inLabel', {
-            a: Math.round(days / 365),
-            b: t('format.year').toLocaleLowerCase()
-        })
+        return nextExecution.toLocaleDateString()
+    }
+
+    const subscriptionLoading: LoadingState = {
+        create: createMutation.isPending,
+        update: updateMutation.isPending,
+        delete: deleteMutation.isPending,
+        fetch: useIsFetching({ queryKey: getSubscriptionsQueryKey() }) > 0,
+        get:
+            useIsFetching({
+                predicate: query => {
+                    const key = query.queryKey?.[0] as { _id?: string } | undefined
+                    return key?._id === 'getSubscriptionById'
+                }
+            }) > 0
     }
 
     return {
         subscriptionCacheList: subscriptionStore.subscriptionCacheList,
         subscriptionLoading,
-        addSubscription,
-        editSubscription,
-        removeSubscription,
+        createSubscription: createMutation.mutateAsync,
+        updateSubscription: updateMutation.mutateAsync,
+        deleteSubscription: deleteMutation.mutateAsync,
         getSubscription,
-        getNextExecutionText,
-        fetchSubscriptions
+        fetchSubscriptions,
+        getNextExecutionText
     }
 }

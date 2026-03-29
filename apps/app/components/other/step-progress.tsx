@@ -1,7 +1,7 @@
-import { useUser } from '@/hooks/use-user'
-import { OnBoardingStep } from '@poveroh/types'
+import { OnBoardingStepEnum } from '@poveroh/types'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { useTranslations } from 'next-intl'
+import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
 
 type StepLineProps = {
     active: boolean
@@ -22,17 +22,18 @@ function StepLine({ active, tooltip }: StepLineProps) {
 }
 
 type StepProgressProps = {
-    current: OnBoardingStep
+    current: OnBoardingStepEnum
 }
 
 export function StepProgress({ current }: StepProgressProps) {
     const t = useTranslations()
+    const { isAtLeast } = useOnBoardingStepOrder()
 
     return (
         <div className='w-full flex flex-row space-x-2'>
-            <StepLine active={current >= OnBoardingStep.EMAIL} tooltip={t('signup.steps.1.tooltip')} />
-            <StepLine active={current >= OnBoardingStep.GENERALITIES} tooltip={t('signup.steps.2.tooltip')} />
-            <StepLine active={current >= OnBoardingStep.PREFERENCES} tooltip={t('signup.steps.3.tooltip')} />
+            <StepLine active={isAtLeast(current, 'EMAIL')} tooltip={t('signup.steps.1.tooltip')} />
+            <StepLine active={isAtLeast(current, 'GENERALITES')} tooltip={t('signup.steps.2.tooltip')} />
+            <StepLine active={isAtLeast(current, 'PREFERENCES')} tooltip={t('signup.steps.3.tooltip')} />
         </div>
     )
 }

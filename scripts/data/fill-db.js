@@ -48,6 +48,7 @@ const TABLE_NAME_MAP = {
 
 const IMPORT_ORDER = [
     'User',
+    'DashboardLayout',
     'Account',
     'FinancialAccounts',
     'Category',
@@ -120,7 +121,7 @@ async function processFile(basePath, filename, userId) {
     console.log(`\n➡️  Processing file: ${filename}`)
 
     const tableName = path.basename(filename, path.extname(filename))
-    const modelName = TABLE_NAME_MAP[tableName] || tableName.toLowerCase()
+    const modelName = TABLE_NAME_MAP[tableName] || (tableName.charAt(0).toLowerCase() + tableName.slice(1))
     const filePath = path.join(basePath, filename)
     const fileExtension = path.extname(filename).toLowerCase()
 

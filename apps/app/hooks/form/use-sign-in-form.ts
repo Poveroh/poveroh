@@ -1,39 +1,22 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import * as z from 'zod'
 
-import { IUserLogin, OnBoardingStep } from '@poveroh/types'
+import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
+import { UserLogin } from '@poveroh/types'
+import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
 
 export function useSignInForm() {
-    const t = useTranslations()
     const router = useRouter()
     const { signIn } = useAuth()
+    const { isAtLeast } = useOnBoardingStepOrder()
 
     const [loading, setLoading] = useState(false)
 
-    const loginSchema = useMemo(
-        () =>
-            z.object({
-                email: z.string().nonempty(t('messages.errors.required')).email(t('messages.errors.email')),
-                password: z
-                    .string()
-                    .nonempty(t('messages.errors.required'))
-                    .min(
-                        6,
-                        t('messages.errors.passwordAtLeastChar', {
-                            a: 6
-                        })
-                    )
-            }),
-        [t]
-    )
-
-    const form = useForm<IUserLogin>({
-        resolver: zodResolver(loginSchema),
+    const form = useForm<UserLogin>({
+        resolver: zodResolver(UserLoginSchema),
         defaultValues: {
             email: '',
             password: ''
@@ -41,14 +24,14 @@ export function useSignInForm() {
     })
 
     const handleSignIn = useCallback(
-        async (user: IUserLogin) => {
+        async (user: UserLogin) => {
             setLoading(true)
 
             try {
                 const res = await signIn(user)
 
                 if (res) {
-                    if (res.onBoardingStep >= OnBoardingStep.PREFERENCES) {
+                    if (isAtLeast(res.onBoardingStep, 'PREFERENCES')) {
                         router.push('/dashboard')
                     } else {
                         router.push('/onboarding')
@@ -60,7 +43,7 @@ export function useSignInForm() {
                 setLoading(false)
             }
         },
-        [router, signIn]
+        [router, signIn, isAtLeast]
     )
 
     return {

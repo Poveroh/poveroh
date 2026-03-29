@@ -1,4 +1,4 @@
-import { DashboardWidgetId } from '@poveroh/types'
+import { DashboardWidgetEnum } from '@poveroh/types'
 import { AccountBalancesWidget } from './widgets/account-balances-widget'
 import { CategoryTrendWidget } from './widgets/category-trend-widget'
 import { ExpenseMacroDistributionWidget } from './widgets/expense-macro-distribution-widget'
@@ -10,7 +10,7 @@ import { NetWorthEvolutionWidget } from './widgets/net-worth-evolution-widget'
 import { RecentTransactionsWidget } from './widgets/recent-transactions-widget'
 
 type WidgetProps = {
-    id: DashboardWidgetId
+    id: DashboardWidgetEnum
 }
 
 export const Widget = ({ id }: WidgetProps) => {

@@ -1,21 +1,15 @@
-import logger from '../../../utils/logger'
 import { Request, Response } from 'express'
+import { ResponseHelper } from '@/src/utils'
+import { StatusService } from '../services/status.service'
 
 export class StatusController {
+    // GET /
     static async isAlive(req: Request, res: Response) {
         try {
-            res.json({
-                status: 'ok',
-                uptime: process.uptime(),
-                version: 'v1',
-                timestamp: new Date()
-            })
-        } catch (error: any) {
-            logger.error(error)
-            res.status(500).json({
-                message: 'An error occurred during login',
-                error: error.message
-            })
+            const status = StatusService.getStatus()
+            return ResponseHelper.success(res, status)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

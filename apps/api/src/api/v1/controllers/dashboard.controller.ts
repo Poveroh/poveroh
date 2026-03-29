@@ -1,53 +1,36 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import logger from '../../../utils/logger'
-import { DashboardLayout } from '@poveroh/types'
+import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
+import { BadRequestError, ResponseHelper } from '@/src/utils'
+import { DashboardService } from '../services/dashboard.service'
 
 export class DashboardController {
     // GET /
-    static async read(req: Request, res: Response) {
+    static async getDashboard(req: Request, res: Response) {
         try {
-            const userId = req.user.id
+            const dashboardService = new DashboardService(req.user.id)
 
-            const dashboardLayout = await prisma.dashboardLayout.findUnique({
-                where: { userId }
-            })
-
-            res.status(200).json(dashboardLayout)
+            const dashboardLayout = await dashboardService.getDashboardLayout()
+            return ResponseHelper.success<GetDashboardLayout>(res, dashboardLayout)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     // PUT /
-    static async save(req: Request, res: Response) {
+    static async updateDashboard(req: Request, res: Response) {
         try {
-            const userId = req.user.id
-            const payload = (req.body?.layout ?? req.body) as DashboardLayout | undefined
+            const payload = req.body as UpdateDashboardLayoutRequest
 
             if (!payload) {
-                res.status(400).json({ message: 'Layout not provided' })
-                return
+                throw new BadRequestError('Layout not provided')
             }
 
-            const saved = await prisma.dashboardLayout.upsert({
-                where: { userId },
-                update: {
-                    layout: payload,
-                    version: payload.version || 1
-                },
-                create: {
-                    userId,
-                    layout: payload,
-                    version: payload.version || 1
-                }
-            })
+            const dashboardService = new DashboardService(req.user.id)
+            await dashboardService.saveDashboardLayout(payload)
 
-            res.status(200).json(saved)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

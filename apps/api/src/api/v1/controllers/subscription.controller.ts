@@ -1,118 +1,129 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import moment from 'moment-timezone'
-import { ISubscription, ISubscriptionFilters } from '@poveroh/types'
-import { buildWhere } from '../../../helpers/filter.helper'
-import { MediaHelper } from '../../../helpers/media.helper'
-import logger from '../../../utils/logger'
+import {
+    CreateSubscriptionRequest,
+    SubscriptionData,
+    SubscriptionFilters,
+    UpdateSubscriptionRequest
+} from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { SubscriptionService } from '../services/subscription.service'
 
 export class SubscriptionController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async createSubscription(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
-
-            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
-            parsedSubscription.isEnabled = true
-
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/subscription/${parsedSubscription.title}`
-                )
-                parsedSubscription.appearanceLogoIcon = filePath
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const subscription = await prisma.subscription.create({
-                data: {
-                    ...parsedSubscription,
-                    userId: req.user.id
-                }
-            })
+            const subscriptionPayload: CreateSubscriptionRequest = req.body
 
-            res.status(200).json(subscription)
+            const subscriptionService = new SubscriptionService(req.user.id)
+            const subscription = await subscriptionService.createSubscription(subscriptionPayload, req.file)
+
+            if (!subscription) {
+                throw new NotFoundError('Subscription not created')
+            }
+
+            return ResponseHelper.success(res, subscription)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /:id
-    static async save(req: Request, res: Response) {
+    //PATCH /:id
+    static async updateSubscription(req: Request, res: Response) {
         try {
-            if (!req.body) throw new Error('Data not provided')
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
+            }
 
-            const parsedSubscription: Omit<ISubscription, 'id' | 'userId' | 'createdAt'> = req.body
+            const subscriptionPayload: UpdateSubscriptionRequest = req.body
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing subscription ID' })
-                return
+                throw new BadRequestError('Missing subscription ID')
             }
 
-            if (req.file) {
-                const filePath = await MediaHelper.handleUpload(
-                    req.file,
-                    `${req.user.id}/subscription/${parsedSubscription.title}`
-                )
-                parsedSubscription.appearanceLogoIcon = filePath
-            }
+            const subscriptionService = new SubscriptionService(req.user.id)
+            await subscriptionService.updateSubscription(id, subscriptionPayload, req.file)
 
-            const subscription = await prisma.subscription.update({
-                where: { id },
-                data: parsedSubscription
-            })
-
-            res.status(200).json(subscription)
+            return ResponseHelper.success(res)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteSubscription(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing subscription ID' })
-                return
+                throw new BadRequestError('Missing subscription ID')
             }
 
-            await prisma.subscription.delete({ where: { id } })
+            const subscriptionService = new SubscriptionService(req.user.id)
+            await subscriptionService.deleteSubscription(id)
 
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE /
+    static async deleteAllSubscriptions(req: Request, res: Response) {
+        try {
+            const subscriptionService = new SubscriptionService(req.user.id)
+            await subscriptionService.deleteAllSubscriptions()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id
+    static async readSubscriptionById(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing subscription ID')
+            }
+
+            const subscriptionService = new SubscriptionService(req.user.id)
+            const data = await subscriptionService.getSubscriptionById(id)
+
+            if (!data) {
+                throw new NotFoundError('Subscription not found')
+            }
+
+            return ResponseHelper.success<SubscriptionData>(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readSubscriptions(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ISubscriptionFilters
+            const filters = req.query as unknown as SubscriptionFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const subscriptionService = new SubscriptionService(req.user.id)
+            const data = await subscriptionService.getSubscriptions(filters, skip, take)
 
-            const [data, total] = await Promise.all([
-                prisma.subscription.findMany({
-                    where,
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take
-                }),
-                prisma.subscription.count({ where })
-            ])
+            if (!data || data.length === 0) {
+                throw new NotFoundError('Subscription not found')
+            }
 
-            res.status(200).json({ data, total })
+            return ResponseHelper.success<SubscriptionData[]>(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

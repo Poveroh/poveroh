@@ -1,6 +1,5 @@
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
-import { ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useMemo, memo, useRef, type FC } from 'react'
 import { ArrowRightLeft } from 'lucide-react'
@@ -9,13 +8,14 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { OptionsPopover } from '../navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
 import { useTranslations } from 'next-intl'
+import { TransactionData } from '@poveroh/types'
 
 type TransactionItemProps = {
-    transaction: ITransaction
+    transaction: TransactionData
     compact?: boolean
     showOptions?: boolean
-    openDelete?: (item: ITransaction) => void
-    openEdit?: (item: ITransaction) => void
+    openDelete?: (item: TransactionData) => void
+    openEdit?: (item: TransactionData) => void
 }
 
 const TransactionItemComponent: FC<TransactionItemProps> = ({
@@ -26,7 +26,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
     openEdit
 }) => {
     const t = useTranslations()
-    const { financialAccountCacheList } = useFinancialAccount()
+    const { accountQuery } = useFinancialAccount()
     const { categoryCacheList } = useCategory()
 
     const isClickingRef = useRef(false)
@@ -46,17 +46,17 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
 
         let amount = { ...transaction.amounts[0] }
 
-        if (transaction.action === TransactionAction.EXPENSES) {
+        if (transaction.action === 'EXPENSES') {
             amount = { ...amount, amount: transaction.amounts.reduce((acc, curr) => acc + (curr.amount || 0), 0) }
         } else {
             if (!amount) return defaultValues
         }
 
         // Get accounts from cache instead of async calls
-        const fromAccount = financialAccountCacheList.find(acc => acc.id === amount.financialAccountId) || null
+        const fromAccount = accountQuery.data?.data.find(acc => acc.id === amount.financialAccountId) || null
         const toAccount =
-            transaction.action === TransactionAction.TRANSFER && transaction.amounts[1]
-                ? financialAccountCacheList.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
+            transaction.action === 'TRANSFER' && transaction.amounts[1]
+                ? accountQuery.data?.data.find(acc => acc.id === transaction.amounts[1]!.financialAccountId) || null
                 : null
 
         // Get category from cache instead of async calls
@@ -70,9 +70,9 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
             category,
             amount: Number(amount.amount) || 0,
             // currencySymbol: icons[amount.currency]?.symbol || '',
-            isExpense: transaction.action === TransactionAction.EXPENSES
+            isExpense: transaction.action === 'EXPENSES'
         }
-    }, [transaction, financialAccountCacheList, categoryCacheList])
+    }, [transaction, accountQuery.data?.data, categoryCacheList])
 
     const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 
@@ -101,7 +101,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
                         color: category?.color
                     }}
                 >
-                    {transaction.action === TransactionAction.TRANSFER ? (
+                    {transaction.action === 'TRANSFER' ? (
                         <ArrowRightLeft size={20} />
                     ) : transaction.icon ? (
                         <BrandIcon icon={transaction.icon} />
@@ -127,7 +127,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
             <div className='flex flex-row items-center space-x-6'>
                 <div className='flex flex-col space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
-                        {transaction.action !== TransactionAction.TRANSFER && (
+                        {transaction.action !== 'TRANSFER' && (
                             <h5 className={cn(isExpense ? 'danger' : 'success', 'font-bold')}>
                                 {isExpense ? '-' : '+'}
                             </h5>
@@ -139,7 +139,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
                 </div>
                 {showOptions && (
                     <div onClick={e => e.stopPropagation()}>
-                        <OptionsPopover<ITransaction>
+                        <OptionsPopover<TransactionData>
                             data={transaction}
                             buttons={[
                                 {

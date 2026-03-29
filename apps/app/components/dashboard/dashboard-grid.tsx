@@ -5,15 +5,15 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
-import { DashboardLayoutItem, DashboardWidgetId } from '@poveroh/types'
+import { ColSpanEnum, DashboardLayoutItem, DashboardWidgetEnum } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
 import { Button } from '@poveroh/ui/components/button'
 import { Widget } from './render-widget'
 import { useDashboardLayout } from '@/hooks/dashboard/use-dashboard-layout'
 import { DashboardGridSkeleton } from '@/components/skeleton/dashboard-grid-skeleton'
 
-const colSpanClass = (span: DashboardLayoutItem['colSpan']) => {
-    switch (span) {
+const colSpanClass = (span: ColSpanEnum) => {
+    switch (Number(span)) {
         case 3:
             return 'col-span-12 md:col-span-3'
         case 4:
@@ -69,7 +69,7 @@ export const DashboardGrid = ({ items }: DashboardGridProps) => {
     )
 }
 
-type SortableWidgetProps = PropsWithChildren<{ id: DashboardWidgetId; className?: string }>
+type SortableWidgetProps = PropsWithChildren<{ id: DashboardWidgetEnum; className?: string }>
 
 const SortableWidget = ({ id, className, children }: SortableWidgetProps) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })

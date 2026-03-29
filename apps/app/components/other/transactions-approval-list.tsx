@@ -2,6 +2,7 @@ import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { TransactionApprovalItem } from '../item/transaction-approval-item'
 import { useImport } from '@/hooks/use-imports'
+import type { Transaction } from '@/lib/api-client'
 
 export function TransactionsApprovalList() {
     const t = useTranslations()
@@ -39,9 +40,15 @@ export function TransactionsApprovalList() {
                             key={transaction.id}
                             index={index}
                             transaction={transaction}
-                            onApprove={handleApproveTransaction}
+                            onApprove={(transactionId, newValue) => {
+                                if (newValue === 'IMPORT_APPROVED' || newValue === 'IMPORT_REJECTED') {
+                                    void handleApproveTransaction(transactionId, newValue)
+                                }
+                            }}
                             onDelete={handleDeleteTransaction}
-                            onEdit={handleEditTransaction}
+                            onEdit={item => {
+                                handleEditTransaction(item as unknown as Transaction)
+                            }}
                         ></TransactionApprovalItem>
                     )
                 })}

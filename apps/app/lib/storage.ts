@@ -67,6 +67,7 @@ export const cookie = {
             const value = this.get(key)
             return value ? (JSON.parse(value) as T) : null
         } catch (error) {
+            console.error(`Error parsing cookie "${key}":`, error)
             return null
         }
     },

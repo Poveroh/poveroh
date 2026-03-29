@@ -1,13 +1,13 @@
-import DynamicIcon from '../icon/dynamic-icon'
-import { CategoryModelMode, ICategory, ISubcategory } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { CategoryBadge } from './category-badge'
+import { CategoryData, SubcategoryData } from '@poveroh/types'
+import { CategoryModelMode } from '@poveroh/types'
 
 type CategoryItemProps = {
-    category: ICategory
-    openDelete: (mode: CategoryModelMode, item: ICategory | ISubcategory) => void
-    openEdit: (mode: CategoryModelMode, item: ICategory | ISubcategory) => void
+    category: CategoryData
+    openDelete: (mode: CategoryModelMode, item: CategoryData | SubcategoryData) => void
+    openEdit: (mode: CategoryModelMode, item: CategoryData | SubcategoryData) => void
 }
 
 export function CategoryItem({ category, openDelete, openEdit }: CategoryItemProps) {
@@ -21,7 +21,7 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                     onClick={() => openEdit('category', category)}
                 >
                     <CategoryBadge category={category} />
-                    <OptionsPopover<ICategory>
+                    <OptionsPopover<CategoryData>
                         data={category}
                         buttons={[
                             {
@@ -38,14 +38,14 @@ export function CategoryItem({ category, openDelete, openEdit }: CategoryItemPro
                         ]}
                     ></OptionsPopover>
                 </div>
-                {category.subcategories?.map((subcategory: ISubcategory) => (
+                {category.subcategories?.map((subcategory: SubcategoryData) => (
                     <div
                         key={subcategory.id}
                         className='flex flex-row justify-between items-center w-full pl-10 pr-5 p-2 border-border cursor-pointer hover:bg-accent/50 transition-colors'
                         onClick={() => openEdit('subcategory', subcategory)}
                     >
                         <CategoryBadge variant='subcategory' subcategory={subcategory} color={category.color} />
-                        <OptionsPopover<ISubcategory>
+                        <OptionsPopover<SubcategoryData>
                             data={subcategory}
                             buttons={[
                                 {

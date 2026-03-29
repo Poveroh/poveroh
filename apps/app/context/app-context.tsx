@@ -10,12 +10,12 @@ type AppContextProviderProps = {
 }
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
-    const { me } = useUser()
+    const { getMe } = useUser()
     const context = {}
 
     useEffect(() => {
-        async function fetchUser() {
-            await me()
+        const fetchUser = async () => {
+            await getMe()
         }
         fetchUser()
     }, [])

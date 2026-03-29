@@ -1,7 +1,6 @@
-import { Currencies } from './currency.js'
-import { ITransaction, TransactionAction, TransactionStatus } from './transaction.js'
+import { TransactionActionEnum, CurrencyEnum } from './contracts.js'
 
-export interface IFieldMapping {
+export type FieldMapping = {
     date?: string
     amount?: string
     currency?: string
@@ -13,9 +12,9 @@ export interface IFieldMapping {
     titleFallbacks?: string[]
 }
 
-export interface IValueReturned {
-    transactions: IReadedTransaction[]
-    mapping: IFieldMapping
+export type ValueReturned = {
+    transactions: ReadedTransaction[]
+    mapping: FieldMapping
     errors: string[]
     detectedStartRow?: number
     summary: {
@@ -25,36 +24,11 @@ export interface IValueReturned {
     }
 }
 
-export interface IReadedTransaction {
+export type ReadedTransaction = {
     date: string
     amount: number
-    action: TransactionAction
-    currency: Currencies
+    action: TransactionActionEnum
+    currency: CurrencyEnum
     title: string
     originalRow?: Record<string, any>
-}
-
-export interface IImportsFile {
-    id: string
-    importId: string
-    filename: string
-    filetype: FileType
-    path: string
-    createdAt: string
-}
-
-export interface IImport {
-    id: string
-    userId: string
-    title: string
-    status: TransactionStatus
-    createdAt: string
-    financialAccountId: string
-    files: IImportsFile[]
-    transactions: ITransaction[]
-}
-
-export enum FileType {
-    CSV = 'CSV',
-    PDF = 'PDF'
 }

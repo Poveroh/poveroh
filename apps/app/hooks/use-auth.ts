@@ -1,24 +1,35 @@
 'use client'
 
 import { authClient } from '@/lib/auth'
+import { authToken } from '@/lib/auth-token'
 import { cookie, storage } from '@/lib/storage'
 import { useUserStore } from '@/store/auth.store'
-import { IUserLogin } from '@poveroh/types'
 import { isValidEmail, isEmpty } from '@poveroh/utils'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useError } from './use-error'
 import { useUser } from './use-user'
+import { UserLogin } from '@poveroh/types'
 
 export const useAuth = () => {
     const { handleError } = useError()
-    const { me } = useUser()
+    const { getMe } = useUser()
+
     const userStore = useUserStore()
     const router = useRouter()
 
     const authSession = authClient.useSession()
 
+    const storeTokenFromFetchContext = (context: unknown) => {
+        const response = (context as { response?: Response } | undefined)?.response
+        const token = response?.headers?.get('set-auth-token')
+        if (token) {
+            authToken.set(token)
+        }
+    }
+
     const cleanUpAuthData = () => {
+        authToken.clear()
         cookie.clear()
         storage.clear()
         userStore.resetAll()
@@ -27,7 +38,7 @@ export const useAuth = () => {
     }
 
     const signIn = useCallback(
-        async (userToLogin: IUserLogin) => {
+        async (userToLogin: UserLogin) => {
             try {
                 if (!isValidEmail(userToLogin.email)) {
                     throw new Error('E-mail not valid')
@@ -36,7 +47,12 @@ export const useAuth = () => {
                     throw new Error('Password not valid')
                 }
 
-                const result = await authClient.signIn.email(userToLogin)
+                const result = await authClient.signIn.email({
+                    ...userToLogin,
+                    fetchOptions: {
+                        onSuccess: storeTokenFromFetchContext
+                    }
+                })
 
                 if (result.error) {
                     throw new Error(result.error.message || 'Login failed')
@@ -44,18 +60,16 @@ export const useAuth = () => {
 
                 userStore.setLogged(true)
 
-                const user = await me()
-
-                return user
+                return await getMe()
             } catch (error) {
                 return handleError(error, 'Login failed')
             }
         },
-        [handleError, me, userStore]
+        [handleError, getMe, userStore]
     )
 
     const signUp = useCallback(
-        async (userToSave: IUserLogin) => {
+        async (userToSave: UserLogin) => {
             try {
                 if (!isValidEmail(userToSave.email)) {
                     throw new Error('E-mail not valid')
@@ -67,7 +81,10 @@ export const useAuth = () => {
                 const result = await authClient.signUp.email({
                     email: userToSave.email,
                     password: userToSave.password,
-                    name: ' '
+                    name: ' ',
+                    fetchOptions: {
+                        onSuccess: storeTokenFromFetchContext
+                    }
                 })
 
                 if (result.error) {
@@ -92,18 +109,18 @@ export const useAuth = () => {
                     onSuccess: () => {
                         cleanUpAuthData()
                     },
-                    onError: () => {
-                        console.error('Error during sign out')
+                    onError: error => {
+                        handleError(error, 'Error during sign out')
                     }
                 }
             })
         } catch (error) {
-            console.error('Logout error:', error)
+            handleError(error, 'Logout failed')
             cleanUpAuthData()
         }
     }
 
-    const isAuthenticate = useCallback(() => {
+    const isAuthenticated = useCallback(() => {
         return !!authSession.data?.session
     }, [authSession])
 
@@ -111,6 +128,6 @@ export const useAuth = () => {
         logout,
         signIn,
         signUp,
-        isAuthenticate
+        isAuthenticated
     }
 }

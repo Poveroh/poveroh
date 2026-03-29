@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 import config from '../utils/environment'
 import { auth } from '../lib/auth'
 import { fromNodeHeaders } from 'better-auth/node'
+import { ResponseHelper } from '../utils'
+import logger from '../utils/logger'
 
 export class AuthMiddleware {
     static async isAuthenticated(req: Request, res: Response, next: NextFunction) {
@@ -25,11 +27,13 @@ export class AuthMiddleware {
             }
 
             // Fallback to legacy JWT token for backward compatibility during migration
-            const token = req.cookies.token
+            const authHeader = req.headers.authorization
+            const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : undefined
+            const token = bearerToken || req.cookies.token
             if (token) {
                 jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
                     if (err) {
-                        return res.status(403).json({ message: 'Invalid token' })
+                        return ResponseHelper.forbidden(res, 'Invalid token')
                     }
                     req.user = user
                     next()
@@ -38,10 +42,10 @@ export class AuthMiddleware {
             }
 
             // No valid session found
-            res.status(401).json({ message: 'No active session' })
+            return ResponseHelper.unauthorized(res, 'No active session')
         } catch (error) {
-            console.error('Auth middleware error:', error)
-            res.status(403).json({ message: 'Invalid session' })
+            logger.error('Auth middleware error:', error)
+            return ResponseHelper.forbidden(res, 'Invalid session')
         }
     }
 
@@ -50,13 +54,12 @@ export class AuthMiddleware {
         const token = req.cookies.token
 
         if (!token) {
-            res.status(401).json({ message: 'No token provided' })
-            return
+            return ResponseHelper.unauthorized(res, 'No token provided')
         }
 
         jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
             if (err) {
-                return res.status(403).json({ message: 'Invalid token' })
+                return ResponseHelper.forbidden(res, 'Invalid token')
             }
 
             req.user = user

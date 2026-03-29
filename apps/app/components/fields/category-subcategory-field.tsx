@@ -1,19 +1,19 @@
 import { useEffect, useState, useCallback } from 'react'
 import { CategoryField } from './category-field'
 import { SubcategoryField } from './subcategory-field'
-import { ISubcategory } from '@poveroh/types'
 import { useCategoryStore } from '@/store/category.store'
 import { CategorySubcategoryFieldProps } from '@/types'
 import { FieldValues, Path } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
 import { useCategory } from '@/hooks/use-category'
+import { SubcategoryData } from '@poveroh/types'
 
 export function CategorySubcategoryField<T extends FieldValues = FieldValues>(props: CategorySubcategoryFieldProps<T>) {
     const t = useTranslations()
     const { categoryCacheList } = useCategoryStore()
-    const { fetchCategory } = useCategory()
+    const { fetchCategories } = useCategory()
 
-    const [subcategoryList, setSubcategoryList] = useState<ISubcategory[]>([])
+    const [subcategoryList, setSubcategoryList] = useState<SubcategoryData[]>([])
 
     const parseSubcategoryList = useCallback(
         async (categoryId: string, options?: { forceSelectFirst?: boolean }) => {
@@ -25,15 +25,16 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
                 return
             }
 
+            //TODO: fix and understand why categoryCacheList can be empty at this point, even after fetchCategories is called
             const category = categoryCacheList.find(item => item.id === categoryId)
-            const res = category ? category.subcategories : []
-            setSubcategoryList(res)
+            const res = category ? category.subcategories : ([] as SubcategoryData[])
+            setSubcategoryList(res ?? [])
 
             const currentValue = props.form?.getValues(props.subcategoryName) as string | undefined
-            const hasCurrentValue = currentValue ? res.some(item => item.id === currentValue) : false
+            const hasCurrentValue = currentValue ? res?.some(item => item.id === currentValue) : false
 
             if (options?.forceSelectFirst || !hasCurrentValue) {
-                props.form?.setValue(props.subcategoryName, (res[0]?.id || '') as T[Path<T>])
+                props.form?.setValue(props.subcategoryName, (res?.[0]?.id || '') as T[Path<T>])
             }
         },
         [categoryCacheList, props.form, props.subcategoryName]
@@ -42,7 +43,7 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
     useEffect(() => {
         const initializeComponent = async () => {
             if (categoryCacheList.length === 0) {
-                await fetchCategory()
+                await fetchCategories()
             }
 
             const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''

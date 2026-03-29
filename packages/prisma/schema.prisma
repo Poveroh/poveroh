@@ -16,7 +16,7 @@ model User {
     surname           String
     email             String             @unique
     emailVerified     Boolean            @default(false)
-    onBoardingStep    Int                @default(2)
+    onBoardingStep    OnBoardingStep     @default(GENERALITES)
     onBoardingAt      DateTime?
     image             String?
     snapshotFrequency SnapshotFrequency  @default(MONTHLY)
@@ -24,11 +24,12 @@ model User {
     preferredCurrency Currency           @default(EUR)
     preferredLanguage Language           @default(EN)
     dateFormat        DateFormat         @default(DD_MM_YYYY)
-    country           String             @default("italy")
+    country           Countries          @default(ITALY)
     timezone          Timezone           @default(ETC_UTC)
     //Other
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @updatedAt
+    deletedAt         DateTime?          @db.Timestamptz
     transactions      Transaction[]
     transfers         Transfer[]
     subscriptions     Subscription[]
@@ -54,7 +55,8 @@ model DashboardLayout {
     layout    Json
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }
@@ -68,7 +70,8 @@ model Session {
     userAgent String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([token])
@@ -88,7 +91,8 @@ model Account {
     password              String?
     createdAt             DateTime  @default(now())
     updatedAt             DateTime  @updatedAt
-    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }
@@ -101,7 +105,8 @@ model Verification {
     userId     String?
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
-    user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([identifier, value])
     @@index([identifier])
@@ -116,17 +121,18 @@ model FinancialAccount {
     id               String                   @id @default(uuid())
     userId           String
     title            String
-    description      String
     balance          Decimal                  @default(0) @db.Decimal(20, 2)
     type             FinancialAccountType     @default(BANK_ACCOUNT)
     logoIcon         String?
     createdAt        DateTime                 @default(now())
     updatedAt        DateTime                 @updatedAt
+    deletedAt        DateTime?                @db.Timestamptz
     subscriptions    Subscription[]
     amounts          Amount[]
-    user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
     imports          Import[]
     snapshotBalances SnapshotAccountBalance[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@map("FinancialAccounts")
@@ -144,7 +150,7 @@ model Asset {
     currency       Currency             @default(EUR)
     createdAt      DateTime             @default(now())
     updatedAt      DateTime             @updatedAt
-    user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    deletedAt      DateTime?            @db.Timestamptz
     marketable     MarketableAsset?
     realEstate     RealEstateAsset?
     collectible    CollectibleAsset?
@@ -152,6 +158,8 @@ model Asset {
     insurance      InsuranceAsset?
     transactions   AssetTransaction[]
     snapshotValues SnapshotAssetValue[]
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([userId, type])
@@ -162,7 +170,8 @@ model MarketableAsset {
     assetId String  @unique
     symbol  String?
     isin    String?
-    asset   Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model RealEstateAsset {
@@ -172,7 +181,8 @@ model RealEstateAsset {
     purchasePrice Decimal?  @db.Decimal(20, 2)
     purchaseDate  DateTime?
     currentValue  Decimal?  @db.Decimal(20, 2)
-    asset         Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model CollectibleAsset {
@@ -182,7 +192,8 @@ model CollectibleAsset {
     acquisitionDate DateTime?
     appraisalValue  Decimal?  @db.Decimal(20, 2)
     appraisalDate   DateTime?
-    asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model PrivateDealAsset {
@@ -192,7 +203,8 @@ model PrivateDealAsset {
     calledAmount    Decimal?  @db.Decimal(20, 2)
     latestNav       Decimal?  @db.Decimal(20, 2)
     navDate         DateTime?
-    asset           Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model InsuranceAsset {
@@ -201,7 +213,8 @@ model InsuranceAsset {
     policyNumber   String?
     premiumPaid    Decimal? @db.Decimal(20, 2)
     surrenderValue Decimal? @db.Decimal(20, 2)
-    asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model AssetTransaction {
@@ -213,7 +226,8 @@ model AssetTransaction {
     totalAmount    Decimal? @db.Decimal(20, 2)
     fees           Decimal? @db.Decimal(10, 2)
     note           String?
-    asset          Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
     @@index([assetId])
     @@index([assetId, date])
@@ -230,21 +244,26 @@ model Snapshot {
     totalCash        Decimal                  @default(0) @db.Decimal(20, 2)
     totalInvestments Decimal                  @default(0) @db.Decimal(20, 2)
     totalNetWorth    Decimal                  @default(0) @db.Decimal(20, 2)
-    user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
     accountBalances  SnapshotAccountBalance[]
     assetValues      SnapshotAssetValue[]
+    createdAt        DateTime                 @default(now())
+    updatedAt        DateTime                 @updatedAt
+    deletedAt        DateTime?                @db.Timestamptz
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([userId, snapshotDate])
     @@index([userId, snapshotDate(sort: Desc)])
 }
 
 model SnapshotAccountBalance {
-    id         String           @id @default(uuid())
+    id         String  @id @default(uuid())
     snapshotId String
     accountId  String
-    balance    Decimal          @db.Decimal(20, 2)
-    snapshot   Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    account    FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    balance    Decimal @db.Decimal(20, 2)
+
+    snapshot Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    account  FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
     @@unique([snapshotId, accountId])
 }
@@ -256,8 +275,9 @@ model SnapshotAssetValue {
     quantity   Decimal? @db.Decimal(20, 10)
     unitPrice  Decimal? @db.Decimal(20, 8)
     totalValue Decimal  @db.Decimal(20, 2)
-    snapshot   Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    asset      Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+    snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    asset    Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
     @@unique([snapshotId, assetId])
 }
@@ -271,24 +291,30 @@ model Import {
     title              String
     financialAccountId String
     status             TransactionStatus @default(IMPORT_PENDING)
-    createdAt          DateTime          @default(now())
-    user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount   FinancialAccount  @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
     transactions       Transaction[]
     files              ImportFile[]
+    createdAt          DateTime          @default(now())
+    updatedAt          DateTime          @updatedAt
+    deletedAt          DateTime?         @db.Timestamptz
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([status])
 }
 
 model ImportFile {
-    id        String   @id @default(uuid())
+    id        String    @id @default(uuid())
     importId  String
     filename  String
     filetype  FileType
     path      String
-    createdAt DateTime @default(now())
-    import    Import   @relation(fields: [importId], references: [id], onDelete: Cascade)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime? @db.Timestamptz
+
+    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
 
     @@index([importId])
 }
@@ -308,6 +334,7 @@ model Transaction {
     ignore        Boolean            @default(false)
     createdAt     DateTime           @default(now())
     updatedAt     DateTime           @updatedAt
+    deletedAt     DateTime?          @db.Timestamptz
     media         TransactionMedia[]
     amounts       Amount[]
 
@@ -332,14 +359,15 @@ model Transaction {
 }
 
 model Transfer {
-    id                String   @id @default(uuid())
+    id                String    @id @default(uuid())
     userId            String
     transferDate      DateTime
     note              String?
-    fromTransactionId String?  @unique
-    toTransactionId   String?  @unique
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
+    fromTransactionId String?   @unique
+    toTransactionId   String?   @unique
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    deletedAt         DateTime? @db.Timestamptz
 
     user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
     fromTransaction Transaction? @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
@@ -353,13 +381,16 @@ model Transfer {
 }
 
 model TransactionMedia {
-    id            String      @id @default(uuid())
+    id            String    @id @default(uuid())
     transactionId String
     filename      String
     filetype      String
     path          String
-    createdAt     DateTime    @default(now())
-    transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime? @db.Timestamptz
+
+    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
 }
@@ -373,8 +404,11 @@ model Amount {
     financialAccountId String
     importReference    String?
     createdAt          DateTime          @default(now())
-    financialAccount   FinancialAccount  @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-    transaction        Transaction       @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+    updatedAt          DateTime          @updatedAt
+    deletedAt          DateTime?         @db.Timestamptz
+
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
     @@index([transactionId])
     @@index([financialAccountId])
@@ -385,23 +419,26 @@ model Amount {
 // SUBSCRIPTIONS
 // ===========================================================================
 model Subscription {
-    id                 String           @id @default(uuid())
+    id                 String         @id @default(uuid())
     userId             String
     title              String
     description        String?
-    amount             Decimal          @db.Decimal(20, 2)
+    amount             Decimal        @db.Decimal(20, 2)
     currency           Currency
     appearanceMode     AppearanceMode
     appearanceLogoIcon String
     firstPayment       DateTime
-    cycleNumber        String
-    cyclePeriod        String
+    cycleNumber        Decimal
+    cyclePeriod        CyclePeriod
     rememberPeriod     RememberPeriod
     financialAccountId String
     isEnabled          Boolean
-    createdAt          DateTime         @default(now())
-    user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount   FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+    createdAt          DateTime       @default(now())
+    updatedAt          DateTime       @updatedAt
+    deletedAt          DateTime?      @db.Timestamptz
+
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([financialAccountId])
@@ -420,9 +457,12 @@ model Category {
     logoIcon      String
     color         String            @default("#8B5CF6")
     createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+    deletedAt     DateTime?         @db.Timestamptz
     transactions  Transaction[]
     subcategories Subcategory[]
-    user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([userId])
     @@index([for])
@@ -435,8 +475,11 @@ model Subcategory {
     description  String?
     logoIcon     String
     createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    deletedAt    DateTime?     @db.Timestamptz
     transactions Transaction[]
-    category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     @@index([categoryId])
 }
@@ -679,6 +722,13 @@ enum RememberPeriod {
     NINETY_DAYS
 }
 
+enum CyclePeriod {
+    DAY
+    WEEK
+    MONTH
+    YEAR
+}
+
 enum AppearanceMode {
     LOGO
     ICON
@@ -775,4 +825,209 @@ enum DateFormat {
     DD_MMMM_YYYY
     MMMM_DD_YYYY
     YYYY_MMMM_DD
+}
+
+enum OnBoardingStep {
+    EMAIL
+    GENERALITES
+    PREFERENCES
+    COMPLETED
+}
+
+enum Countries {
+    AFGHANISTAN
+    ALBANIA
+    ALGERIA
+    ANDORRA
+    ANGOLA
+    ANTIGUA_AND_BARBUDA
+    ARGENTINA
+    ARMENIA
+    AUSTRALIA
+    AUSTRIA
+    AZERBAIJAN
+    BAHAMAS
+    BAHRAIN
+    BANGLADESH
+    BARBADOS
+    BELARUS
+    BELGIUM
+    BELIZE
+    BENIN
+    BHUTAN
+    BOLIVIA
+    BOSNIA_AND_HERZEGOVINA
+    BOTSWANA
+    BRAZIL
+    BRUNEI
+    BULGARIA
+    BURKINA_FASO
+    BURUNDI
+    CABO_VERDE
+    CAMBODIA
+    CAMEROON
+    CANADA
+    CENTRAL_AFRICAN_REPUBLIC
+    CHAD
+    CHILE
+    CHINA
+    COLOMBIA
+    COMOROS
+    CONGO_DEMOCRATIC_REPUBLIC
+    CONGO_REPUBLIC
+    COSTA_RICA
+    CROATIA
+    CUBA
+    CYPRUS
+    CZECH_REPUBLIC
+    DENMARK
+    DJIBOUTI
+    DOMINICA
+    DOMINICAN_REPUBLIC
+    ECUADOR
+    EGYPT
+    EL_SALVADOR
+    EQUATORIAL_GUINEA
+    ERITREA
+    ESTONIA
+    ESWATINI
+    ETHIOPIA
+    FIJI
+    FINLAND
+    FRANCE
+    GABON
+    GAMBIA
+    GEORGIA
+    GERMANY
+    GHANA
+    GREECE
+    GRENADA
+    GUATEMALA
+    GUINEA
+    GUINEA_BISSAU
+    GUYANA
+    HAITI
+    HONDURAS
+    HUNGARY
+    ICELAND
+    INDIA
+    INDONESIA
+    IRAN
+    IRAQ
+    IRELAND
+    ISRAEL
+    ITALY
+    JAMAICA
+    JAPAN
+    JORDAN
+    KAZAKHSTAN
+    KENYA
+    KIRIBATI
+    KOREA_NORTH
+    KOREA_SOUTH
+    KUWAIT
+    KYRGYZSTAN
+    LAOS
+    LATVIA
+    LEBANON
+    LESOTHO
+    LIBERIA
+    LIBYA
+    LIECHTENSTEIN
+    LITHUANIA
+    LUXEMBOURG
+    MADAGASCAR
+    MALAWI
+    MALAYSIA
+    MALDIVES
+    MALI
+    MALTA
+    MARSHALL_ISLANDS
+    MAURITANIA
+    MAURITIUS
+    MEXICO
+    MICRONESIA
+    MOLDOVA
+    MONACO
+    MONGOLIA
+    MONTENEGRO
+    MOROCCO
+    MOZAMBIQUE
+    MYANMAR
+    NAMIBIA
+    NAURU
+    NEPAL
+    NETHERLANDS
+    NEW_ZEALAND
+    NICARAGUA
+    NIGER
+    NIGERIA
+    NORTH_MACEDONIA
+    NORWAY
+    OMAN
+    PAKISTAN
+    PALAU
+    PALESTINE
+    PANAMA
+    PAPUA_NEW_GUINEA
+    PARAGUAY
+    PERU
+    PHILIPPINES
+    POLAND
+    PORTUGAL
+    QATAR
+    ROMANIA
+    RUSSIA
+    RWANDA
+    SAINT_KITTS_AND_NEVIS
+    SAINT_LUCIA
+    SAINT_VINCENT_AND_GRENADINES
+    SAMOA
+    SAN_MARINO
+    SAO_TOME_AND_PRINCIPE
+    SAUDI_ARABIA
+    SENEGAL
+    SERBIA
+    SEYCHELLES
+    SIERRA_LEONE
+    SINGAPORE
+    SLOVAKIA
+    SLOVENIA
+    SOLOMON_ISLANDS
+    SOMALIA
+    SOUTH_AFRICA
+    SOUTH_SUDAN
+    SPAIN
+    SRI_LANKA
+    SUDAN
+    SURINAME
+    SWEDEN
+    SWITZERLAND
+    SYRIA
+    TAIWAN
+    TAJIKISTAN
+    TANZANIA
+    THAILAND
+    TIMOR_LESTE
+    TOGO
+    TONGA
+    TRINIDAD_AND_TOBAGO
+    TUNISIA
+    TURKEY
+    TURKMENISTAN
+    TUVALU
+    UGANDA
+    UKRAINE
+    UNITED_ARAB_EMIRATES
+    UNITED_KINGDOM
+    UNITED_STATES
+    URUGUAY
+    UZBEKISTAN
+    VANUATU
+    VATICAN_CITY
+    VENEZUELA
+    VIETNAM
+    YEMEN
+    ZAMBIA
+    ZIMBABWE
 }

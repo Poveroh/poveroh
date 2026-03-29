@@ -1,4 +1,3 @@
-import { AppearanceMode } from '@poveroh/types'
 import { DialogDescription, DialogHeader, DialogTitle } from '@poveroh/ui/components/dialog'
 import { BrandIcon } from '../icon/brand-icon'
 import DynamicIcon from '../icon/dynamic-icon'
@@ -10,7 +9,7 @@ export function ModalHeader({ title, description, decoration }: ModalHeaderProps
             <div className='flex flex-row items-center space-x-3'>
                 {decoration?.iconLogo &&
                     decoration.iconLogo.name !== '' &&
-                    (decoration.iconLogo.mode === AppearanceMode.LOGO ? (
+                    (decoration.iconLogo.mode === 'LOGO' ? (
                         <BrandIcon
                             circled={decoration.iconLogo.circled}
                             icon={decoration.iconLogo.name}

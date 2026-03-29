@@ -1,10 +1,10 @@
 import { cn } from '@poveroh/ui/lib/utils'
-import { ReactElement, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 type BoxProps = {
     title?: string
     header?: ReactNode
-    children: ReactElement | ReactElement[]
+    children: ReactNode | ReactNode[]
     noDivide?: boolean
     gap?: number
 }

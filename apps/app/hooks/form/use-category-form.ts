@@ -2,18 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
 
-import { ICategory, TransactionAction } from '@poveroh/types'
 import { iconList } from '@/components/icon'
 import { useError } from '@/hooks/use-error'
 import { useTransaction } from '@/hooks/use-transaction'
+import { CategoryData, CategoryForm } from '@poveroh/types'
+import { CategoryFormSchema } from '@poveroh/schemas'
 
-export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: boolean = false) => {
-    const t = useTranslations()
-
+export const useCategoryForm = (initialData: CategoryData | null, inEditingMode: boolean = false) => {
     const { handleError } = useError()
     const { getActionList } = useTransaction()
 
@@ -25,23 +22,11 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
         description: '',
         logoIcon: iconList[0] as string,
         color: '#8B5CF6',
-        for: TransactionAction.EXPENSES
+        for: 'EXPENSES'
     }
 
-    const formSchema = z.object({
-        title: z.string().nonempty(t('messages.errors.required')),
-        description: z
-            .string()
-            .optional()
-            .nullable()
-            .transform(val => val || ''),
-        logoIcon: z.string().nonempty(t('messages.errors.required')),
-        color: z.string().nonempty(t('messages.errors.required')),
-        for: z.enum([TransactionAction.INCOME, TransactionAction.EXPENSES])
-    })
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<CategoryForm>({
+        resolver: zodResolver(CategoryFormSchema),
         defaultValues: defaultValues
     })
 
@@ -56,13 +41,13 @@ export const useCategoryForm = (initialData?: ICategory | null, inEditingMode: b
     }, [initialData, form])
 
     const handleSubmit = async (
-        values: z.infer<typeof formSchema>,
-        dataCallback: (formData: Partial<ICategory>) => Promise<void>
+        values: CategoryForm,
+        dataCallback: (formData: Partial<CategoryForm>, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values)
+            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

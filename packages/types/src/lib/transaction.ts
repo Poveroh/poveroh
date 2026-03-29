@@ -1,69 +1,5 @@
-import { Currencies } from './currency.js'
-
-export interface IAmountBase {
-    transactionId: string
-    amount: number
-    currency: Currencies
-    action: TransactionAction
-    financialAccountId: string
-    importReference?: string
-}
-
-export interface IAmount extends IAmountBase {
-    id: string
-    createdAt: string
-}
-
-export interface ITransactionMediaBase {
-    filename: string
-    filetype: string
-    path: string
-}
-
-export interface ITransactionMedia extends ITransactionMediaBase {
-    id: string
-    transactionId: string
-    createdAt: string
-}
-
-export interface ITransferBase {
-    transferDate: string
-    note?: string
-}
-
-export interface ITransfer extends ITransferBase {
-    id: string
-    userId: string
-    fromTransactionId?: string
-    toTransactionId?: string
-    createdAt: string
-    updatedAt: string
-}
-
-export type ITransactionBase = {
-    title: string
-    action: TransactionAction
-    categoryId?: string
-    subcategoryId?: string
-    icon?: string
-    date: string
-    note?: string | null
-    ignore: boolean
-}
-
-export interface ITransaction extends ITransactionBase {
-    id: string
-    userId: string
-    createdAt: string
-    status: TransactionStatus
-    importId?: string
-    updatedAt: string
-    amounts: IAmount[]
-    action: TransactionAction
-    media?: ITransactionMedia[]
-    transferId?: string
-    transferHash?: string
-}
+import { FinancialAccountTypeEnum, TransactionData } from './contracts.js'
+import { Item } from './item.js'
 
 type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
 
@@ -106,18 +42,35 @@ export type TransferFormData = {
 
 export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
 
-export enum TransactionAction {
-    INCOME = 'INCOME',
-    EXPENSES = 'EXPENSES',
-    TRANSFER = 'TRANSFER'
-}
+export type GroupedTransactions = Record<string, TransactionData[]>
 
-export enum TransactionStatus {
-    APPROVED = 'APPROVED',
-    REJECTED = 'REJECTED',
-    IMPORT_PENDING = 'IMPORT_PENDING',
-    IMPORT_REJECTED = 'IMPORT_REJECTED',
-    IMPORT_APPROVED = 'IMPORT_APPROVED'
-}
+export type FilterField =
+    | {
+          name: string
+          label: string
+          type: 'text' | 'date'
+      }
+    | {
+          name: string
+          label: string
+          type: 'select'
+          options: Item[]
+      }
+    | {
+          fromName: string
+          toName: string
+          label: string
+          type: 'dateRange'
+      }
 
-export type GroupedTransactions = Record<string, ITransaction[]>
+export const ACCOUNT_TYPE_CATALOG: Item<FinancialAccountTypeEnum>[] = [
+    { value: 'ONLINE_BANK', label: 'accounts.types.online' },
+    { value: 'BANK_ACCOUNT', label: 'accounts.types.bank' },
+    { value: 'CIRCUIT', label: 'accounts.types.circuit' },
+    { value: 'DEPOSIT_BANK', label: 'accounts.types.deposit' },
+    { value: 'BROKER', label: 'accounts.types.broker' },
+    { value: 'WALLET', label: 'accounts.types.wallet' },
+    { value: 'CASH', label: 'accounts.types.cash' },
+    { value: 'CREDIT_CARD', label: 'accounts.types.creditCard' },
+    { value: 'OTHER', label: 'accounts.types.other' }
+]

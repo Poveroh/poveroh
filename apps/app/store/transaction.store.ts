@@ -1,15 +1,15 @@
 import { create } from 'zustand'
 import { cloneDeep } from 'lodash'
-import { ITransaction } from '@poveroh/types'
+import { TransactionData } from '@poveroh/types'
 
 type TransactionStore = {
-    transactionCacheList: ITransaction[]
-    addTransaction: (transaction: ITransaction) => void
-    appendTransactions: (transactions: ITransaction[]) => void
-    editTransaction: (transaction: ITransaction) => void
-    setTransactions: (transactions: ITransaction[]) => void
+    transactionCacheList: TransactionData[]
+    addTransaction: (transaction: TransactionData) => void
+    appendTransactions: (transactions: TransactionData[]) => void
+    editTransaction: (transaction: TransactionData) => void
+    setTransactions: (transactions: TransactionData[]) => void
     removeTransaction: (transactionId: string) => void
-    getTransaction: (transactionId: string) => ITransaction | null
+    getTransaction: (transactionId: string) => TransactionData | null
 }
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({

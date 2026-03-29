@@ -1,6 +1,5 @@
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
-import { ICategory, TransactionStatus, ITransaction, TransactionAction } from '@poveroh/types'
 
 import { useEffect, useRef, useState } from 'react'
 import icons from 'currency-icons'
@@ -24,30 +23,30 @@ import {
     AlertDialogTrigger
 } from '@poveroh/ui/components/alert-dialog'
 import { useImport } from '@/hooks/use-imports'
+import { CategoryData, TransactionData, TransactionStatusEnum } from '@poveroh/types'
 
 type TransactionItemProps = {
-    transaction: ITransaction
+    transaction: TransactionData
     index: number
     onDelete: (transactionId: string) => void
-    onEdit: (item: ITransaction) => void
-    onApprove: (transactionId: string, newValue: TransactionStatus) => void
+    onEdit: (item: TransactionData) => void
+    onApprove: (transactionId: string, newValue: TransactionStatusEnum) => void
 }
 
 export function TransactionApprovalItem({ transaction, index, onApprove, onDelete, onEdit }: TransactionItemProps) {
     const t = useTranslations()
 
     const { getCategory } = useCategory()
-    const { getFinancialAccount } = useFinancialAccount()
-    const { editPendingTransaction, removePendingTransaction } = useImport()
+    const { accountQuery } = useFinancialAccount()
+    const { updatePendingTransaction, deletePendingTransaction } = useImport()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const isApproved =
-        transaction.status == TransactionStatus.IMPORT_APPROVED || transaction.status == TransactionStatus.APPROVED
+    const isApproved = transaction.status == 'IMPORT_APPROVED' || transaction.status == 'APPROVED'
 
     const [editingMode, setEditingMode] = useState(false)
 
-    const [category, setCategory] = useState<ICategory | null>(null)
+    const [category, setCategory] = useState<CategoryData | null>(null)
     const [amount, setAmount] = useState<number>(0)
     const [currencySymbol, setCurrencySymbol] = useState('')
     const [isExpense, setIsExpense] = useState(false)
@@ -61,7 +60,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
 
                 setAmount(firstAmount.amount)
                 setCurrencySymbol(icons[firstAmount.currency]?.symbol || '')
-                setIsExpense(firstAmount.action === TransactionAction.EXPENSES)
+                setIsExpense(firstAmount.action === 'EXPENSES')
             }
 
             if (transaction.categoryId) {
@@ -70,21 +69,22 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         }
 
         fetchData()
-    }, [transaction, getFinancialAccount, getCategory])
+    }, [transaction, getCategory])
 
-    const handleEditTransaction = async (data: FormData | Partial<ITransaction>) => {
-        // For now, we only handle FormData case since editPendingTransaction expects FormData
+    const handleEditTransaction = async (data: FormData | Partial<TransactionData>) => {
+        // For now, we only handle FormData case since updatePendingTransaction expects FormData
         if (data instanceof FormData) {
-            const editedTransaction = await editPendingTransaction(transaction.id, data)
+            const editedTransaction = await updatePendingTransaction(transaction.id, data)
 
             if (!editedTransaction) return
 
-            onEdit(editedTransaction)
+            //TODO: we might want to update the item in place instead of refetching the whole list
+            // onEdit(editedTransaction)
         }
     }
 
     const handleDeleteTransaction = async () => {
-        const editedTransaction = await removePendingTransaction(transaction.id)
+        const editedTransaction = await deletePendingTransaction(transaction.id)
 
         if (!editedTransaction) return
 
@@ -175,7 +175,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                         <div className='flex flex-col items-center'>
                             <div className='flex flex-col space-y-1 items-end'>
                                 <div className='flex flex-row space-x-1'>
-                                    {transaction.action !== TransactionAction.TRANSFER && (
+                                    {transaction.action !== 'TRANSFER' && (
                                         <>
                                             {isExpense ? (
                                                 <p className='danger font-bold'>-</p>
@@ -201,7 +201,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             <Button
                                 variant={isApproved ? 'ghost' : 'danger'}
                                 size='xs'
-                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_REJECTED)}
+                                onClick={() => onApprove(transaction.id, 'IMPORT_REJECTED')}
                             >
                                 <DynamicIcon
                                     name='x'
@@ -211,7 +211,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             <Button
                                 variant={isApproved ? 'success' : 'ghost'}
                                 size='xs'
-                                onClick={() => onApprove(transaction.id, TransactionStatus.IMPORT_APPROVED)}
+                                onClick={() => onApprove(transaction.id, 'IMPORT_APPROVED')}
                             >
                                 <DynamicIcon
                                     name='check'

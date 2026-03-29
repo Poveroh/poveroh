@@ -1,444 +1,164 @@
 import { Request, Response } from 'express'
-import prisma from '@poveroh/prisma'
-import { TransactionHelper } from '../helpers/transaction.helper'
-import { buildWhere } from '../../../helpers/filter.helper'
-import {
-    FileType,
-    IImportsFile,
-    TransactionStatus,
-    ITransactionFilters,
-    ITransaction,
-    TransactionAction
-} from '@poveroh/types'
-import logger from '../../../utils/logger'
-import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
-import { ImportHelper } from '../helpers/import.helper'
-import { v4 as uuidv4 } from 'uuid'
-import { MediaHelper } from '../../../helpers/media.helper'
-import { BalanceHelper } from '../helpers/balance.helper'
+import { CreateImportRequest, ImportFilters, TransactionFilters, UpdateImportRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
-import { TransactionWithAmounts } from '@/types/transactions'
+import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { ImportService } from '../services/import.service'
 
 export class ImportController {
     //POST /
-    static async add(req: Request, res: Response) {
+    static async createImport(req: Request, res: Response) {
         try {
-            const { data, action } = req.body
+            try {
+                if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+                    throw new BadRequestError('No files provided')
+                }
 
-            if (!data || !action) {
-                res.status(400).json({ message: 'Data or action not provided' })
-                return
+                const files = req.files as Express.Multer.File[]
+                const payload = req.body as CreateImportRequest
+                if (!payload.financialAccountId) {
+                    throw new BadRequestError('Missing financialAccountId')
+                }
+
+                const importService = new ImportService(req.user.id)
+                const data = await importService.createImport(payload, files)
+
+                return ResponseHelper.success(res, data)
+            } catch (error) {
+                return ResponseHelper.handleError(res, error)
             }
-
-            const parsedData = JSON.parse(data)
-            const userId = req.user.id
-
-            const result = await TransactionHelper.handleTransaction(action, parsedData, userId)
-            res.status(200).json(result)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //PUT /:id
-    static async complete(req: Request, res: Response) {
+    static async updateImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing import ID' })
-                return
+                throw new BadRequestError('Missing import ID')
             }
 
-            const deletePattern = {
-                importId: id,
-                status: {
-                    in: [TransactionStatus.IMPORT_PENDING, TransactionStatus.IMPORT_REJECTED]
-                }
+            if (!req.body) {
+                throw new BadRequestError('Data not provided')
             }
 
-            const imports = await prisma.$transaction(async tx => {
-                // Fetch approved transactions with their amounts before updating
-                const approvedTransactions = (await tx.transaction.findMany({
-                    where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
-                    include: { amounts: true }
-                })) as TransactionWithAmounts[]
+            const payload = req.body as UpdateImportRequest
 
-                // Update transactions
-                await tx.transaction.updateMany({
-                    where: { status: TransactionStatus.IMPORT_APPROVED, importId: id },
-                    data: {
-                        status: TransactionStatus.APPROVED
-                    }
-                })
+            const importService = new ImportService(req.user.id)
+            const data = await importService.updateImport(id, payload)
 
-                const flatAmounts = approvedTransactions.flatMap(t => t.amounts)
-
-                // Update balances for all approved transactions
-                const amountsToUpdate = flatAmounts.map(amount =>
-                    TransactionHelper.createAmountData({ dbAmount: amount })
-                )
-                await BalanceHelper.updateAccountBalances(amountsToUpdate, undefined, tx)
-
-                // Delete amounts and transactions for both statuses in a single transaction, but separate deleteMany calls are required
-                await tx.amount.deleteMany({
-                    where: {
-                        transaction: deletePattern
-                    }
-                })
-
-                await tx.transaction.deleteMany({
-                    where: deletePattern
-                })
-
-                // Update import
-                return tx.import.update({
-                    where: { id },
-                    data: {
-                        status: TransactionStatus.APPROVED
-                    }
-                })
-            })
-
-            res.status(200).json(imports)
+            return ResponseHelper.success(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({
-                message: 'An error occurred while updating the import',
-                error: process.env.NODE_ENV === 'production' ? undefined : error
-            })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //PATCH /complete/:id
+    static async completeImport(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing import ID')
+            }
+
+            const importService = new ImportService(req.user.id)
+            const imports = await importService.completeImport(id)
+
+            return ResponseHelper.success(res, imports)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //DELETE /:id
-    static async delete(req: Request, res: Response) {
+    static async deleteImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing import ID' })
-                return
+                throw new BadRequestError('Missing import ID')
             }
 
-            const transactions = await prisma.transaction.findMany({
-                where: {
-                    importId: id,
-                    status: {
-                        in: [
-                            TransactionStatus.IMPORT_PENDING,
-                            TransactionStatus.IMPORT_REJECTED,
-                            TransactionStatus.IMPORT_APPROVED
-                        ]
-                    }
-                },
-                select: { id: true }
-            })
-            const transactionIds = transactions.map(t => t.id)
+            const importService = new ImportService(req.user.id)
+            await importService.deleteImport(id)
 
-            if (transactionIds.length > 0) {
-                await prisma.amount.deleteMany({
-                    where: { transactionId: { in: transactionIds } }
-                })
-            }
-
-            await prisma.$transaction([
-                prisma.transaction.deleteMany({
-                    where: { importId: id }
-                }),
-                prisma.importFile.deleteMany({
-                    where: { importId: id }
-                }),
-                prisma.import.delete({
-                    where: { id }
-                })
-            ])
-
-            res.status(200).json(true)
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //DELETE /
+    static async deleteAllImports(req: Request, res: Response) {
+        try {
+            const importService = new ImportService(req.user.id)
+            await importService.deleteAllImports()
+
+            return ResponseHelper.success(res, true)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
         }
     }
 
     //GET /
-    static async read(req: Request, res: Response) {
+    static async readImports(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as IImportsFile
+            const filters = req.query as unknown as ImportFilters
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const where = buildWhere(filters)
+            const importService = new ImportService(req.user.id)
+            const data = await importService.getImports(filters, skip, take)
 
-            const [data, total] = await Promise.all([
-                prisma.import.findMany({
-                    where,
-                    include: { files: true },
-                    orderBy: { createdAt: 'desc' },
-                    skip,
-                    take
-                }),
-                prisma.import.count({ where })
-            ])
-
-            res.status(200).json({ data, total })
+            return ResponseHelper.success(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    static async readPendingTransactions(req: Request, res: Response) {
+    //GET /:id
+    static async readImportById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
 
             if (!id) {
-                res.status(400).json({ message: 'Missing import ID' })
-                return
+                throw new BadRequestError('Missing import ID')
             }
 
-            const filters = req.query as unknown as ITransactionFilters
+            const importService = new ImportService(req.user.id)
+            const data = await importService.getImportById(id)
 
-            const where = buildWhere(filters)
-
-            const data = await prisma.transaction.findMany({
-                where: {
-                    ...where,
-                    importId: id,
-                    status: {
-                        in: [
-                            TransactionStatus.IMPORT_PENDING,
-                            TransactionStatus.IMPORT_APPROVED,
-                            TransactionStatus.IMPORT_REJECTED
-                        ]
-                    }
-                },
-                include: { amounts: true },
-                orderBy: { createdAt: 'desc' }
-            })
-
-            res.status(200).json(data)
+            if (!data) {
+                throw new NotFoundError('Import not found')
+            }
+            return ResponseHelper.success(res, data)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 
-    static async deletePendingTransaction(req: Request, res: Response) {
-        try {
-            const transactionId = getParamString(req.params, 'transactionId')
-
-            if (!transactionId) {
-                res.status(400).json({ message: 'Missing transaction ID' })
-                return
-            }
-            await prisma.transaction.delete({
-                where: { id: transactionId }
-            })
-
-            res.status(200).json(true)
-        } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
-    static async editPendingTransaction(req: Request, res: Response) {
-        try {
-            const { data } = req.body
-
-            const parsedData: ITransaction[] = JSON.parse(data)
-
-            if (!Array.isArray(parsedData) || parsedData.length === 0) {
-                res.status(400).json({ message: 'Missing or empty transactions array' })
-                return
-            }
-
-            const updatedTransactions = await prisma.$transaction(async tx => {
-                const results = []
-
-                for (const t of parsedData) {
-                    const { amounts, action, media, ...transactionData } = t
-
-                    // Update transaction data (excluding media)
-                    const updatedTransaction = await tx.transaction.update({
-                        where: { id: t.id },
-                        data: transactionData
-                    })
-
-                    // Handle media separately if provided
-                    if (media && Array.isArray(media)) {
-                        // Delete existing media
-                        await tx.transactionMedia.deleteMany({
-                            where: { transactionId: t.id }
-                        })
-
-                        // Create new media records
-                        if (media.length > 0) {
-                            await tx.transactionMedia.createMany({
-                                data: media.map(m => ({
-                                    transactionId: t.id,
-                                    filename: m.filename,
-                                    filetype: m.filetype,
-                                    path: m.path
-                                }))
-                            })
-                        }
-                    }
-
-                    results.push(updatedTransaction)
-                }
-
-                return results
-            })
-
-            res.status(200).json(updatedTransactions)
-        } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
-    /**
-     * @summary Parse uploaded files and create transactions
-     * @route POST /api/v1/imports/read-file
-     *
-     * This controller method performs the following steps:
-     * 1. Validates that files are provided in the request.
-     * 2. Uploads each file and parses its content to extract transactions using a heuristic parser.
-     * 3. Normalizes and prepares transaction data for database insertion.
-     * 4. Creates import and import file records in the database.
-     * 5. Inserts parsed transactions and their associated amounts into the database.
-     * 6. Returns a JSON response with import details, files, and transactions.
-     *
-     * @param req - Express request object.
-     * @param res - Express response object used to send the result or error.
-     * @returns A JSON response with import metadata, file information, and parsed transactions.
-     *
-     * @remarks
-     * - Expects files to be uploaded via multipart/form-data.
-     * - Uses Multer for file handling and Prisma for database operations.
-     * - Handles errors gracefully and logs them.
-     */
-    static async parseFile(req: Request, res: Response) {
-        try {
-            if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-                res.status(400).json({ message: 'No files provided' })
-                return
-            }
-
-            const files = req.files as Express.Multer.File[]
-            const financialAccountId: string = req.body.financialAccountId
-            const userId = req.user.id
-            const importId = uuidv4()
-            const now = new Date()
-
-            // This algorithm parses the CSV files and extracts transactions dinamically
-            const parser = new HowIParsedYourDataAlgorithm()
-
-            // Upload files and parse transactions in parallel
-            const fileResults = await Promise.all(
-                files.map(async file => {
-                    const content = file.buffer.toString('utf-8')
-
-                    const filePath = await MediaHelper.handleUpload(file, `${userId}/imports/${importId}`)
-
-                    const parsed = await parser.parseCSVFile(content)
-
-                    return {
-                        filePath,
-                        originalname: file.originalname,
-                        transactions: parsed.transactions
-                    }
-                })
-            )
-
-            const savedFiles = fileResults.map(f => f.filePath)
-            const allTransactions = fileResults.flatMap(f => f.transactions)
-
-            /*
-             * Normalize transactions to match the expected format for the database.
-             * The algorithm check back existing transactions and subscription to fill new transactions with the correct data.
-             */
-            const parsedTransactions = await ImportHelper.normalizeTransaction(
-                userId,
-                financialAccountId,
-                allTransactions
-            )
-
-            const importFiles: IImportsFile[] = savedFiles.map((path, idx) => ({
-                id: uuidv4(),
-                importId: importId,
-                filename: files[idx]?.originalname || '',
-                filetype: FileType.CSV,
-                path,
-                createdAt: now.toISOString()
-            }))
-
-            const imports = await prisma.import.create({
-                data: {
-                    id: importId,
-                    userId: userId,
-                    financialAccountId: financialAccountId,
-                    title: 'Import at ' + now.toISOString(),
-                    status: TransactionStatus.IMPORT_PENDING,
-                    createdAt: now
-                }
-            })
-
-            await prisma.importFile.createMany({ data: importFiles })
-
-            await prisma.transaction.createMany({
-                data: parsedTransactions.map(({ amounts, ...transaction }) => ({
-                    ...transaction,
-                    importId: importId
-                }))
-            })
-
-            const allAmounts = parsedTransactions.flatMap(transaction =>
-                transaction.amounts.map(amount => ({
-                    transactionId: amount.transactionId,
-                    amount: amount.amount,
-                    currency: amount.currency,
-                    action: amount.action as TransactionAction,
-                    financialAccountId: amount.financialAccountId,
-                    importReference: amount.importReference
-                }))
-            )
-
-            if (allAmounts.length > 0) {
-                await prisma.amount.createMany({ data: allAmounts })
-            }
-
-            res.status(200).json({
-                ...imports,
-                files: importFiles,
-                transactions: parsedTransactions
-            })
-        } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'An error occurred', error })
-        }
-    }
-
+    //POST /template
     static async importTemplates(req: Request, res: Response) {
         try {
-            const userId = req.user.id
             const { action } = req.body
 
-            switch (action) {
-                case 'categories':
-                    await ImportHelper.importCategoriesFromTemplate(userId)
-                    break
-                default:
-                    res.status(400).json({ message: 'Invalid action for template import' })
-                    return
+            if (!action) {
+                throw new BadRequestError('Invalid action for template import')
             }
 
-            res.status(200).json(true)
+            const importService = new ImportService(req.user.id)
+            const result = await importService.importTemplates(action)
+
+            if (!result) {
+                throw new BadRequestError('Invalid action for template import')
+            }
+
+            return ResponseHelper.success(res, true)
         } catch (error) {
-            logger.error(error)
-            res.status(500).json({ message: 'Error importing templates', error })
+            return ResponseHelper.handleError(res, error)
         }
     }
 }

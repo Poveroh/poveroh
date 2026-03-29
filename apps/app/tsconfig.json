@@ -5,8 +5,8 @@
         "paths": {
             "@/*": ["./*"],
             "@poveroh/ui/*": ["../../packages/ui/src/*"],
-            "@poveroh/types/*": ["../../packages/types/*"],
-            "@poveroh/utils/*": ["../../packages/utils/*"]
+            "@poveroh/utils/*": ["../../packages/utils/*"],
+            "@poveroh/schemas/*": ["../../packages/schemas/src/*"]
         },
         "plugins": [
             {

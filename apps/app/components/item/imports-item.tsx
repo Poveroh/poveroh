@@ -1,18 +1,18 @@
-import { IImport, TransactionStatus } from '@poveroh/types'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { cn } from '@poveroh/ui/lib/utils'
+import { ImportData } from '@poveroh/types'
 
 type ImportsItemProps = {
-    imports: IImport
-    openDelete: (item: IImport) => void
-    openEdit: (item: IImport) => void
+    imports: ImportData
+    openDelete: (item: ImportData) => void
+    openEdit: (item: ImportData) => void
 }
 
 export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps) {
     const t = useTranslations()
 
-    const importApproved = imports.status === TransactionStatus.APPROVED
+    const importApproved = imports.status === 'APPROVED'
 
     return (
         <div
@@ -28,7 +28,7 @@ export function ImportsItem({ imports, openDelete, openEdit }: ImportsItemProps)
                     <p className={importApproved ? 'text-success' : 'sub'}>{t(`imports.status.${imports.status}`)}</p>
                 </div>
             </div>
-            <OptionsPopover<IImport>
+            <OptionsPopover<ImportData>
                 data={imports}
                 buttons={[
                     {

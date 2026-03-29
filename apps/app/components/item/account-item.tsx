@@ -1,22 +1,22 @@
 import { BrandIcon } from '../icon/brand-icon'
-import { IFinancialAccount } from '@poveroh/types'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { ExtraButton } from '@/types/options'
+import { FinancialAccountData } from '@poveroh/types'
 
 type AccountItemProps = {
-    account: IFinancialAccount
-    buttons?: ExtraButton<IFinancialAccount>[]
-    openDelete: (item: IFinancialAccount) => void
-    openEdit: (item: IFinancialAccount) => void
+    account: FinancialAccountData
+    buttons?: ExtraButton<FinancialAccountData>[]
+    openDelete: (item: FinancialAccountData) => void
+    openEdit: (item: FinancialAccountData) => void
 }
 
 export function AccountItem({ account, buttons, openDelete, openEdit }: AccountItemProps) {
     const t = useTranslations()
-    const { TYPE_LIST } = useFinancialAccount()
+    const { ACCOUNT_TYPE_CATALOG } = useFinancialAccount()
 
-    const type = TYPE_LIST.find(tp => tp.value == account.type)
+    const type = ACCOUNT_TYPE_CATALOG.find(tp => tp.value == account.type)
 
     return (
         <div
@@ -30,7 +30,7 @@ export function AccountItem({ account, buttons, openDelete, openEdit }: AccountI
                     <p className='sub'>{type?.label}</p>
                 </div>
             </div>
-            <OptionsPopover<IFinancialAccount>
+            <OptionsPopover<FinancialAccountData>
                 data={account}
                 buttons={[
                     {
