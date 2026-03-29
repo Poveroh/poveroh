@@ -1,5 +1,4 @@
 import prisma from '@poveroh/prisma'
-import { Prisma } from '@prisma/client'
 import moment from 'moment-timezone'
 import { ExpensesFormData, FormMode, IncomeFormData, TransferFormData } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
@@ -582,8 +581,8 @@ export const TransactionHelper = {
      * Creates or converts an Amount object to IAmountBase
      */
     createAmountData(
-        params:
-            | { dbAmount: Prisma.AmountGetPayload<{}> }
+        params: //TODO: Workaround to allow both direct params or a DB amount object, to simplify the code when handling amounts in edit flows
+            | { dbAmount: any }
             | {
                   transactionId: string
                   amount: number
