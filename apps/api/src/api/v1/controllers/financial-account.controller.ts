@@ -17,7 +17,7 @@ export class FinancialAccountController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const readFinancialAccount: CreateFinancialAccountRequest = req.body
+            const readFinancialAccount: CreateFinancialAccountRequest = JSON.parse(req.body.data)
 
             const financialAccountService = new FinancialAccountService(req.user.id)
             const account = await financialAccountService.createFinancialAccount(readFinancialAccount, req.file)

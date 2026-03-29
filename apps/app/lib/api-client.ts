@@ -3,6 +3,16 @@ import appConfig from '@/config'
 import { authToken } from '@/lib/auth-token'
 import axios, { type AxiosRequestConfig } from 'axios'
 
+/**
+ * API client configuration and helper functions
+ */
+const apiUrl = appConfig.apiUrl + '/v1'
+
+/**
+ * Custom query serializer to handle nested objects and arrays in query parameters
+ * This is needed because the default URLSearchParams doesn't support complex structures well
+ * and hey-api expects a specific format for nested queries.
+ */
 const querySerializer = (params: Record<string, unknown>): string => {
     const parts: string[] = []
 
@@ -23,6 +33,8 @@ const querySerializer = (params: Record<string, unknown>): string => {
     return parts.join('&')
 }
 
+// ------------------------------------------------------------------------------------------
+
 /**
  * Configure axios instance with authentication
  *
@@ -30,7 +42,7 @@ const querySerializer = (params: Record<string, unknown>): string => {
  * The session cookie is automatically sent with each request.
  */
 const axiosInstance = axios.create({
-    baseURL: appConfig.apiUrl + '/v1',
+    baseURL: apiUrl,
     headers: {
         'Content-Type': 'application/json'
     },
@@ -58,17 +70,47 @@ axiosInstance.interceptors.response.use(response => {
 })
 
 client.setConfig({
-    baseUrl: appConfig.apiUrl + '/v1',
+    baseUrl: apiUrl,
     querySerializer,
     fetch: async (url: string | URL | Request, init?: RequestInit) => {
-        const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url
+        let urlString: string
+        let method: string
+        let body: unknown
+        let headers: Record<string, string>
+        let signal: AbortSignal | null | undefined
+
+        if (url instanceof Request) {
+            urlString = url.url
+            method = url.method
+            signal = url.signal ?? undefined
+
+            const contentType = url.headers.get('content-type') ?? ''
+            const isMultipart = contentType.includes('multipart/form-data')
+
+            headers = {}
+            url.headers.forEach((value, key) => {
+                if (!(isMultipart && key.toLowerCase() === 'content-type')) {
+                    headers[key] = value
+                }
+            })
+
+            if (method !== 'GET' && method !== 'HEAD' && url.body !== null) {
+                body = isMultipart ? await url.clone().formData() : await url.clone().text()
+            }
+        } else {
+            urlString = typeof url === 'string' ? url : url.toString()
+            method = init?.method || 'GET'
+            body = init?.body
+            headers = (init?.headers as Record<string, string>) || {}
+            signal = init?.signal ?? undefined
+        }
 
         const axiosConfig: AxiosRequestConfig = {
             url: urlString,
-            method: init?.method || 'GET',
-            data: init?.body,
-            headers: (init?.headers as Record<string, string>) || {},
-            signal: init?.signal || undefined
+            method,
+            data: body,
+            headers,
+            signal: signal ?? undefined
         }
 
         const response = await axiosInstance.request(axiosConfig)
@@ -80,58 +122,6 @@ client.setConfig({
         })
     }
 })
-
-/**
- * Helper to make unauthenticated requests
- * Use this for public endpoints that don't require authentication
- *
- * @example
- * // Authenticated call (default, sends cookies)
- * const { data } = await getUser()
- *
- * // Unauthenticated call (doesn't send cookies)
- * const { data } = await getRootStatus(withoutAuth())
- */
-export const withoutAuth = () => {
-    const axiosInstanceNoAuth = axios.create({
-        baseURL: appConfig.apiUrl + '/v1',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: false
-    })
-
-    axiosInstanceNoAuth.interceptors.response.use(response => {
-        const nextToken = response.headers['set-auth-token']
-        if (typeof nextToken === 'string') {
-            authToken.set(nextToken)
-        }
-
-        return response
-    })
-
-    return {
-        fetch: async (url: string | URL | Request, init?: RequestInit) => {
-            const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url
-
-            const axiosConfig: AxiosRequestConfig = {
-                url: urlString,
-                method: init?.method || 'GET',
-                data: init?.body,
-                headers: (init?.headers as Record<string, string>) || {},
-                signal: init?.signal || undefined
-            }
-
-            const response = await axiosInstanceNoAuth.request(axiosConfig)
-
-            return new Response(JSON.stringify(response.data), {
-                status: response.status,
-                statusText: response.statusText,
-                headers: new Headers(response.headers as HeadersInit)
-            })
-        }
-    }
-}
 
 export { client, axiosInstance }
 
