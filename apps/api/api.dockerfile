@@ -1,4 +1,4 @@
-FROM node:23-alpine AS base
+FROM node:22-alpine AS base
 
 ARG API_PORT
 ARG JWT_KEY

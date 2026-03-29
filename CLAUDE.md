@@ -39,7 +39,7 @@ The local proxy routes traffic using these hostnames (added to /etc/hosts by npm
   cdn.poveroh.local   -> file storage
   studio.poveroh.local -> Prisma Studio
 
-Environment files: copy .env.example to .env for local dev. The file at packages/prisma/.env, apps/app/.env, and apps/api/.env all symlink to the root .env, do not touch them. Use .env.production for Docker deployments.
+Environment files: copy .env.example to .env for local dev. The root .env is the single source of truth — all tools load it explicitly (nodemon via --env-file, Next.js via dotenv-cli, Prisma CLI via --env-file, Docker Compose via --env-file flag). Do not create .env files in subdirectories. Use .env.production for Docker deployments.
 
 The development branch is main. Branch naming: feature/NAME, fix/NAME, refactor/NAME.
 

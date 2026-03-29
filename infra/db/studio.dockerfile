@@ -1,11 +1,12 @@
-FROM node:23-alpine AS base
+FROM node:22-alpine AS base
 
 # Don't set DATABASE_URL as ENV here, it will be passed at runtime
 WORKDIR /app
 
-RUN npm install -g prisma
+RUN npm init -y && npm install prisma@^7.6.0 typescript ts-node @types/node
 
 COPY ./packages/prisma/schema.prisma ./schema.prisma
+COPY ./infra/db/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 5555
 
@@ -16,4 +17,4 @@ RUN chmod +x /app/docker-studio-start.sh
 
 ENTRYPOINT ["/app/docker-studio-start.sh"]
 
-CMD ["prisma", "studio"]
+CMD ["npx", "prisma", "studio", "--port", "5555", "--browser", "none"]
