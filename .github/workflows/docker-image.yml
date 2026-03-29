@@ -38,6 +38,14 @@ jobs:
               run: |
                   cp .env.example .env
 
+            - name: Generate SSL certificates for proxy build
+              run: |
+                  mkdir -p infra/proxy/ssl
+                  openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+                    -keyout infra/proxy/ssl/_wildcard.poveroh.local+1-key.pem \
+                    -out infra/proxy/ssl/_wildcard.poveroh.local+1.pem \
+                    -subj "/CN=*.poveroh.local" 2>/dev/null
+
             - name: Build Docker images using local compose file
               run: docker compose -f docker/docker-compose.local.yml --env-file .env build
 
