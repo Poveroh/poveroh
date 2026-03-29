@@ -39,7 +39,7 @@ jobs:
                   cp .env.example .env
 
             - name: Build Docker images using local compose file
-              run: cd ./docker && docker compose -f docker-compose.local.yml build
+              run: docker compose -f docker/docker-compose.local.yml --env-file .env build
 
             - name: Tag and push images
               run: |
