@@ -19,6 +19,6 @@
     "keywords": [],
     "description": "",
     "devDependencies": {
-        "prisma": "^6.19.0"
+        "prisma": "^7.6.0"
     }
 }
