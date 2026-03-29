@@ -1,5 +1,6 @@
 {
     "spellright.language": ["en"],
     "spellright.documentTypes": ["markdown", "latex", "plaintext"],
-    "git.allowNoVerifyCommit": true
+    "git.allowNoVerifyCommit": true,
+    "prisma.pinToPrisma6": false
 }

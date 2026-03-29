@@ -11,14 +11,17 @@
         "clean": "rm -rf .turbo && rm -rf node_modules",
         "db-migrate": "npm prisma migrate dev",
         "generate-schemas": "prisma generate",
-        "postinstall": "prisma generate"
+        "postinstall": "prisma generate || true"
     },
     "dependencies": {
-        "@prisma/client": "^6.19.0"
+        "@prisma/client": "^7.6.0",
+        "@prisma/adapter-pg": "^7.6.0",
+        "pg": "^8.13.3"
     },
     "keywords": [],
     "description": "",
     "devDependencies": {
-        "prisma": "^7.6.0"
+        "prisma": "^7.6.0",
+        "@types/pg": "^8.11.6"
     }
 }
