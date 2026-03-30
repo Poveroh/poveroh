@@ -1,90 +1,107 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { isEmpty } from '@poveroh/utils'
+import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import Box from '@/components/box/box-wrapper'
-
+import { Button } from '@poveroh/ui/components/button'
 import { Input } from '@poveroh/ui/components/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
 import { List, ListTree, Search, Shapes } from 'lucide-react'
-import { Button } from '@poveroh/ui/components/button'
-import { CategorySubcategoryDialog } from '@/components/dialog/category-subcategory-dialog'
-import { useCategory } from '@/hooks/use-category'
+
+import Box from '@/components/box/box-wrapper'
+import { CategoryDialog } from '@/components/dialog/category-dialog'
+import { SubcategoryDialog } from '@/components/dialog/subcategory-dialog'
 import { CategoryItem } from '@/components/item/category-item'
 import { Header } from '@/components/other/header-page'
 import SkeletonItem from '@/components/skeleton/skeleton-item'
+
+import { useCategory } from '@/hooks/use-category'
+import { useSubcategory } from '@/hooks/use-subcategory'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { CategoryData, SubcategoryData } from '@poveroh/types'
-import { CategoryModelMode } from '@poveroh/types'
+import { CategoryData, SubcategoryData, CategoryModelMode } from '@poveroh/types'
 
 export default function CategoryView() {
     const t = useTranslations()
 
-    const { categoryCacheList, categoryLoading, fetchCategories, importTemplates, deleteCategories } = useCategory()
+    const {
+        categoryQuery,
+        categoryData,
+        createCategoryMutation,
+        deleteAllCategoryMutation,
+        importTemplates,
+        onSearch
+    } = useCategory()
+    const { createSubcategoryMutation } = useSubcategory()
 
-    const categoryModal = useModal<CategoryData | SubcategoryData>('category-dialog')
-    const subcategoryModal = useModal<CategoryData | SubcategoryData>('subcategory-dialog')
+    const categoryModal = useModal<CategoryData>('category-dialog')
+    const subcategoryModal = useModal<SubcategoryData>('subcategory-dialog')
     const { openModal: openDeleteModal } = useDeleteModal<CategoryData | SubcategoryData>()
 
-    const [dialogModel, setDialogModel] = useState<CategoryModelMode>('category')
-    const [localCategoryList, setLocalCategoryList] = useState<CategoryData[]>(categoryCacheList)
     const [activeTab, setActiveTab] = useState('expenses')
 
-    useEffect(() => {
-        fetchCategories(true)
-    }, [])
-
-    useEffect(() => {
-        setLocalCategoryList(categoryCacheList)
-    }, [categoryCacheList])
-
-    const onSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value.toLowerCase()
-
-        if (isEmpty(textToSearch)) {
-            setLocalCategoryList(categoryCacheList)
-            return
+    const pageContent = useMemo(() => {
+        if (categoryQuery.isPending) {
+            return <SkeletonItem repeat={5} />
         }
 
-        const filteredList = categoryCacheList
-            .map(category => {
-                const matchingSubcategories = category.subcategories?.filter(
-                    subcategory =>
-                        subcategory.title.toLowerCase().includes(textToSearch) ||
-                        subcategory.description?.toLowerCase().includes(textToSearch)
-                )
+        if (categoryData.length > 0) {
+            return (
+                <Tabs defaultValue={activeTab} value={activeTab} className='p-0'>
+                    {['expenses', 'income'].map(tab => (
+                        <TabsContent key={tab} value={tab} className='m-0'>
+                            <Box>
+                                <>
+                                    {categoryData
+                                        .filter(x => x.for === (tab === 'expenses' ? 'EXPENSES' : 'INCOME'))
+                                        .map(category => (
+                                            <CategoryItem
+                                                key={category.id}
+                                                category={category}
+                                                openEdit={(
+                                                    mode: CategoryModelMode,
+                                                    item: CategoryData | SubcategoryData
+                                                ) => {
+                                                    if (mode === 'category') {
+                                                        categoryModal.openModal('edit', item as CategoryData)
+                                                    } else {
+                                                        subcategoryModal.openModal('edit', item as SubcategoryData)
+                                                    }
+                                                }}
+                                                openDelete={(
+                                                    _mode: CategoryModelMode,
+                                                    item: CategoryData | SubcategoryData
+                                                ) => {
+                                                    openDeleteModal(item)
+                                                }}
+                                            />
+                                        ))}
+                                </>
+                            </Box>
+                        </TabsContent>
+                    ))}
+                </Tabs>
+            )
+        }
 
-                if (
-                    category.title.toLowerCase().includes(textToSearch) ||
-                    category.description?.toLowerCase().includes(textToSearch) ||
-                    (matchingSubcategories && matchingSubcategories.length > 0)
-                ) {
-                    return {
-                        ...category,
-                        subcategories:
-                            matchingSubcategories && matchingSubcategories.length > 0
-                                ? matchingSubcategories
-                                : category.subcategories
-                    }
-                }
-
-                return null
-            })
-            .filter(Boolean) as CategoryData[]
-
-        setLocalCategoryList(filteredList)
-    }
-
-    const openNew = (mode: CategoryModelMode) => {
-        setDialogModel(mode)
-        const manager = mode === 'category' ? categoryModal : subcategoryModal
-        manager.openModal('create')
-    }
+        return (
+            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                <Shapes />
+                <div className='flex flex-col items-center space-y-2 justify-center'>
+                    <h4>{t('categories.empty.title')}</h4>
+                    <p>{t('categories.empty.subtitle')}</p>
+                </div>
+                <div className='flex flex-row space-x-3'>
+                    <Button variant='outline' onClick={() => importTemplates()}>
+                        {t('buttons.addFromTemplates')}
+                    </Button>
+                    <Button onClick={() => categoryModal.openModal('create')}>{t('buttons.add.new')}</Button>
+                </div>
+            </div>
+        )
+    }, [categoryQuery.isPending, categoryData, activeTab])
 
     return (
         <>
@@ -98,21 +115,21 @@ export default function CategoryView() {
                         { label: t('categories.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => fetchCategories(true),
-                        loading: categoryLoading.fetchCategories
+                        onClick: categoryQuery.refetch,
+                        loading: categoryQuery.isPending
                     }}
                     addAction={[
                         {
-                            onClick: () => openNew('category'),
-                            loading: categoryLoading.createCategory,
+                            onClick: () => categoryModal.openModal('create'),
+                            loading: createCategoryMutation.isPending,
                             label: t('categories.modal.newTitle'),
                             icon: <List />
                         },
-                        ...(categoryCacheList.length > 0
+                        ...(categoryData.length > 0
                             ? [
                                   {
-                                      onClick: () => openNew('subcategory'),
-                                      loading: categoryLoading.createSubcategory,
+                                      onClick: () => subcategoryModal.openModal('create'),
+                                      loading: createSubcategoryMutation.isPending,
                                       label: t('subcategories.modal.newTitle'),
                                       icon: <ListTree />
                                   }
@@ -120,9 +137,9 @@ export default function CategoryView() {
                             : [])
                     ]}
                     onDeleteAll={{
-                        onClick: () => deleteCategories(),
-                        loading: categoryLoading.deleteCategories,
-                        disabled: localCategoryList.length === 0
+                        onClick: () => deleteAllCategoryMutation.mutateAsync({}),
+                        loading: deleteAllCategoryMutation.isPending,
+                        disabled: categoryData.length === 0
                     }}
                 />
 
@@ -147,65 +164,12 @@ export default function CategoryView() {
                         </Tabs>
                     </div>
                 </div>
-                {!categoryLoading.fetchCategories && localCategoryList.length > 0 ? (
-                    <Tabs defaultValue={activeTab} value={activeTab} className='p-0'>
-                        {['expenses', 'income'].map(tab => (
-                            <TabsContent key={tab} value={tab} className='m-0'>
-                                <Box>
-                                    <>
-                                        {localCategoryList
-                                            .filter(x => x.for === (tab === 'expenses' ? 'EXPENSES' : 'INCOME'))
-                                            .map(category => (
-                                                <CategoryItem
-                                                    key={category.id}
-                                                    category={category}
-                                                    openEdit={(
-                                                        mode: CategoryModelMode,
-                                                        item: CategoryData | SubcategoryData
-                                                    ) => {
-                                                        setDialogModel(mode)
-                                                        const manager =
-                                                            mode === 'category' ? categoryModal : subcategoryModal
-                                                        manager.openModal('edit', item)
-                                                    }}
-                                                    openDelete={(
-                                                        mode: CategoryModelMode,
-                                                        item: CategoryData | SubcategoryData
-                                                    ) => {
-                                                        setDialogModel(mode)
-                                                        openDeleteModal(item)
-                                                    }}
-                                                />
-                                            ))}
-                                    </>
-                                </Box>
-                            </TabsContent>
-                        ))}
-                    </Tabs>
-                ) : (
-                    <>
-                        {categoryLoading.fetchCategories ? (
-                            <SkeletonItem repeat={5} />
-                        ) : (
-                            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                                <Shapes />
-                                <div className='flex flex-col items-center space-y-2 justify-center'>
-                                    <h4>{t('categories.empty.title')}</h4>
-                                    <p>{t('categories.empty.subtitle')}</p>
-                                </div>
-                                <div className='flex flex-row space-x-3'>
-                                    <Button variant='outline' onClick={() => importTemplates()}>
-                                        {t('buttons.addFromTemplates')}
-                                    </Button>
-                                    <Button onClick={() => openNew('category')}>{t('buttons.add.new')}</Button>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
+
+                {pageContent}
             </PageWrapper>
 
-            <CategorySubcategoryDialog mode={dialogModel}></CategorySubcategoryDialog>
+            <CategoryDialog />
+            <SubcategoryDialog />
         </>
     )
 }

@@ -15,7 +15,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
     mandatory = true,
     onValueChange
 }: CategoryFieldProps<T>) {
-    const { categoryCacheList } = useCategory()
+    const { categoryData } = useCategory()
     const { createIconContent } = useFieldIcon()
 
     if (!label) return null
@@ -29,7 +29,7 @@ export function CategoryField<T extends FieldValues = FieldValues>({
             variant={variant}
             disabled={disabled}
             mandatory={mandatory}
-            options={categoryCacheList}
+            options={categoryData}
             getOptionLabel={(item: CategoryData) => item.title}
             getOptionValue={(item: CategoryData) => item.id}
             onValueChange={onValueChange}

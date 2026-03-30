@@ -36,8 +36,7 @@ type TransactionItemProps = {
 export function TransactionApprovalItem({ transaction, index, onApprove, onDelete, onEdit }: TransactionItemProps) {
     const t = useTranslations()
 
-    const { getCategory } = useCategory()
-    const { accountQuery } = useFinancialAccount()
+    const { getCategoryById } = useCategory()
     const { updatePendingTransaction, deletePendingTransaction } = useImport()
 
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -64,12 +63,12 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
             }
 
             if (transaction.categoryId) {
-                setCategory(await getCategory(transaction.categoryId))
+                setCategory(await getCategoryById(transaction.categoryId))
             }
         }
 
         fetchData()
-    }, [transaction, getCategory])
+    }, [transaction])
 
     const handleEditTransaction = async (data: FormData | Partial<TransactionData>) => {
         // For now, we only handle FormData case since updatePendingTransaction expects FormData

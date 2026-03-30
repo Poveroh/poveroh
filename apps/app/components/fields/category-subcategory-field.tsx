@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { CategoryField } from './category-field'
 import { SubcategoryField } from './subcategory-field'
-import { useCategoryStore } from '@/store/category.store'
 import { CategorySubcategoryFieldProps } from '@/types'
 import { FieldValues, Path } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
@@ -10,8 +9,7 @@ import { SubcategoryData } from '@poveroh/types'
 
 export function CategorySubcategoryField<T extends FieldValues = FieldValues>(props: CategorySubcategoryFieldProps<T>) {
     const t = useTranslations()
-    const { categoryCacheList } = useCategoryStore()
-    const { fetchCategories } = useCategory()
+    const { categoryData } = useCategory()
 
     const [subcategoryList, setSubcategoryList] = useState<SubcategoryData[]>([])
 
@@ -25,8 +23,7 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
                 return
             }
 
-            //TODO: fix and understand why categoryCacheList can be empty at this point, even after fetchCategories is called
-            const category = categoryCacheList.find(item => item.id === categoryId)
+            const category = categoryData.find(item => item.id === categoryId)
             const res = category ? category.subcategories : ([] as SubcategoryData[])
             setSubcategoryList(res ?? [])
 
@@ -37,23 +34,15 @@ export function CategorySubcategoryField<T extends FieldValues = FieldValues>(pr
                 props.form?.setValue(props.subcategoryName, (res?.[0]?.id || '') as T[Path<T>])
             }
         },
-        [categoryCacheList, props.form, props.subcategoryName]
+        [categoryData, props.form, props.subcategoryName]
     )
 
     useEffect(() => {
-        const initializeComponent = async () => {
-            if (categoryCacheList.length === 0) {
-                await fetchCategories()
-            }
-
-            const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''
-            if (initialCategoryId) {
-                parseSubcategoryList(initialCategoryId)
-            }
+        const initialCategoryId = props.categoryId || (props.form?.getValues(props.name!) as string) || ''
+        if (initialCategoryId) {
+            parseSubcategoryList(initialCategoryId)
         }
-
-        initializeComponent()
-    }, [categoryCacheList, props.categoryId, props.form, props.name, parseSubcategoryList])
+    }, [categoryData, props.categoryId, props.form, props.name, parseSubcategoryList])
 
     return (
         <div className='flex flex-row space-x-2'>

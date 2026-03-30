@@ -27,7 +27,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
 }) => {
     const t = useTranslations()
     const { accountQuery } = useFinancialAccount()
-    const { categoryCacheList } = useCategory()
+    const { categoryData } = useCategory()
 
     const isClickingRef = useRef(false)
 
@@ -61,7 +61,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
 
         // Get category from cache instead of async calls
         const category = transaction.categoryId
-            ? categoryCacheList.find(cat => cat.id === transaction.categoryId) || null
+            ? categoryData.find(cat => cat.id === transaction.categoryId) || null
             : null
 
         return {
@@ -72,7 +72,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
             // currencySymbol: icons[amount.currency]?.symbol || '',
             isExpense: transaction.action === 'EXPENSES'
         }
-    }, [transaction, accountQuery.data?.data, categoryCacheList])
+    }, [transaction, accountQuery.data?.data, categoryData])
 
     const { fromAccount, toAccount, category, amount, isExpense } = transactionData
 

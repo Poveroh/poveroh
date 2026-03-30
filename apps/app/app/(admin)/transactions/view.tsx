@@ -53,7 +53,7 @@ export default function TransactionsView() {
         groupTransactionsByDate,
         transactionLoading
     } = useTransaction()
-    const { categoryCacheList, fetchCategories, categoryLoading } = useCategory()
+    const { categoryData, categoryQuery } = useCategory()
     const { accountQuery } = useFinancialAccount()
     const { renderDate, preferedLanguage } = useConfig()
 
@@ -100,8 +100,6 @@ export default function TransactionsView() {
     })
 
     useEffect(() => {
-        fetchCategories()
-
         if (viewMode === 'table') {
             loadTransactionsPaginated(transactionFilterSetting)
         } else {
@@ -285,7 +283,7 @@ export default function TransactionsView() {
             name: 'categoryId',
             label: 'form.category.label',
             type: 'select',
-            options: categoryCacheList.map(cat => ({
+            options: categoryData.map(cat => ({
                 label: cat.title,
                 value: cat.id
             }))
@@ -357,7 +355,7 @@ export default function TransactionsView() {
             if (value === 'TRANSFER') return 'Transfer'
         }
         if (key === 'categoryId') {
-            return categoryCacheList.find(c => c.id === value)?.title || String(value)
+            return categoryData.find(c => c.id === value)?.title || String(value)
         }
         if (key === 'financialAccountId') {
             return accountQuery.data?.data.find(a => a.id === value)?.title || String(value)
@@ -473,7 +471,7 @@ export default function TransactionsView() {
         },
         {
             id: 'category',
-            accessorFn: row => categoryCacheList.find(c => c.id === row.categoryId)?.title || '',
+            accessorFn: row => categoryData.find(c => c.id === row.categoryId)?.title || '',
             header: ({ column }) => {
                 return (
                     <Button
@@ -488,7 +486,7 @@ export default function TransactionsView() {
             },
             cell: ({ row }) => {
                 const transaction = row.original
-                const category = categoryCacheList.find(c => c.id === transaction.categoryId)
+                const category = categoryData.find(c => c.id === transaction.categoryId)
 
                 if (!category) return <p></p>
 
@@ -498,7 +496,7 @@ export default function TransactionsView() {
         {
             id: 'subcategory',
             accessorFn: row => {
-                const category = categoryCacheList.find(c => c.id === row.categoryId)
+                const category = categoryData.find(c => c.id === row.categoryId)
                 return category?.subcategories?.find(s => s.id === row.subcategoryId)?.title || ''
             },
             header: ({ column }) => {
@@ -515,7 +513,7 @@ export default function TransactionsView() {
             },
             cell: ({ row }) => {
                 const transaction = row.original
-                const category = categoryCacheList.find(c => c.id === transaction.categoryId)
+                const category = categoryData.find(c => c.id === transaction.categoryId)
 
                 if (!category) return <p></p>
 
@@ -625,7 +623,7 @@ export default function TransactionsView() {
                                 fetchTransaction(filters, transactionFilterSetting, false, true)
                             }
                         },
-                        loading: transactionLoading.fetch || categoryLoading.fetchCategories || accountQuery.isLoading
+                        loading: transactionLoading.fetch || categoryQuery.isPending || accountQuery.isLoading
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
@@ -807,7 +805,7 @@ export default function TransactionsView() {
                                                 </p>
                                             </div>
                                         </div>
-                                        {(accountQuery.data?.data.length == 0 || categoryCacheList.length == 0) && (
+                                        {(accountQuery.data?.data.length == 0 || categoryData.length == 0) && (
                                             <>
                                                 <Divider />
                                                 <div className='flex flex-col items-center space-y-8 justify-center'>

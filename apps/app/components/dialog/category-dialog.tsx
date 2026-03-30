@@ -1,73 +1,59 @@
-import { useTranslations } from 'next-intl'
-import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { FinancialAccountData } from '@poveroh/types'
+import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
-import { useFinancialAccount } from '@/hooks/use-account'
-import { AccountForm } from '../form/account-form'
+import Modal from '@/components/modal/modal'
+import { CategoryForm } from '../form/category-form'
+import { useCategory } from '@/hooks/use-category'
 import { useModal } from '@/hooks/use-modal'
-import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
+import { DeleteModal } from '../modal/delete-modal'
+import { FormRef } from '@/types'
+import { CategoryData, UpdateCategoryRequest } from '@poveroh/types'
 
-export function AccountDialog() {
+export function CategoryDialog() {
     const t = useTranslations()
-    const { createMutation, updateMutation, deleteMutation } = useFinancialAccount()
+    const { createCategoryMutation, updateCategoryMutation, deleteCategoryMutation } = useCategory()
 
-    const modalId = 'account'
-    const modalManager = useModal<FinancialAccountData>(modalId)
-    const deleteModalManager = useDeleteModal<FinancialAccountData>()
+    const modalId = 'category-dialog'
+    const modalManager = useModal<CategoryData>(modalId)
+    const deleteModalManager = useDeleteModal<CategoryData>()
 
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (paylod: Partial<FinancialAccountData>, files: File[]) => {
+    const handleFormSubmit = async (data: FormData | Partial<CategoryData>) => {
         modalManager.setLoading(true)
 
-        // edit dialog
-        if (modalManager.inEditingMode && modalManager.item) {
-            const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
+        const res = modalManager.inEditingMode && modalManager.item
+        await updateCategoryMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: data as UpdateCategoryRequest
+        })
+        // : await createCategoryMutation.mutateAsync({
+        //       body: data as UpdateCategoryRequest
+        //   })
 
-            const response = await updateMutation.mutateAsync({
-                path: { id: modalManager.item.id },
-                body
-            })
+        const titleFromData =
+            data instanceof FormData
+                ? (data.get('title')?.toString() ?? '')
+                : ((data as Partial<CategoryData> | undefined)?.title ?? '')
 
-            if (!response?.success) {
-                modalManager.setLoading(false)
-                return
-            }
+        if (!res) {
+            modalManager.setLoading(false)
+            return
+        }
 
+        if (modalManager.inEditingMode || !modalManager.keepAdding.checked) {
             modalManager.closeModal()
         } else {
-            // new dialog
-            const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
-            const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
-
-            const response = await createMutation.mutateAsync({
-                body: {
-                    data: bodyData,
-                    file: files as Array<Blob | File>
-                }
-            })
-
-            if (!response?.success) {
-                modalManager.setLoading(false)
-                return
-            }
-
-            if (modalManager.keepAdding.checked) {
-                formRef.current?.reset()
-            } else {
-                modalManager.closeModal()
-            }
+            formRef.current?.reset()
         }
 
         toast.success(
             t('messages.successfully', {
-                a: data.title,
+                a: modalManager.item?.title ?? titleFromData,
                 b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
             })
         )
-
         modalManager.setLoading(false)
     }
 
@@ -76,13 +62,13 @@ export function AccountDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await deleteMutation.mutateAsync({
+        const res = await deleteCategoryMutation.mutateAsync({
             path: { id: deleteModalManager.item.id }
         })
 
         deleteModalManager.setLoading(false)
 
-        if (res?.success) {
+        if (res) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
@@ -93,19 +79,19 @@ export function AccountDialog() {
 
     return (
         <>
-            <Modal<FinancialAccountData>
+            <Modal<CategoryData>
                 modalId={modalId}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
                         ? modalManager.item.title
-                        : t('accounts.modal.newTitle')
+                        : t('categories.modal.newTitle')
                 }
                 decoration={{
                     iconLogo: {
                         name: modalManager.item?.logoIcon ?? '',
                         mode: 'LOGO',
-                        circled: false
+                        circled: true
                     }
                 }}
                 footer={{
@@ -117,7 +103,7 @@ export function AccountDialog() {
                 }}
             >
                 <div className='flex flex-col space-y-6 w-full'>
-                    <AccountForm
+                    <CategoryForm
                         ref={formRef}
                         initialData={modalManager.item ?? null}
                         inEditingMode={modalManager.inEditingMode}
@@ -128,7 +114,7 @@ export function AccountDialog() {
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('accounts.modal.deleteDescription')}
+                description={t('categories.modal.deleteDescription')}
                 loading={deleteModalManager.loading}
                 open={deleteModalManager.isOpen}
                 closeDialog={deleteModalManager.closeModal}
