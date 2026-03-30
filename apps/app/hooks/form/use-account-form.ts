@@ -18,7 +18,6 @@ export const useFinancialAccountForm = (initialData: FinancialAccountData | null
     const defaultValues: FinancialAccountForm = initialData || {
         title: '',
         type: 'BANK_ACCOUNT',
-        balance: 0,
         logoIcon: ''
     }
 

@@ -857,7 +857,6 @@ export type GetFinancialAccountResponse = {
 
 export type CreateFinancialAccountRequest = {
     title: string
-    balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
 }
@@ -934,7 +933,6 @@ export type QueryFinancialAccountFilters = {
 
 export type FinancialAccountForm = {
     title: string
-    balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
 }

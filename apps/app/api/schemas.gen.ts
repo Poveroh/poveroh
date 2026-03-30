@@ -1428,9 +1428,6 @@ export const CreateFinancialAccountRequestSchema = {
         title: {
             type: 'string'
         },
-        balance: {
-            type: 'number'
-        },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
@@ -1438,7 +1435,7 @@ export const CreateFinancialAccountRequestSchema = {
             type: 'string'
         }
     },
-    required: ['title', 'balance', 'type', 'logoIcon']
+    required: ['title', 'type', 'logoIcon']
 } as const
 
 export const CreateFinancialAccountMultipartRequestSchema = {
@@ -1588,9 +1585,6 @@ export const FinancialAccountFormSchema = {
         title: {
             type: 'string'
         },
-        balance: {
-            type: 'number'
-        },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
@@ -1598,7 +1592,7 @@ export const FinancialAccountFormSchema = {
             type: 'string'
         }
     },
-    required: ['title', 'balance', 'type', 'logoIcon']
+    required: ['title', 'type', 'logoIcon']
 } as const
 
 export const ImportFileSchema = {

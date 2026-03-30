@@ -1587,9 +1587,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "balance": {
-                        "type": "number"
-                    },
                     "type": {
                         "$ref": "#/components/schemas/FinancialAccountTypeEnum"
                     },
@@ -1599,7 +1596,6 @@
                 },
                 "required": [
                     "title",
-                    "balance",
                     "type",
                     "logoIcon"
                 ]
@@ -1757,9 +1753,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "balance": {
-                        "type": "number"
-                    },
                     "type": {
                         "$ref": "#/components/schemas/FinancialAccountTypeEnum"
                     },
@@ -1769,7 +1762,6 @@
                 },
                 "required": [
                     "title",
-                    "balance",
                     "type",
                     "logoIcon"
                 ]

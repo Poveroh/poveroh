@@ -5,7 +5,6 @@
 import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum'
 export type CreateFinancialAccountRequest = {
     title: string
-    balance: number
     type: FinancialAccountTypeEnum
     logoIcon: string
 }
