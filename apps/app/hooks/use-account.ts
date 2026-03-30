@@ -1,7 +1,6 @@
 'use client'
 
 import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
-import { useFinancialAccountStore } from '@/store/account.store'
 import { useError } from './use-error'
 import {
     createFinancialAccountMutation,
@@ -21,7 +20,6 @@ export const useFinancialAccount = () => {
     const queryClient = useQueryClient()
     const { renderItemsLabel } = useUtils()
     const { handleError } = useError()
-    const financialAccountStore = useFinancialAccountStore()
 
     const filters = useFilters<FinancialAccountFilters>(text => ({
         title: { contains: text },
@@ -41,11 +39,7 @@ export const useFinancialAccount = () => {
 
     const createMutation = useMutation({
         ...createFinancialAccountMutation(),
-        onSuccess: data => {
-            const financialAccount = data?.data as FinancialAccountData | undefined
-            if (financialAccount) {
-                financialAccountStore.addFinancialAccount(financialAccount)
-            }
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
         },
         onError: error => {
@@ -56,11 +50,6 @@ export const useFinancialAccount = () => {
     const updateMutation = useMutation({
         ...updateFinancialAccountMutation(),
         onSuccess: (data, variables) => {
-            const financialAccount = (data?.data ?? variables.body) as FinancialAccountData | undefined
-            if (financialAccount) {
-                financialAccountStore.editFinancialAccount(financialAccount)
-            }
-
             queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
             queryClient.invalidateQueries({
                 queryKey: getFinancialAccountByIdQueryKey({
@@ -75,8 +64,7 @@ export const useFinancialAccount = () => {
 
     const deleteMutation = useMutation({
         ...deleteFinancialAccountMutation(),
-        onSuccess: (_, variables) => {
-            financialAccountStore.removeFinancialAccount(variables.path.id)
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
         },
         onError: error => {
