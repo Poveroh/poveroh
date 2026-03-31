@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 
 // @ts-ignore
 const __filename = fileURLToPath(import.meta.url)
@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename)
  */
 const generate = async () => {
     try {
-        const authPath = path.resolve(__dirname, '../../apps/api/src/lib/auth.ts')
+        const authPath = pathToFileURL(path.resolve(__dirname, '../../apps/api/src/lib/auth.ts')).href
         const { auth } = await import(authPath)
         const schema = await auth.api.generateOpenAPISchema()
 

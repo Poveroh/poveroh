@@ -1484,15 +1484,8 @@ export const CreateFinancialAccountResponseSchema = {
 export const UpdateFinancialAccountRequestSchema = {
     type: 'object',
     properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
         title: {
             type: 'string'
-        },
-        balance: {
-            type: 'number'
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'

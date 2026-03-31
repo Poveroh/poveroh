@@ -1,74 +1,82 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { FinancialAccountData } from '@poveroh/types'
+import { CreateFinancialAccountRequest, UpdateFinancialAccountRequest, FinancialAccountData } from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'
 import { useModal } from '@/hooks/use-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
+import { useError } from '@/hooks/use-error'
+import { MODAL_IDS } from '@/types/constant'
 
 export function AccountDialog() {
     const t = useTranslations()
     const { createMutation, updateMutation, deleteMutation } = useFinancialAccount()
+    const { handleError } = useError()
 
-    const modalId = 'account'
-    const modalManager = useModal<FinancialAccountData>(modalId)
+    const modalManager = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
     const deleteModalManager = useDeleteModal<FinancialAccountData>()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const handleFormSubmit = async (paylod: Partial<FinancialAccountData>, files: File[]) => {
-        modalManager.setLoading(true)
-
-        // edit dialog
-        if (modalManager.inEditingMode && modalManager.item) {
-            const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
-
-            const response = await updateMutation.mutateAsync({
-                path: { id: modalManager.item.id },
-                body
-            })
-
-            if (!response?.success) {
-                modalManager.setLoading(false)
-                return
+    const onCreate = async (payload: Partial<FinancialAccountData>, files: File[]) => {
+        const response = await createMutation.mutateAsync({
+            body: {
+                data: payload as CreateFinancialAccountRequest,
+                file: files as Array<Blob | File>
             }
+        })
 
-            modalManager.closeModal()
-        } else {
-            // new dialog
-            const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
-            const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
-
-            const response = await createMutation.mutateAsync({
-                body: {
-                    data: bodyData,
-                    file: files as Array<Blob | File>
-                }
-            })
-
-            if (!response?.success) {
-                modalManager.setLoading(false)
-                return
-            }
-
-            if (modalManager.keepAdding.checked) {
-                formRef.current?.reset()
-            } else {
-                modalManager.closeModal()
-            }
+        if (!response?.success) {
+            modalManager.setLoading(false)
+            return
         }
 
-        toast.success(
-            t('messages.successfully', {
-                a: data.title,
-                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-            })
-        )
+        if (modalManager.keepAdding.checked) {
+            formRef.current?.reset()
+        } else {
+            modalManager.closeModal()
+        }
 
-        modalManager.setLoading(false)
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
+    }
+
+    const onUpdate = async (payload: UpdateFinancialAccountRequest) => {
+        if (!modalManager.item) {
+            throw new Error('No item to update')
+        }
+
+        const response = await updateMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: payload
+        })
+
+        if (!response?.success) {
+            return
+        }
+
+        modalManager.closeModal()
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
+    }
+
+    const handleFormSubmit = async (payload: Partial<FinancialAccountData>, files: File[]) => {
+        if (modalManager.loading) return
+
+        try {
+            modalManager.setLoading(true)
+
+            if (modalManager.inEditingMode) {
+                await onUpdate(payload as UpdateFinancialAccountRequest)
+            } else {
+                await onCreate(payload, files)
+            }
+        } catch (error) {
+            handleError(error)
+        } finally {
+            modalManager.setLoading(false)
+        }
     }
 
     const onDelete = async () => {
@@ -94,7 +102,7 @@ export function AccountDialog() {
     return (
         <>
             <Modal<FinancialAccountData>
-                modalId={modalId}
+                modalId={MODAL_IDS.ACCOUNT}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item

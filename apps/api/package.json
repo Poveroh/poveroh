@@ -8,7 +8,7 @@
         "start": "node dist/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
-        "openapi:generate-spec": "npm run openapi:generate-better-auth; npm run openapi:generate-main",
+        "openapi:generate-spec": "npm run openapi:generate-better-auth && npm run openapi:generate-main",
         "openapi:generate-better-auth": "tsx ../../packages/openapi/generate-better-auth.ts || true",
         "openapi:generate-main": "ts-node ../../packages/openapi/generate.ts",
         "openapi:generate-contracts": "npx openapi-typescript-codegen -i ../../packages/openapi/openapi.json -o ../../packages/contracts/src/ --exportModels true --exportServices false --exportCore false --useUnionTypes"

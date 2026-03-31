@@ -79,7 +79,9 @@ export const CreateFinancialAccountResponseSchema = SuccessResponseSchema(Financ
  */
 export const UpdateFinancialAccountRequestSchema = FinancialAccountSchema.partial()
     .omit({
+        id: true,
         userId: true,
+        balance: true,
         createdAt: true,
         updatedAt: true,
         deletedAt: true

@@ -879,9 +879,7 @@ export type CreateFinancialAccountResponse = {
 }
 
 export type UpdateFinancialAccountRequest = {
-    id?: string
     title?: string
-    balance?: number
     type?: FinancialAccountTypeEnum
     logoIcon?: string
 }

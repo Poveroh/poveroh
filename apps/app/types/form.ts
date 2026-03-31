@@ -28,7 +28,7 @@ export const amountSchema = (errors: AmountSchemaErrors) => {
 export type FormProps<T> = {
     initialData: T | null
     inEditingMode: boolean
-    dataCallback: (paylod: Partial<T>, files: File[]) => Promise<void>
+    dataCallback: (paylod: T, files: File[]) => Promise<void>
 }
 
 export type TransactionFormProps = FormProps<TransactionData> & {
