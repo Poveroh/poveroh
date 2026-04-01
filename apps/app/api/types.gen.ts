@@ -1863,6 +1863,14 @@ export type UserProfileSecurityForm = {
     confirmPassword: string
 }
 
+export type CreateUpdateFinancialAccountRequest = CreateFinancialAccountRequest | UpdateFinancialAccountRequest
+
+export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategoryRequest
+
+export type CreateUpdateSubcategoryRequest = CreateSubcategoryRequest | UpdateSubcategoryRequest
+
+export type CreateUpdateSubscriptionRequest = CreateSubscriptionRequest | UpdateSubscriptionRequest
+
 export type GetRootStatusData = {
     body?: never
     path?: never

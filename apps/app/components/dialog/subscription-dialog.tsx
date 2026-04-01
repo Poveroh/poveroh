@@ -9,15 +9,22 @@ import { Button } from '@poveroh/ui/components/button'
 import { DeleteModal } from '../modal/delete-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useModal } from '@/hooks/use-modal'
-import { CreateSubscriptionRequest, SubscriptionData } from '@poveroh/types'
-import { Brand } from '@poveroh/types'
+import { useError } from '@/hooks/use-error'
+import {
+    CreateSubscriptionRequest,
+    UpdateSubscriptionRequest,
+    CreateUpdateSubscriptionRequest,
+    SubscriptionData,
+    Brand
+} from '@poveroh/types'
+import { MODAL_IDS } from '@/types/constant'
 
 export function SubscriptionDialog() {
     const t = useTranslations()
-    const { createSubscription, updateSubscription, deleteSubscription } = useSubscription()
+    const { createMutation, updateMutation, deleteMutation } = useSubscription()
+    const { handleError } = useError()
 
-    const modalId = 'subscription'
-    const modalManager = useModal<SubscriptionData>(modalId)
+    const modalManager = useModal<SubscriptionData>(MODAL_IDS.SUBSCRIPTION)
     const deleteModalManager = useDeleteModal<SubscriptionData>()
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
@@ -48,72 +55,66 @@ export function SubscriptionDialog() {
         setTitle(t('subscriptions.modal.newTitle'))
     }
 
-    const handleFormSubmit = async (data: Partial<SubscriptionData>) => {
-        modalManager.setLoading(true)
-
-        // edit dialog
-        if (modalManager.inEditingMode && modalManager.item) {
-            const response = await updateSubscription({
-                path: { id: modalManager.item.id },
-                body: data
-            })
-
-            if (!response.success) {
-                modalManager.setLoading(false)
-                return
+    const onCreate = async (payload: CreateSubscriptionRequest, files: File[]) => {
+        const response = await createMutation.mutateAsync({
+            body: {
+                data: payload as CreateSubscriptionRequest,
+                file: files as Array<Blob | File>
             }
+        })
 
-            modalManager.closeModal()
-        } else {
-            // new dialog
-            const response = await createSubscription({
-                body: {
-                    data: data as CreateSubscriptionRequest,
-                    file: []
-                }
-            })
-
-            if (!response?.success || !response.data) {
-                modalManager.setLoading(false)
-                return
-            }
-
-            if (modalManager.keepAdding.checked) {
-                formRef.current?.reset()
-                clearUp()
-            } else {
-                modalManager.closeModal()
-            }
+        if (!response?.success || !response.data) {
+            modalManager.setLoading(false)
+            return
         }
 
-        toast.success(
-            t('messages.successfully', {
-                a: data.title!,
-                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-            })
-        )
+        if (modalManager.keepAdding.checked) {
+            formRef.current?.reset()
+            clearUp()
+        } else {
+            modalManager.closeModal()
+        }
 
-        modalManager.setLoading(false)
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
+    }
+
+    const onUpdate = async (payload: UpdateSubscriptionRequest) => {
+        if (!modalManager.item) {
+            throw new Error('No item to update')
+        }
+
+        const response = await updateMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: payload
+        })
+
+        if (!response?.success) {
+            return
+        }
+
+        modalManager.closeModal()
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
+    }
+
+    const handleFormSubmit = async (payload: CreateUpdateSubscriptionRequest, files: File[]) => {
+        if (modalManager.loading) return
+
+        try {
+            modalManager.setLoading(true)
+
+            if (modalManager.inEditingMode) {
+                await onUpdate(payload as UpdateSubscriptionRequest)
+            } else {
+                await onCreate(payload as CreateSubscriptionRequest, files)
+            }
+        } catch (error) {
+            handleError(error)
+        } finally {
+            modalManager.setLoading(false)
+        }
     }
 
     const onTemplateSelected = (brand: Brand) => {
-        // setLocalSubscription({
-        //     id: '',
-        //     createdAt: new Date().toISOString(),
-        //     updatedAt: new Date().toISOString(),
-        //     title: brand.name,
-        //     description: '',
-        //     amount: 0,
-        //     currency: 'USD',
-        //     appearanceMode: 'LOGO',
-        //     appearanceLogoIcon: brand.logo,
-        //     firstPayment: new Date().toISOString(),
-        //     cycleNumber: 1,
-        //     cyclePeriod: 'MONTH',
-        //     rememberPeriod: 'SAME_DAY',
-        //     financialAccountId: '',
-        //     isEnabled: true
-        // })
         setTitle(brand.name)
         setFromTemplate(true)
         setMode('editor')
@@ -123,9 +124,11 @@ export function SubscriptionDialog() {
         if (!deleteModalManager.item) return
 
         deleteModalManager.setLoading(true)
-        const res = await deleteSubscription({
+
+        const res = await deleteMutation.mutateAsync({
             path: { id: deleteModalManager.item.id }
         })
+
         deleteModalManager.setLoading(false)
 
         if (res?.success) {
@@ -139,8 +142,8 @@ export function SubscriptionDialog() {
 
     return (
         <>
-            <Modal
-                modalId={modalId}
+            <Modal<SubscriptionData>
+                modalId={MODAL_IDS.SUBSCRIPTION}
                 open={modalManager.isOpen}
                 title={title}
                 decoration={{

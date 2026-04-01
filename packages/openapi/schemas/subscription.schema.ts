@@ -143,3 +143,10 @@ export const QuerySubscriptionFiltersSchema =
  * Subscription form schema representing the data structure for subscription creation and editing forms
  */
 export const SubscriptionFormSchema = CreateSubscriptionRequestSchema.openapi('SubscriptionForm')
+
+/*
+ * Union schema for create and update subscription requests, allowing for flexible handling of both operations
+ */
+export const CreateUpdateSubscriptionRequestSchema = z
+    .union([CreateSubscriptionRequestSchema, UpdateSubscriptionRequestSchema])
+    .openapi('CreateUpdateSubscriptionRequest')

@@ -17,10 +17,14 @@ import {
 import { Form } from '@poveroh/ui/components/form'
 import { FormProps, FormRef } from '@/types'
 import { useUtils } from '@/hooks/use-utils'
-import { SubscriptionData } from '@poveroh/types'
-import { CyclePeriodCatalog, RememberPeriodCatalog } from '@poveroh/types'
+import {
+    CreateUpdateSubscriptionRequest,
+    SubscriptionData,
+    CyclePeriodCatalog,
+    RememberPeriodCatalog
+} from '@poveroh/types'
 
-type SubscriptionFormProps = FormProps<SubscriptionData> & {
+type SubscriptionFormProps = FormProps<SubscriptionData, CreateUpdateSubscriptionRequest> & {
     fromTemplate?: boolean
 }
 

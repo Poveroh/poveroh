@@ -4,12 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import {
-    CreateFinancialAccountRequest,
-    FinancialAccountData,
-    FinancialAccountForm,
-    UpdateFinancialAccountRequest
-} from '@poveroh/types'
+import { CreateUpdateFinancialAccountRequest, FinancialAccountData, FinancialAccountForm } from '@poveroh/types'
 
 import { useError } from '@/hooks/use-error'
 import { FinancialAccountFormSchema } from '@poveroh/schemas'
@@ -39,15 +34,12 @@ export const useFinancialAccountForm = (initialData: FinancialAccountData | null
 
     const handleSubmit = async (
         values: FinancialAccountForm,
-        dataCallback: (
-            payload: CreateFinancialAccountRequest | UpdateFinancialAccountRequest,
-            files: File[]
-        ) => Promise<void>
+        dataCallback: (payload: CreateUpdateFinancialAccountRequest, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            const payload = inEditingMode ? { ...initialData, ...values } : values
+            const payload: CreateUpdateFinancialAccountRequest = inEditingMode ? { ...initialData, ...values } : values
 
             await dataCallback(payload, file ? Array.from(file) : [])
         } catch (error) {

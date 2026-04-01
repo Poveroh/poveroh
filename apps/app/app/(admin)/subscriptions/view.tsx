@@ -1,15 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-import { isEmpty } from '@poveroh/utils'
+import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Input } from '@poveroh/ui/components/input'
 import { Landmark, Search } from 'lucide-react'
 
 import { useSubscription } from '@/hooks/use-subscriptions'
-import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 
@@ -20,40 +17,62 @@ import { SubscriptionItem } from '@/components/item/subscriptions-item'
 import { Header } from '@/components/other/header-page'
 import { PageWrapper } from '@/components/box/page-wrapper'
 import { SubscriptionData } from '@poveroh/types'
+import { MODAL_IDS } from '@/types/constant'
 
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const { subscriptionCacheList, fetchSubscriptions, subscriptionLoading } = useSubscription()
-    const { accountQuery } = useFinancialAccount()
+    const {
+        subscriptionQuery,
+        createMutation,
+        deleteMutation,
+        onSearch
+    } = useSubscription()
 
-    const { openModal } = useModal<SubscriptionData>('subscription')
+    const { openModal } = useModal<SubscriptionData>(MODAL_IDS.SUBSCRIPTION)
     const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()
 
-    const [localSubscriptionList, setLocalSubscriptionList] = useState<SubscriptionData[]>(subscriptionCacheList)
-    const total = localSubscriptionList.reduce((sum, sub) => sum + Number(sub.amount || 0), 0)
-    const subscriptionsTotal = parseFloat(total.toFixed(2))
+    const subscriptionsTotal = useMemo(() => {
+        if (!subscriptionQuery.data?.data) return 0
+        const total = (subscriptionQuery.data.data as SubscriptionData[]).reduce(
+            (sum, sub) => sum + Number(sub.amount || 0),
+            0
+        )
+        return parseFloat(total.toFixed(2))
+    }, [subscriptionQuery.data])
 
-    useEffect(() => {
-        fetchSubscriptions()
-    }, [])
-
-    useEffect(() => {
-        setLocalSubscriptionList(subscriptionCacheList)
-    }, [subscriptionCacheList])
-
-    const onSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const textToSearch = event.target.value
-
-        if (isEmpty(textToSearch)) {
-            setLocalSubscriptionList(subscriptionCacheList)
-            return
+    const pageContent = useMemo(() => {
+        if (subscriptionQuery.isPending) {
+            return <SkeletonItem repeat={5} />
         }
 
-        const filteredList = localSubscriptionList.filter(x => x.title.toLowerCase().includes(textToSearch))
+        if (subscriptionQuery.data && subscriptionQuery.data?.data.length > 0) {
+            return (
+                <Box>
+                    {(subscriptionQuery.data.data as SubscriptionData[]).map(item => (
+                        <SubscriptionItem
+                            key={item.id}
+                            subscription={item}
+                            openEdit={(item: SubscriptionData) => {
+                                openModal('edit', item)
+                            }}
+                            openDelete={openDeleteModal}
+                        />
+                    ))}
+                </Box>
+            )
+        }
 
-        setLocalSubscriptionList(filteredList)
-    }
+        return (
+            <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
+                <Landmark />
+                <div className='flex flex-col items-center space-y-2 justify-center'>
+                    <h4>{t('subscriptions.empty.title')}</h4>
+                    <p>{t('subscriptions.empty.subtitle')}</p>
+                </div>
+            </div>
+        )
+    }, [subscriptionQuery.isPending, subscriptionQuery.data])
 
     return (
         <>
@@ -66,16 +85,16 @@ export default function SubscriptionsView() {
                         { label: t('subscriptions.title') }
                     ]}
                     fetchAction={{
-                        onClick: fetchSubscriptions,
-                        loading: subscriptionLoading.fetch
+                        onClick: subscriptionQuery.refetch,
+                        loading: subscriptionQuery.isPending
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
-                        loading: subscriptionLoading.create
+                        loading: createMutation.isPending
                     }}
                     onDeleteAll={{
                         onClick: () => {},
-                        loading: subscriptionLoading.delete
+                        loading: deleteMutation.isPending
                     }}
                 />
 
@@ -94,35 +113,11 @@ export default function SubscriptionsView() {
                         })}
                     </p>
                 </div>
-                {subscriptionLoading.fetch ? (
-                    <SkeletonItem repeat={5} />
-                ) : localSubscriptionList.length > 0 ? (
-                    <Box>
-                        <>
-                            {localSubscriptionList.map(item => (
-                                <SubscriptionItem
-                                    key={item.id}
-                                    subscription={item}
-                                    openEdit={(item: SubscriptionData) => {
-                                        openModal('edit', item)
-                                    }}
-                                    openDelete={openDeleteModal}
-                                />
-                            ))}
-                        </>
-                    </Box>
-                ) : (
-                    <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-                        <Landmark />
-                        <div className='flex flex-col items-center space-y-2 justify-center'>
-                            <h4>{t('subscriptions.empty.title')}</h4>
-                            <p>{t('subscriptions.empty.subtitle')}</p>
-                        </div>
-                    </div>
-                )}
+
+                {pageContent}
             </PageWrapper>
 
-            <SubscriptionDialog></SubscriptionDialog>
+            <SubscriptionDialog />
         </>
     )
 }

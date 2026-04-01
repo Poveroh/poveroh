@@ -8,9 +8,13 @@ import { useTranslations } from 'next-intl'
 
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
-import { SubscriptionData, SubscriptionForm } from '@poveroh/types'
+import {
+    SubscriptionData,
+    SubscriptionForm,
+    DEFAULT_SUBSCRIPTION,
+    CreateUpdateSubscriptionRequest
+} from '@poveroh/types'
 import { SubscriptionFormSchema } from '@poveroh/schemas'
-import { DEFAULT_SUBSCRIPTION } from '@poveroh/types'
 
 export const useSubscriptionForm = (initialData: SubscriptionData | null, inEditingMode: boolean) => {
     const t = useTranslations()
@@ -45,14 +49,16 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null, inEdit
 
     const handleSubmit = async (
         values: SubscriptionForm,
-        dataCallback: (formData: Partial<SubscriptionData>, files: File[]) => Promise<void>
+        dataCallback: (payload: CreateUpdateSubscriptionRequest, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
             values.firstPayment = new Date(values.firstPayment).toISOString()
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
+            const payload: CreateUpdateSubscriptionRequest = inEditingMode ? { ...initialData, ...values } : values
+
+            await dataCallback(payload, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

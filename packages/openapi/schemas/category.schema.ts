@@ -125,3 +125,10 @@ export const QueryCategoryFiltersSchema = ReadQuerySchema(CategoryFiltersSchema)
  * Category form schema representing the data structure for category creation and editing forms
  */
 export const CategoryFormSchema = CreateCategoryRequestSchema.openapi('CategoryForm')
+
+/**
+ * Union schema for category creation and updating requests, allowing the same form to be used for both operations with appropriate validation
+ */
+export const CreateUpdateCategoryRequestSchema = z
+    .union([CreateCategoryRequestSchema, UpdateCategoryRequestSchema])
+    .openapi('CreateUpdateCategoryRequest')

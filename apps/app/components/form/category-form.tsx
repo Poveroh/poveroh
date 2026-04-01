@@ -16,14 +16,15 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
 import { Pencil } from 'lucide-react'
-import { CategoryData } from '@poveroh/types'
-import { Item } from '@poveroh/types'
+import { CategoryData, CreateUpdateCategoryRequest, Item } from '@poveroh/types'
 
-export const CategoryForm = forwardRef<FormRef, FormProps<CategoryData>>((props: FormProps<CategoryData>, ref) => {
+type CategoryFormProps = FormProps<CategoryData, CreateUpdateCategoryRequest>
+
+export const CategoryForm = forwardRef<FormRef, CategoryFormProps>((props: CategoryFormProps, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
-    const { form, icon, handleSubmit, handleIconChange, actionList } = useCategoryForm(initialData, inEditingMode)
+    const { form, icon, actionList, handleSubmit, handleIconChange } = useCategoryForm(initialData, inEditingMode)
 
     const color = useWatch({ control: form.control, name: 'color' })
     const logoIcon = useWatch({ control: form.control, name: 'logoIcon' })

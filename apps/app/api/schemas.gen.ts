@@ -4173,3 +4173,47 @@ export const UserProfileSecurityFormSchema = {
     },
     required: ['oldPassword', 'newPassword', 'confirmPassword']
 } as const
+
+export const CreateUpdateFinancialAccountRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateFinancialAccountRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
+        }
+    ]
+} as const
+
+export const CreateUpdateCategoryRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateCategoryRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateCategoryRequest'
+        }
+    ]
+} as const
+
+export const CreateUpdateSubcategoryRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateSubcategoryRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateSubcategoryRequest'
+        }
+    ]
+} as const
+
+export const CreateUpdateSubscriptionRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateSubscriptionRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateSubscriptionRequest'
+        }
+    ]
+} as const

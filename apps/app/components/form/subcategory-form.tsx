@@ -14,80 +14,80 @@ import DynamicIcon from '../icon/dynamic-icon'
 import { Button } from '@poveroh/ui/components/button'
 import { Popover, PopoverTrigger, PopoverContent } from '@poveroh/ui/components/popover'
 import { Pencil } from 'lucide-react'
-import { SubcategoryData } from '@poveroh/types'
+import { CreateUpdateSubcategoryRequest, SubcategoryData } from '@poveroh/types'
 
-export const SubcategoryForm = forwardRef<FormRef, FormProps<SubcategoryData>>(
-    (props: FormProps<SubcategoryData>, ref) => {
-        const { initialData, inEditingMode, dataCallback } = props
+type SubcategoryFormProps = FormProps<SubcategoryData, CreateUpdateSubcategoryRequest>
 
-        const t = useTranslations()
-        const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData, inEditingMode)
+export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props: SubcategoryFormProps, ref) => {
+    const { initialData, inEditingMode, dataCallback } = props
 
-        const logoIcon = useWatch({ control: form.control, name: 'logoIcon' })
+    const t = useTranslations()
+    const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData, inEditingMode)
 
-        useImperativeHandle(ref, () => ({
-            submit: () => {
-                form.handleSubmit(values => handleSubmit(values, dataCallback))()
-            },
-            reset: () => {
-                form.reset()
-            }
-        }))
+    const logoIcon = useWatch({ control: form.control, name: 'logoIcon' })
 
-        return (
-            <Form {...form}>
-                <form
-                    className='flex flex-col space-y-10'
-                    onSubmit={e => {
-                        e.preventDefault()
-                    }}
-                >
-                    <div className='flex flex-col space-y-6'>
-                        <div className='flex flex-row space-x-7'>
-                            <div className='relative p-5 w-fit h-fit rounded-full bg-muted'>
-                                <DynamicIcon name={logoIcon} className='w-5 h-5' />
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            form.handleSubmit(values => handleSubmit(values, dataCallback))()
+        },
+        reset: () => {
+            form.reset()
+        }
+    }))
 
-                                <div className='absolute bottom-[-8px] right-[-8px]'>
-                                    <Popover>
-                                        <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
-                                            <Button size='icon' variant='secondary' className='rounded-full w-7 h-7'>
-                                                <Pencil className='w-2 h-2' />
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent align='end' className='w-[40rem] max-h-[600px] overflow-y-auto'>
-                                            <IconField
-                                                label={t('form.icon.label')}
-                                                selectedIcon={icon}
-                                                onIconChange={handleIconChange}
-                                                mandatory={!inEditingMode}
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
+    return (
+        <Form {...form}>
+            <form
+                className='flex flex-col space-y-10'
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
+                <div className='flex flex-col space-y-6'>
+                    <div className='flex flex-row space-x-7'>
+                        <div className='relative p-5 w-fit h-fit rounded-full bg-muted'>
+                            <DynamicIcon name={logoIcon} className='w-5 h-5' />
+
+                            <div className='absolute bottom-[-8px] right-[-8px]'>
+                                <Popover>
+                                    <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
+                                        <Button size='icon' variant='secondary' className='rounded-full w-7 h-7'>
+                                            <Pencil className='w-2 h-2' />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent align='end' className='w-[40rem] max-h-[600px] overflow-y-auto'>
+                                        <IconField
+                                            label={t('form.icon.label')}
+                                            selectedIcon={icon}
+                                            onIconChange={handleIconChange}
+                                            mandatory={!inEditingMode}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
-
-                            <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
                         </div>
 
-                        <TextField
-                            control={form.control}
-                            name='description'
-                            label={t('form.description.label')}
-                            mandatory={false}
-                        />
-
-                        <CategoryField
-                            control={form.control}
-                            name='categoryId'
-                            label={t('form.category.label')}
-                            placeholder={t('form.category.placeholder')}
-                            mandatory={true}
-                        />
+                        <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
                     </div>
-                </form>
-            </Form>
-        )
-    }
-)
+
+                    <TextField
+                        control={form.control}
+                        name='description'
+                        label={t('form.description.label')}
+                        mandatory={false}
+                    />
+
+                    <CategoryField
+                        control={form.control}
+                        name='categoryId'
+                        label={t('form.category.label')}
+                        placeholder={t('form.category.placeholder')}
+                        mandatory={true}
+                    />
+                </div>
+            </form>
+        </Form>
+    )
+})
 
 SubcategoryForm.displayName = 'SubcategoryForm'

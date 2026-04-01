@@ -25,13 +25,20 @@ export const amountSchema = (errors: AmountSchemaErrors) => {
         .positive()
 }
 
-export type FormProps<T> = {
+export type FormProps<T, U> = {
     initialData: T | null
     inEditingMode: boolean
-    dataCallback: (paylod: T, files: File[]) => Promise<void>
+    dataCallback: (paylod: U, files: File[]) => Promise<void>
 }
 
-export type TransactionFormProps = FormProps<TransactionData> & {
+export type FormRef = {
+    submit: () => void
+    reset: () => void
+}
+
+// ------------------------------------------------------------------------------
+
+export type TransactionFormProps = FormProps<TransactionData, FormData> & {
     dataCallback: (formData: FormData) => Promise<void>
     inputStyle?: InputVariantStyle
 }
@@ -40,9 +47,4 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     startIcon?: LucideIcon
     variant?: InputVariantStyle
     endIcon?: LucideIcon
-}
-
-export type FormRef = {
-    submit: () => void
-    reset: () => void
 }

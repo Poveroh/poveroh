@@ -117,10 +117,6 @@ export class SubscriptionController {
             const subscriptionService = new SubscriptionService(req.user.id)
             const data = await subscriptionService.getSubscriptions(filters, skip, take)
 
-            if (!data || data.length === 0) {
-                throw new NotFoundError('Subscription not found')
-            }
-
             return ResponseHelper.success<SubscriptionData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)

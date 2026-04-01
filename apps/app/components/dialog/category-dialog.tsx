@@ -8,11 +8,13 @@ import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
-import { CategoryData, UpdateCategoryRequest } from '@poveroh/types'
+import { CategoryData, CreateCategoryRequest, CreateUpdateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
+import { useError } from '@/hooks/use-error'
 
 export function CategoryDialog() {
     const t = useTranslations()
     const { createCategoryMutation, updateCategoryMutation, deleteCategoryMutation } = useCategory()
+    const { handleError } = useError()
 
     const modalId = 'category-dialog'
     const modalManager = useModal<CategoryData>(modalId)
@@ -20,41 +22,59 @@ export function CategoryDialog() {
 
     const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<CategoryData>) => {
-        modalManager.setLoading(true)
-
-        const res = modalManager.inEditingMode && modalManager.item
-        await updateCategoryMutation.mutateAsync({
-            path: { id: modalManager.item.id },
-            body: data as UpdateCategoryRequest
+    const onCreate = async (payload: CreateCategoryRequest) => {
+        const response = await createCategoryMutation.mutateAsync({
+            body: payload as CreateCategoryRequest
         })
-        // : await createCategoryMutation.mutateAsync({
-        //       body: data as UpdateCategoryRequest
-        //   })
 
-        const titleFromData =
-            data instanceof FormData
-                ? (data.get('title')?.toString() ?? '')
-                : ((data as Partial<CategoryData> | undefined)?.title ?? '')
-
-        if (!res) {
+        if (!response?.success) {
             modalManager.setLoading(false)
             return
         }
 
-        if (modalManager.inEditingMode || !modalManager.keepAdding.checked) {
-            modalManager.closeModal()
-        } else {
+        if (modalManager.keepAdding.checked) {
             formRef.current?.reset()
+        } else {
+            modalManager.closeModal()
         }
 
-        toast.success(
-            t('messages.successfully', {
-                a: modalManager.item?.title ?? titleFromData,
-                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-            })
-        )
-        modalManager.setLoading(false)
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
+    }
+
+    const onUpdate = async (payload: UpdateCategoryRequest) => {
+        if (!modalManager.item) {
+            throw new Error('No item to update')
+        }
+
+        const response = await updateCategoryMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: payload
+        })
+
+        if (!response?.success) {
+            return
+        }
+
+        modalManager.closeModal()
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
+    }
+
+    const handleFormSubmit = async (payload: CreateUpdateCategoryRequest) => {
+        if (modalManager.loading) return
+
+        try {
+            modalManager.setLoading(true)
+
+            if (modalManager.inEditingMode) {
+                await onUpdate(payload as UpdateCategoryRequest)
+            } else {
+                await onCreate(payload as CreateCategoryRequest)
+            }
+        } catch (error) {
+            handleError(error)
+        } finally {
+            modalManager.setLoading(false)
+        }
     }
 
     const onDelete = async () => {
@@ -68,7 +88,7 @@ export function CategoryDialog() {
 
         deleteModalManager.setLoading(false)
 
-        if (res) {
+        if (res.success) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {

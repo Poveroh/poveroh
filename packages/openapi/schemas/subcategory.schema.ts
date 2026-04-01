@@ -121,3 +121,10 @@ export const QuerySubcategoryFiltersSchema =
  * Subcategory form schema representing the data structure for subcategory creation and editing forms
  */
 export const SubcategoryFormSchema = CreateSubcategoryRequestSchema.openapi('SubcategoryForm')
+
+/**
+ * Union schema for subcategory creation and updating requests, allowing the same form to be used for both operations with appropriate validation
+ */
+export const CreateUpdateSubcategoryRequestSchema = z
+    .union([CreateSubcategoryRequestSchema, UpdateSubcategoryRequestSchema])
+    .openapi('CreateUpdateSubcategoryRequest')

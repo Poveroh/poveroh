@@ -131,3 +131,10 @@ export const QueryFinancialAccountFiltersSchema =
  * Financial account form schema representing the data structure for financial account creation and editing forms
  */
 export const FinancialAccountFormSchema = CreateFinancialAccountRequestSchema.openapi('FinancialAccountForm')
+
+/**
+ * Union schema for create and update financial account requests, used for form validation when the same form is used for both creating and editing financial accounts
+ */
+export const CreateUpdateFinancialAccountRequestSchema = z
+    .union([CreateFinancialAccountRequestSchema, UpdateFinancialAccountRequestSchema])
+    .openapi('CreateUpdateFinancialAccountRequest')

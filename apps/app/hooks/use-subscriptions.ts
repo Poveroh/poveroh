@@ -1,10 +1,7 @@
 'use client'
 
-import { useIsFetching, useMutation, useQueryClient } from '@tanstack/react-query'
-import { LoadingState } from '@/types/general'
-import { SubscriptionData } from '@poveroh/types'
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import { useError } from './use-error'
-import { useSubscriptionStore } from '@/store/subscriptions.store'
 import {
     createSubscriptionMutation,
     deleteSubscriptionMutation,
@@ -14,6 +11,8 @@ import {
     getSubscriptionsQueryKey,
     updateSubscriptionMutation
 } from '@/api/@tanstack/react-query.gen'
+import { SubscriptionData, SubscriptionFilters } from '@poveroh/types'
+import { useFilters } from './use-filters'
 
 const addCycle = (date: Date, cycleNumber: number, cyclePeriod: string): Date => {
     const next = new Date(date)
@@ -38,15 +37,26 @@ const addCycle = (date: Date, cycleNumber: number, cyclePeriod: string): Date =>
 export const useSubscription = () => {
     const queryClient = useQueryClient()
     const { handleError } = useError()
-    const subscriptionStore = useSubscriptionStore()
+
+    const filters = useFilters<SubscriptionFilters>(text => ({
+        title: { contains: text },
+        description: { contains: text }
+    }))
+
+    const [subscriptionQuery] = useQueries({
+        queries: [
+            {
+                ...getSubscriptionsOptions(
+                    filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined
+                ),
+                staleTime: Infinity
+            }
+        ]
+    })
 
     const createMutation = useMutation({
         ...createSubscriptionMutation(),
-        onSuccess: data => {
-            const subscription = data?.data as SubscriptionData | undefined
-            if (subscription) {
-                subscriptionStore.addSubscription(subscription)
-            }
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
         },
         onError: error => {
@@ -56,12 +66,7 @@ export const useSubscription = () => {
 
     const updateMutation = useMutation({
         ...updateSubscriptionMutation(),
-        onSuccess: (data, variables) => {
-            const subscription = (data?.data ?? variables.body) as SubscriptionData | undefined
-            if (subscription) {
-                subscriptionStore.editSubscription(subscription)
-            }
-
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
             queryClient.invalidateQueries({
                 queryKey: getSubscriptionByIdQueryKey({
@@ -76,26 +81,13 @@ export const useSubscription = () => {
 
     const deleteMutation = useMutation({
         ...deleteSubscriptionMutation(),
-        onSuccess: (_, variables) => {
-            subscriptionStore.removeSubscription(variables.path.id)
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
         },
         onError: error => {
             handleError(error, 'Error deleting subscription')
         }
     })
-
-    const fetchSubscriptions = async () => {
-        try {
-            const response = await queryClient.fetchQuery(getSubscriptionsOptions())
-
-            if (!response?.success) return []
-
-            return response?.data as SubscriptionData[]
-        } catch (error) {
-            return handleError(error, 'Error fetching subscriptions')
-        }
-    }
 
     const getSubscription = async (subscriptionId: string) => {
         try {
@@ -107,7 +99,7 @@ export const useSubscription = () => {
 
             if (!response?.success) return null
 
-            return response?.data as SubscriptionData
+            return (response?.data ?? null) as SubscriptionData | null
         } catch (error) {
             return handleError(error, 'Error fetching subscription')
         }
@@ -132,28 +124,13 @@ export const useSubscription = () => {
         return nextExecution.toLocaleDateString()
     }
 
-    const subscriptionLoading: LoadingState = {
-        create: createMutation.isPending,
-        update: updateMutation.isPending,
-        delete: deleteMutation.isPending,
-        fetch: useIsFetching({ queryKey: getSubscriptionsQueryKey() }) > 0,
-        get:
-            useIsFetching({
-                predicate: query => {
-                    const key = query.queryKey?.[0] as { _id?: string } | undefined
-                    return key?._id === 'getSubscriptionById'
-                }
-            }) > 0
-    }
-
     return {
-        subscriptionCacheList: subscriptionStore.subscriptionCacheList,
-        subscriptionLoading,
-        createSubscription: createMutation.mutateAsync,
-        updateSubscription: updateMutation.mutateAsync,
-        deleteSubscription: deleteMutation.mutateAsync,
+        ...filters,
+        subscriptionQuery,
+        createMutation,
+        updateMutation,
+        deleteMutation,
         getSubscription,
-        fetchSubscriptions,
         getNextExecutionText
     }
 }

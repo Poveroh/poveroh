@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useError } from '@/hooks/use-error'
 import { iconList } from '@/components/icon'
-import { SubcategoryData, SubcategoryForm } from '@poveroh/types'
+import { CreateUpdateSubcategoryRequest, SubcategoryData, SubcategoryForm } from '@poveroh/types'
 import { SubcategoryFormSchema } from '@poveroh/schemas'
 
 export function useSubcategoryForm(initialData: SubcategoryData | null, inEditingMode: boolean = false) {
@@ -37,7 +37,7 @@ export function useSubcategoryForm(initialData: SubcategoryData | null, inEditin
 
     const handleSubmit = async (
         values: SubcategoryForm,
-        dataCallback: (formData: Partial<SubcategoryData>, files: File[]) => Promise<void>
+        dataCallback: (formData: CreateUpdateSubcategoryRequest, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)

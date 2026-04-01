@@ -10,13 +10,11 @@ import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
 import { FileUploadField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { FormProps, FormRef } from '@/types'
-import { CreateFinancialAccountRequest, FinancialAccountData, UpdateFinancialAccountRequest } from '@poveroh/types'
-import { Item } from '@poveroh/types'
+import { CreateUpdateFinancialAccountRequest, FinancialAccountData, Item } from '@poveroh/types'
 
-export const AccountForm = forwardRef<
-    FormRef,
-    FormProps<CreateFinancialAccountRequest | UpdateFinancialAccountRequest>
->((props: FormProps<FinancialAccountData>, ref) => {
+type AccountFormProps = FormProps<FinancialAccountData, CreateUpdateFinancialAccountRequest>
+
+export const AccountForm = forwardRef<FormRef, AccountFormProps>((props, ref) => {
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()

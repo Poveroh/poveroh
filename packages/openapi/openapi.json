@@ -4518,6 +4518,46 @@
                     "newPassword",
                     "confirmPassword"
                 ]
+            },
+            "CreateUpdateFinancialAccountRequest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateFinancialAccountRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UpdateFinancialAccountRequest"
+                    }
+                ]
+            },
+            "CreateUpdateCategoryRequest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateCategoryRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UpdateCategoryRequest"
+                    }
+                ]
+            },
+            "CreateUpdateSubcategoryRequest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateSubcategoryRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UpdateSubcategoryRequest"
+                    }
+                ]
+            },
+            "CreateUpdateSubscriptionRequest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateSubscriptionRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UpdateSubscriptionRequest"
+                    }
+                ]
             }
         },
         "parameters": {},

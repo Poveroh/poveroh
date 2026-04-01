@@ -8,50 +8,78 @@ import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
-import { SubcategoryData } from '@poveroh/types'
-import type { Subcategory } from '@/lib/api-client'
+import {
+    CreateSubcategoryRequest,
+    CreateUpdateSubcategoryRequest,
+    SubcategoryData,
+    UpdateSubcategoryRequest
+} from '@poveroh/types'
+import { useError } from '@/hooks/use-error'
+import { MODAL_IDS } from '@/types/constant'
 
 export function SubcategoryDialog() {
     const t = useTranslations()
     const { createSubcategoryMutation, updateSubcategoryMutation, deleteSubcategoryMutation } = useSubcategory()
+    const { handleError } = useError()
 
-    const modalId = 'subcategory-dialog'
-    const modalManager = useModal<SubcategoryData>(modalId)
+    const modalManager = useModal<SubcategoryData>(MODAL_IDS.SUBCATEGORY)
     const deleteModalManager = useDeleteModal<SubcategoryData>()
 
     const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<SubcategoryData>) => {
-        modalManager.setLoading(true)
-
-        const res = await updateSubcategoryMutation.mutateAsync({
-            path: { id: modalManager.item.id },
-            body: data as Partial<Subcategory>
+    const onCreate = async (payload: CreateSubcategoryRequest) => {
+        const response = await createSubcategoryMutation.mutateAsync({
+            body: payload as CreateSubcategoryRequest
         })
 
-        const titleFromData =
-            data instanceof FormData
-                ? (data.get('title')?.toString() ?? '')
-                : ((data as Partial<SubcategoryData> | undefined)?.title ?? '')
-
-        if (!res) {
+        if (!response?.success) {
             modalManager.setLoading(false)
             return
         }
 
-        if (modalManager.inEditingMode || !modalManager.keepAdding.checked) {
-            modalManager.closeModal()
-        } else {
+        if (modalManager.keepAdding.checked) {
             formRef.current?.reset()
+        } else {
+            modalManager.closeModal()
         }
 
-        toast.success(
-            t('messages.successfully', {
-                a: modalManager.item?.title ?? titleFromData,
-                b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-            })
-        )
-        modalManager.setLoading(false)
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
+    }
+
+    const onUpdate = async (payload: UpdateSubcategoryRequest) => {
+        if (!modalManager.item) {
+            throw new Error('No item to update')
+        }
+
+        const response = await updateSubcategoryMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: payload
+        })
+
+        if (!response?.success) {
+            return
+        }
+
+        modalManager.closeModal()
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
+    }
+
+    const handleFormSubmit = async (payload: CreateUpdateSubcategoryRequest) => {
+        if (modalManager.loading) return
+
+        try {
+            modalManager.setLoading(true)
+
+            if (modalManager.inEditingMode) {
+                await onUpdate(payload as UpdateSubcategoryRequest)
+            } else {
+                await onCreate(payload as CreateSubcategoryRequest)
+            }
+        } catch (error) {
+            handleError(error)
+        } finally {
+            modalManager.setLoading(false)
+        }
     }
 
     const onDelete = async () => {
@@ -59,11 +87,13 @@ export function SubcategoryDialog() {
 
         deleteModalManager.setLoading(true)
 
-        const res = await deleteSubcategory(deleteModalManager.item.id)
+        const res = await deleteSubcategoryMutation.mutateAsync({
+            path: { id: deleteModalManager.item.id }
+        })
 
         deleteModalManager.setLoading(false)
 
-        if (res) {
+        if (res.success) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
@@ -75,7 +105,7 @@ export function SubcategoryDialog() {
     return (
         <>
             <Modal<SubcategoryData>
-                modalId={modalId}
+                modalId={MODAL_IDS.SUBCATEGORY}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item

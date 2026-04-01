@@ -1,7 +1,12 @@
 import { useTranslations } from 'next-intl'
 import Modal from '@/components/modal/modal'
 import { useRef } from 'react'
-import { CreateFinancialAccountRequest, UpdateFinancialAccountRequest, FinancialAccountData } from '@poveroh/types'
+import {
+    CreateFinancialAccountRequest,
+    UpdateFinancialAccountRequest,
+    FinancialAccountData,
+    CreateUpdateFinancialAccountRequest
+} from '@poveroh/types'
 import { toast } from '@poveroh/ui/components/sonner'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { AccountForm } from '../form/account-form'
@@ -21,7 +26,7 @@ export function AccountDialog() {
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const onCreate = async (payload: Partial<FinancialAccountData>, files: File[]) => {
+    const onCreate = async (payload: CreateFinancialAccountRequest, files: File[]) => {
         const response = await createMutation.mutateAsync({
             body: {
                 data: payload as CreateFinancialAccountRequest,
@@ -61,7 +66,7 @@ export function AccountDialog() {
         toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
     }
 
-    const handleFormSubmit = async (payload: Partial<FinancialAccountData>, files: File[]) => {
+    const handleFormSubmit = async (payload: CreateUpdateFinancialAccountRequest, files: File[]) => {
         if (modalManager.loading) return
 
         try {
@@ -70,7 +75,7 @@ export function AccountDialog() {
             if (modalManager.inEditingMode) {
                 await onUpdate(payload as UpdateFinancialAccountRequest)
             } else {
-                await onCreate(payload, files)
+                await onCreate(payload as CreateFinancialAccountRequest, files)
             }
         } catch (error) {
             handleError(error)
@@ -90,7 +95,7 @@ export function AccountDialog() {
 
         deleteModalManager.setLoading(false)
 
-        if (res?.success) {
+        if (res.success) {
             deleteModalManager.closeModal()
 
             if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
