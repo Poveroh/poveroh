@@ -1234,10 +1234,9 @@ export type SnapshotData = {
 }
 
 export type CreateSnapshotAccountBalanceRequest = {
-    balance: string
-    snapshotDate: string
     accountId: string
-    note: string
+    balance: number
+    snapshotDate: string
 }
 
 export type CreateSnapshotAccountBalanceResponse = {
@@ -1870,6 +1869,8 @@ export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategory
 export type CreateUpdateSubcategoryRequest = CreateSubcategoryRequest | UpdateSubcategoryRequest
 
 export type CreateUpdateSubscriptionRequest = CreateSubscriptionRequest | UpdateSubscriptionRequest
+
+export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportRequest
 
 export type GetRootStatusData = {
     body?: never

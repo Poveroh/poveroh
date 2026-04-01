@@ -38,6 +38,7 @@ export type { CreateTransactionRequest } from './models/CreateTransactionRequest
 export type { CreateTransactionResponse } from './models/CreateTransactionResponse'
 export type { CreateUpdateCategoryRequest } from './models/CreateUpdateCategoryRequest'
 export type { CreateUpdateFinancialAccountRequest } from './models/CreateUpdateFinancialAccountRequest'
+export type { CreateUpdateImportRequest } from './models/CreateUpdateImportRequest'
 export type { CreateUpdateSubcategoryRequest } from './models/CreateUpdateSubcategoryRequest'
 export type { CreateUpdateSubscriptionRequest } from './models/CreateUpdateSubscriptionRequest'
 export type { CurrencyEnum } from './models/CurrencyEnum'

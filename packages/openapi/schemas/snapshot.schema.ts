@@ -60,12 +60,12 @@ export const SnapshotDataSchema = SnapshotSchema.omit({
 /**
  * Request schema for creating a new snapshot account balance
  */
-export const CreateSnapshotAccountBalanceRequestSchema = z
-    .object({
-        balance: z.string().uuid(),
-        snapshotDate: z.string().datetime(),
-        accountId: z.string().uuid(),
-        note: z.string()
+export const CreateSnapshotAccountBalanceRequestSchema = SnapshotAccountBalanceSchema.pick({
+    accountId: true,
+    balance: true
+})
+    .extend({
+        snapshotDate: z.string().datetime()
     })
     .openapi('CreateSnapshotAccountBalanceRequest')
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/use-error'
-import { SnapshotAccountBalance } from '@poveroh/types'
+import { CreateSnapshotAccountBalanceRequest, SnapshotAccountBalance } from '@poveroh/types'
 import { SnapshotAccountBalanceSchema } from '@poveroh/schemas'
 
 export const useAccountBalanceSnapshotForm = (
@@ -16,10 +16,11 @@ export const useAccountBalanceSnapshotForm = (
 
     const [loading, setLoading] = useState(false)
 
-    const form = useForm<SnapshotAccountBalance>({
+    const form = useForm<CreateSnapshotAccountBalanceRequest>({
         resolver: zodResolver(SnapshotAccountBalanceSchema),
         defaultValues: {
             accountId: initialAccountId ?? '',
+            snapshotDate: new Date().toISOString().split('T')[0],
             balance: 0
         }
     })
@@ -31,13 +32,13 @@ export const useAccountBalanceSnapshotForm = (
     }, [form.formState.errors])
 
     const handleSubmit = async (
-        values: SnapshotAccountBalance,
-        dataCallback: (formData: Partial<SnapshotAccountBalance>, files: File[]) => Promise<void>
+        values: CreateSnapshotAccountBalanceRequest,
+        dataCallback: (payload: CreateSnapshotAccountBalanceRequest, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
+            await dataCallback(values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

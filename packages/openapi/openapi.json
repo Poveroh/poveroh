@@ -2728,27 +2728,22 @@
             "CreateSnapshotAccountBalanceRequest": {
                 "type": "object",
                 "properties": {
-                    "balance": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "snapshotDate": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "accountId": {
                         "type": "string",
                         "format": "uuid"
                     },
-                    "note": {
-                        "type": "string"
+                    "balance": {
+                        "type": "number"
+                    },
+                    "snapshotDate": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "required": [
-                    "balance",
-                    "snapshotDate",
                     "accountId",
-                    "note"
+                    "balance",
+                    "snapshotDate"
                 ]
             },
             "CreateSnapshotAccountBalanceResponse": {
@@ -4556,6 +4551,16 @@
                     },
                     {
                         "$ref": "#/components/schemas/UpdateSubscriptionRequest"
+                    }
+                ]
+            },
+            "CreateUpdateImportRequest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CreateImportRequest"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UpdateImportRequest"
                     }
                 ]
             }

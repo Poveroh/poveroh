@@ -24,7 +24,7 @@ export function DateField<T extends FieldValues = FieldValues>({
                             {...field}
                             variant={variant}
                             value={field.value ? field.value.split('T')[0] : ''}
-                            onChange={e => field.onChange(e.target.value)}
+                            onChange={e => field.onChange(new Date(e.target.value).toISOString())}
                             disabled={disabled}
                         />
                     </FormControl>

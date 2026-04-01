@@ -2501,23 +2501,19 @@ export const SnapshotDataSchema = {
 export const CreateSnapshotAccountBalanceRequestSchema = {
     type: 'object',
     properties: {
-        balance: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        },
         accountId: {
             type: 'string',
             format: 'uuid'
         },
-        note: {
-            type: 'string'
+        balance: {
+            type: 'number'
+        },
+        snapshotDate: {
+            type: 'string',
+            format: 'date-time'
         }
     },
-    required: ['balance', 'snapshotDate', 'accountId', 'note']
+    required: ['accountId', 'balance', 'snapshotDate']
 } as const
 
 export const CreateSnapshotAccountBalanceResponseSchema = {
@@ -4214,6 +4210,17 @@ export const CreateUpdateSubscriptionRequestSchema = {
         },
         {
             $ref: '#/components/schemas/UpdateSubscriptionRequest'
+        }
+    ]
+} as const
+
+export const CreateUpdateImportRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateImportRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateImportRequest'
         }
     ]
 } as const

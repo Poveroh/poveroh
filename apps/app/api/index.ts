@@ -168,6 +168,7 @@ export type {
     CreateTransactionResponses,
     CreateUpdateCategoryRequest,
     CreateUpdateFinancialAccountRequest,
+    CreateUpdateImportRequest,
     CreateUpdateSubcategoryRequest,
     CreateUpdateSubscriptionRequest,
     CurrencyEnum,

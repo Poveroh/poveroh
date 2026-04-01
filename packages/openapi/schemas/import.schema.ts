@@ -149,3 +149,10 @@ export const ImportFiltersSchema = z
  * Query schema for import filters
  */
 export const QueryImportFiltersSchema = ReadQuerySchema(ImportFiltersSchema).openapi('QueryImportFilters')
+
+/*
+ * Union schema for create and update import requests, allowing for flexible handling of both operations
+ */
+export const CreateUpdateImportRequestSchema = z
+    .union([CreateImportRequestSchema, UpdateImportRequestSchema])
+    .openapi('CreateUpdateImportRequest')

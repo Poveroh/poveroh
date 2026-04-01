@@ -14,7 +14,7 @@ export class SnapshotController {
                 throw new BadRequestError('Missing financial account ID')
             }
 
-            const { balance, snapshotDate, note } = req.body || {}
+            const { balance, snapshotDate } = req.body || {}
 
             if (balance === undefined || snapshotDate === undefined) {
                 throw new BadRequestError('Missing balance or snapshotDate')
@@ -27,9 +27,8 @@ export class SnapshotController {
 
             const payload: CreateSnapshotAccountBalanceRequest = {
                 accountId,
-                balance: String(balance),
-                snapshotDate,
-                note: note ?? ''
+                balance: parsedBalance,
+                snapshotDate
             }
 
             const snapshotService = new SnapshotService(req.user.id)

@@ -32,7 +32,7 @@ export class SnapshotService extends BaseService {
         payload: CreateSnapshotAccountBalanceRequest
     ): Promise<SnapshotAccountBalanceResponse> {
         const userId = this.getUserId()
-        const { accountId, balance, snapshotDate, note } = payload
+        const { accountId, balance, snapshotDate } = payload
 
         const parsedBalance = Number(balance)
 
@@ -52,11 +52,10 @@ export class SnapshotService extends BaseService {
                     snapshotDate
                 }
             },
-            update: note !== undefined ? { note } : {},
+            update: {},
             create: {
                 userId,
                 snapshotDate,
-                note: note ?? null,
                 totalCash: 0,
                 totalInvestments: 0,
                 totalNetWorth: 0
