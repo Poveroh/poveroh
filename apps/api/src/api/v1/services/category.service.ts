@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { buildWhere } from '../../../helpers/filter.helper'
+import { buildWhere2 } from '../../../helpers/filter.helper'
 import { CategoryFilters, CreateCategoryRequest, CategoryData, UpdateCategoryRequest } from '@poveroh/types'
 import { BaseService } from './base.service'
 
@@ -129,14 +129,11 @@ export class CategoryService extends BaseService {
     async getCategories(filters: CategoryFilters, skip: number, take: number): Promise<CategoryData[]> {
         const userId = this.getUserId()
 
-        const where = {
-            ...buildWhere(filters),
-            userId,
-            deletedAt: null
-        }
+        const whereCondition = buildWhere2({ ...filters, deletedAt: null, userId }, ['title'])
 
         return (await prisma.category.findMany({
-            where,
+            where: whereCondition,
+            omit: { userId: true, deletedAt: true },
             include: { subcategories: true },
             orderBy: { createdAt: 'desc' },
             skip,
