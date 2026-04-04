@@ -21,6 +21,7 @@ import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
 import { FinancialAccountData, FinancialAccountFilters, SnapshotAccountBalance } from '@poveroh/types'
+import { MODAL_IDS } from '@/types/constant'
 
 export default function AccountView() {
     const t = useTranslations()
@@ -37,7 +38,7 @@ export default function AccountView() {
         onSearch
     } = useFinancialAccount()
 
-    const { openModal } = useModal<FinancialAccountData>('account')
+    const { openModal } = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
     const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
     const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
 
