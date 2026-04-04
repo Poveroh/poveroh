@@ -22,8 +22,7 @@ export const useFinancialAccount = () => {
     const { handleError } = useError()
 
     const filters = useFilters<FinancialAccountFilters>(text => ({
-        title: { contains: text },
-        description: { contains: text }
+        title: { contains: text }
     }))
 
     const [accountQuery] = useQueries({
