@@ -43,7 +43,7 @@ export default function AccountView() {
     const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
 
     const pageContent = useMemo(() => {
-        if (accountQuery.isPending) {
+        if (accountQuery.isFetching) {
             return <SkeletonItem repeat={5} />
         }
 
@@ -94,7 +94,7 @@ export default function AccountView() {
                 </div>
             </div>
         )
-    }, [accountQuery.isPending, accountQuery.data, activeFilters])
+    }, [accountQuery.isFetching, accountQuery.data, activeFilters])
 
     return (
         <>
@@ -109,7 +109,7 @@ export default function AccountView() {
                     ]}
                     fetchAction={{
                         onClick: accountQuery.refetch,
-                        loading: accountQuery.isPending
+                        loading: accountQuery.isFetching
                     }}
                     addAction={{
                         onClick: () => {
