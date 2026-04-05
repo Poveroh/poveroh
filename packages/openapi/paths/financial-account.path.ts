@@ -3,7 +3,7 @@ import {
     CreateFinancialAccountMultipartRequestSchema,
     ErrorResponseSchema,
     FinancialAccountParamsId,
-    UpdateFinancialAccountRequestSchema,
+    UpdateFinancialAccountMultipartRequestSchema,
     GetFinancialAccountListResponseSchema,
     QueryFinancialAccountFiltersSchema,
     GetFinancialAccountResponseSchema,
@@ -195,7 +195,7 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 required: true,
                 content: {
                     'multipart/form-data': {
-                        schema: UpdateFinancialAccountRequestSchema,
+                        schema: UpdateFinancialAccountMultipartRequestSchema,
                         encoding: {
                             data: {
                                 contentType: 'application/json'

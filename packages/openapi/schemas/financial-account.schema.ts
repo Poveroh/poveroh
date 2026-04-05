@@ -89,6 +89,13 @@ export const UpdateFinancialAccountRequestSchema = FinancialAccountSchema.partia
     .openapi('UpdateFinancialAccountRequest')
 
 /**
+ * Request schema for updating an existing financial account with multipart/form-data
+ */
+export const UpdateFinancialAccountMultipartRequestSchema = MultipartRequestSchema(
+    UpdateFinancialAccountRequestSchema
+).openapi('UpdateFinancialAccountMultipartRequest')
+
+/**
  * Response schema for updating an existing financial account
  */
 export const UpdateFinancialAccountResponseSchema = SuccessResponseSchema().openapi('UpdateFinancialAccountResponse')

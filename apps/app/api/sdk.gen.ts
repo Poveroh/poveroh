@@ -754,11 +754,12 @@ export const updateFinancialAccount = <ThrowOnError extends boolean = false>(
     options: Options<UpdateFinancialAccountData, ThrowOnError>
 ) =>
     (options.client ?? client).patch<UpdateFinancialAccountResponses, UpdateFinancialAccountErrors, ThrowOnError>({
+        ...formDataBodySerializer,
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/financial-accounts/{id}',
         ...options,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': null,
             ...options.headers
         }
     })

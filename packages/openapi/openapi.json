@@ -4563,6 +4563,25 @@
                         "$ref": "#/components/schemas/UpdateImportRequest"
                     }
                 ]
+            },
+            "UpdateFinancialAccountMultipartRequest": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/UpdateFinancialAccountRequest"
+                    },
+                    "file": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Optional file upload"
+                        }
+                    }
+                },
+                "required": [
+                    "file"
+                ]
             }
         },
         "parameters": {},
@@ -6901,9 +6920,14 @@
                     "description": "Financial account data to update",
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateFinancialAccountRequest"
+                                "$ref": "#/components/schemas/UpdateFinancialAccountMultipartRequest"
+                            },
+                            "encoding": {
+                                "data": {
+                                    "contentType": "application/json"
+                                }
                             }
                         }
                     }

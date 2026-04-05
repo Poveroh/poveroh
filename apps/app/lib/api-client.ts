@@ -105,11 +105,12 @@ client.setConfig({
             signal = init?.signal ?? undefined
         }
 
+        const isFormData = body instanceof FormData
         const axiosConfig: AxiosRequestConfig = {
             url: urlString,
             method,
             data: body,
-            headers,
+            headers: isFormData ? { ...headers, 'Content-Type': undefined } : headers,
             signal: signal ?? undefined
         }
 

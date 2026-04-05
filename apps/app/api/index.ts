@@ -563,6 +563,7 @@ export type {
     UpdateFinancialAccountData,
     UpdateFinancialAccountError,
     UpdateFinancialAccountErrors,
+    UpdateFinancialAccountMultipartRequest,
     UpdateFinancialAccountRequest,
     UpdateFinancialAccountResponse,
     UpdateFinancialAccountResponse2,

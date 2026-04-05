@@ -54,9 +54,10 @@ export function AccountDialog() {
         }
 
         const response = await updateMutation.mutateAsync({
+            path: { id: modalManager.item.id },
             body: {
-                data: payload as CreateFinancialAccountRequest,
-                file: files as Array<Blob | File>
+                data: payload as UpdateFinancialAccountRequest,
+                file: files
             }
         })
 

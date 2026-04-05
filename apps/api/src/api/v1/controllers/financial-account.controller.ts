@@ -35,7 +35,7 @@ export class FinancialAccountController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const readFinancialAccount: UpdateFinancialAccountRequest = req.body
+            const readFinancialAccount: UpdateFinancialAccountRequest = JSON.parse(req.body.data)
             const id = getParamString(req.params, 'id')
 
             if (!id) {

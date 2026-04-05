@@ -39,9 +39,7 @@ export const useFinancialAccountForm = (initialData: FinancialAccountData | null
         try {
             setLoading(true)
 
-            const payload: CreateUpdateFinancialAccountRequest = inEditingMode ? { ...initialData, ...values } : values
-
-            await dataCallback(payload, file ? Array.from(file) : [])
+            await dataCallback(values, file ? Array.from(file) : [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

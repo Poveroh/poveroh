@@ -4224,3 +4224,21 @@ export const CreateUpdateImportRequestSchema = {
         }
     ]
 } as const
+
+export const UpdateFinancialAccountMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
+        }
+    },
+    required: ['file']
+} as const

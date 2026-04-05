@@ -1872,6 +1872,11 @@ export type CreateUpdateSubscriptionRequest = CreateSubscriptionRequest | Update
 
 export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportRequest
 
+export type UpdateFinancialAccountMultipartRequest = {
+    data?: UpdateFinancialAccountRequest
+    file: Array<Blob | File>
+}
+
 export type GetRootStatusData = {
     body?: never
     path?: never
@@ -3103,7 +3108,7 @@ export type UpdateFinancialAccountData = {
     /**
      * Financial account data to update
      */
-    body: UpdateFinancialAccountRequest
+    body: UpdateFinancialAccountMultipartRequest
     path: {
         id: string
     }
