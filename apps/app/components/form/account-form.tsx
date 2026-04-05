@@ -7,8 +7,9 @@ import { Form } from '@poveroh/ui/components/form'
 
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
-import { FileUploadField, TextField } from '../fields'
+import { TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
+import { PopoverIconLogo } from '../fields/popover-icon-logo'
 import { FormProps, FormRef } from '@/types'
 import { CreateUpdateFinancialAccountRequest, FinancialAccountData, Item } from '@poveroh/types'
 
@@ -39,7 +40,18 @@ export const AccountForm = forwardRef<FormRef, AccountFormProps>((props, ref) =>
                 }}
             >
                 <div className='flex flex-col space-y-6'>
-                    <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
+                    <div className='flex flex-row items-center space-x-7'>
+                        <PopoverIconLogo
+                            control={form.control}
+                            logoUrl={initialData?.logoIcon}
+                            onFileChange={setFile}
+                            enableIcon={false}
+                            enableLogo={true}
+                            inEditingMode={inEditingMode}
+                        />
+
+                        <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
+                    </div>
 
                     <SelectField
                         control={form.control}
@@ -50,14 +62,6 @@ export const AccountForm = forwardRef<FormRef, AccountFormProps>((props, ref) =>
                         getOptionLabel={(item: Item) => item.label}
                         getOptionValue={(item: Item) => item.value}
                         mandatory
-                    />
-
-                    <FileUploadField
-                        label={t('form.icon.label')}
-                        toUploadMessage={t('messages.toUpload')}
-                        accept='image/*'
-                        mandatory={!inEditingMode}
-                        onFileChange={setFile}
                     />
                 </div>
             </form>

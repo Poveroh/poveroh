@@ -48,14 +48,16 @@ export function AccountDialog() {
         toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
     }
 
-    const onUpdate = async (payload: UpdateFinancialAccountRequest) => {
+    const onUpdate = async (payload: UpdateFinancialAccountRequest, files: File[]) => {
         if (!modalManager.item) {
             throw new Error('No item to update')
         }
 
         const response = await updateMutation.mutateAsync({
-            path: { id: modalManager.item.id },
-            body: payload
+            body: {
+                data: payload as CreateFinancialAccountRequest,
+                file: files as Array<Blob | File>
+            }
         })
 
         if (!response?.success) {
@@ -73,7 +75,7 @@ export function AccountDialog() {
             modalManager.setLoading(true)
 
             if (modalManager.inEditingMode) {
-                await onUpdate(payload as UpdateFinancialAccountRequest)
+                await onUpdate(payload as UpdateFinancialAccountRequest, files)
             } else {
                 await onCreate(payload as CreateFinancialAccountRequest, files)
             }
@@ -114,13 +116,6 @@ export function AccountDialog() {
                         ? modalManager.item.title
                         : t('accounts.modal.newTitle')
                 }
-                decoration={{
-                    iconLogo: {
-                        name: modalManager.item?.logoIcon ?? '',
-                        mode: 'LOGO',
-                        circled: false
-                    }
-                }}
                 footer={{
                     show: true
                 }}

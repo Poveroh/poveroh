@@ -69,3 +69,5 @@ export type ModalState<T = unknown> = {
 }
 
 export type ModalMode = 'edit' | 'create'
+
+export type ActiveTab = 'icon' | 'logo'

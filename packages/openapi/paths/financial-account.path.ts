@@ -194,8 +194,13 @@ export const registerFinancialAccountPath = (registry: OpenAPIRegistry) => {
                 description: 'Financial account data to update',
                 required: true,
                 content: {
-                    'application/json': {
-                        schema: UpdateFinancialAccountRequestSchema
+                    'multipart/form-data': {
+                        schema: UpdateFinancialAccountRequestSchema,
+                        encoding: {
+                            data: {
+                                contentType: 'application/json'
+                            }
+                        }
                     }
                 }
             }

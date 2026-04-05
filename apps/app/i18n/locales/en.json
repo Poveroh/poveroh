@@ -220,6 +220,9 @@
             "addAsUrl": "Add as URL",
             "addAsFile": "Add as file"
         },
+        "logo": {
+            "label": "Logo"
+        },
         "color": {
             "label": "Color"
         },
