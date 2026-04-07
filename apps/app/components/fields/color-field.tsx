@@ -31,7 +31,7 @@ const ColorButton = memo(({ color, isSelected, onClick }: ColorButtonProps) => (
         type='button'
         onClick={onClick}
         className={cn(
-            'w-7 h-7 rounded-full transition-all cursor-pointer',
+            'w-[20px] h-[20px] rounded-full transition-all cursor-pointer',
             isSelected ? 'ring-2 ring-offset-1 ring-primary scale-110' : 'hover:scale-105'
         )}
         style={{ backgroundColor: color }}
@@ -87,7 +87,7 @@ export function ColorField<T extends FieldValues>({ control, name, label, mandat
                                     <div
                                         ref={previewRef}
                                         className={cn(
-                                            'w-7 h-7 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center pointer-events-none',
+                                            'w-[20px] h-[20px] rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center pointer-events-none',
                                             isCustomColor ? 'ring-2 ring-offset-1 ring-primary scale-110' : ''
                                         )}
                                         style={{

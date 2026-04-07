@@ -134,7 +134,7 @@ export function PopoverIconLogo<T extends FieldValues>({
                             <Pencil className='w-2 h-2' />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent align='end' className='w-[400px] max-h-[400px] overflow-y-auto'>
+                    <PopoverContent align='end' className='w-[500px] max-h-[400px] overflow-y-auto'>
                         {enableIcon && enableLogo ? (
                             <Tabs
                                 value={activeTab}
