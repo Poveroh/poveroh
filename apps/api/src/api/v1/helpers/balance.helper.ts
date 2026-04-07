@@ -1,7 +1,8 @@
-import prisma from '@poveroh/prisma'
-import { Decimal } from '@prisma/client/runtime/library'
+import prisma, { Prisma } from '@poveroh/prisma'
 import { RedisHelper } from './redis.helper'
 import { Amount } from '@poveroh/types'
+
+const Decimal = Prisma.Decimal
 
 export const BalanceHelper = {
     getAccountBalance: async (financialAccountId: string, tx?: any) => {
