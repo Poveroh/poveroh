@@ -134,7 +134,8 @@ export function PopoverIconLogo<T extends FieldValues>({
                             <Pencil className='w-2 h-2' />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent align='end' className='w-[500px] max-h-[400px] overflow-y-auto'>
+                    <PopoverContent align='end' className='w-[500px] max-h-[400px] overflow-hidden p-0'>
+                      <div className='overflow-y-auto max-h-[400px] p-4' onWheel={e => e.stopPropagation()}>
                         {enableIcon && enableLogo ? (
                             <Tabs
                                 value={activeTab}
@@ -200,6 +201,7 @@ export function PopoverIconLogo<T extends FieldValues>({
                                 />
                             </div>
                         )}
+                      </div>
                     </PopoverContent>
                 </Popover>
             </div>
