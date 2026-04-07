@@ -48,7 +48,7 @@ type ColorFieldProps<T extends FieldValues> = {
 }
 
 export function ColorField<T extends FieldValues>({ control, name, label, mandatory = false }: ColorFieldProps<T>) {
-    const colorInputRef = useRef<HTMLInputElement>(null)
+    const colorInputRef = useRef<HTMLInputElement | null>(null)
     const previewRef = useRef<HTMLDivElement>(null)
 
     return (
@@ -73,7 +73,12 @@ export function ColorField<T extends FieldValues>({ control, name, label, mandat
                                 ))}
                                 <div className='relative w-7 h-7'>
                                     <input
-                                        ref={colorInputRef}
+                                        ref={el => {
+                                            colorInputRef.current = el
+                                            if (el) {
+                                                el.onchange = () => field.onChange(el.value)
+                                            }
+                                        }}
                                         type='color'
                                         defaultValue={field.value}
                                         onInput={e => {
@@ -81,7 +86,6 @@ export function ColorField<T extends FieldValues>({ control, name, label, mandat
                                                 previewRef.current.style.backgroundColor = e.currentTarget.value
                                             }
                                         }}
-                                        onChange={e => field.onChange(e.target.value)}
                                         className='absolute inset-0 w-full h-full rounded-full cursor-pointer opacity-0'
                                     />
                                     <div
