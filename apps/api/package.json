@@ -18,13 +18,10 @@
     "description": "",
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^7.3.4",
-        "@poveroh/eslint-config": "*",
         "@poveroh/prisma": "*",
-        "@poveroh/tsconfig": "*",
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
-        "@prisma/client": "^6.19.0",
-        "@types/swagger-ui-express": "^4.1.8",
+        "@prisma/client": "^7.6.0",
         "bcryptjs": "^3.0.2",
         "better-auth": "^1.4.0",
         "beycloud": "^1.1.2",
@@ -41,7 +38,6 @@
         "prisma": "^7.6.0",
         "qs": "^6.14.2",
         "redis": "^5.0.1",
-        "swagger-ui-express": "^5.0.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3",
         "ua-parser-js": "^2.0.1",
@@ -51,10 +47,7 @@
     },
     "devDependencies": {
         "@poveroh/eslint-config": "*",
-        "@poveroh/prisma": "*",
         "@poveroh/tsconfig": "*",
-        "@poveroh/types": "*",
-        "@prisma/client": "^6.19.0",
         "@types/cookie-parser": "^1.4.8",
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
@@ -69,7 +62,6 @@
         "@typescript-eslint/parser": "^8.22.0",
         "nodemon": "^3.1.9",
         "openapi-typescript": "^7.13.0",
-        "prisma": "^7.6.0",
         "tsx": "^4.21.0"
     }
 }
