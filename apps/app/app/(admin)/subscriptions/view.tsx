@@ -22,12 +22,7 @@ import { MODAL_IDS } from '@/types/constant'
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const {
-        subscriptionQuery,
-        createMutation,
-        deleteMutation,
-        onSearch
-    } = useSubscription()
+    const { subscriptionQuery, createMutation, deleteMutation, onSearch } = useSubscription()
 
     const { openModal } = useModal<SubscriptionData>(MODAL_IDS.SUBSCRIPTION)
     const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()

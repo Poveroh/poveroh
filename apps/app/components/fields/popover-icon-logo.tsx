@@ -135,73 +135,73 @@ export function PopoverIconLogo<T extends FieldValues>({
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent align='end' className='w-[500px] max-h-[400px] overflow-hidden p-0'>
-                      <div className='overflow-y-auto max-h-[400px] p-4' onWheel={e => e.stopPropagation()}>
-                        {enableIcon && enableLogo ? (
-                            <Tabs
-                                value={activeTab}
-                                onValueChange={v => setActiveTab(v as ActiveTab)}
-                                className='w-full'
-                            >
-                                <TabsList className='w-full'>
-                                    <TabsTrigger value='icon' className='flex-1'>
-                                        {t('form.icon.label')}
-                                    </TabsTrigger>
-                                    <TabsTrigger value='logo' className='flex-1'>
-                                        {t('form.logo.label')}
-                                    </TabsTrigger>
-                                </TabsList>
+                        <div className='overflow-y-auto max-h-[400px] p-4' onWheel={e => e.stopPropagation()}>
+                            {enableIcon && enableLogo ? (
+                                <Tabs
+                                    value={activeTab}
+                                    onValueChange={v => setActiveTab(v as ActiveTab)}
+                                    className='w-full'
+                                >
+                                    <TabsList className='w-full'>
+                                        <TabsTrigger value='icon' className='flex-1'>
+                                            {t('form.icon.label')}
+                                        </TabsTrigger>
+                                        <TabsTrigger value='logo' className='flex-1'>
+                                            {t('form.logo.label')}
+                                        </TabsTrigger>
+                                    </TabsList>
 
-                                <TabsContent value='icon'>
-                                    <div className='flex flex-col space-y-6 pt-4'>
-                                        {colorFieldName && (
-                                            <ColorField
-                                                control={control}
-                                                name={colorFieldName}
-                                                label={t('form.color.label')}
-                                                mandatory
+                                    <TabsContent value='icon'>
+                                        <div className='flex flex-col space-y-6 pt-4'>
+                                            {colorFieldName && (
+                                                <ColorField
+                                                    control={control}
+                                                    name={colorFieldName}
+                                                    label={t('form.color.label')}
+                                                    mandatory
+                                                />
+                                            )}
+                                            <IconField
+                                                label={t('form.icon.label')}
+                                                selectedIcon={selectedIcon}
+                                                onIconChange={name => onIconChange?.(name)}
+                                                mandatory={!inEditingMode}
                                             />
-                                        )}
-                                        <IconField
-                                            label={t('form.icon.label')}
-                                            selectedIcon={selectedIcon}
-                                            onIconChange={name => onIconChange?.(name)}
-                                            mandatory={!inEditingMode}
-                                        />
-                                    </div>
-                                </TabsContent>
+                                        </div>
+                                    </TabsContent>
 
-                                <TabsContent value='logo'>
-                                    <div className='flex flex-col space-y-6 pt-4'>
-                                        <FileUploadField
-                                            label={t('form.logo.label')}
-                                            toUploadMessage={t('messages.toUpload')}
-                                            accept='image/*'
-                                            mandatory={!inEditingMode}
-                                            file={selectedFile}
-                                            onFileChange={handleFileChange}
+                                    <TabsContent value='logo'>
+                                        <div className='flex flex-col space-y-6 pt-4'>
+                                            <FileUploadField
+                                                label={t('form.logo.label')}
+                                                toUploadMessage={t('messages.toUpload')}
+                                                accept='image/*'
+                                                mandatory={!inEditingMode}
+                                                file={selectedFile}
+                                                onFileChange={handleFileChange}
+                                            />
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
+                            ) : (
+                                <div className='flex flex-col space-y-6'>
+                                    {colorFieldName && (
+                                        <ColorField
+                                            control={control}
+                                            name={colorFieldName}
+                                            label={t('form.color.label')}
+                                            mandatory
                                         />
-                                    </div>
-                                </TabsContent>
-                            </Tabs>
-                        ) : (
-                            <div className='flex flex-col space-y-6'>
-                                {colorFieldName && (
-                                    <ColorField
-                                        control={control}
-                                        name={colorFieldName}
-                                        label={t('form.color.label')}
-                                        mandatory
+                                    )}
+                                    <IconField
+                                        label={t('form.icon.label')}
+                                        selectedIcon={selectedIcon}
+                                        onIconChange={name => onIconChange?.(name)}
+                                        mandatory={!inEditingMode}
                                     />
-                                )}
-                                <IconField
-                                    label={t('form.icon.label')}
-                                    selectedIcon={selectedIcon}
-                                    onIconChange={name => onIconChange?.(name)}
-                                    mandatory={!inEditingMode}
-                                />
-                            </div>
-                        )}
-                      </div>
+                                </div>
+                            )}
+                        </div>
                     </PopoverContent>
                 </Popover>
             </div>
