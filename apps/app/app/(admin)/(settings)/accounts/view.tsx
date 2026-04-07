@@ -29,7 +29,7 @@ export default function AccountView() {
     const {
         accountQuery,
         createMutation,
-        deleteMutation,
+        deleteAllMutation,
         ACCOUNT_TYPE_CATALOG,
         filters,
         activeFilters,
@@ -118,8 +118,8 @@ export default function AccountView() {
                         loading: createMutation.isPending
                     }}
                     onDeleteAll={{
-                        onClick: () => {},
-                        loading: deleteMutation.isPending
+                        onClick: () => deleteAllMutation.mutate({}),
+                        loading: deleteAllMutation.isPending
                     }}
                 />
 

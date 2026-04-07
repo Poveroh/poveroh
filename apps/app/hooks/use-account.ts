@@ -5,6 +5,7 @@ import { useError } from './use-error'
 import {
     createFinancialAccountMutation,
     deleteFinancialAccountMutation,
+    deleteFinancialAccountsMutation,
     getFinancialAccountByIdOptions,
     getFinancialAccountByIdQueryKey,
     getFinancialAccountsOptions,
@@ -71,6 +72,16 @@ export const useFinancialAccount = () => {
         }
     })
 
+    const deleteAllMutation = useMutation({
+        ...deleteFinancialAccountsMutation(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting all financial accounts')
+        }
+    })
+
     const getFinancialAccountById = async (financialAccountId: string) => {
         try {
             const response = await queryClient.fetchQuery(
@@ -93,6 +104,7 @@ export const useFinancialAccount = () => {
         createMutation,
         updateMutation,
         deleteMutation,
+        deleteAllMutation,
         getFinancialAccountById,
         ACCOUNT_TYPE_CATALOG: useMemo(() => renderItemsLabel(ACCOUNT_TYPE_CATALOG), [])
     }
