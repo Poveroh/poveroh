@@ -15,7 +15,6 @@ export function useSubcategoryForm(initialData: SubcategoryData | null, inEditin
 
     const defaultValues = {
         title: '',
-        description: '',
         logoIcon: iconList[0] as string,
         categoryId: initialData?.categoryId || ''
     }
@@ -28,8 +27,7 @@ export function useSubcategoryForm(initialData: SubcategoryData | null, inEditin
     useEffect(() => {
         if (initialData) {
             form.reset({
-                ...initialData,
-                description: initialData.description || ''
+                ...initialData
             })
             setIcon(initialData.logoIcon)
         }

@@ -258,9 +258,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "logoIcon": {
                         "type": "string",
                         "format": "uri"
@@ -299,9 +296,6 @@
                         "format": "uuid"
                     },
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "for": {
@@ -352,9 +346,6 @@
                         "format": "uuid"
                     },
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "for": {
@@ -451,9 +442,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
@@ -504,9 +492,6 @@
                 "type": "object",
                 "properties": {
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "for": {
@@ -596,9 +581,6 @@
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
-                    "description": {
-                        "$ref": "#/components/schemas/StringFilter"
-                    },
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     }
@@ -647,9 +629,6 @@
                 "type": "object",
                 "properties": {
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "for": {
@@ -2812,9 +2791,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "logoIcon": {
                         "type": "string",
                         "format": "uri"
@@ -2900,9 +2876,6 @@
                     "title": {
                         "type": "string"
                     },
-                    "description": {
-                        "type": "string"
-                    },
                     "logoIcon": {
                         "type": "string",
                         "format": "uri"
@@ -2946,9 +2919,6 @@
                 "type": "object",
                 "properties": {
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "logoIcon": {
@@ -3020,9 +2990,6 @@
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
-                    "description": {
-                        "$ref": "#/components/schemas/StringFilter"
-                    },
                     "categoryId": {
                         "type": "object",
                         "properties": {
@@ -3066,9 +3033,6 @@
                         "format": "uuid"
                     },
                     "title": {
-                        "type": "string"
-                    },
-                    "description": {
                         "type": "string"
                     },
                     "logoIcon": {

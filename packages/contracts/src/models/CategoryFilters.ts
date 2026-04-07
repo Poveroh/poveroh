@@ -8,6 +8,5 @@ import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CategoryFilters = {
     id?: CategoryParamsId
     title?: StringFilter
-    description?: StringFilter
     for?: TransactionActionEnum
 }

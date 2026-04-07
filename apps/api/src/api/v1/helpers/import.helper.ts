@@ -99,7 +99,6 @@ export const ImportHelper = {
                     data: {
                         userId: userId,
                         title: category.title,
-                        description: category.description,
                         for: category.for,
                         logoIcon: category.logoIcon,
                         color: category.color
@@ -112,7 +111,6 @@ export const ImportHelper = {
                 //         data: {
                 //             categoryId: newCategory.id,
                 //             title: subcategory.title,
-                //             description: subcategory.description,
                 //             logoIcon: subcategory.logoIcon
                 //         }
                 //     })

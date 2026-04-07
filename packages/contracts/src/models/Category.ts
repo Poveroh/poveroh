@@ -8,7 +8,6 @@ export type Category = {
     id: string
     userId: string
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string

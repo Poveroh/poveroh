@@ -65,7 +65,6 @@ export type Subcategory = {
     id: string
     categoryId: string
     title: string
-    description?: string
     logoIcon: string
     createdAt: string
     updatedAt: string
@@ -76,7 +75,6 @@ export type Category = {
     id: string
     userId: string
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string
@@ -89,7 +87,6 @@ export type Category = {
 export type CategoryData = {
     id: string
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string
@@ -127,7 +124,6 @@ export type GetCategoryResponse = {
 
 export type CreateCategoryRequest = {
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string
@@ -147,7 +143,6 @@ export type CreateCategoryResponse = {
 
 export type UpdateCategoryRequest = {
     title?: string
-    description?: string
     for?: TransactionActionEnum
     logoIcon?: string
     color?: string
@@ -195,7 +190,6 @@ export type StringFilter = {
 export type CategoryFilters = {
     id?: CategoryParamsId
     title?: StringFilter
-    description?: StringFilter
     for?: TransactionActionEnum
 }
 
@@ -213,7 +207,6 @@ export type QueryCategoryFilters = {
 
 export type CategoryForm = {
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string
@@ -1262,7 +1255,6 @@ export type SubcategoryData = {
     id: string
     categoryId: string
     title: string
-    description?: string
     logoIcon: string
     createdAt: string
     updatedAt: string
@@ -1298,7 +1290,6 @@ export type GetSubcategoryResponse = {
 export type CreateSubcategoryRequest = {
     categoryId: string
     title: string
-    description?: string
     logoIcon: string
 }
 
@@ -1316,7 +1307,6 @@ export type CreateSubcategoryResponse = {
 
 export type UpdateSubcategoryRequest = {
     title?: string
-    description?: string
     logoIcon?: string
 }
 
@@ -1357,7 +1347,6 @@ export type SubcategoryParamsId = {
 export type SubcategoryFilters = {
     id?: SubcategoryParamsId
     title?: StringFilter
-    description?: StringFilter
     categoryId?: {
         categoryId: string
     }
@@ -1380,7 +1369,6 @@ export type QuerySubcategoryFilters = {
 export type SubcategoryForm = {
     categoryId: string
     title: string
-    description?: string
     logoIcon: string
 }
 

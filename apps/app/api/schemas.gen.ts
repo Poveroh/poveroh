@@ -214,9 +214,6 @@ export const SubcategorySchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         logoIcon: {
             type: 'string',
             format: 'uri'
@@ -249,9 +246,6 @@ export const CategorySchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         for: {
@@ -295,9 +289,6 @@ export const CategoryDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         for: {
@@ -382,9 +373,6 @@ export const CreateCategoryRequestSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
@@ -429,9 +417,6 @@ export const UpdateCategoryRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         for: {
@@ -518,9 +503,6 @@ export const CategoryFiltersSchema = {
         title: {
             $ref: '#/components/schemas/StringFilter'
         },
-        description: {
-            $ref: '#/components/schemas/StringFilter'
-        },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         }
@@ -569,9 +551,6 @@ export const CategoryFormSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         for: {
@@ -2575,9 +2554,6 @@ export const SubcategoryDataSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         logoIcon: {
             type: 'string',
             format: 'uri'
@@ -2651,9 +2627,6 @@ export const CreateSubcategoryRequestSchema = {
         title: {
             type: 'string'
         },
-        description: {
-            type: 'string'
-        },
         logoIcon: {
             type: 'string',
             format: 'uri'
@@ -2691,9 +2664,6 @@ export const UpdateSubcategoryRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         logoIcon: {
@@ -2761,9 +2731,6 @@ export const SubcategoryFiltersSchema = {
         title: {
             $ref: '#/components/schemas/StringFilter'
         },
-        description: {
-            $ref: '#/components/schemas/StringFilter'
-        },
         categoryId: {
             type: 'object',
             properties: {
@@ -2807,9 +2774,6 @@ export const SubcategoryFormSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
-        },
-        description: {
             type: 'string'
         },
         logoIcon: {

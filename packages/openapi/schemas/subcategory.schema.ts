@@ -11,7 +11,6 @@ export const SubcategorySchema = z
         id: z.string().uuid(),
         categoryId: z.string().uuid(),
         title: z.string(),
-        description: z.string().optional(),
         logoIcon: z.string().url(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
@@ -102,7 +101,6 @@ export const SubcategoryFiltersSchema = z
     .object({
         id: SubcategoryParamsId,
         title: StringFilterSchema.optional(),
-        description: StringFilterSchema.optional(),
         categoryId: SubcategorySchema.pick({ categoryId: true }).optional()
     })
     .partial()

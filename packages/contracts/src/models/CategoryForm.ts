@@ -5,7 +5,6 @@
 import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CategoryForm = {
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string

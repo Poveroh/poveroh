@@ -22,8 +22,7 @@ export const useCategory = () => {
     const { importTemplates: importFromTemplate } = useImport()
 
     const filters = useFilters<CategoryFilters>(text => ({
-        title: { contains: text },
-        description: { contains: text }
+        title: { contains: text }
     }))
 
     const [categoryQuery] = useQueries({

@@ -7,7 +7,6 @@ import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CategoryData = {
     id: string
     title: string
-    description?: string
     for: TransactionActionEnum
     logoIcon: string
     color?: string

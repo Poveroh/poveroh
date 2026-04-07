@@ -50,13 +50,6 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
                         <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />
                     </div>
 
-                    <TextField
-                        control={form.control}
-                        name='description'
-                        label={t('form.description.label')}
-                        mandatory={false}
-                    />
-
                     <CategoryField
                         control={form.control}
                         name='categoryId'

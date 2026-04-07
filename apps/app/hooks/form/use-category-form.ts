@@ -19,7 +19,6 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
 
     const defaultValues = initialData || {
         title: '',
-        description: '',
         logoIcon: iconList[0] as string,
         color: '#8B5CF6',
         for: 'EXPENSES'
@@ -33,8 +32,7 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
     useEffect(() => {
         if (initialData) {
             form.reset({
-                ...initialData,
-                description: initialData.description || ''
+                ...initialData
             })
             setIcon(initialData.logoIcon)
         }

@@ -5,6 +5,5 @@
 export type CreateSubcategoryRequest = {
     categoryId: string
     title: string
-    description?: string
     logoIcon: string
 }

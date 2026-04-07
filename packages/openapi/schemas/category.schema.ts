@@ -12,7 +12,6 @@ export const CategorySchema = z
         id: z.string().uuid(),
         userId: z.string().uuid(),
         title: z.string(),
-        description: z.string().optional(),
         for: TransactionActionEnum,
         logoIcon: z.string().url(),
         color: z.string().default('#8B5CF6'),
@@ -108,7 +107,6 @@ export const CategoryFiltersSchema = z
     .object({
         id: CategoryParamsId,
         title: StringFilterSchema,
-        description: StringFilterSchema,
         for: TransactionActionEnum
     })
     .partial()

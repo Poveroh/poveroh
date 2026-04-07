@@ -6,7 +6,7 @@ import { useWatch } from 'react-hook-form'
 
 import { Form } from '@poveroh/ui/components/form'
 import { TextField } from '@/components/fields/text-field'
-import { NoteField } from '@/components/fields/note-field'
+
 import { SelectField } from '@/components/fields/select-field'
 import { PopoverIconLogo } from '@/components/fields/popover-icon-logo'
 import { useCategoryForm } from '@/hooks/form/use-category-form'
@@ -55,14 +55,6 @@ export const CategoryForm = forwardRef<FormRef, CategoryFormProps>((props: Categ
 
                         <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
                     </div>
-
-                    <NoteField
-                        control={form.control}
-                        name='description'
-                        label={t('form.description.label')}
-                        placeholder={t('form.description.placeholder')}
-                        mandatory={false}
-                    />
 
                     <SelectField
                         control={form.control}
