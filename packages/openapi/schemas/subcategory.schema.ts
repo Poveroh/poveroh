@@ -11,7 +11,7 @@ export const SubcategorySchema = z
         id: z.string().uuid(),
         categoryId: z.string().uuid(),
         title: z.string(),
-        logoIcon: z.string().url(),
+        icon: z.string().url(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
         deletedAt: z.string().datetime().optional()

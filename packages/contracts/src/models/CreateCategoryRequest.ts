@@ -6,6 +6,6 @@ import type { TransactionActionEnum } from './TransactionActionEnum'
 export type CreateCategoryRequest = {
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
 }

@@ -112,10 +112,6 @@ export class CategoryController {
             const categoryService = new CategoryService(req.user.id)
             const data = await categoryService.getCategories(filters, skip, take)
 
-            if (!data || data.length === 0) {
-                throw new NotFoundError('Category not found')
-            }
-
             return ResponseHelper.success<CategoryData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)

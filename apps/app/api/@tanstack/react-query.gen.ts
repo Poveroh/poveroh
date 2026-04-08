@@ -10,6 +10,7 @@ import {
     createCategory,
     createFinancialAccount,
     createImport,
+    createImportTemplate,
     createSnapshotAccountBalance,
     createSubcategory,
     createSubscription,
@@ -103,6 +104,9 @@ import type {
     CreateImportData,
     CreateImportError,
     CreateImportResponse2,
+    CreateImportTemplateData,
+    CreateImportTemplateError,
+    CreateImportTemplateResponse2,
     CreateSnapshotAccountBalanceData,
     CreateSnapshotAccountBalanceError,
     CreateSnapshotAccountBalanceResponse2,
@@ -2253,3 +2257,28 @@ export const getAuthErrorOptions = (options?: Options<GetAuthErrorData>) =>
         },
         queryKey: getAuthErrorQueryKey(options)
     })
+
+/**
+ * Create import template
+ *
+ * Create a new import template with the provided data
+ */
+export const createImportTemplateMutation = (
+    options?: Partial<Options<CreateImportTemplateData>>
+): UseMutationOptions<CreateImportTemplateResponse2, CreateImportTemplateError, Options<CreateImportTemplateData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateImportTemplateResponse2,
+        CreateImportTemplateError,
+        Options<CreateImportTemplateData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createImportTemplate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}

@@ -10,7 +10,9 @@ import {
     UpdateImportResponseSchema,
     DeleteImportResponseSchema,
     UpdateImportRequestSchema,
-    GetImportTransactionsResponseSchema
+    GetImportTransactionsResponseSchema,
+    ImportTemplateActionParams,
+    CreateImportTemplateResponseSchema
 } from '../schemas'
 
 export const registerImportPath = (registry: OpenAPIRegistry) => {
@@ -206,6 +208,52 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
                 content: {
                     'application/json': {
                         schema: CreateImportResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'post',
+        path: '/imports/template/{action}',
+        tags: ['Import'],
+        operationId: 'createImportTemplate',
+        summary: 'Create import template',
+        description: 'Create a new import template with the provided data',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportTemplateActionParams.describe('Action to perform on the import template')
+        },
+        responses: {
+            200: {
+                description: 'Import created',
+                content: {
+                    'application/json': {
+                        schema: CreateImportTemplateResponseSchema
                     }
                 }
             },

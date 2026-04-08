@@ -4,6 +4,7 @@ import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.
 import { MultipartRequestSchema } from './media.schema'
 import { SuccessResponseSchema } from './response.schema'
 import { TransactionSchema } from './transaction.schema'
+import { CategoryDataSchema } from './category.schema'
 
 /**
  * Import file schema representing a file associated with an import operation
@@ -156,3 +157,26 @@ export const QueryImportFiltersSchema = ReadQuerySchema(ImportFiltersSchema).ope
 export const CreateUpdateImportRequestSchema = z
     .union([CreateImportRequestSchema, UpdateImportRequestSchema])
     .openapi('CreateUpdateImportRequest')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Enum representing the available template import actions that can be performed when importing templates
+ */
+export const ImportTemplateActionEnum = z.enum(['categories']).openapi('ImportTemplateActionEnum')
+
+/**
+ * Params schema for import template action
+ */
+export const ImportTemplateActionParams = z
+    .object({
+        action: ImportTemplateActionEnum
+    })
+    .openapi('ImportTemplateActionParams')
+
+/**
+ * Response schema for import template action
+ */
+export const CreateImportTemplateResponseSchema = SuccessResponseSchema(CategoryDataSchema.array()).openapi(
+    'CreateImportTemplateResponse'
+)

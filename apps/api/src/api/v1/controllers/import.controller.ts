@@ -143,7 +143,7 @@ export class ImportController {
     //POST /template
     static async importTemplates(req: Request, res: Response) {
         try {
-            const { action } = req.body
+            const action = getParamString(req.params, 'action')
 
             if (!action) {
                 throw new BadRequestError('Invalid action for template import')
@@ -156,7 +156,7 @@ export class ImportController {
                 throw new BadRequestError('Invalid action for template import')
             }
 
-            return ResponseHelper.success(res, true)
+            return ResponseHelper.success(res, result)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

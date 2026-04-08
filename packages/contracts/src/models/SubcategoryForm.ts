@@ -5,5 +5,5 @@
 export type SubcategoryForm = {
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
 }

@@ -6,7 +6,7 @@ export type SubcategoryData = {
     id: string
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
     createdAt: string
     updatedAt: string
 }

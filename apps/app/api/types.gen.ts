@@ -65,7 +65,7 @@ export type Subcategory = {
     id: string
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
     createdAt: string
     updatedAt: string
     deletedAt?: string
@@ -76,7 +76,7 @@ export type Category = {
     userId: string
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
     subcategories?: Array<Subcategory>
     createdAt: string
@@ -88,7 +88,7 @@ export type CategoryData = {
     id: string
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
     subcategories?: Array<Subcategory>
     createdAt: string
@@ -125,7 +125,7 @@ export type GetCategoryResponse = {
 export type CreateCategoryRequest = {
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
 }
 
@@ -144,7 +144,7 @@ export type CreateCategoryResponse = {
 export type UpdateCategoryRequest = {
     title?: string
     for?: TransactionActionEnum
-    logoIcon?: string
+    icon?: string
     color?: string
 }
 
@@ -208,7 +208,7 @@ export type QueryCategoryFilters = {
 export type CategoryForm = {
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
 }
 
@@ -1255,7 +1255,7 @@ export type SubcategoryData = {
     id: string
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
     createdAt: string
     updatedAt: string
 }
@@ -1290,7 +1290,7 @@ export type GetSubcategoryResponse = {
 export type CreateSubcategoryRequest = {
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
 }
 
 export type CreateSubcategoryResponse = {
@@ -1307,7 +1307,7 @@ export type CreateSubcategoryResponse = {
 
 export type UpdateSubcategoryRequest = {
     title?: string
-    logoIcon?: string
+    icon?: string
 }
 
 export type UpdateSubcategoryResponse = {
@@ -1369,7 +1369,7 @@ export type QuerySubcategoryFilters = {
 export type SubcategoryForm = {
     categoryId: string
     title: string
-    logoIcon: string
+    icon: string
 }
 
 export type Subscription = {
@@ -1863,6 +1863,46 @@ export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportReques
 export type UpdateFinancialAccountMultipartRequest = {
     data?: UpdateFinancialAccountRequest
     file: Array<Blob | File>
+}
+
+export type ImportTemplateActionEnum = 'categories'
+
+export type ImportTemplateActionParams = {
+    action: ImportTemplateActionEnum
+}
+
+export type CreateImportTemplateResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<CategoryData>
+}
+
+export type CreateCategoryTemplate = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+}
+
+export type CreateCategoryTemplateRequest = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<{
+        title: string
+        icon: string
+    }>
 }
 
 export type GetRootStatusData = {
@@ -5859,3 +5899,38 @@ export type GetAuthErrorResponses = {
 }
 
 export type GetAuthErrorResponse = GetAuthErrorResponses[keyof GetAuthErrorResponses]
+
+export type CreateImportTemplateData = {
+    body?: never
+    path: {
+        action: ImportTemplateActionEnum
+    }
+    query?: never
+    url: '/imports/template/{action}'
+}
+
+export type CreateImportTemplateErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateImportTemplateError = CreateImportTemplateErrors[keyof CreateImportTemplateErrors]
+
+export type CreateImportTemplateResponses = {
+    /**
+     * Import created
+     */
+    200: CreateImportTemplateResponse
+}
+
+export type CreateImportTemplateResponse2 = CreateImportTemplateResponses[keyof CreateImportTemplateResponses]

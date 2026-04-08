@@ -214,7 +214,7 @@ export const SubcategorySchema = {
         title: {
             type: 'string'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -231,7 +231,7 @@ export const SubcategorySchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
 } as const
 
 export const CategorySchema = {
@@ -251,7 +251,7 @@ export const CategorySchema = {
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -278,7 +278,7 @@ export const CategorySchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'userId', 'title', 'for', 'icon', 'createdAt', 'updatedAt']
 } as const
 
 export const CategoryDataSchema = {
@@ -294,7 +294,7 @@ export const CategoryDataSchema = {
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -317,7 +317,7 @@ export const CategoryDataSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'title', 'for', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'title', 'for', 'icon', 'createdAt', 'updatedAt']
 } as const
 
 export const GetCategoryListResponseSchema = {
@@ -376,7 +376,7 @@ export const CreateCategoryRequestSchema = {
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -385,7 +385,7 @@ export const CreateCategoryRequestSchema = {
             default: '#8B5CF6'
         }
     },
-    required: ['title', 'for', 'logoIcon']
+    required: ['title', 'for', 'icon']
 } as const
 
 export const CreateCategoryResponseSchema = {
@@ -422,7 +422,7 @@ export const UpdateCategoryRequestSchema = {
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -556,7 +556,7 @@ export const CategoryFormSchema = {
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -565,7 +565,7 @@ export const CategoryFormSchema = {
             default: '#8B5CF6'
         }
     },
-    required: ['title', 'for', 'logoIcon']
+    required: ['title', 'for', 'icon']
 } as const
 
 export const DashboardWidgetEnumSchema = {
@@ -2554,7 +2554,7 @@ export const SubcategoryDataSchema = {
         title: {
             type: 'string'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         },
@@ -2567,7 +2567,7 @@ export const SubcategoryDataSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'categoryId', 'title', 'logoIcon', 'createdAt', 'updatedAt']
+    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
 } as const
 
 export const GetSubcategoryListResponseSchema = {
@@ -2627,12 +2627,12 @@ export const CreateSubcategoryRequestSchema = {
         title: {
             type: 'string'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         }
     },
-    required: ['categoryId', 'title', 'logoIcon']
+    required: ['categoryId', 'title', 'icon']
 } as const
 
 export const CreateSubcategoryResponseSchema = {
@@ -2666,7 +2666,7 @@ export const UpdateSubcategoryRequestSchema = {
         title: {
             type: 'string'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         }
@@ -2776,12 +2776,12 @@ export const SubcategoryFormSchema = {
         title: {
             type: 'string'
         },
-        logoIcon: {
+        icon: {
             type: 'string',
             format: 'uri'
         }
     },
-    required: ['categoryId', 'title', 'logoIcon']
+    required: ['categoryId', 'title', 'icon']
 } as const
 
 export const SubscriptionSchema = {
@@ -4205,4 +4205,105 @@ export const UpdateFinancialAccountMultipartRequestSchema = {
         }
     },
     required: ['file']
+} as const
+
+export const ImportTemplateActionEnumSchema = {
+    type: 'string',
+    enum: ['categories']
+} as const
+
+export const ImportTemplateActionParamsSchema = {
+    type: 'object',
+    properties: {
+        action: {
+            $ref: '#/components/schemas/ImportTemplateActionEnum'
+        }
+    },
+    required: ['action']
+} as const
+
+export const CreateImportTemplateResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/CategoryData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CreateCategoryTemplateSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        icon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Subcategory'
+            }
+        }
+    },
+    required: ['title', 'for', 'icon']
+} as const
+
+export const CreateCategoryTemplateRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        icon: {
+            type: 'string',
+            format: 'uri'
+        },
+        color: {
+            type: 'string',
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    title: {
+                        type: 'string'
+                    },
+                    icon: {
+                        type: 'string',
+                        format: 'uri'
+                    }
+                },
+                required: ['title', 'icon']
+            }
+        }
+    },
+    required: ['title', 'for', 'icon']
 } as const

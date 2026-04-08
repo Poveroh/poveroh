@@ -3,9 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { TransactionActionEnum } from './TransactionActionEnum'
-export type CategoryForm = {
+export type CreateCategoryTemplateRequest = {
     title: string
     for: TransactionActionEnum
     icon: string
     color?: string
+    subcategories?: Array<{
+        title: string
+        icon: string
+    }>
 }

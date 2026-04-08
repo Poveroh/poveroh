@@ -29,8 +29,8 @@ export function AccountDialog() {
     const onCreate = async (payload: CreateFinancialAccountRequest, files: File[]) => {
         const response = await createMutation.mutateAsync({
             body: {
-                data: payload as CreateFinancialAccountRequest,
-                file: files as Array<Blob | File>
+                data: payload,
+                file: files
             }
         })
 
@@ -56,7 +56,7 @@ export function AccountDialog() {
         const response = await updateMutation.mutateAsync({
             path: { id: modalManager.item.id },
             body: {
-                data: payload as UpdateFinancialAccountRequest,
+                data: payload,
                 file: files
             }
         })

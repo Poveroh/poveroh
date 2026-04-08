@@ -1,797 +1,402 @@
-import { Category } from '@poveroh/types'
+import { CreateCategoryTemplateRequest } from '@poveroh/types'
 
-export const CategoryTemplate: Category[] = [
+export const CATEGORY_TEMPLATE: CreateCategoryTemplateRequest[] = [
     {
-        id: '',
-        userId: '',
         title: 'Salary - Wage',
-
         for: 'INCOME',
-        logoIcon: 'briefcase',
+        icon: 'briefcase',
         color: '#34D399',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Monthly salary',
-
-                logoIcon: 'calendar-check',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'calendar-check'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Pension',
-
-                logoIcon: 'landmark',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'landmark'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Bonuses and Extras',
-
         for: 'INCOME',
-        logoIcon: 'gift',
+        icon: 'gift',
         color: '#86EFAC',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Company bonus',
-
-                logoIcon: 'award',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'award'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Performance bonus',
-
-                logoIcon: 'trophy',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'trophy'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Investment Income',
-
         for: 'INCOME',
-        logoIcon: 'trending-up',
+        icon: 'trending-up',
         color: '#60A5FA',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Bank interest',
-
-                logoIcon: 'piggy-bank',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'piggy-bank'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Stock-ETF dividends',
-
-                logoIcon: 'trending-up',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'trending-up'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Bond coupons',
-
-                logoIcon: 'receipt',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'receipt'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Rental income',
-
-                logoIcon: 'house',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'house'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Crypto-trading gains',
-
-                logoIcon: 'bitcoin',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'bitcoin'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Refunds',
-
         for: 'INCOME',
-        logoIcon: 'arrow-left-right',
+        icon: 'arrow-left-right',
         color: '#2DD4BF',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Tax refund',
-
-                logoIcon: 'file-text',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'file-text'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Insurance refund',
-
-                logoIcon: 'shield-check',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'shield-check'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Purchase return',
-
-                logoIcon: 'package',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'package'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Medical reimbursement',
-
-                logoIcon: 'heart-pulse',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'heart-pulse'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Loan reimbursement',
-
-                logoIcon: 'landmark',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'landmark'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Gifts Received',
-
         for: 'INCOME',
-        logoIcon: 'heart-handshake',
+        icon: 'heart-handshake',
         color: '#FB7185',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Gift',
-
-                logoIcon: 'gift',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'gift'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Housing and Utilities',
-
         for: 'EXPENSES',
-        logoIcon: 'house',
+        icon: 'house',
         color: '#8B5CF6',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Rent - Mortgage',
-
-                logoIcon: 'key',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'key'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Utilities',
-
-                logoIcon: 'zap',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'zap'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Internet - Phone',
-
-                logoIcon: 'wifi',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wifi'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Condo fees',
-
-                logoIcon: 'building-2',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'building-2'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Maintenance',
-
-                logoIcon: 'wrench',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wrench'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Transportation',
-
         for: 'EXPENSES',
-        logoIcon: 'car',
+        icon: 'car',
         color: '#60A5FA',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Fuel',
-
-                logoIcon: 'fuel',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'fuel'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Public transport',
-
-                logoIcon: 'bus',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'bus'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Taxi - Uber',
-
-                logoIcon: 'car-front',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'car-front'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Parking',
-
-                logoIcon: 'circle-parking',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'circle-parking'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Car maintenance',
-
-                logoIcon: 'wrench',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wrench'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Groceries',
-
         for: 'EXPENSES',
-        logoIcon: 'shopping-cart',
+        icon: 'shopping-cart',
         color: '#34D399',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Food',
-
-                logoIcon: 'apple',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'apple'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Household products',
-
-                logoIcon: 'spray-can',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'spray-can'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Personal care',
-
-                logoIcon: 'droplets',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'droplets'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Restaurants and Bars',
-
         for: 'EXPENSES',
-        logoIcon: 'utensils',
+        icon: 'utensils',
         color: '#FB923C',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Restaurants',
-
-                logoIcon: 'utensils-crossed',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'utensils-crossed'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Bars - Coffee',
-
-                logoIcon: 'coffee',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'coffee'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Delivery',
-
-                logoIcon: 'bike',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'bike'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Health',
-
         for: 'EXPENSES',
-        logoIcon: 'heart-pulse',
+        icon: 'heart-pulse',
         color: '#F87171',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Doctor visits',
-
-                logoIcon: 'stethoscope',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'stethoscope'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Medications',
-
-                logoIcon: 'pill',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'pill'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Gym',
-
-                logoIcon: 'dumbbell',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'dumbbell'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Hairdresser - Beauty',
-
-                logoIcon: 'scissors',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'scissors'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Entertainment',
-
         for: 'EXPENSES',
-        logoIcon: 'popcorn',
+        icon: 'popcorn',
         color: '#C084FC',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Outings - Cinema',
-
-                logoIcon: 'clapperboard',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'clapperboard'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Travel',
-
-                logoIcon: 'plane',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'plane'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Hobbies',
-
-                logoIcon: 'palette',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'palette'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Shopping',
-
         for: 'EXPENSES',
-        logoIcon: 'shirt',
+        icon: 'shirt',
         color: '#FB7185',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Clothes',
-
-                logoIcon: 'shirt',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'shirt'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Shoes',
-
-                logoIcon: 'footprints',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'footprints'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Accessories',
-
-                logoIcon: 'watch',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'watch'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'E-commerce',
-
-                logoIcon: 'shopping-bag',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'shopping-bag'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Subscriptions and Services',
-
         for: 'EXPENSES',
-        logoIcon: 'tv',
+        icon: 'tv',
         color: '#A78BFA',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Streaming',
-
-                logoIcon: 'tv',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'tv'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Gym - Fitness',
-
-                logoIcon: 'dumbbell',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'dumbbell'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Software - App',
-
-                logoIcon: 'laptop',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'laptop'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Taxes and Insurance',
-
         for: 'EXPENSES',
-        logoIcon: 'shield',
+        icon: 'shield',
         color: '#FBBF24',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Taxes',
-
-                logoIcon: 'receipt',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'receipt'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Insurance',
-
-                logoIcon: 'shield-check',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'shield-check'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Fees',
-
-                logoIcon: 'triangle-alert',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'triangle-alert'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Gifts and Donations',
-
         for: 'EXPENSES',
-        logoIcon: 'hand-heart',
+        icon: 'hand-heart',
         color: '#FB7185',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Gifts',
-
-                logoIcon: 'gift',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'gift'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Charity',
-
-                logoIcon: 'hand-coins',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'hand-coins'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Loans',
-
         for: 'EXPENSES',
-        logoIcon: 'landmark',
+        icon: 'landmark',
         color: '#0EA5E9',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Loan disbursement',
-
-                logoIcon: 'arrow-up-right',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'arrow-up-right'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Loan repayment',
-
-                logoIcon: 'arrow-down-left',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'arrow-down-left'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Transfer Between Accounts',
-
         for: 'EXPENSES',
-        logoIcon: 'arrow-left-right',
+        icon: 'arrow-left-right',
         color: '#2DD4BF',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Between my accounts',
-
-                logoIcon: 'arrow-left-right',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'arrow-left-right'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Cash withdrawal-deposit',
-
-                logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wallet'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Investments',
-
-                logoIcon: 'piggy-bank',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'piggy-bank'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Transfer Between Accounts',
-
         for: 'INCOME',
-        logoIcon: 'arrow-left-right',
+        icon: 'arrow-left-right',
         color: '#2DD4BF',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Between my accounts',
-
-                logoIcon: 'arrow-left-right',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'arrow-left-right'
             },
             {
-                id: '',
-                categoryId: '',
                 title: 'Cash deposit',
-
-                logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wallet'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Generic',
-
         for: 'INCOME',
-        logoIcon: 'arrow-left-right',
+        icon: 'arrow-left-right',
         color: '#F472B6',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Generic',
-
-                logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wallet'
             }
         ]
     },
     {
-        id: '',
-        userId: '',
         title: 'Generic',
-
         for: 'EXPENSES',
-        logoIcon: 'arrow-left-right',
+        icon: 'arrow-left-right',
         color: '#F472B6',
-        createdAt: '2026-01-03T00:00:00.000Z',
-        updatedAt: '2026-01-03T00:00:00.000Z',
         subcategories: [
             {
-                id: '',
-                categoryId: '',
                 title: 'Generic',
-
-                logoIcon: 'wallet',
-                createdAt: '2026-01-03T00:00:00.000Z',
-                updatedAt: '2026-01-03T00:00:00.000Z'
+                icon: 'wallet'
             }
         ]
     }
 ]
 
-export default CategoryTemplate
+export default CATEGORY_TEMPLATE

@@ -8,7 +8,7 @@ export type CategoryData = {
     id: string
     title: string
     for: TransactionActionEnum
-    logoIcon: string
+    icon: string
     color?: string
     subcategories?: Array<Subcategory>
     createdAt: string

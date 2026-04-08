@@ -21,6 +21,9 @@ import type {
     CreateImportData,
     CreateImportErrors,
     CreateImportResponses,
+    CreateImportTemplateData,
+    CreateImportTemplateErrors,
+    CreateImportTemplateResponses,
     CreateSnapshotAccountBalanceData,
     CreateSnapshotAccountBalanceErrors,
     CreateSnapshotAccountBalanceResponses,
@@ -1393,5 +1396,19 @@ export const getAuthError = <ThrowOnError extends boolean = false>(options?: Opt
     (options?.client ?? client).get<GetAuthErrorResponses, GetAuthErrorErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/auth/error',
+        ...options
+    })
+
+/**
+ * Create import template
+ *
+ * Create a new import template with the provided data
+ */
+export const createImportTemplate = <ThrowOnError extends boolean = false>(
+    options: Options<CreateImportTemplateData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateImportTemplateResponses, CreateImportTemplateErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports/template/{action}',
         ...options
     })

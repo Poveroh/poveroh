@@ -14,10 +14,12 @@ import {
     TransactionActionEnum,
     TransactionStatusEnum,
     TransactionDataResponse,
-    TransactionFilters
+    TransactionFilters,
+    CategoryData
 } from '@poveroh/types'
 import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
+import { CategoryService } from './category.service'
 
 /**
  * Service class for managing imports, including creating, updating, deleting, and retrieving imports for the authenticated user
@@ -391,16 +393,14 @@ export class ImportService extends BaseService {
      * @param action The template import action
      * @returns Whether the import succeeded
      */
-    async importTemplates(action: string): Promise<boolean> {
+    async importTemplates(action: string): Promise<CategoryData[] | null> {
         const userId = this.getUserId()
         switch (action) {
             case 'categories':
-                await ImportHelper.importCategoriesFromTemplate(userId)
-                break
+                const categoryService = new CategoryService(userId)
+                return await categoryService.createFromTemplate()
             default:
-                return false
+                return null
         }
-
-        return true
     }
 }

@@ -10,21 +10,21 @@ import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
 import { CategoryData, CreateCategoryRequest, CreateUpdateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { useError } from '@/hooks/use-error'
+import { MODAL_IDS } from '@/types/constant'
 
 export function CategoryDialog() {
     const t = useTranslations()
     const { createCategoryMutation, updateCategoryMutation, deleteCategoryMutation } = useCategory()
     const { handleError } = useError()
 
-    const modalId = 'category-dialog'
-    const modalManager = useModal<CategoryData>(modalId)
+    const modalManager = useModal<CategoryData>(MODAL_IDS.CATEGORY)
     const deleteModalManager = useDeleteModal<CategoryData>()
 
     const formRef = useRef<FormRef | null>(null)
 
     const onCreate = async (payload: CreateCategoryRequest) => {
         const response = await createCategoryMutation.mutateAsync({
-            body: payload as CreateCategoryRequest
+            body: payload
         })
 
         if (!response?.success) {
@@ -100,20 +100,13 @@ export function CategoryDialog() {
     return (
         <>
             <Modal<CategoryData>
-                modalId={modalId}
+                modalId={MODAL_IDS.CATEGORY}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
                         ? modalManager.item.title
                         : t('categories.modal.newTitle')
                 }
-                decoration={{
-                    iconLogo: {
-                        name: modalManager.item?.logoIcon ?? '',
-                        mode: 'LOGO',
-                        circled: true
-                    }
-                }}
                 footer={{
                     show: true
                 }}

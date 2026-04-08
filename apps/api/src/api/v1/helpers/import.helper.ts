@@ -91,36 +91,5 @@ export const ImportHelper = {
         }
 
         return transactions
-    },
-    async importCategoriesFromTemplate(userId: string): Promise<boolean> {
-        try {
-            for (const category of CategoryTemplate) {
-                const newCategory = await prisma.category.create({
-                    data: {
-                        userId: userId,
-                        title: category.title,
-                        for: category.for,
-                        logoIcon: category.logoIcon,
-                        color: category.color
-                    }
-                })
-
-                //TODO: add subcategories to the template and uncomment this code to import them as well
-                // for (const subcategory of category.subcategories) {
-                //     await prisma.subcategory.create({
-                //         data: {
-                //             categoryId: newCategory.id,
-                //             title: subcategory.title,
-                //             logoIcon: subcategory.logoIcon
-                //         }
-                //     })
-                // }
-            }
-
-            return true
-        } catch (error) {
-            console.error('Error importing categories from template:', error)
-            return false
-        }
     }
 }

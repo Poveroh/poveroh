@@ -258,7 +258,7 @@
                     "title": {
                         "type": "string"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -279,7 +279,7 @@
                     "id",
                     "categoryId",
                     "title",
-                    "logoIcon",
+                    "icon",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -301,7 +301,7 @@
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -333,7 +333,7 @@
                     "userId",
                     "title",
                     "for",
-                    "logoIcon",
+                    "icon",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -351,7 +351,7 @@
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -378,7 +378,7 @@
                     "id",
                     "title",
                     "for",
-                    "logoIcon",
+                    "icon",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -445,7 +445,7 @@
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -457,7 +457,7 @@
                 "required": [
                     "title",
                     "for",
-                    "logoIcon"
+                    "icon"
                 ]
             },
             "CreateCategoryResponse": {
@@ -497,7 +497,7 @@
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -634,7 +634,7 @@
                     "for": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -646,7 +646,7 @@
                 "required": [
                     "title",
                     "for",
-                    "logoIcon"
+                    "icon"
                 ]
             },
             "DashboardWidgetEnum": {
@@ -2791,7 +2791,7 @@
                     "title": {
                         "type": "string"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     },
@@ -2808,7 +2808,7 @@
                     "id",
                     "categoryId",
                     "title",
-                    "logoIcon",
+                    "icon",
                     "createdAt",
                     "updatedAt"
                 ]
@@ -2876,7 +2876,7 @@
                     "title": {
                         "type": "string"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     }
@@ -2884,7 +2884,7 @@
                 "required": [
                     "categoryId",
                     "title",
-                    "logoIcon"
+                    "icon"
                 ]
             },
             "CreateSubcategoryResponse": {
@@ -2921,7 +2921,7 @@
                     "title": {
                         "type": "string"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     }
@@ -3035,7 +3035,7 @@
                     "title": {
                         "type": "string"
                     },
-                    "logoIcon": {
+                    "icon": {
                         "type": "string",
                         "format": "uri"
                     }
@@ -3043,7 +3043,7 @@
                 "required": [
                     "categoryId",
                     "title",
-                    "logoIcon"
+                    "icon"
                 ]
             },
             "Subscription": {
@@ -4545,6 +4545,121 @@
                 },
                 "required": [
                     "file"
+                ]
+            },
+            "ImportTemplateActionEnum": {
+                "type": "string",
+                "enum": [
+                    "categories"
+                ]
+            },
+            "ImportTemplateActionParams": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "$ref": "#/components/schemas/ImportTemplateActionEnum"
+                    }
+                },
+                "required": [
+                    "action"
+                ]
+            },
+            "CreateImportTemplateResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryData"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "CreateCategoryTemplate": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Subcategory"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "for",
+                    "icon"
+                ]
+            },
+            "CreateCategoryTemplateRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "for": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "color": {
+                        "type": "string",
+                        "default": "#8B5CF6"
+                    },
+                    "subcategories": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "icon": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            },
+                            "required": [
+                                "title",
+                                "icon"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "for",
+                    "icon"
                 ]
             }
         },
@@ -13038,6 +13153,73 @@
                             }
                         },
                         "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/imports/template/{action}": {
+            "post": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "createImportTemplate",
+                "summary": "Create import template",
+                "description": "Create a new import template with the provided data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ImportTemplateActionEnum"
+                        },
+                        "required": true,
+                        "name": "action",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Import created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateImportTemplateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }

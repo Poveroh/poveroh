@@ -6,6 +6,7 @@ import { ImportController } from '../controllers/import.controller'
 const router: Router = Router()
 
 router.post('/', AuthMiddleware.isAuthenticated, upload.array('file'), ImportController.createImport)
+router.post('/template/:action', AuthMiddleware.isAuthenticated, ImportController.importTemplates)
 router.get('/', AuthMiddleware.isAuthenticated, ImportController.readImports)
 router.get('/:id', AuthMiddleware.isAuthenticated, ImportController.readImportById)
 router.patch('/complete/:id', AuthMiddleware.isAuthenticated, ImportController.completeImport)

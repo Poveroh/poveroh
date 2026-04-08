@@ -13,7 +13,7 @@ export const CategorySchema = z
         userId: z.string().uuid(),
         title: z.string(),
         for: TransactionActionEnum,
-        logoIcon: z.string().url(),
+        icon: z.string().url(),
         color: z.string().default('#8B5CF6'),
         subcategories: z.array(SubcategorySchema).optional(),
         createdAt: z.string().datetime(),
@@ -62,6 +62,29 @@ export const CreateCategoryRequestSchema = CategorySchema.omit({
  * Response schema for creating a new category
  */
 export const CreateCategoryResponseSchema = SuccessResponseSchema(CategoryDataSchema).openapi('CreateCategoryResponse')
+
+/**
+ * Request schema for creating a new category from template
+ */
+export const CreateCategoryTemplateSchema = CategorySchema.omit({
+    id: true,
+    userId: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
+    subcategories: true
+})
+    .extend({
+        subcategories: z
+            .array(
+                SubcategorySchema.pick({
+                    title: true,
+                    icon: true
+                })
+            )
+            .optional()
+    })
+    .openapi('CreateCategoryTemplateRequest')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

@@ -2,6 +2,7 @@ import prisma from '@poveroh/prisma'
 import { buildWhere2 } from '../../../helpers/filter.helper'
 import { CategoryFilters, CreateCategoryRequest, CategoryData, UpdateCategoryRequest } from '@poveroh/types'
 import { BaseService } from './base.service'
+import { CATEGORY_TEMPLATE } from '../content/template/category'
 
 /**
  * Service class for managing categories, including creating, updating, deleting, and retrieving categories for the authenticated user
@@ -29,7 +30,7 @@ export class CategoryService extends BaseService {
         const generatedId = crypto.randomUUID()
 
         if (file) {
-            payload.logoIcon = await this.saveFile(generatedId, file)
+            payload.icon = await this.saveFile(generatedId, file)
         }
 
         return (await prisma.category.create({
@@ -39,6 +40,39 @@ export class CategoryService extends BaseService {
                 userId
             }
         })) as unknown as CategoryData
+    }
+
+    /**
+     * Creates default categories for the authenticated user based on a predefined template
+     * User ID is automatically retrieved from request context
+     * @return An array of created category data responses based on the template
+     */
+    async createFromTemplate(): Promise<CategoryData[]> {
+        const userId = this.getUserId()
+
+        const categories = await prisma.$transaction(
+            CATEGORY_TEMPLATE.map(category =>
+                prisma.category.create({
+                    data: {
+                        title: category.title,
+                        for: category.for,
+                        icon: category.icon,
+                        color: category.color ?? '#8B5CF6',
+                        userId,
+                        subcategories: {
+                            create: (category.subcategories ?? []).map(sub => ({
+                                title: sub.title,
+                                icon: sub.icon
+                            }))
+                        }
+                    },
+                    omit: { userId: true, deletedAt: true },
+                    include: { subcategories: true }
+                })
+            )
+        )
+
+        return categories as unknown as CategoryData[]
     }
 
     /**
@@ -53,7 +87,7 @@ export class CategoryService extends BaseService {
         const userId = this.getUserId()
 
         if (file) {
-            payload.logoIcon = await this.saveFile(id, file)
+            payload.icon = await this.saveFile(id, file)
         }
 
         await prisma.category.update({

@@ -4,5 +4,5 @@
 /* eslint-disable */
 export type UpdateSubcategoryRequest = {
     title?: string
-    logoIcon?: string
+    icon?: string
 }

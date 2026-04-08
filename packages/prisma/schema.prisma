@@ -452,7 +452,7 @@ model Category {
     userId        String
     title         String
     for           TransactionAction
-    logoIcon      String
+    icon          String
     color         String            @default("#8B5CF6")
     createdAt     DateTime          @default(now())
     updatedAt     DateTime          @updatedAt
@@ -470,7 +470,7 @@ model Subcategory {
     id           String        @id @default(uuid())
     categoryId   String
     title        String
-    logoIcon     String
+    icon         String
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
     deletedAt    DateTime?     @db.Timestamptz

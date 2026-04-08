@@ -2,8 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateSubcategoryRequest = {
-    categoryId: string
-    title: string
-    icon: string
-}
+export type ImportTemplateActionEnum = 'categories'
