@@ -27,7 +27,7 @@ export class SubcategoryService extends BaseService {
         const generatedId = crypto.randomUUID()
 
         if (file) {
-            payload.logoIcon = await this.saveFile(generatedId, file)
+            payload.icon = await this.saveFile(generatedId, file)
         }
 
         const categoryService = new CategoryService(this.getUserId())
@@ -53,7 +53,7 @@ export class SubcategoryService extends BaseService {
         const userId = this.getUserId()
 
         if (file) {
-            payload.logoIcon = await this.saveFile(id, file)
+            payload.icon = await this.saveFile(id, file)
         }
 
         await prisma.subcategory.update({

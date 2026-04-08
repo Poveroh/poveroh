@@ -33,7 +33,7 @@ export function CategoryBadge(props: CategoryBadgeProps) {
                 }
                 style={baseStyle}
             >
-                <DynamicIcon name={subcategory.logoIcon} className='w-4 h-4' />
+                <DynamicIcon name={subcategory.icon} className='w-4 h-4' />
                 <span style={{ color }}>{subcategory.title}</span>
             </div>
         )
@@ -61,7 +61,7 @@ export function CategoryBadge(props: CategoryBadgeProps) {
             }
             style={{ backgroundColor: `${category.color}20`, color: category.color }}
         >
-            <DynamicIcon name={category.logoIcon} className={compact ? 'w-4 h-4' : 'w-5 h-5'} />
+            <DynamicIcon name={category.icon} className={compact ? 'w-4 h-4' : 'w-5 h-5'} />
             <span style={{ color: category.color }}>{category.title}</span>
         </div>
     )

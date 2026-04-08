@@ -7,7 +7,7 @@ export const defaultCategory: Category = {
     userId: '',
     title: '',
     for: 'EXPENSES',
-    logoIcon: '',
+    icon: '',
     color: '#8B5CF6',
     subcategories: [],
     createdAt: '',

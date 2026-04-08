@@ -106,7 +106,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
                     ) : transaction.icon ? (
                         <BrandIcon icon={transaction.icon} />
                     ) : (
-                        <DynamicIcon name={category?.logoIcon || 'landmark'} className='h-[20px] w-[20px]' />
+                        <DynamicIcon name={category?.icon || 'landmark'} className='h-[20px] w-[20px]' />
                     )}
                 </div>
 

@@ -31,7 +31,7 @@ export function SubcategoryField<T extends FieldValues = FieldValues>({
             getOptionLabel={(item: SubcategoryData) => item.title}
             getOptionValue={(item: SubcategoryData) => item.id}
             renderOptionContent={(item: SubcategoryData) =>
-                createIconContent(item.logoIcon, item.title, { type: 'dynamic' })
+                createIconContent(item.icon, item.title, { type: 'dynamic' })
             }
         />
     )
