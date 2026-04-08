@@ -160,7 +160,7 @@ export class CategoryService extends BaseService {
         return (await prisma.category.findMany({
             where: whereCondition,
             omit: { userId: true, deletedAt: true },
-            include: { subcategories: true },
+            include: { subcategories: { where: { deletedAt: null } } },
             orderBy: { createdAt: 'desc' },
             skip,
             take
