@@ -6,7 +6,6 @@ import { CategoryForm } from '../form/category-form'
 import { useCategory } from '@/hooks/use-category'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
-import { DeleteModal } from '../modal/delete-modal'
 import { FormRef } from '@/types'
 import { CategoryData, CreateCategoryRequest, CreateUpdateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { useError } from '@/hooks/use-error'
@@ -14,11 +13,11 @@ import { MODAL_IDS } from '@/types/constant'
 
 export function CategoryDialog() {
     const t = useTranslations()
-    const { createCategoryMutation, updateCategoryMutation, deleteCategoryMutation } = useCategory()
+    const { createCategoryMutation, updateCategoryMutation } = useCategory()
     const { handleError } = useError()
 
     const modalManager = useModal<CategoryData>(MODAL_IDS.CATEGORY)
-    const deleteModalManager = useDeleteModal<CategoryData>()
+    const { openModal: openDeleteModal } = useDeleteModal<CategoryData>()
 
     const formRef = useRef<FormRef | null>(null)
 
@@ -77,62 +76,31 @@ export function CategoryDialog() {
         }
     }
 
-    const onDelete = async () => {
-        if (!deleteModalManager.item) return
-
-        deleteModalManager.setLoading(true)
-
-        const res = await deleteCategoryMutation.mutateAsync({
-            path: { id: deleteModalManager.item.id }
-        })
-
-        deleteModalManager.setLoading(false)
-
-        if (res.success) {
-            deleteModalManager.closeModal()
-
-            if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
-                modalManager.closeModal()
-            }
-        }
-    }
-
     return (
-        <>
-            <Modal<CategoryData>
-                modalId={MODAL_IDS.CATEGORY}
-                open={modalManager.isOpen}
-                title={
-                    modalManager.inEditingMode && modalManager.item
-                        ? modalManager.item.title
-                        : t('categories.modal.newTitle')
-                }
-                footer={{
-                    show: true
-                }}
-                onClick={() => formRef.current?.submit()}
-                onDeleteClick={() => {
-                    deleteModalManager.openModal(modalManager.item)
-                }}
-            >
-                <div className='flex flex-col space-y-6 w-full'>
-                    <CategoryForm
-                        ref={formRef}
-                        initialData={modalManager.item ?? null}
-                        inEditingMode={modalManager.inEditingMode}
-                        dataCallback={handleFormSubmit}
-                    />
-                </div>
-            </Modal>
-
-            <DeleteModal
-                title={deleteModalManager.item ? deleteModalManager.item.title : ''}
-                description={t('categories.modal.deleteDescription')}
-                loading={deleteModalManager.loading}
-                open={deleteModalManager.isOpen}
-                closeDialog={deleteModalManager.closeModal}
-                onConfirm={onDelete}
-            />
-        </>
+        <Modal<CategoryData>
+            modalId={MODAL_IDS.CATEGORY}
+            open={modalManager.isOpen}
+            title={
+                modalManager.inEditingMode && modalManager.item
+                    ? modalManager.item.title
+                    : t('categories.modal.newTitle')
+            }
+            footer={{
+                show: true
+            }}
+            onClick={() => formRef.current?.submit()}
+            onDeleteClick={() => {
+                openDeleteModal(modalManager.item)
+            }}
+        >
+            <div className='flex flex-col space-y-6 w-full'>
+                <CategoryForm
+                    ref={formRef}
+                    initialData={modalManager.item ?? null}
+                    inEditingMode={modalManager.inEditingMode}
+                    dataCallback={handleFormSubmit}
+                />
+            </div>
+        </Modal>
     )
 }

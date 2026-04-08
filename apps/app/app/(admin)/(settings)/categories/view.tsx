@@ -22,6 +22,8 @@ import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
 import { CategoryData, SubcategoryData, CategoryModelMode } from '@poveroh/types'
+import { MODAL_IDS } from '@/types/constant'
+import { DeleteModal } from '@/components/modal/delete-modal'
 
 export default function CategoryView() {
     const t = useTranslations()
@@ -30,17 +32,39 @@ export default function CategoryView() {
         categoryQuery,
         categoryData,
         createCategoryMutation,
+        deleteCategoryMutation,
         deleteAllCategoryMutation,
         importTemplates,
         onSearch
     } = useCategory()
-    const { createSubcategoryMutation } = useSubcategory()
+    const { createSubcategoryMutation, deleteSubcategoryMutation } = useSubcategory()
 
-    const categoryModal = useModal<CategoryData>('category-dialog')
-    const subcategoryModal = useModal<SubcategoryData>('subcategory-dialog')
-    const { openModal: openDeleteModal } = useDeleteModal<CategoryData | SubcategoryData>()
+    const categoryModal = useModal<CategoryData>(MODAL_IDS.CATEGORY)
+    const subcategoryModal = useModal<SubcategoryData>(MODAL_IDS.SUBCATEGORY)
+    const deleteModal = useDeleteModal<CategoryData | SubcategoryData>()
 
     const [activeTab, setActiveTab] = useState('expenses')
+
+    const isSubcategory = (item: CategoryData | SubcategoryData): item is SubcategoryData => {
+        return 'categoryId' in item
+    }
+
+    const onDelete = async () => {
+        const item = deleteModal.item
+        if (!item) return
+
+        deleteModal.setLoading(true)
+
+        try {
+            if (isSubcategory(item)) {
+                await deleteSubcategoryMutation.mutateAsync({ path: { id: item.id } })
+            } else {
+                await deleteCategoryMutation.mutateAsync({ path: { id: item.id } })
+            }
+        } finally {
+            deleteModal.closeModal()
+        }
+    }
 
     const pageContent = useMemo(() => {
         if (categoryQuery.isPending) {
@@ -74,7 +98,7 @@ export default function CategoryView() {
                                                     _mode: CategoryModelMode,
                                                     item: CategoryData | SubcategoryData
                                                 ) => {
-                                                    openDeleteModal(item)
+                                                    deleteModal.openModal(item)
                                                 }}
                                             />
                                         ))}
@@ -170,6 +194,18 @@ export default function CategoryView() {
 
             <CategoryDialog />
             <SubcategoryDialog />
+            <DeleteModal
+                title={deleteModal.item?.title ?? ''}
+                description={
+                    deleteModal.item && isSubcategory(deleteModal.item)
+                        ? t('subcategories.modal.deleteDescription')
+                        : t('categories.modal.deleteDescription')
+                }
+                loading={deleteModal.loading}
+                open={deleteModal.isOpen}
+                closeDialog={deleteModal.closeModal}
+                onConfirm={onDelete}
+            />
         </>
     )
 }
