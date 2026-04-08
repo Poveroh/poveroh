@@ -20,7 +20,7 @@ export const AccountForm = forwardRef<FormRef, AccountFormProps>((props, ref) =>
 
     const t = useTranslations()
     const { ACCOUNT_TYPE_CATALOG } = useFinancialAccount()
-    const { form, setFile, handleSubmit } = useFinancialAccountForm(initialData, inEditingMode)
+    const { form, setFile, handleSubmit } = useFinancialAccountForm(initialData)
 
     useImperativeHandle(ref, () => ({
         submit: () => {

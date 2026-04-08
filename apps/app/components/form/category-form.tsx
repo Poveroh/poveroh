@@ -21,7 +21,7 @@ export const CategoryForm = forwardRef<FormRef, CategoryFormProps>((props: Categ
 
     const t = useTranslations()
     const { getActionList } = useTransaction()
-    const { form, icon, handleSubmit, handleIconChange } = useCategoryForm(initialData, inEditingMode)
+    const { form, icon, handleSubmit, handleIconChange } = useCategoryForm(initialData)
 
     const color = useWatch({ control: form.control, name: 'color' })
 

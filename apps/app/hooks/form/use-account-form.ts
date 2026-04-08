@@ -9,7 +9,7 @@ import { CreateUpdateFinancialAccountRequest, FinancialAccountData, FinancialAcc
 import { useError } from '@/hooks/use-error'
 import { FinancialAccountFormSchema } from '@poveroh/schemas'
 
-export const useFinancialAccountForm = (initialData: FinancialAccountData | null, inEditingMode: boolean) => {
+export const useFinancialAccountForm = (initialData: FinancialAccountData | null) => {
     const { handleError } = useError()
 
     const [file, setFile] = useState<FileList | null>(null)

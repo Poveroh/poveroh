@@ -7,7 +7,7 @@ import { iconList } from '@/components/icon'
 import { CreateUpdateSubcategoryRequest, SubcategoryData, SubcategoryForm } from '@poveroh/types'
 import { SubcategoryFormSchema } from '@poveroh/schemas'
 
-export function useSubcategoryForm(initialData: SubcategoryData | null, inEditingMode: boolean = false) {
+export function useSubcategoryForm(initialData: SubcategoryData | null) {
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
@@ -40,7 +40,7 @@ export function useSubcategoryForm(initialData: SubcategoryData | null, inEditin
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
+            await dataCallback(values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

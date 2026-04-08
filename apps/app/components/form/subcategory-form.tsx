@@ -15,11 +15,11 @@ import { useCategory } from '@/hooks/use-category'
 type SubcategoryFormProps = FormProps<SubcategoryData, CreateUpdateSubcategoryRequest>
 
 export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props: SubcategoryFormProps, ref) => {
-    const { initialData, inEditingMode, dataCallback } = props
+    const { initialData, dataCallback } = props
 
     const t = useTranslations()
     const { categoryData } = useCategory()
-    const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData, inEditingMode)
+    const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData)
 
     const [selectedColor, setSelectedColor] = useState<string>('')
 
@@ -56,7 +56,6 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
                             onIconChange={handleIconChange}
                             enableIcon={true}
                             enableLogo={false}
-                            inEditingMode={inEditingMode}
                         />
 
                         <TextField control={form.control} name='title' label={t('form.title.label')} mandatory />

@@ -9,7 +9,7 @@ import { useError } from '@/hooks/use-error'
 import { CategoryData, CategoryForm, CreateUpdateCategoryRequest } from '@poveroh/types'
 import { CategoryFormSchema } from '@poveroh/schemas'
 
-export const useCategoryForm = (initialData: CategoryData | null, inEditingMode: boolean = false) => {
+export const useCategoryForm = (initialData: CategoryData | null) => {
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
@@ -47,7 +47,7 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
         try {
             setLoading(true)
 
-            await dataCallback(inEditingMode ? { ...initialData, ...values } : values, [])
+            await dataCallback(values, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {
