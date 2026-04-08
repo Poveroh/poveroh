@@ -1,9 +1,19 @@
 import { FieldValues, Path } from 'react-hook-form'
 import { CategoryFieldProps } from '@/types'
-import { SelectField } from './select-field'
 import { useFieldIcon } from '../../hooks/use-field-icon'
 import { useCategory } from '@/hooks/use-category'
 import { CategoryData } from '@poveroh/types'
+import { useTranslations } from 'next-intl'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from '@poveroh/ui/components/select'
 
 export function CategoryField<T extends FieldValues = FieldValues>({
     control,
@@ -17,25 +27,61 @@ export function CategoryField<T extends FieldValues = FieldValues>({
 }: CategoryFieldProps<T>) {
     const { categoryData } = useCategory()
     const { createIconContent } = useFieldIcon()
+    const t = useTranslations()
 
     if (!label) return null
 
+    const incomeCategories = categoryData.filter((c: CategoryData) => c.for === 'INCOME')
+    const expensesCategories = categoryData.filter((c: CategoryData) => c.for === 'EXPENSES')
+
     return (
-        <SelectField
+        <FormField
             control={control}
-            name={name}
-            label={label}
-            placeholder={placeholder}
-            variant={variant}
-            disabled={disabled}
-            mandatory={mandatory}
-            options={categoryData}
-            getOptionLabel={(item: CategoryData) => item.title}
-            getOptionValue={(item: CategoryData) => item.id}
-            onValueChange={onValueChange}
-            renderOptionContent={(item: CategoryData) =>
-                createIconContent(item.logoIcon, item.title, { type: 'dynamic' })
-            }
+            name={name!}
+            render={({ field }) => (
+                <FormItem>
+                    {label && <FormLabel mandatory={mandatory}>{label}</FormLabel>}
+                    <Select
+                        value={field.value ?? ''}
+                        onValueChange={value => {
+                            field.onChange(value)
+                            if (onValueChange) {
+                                onValueChange(value as T[Path<T>])
+                            }
+                        }}
+                        disabled={disabled}
+                    >
+                        <FormControl>
+                            <SelectTrigger variant={variant}>
+                                <SelectValue placeholder={placeholder} />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {incomeCategories.length > 0 && (
+                                <SelectGroup>
+                                    <SelectLabel>{t('transactions.action.income')}</SelectLabel>
+                                    {incomeCategories.map((item: CategoryData) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                            {createIconContent(item.icon, item.title, { type: 'dynamic' })}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            )}
+                            {expensesCategories.length > 0 && (
+                                <SelectGroup>
+                                    <SelectLabel>{t('transactions.action.expenses')}</SelectLabel>
+                                    {expensesCategories.map((item: CategoryData) => (
+                                        <SelectItem key={item.id} value={item.id}>
+                                            {createIconContent(item.icon, item.title, { type: 'dynamic' })}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            )}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            )}
         />
     )
 }

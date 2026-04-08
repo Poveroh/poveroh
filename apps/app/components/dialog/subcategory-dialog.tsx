@@ -112,13 +112,6 @@ export function SubcategoryDialog() {
                         ? modalManager.item.title
                         : t('subcategories.modal.newTitle')
                 }
-                decoration={{
-                    iconLogo: {
-                        name: modalManager.item?.logoIcon ?? '',
-                        mode: 'LOGO',
-                        circled: true
-                    }
-                }}
                 footer={{
                     show: true
                 }}

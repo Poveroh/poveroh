@@ -29,10 +29,6 @@ export class CategoryService extends BaseService {
 
         const generatedId = crypto.randomUUID()
 
-        if (file) {
-            payload.icon = await this.saveFile(generatedId, file)
-        }
-
         return (await prisma.category.create({
             data: {
                 id: generatedId,
@@ -85,10 +81,6 @@ export class CategoryService extends BaseService {
 
     async updateCategory(id: string, payload: UpdateCategoryRequest, file?: Express.Multer.File): Promise<void> {
         const userId = this.getUserId()
-
-        if (file) {
-            payload.icon = await this.saveFile(id, file)
-        }
 
         await prisma.category.update({
             where: { id, userId, deletedAt: null },

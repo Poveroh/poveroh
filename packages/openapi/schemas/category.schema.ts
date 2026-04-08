@@ -11,10 +11,10 @@ export const CategorySchema = z
     .object({
         id: z.string().uuid(),
         userId: z.string().uuid(),
-        title: z.string(),
+        title: z.string().nonempty('Title cannot be empty'),
         for: TransactionActionEnum,
-        icon: z.string().url(),
-        color: z.string().default('#8B5CF6'),
+        icon: z.string().nonempty(),
+        color: z.string().nonempty().default('#8B5CF6'),
         subcategories: z.array(SubcategorySchema).optional(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),

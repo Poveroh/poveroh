@@ -12,6 +12,7 @@ import { PopoverIconLogo } from '@/components/fields/popover-icon-logo'
 import { useCategoryForm } from '@/hooks/form/use-category-form'
 import { FormProps, FormRef } from '@/types'
 import { CategoryData, CreateUpdateCategoryRequest, Item } from '@poveroh/types'
+import { useTransaction } from '@/hooks/use-transaction'
 
 type CategoryFormProps = FormProps<CategoryData, CreateUpdateCategoryRequest>
 
@@ -19,7 +20,8 @@ export const CategoryForm = forwardRef<FormRef, CategoryFormProps>((props: Categ
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
-    const { form, icon, actionList, handleSubmit, handleIconChange } = useCategoryForm(initialData, inEditingMode)
+    const { getActionList } = useTransaction()
+    const { form, icon, handleSubmit, handleIconChange } = useCategoryForm(initialData, inEditingMode)
 
     const color = useWatch({ control: form.control, name: 'color' })
 
@@ -62,7 +64,7 @@ export const CategoryForm = forwardRef<FormRef, CategoryFormProps>((props: Categ
                         label={t('form.type.label')}
                         placeholder={t('form.type.placeholder')}
                         mandatory={true}
-                        options={actionList}
+                        options={getActionList(true)}
                         getOptionLabel={(item: Item) => item.label}
                         getOptionValue={(item: Item) => item.value.toString()}
                     />

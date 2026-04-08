@@ -6,20 +6,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { iconList } from '@/components/icon'
 import { useError } from '@/hooks/use-error'
-import { useTransaction } from '@/hooks/use-transaction'
 import { CategoryData, CategoryForm, CreateUpdateCategoryRequest } from '@poveroh/types'
 import { CategoryFormSchema } from '@poveroh/schemas'
 
 export const useCategoryForm = (initialData: CategoryData | null, inEditingMode: boolean = false) => {
     const { handleError } = useError()
-    const { getActionList } = useTransaction()
 
     const [icon, setIcon] = useState(iconList[0])
     const [loading, setLoading] = useState(false)
 
     const defaultValues = initialData || {
         title: '',
-        logoIcon: iconList[0] as string,
+        icon: iconList[0] as string,
         color: '#8B5CF6',
         for: 'EXPENSES'
     }
@@ -31,10 +29,8 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
 
     useEffect(() => {
         if (initialData) {
-            form.reset({
-                ...initialData
-            })
-            setIcon(initialData.logoIcon)
+            form.reset(initialData)
+            setIcon(initialData.icon)
         }
     }, [initialData, form])
 
@@ -60,7 +56,7 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
     }
 
     const handleIconChange = (iconName: string) => {
-        form.setValue('logoIcon', iconName)
+        form.setValue('icon', iconName)
         setIcon(iconName)
     }
 
@@ -70,7 +66,6 @@ export const useCategoryForm = (initialData: CategoryData | null, inEditingMode:
         loading,
         setLoading,
         handleSubmit,
-        handleIconChange,
-        actionList: getActionList(true)
+        handleIconChange
     }
 }

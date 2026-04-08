@@ -215,8 +215,7 @@ export const SubcategorySchema = {
             type: 'string'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         createdAt: {
             type: 'string',
@@ -252,8 +251,7 @@ export const CategorySchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -295,8 +293,7 @@ export const CategoryDataSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -377,8 +374,7 @@ export const CreateCategoryRequestSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -423,8 +419,7 @@ export const UpdateCategoryRequestSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -557,8 +552,7 @@ export const CategoryFormSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -2555,8 +2549,7 @@ export const SubcategoryDataSchema = {
             type: 'string'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         createdAt: {
             type: 'string',
@@ -2628,8 +2621,7 @@ export const CreateSubcategoryRequestSchema = {
             type: 'string'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         }
     },
     required: ['categoryId', 'title', 'icon']
@@ -2667,8 +2659,7 @@ export const UpdateSubcategoryRequestSchema = {
             type: 'string'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         }
     }
 } as const
@@ -2777,8 +2768,7 @@ export const SubcategoryFormSchema = {
             type: 'string'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         }
     },
     required: ['categoryId', 'title', 'icon']
@@ -4281,8 +4271,7 @@ export const CreateCategoryTemplateRequestSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string',
-            format: 'uri'
+            type: 'string'
         },
         color: {
             type: 'string',
@@ -4297,8 +4286,7 @@ export const CreateCategoryTemplateRequestSchema = {
                         type: 'string'
                     },
                     icon: {
-                        type: 'string',
-                        format: 'uri'
+                        type: 'string'
                     }
                 },
                 required: ['title', 'icon']

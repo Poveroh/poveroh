@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Form } from '@poveroh/ui/components/form'
@@ -10,6 +10,7 @@ import { PopoverIconLogo } from '@/components/fields/popover-icon-logo'
 import { useSubcategoryForm } from '@/hooks/form/use-subcategory-form'
 import { FormProps, FormRef } from '@/types'
 import { CreateUpdateSubcategoryRequest, SubcategoryData } from '@poveroh/types'
+import { useCategory } from '@/hooks/use-category'
 
 type SubcategoryFormProps = FormProps<SubcategoryData, CreateUpdateSubcategoryRequest>
 
@@ -17,7 +18,10 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
     const { initialData, inEditingMode, dataCallback } = props
 
     const t = useTranslations()
+    const { categoryData } = useCategory()
     const { form, icon, handleSubmit, handleIconChange } = useSubcategoryForm(initialData, inEditingMode)
+
+    const [selectedColor, setSelectedColor] = useState<string>('')
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -27,6 +31,13 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
             form.reset()
         }
     }))
+
+    function onCategoryChange(categoryId: string) {
+        const category = categoryData.find(c => c.id === categoryId)
+        if (category) {
+            setSelectedColor(category.color!)
+        }
+    }
 
     return (
         <Form {...form}>
@@ -41,6 +52,7 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
                         <PopoverIconLogo
                             control={form.control}
                             selectedIcon={icon}
+                            selectedColor={selectedColor}
                             onIconChange={handleIconChange}
                             enableIcon={true}
                             enableLogo={false}
@@ -55,6 +67,7 @@ export const SubcategoryForm = forwardRef<FormRef, SubcategoryFormProps>((props:
                         name='categoryId'
                         label={t('form.category.label')}
                         placeholder={t('form.category.placeholder')}
+                        onValueChange={onCategoryChange}
                         mandatory={true}
                     />
                 </div>

@@ -10,8 +10,8 @@ export const SubcategorySchema = z
     .object({
         id: z.string().uuid(),
         categoryId: z.string().uuid(),
-        title: z.string(),
-        icon: z.string().url(),
+        title: z.string().nonempty(),
+        icon: z.string().nonempty(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
         deletedAt: z.string().datetime().optional()

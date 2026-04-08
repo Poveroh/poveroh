@@ -11,10 +11,10 @@ export const FinancialAccountSchema = z
     .object({
         id: z.string().uuid(),
         userId: z.string().uuid(),
-        title: z.string(),
+        title: z.string().nonempty(),
         balance: z.number(),
         type: FinancialAccountTypeEnum,
-        logoIcon: z.string(),
+        logoIcon: z.string().nonempty(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
         deletedAt: z.string().datetime().optional()
