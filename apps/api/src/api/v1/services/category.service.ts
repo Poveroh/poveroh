@@ -118,12 +118,12 @@ export class CategoryService extends BaseService {
         const deletedAt = new Date()
 
         await prisma.$transaction([
-            prisma.category.updateMany({
-                where: { userId, deletedAt: null },
-                data: { deletedAt }
-            }),
             prisma.subcategory.updateMany({
                 where: { category: { userId, deletedAt: null } },
+                data: { deletedAt }
+            }),
+            prisma.category.updateMany({
+                where: { userId, deletedAt: null },
                 data: { deletedAt }
             })
         ])
