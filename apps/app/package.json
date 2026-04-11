@@ -23,7 +23,7 @@
         "@prisma/client": "^7.6.0",
         "@tanstack/react-query": "^5.94.4",
         "@tanstack/react-table": "^8.21.3",
-        "axios": "^1.13.5",
+        "axios": "^1.15.0",
         "better-auth": "^1.4.0",
         "currency-icons": "^1.0.14",
         "dotenv": "^16.4.7",
