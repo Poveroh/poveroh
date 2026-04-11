@@ -43,9 +43,7 @@ export function PopoverIconLogo<T extends FieldValues>({
 }: PopoverIconLogoProps<T>) {
     const t = useTranslations()
 
-    const [activeTab, setActiveTab] = useState<ActiveTab>(
-        logoUrl && enableLogo ? 'logo' : enableIcon ? 'icon' : 'logo'
-    )
+    const [activeTab, setActiveTab] = useState<ActiveTab>(logoUrl && enableLogo ? 'logo' : enableIcon ? 'icon' : 'logo')
     const [previewLogoUrl, setPreviewLogoUrl] = useState<string | undefined>(logoUrl)
     const [selectedFile, setSelectedFile] = useState<FileList | null>(null)
 
