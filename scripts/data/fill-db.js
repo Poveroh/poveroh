@@ -31,13 +31,17 @@
  */
 
 const { PrismaClient } = require('@prisma/client')
+const { PrismaPg } = require('@prisma/adapter-pg')
 const fs = require('fs')
 const path = require('path')
 const csv = require('csv-parser')
 const minimist = require('minimist')
-require('dotenv').config()
+const dotenv = require('dotenv')
+const dotenvExpand = require('dotenv-expand')
+dotenvExpand.expand(dotenv.config({ path: path.resolve(__dirname, '../../.env') }))
 
-const prisma = new PrismaClient()
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const prisma = new PrismaClient({ adapter })
 const ALLOWED_EXTENSIONS = ['.json', '.csv']
 const DEFAULT_FOLDER = 'sample'
 
@@ -202,7 +206,7 @@ async function main() {
         }
 
         if (userId) {
-            const userExists = await prisma.users.findUnique({ where: { id: userId } })
+            const userExists = await prisma.user.findUnique({ where: { id: userId } })
             if (!userExists) {
                 throw new Error(`User with ID '${userId}' not found in the users table.`)
             }
