@@ -17,7 +17,7 @@ export class SubscriptionController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const subscriptionPayload: CreateSubscriptionRequest = req.body
+            const subscriptionPayload: CreateSubscriptionRequest = JSON.parse(req.body.data)
 
             const subscriptionService = new SubscriptionService(req.user.id)
             const subscription = await subscriptionService.createSubscription(subscriptionPayload, req.file)
@@ -39,7 +39,7 @@ export class SubscriptionController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const subscriptionPayload: UpdateSubscriptionRequest = req.body
+            const subscriptionPayload: UpdateSubscriptionRequest = JSON.parse(req.body.data)
             const id = getParamString(req.params, 'id')
 
             if (!id) {
@@ -110,9 +110,10 @@ export class SubscriptionController {
     //GET /
     static async readSubscriptions(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as SubscriptionFilters
-            const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take) || 20
+            const filters = (req.query.filter || {}) as SubscriptionFilters
+            const options = (req.query.options || {}) as any
+            const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
+            const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 
             const subscriptionService = new SubscriptionService(req.user.id)
             const data = await subscriptionService.getSubscriptions(filters, skip, take)

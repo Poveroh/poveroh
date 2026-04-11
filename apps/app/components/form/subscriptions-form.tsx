@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useSubscriptionForm } from '@/hooks/form/use-subscription-form'
@@ -12,7 +12,7 @@ import {
     AccountField,
     SelectField,
     NoteField,
-    IconField
+    PopoverIconLogo
 } from '../fields'
 import { Form } from '@poveroh/ui/components/form'
 import { FormProps, FormRef } from '@/types'
@@ -21,19 +21,21 @@ import {
     CreateUpdateSubscriptionRequest,
     SubscriptionData,
     CyclePeriodCatalog,
-    RememberPeriodCatalog
+    RememberPeriodCatalog,
+    Item
 } from '@poveroh/types'
+import { useWatch } from 'react-hook-form'
 
-type SubscriptionFormProps = FormProps<SubscriptionData, CreateUpdateSubscriptionRequest> & {
-    fromTemplate?: boolean
-}
+type SubscriptionFormProps = FormProps<SubscriptionData, CreateUpdateSubscriptionRequest>
 
 export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((props: SubscriptionFormProps, ref) => {
-    const { initialData, inEditingMode, fromTemplate, dataCallback } = props
+    const { initialData, dataCallback } = props
 
     const t = useTranslations()
     const { renderItemsLabel } = useUtils()
-    const { form, icon, handleIconChange, handleSubmit } = useSubscriptionForm(initialData, inEditingMode)
+    const { form, icon, handleIconChange, handleFileChange, handleSubmit } = useSubscriptionForm(initialData)
+
+    const color = useWatch({ control: form.control, name: 'appearanceIconColor' })
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -44,6 +46,13 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
         }
     }))
 
+    const DAYS = useMemo(() => {
+        return Array.from({ length: 31 }, (_, i) => ({
+            label: (i + 1).toString(),
+            value: (i + 1).toString()
+        })) as Item<string>[]
+    }, [])
+
     return (
         <Form {...form}>
             <form
@@ -52,7 +61,21 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                 }}
             >
                 <div className='flex flex-col space-y-6'>
-                    <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
+                    <div className='flex flex-row items-center space-x-7'>
+                        <PopoverIconLogo
+                            control={form.control}
+                            logoUrl={initialData?.appearanceLogoIcon}
+                            colorFieldName='appearanceIconColor'
+                            selectedIcon={icon}
+                            selectedColor={color || initialData?.appearanceIconColor}
+                            onFileChange={handleFileChange}
+                            onIconChange={handleIconChange}
+                            enableIcon={true}
+                            enableLogo={true}
+                        />
+
+                        <TextField control={form.control} name='title' label={t('form.title.label')} mandatory={true} />
+                    </div>
 
                     <div className='flex flex-row space-x-2'>
                         <AmountField
@@ -86,12 +109,11 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                                 name='cycleNumber'
                                 label={t('form.cycle_number.label')}
                                 mandatory={true}
-                                options={Array.from({ length: 31 }, (_, i) => ({
-                                    label: (i + 1).toString(),
-                                    value: (i + 1).toString()
-                                }))}
+                                options={DAYS}
                                 getOptionLabel={option => option.label}
                                 getOptionValue={option => option.value}
+                                formatValue={value => (value ? String(value) : '')}
+                                parseValue={value => Number(value)}
                             />
                         </div>
 
@@ -113,15 +135,6 @@ export const SubscriptionForm = forwardRef<FormRef, SubscriptionFormProps>((prop
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}
                     />
-
-                    {!fromTemplate && (
-                        <IconField
-                            label={t('form.icon.label')}
-                            selectedIcon={icon}
-                            onIconChange={handleIconChange}
-                            mandatory={!inEditingMode}
-                        />
-                    )}
 
                     <SelectField
                         control={form.control}

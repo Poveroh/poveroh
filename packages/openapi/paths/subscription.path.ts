@@ -9,7 +9,8 @@ import {
     GetSubscriptionResponseSchema,
     CreateSubscriptionResponseSchema,
     UpdateSubscriptionResponseSchema,
-    DeleteSubscriptionResponseSchema
+    DeleteSubscriptionResponseSchema,
+    UpdateSubscriptionMultipartRequestSchema
 } from '../schemas'
 
 export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
@@ -194,8 +195,13 @@ export const registerSubscriptionPath = (registry: OpenAPIRegistry) => {
                 description: 'Subscription data to update',
                 required: true,
                 content: {
-                    'application/json': {
-                        schema: UpdateSubscriptionRequestSchema
+                    'multipart/form-data': {
+                        schema: UpdateSubscriptionMultipartRequestSchema,
+                        encoding: {
+                            data: {
+                                contentType: 'application/json'
+                            }
+                        }
                     }
                 }
             }

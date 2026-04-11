@@ -1381,6 +1381,7 @@ export type Subscription = {
     currency: CurrencyEnum
     appearanceMode: AppearanceModeEnum
     appearanceLogoIcon: string
+    appearanceIconColor: string
     firstPayment: string
     cycleNumber: number
     cyclePeriod: CyclePeriodEnum
@@ -1400,6 +1401,7 @@ export type SubscriptionData = {
     currency: CurrencyEnum
     appearanceMode: AppearanceModeEnum
     appearanceLogoIcon: string
+    appearanceIconColor: string
     firstPayment: string
     cycleNumber: number
     cyclePeriod: CyclePeriodEnum
@@ -1444,6 +1446,7 @@ export type CreateSubscriptionRequest = {
     currency: CurrencyEnum
     appearanceMode: AppearanceModeEnum
     appearanceLogoIcon: string
+    appearanceIconColor: string
     firstPayment: string
     cycleNumber: number
     cyclePeriod: CyclePeriodEnum
@@ -1476,6 +1479,7 @@ export type UpdateSubscriptionRequest = {
     currency?: CurrencyEnum
     appearanceMode?: AppearanceModeEnum
     appearanceLogoIcon?: string
+    appearanceIconColor?: string
     firstPayment?: string
     cycleNumber?: number
     cyclePeriod?: CyclePeriodEnum
@@ -1523,14 +1527,6 @@ export type SubscriptionFilters = {
     title?: StringFilter
     description?: StringFilter
     type?: FinancialAccountTypeEnum
-    [key: string]:
-        | string
-        | StringFilter
-        | FinancialAccountTypeEnum
-        | SubscriptionParamsId
-        | StringFilter
-        | FinancialAccountTypeEnum
-        | undefined
 }
 
 export type QuerySubscriptionFilters = {
@@ -1545,6 +1541,7 @@ export type SubscriptionForm = {
     currency: CurrencyEnum
     appearanceMode: AppearanceModeEnum
     appearanceLogoIcon: string
+    appearanceIconColor: string
     firstPayment: string
     cycleNumber: number
     cyclePeriod: CyclePeriodEnum
@@ -1903,6 +1900,11 @@ export type CreateCategoryTemplateRequest = {
         title: string
         icon: string
     }>
+}
+
+export type UpdateSubscriptionMultipartRequest = {
+    data?: UpdateSubscriptionRequest
+    file: Array<Blob | File>
 }
 
 export type GetRootStatusData = {
@@ -2907,7 +2909,7 @@ export type UpdateSubscriptionData = {
     /**
      * Subscription data to update
      */
-    body: UpdateSubscriptionRequest
+    body: UpdateSubscriptionMultipartRequest
     path: {
         id: string
     }

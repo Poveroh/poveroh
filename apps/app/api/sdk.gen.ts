@@ -664,11 +664,12 @@ export const updateSubscription = <ThrowOnError extends boolean = false>(
     options: Options<UpdateSubscriptionData, ThrowOnError>
 ) =>
     (options.client ?? client).patch<UpdateSubscriptionResponses, UpdateSubscriptionErrors, ThrowOnError>({
+        ...formDataBodySerializer,
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/subscriptions/{id}',
         ...options,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': null,
             ...options.headers
         }
     })

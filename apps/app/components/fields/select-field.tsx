@@ -17,7 +17,9 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
     getOptionDisabled,
     onValueChange,
     onOpenChange,
-    renderOptionContent
+    renderOptionContent,
+    parseValue,
+    formatValue
 }: SelectFieldProps<OptionType, T>) {
     return (
         <FormField
@@ -27,11 +29,12 @@ export function SelectField<OptionType, T extends FieldValues = FieldValues>({
                 <FormItem>
                     {label && <FormLabel mandatory={mandatory}>{label}</FormLabel>}
                     <Select
-                        value={field.value ?? ''}
+                        value={formatValue ? formatValue(field.value) : (field.value ?? '')}
                         onValueChange={value => {
-                            field.onChange(value)
+                            const parsed = parseValue ? parseValue(value) : value
+                            field.onChange(parsed)
                             if (onValueChange) {
-                                onValueChange(value as T[Path<T>])
+                                onValueChange(parsed as T[Path<T>])
                             }
                         }}
                         onOpenChange={onOpenChange}

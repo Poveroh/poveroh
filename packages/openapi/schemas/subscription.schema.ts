@@ -17,17 +17,18 @@ export const SubscriptionSchema = z
     .object({
         id: z.string().uuid(),
         userId: z.string().uuid(),
-        title: z.string(),
+        title: z.string().nonempty(),
         description: z.string(),
-        amount: z.number(),
+        amount: z.number().nonnegative(),
         currency: CurrencyEnum,
         appearanceMode: AppearanceModeEnum,
         appearanceLogoIcon: z.string(),
+        appearanceIconColor: z.string(),
         firstPayment: z.string().datetime(),
-        cycleNumber: z.number(),
+        cycleNumber: z.number().positive(),
         cyclePeriod: CyclePeriodEnum,
         rememberPeriod: RememberPeriodEnum,
-        financialAccountId: z.string().uuid(),
+        financialAccountId: z.string().nonempty(),
         isEnabled: z.boolean(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
@@ -96,6 +97,10 @@ export const UpdateSubscriptionRequestSchema = SubscriptionSchema.partial()
     })
     .openapi('UpdateSubscriptionRequest')
 
+export const UpdateSubscriptionMultipartRequestSchema = MultipartRequestSchema(UpdateSubscriptionRequestSchema).openapi(
+    'UpdateSubscriptionMultipartRequest'
+)
+
 /**
  * Response schema for updating an existing subscription
  */
@@ -128,7 +133,6 @@ export const SubscriptionFiltersSchema = z
         type: FinancialAccountTypeEnum.optional()
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema, FinancialAccountTypeEnum]))
     .openapi('SubscriptionFilters')
 
 /**

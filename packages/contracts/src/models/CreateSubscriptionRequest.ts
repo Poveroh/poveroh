@@ -13,6 +13,7 @@ export type CreateSubscriptionRequest = {
     currency: CurrencyEnum
     appearanceMode: AppearanceModeEnum
     appearanceLogoIcon: string
+    appearanceIconColor: string
     firstPayment: string
     cycleNumber: number
     cyclePeriod: CyclePeriodEnum

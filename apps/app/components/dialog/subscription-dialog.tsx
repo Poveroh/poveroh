@@ -15,7 +15,8 @@ import {
     UpdateSubscriptionRequest,
     CreateUpdateSubscriptionRequest,
     SubscriptionData,
-    Brand
+    Brand,
+    DEFAULT_SUBSCRIPTION
 } from '@poveroh/types'
 import { MODAL_IDS } from '@/types/constant'
 
@@ -28,17 +29,12 @@ export function SubscriptionDialog() {
     const deleteModalManager = useDeleteModal<SubscriptionData>()
 
     const [mode, setMode] = useState<string>(modalManager.inEditingMode ? 'editor' : 'template')
-    const [fromTemplate, setFromTemplate] = useState<boolean>(modalManager.inEditingMode ? false : true)
+    const [selectedSubscriptionTemplate, setSelectedSubscriptionTemplate] = useState<SubscriptionData | null>(null)
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
-    const [title, setTitle] = useState(
-        modalManager.inEditingMode && modalManager.item ? modalManager.item.title : t('subscriptions.modal.newTitle')
-    )
-
     useEffect(() => {
         if (modalManager.inEditingMode && modalManager.item) {
-            setTitle(modalManager.item.title)
             setMode('editor')
         }
     }, [modalManager.inEditingMode, modalManager.item])
@@ -51,15 +47,13 @@ export function SubscriptionDialog() {
 
     const clearUp = () => {
         setMode('template')
-        setFromTemplate(true)
-        setTitle(t('subscriptions.modal.newTitle'))
     }
 
     const onCreate = async (payload: CreateSubscriptionRequest, files: File[]) => {
         const response = await createMutation.mutateAsync({
             body: {
-                data: payload as CreateSubscriptionRequest,
-                file: files as Array<Blob | File>
+                data: payload,
+                file: files
             }
         })
 
@@ -78,14 +72,17 @@ export function SubscriptionDialog() {
         toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
     }
 
-    const onUpdate = async (payload: UpdateSubscriptionRequest) => {
+    const onUpdate = async (payload: UpdateSubscriptionRequest, files: File[]) => {
         if (!modalManager.item) {
             throw new Error('No item to update')
         }
 
         const response = await updateMutation.mutateAsync({
             path: { id: modalManager.item.id },
-            body: payload
+            body: {
+                data: payload,
+                file: files
+            }
         })
 
         if (!response?.success) {
@@ -103,7 +100,7 @@ export function SubscriptionDialog() {
             modalManager.setLoading(true)
 
             if (modalManager.inEditingMode) {
-                await onUpdate(payload as UpdateSubscriptionRequest)
+                await onUpdate(payload as UpdateSubscriptionRequest, files)
             } else {
                 await onCreate(payload as CreateSubscriptionRequest, files)
             }
@@ -115,8 +112,16 @@ export function SubscriptionDialog() {
     }
 
     const onTemplateSelected = (brand: Brand) => {
-        setTitle(brand.name)
-        setFromTemplate(true)
+        setSelectedSubscriptionTemplate({
+            ...DEFAULT_SUBSCRIPTION,
+            title: brand.name,
+            appearanceMode: 'LOGO',
+            appearanceLogoIcon: brand.logo,
+            appearanceIconColor: brand.color,
+            id: '',
+            createdAt: '',
+            updatedAt: ''
+        })
         setMode('editor')
     }
 
@@ -145,15 +150,11 @@ export function SubscriptionDialog() {
             <Modal<SubscriptionData>
                 modalId={MODAL_IDS.SUBSCRIPTION}
                 open={modalManager.isOpen}
-                title={title}
-                decoration={{
-                    iconLogo: {
-                        name: modalManager.item?.appearanceLogoIcon || '',
-                        mode: modalManager.item?.appearanceMode || 'LOGO',
-                        circled: true
-                    },
-                    contentHeight: 'h-[60vh]'
-                }}
+                title={
+                    modalManager.inEditingMode && modalManager.item
+                        ? modalManager.item.title
+                        : t('categories.modal.newTitle')
+                }
                 footer={{
                     show: true,
                     customFooter:
@@ -161,7 +162,6 @@ export function SubscriptionDialog() {
                             <Button
                                 type='button'
                                 onClick={() => {
-                                    setFromTemplate(false)
                                     setMode('editor')
                                 }}
                                 className='w-full'
@@ -171,6 +171,9 @@ export function SubscriptionDialog() {
                         ) : undefined
                 }}
                 onClick={() => formRef.current?.submit()}
+                onOpenChange={x => {
+                    console.log(x)
+                }}
                 onDeleteClick={() => {
                     deleteModalManager.openModal(modalManager.item)
                 }}
@@ -181,8 +184,7 @@ export function SubscriptionDialog() {
                     <div className='flex flex-col space-y-6 w-full'>
                         <SubscriptionForm
                             ref={formRef}
-                            fromTemplate={fromTemplate}
-                            initialData={modalManager.item ?? null}
+                            initialData={modalManager.item || selectedSubscriptionTemplate || null}
                             inEditingMode={modalManager.inEditingMode}
                             dataCallback={handleFormSubmit}
                         />

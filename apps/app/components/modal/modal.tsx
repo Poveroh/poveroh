@@ -50,19 +50,17 @@ export default function Modal<T>(props: ModalProps) {
     }
 
     const handleOpenChange = (nextOpen: boolean) => {
+        if (props.onOpenChange) {
+            props.onOpenChange(nextOpen)
+        }
+
         if (!nextOpen) {
             if (showConfirmationDialog) {
                 setOpenConfirmationDialog(true)
-            } else if (props.onOpenChange) {
-                props.onOpenChange(false)
             } else {
                 closeModal()
             }
             return
-        }
-
-        if (props.onOpenChange) {
-            props.onOpenChange(true)
         }
     }
 

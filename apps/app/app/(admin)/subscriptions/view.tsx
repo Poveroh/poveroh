@@ -22,7 +22,7 @@ import { MODAL_IDS } from '@/types/constant'
 export default function SubscriptionsView() {
     const t = useTranslations()
 
-    const { subscriptionQuery, createMutation, deleteMutation, onSearch } = useSubscription()
+    const { subscriptionQuery, createMutation, deleteMutation, deleteAllMutation, onSearch } = useSubscription()
 
     const { openModal } = useModal<SubscriptionData>(MODAL_IDS.SUBSCRIPTION)
     const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()
@@ -37,7 +37,7 @@ export default function SubscriptionsView() {
     }, [subscriptionQuery.data])
 
     const pageContent = useMemo(() => {
-        if (subscriptionQuery.isPending) {
+        if (subscriptionQuery.isFetching) {
             return <SkeletonItem repeat={5} />
         }
 
@@ -67,7 +67,7 @@ export default function SubscriptionsView() {
                 </div>
             </div>
         )
-    }, [subscriptionQuery.isPending, subscriptionQuery.data])
+    }, [subscriptionQuery.isFetching, subscriptionQuery.data])
 
     return (
         <>
@@ -81,14 +81,14 @@ export default function SubscriptionsView() {
                     ]}
                     fetchAction={{
                         onClick: subscriptionQuery.refetch,
-                        loading: subscriptionQuery.isPending
+                        loading: subscriptionQuery.isFetching
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
                         loading: createMutation.isPending
                     }}
                     onDeleteAll={{
-                        onClick: () => {},
+                        onClick: () => deleteAllMutation.mutate({}),
                         loading: deleteMutation.isPending
                     }}
                 />

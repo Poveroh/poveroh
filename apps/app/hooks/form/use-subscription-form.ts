@@ -16,11 +16,12 @@ import {
 } from '@poveroh/types'
 import { SubscriptionFormSchema } from '@poveroh/schemas'
 
-export const useSubscriptionForm = (initialData: SubscriptionData | null, inEditingMode: boolean) => {
+export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
     const t = useTranslations()
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
+    const [file, setFile] = useState<FileList | null>(null)
     const [loading, setLoading] = useState(false)
 
     const formSchema = SubscriptionFormSchema.refine(
@@ -44,8 +45,18 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null, inEdit
     useEffect(() => {
         if (Object.keys(form.formState.errors).length > 0) {
             console.debug('Form errors:', form.formState.errors)
+            console.debug('Form values:', form.getValues())
         }
     }, [form.formState.errors])
+
+    useEffect(() => {
+        if (initialData) {
+            form.reset(initialData)
+            if (initialData.appearanceLogoIcon) {
+                setIcon(initialData.appearanceLogoIcon)
+            }
+        }
+    }, [initialData])
 
     const handleSubmit = async (
         values: SubscriptionForm,
@@ -54,11 +65,11 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null, inEdit
         try {
             setLoading(true)
 
+            console.log('[subscription submit]', values)
+
             values.firstPayment = new Date(values.firstPayment).toISOString()
 
-            const payload: CreateUpdateSubscriptionRequest = inEditingMode ? { ...initialData, ...values } : values
-
-            await dataCallback(payload, [])
+            await dataCallback(values, file ? Array.from(file) : [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {
@@ -71,11 +82,17 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null, inEdit
         setIcon(newIcon)
     }
 
+    const handleFileChange = (newFile: FileList | null) => {
+        setFile(newFile)
+    }
+
     return {
         form,
         icon,
+        file,
         loading,
         handleSubmit,
-        handleIconChange
+        handleIconChange,
+        handleFileChange
     }
 }

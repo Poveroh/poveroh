@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Control, FieldValues, Path } from 'react-hook-form'
 
@@ -33,7 +33,7 @@ export function PopoverIconLogo<T extends FieldValues>({
     control,
     colorFieldName,
     selectedIcon,
-    selectedColor,
+    selectedColor = '#818a66',
     logoUrl,
     onIconChange,
     onFileChange,
@@ -43,9 +43,18 @@ export function PopoverIconLogo<T extends FieldValues>({
 }: PopoverIconLogoProps<T>) {
     const t = useTranslations()
 
-    const [activeTab, setActiveTab] = useState<ActiveTab>(enableIcon ? 'icon' : 'logo')
+    const [activeTab, setActiveTab] = useState<ActiveTab>(
+        logoUrl && enableLogo ? 'logo' : enableIcon ? 'icon' : 'logo'
+    )
     const [previewLogoUrl, setPreviewLogoUrl] = useState<string | undefined>(logoUrl)
     const [selectedFile, setSelectedFile] = useState<FileList | null>(null)
+
+    useEffect(() => {
+        setPreviewLogoUrl(logoUrl)
+        if (logoUrl && enableLogo) {
+            setActiveTab('logo')
+        }
+    }, [logoUrl, enableLogo])
 
     const fileInputRef = useRef<HTMLInputElement>(null)
     const logoOnly = enableLogo && !enableIcon

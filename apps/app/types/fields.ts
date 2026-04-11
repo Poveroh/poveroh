@@ -84,6 +84,8 @@ export type SelectFieldProps<OptionType, T extends FieldValues = FieldValues> = 
     getOptionValue: (option: OptionType) => string
     getOptionDisabled?: (option: OptionType) => boolean
     renderOptionContent?: (option: OptionType) => ReactNode
+    parseValue?: (value: string) => unknown
+    formatValue?: (value: unknown) => string
 }
 
 // =============================================================================

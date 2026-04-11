@@ -601,6 +601,7 @@ export type {
     UpdateSubscriptionData,
     UpdateSubscriptionError,
     UpdateSubscriptionErrors,
+    UpdateSubscriptionMultipartRequest,
     UpdateSubscriptionRequest,
     UpdateSubscriptionResponse,
     UpdateSubscriptionResponse2,

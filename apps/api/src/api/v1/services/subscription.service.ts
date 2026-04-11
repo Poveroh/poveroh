@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { buildWhere } from '../../../helpers/filter.helper'
+import { buildWhere, buildWhere2 } from '../../../helpers/filter.helper'
 import { BaseService } from './base.service'
 import {
     CreateSubscriptionRequest,
@@ -122,14 +122,11 @@ export class SubscriptionService extends BaseService {
     async getSubscriptions(filters: SubscriptionFilters, skip: number, take: number): Promise<SubscriptionData[]> {
         const userId = this.getUserId()
 
-        const where = {
-            ...buildWhere(filters),
-            userId,
-            deletedAt: null
-        }
+        const whereCondition = buildWhere2({ ...filters, deletedAt: null, userId }, ['title', 'description'])
 
         return (await prisma.subscription.findMany({
-            where,
+            where: whereCondition,
+            omit: { userId: true, deletedAt: true },
             orderBy: { createdAt: 'desc' },
             skip,
             take

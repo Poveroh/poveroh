@@ -212,10 +212,12 @@ export const SubcategorySchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         createdAt: {
             type: 'string',
@@ -245,16 +247,19 @@ export const CategorySchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         },
         subcategories: {
@@ -287,16 +292,19 @@ export const CategoryDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         },
         subcategories: {
@@ -368,16 +376,19 @@ export const CreateCategoryRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         }
     },
@@ -413,16 +424,19 @@ export const UpdateCategoryRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         }
     }
@@ -546,16 +560,19 @@ export const CategoryFormSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         }
     },
@@ -1290,7 +1307,8 @@ export const FinancialAccountSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         balance: {
             type: 'number'
@@ -1299,7 +1317,8 @@ export const FinancialAccountSchema = {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
         logoIcon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         createdAt: {
             type: 'string',
@@ -1325,7 +1344,8 @@ export const FinancialAccountDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         balance: {
             type: 'number'
@@ -1334,7 +1354,8 @@ export const FinancialAccountDataSchema = {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
         logoIcon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         createdAt: {
             type: 'string',
@@ -1399,13 +1420,15 @@ export const CreateFinancialAccountRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
         logoIcon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     },
     required: ['title', 'type', 'logoIcon']
@@ -1458,13 +1481,15 @@ export const UpdateFinancialAccountRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
         logoIcon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     }
 } as const
@@ -1549,13 +1574,15 @@ export const FinancialAccountFormSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         },
         logoIcon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     },
     required: ['title', 'type', 'logoIcon']
@@ -2546,10 +2573,12 @@ export const SubcategoryDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         createdAt: {
             type: 'string',
@@ -2618,10 +2647,12 @@ export const CreateSubcategoryRequestSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     },
     required: ['categoryId', 'title', 'icon']
@@ -2656,10 +2687,12 @@ export const UpdateSubcategoryRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     }
 } as const
@@ -2765,10 +2798,12 @@ export const SubcategoryFormSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         }
     },
     required: ['categoryId', 'title', 'icon']
@@ -2786,13 +2821,15 @@ export const SubscriptionSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         description: {
             type: 'string'
         },
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -2803,12 +2840,17 @@ export const SubscriptionSchema = {
         appearanceLogoIcon: {
             type: 'string'
         },
+        appearanceIconColor: {
+            type: 'string'
+        },
         firstPayment: {
             type: 'string',
             format: 'date-time'
         },
         cycleNumber: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         cyclePeriod: {
             $ref: '#/components/schemas/CyclePeriodEnum'
@@ -2818,7 +2860,7 @@ export const SubscriptionSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         isEnabled: {
             type: 'boolean'
@@ -2845,6 +2887,7 @@ export const SubscriptionSchema = {
         'currency',
         'appearanceMode',
         'appearanceLogoIcon',
+        'appearanceIconColor',
         'firstPayment',
         'cycleNumber',
         'cyclePeriod',
@@ -2864,13 +2907,15 @@ export const SubscriptionDataSchema = {
             format: 'uuid'
         },
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         description: {
             type: 'string'
         },
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -2881,12 +2926,17 @@ export const SubscriptionDataSchema = {
         appearanceLogoIcon: {
             type: 'string'
         },
+        appearanceIconColor: {
+            type: 'string'
+        },
         firstPayment: {
             type: 'string',
             format: 'date-time'
         },
         cycleNumber: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         cyclePeriod: {
             $ref: '#/components/schemas/CyclePeriodEnum'
@@ -2896,7 +2946,7 @@ export const SubscriptionDataSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         isEnabled: {
             type: 'boolean'
@@ -2918,6 +2968,7 @@ export const SubscriptionDataSchema = {
         'currency',
         'appearanceMode',
         'appearanceLogoIcon',
+        'appearanceIconColor',
         'firstPayment',
         'cycleNumber',
         'cyclePeriod',
@@ -2980,13 +3031,15 @@ export const CreateSubscriptionRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         description: {
             type: 'string'
         },
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -2997,12 +3050,17 @@ export const CreateSubscriptionRequestSchema = {
         appearanceLogoIcon: {
             type: 'string'
         },
+        appearanceIconColor: {
+            type: 'string'
+        },
         firstPayment: {
             type: 'string',
             format: 'date-time'
         },
         cycleNumber: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         cyclePeriod: {
             $ref: '#/components/schemas/CyclePeriodEnum'
@@ -3012,7 +3070,7 @@ export const CreateSubscriptionRequestSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         isEnabled: {
             type: 'boolean'
@@ -3025,6 +3083,7 @@ export const CreateSubscriptionRequestSchema = {
         'currency',
         'appearanceMode',
         'appearanceLogoIcon',
+        'appearanceIconColor',
         'firstPayment',
         'cycleNumber',
         'cyclePeriod',
@@ -3081,13 +3140,15 @@ export const UpdateSubscriptionRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         description: {
             type: 'string'
         },
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -3098,12 +3159,17 @@ export const UpdateSubscriptionRequestSchema = {
         appearanceLogoIcon: {
             type: 'string'
         },
+        appearanceIconColor: {
+            type: 'string'
+        },
         firstPayment: {
             type: 'string',
             format: 'date-time'
         },
         cycleNumber: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         cyclePeriod: {
             $ref: '#/components/schemas/CyclePeriodEnum'
@@ -3113,7 +3179,7 @@ export const UpdateSubscriptionRequestSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         isEnabled: {
             type: 'boolean'
@@ -3185,19 +3251,6 @@ export const SubscriptionFiltersSchema = {
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            },
-            {
-                $ref: '#/components/schemas/FinancialAccountTypeEnum'
-            }
-        ]
     }
 } as const
 
@@ -3217,13 +3270,15 @@ export const SubscriptionFormSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         description: {
             type: 'string'
         },
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -3234,12 +3289,17 @@ export const SubscriptionFormSchema = {
         appearanceLogoIcon: {
             type: 'string'
         },
+        appearanceIconColor: {
+            type: 'string'
+        },
         firstPayment: {
             type: 'string',
             format: 'date-time'
         },
         cycleNumber: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         cyclePeriod: {
             $ref: '#/components/schemas/CyclePeriodEnum'
@@ -3249,7 +3309,7 @@ export const SubscriptionFormSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         isEnabled: {
             type: 'boolean'
@@ -3262,6 +3322,7 @@ export const SubscriptionFormSchema = {
         'currency',
         'appearanceMode',
         'appearanceLogoIcon',
+        'appearanceIconColor',
         'firstPayment',
         'cycleNumber',
         'cyclePeriod',
@@ -4265,16 +4326,19 @@ export const CreateCategoryTemplateRequestSchema = {
     type: 'object',
     properties: {
         title: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         for: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         icon: {
-            type: 'string'
+            type: 'string',
+            minLength: 1
         },
         color: {
             type: 'string',
+            minLength: 1,
             default: '#8B5CF6'
         },
         subcategories: {
@@ -4283,10 +4347,12 @@ export const CreateCategoryTemplateRequestSchema = {
                 type: 'object',
                 properties: {
                     title: {
-                        type: 'string'
+                        type: 'string',
+                        minLength: 1
                     },
                     icon: {
-                        type: 'string'
+                        type: 'string',
+                        minLength: 1
                     }
                 },
                 required: ['title', 'icon']
@@ -4294,4 +4360,22 @@ export const CreateCategoryTemplateRequestSchema = {
         }
     },
     required: ['title', 'for', 'icon']
+} as const
+
+export const UpdateSubscriptionMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/UpdateSubscriptionRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
+        }
+    },
+    required: ['file']
 } as const

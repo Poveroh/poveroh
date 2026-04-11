@@ -4,4 +4,10 @@
 /* eslint-disable */
 import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum'
 import type { StringFilter } from './StringFilter'
-export type SubscriptionFilters = Record<string, string | StringFilter | FinancialAccountTypeEnum>
+import type { SubscriptionParamsId } from './SubscriptionParamsId'
+export type SubscriptionFilters = {
+    id?: SubscriptionParamsId
+    title?: StringFilter
+    description?: StringFilter
+    type?: FinancialAccountTypeEnum
+}

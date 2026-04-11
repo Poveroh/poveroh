@@ -5,6 +5,7 @@ import { useError } from './use-error'
 import {
     createSubscriptionMutation,
     deleteSubscriptionMutation,
+    deleteSubscriptionsMutation,
     getSubscriptionByIdOptions,
     getSubscriptionByIdQueryKey,
     getSubscriptionsOptions,
@@ -89,7 +90,17 @@ export const useSubscription = () => {
         }
     })
 
-    const getSubscription = async (subscriptionId: string) => {
+    const deleteAllMutation = useMutation({
+        ...deleteSubscriptionsMutation(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: getSubscriptionsQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error deleting all subscriptions')
+        }
+    })
+
+    const getSubscriptionById = async (subscriptionId: string) => {
         try {
             const response = await queryClient.fetchQuery(
                 getSubscriptionByIdOptions({
@@ -130,7 +141,8 @@ export const useSubscription = () => {
         createMutation,
         updateMutation,
         deleteMutation,
-        getSubscription,
+        deleteAllMutation,
+        getSubscriptionById,
         getNextExecutionText
     }
 }
