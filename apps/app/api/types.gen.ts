@@ -1651,13 +1651,14 @@ export type GetTransactionResponse = {
 }
 
 export type CreateTransactionRequest = {
-    date: string
     title: string
-    note: string | null
-    icon: string | null
+    date: string
     categoryId: string | null
     subcategoryId: string | null
+    note: string | null
     ignore: boolean
+    action: TransactionActionEnum
+    amounts: Array<ExpensesAmount>
 }
 
 export type CreateTransactionMultipartRequest = {
@@ -1678,13 +1679,14 @@ export type CreateTransactionResponse = {
 }
 
 export type UpdateTransactionRequest = {
-    date?: string
     title?: string
-    note?: string | null
-    icon?: string | null
+    date?: string
     categoryId?: string | null
     subcategoryId?: string | null
+    note?: string | null
     ignore?: boolean
+    action?: TransactionActionEnum
+    amounts?: Array<ExpensesAmount>
 }
 
 export type UpdateTransactionResponse = {
@@ -1910,6 +1912,12 @@ export type TransactionListData = {
      * Total number of transactions matching the filters
      */
     total: number
+}
+
+export type ExpensesAmount = {
+    amount: number
+    action: TransactionActionEnum
+    financialAccountId: string
 }
 
 export type GetRootStatusData = {

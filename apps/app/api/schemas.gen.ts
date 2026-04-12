@@ -3682,20 +3682,12 @@ export const GetTransactionResponseSchema = {
 export const CreateTransactionRequestSchema = {
     type: 'object',
     properties: {
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
         title: {
             type: 'string'
         },
-        note: {
+        date: {
             type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
+            format: 'date-time'
         },
         categoryId: {
             type: 'string',
@@ -3705,11 +3697,24 @@ export const CreateTransactionRequestSchema = {
             type: 'string',
             nullable: true
         },
+        note: {
+            type: 'string',
+            nullable: true
+        },
         ignore: {
             type: 'boolean'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ExpensesAmount'
+            }
         }
     },
-    required: ['date', 'title', 'note', 'icon', 'categoryId', 'subcategoryId', 'ignore']
+    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'amounts']
 } as const
 
 export const CreateTransactionMultipartRequestSchema = {
@@ -3758,20 +3763,12 @@ export const CreateTransactionResponseSchema = {
 export const UpdateTransactionRequestSchema = {
     type: 'object',
     properties: {
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
         title: {
             type: 'string'
         },
-        note: {
+        date: {
             type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
+            format: 'date-time'
         },
         categoryId: {
             type: 'string',
@@ -3781,8 +3778,21 @@ export const UpdateTransactionRequestSchema = {
             type: 'string',
             nullable: true
         },
+        note: {
+            type: 'string',
+            nullable: true
+        },
         ignore: {
             type: 'boolean'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ExpensesAmount'
+            }
         }
     }
 } as const
@@ -4399,4 +4409,21 @@ export const TransactionListDataSchema = {
         }
     },
     required: ['data', 'total']
+} as const
+
+export const ExpensesAmountSchema = {
+    type: 'object',
+    properties: {
+        amount: {
+            type: 'number'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['amount', 'action', 'financialAccountId']
 } as const

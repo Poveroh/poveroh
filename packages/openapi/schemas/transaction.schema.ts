@@ -155,22 +155,37 @@ export const GetTransactionResponseSchema =
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
+ * Transaction form schema representing the data structure for transaction creation and editing forms, including amounts for expenses transactions
+ */
+const ExpensesAmountSchema = z
+    .object({
+        amount: z.number(),
+        action: TransactionActionEnum,
+        financialAccountId: z.string().uuid()
+    })
+    .openapi('ExpensesAmount')
+
+/**
+ * Transaction form schema representing the data structure for transaction creation and editing forms, including amounts for expenses transactions
+ */
+const TransactionFormSchema = TransactionSchema.pick({
+    title: true,
+    date: true,
+    categoryId: true,
+    subcategoryId: true,
+    note: true,
+    ignore: true
+})
+    .extend({
+        action: TransactionActionEnum,
+        amounts: z.array(ExpensesAmountSchema)
+    })
+    .openapi('TransactionForm')
+
+/**
  * Create transaction request schema representing the structure of a request to create a new transaction
  */
-export const CreateTransactionRequestSchema = TransactionSchema.omit({
-    id: true,
-    userId: true,
-    createdAt: true,
-    status: true,
-    importId: true,
-    updatedAt: true,
-    deletedAt: true,
-    amounts: true,
-    action: true,
-    media: true,
-    transferId: true,
-    transferHash: true
-}).openapi('CreateTransactionRequest')
+export const CreateTransactionRequestSchema = TransactionFormSchema.openapi('CreateTransactionRequest')
 
 export const CreateTransactionMultipartRequestSchema = MultipartRequestSchema(CreateTransactionRequestSchema).openapi(
     'CreateTransactionMultipartRequest'
@@ -187,22 +202,7 @@ export const CreateTransactionResponseSchema =
 /**
  * Request schema for updating an existing transaction
  */
-export const UpdateTransactionRequestSchema = TransactionSchema.partial()
-    .omit({
-        id: true,
-        userId: true,
-        createdAt: true,
-        status: true,
-        importId: true,
-        updatedAt: true,
-        deletedAt: true,
-        amounts: true,
-        action: true,
-        media: true,
-        transferId: true,
-        transferHash: true
-    })
-    .openapi('UpdateTransactionRequest')
+export const UpdateTransactionRequestSchema = TransactionFormSchema.partial().openapi('UpdateTransactionRequest')
 
 /**
  * Response schema for updating an existing transaction
@@ -247,10 +247,3 @@ export const TransactionFiltersSchema = z
  */
 export const QueryTransactionFiltersSchema =
     ReadQuerySchema(TransactionFiltersSchema).openapi('QueryTransactionFilters')
-
-// ------------------------------------------------------------------------------------------------------------------------------ //
-
-/**
- * Transaction form schema representing the data structure for transaction creation and editing forms
- */
-export const TransactionFormSchema = CreateTransactionRequestSchema.openapi('TransactionForm')

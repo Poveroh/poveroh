@@ -259,6 +259,7 @@ export type {
     DeleteUserResponse,
     DeleteUserResponses,
     ErrorResponse,
+    ExpensesAmount,
     FileTypeEnum,
     FilterOptions,
     FinancialAccount,

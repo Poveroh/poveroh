@@ -58,6 +58,7 @@ export type { DeleteSubcategoryResponse } from './models/DeleteSubcategoryRespon
 export type { DeleteSubscriptionResponse } from './models/DeleteSubscriptionResponse'
 export type { DeleteTransactionResponse } from './models/DeleteTransactionResponse'
 export type { ErrorResponse } from './models/ErrorResponse'
+export type { ExpensesAmount } from './models/ExpensesAmount'
 export type { FileTypeEnum } from './models/FileTypeEnum'
 export type { FilterOptions } from './models/FilterOptions'
 export type { FinancialAccount } from './models/FinancialAccount'
