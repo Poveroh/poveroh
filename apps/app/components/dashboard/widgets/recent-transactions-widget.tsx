@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
 import BoxHeader from '@/components/box/box-header'
@@ -11,30 +11,20 @@ import { TransactionData } from '@poveroh/types'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
 import { TransactionItem } from '@/components/item/transaction-item'
 import { useTransaction } from '@/hooks/use-transaction'
+import { MODAL_IDS } from '@/types/constant'
 
 export const RecentTransactionsWidget = () => {
     const t = useTranslations()
-    const { openModal } = useModal<TransactionData>('transaction')
+    const { openModal } = useModal<TransactionData>(MODAL_IDS.TRANSACTION)
 
-    const { transactionCacheList, fetchTransaction } = useTransaction()
+    const { fetchTransactions } = useTransaction()
+    const [data, setData] = useState<TransactionData[]>([])
 
     useEffect(() => {
-        fetchTransaction(
-            undefined,
-            {
-                take: 5,
-                sortBy: 'date',
-                sortOrder: 'desc'
-            },
-            false,
-            true,
-            true
-        )
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchTransactions(undefined, { skip: 0, take: 5 }).then(result => {
+            setData(result?.data ?? [])
+        })
     }, [])
-
-    const data: TransactionData[] = [] // useMemo(() => transactionCacheList.slice(0, 5), [transactionCacheList])
 
     return (
         <>
@@ -73,7 +63,7 @@ export const RecentTransactionsWidget = () => {
                     )}
                 </div>
             </Box>
-            <TransactionDialog></TransactionDialog>
+            <TransactionDialog />
         </>
     )
 }

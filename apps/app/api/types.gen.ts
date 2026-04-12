@@ -1635,10 +1635,7 @@ export type GetTransactionListResponse = {
      * Optional success message
      */
     message: string
-    /**
-     * Response data
-     */
-    data: Array<TransactionData>
+    data: TransactionListData & unknown
 }
 
 export type GetTransactionResponse = {
@@ -1905,6 +1902,14 @@ export type CreateCategoryTemplateRequest = {
 export type UpdateSubscriptionMultipartRequest = {
     data?: UpdateSubscriptionRequest
     file: Array<Blob | File>
+}
+
+export type TransactionListData = {
+    data: Array<TransactionData>
+    /**
+     * Total number of transactions matching the filters
+     */
+    total: number
 }
 
 export type GetRootStatusData = {

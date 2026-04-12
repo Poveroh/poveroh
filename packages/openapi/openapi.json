@@ -3921,11 +3921,14 @@
                         "description": "Optional success message"
                     },
                     "data": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TransactionData"
-                        },
-                        "description": "Response data"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TransactionListData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -4733,6 +4736,26 @@
                 },
                 "required": [
                     "file"
+                ]
+            },
+            "TransactionListData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionData"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Total number of transactions matching the filters"
+                    }
+                },
+                "required": [
+                    "data",
+                    "total"
                 ]
             }
         },

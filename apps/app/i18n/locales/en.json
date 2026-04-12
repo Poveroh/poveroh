@@ -382,6 +382,7 @@
         },
         "action": {
             "internalTransfer": "Transfer",
+            "transfer": "Transfer",
             "income": "Income",
             "expenses": "Expenses"
         },

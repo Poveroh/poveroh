@@ -131,11 +131,20 @@ export const TransactionDataSchema = TransactionSchema.omit({
 }).openapi('TransactionData')
 
 /**
+ * Paginated transaction list data schema
+ */
+export const TransactionListDataSchema = z
+    .object({
+        data: TransactionDataSchema.array(),
+        total: z.number().int().nonnegative().describe('Total number of transactions matching the filters')
+    })
+    .openapi('TransactionListData')
+
+/**
  * Response schema for getting a list of transactions
  */
-export const GetTransactionListResponseSchema = SuccessResponseSchema(TransactionDataSchema.array()).openapi(
-    'GetTransactionListResponse'
-)
+export const GetTransactionListResponseSchema =
+    SuccessResponseSchema(TransactionListDataSchema).openapi('GetTransactionListResponse')
 
 /**
  * Response schema for getting a single transaction by ID

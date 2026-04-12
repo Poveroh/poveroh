@@ -7,120 +7,108 @@ import { TransactionForm } from '../form/transaction-form'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
+import { useError } from '@/hooks/use-error'
 import { TransactionData } from '@poveroh/types'
+import { MODAL_IDS } from '@/types/constant'
+import { FormRef } from '@/types'
 
 export function TransactionDialog() {
     const t = useTranslations()
+    const { createMutation, updateMutation, deleteMutation } = useTransaction()
+    const { handleError } = useError()
 
-    const { createTransaction, updateTransaction, deleteTransaction } = useTransaction()
-
-    const modalId = 'transaction'
-    const modalManager = useModal<TransactionData>(modalId)
+    const modalManager = useModal<TransactionData>(MODAL_IDS.TRANSACTION)
     const deleteModalManager = useDeleteModal<TransactionData>()
 
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
-    const handleFormSubmit = async (data: FormData | Partial<TransactionData>) => {
-        if (modalManager.loading) return // Prevent multiple submissions
+    const onCreate = async (formData: FormData) => {
+        const bodyData = JSON.parse(String(formData.get('data') || '{}'))
+        const files = formData.getAll('file').filter(item => item instanceof File)
 
-        modalManager.setLoading(true)
+        const response = await createMutation.mutateAsync({
+            body: {
+                data: bodyData,
+                file: files as Array<Blob | File>
+            }
+        })
+
+        if (!response?.success || !response.data) {
+            modalManager.setLoading(false)
+            return
+        }
+
+        if (modalManager.keepAdding.checked) {
+            formRef.current?.reset()
+        } else {
+            modalManager.closeModal()
+        }
+
+        toast.success(t('messages.successfully', { a: bodyData.title ?? '', b: t('messages.uploaded') }))
+    }
+
+    const onUpdate = async (formData: FormData) => {
+        if (!modalManager.item) {
+            throw new Error('No item to update')
+        }
+
+        const bodyData = JSON.parse(String(formData.get('data') || '{}'))
+
+        const response = await updateMutation.mutateAsync({
+            path: { id: modalManager.item.id },
+            body: bodyData
+        })
+
+        if (!response?.success) {
+            return
+        }
+
+        modalManager.closeModal()
+        toast.success(t('messages.successfully', { a: bodyData.title ?? '', b: t('messages.saved') }))
+    }
+
+    const handleFormSubmit = async (formData: FormData) => {
+        if (modalManager.loading) return
 
         try {
-            let res: TransactionData | null
+            modalManager.setLoading(true)
 
-            // edit dialog
-            if (modalManager.inEditingMode && modalManager.item) {
-                const body = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
-
-                const response = await updateTransaction({
-                    path: { id: modalManager.item.id },
-                    body
-                })
-
-                res = (response?.data as TransactionData | undefined) ?? null
-
-                if (!res) {
-                    modalManager.setLoading(false)
-                    return
-                }
-
-                modalManager.closeModal()
+            if (modalManager.inEditingMode) {
+                await onUpdate(formData)
             } else {
-                // new dialog
-                const bodyData = data instanceof FormData ? JSON.parse(String(data.get('data') || '{}')) : data
-                const files = data instanceof FormData ? data.getAll('file').filter(item => item instanceof File) : []
-
-                const response = await createTransaction({
-                    body: {
-                        data: bodyData,
-                        file: files as Array<Blob | File>
-                    }
-                })
-
-                res = (response?.data as TransactionData | undefined) ?? null
-
-                if (!res) {
-                    modalManager.setLoading(false)
-                    return
-                }
-
-                if (modalManager.keepAdding.checked) {
-                    formRef.current?.reset()
-                } else {
-                    modalManager.closeModal()
-                }
+                await onCreate(formData)
             }
-
-            toast.success(
-                t('messages.successfully', {
-                    a: res.title,
-                    b: t(modalManager.inEditingMode ? 'messages.saved' : 'messages.uploaded')
-                })
-            )
         } catch (error) {
-            console.error('Error submitting transaction form:', error)
-            toast.error(t('messages.error'))
+            handleError(error)
         } finally {
             modalManager.setLoading(false)
         }
     }
 
     const onDelete = async () => {
-        if (!deleteModalManager.item || deleteModalManager.loading) return
+        if (!deleteModalManager.item) return
 
         deleteModalManager.setLoading(true)
 
-        try {
-            const res = await deleteTransaction({
-                path: { id: deleteModalManager.item.id }
-            })
+        const res = await deleteMutation.mutateAsync({
+            path: { id: deleteModalManager.item.id }
+        })
 
-            if (res?.success) {
-                deleteModalManager.closeModal()
+        deleteModalManager.setLoading(false)
 
-                if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
-                    modalManager.closeModal()
-                }
+        if (res?.success) {
+            deleteModalManager.closeModal()
 
-                toast.success(
-                    t('messages.successfully', {
-                        a: deleteModalManager.item.title,
-                        b: t('messages.deleted')
-                    })
-                )
+            if (modalManager.item && modalManager.item.id === deleteModalManager.item.id) {
+                modalManager.closeModal()
             }
-        } catch (error) {
-            console.error('Error deleting transaction:', error)
-            toast.error(t('messages.error'))
-        } finally {
-            deleteModalManager.setLoading(false)
         }
     }
 
     return (
         <>
             <Modal<TransactionData>
-                modalId={modalId}
+                modalId={MODAL_IDS.TRANSACTION}
                 open={modalManager.isOpen}
                 title={
                     modalManager.inEditingMode && modalManager.item
@@ -141,15 +129,9 @@ export function TransactionDialog() {
                 footer={{
                     show: true
                 }}
-                onClick={() => {
-                    if (formRef.current && !modalManager.loading) {
-                        formRef.current.submit()
-                    }
-                }}
+                onClick={() => formRef.current?.submit()}
                 onDeleteClick={() => {
-                    if (modalManager.item && modalManager.inEditingMode && !modalManager.loading) {
-                        deleteModalManager.openModal(modalManager.item)
-                    }
+                    deleteModalManager.openModal(modalManager.item)
                 }}
             >
                 {modalManager.isOpen && (

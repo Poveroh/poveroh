@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { buildWhere } from '../../../helpers/filter.helper'
+import { buildWhere2 } from '../../../helpers/filter.helper'
 import { TransactionHelper } from '../helpers/transaction.helper'
 import { FilterOptions, QueryTransactionFilters, TransactionDataResponse, TransactionFilters } from '@poveroh/types'
 import { TransactionWithAmounts } from '@/types/transactions'
@@ -72,8 +72,9 @@ export class TransactionService extends BaseService {
      * @param query The query filters and options for retrieving transactions
      * @returns An object containing the transaction data and the total count
      */
-    async getTransactions(query: QueryTransactionFilters): Promise<{ data: unknown[]; total: number }> {
+    async getTransactions(query: QueryTransactionFilters) {
         const userId = this.getUserId()
+
         const filters = (query.filter || {}) as TransactionFilters
         const options = (query.options || {}) as FilterOptions
 
@@ -82,24 +83,19 @@ export class TransactionService extends BaseService {
         const sortBy = options.sortBy || 'date'
         const sortOrder = options.sortOrder || 'desc'
 
-        const { type, financialAccountId, ...genericFilters } = filters as TransactionFilters & {
-            type?: string
-            financialAccountId?: string
+        const { financialAccountId, ...otherFilters } = filters
+
+        const allFilters: Record<string, any> = {
+            ...otherFilters,
+            userId,
+            status: 'APPROVED'
         }
 
-        const where = {
-            ...buildWhere(genericFilters),
-            userId,
-            status: 'APPROVED',
-            ...(type && { action: type }),
-            ...(financialAccountId && {
-                amounts: {
-                    some: {
-                        financialAccountId
-                    }
-                }
-            })
+        if (financialAccountId) {
+            allFilters.amounts = { some: { financialAccountId } }
         }
+
+        const where = buildWhere2(allFilters, [])
 
         let orderBy: any[] = []
         let sortInMemory = false
@@ -149,9 +145,6 @@ export class TransactionService extends BaseService {
 
         const mergedData = TransactionHelper.mergeTransferTransactions(finalData)
 
-        return {
-            data: mergedData as unknown[],
-            total
-        }
+        return { data: mergedData, total }
     }
 }

@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TransactionData } from './TransactionData'
+import type { TransactionListData } from './TransactionListData'
 export type GetTransactionListResponse = {
     /**
      * Indicates if the request was successful
@@ -12,8 +12,5 @@ export type GetTransactionListResponse = {
      * Optional success message
      */
     message: string
-    /**
-     * Response data
-     */
-    data: Array<TransactionData>
+    data: TransactionListData
 }

@@ -547,6 +547,7 @@ export type {
     TransactionDataResponse,
     TransactionFilters,
     TransactionForm,
+    TransactionListData,
     TransactionMedia,
     TransactionMediaFilters,
     TransactionMediaParamsId,

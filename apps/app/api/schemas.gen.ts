@@ -3641,11 +3641,14 @@ export const GetTransactionListResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionData'
-            },
-            description: 'Response data'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/TransactionListData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -4378,4 +4381,22 @@ export const UpdateSubscriptionMultipartRequestSchema = {
         }
     },
     required: ['file']
+} as const
+
+export const TransactionListDataSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/TransactionData'
+            }
+        },
+        total: {
+            type: 'integer',
+            minimum: 0,
+            description: 'Total number of transactions matching the filters'
+        }
+    },
+    required: ['data', 'total']
 } as const

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import {
     CreateFinancialAccountRequest,
+    FilterOptions,
     FinancialAccountData,
     FinancialAccountFilters,
     UpdateFinancialAccountRequest
@@ -107,7 +108,7 @@ export class FinancialAccountController {
     static async readFinancialAccounts(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as FinancialAccountFilters
-            const options = (req.query.options || {}) as any
+            const options = (req.query.options || {}) as FilterOptions
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 

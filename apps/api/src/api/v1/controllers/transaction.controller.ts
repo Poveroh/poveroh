@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { QueryTransactionFilters } from '@poveroh/types'
+import { FilterOptions, QueryTransactionFilters, TransactionFilters } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { TransactionService } from '../services/transaction.service'
@@ -108,13 +108,10 @@ export class TransactionController {
     //GET /
     static async readTransactions(req: Request, res: Response) {
         try {
-            const query = {
-                filter: req.query.filter,
-                options: req.query.options
-            } as QueryTransactionFilters
+            const queryFilters = req.query as QueryTransactionFilters
 
             const transactionService = new TransactionService(req.user.id)
-            const data = await transactionService.getTransactions(query)
+            const data = await transactionService.getTransactions(queryFilters)
 
             return ResponseHelper.success(res, data)
         } catch (error) {
