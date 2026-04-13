@@ -2,4 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ColSpanEnum = '12' | '6' | '4' | '3'
+export type ColSpanEnum = '3' | '4' | '6' | '12'

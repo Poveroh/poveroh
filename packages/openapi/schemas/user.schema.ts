@@ -75,7 +75,7 @@ export const UserSessionSchema = z
             userId: z.string().uuid(),
             expiresAt: z.date(),
             token: z.string(),
-            ipAddress: z.string().ip().nullable(),
+            ipAddress: z.string().nullable(),
             userAgent: z.string().nullable()
         }),
         user: UserSchema

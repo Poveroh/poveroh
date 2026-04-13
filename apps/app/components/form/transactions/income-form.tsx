@@ -17,13 +17,13 @@ import {
     AmountField
 } from '@/components/fields'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
-import { useIncomeForm } from '@/hooks/form/use-income-form'
+import { useTransactionForm } from '@/hooks/form/use-transaction-form'
 
 export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { form, file, setFile, handleSubmit } = useIncomeForm(props)
+    const { form, file, setFile, handleSubmit } = useTransactionForm('INCOME', props)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -63,7 +63,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     <div className='flex flex-row space-x-2'>
                         <AmountField
                             control={form.control}
-                            name='amount'
+                            name='amounts.0.amount'
                             label={t('form.amount.label')}
                             placeholder={t('form.amount.placeholder')}
                             mandatory={true}
@@ -83,7 +83,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     <AccountField
                         form={form}
                         control={form.control}
-                        name='financialAccountId'
+                        name='amounts.0.financialAccountId'
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}

@@ -2,12 +2,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { TransactionActionEnum } from './TransactionActionEnum'
+import type { TransactionAmount } from './TransactionAmount'
 export type TransactionForm = {
-    date: string
     title: string
-    note: string | null
-    icon: string | null
+    date: string
     categoryId: string | null
     subcategoryId: string | null
+    note: string | null
     ignore: boolean
+    action: TransactionActionEnum
+    amounts: Array<TransactionAmount>
 }

@@ -101,7 +101,7 @@ export const TransactionSchema = z
         id: z.string(),
         userId: z.string(),
         date: z.string().datetime(),
-        title: z.string(),
+        title: z.string().nonempty(),
         note: z.string().nullable(),
         icon: z.string().nullable(),
         categoryId: z.string().nullable(),
@@ -157,18 +157,18 @@ export const GetTransactionResponseSchema =
 /**
  * Transaction form schema representing the data structure for transaction creation and editing forms, including amounts for expenses transactions
  */
-const ExpensesAmountSchema = z
+export const TransactionAmountSchema = z
     .object({
         amount: z.number(),
         action: TransactionActionEnum,
         financialAccountId: z.string().uuid()
     })
-    .openapi('ExpensesAmount')
+    .openapi('TransactionAmount')
 
 /**
  * Transaction form schema representing the data structure for transaction creation and editing forms, including amounts for expenses transactions
  */
-const TransactionFormSchema = TransactionSchema.pick({
+export const TransactionFormSchema = TransactionSchema.pick({
     title: true,
     date: true,
     categoryId: true,
@@ -178,7 +178,7 @@ const TransactionFormSchema = TransactionSchema.pick({
 })
     .extend({
         action: TransactionActionEnum,
-        amounts: z.array(ExpensesAmountSchema)
+        amounts: z.array(TransactionAmountSchema)
     })
     .openapi('TransactionForm')
 

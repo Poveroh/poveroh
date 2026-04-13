@@ -9,6 +9,9 @@ import type { LanguageEnum } from './LanguageEnum'
 import type { OnBoardingStepEnum } from './OnBoardingStepEnum'
 import type { SnapshotFrequencyEnum } from './SnapshotFrequencyEnum'
 import type { TimezoneEnum } from './TimezoneEnum'
+/**
+ * Response data
+ */
 export type User = {
     id: string
     name: string

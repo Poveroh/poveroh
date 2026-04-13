@@ -13,7 +13,7 @@ type AmountSchemaErrors = {
 export type BaseTransactionFormConfig<T extends FieldValues> = {
     type: TransactionActionEnum
     defaultValues: T
-    schema: z.ZodTypeAny
+    schema: z.ZodType
     transformInitialData?: (data: TransactionData) => T
 }
 

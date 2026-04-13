@@ -15,13 +15,13 @@ import {
     AmountField,
     TransferAccountField
 } from '@/components/fields'
-import { useTransferForm } from '@/hooks/form/use-transfer-form'
+import { useTransactionForm } from '@/hooks/form/use-transaction-form'
 
 export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const { dataCallback } = props
 
     const t = useTranslations()
-    const { form, handleSubmit } = useTransferForm(props)
+    const { form, handleSubmit } = useTransactionForm('TRANSFER', props)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -61,7 +61,7 @@ export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props, re
                     <div className='flex flex-row space-x-2'>
                         <AmountField
                             control={form.control}
-                            name='amount'
+                            name='amounts.0.amount'
                             label={t('form.amount.label')}
                             placeholder={t('form.amount.placeholder')}
                             mandatory={true}
@@ -80,8 +80,8 @@ export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props, re
                     <TransferAccountField
                         form={form}
                         control={form.control}
-                        fromName='from'
-                        toName='to'
+                        fromName='amounts.0.financialAccountId'
+                        toName='amounts.1.financialAccountId'
                         label={t('form.account.label')}
                         placeholder={t('form.account.placeholder')}
                         mandatory={true}

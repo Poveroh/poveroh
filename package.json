@@ -79,6 +79,7 @@
         "packages/*"
     ],
     "dependencies": {
-        "csv-parser": "^3.2.0"
+        "csv-parser": "^3.2.0",
+        "zod": "^4.3.6"
     }
 }

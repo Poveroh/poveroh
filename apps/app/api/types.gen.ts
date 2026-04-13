@@ -4,6 +4,9 @@ export type ClientOptions = {
     baseUrl: 'http://localhost:3001/v1' | 'http://api.poveroh.local/v1' | 'http://api.poveroh.com/v1' | (string & {})
 }
 
+/**
+ * Response data
+ */
 export type User = {
     id: string
     name: string
@@ -223,7 +226,7 @@ export type DashboardWidgetEnum =
     | 'expense-macro-distribution'
     | 'recent-transactions'
 
-export type ColSpanEnum = '12' | '6' | '4' | '3'
+export type ColSpanEnum = '3' | '4' | '6' | '12'
 
 export type DashboardLayoutItem = {
     id: DashboardWidgetEnum
@@ -241,6 +244,9 @@ export type DashboardLayout = {
     updatedAt: string
 }
 
+/**
+ * Response data
+ */
 export type GetDashboardLayout = {
     layout: Array<DashboardLayoutItem>
     version: number
@@ -255,7 +261,7 @@ export type GetDashboardLayoutResponse = {
      * Optional success message
      */
     message: string
-    data: GetDashboardLayout & unknown
+    data: GetDashboardLayout
 }
 
 export type UpdateDashboardLayoutRequest = {
@@ -1144,6 +1150,9 @@ export type NetWorthEvolution = {
     netWorth: number
 }
 
+/**
+ * Response data
+ */
 export type NetWorthEvolutionReport = {
     currentNetWorth: number
     evolution: Array<NetWorthEvolution>
@@ -1158,7 +1167,7 @@ export type GetNetWorthEvolutionReportResponse = {
      * Optional success message
      */
     message: string
-    data: NetWorthEvolutionReport & unknown
+    data: NetWorthEvolutionReport
 }
 
 export type NetWorthEvolutionFilters = {
@@ -1198,6 +1207,9 @@ export type SnapshotAssetValue = {
     totalValue: number
 }
 
+/**
+ * Response data
+ */
 export type Snapshot = {
     id: string
     userId: string
@@ -1241,7 +1253,7 @@ export type CreateSnapshotAccountBalanceResponse = {
      * Optional success message
      */
     message: string
-    data: Snapshot & unknown
+    data: Snapshot
 }
 
 export type StatusResponse = {
@@ -1635,7 +1647,7 @@ export type GetTransactionListResponse = {
      * Optional success message
      */
     message: string
-    data: TransactionListData & unknown
+    data: TransactionListData
 }
 
 export type GetTransactionResponse = {
@@ -1658,7 +1670,7 @@ export type CreateTransactionRequest = {
     note: string | null
     ignore: boolean
     action: TransactionActionEnum
-    amounts: Array<ExpensesAmount>
+    amounts: Array<TransactionAmount>
 }
 
 export type CreateTransactionMultipartRequest = {
@@ -1686,7 +1698,7 @@ export type UpdateTransactionRequest = {
     note?: string | null
     ignore?: boolean
     action?: TransactionActionEnum
-    amounts?: Array<ExpensesAmount>
+    amounts?: Array<TransactionAmount>
 }
 
 export type UpdateTransactionResponse = {
@@ -1740,13 +1752,14 @@ export type QueryTransactionFilters = {
 }
 
 export type TransactionForm = {
-    date: string
     title: string
-    note: string | null
-    icon: string | null
+    date: string
     categoryId: string | null
     subcategoryId: string | null
+    note: string | null
     ignore: boolean
+    action: TransactionActionEnum
+    amounts: Array<TransactionAmount>
 }
 
 export type UserPreferences = {
@@ -1767,7 +1780,7 @@ export type GetUserResponse = {
      * Optional success message
      */
     message: string
-    data: User & unknown
+    data: User
 }
 
 export type UpdateUserRequest = {
@@ -1798,7 +1811,7 @@ export type UpdateUserResponse = {
      * Optional success message
      */
     message: string
-    data: User & unknown
+    data: User
 }
 
 export type UserSession = {
@@ -1906,6 +1919,9 @@ export type UpdateSubscriptionMultipartRequest = {
     file: Array<Blob | File>
 }
 
+/**
+ * Response data
+ */
 export type TransactionListData = {
     data: Array<TransactionData>
     /**
@@ -1918,6 +1934,1311 @@ export type ExpensesAmount = {
     amount: number
     action: TransactionActionEnum
     financialAccountId: string
+}
+
+export type TransactionAmount = {
+    amount: number
+    action: TransactionActionEnum
+    financialAccountId: string
+}
+
+export type CategorySchema = {
+    id: string
+    userId: string
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type CategoryDataSchema = {
+    id: string
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetCategoryListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<CategoryData>
+}
+
+export type GetCategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CategoryData & unknown
+}
+
+export type CreateCategoryRequestSchema = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+}
+
+export type CreateCategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CategoryData & unknown
+}
+
+export type CreateCategoryTemplateSchema = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<{
+        title: string
+        icon: string
+    }>
+}
+
+export type UpdateCategoryRequestSchema = {
+    title?: string
+    for?: TransactionActionEnum
+    icon?: string
+    color?: string
+}
+
+export type UpdateCategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteCategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type CategoryFiltersSchema = {
+    id?: CategoryParamsId
+    title?: StringFilter
+    for?: TransactionActionEnum
+}
+
+export type QueryCategoryFiltersSchema = {
+    filter?: CategoryFilters
+    options?: FilterOptions
+}
+
+export type CategoryFormSchema = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+}
+
+export type CreateUpdateCategoryRequestSchema = CreateCategoryRequest | UpdateCategoryRequest
+
+export type DashboardLayoutItemSchema = {
+    id: DashboardWidgetEnum
+    colSpan: ColSpanEnum
+    minHeight: number
+    visible?: boolean
+}
+
+export type DashboardLayoutSchema = {
+    id: string
+    userId: string
+    version: number
+    layout: Array<DashboardLayoutItem>
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetDashboardLayoutSchema = {
+    layout: Array<DashboardLayoutItem>
+    version: number
+}
+
+export type GetDashboardLayoutResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: GetDashboardLayout
+}
+
+export type UpdateDashboardLayoutRequestSchema = {
+    version: number
+    layout: Array<DashboardLayoutItem>
+}
+
+export type UpdateDashboardLayoutResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type ErrorResponseSchema = {
+    /**
+     * Always false for error responses
+     */
+    success: false
+    /**
+     * Error message describing what went wrong
+     */
+    message: string
+    /**
+     * Optional additional error details or context
+     */
+    error?: unknown
+}
+
+export type StringFilterSchema = {
+    equals?: string
+    contains?: string
+}
+
+export type FilterOptionsSchema = {
+    skip?: number
+    take?: number
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
+}
+
+export type DateFilterSchema = {
+    gte?: string
+    lte?: string
+}
+
+export type FinancialAccountSchema = {
+    id: string
+    userId: string
+    title: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type FinancialAccountDataSchema = {
+    id: string
+    title: string
+    balance: number
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetFinancialAccountListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<FinancialAccountData>
+}
+
+export type GetFinancialAccountResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: FinancialAccountData & unknown
+}
+
+export type CreateFinancialAccountRequestSchema = {
+    title: string
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+}
+
+export type CreateFinancialAccountMultipartRequestSchema = {
+    data?: CreateFinancialAccountRequest
+    file: Array<Blob | File>
+}
+
+export type CreateFinancialAccountResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: FinancialAccountData & unknown
+}
+
+export type UpdateFinancialAccountRequestSchema = {
+    title?: string
+    type?: FinancialAccountTypeEnum
+    logoIcon?: string
+}
+
+export type UpdateFinancialAccountMultipartRequestSchema = {
+    data?: UpdateFinancialAccountRequest
+    file: Array<Blob | File>
+}
+
+export type UpdateFinancialAccountResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteFinancialAccountResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type FinancialAccountFiltersSchema = {
+    id?: FinancialAccountParamsId
+    title?: StringFilter
+    type?: FinancialAccountTypeEnum
+}
+
+export type QueryFinancialAccountFiltersSchema = {
+    filter?: FinancialAccountFilters
+    options?: FilterOptions
+}
+
+export type FinancialAccountFormSchema = {
+    title: string
+    type: FinancialAccountTypeEnum
+    logoIcon: string
+}
+
+export type CreateUpdateFinancialAccountRequestSchema = CreateFinancialAccountRequest | UpdateFinancialAccountRequest
+
+export type ImportFileSchema = {
+    id: string
+    importId: string
+    filename: string
+    filetype: FileTypeEnum
+    path: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type ImportSchema = {
+    id: string
+    userId: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type ImportDataSchema = {
+    id: string
+    title: string
+    financialAccountId: string
+    status: TransactionStatusEnum
+    transactions?: Array<Transaction>
+    files?: Array<ImportFile>
+    createdAt: string
+    updatedAt: string
+}
+
+export type ImportTransactionDataResponseSchema = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type GetImportListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<ImportData>
+}
+
+export type GetImportResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: ImportData & unknown
+}
+
+export type GetImportTransactionsResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<ImportTransactionDataResponse>
+}
+
+export type CreateImportRequestSchema = {
+    financialAccountId: string
+}
+
+export type CreateImportMultipartRequestSchema = {
+    data?: CreateImportRequest
+    file: Array<Blob | File>
+}
+
+export type CreateImportResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: ImportData & unknown
+}
+
+export type UpdateImportRequestSchema = {
+    title?: string
+}
+
+export type UpdateImportResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: ImportData & unknown
+}
+
+export type DeleteImportResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type ImportFiltersSchema = {
+    id?: ImportParamsId
+    title?: StringFilter
+    date?: DateFilter
+    includeTransactions?: boolean
+    [key: string]: string | StringFilter | DateFilter | ImportParamsId | StringFilter | DateFilter | boolean | undefined
+}
+
+export type QueryImportFiltersSchema = {
+    filter?: ImportFilters
+    options?: FilterOptions
+}
+
+export type CreateUpdateImportRequestSchema = CreateImportRequest | UpdateImportRequest
+
+export type CreateImportTemplateResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<CategoryData>
+}
+
+export type NetWorthEvolutionSchema = {
+    date: string
+    netWorth: number
+}
+
+export type NetWorthEvolutionReportSchema = {
+    currentNetWorth: number
+    evolution: Array<NetWorthEvolution>
+}
+
+export type GetNetWorthEvolutionReportResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: NetWorthEvolutionReport
+}
+
+export type NetWorthEvolutionFiltersSchema = {
+    date?: DateFilter
+    [key: string]: string | DateFilter | DateFilter | undefined
+}
+
+export type QueryNetWorthEvolutionFiltersSchema = {
+    filter?: NetWorthEvolutionFilters
+    options?: FilterOptions
+}
+
+export type SimpleSuccessResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type SnapshotAccountBalanceSchema = {
+    id: string
+    snapshotId: string
+    accountId: string
+    balance: number
+}
+
+export type SnapshotAssetValueSchema = {
+    id: string
+    snapshotId: string
+    assetId: string
+    quantity: number
+    unitPrice: number
+    totalValue: number
+}
+
+export type SnapshotSchema = {
+    id: string
+    userId: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    accountBalances: Array<SnapshotAccountBalance>
+    assetValues: Array<SnapshotAssetValue>
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type SnapshotDataSchema = {
+    id: string
+    snapshotDate: string
+    note: string | null
+    totalCash: number
+    totalInvestments: number
+    totalNetWorth: number
+    accountBalances: Array<SnapshotAccountBalance>
+    assetValues: Array<SnapshotAssetValue>
+    createdAt: string
+    updatedAt: string
+}
+
+export type CreateSnapshotAccountBalanceRequestSchema = {
+    accountId: string
+    balance: number
+    snapshotDate: string
+}
+
+export type CreateSnapshotAccountBalanceResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: Snapshot
+}
+
+export type StatusResponseSchema = {
+    status: string
+    uptime: number
+    version: string
+    timestamp: string
+}
+
+export type SubcategorySchema = {
+    id: string
+    categoryId: string
+    title: string
+    icon: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type SubcategoryDataSchema = {
+    id: string
+    categoryId: string
+    title: string
+    icon: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetSubcategoryListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<SubcategoryData>
+}
+
+export type GetSubcategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: SubcategoryData & unknown
+}
+
+export type CreateSubcategoryRequestSchema = {
+    categoryId: string
+    title: string
+    icon: string
+}
+
+export type CreateSubcategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: SubcategoryData & unknown
+}
+
+export type UpdateSubcategoryRequestSchema = {
+    title?: string
+    icon?: string
+}
+
+export type UpdateSubcategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteSubcategoryResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type SubcategoryFiltersSchema = {
+    id?: SubcategoryParamsId
+    title?: StringFilter
+    categoryId?: {
+        categoryId: string
+    }
+    [key: string]:
+        | string
+        | StringFilter
+        | SubcategoryParamsId
+        | StringFilter
+        | {
+              categoryId: string
+          }
+        | undefined
+}
+
+export type QuerySubcategoryFiltersSchema = {
+    filter?: SubcategoryFilters
+    options?: FilterOptions
+}
+
+export type SubcategoryFormSchema = {
+    categoryId: string
+    title: string
+    icon: string
+}
+
+export type CreateUpdateSubcategoryRequestSchema = CreateSubcategoryRequest | UpdateSubcategoryRequest
+
+export type SubscriptionSchema = {
+    id: string
+    userId: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    appearanceIconColor: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type SubscriptionDataSchema = {
+    id: string
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    appearanceIconColor: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetSubscriptionListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<SubscriptionData>
+}
+
+export type GetSubscriptionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: SubscriptionData & unknown
+}
+
+export type CreateSubscriptionRequestSchema = {
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    appearanceIconColor: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+}
+
+export type CreateSubscriptionMultipartRequestSchema = {
+    data?: CreateSubscriptionRequest
+    file: Array<Blob | File>
+}
+
+export type CreateSubscriptionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: SubscriptionData & unknown
+}
+
+export type UpdateSubscriptionRequestSchema = {
+    title?: string
+    description?: string
+    amount?: number
+    currency?: CurrencyEnum
+    appearanceMode?: AppearanceModeEnum
+    appearanceLogoIcon?: string
+    appearanceIconColor?: string
+    firstPayment?: string
+    cycleNumber?: number
+    cyclePeriod?: CyclePeriodEnum
+    rememberPeriod?: RememberPeriodEnum
+    financialAccountId?: string
+    isEnabled?: boolean
+}
+
+export type UpdateSubscriptionMultipartRequestSchema = {
+    data?: UpdateSubscriptionRequest
+    file: Array<Blob | File>
+}
+
+export type UpdateSubscriptionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteSubscriptionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type SubscriptionFiltersSchema = {
+    id?: SubscriptionParamsId
+    title?: StringFilter
+    description?: StringFilter
+    type?: FinancialAccountTypeEnum
+}
+
+export type QuerySubscriptionFiltersSchema = {
+    filter?: SubscriptionFilters
+    options?: FilterOptions
+}
+
+export type SubscriptionFormSchema = {
+    title: string
+    description: string
+    amount: number
+    currency: CurrencyEnum
+    appearanceMode: AppearanceModeEnum
+    appearanceLogoIcon: string
+    appearanceIconColor: string
+    firstPayment: string
+    cycleNumber: number
+    cyclePeriod: CyclePeriodEnum
+    rememberPeriod: RememberPeriodEnum
+    financialAccountId: string
+    isEnabled: boolean
+}
+
+export type CreateUpdateSubscriptionRequestSchema = CreateSubscriptionRequest | UpdateSubscriptionRequest
+
+export type TransactionMediaSchema = {
+    id: string
+    transactionId: string
+    filename: string
+    filetype: string
+    path: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type CreateTransactionMediaRequestSchema = {
+    transactionId: string
+    filename: string
+    filetype: string
+    path: string
+}
+
+export type CreateTransactionMediaMultipartRequestSchema = {
+    data?: CreateTransactionMediaRequest
+    file: Array<Blob | File>
+}
+
+export type TransactionMediaFiltersSchema = {
+    id?: TransactionMediaParamsId
+    transactionId?: string
+    filetype?: StringFilter
+    [key: string]: string | StringFilter | TransactionMediaParamsId | string | StringFilter | undefined
+}
+
+export type AmountSchema = {
+    id: string
+    transactionId: string
+    amount: number
+    currency: CurrencyEnum
+    action: TransactionActionEnum
+    financialAccountId: string
+    importReferenceId: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type CreateAmountRequestSchema = {
+    transactionId: string
+    amount: number
+    currency: CurrencyEnum
+    action: TransactionActionEnum
+    financialAccountId: string
+    importReferenceId: string | null
+}
+
+export type TransactionSchema = {
+    id: string
+    userId: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type TransactionDataSchema = {
+    id: string
+    date: string
+    title: string
+    note: string | null
+    icon: string | null
+    categoryId: string | null
+    subcategoryId: string | null
+    importId: string | null
+    action: TransactionActionEnum
+    status: TransactionStatusEnum
+    ignore: boolean
+    createdAt: string
+    updatedAt: string
+    media: Array<TransactionMedia>
+    amounts: Array<Amount>
+    transferId: string | null
+    transferHash: string | null
+}
+
+export type TransactionListDataSchema = {
+    data: Array<TransactionData>
+    /**
+     * Total number of transactions matching the filters
+     */
+    total: number
+}
+
+export type GetTransactionListResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: TransactionListData
+}
+
+export type GetTransactionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: TransactionData & unknown
+}
+
+export type TransactionAmountSchema = {
+    amount: number
+    action: TransactionActionEnum
+    financialAccountId: string
+}
+
+export type TransactionFormSchema = {
+    title: string
+    date: string
+    categoryId: string | null
+    subcategoryId: string | null
+    note: string | null
+    ignore: boolean
+    action: TransactionActionEnum
+    amounts: Array<TransactionAmount>
+}
+
+export type CreateTransactionRequestSchema = {
+    title: string
+    date: string
+    categoryId: string | null
+    subcategoryId: string | null
+    note: string | null
+    ignore: boolean
+    action: TransactionActionEnum
+    amounts: Array<TransactionAmount>
+}
+
+export type CreateTransactionMultipartRequestSchema = {
+    data?: CreateTransactionRequest
+    file: Array<Blob | File>
+}
+
+export type CreateTransactionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: TransactionData & unknown
+}
+
+export type UpdateTransactionRequestSchema = {
+    title?: string
+    date?: string
+    categoryId?: string | null
+    subcategoryId?: string | null
+    note?: string | null
+    ignore?: boolean
+    action?: TransactionActionEnum
+    amounts?: Array<TransactionAmount>
+}
+
+export type UpdateTransactionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteTransactionResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type TransactionFiltersSchema = {
+    id?: TransactionParamsId
+    title?: StringFilter
+    note?: StringFilter
+    action?: TransactionActionEnum
+    categoryId?: string
+    subcategoryId?: string
+    financialAccountId?: string
+    date?: DateFilter
+}
+
+export type QueryTransactionFiltersSchema = {
+    filter?: TransactionFilters
+    options?: FilterOptions
+}
+
+export type UserPreferencesSchema = {
+    snapshotFrequency: SnapshotFrequencyEnum
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    country: CountriesEnum
+    timezone: TimezoneEnum
+}
+
+export type UserSchema = {
+    id: string
+    name: string
+    surname: string
+    email: string
+    emailVerified: boolean
+    onBoardingStep: OnBoardingStepEnum
+    onBoardingAt: string | null
+    image: string | null
+    createdAt: string
+    updatedAt: string
+    snapshotFrequency: SnapshotFrequencyEnum
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    country: CountriesEnum
+    timezone: TimezoneEnum
+}
+
+export type GetUserResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: User
+}
+
+export type UpdateUserSchemaRequest = {
+    id?: string
+    name?: string
+    surname?: string
+    email?: string
+    emailVerified?: boolean
+    onBoardingStep?: OnBoardingStepEnum
+    onBoardingAt?: string | null
+    image?: string | null
+    createdAt?: string
+    updatedAt?: string
+    snapshotFrequency?: SnapshotFrequencyEnum
+    preferredCurrency?: CurrencyEnum
+    preferredLanguage?: LanguageEnum
+    dateFormat?: DateFormatEnum
+    country?: CountriesEnum
+    timezone?: TimezoneEnum
+}
+
+export type UpdateUserResponseSchema = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: User
+}
+
+export type UserSessionSchema = {
+    session: {
+        id: string
+        createdAt: string
+        updatedAt: string
+        userId: string
+        expiresAt: string
+        token: string
+        ipAddress: string | null
+        userAgent: string | null
+    }
+    user: User
+}
+
+export type UserLoginSchema = {
+    email: string
+    password: string
+}
+
+export type UserFormPreferencesFormSchema = {
+    preferredCurrency: CurrencyEnum
+    preferredLanguage: LanguageEnum
+    dateFormat: DateFormatEnum
+    timezone: TimezoneEnum
+}
+
+export type UserFormGeneralitiesFormSchema = {
+    name: string
+    surname: string
+    country: CountriesEnum
+}
+
+export type UserProfileFormSchema = {
+    name: string
+    surname: string
+    email: string
+    country: CountriesEnum
+}
+
+export type UserProfileSecurityFormSchema = {
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
 }
 
 export type GetRootStatusData = {

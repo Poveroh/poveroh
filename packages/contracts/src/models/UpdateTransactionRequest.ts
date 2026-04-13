@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ExpensesAmount } from './ExpensesAmount'
 import type { TransactionActionEnum } from './TransactionActionEnum'
+import type { TransactionAmount } from './TransactionAmount'
 export type UpdateTransactionRequest = {
     title?: string
     date?: string
@@ -12,5 +12,5 @@ export type UpdateTransactionRequest = {
     note?: string | null
     ignore?: boolean
     action?: TransactionActionEnum
-    amounts?: Array<ExpensesAmount>
+    amounts?: Array<TransactionAmount>
 }

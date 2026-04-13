@@ -25,7 +25,7 @@ type OpenApiAwareSchema = {
 }
 
 const isOpenApiAwareSchema = (value: unknown): value is OpenApiAwareSchema => {
-    return typeof value === 'object' && value !== null && '_def' in value
+    return typeof value === 'object' && value !== null && typeof value !== 'function' && '_def' in value
 }
 
 const registerAllSchemas = (registry: OpenAPIRegistry) => {
@@ -35,7 +35,7 @@ const registerAllSchemas = (registry: OpenAPIRegistry) => {
         }
 
         const schemaName = schema._def?.openapi?._internal?.refId ?? exportName
-        registry.register(schemaName, schema)
+        registry.register(schemaName, schema as any)
     }
 }
 

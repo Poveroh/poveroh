@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { TransactionData } from './TransactionData'
+/**
+ * Response data
+ */
 export type TransactionListData = {
     data: Array<TransactionData>
     /**

@@ -16,7 +16,7 @@ import { TransactionData } from '@poveroh/types'
  * - Error handling
  * - Dynamic field value setting and form reset capabilities
  *
- * @template T - The form data type extending FieldValues // ExpensesFormData | IncomeFormData | TransferFormData
+ * @template T - The form data type extending FieldValues
  * @param config - Configuration object containing schema, default values, and transformation functions
  * @param props - Props containing initial data, editing mode, and data callback
  * @returns Object containing form instance, loading state, and utility functions
@@ -55,7 +55,6 @@ export function useBaseTransactionForm<T extends FieldValues>(
             const formData = new FormData()
 
             formData.append('data', JSON.stringify(localTransaction))
-            formData.append('action', config.type)
 
             if (file && file[0]) {
                 formData.append('file', file[0])

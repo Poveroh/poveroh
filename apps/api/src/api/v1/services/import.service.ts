@@ -36,14 +36,13 @@ export class ImportService extends BaseService {
 
     /**
      * Creates or updates a transaction during the import flow
-     * @param action The transaction action type
-     * @param payload The transaction payload as a JSON string
+     * @param payload The transaction payload as a JSON string (includes action)
      * @returns The created or updated transaction result
      */
-    async handleImportTransaction(action: string, payload: string): Promise<unknown> {
+    async handleImportTransaction(payload: string): Promise<unknown> {
         const userId = this.getUserId()
         const parsedData = JSON.parse(payload)
-        return TransactionHelper.handleTransaction(action, parsedData, userId)
+        return TransactionHelper.handleTransaction(parsedData, userId)
     }
 
     /**

@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { DashboardLayoutItem } from './DashboardLayoutItem'
+/**
+ * Response data
+ */
 export type GetDashboardLayout = {
     layout: Array<DashboardLayoutItem>
     version: number

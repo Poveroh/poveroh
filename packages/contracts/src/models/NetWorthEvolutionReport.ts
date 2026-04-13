@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { NetWorthEvolution } from './NetWorthEvolution'
+/**
+ * Response data
+ */
 export type NetWorthEvolutionReport = {
     currentNetWorth: number
     evolution: Array<NetWorthEvolution>

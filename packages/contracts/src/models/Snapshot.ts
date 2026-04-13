@@ -4,6 +4,9 @@
 /* eslint-disable */
 import type { SnapshotAccountBalance } from './SnapshotAccountBalance'
 import type { SnapshotAssetValue } from './SnapshotAssetValue'
+/**
+ * Response data
+ */
 export type Snapshot = {
     id: string
     userId: string

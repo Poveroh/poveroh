@@ -19,17 +19,16 @@ export class TransactionService extends BaseService {
     }
 
     /**
-     * Creates or updates a transaction based on the provided action and payload
-     * @param action The transaction action type
-     * @param payload The transaction payload as a JSON string
+     * Creates or updates a transaction based on the provided payload
+     * @param payload The transaction payload as a JSON string (includes action)
      * @param id Optional transaction ID for updates
      * @returns The created or updated transaction result
      */
-    async handleTransaction(action: string, payload: string, id?: string): Promise<unknown> {
+    async handleTransaction(payload: string, id?: string): Promise<unknown> {
         const userId = this.getUserId()
         const parsedData = JSON.parse(payload)
 
-        return TransactionHelper.handleTransaction(action, parsedData, userId, id)
+        return TransactionHelper.handleTransaction(parsedData, userId, id)
     }
 
     /**

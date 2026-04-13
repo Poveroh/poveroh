@@ -1,48 +1,30 @@
-import { FinancialAccountTypeEnum, TransactionData } from './contracts.js'
+import { CurrencyEnum, FinancialAccountTypeEnum, TransactionActionEnum, TransactionData } from './contracts.js'
 import { Item } from './item.js'
 
-type ExpensesAmounts = Array<{ amount: number; financialAccountId: string }>
-
-export type ExpensesFormData = {
-    title: string
-    date: string
-    categoryId: string
-    subcategoryId: string
-    note: string
-    ignore: boolean
-    currency: string
-    totalAmount: number
-    multipleAmount: boolean
-    amounts?: ExpensesAmounts
-    totalFinancialAccountId?: string
-}
-
-export type IncomeFormData = {
-    title: string
-    date: string
-    categoryId: string
-    subcategoryId: string
-    note: string
-    ignore: boolean
-    amount: number
-    currency: string
-    financialAccountId: string
-}
-
-export type TransferFormData = {
-    title: string
-    date: string
-    note: string
-    ignore: boolean
-    amount: number
-    currency: string
-    from: string
-    to: string
-}
-
-export type FormMode = ExpensesFormData | IncomeFormData | TransferFormData
-
 export type GroupedTransactions = Record<string, TransactionData[]>
+
+/**
+ * Unified transaction form data type used by the frontend form hook.
+ * The `amounts` array uses TransactionAmount structure:
+ * - INCOME: 1 amount with action INCOME
+ * - EXPENSES: 1+ amounts with action EXPENSES (supports split)
+ * - TRANSFER: 2 amounts — one EXPENSES (from), one INCOME (to)
+ */
+export type TransactionFormData = {
+    title: string
+    date: string
+    categoryId: string
+    subcategoryId: string
+    note: string
+    ignore: boolean
+    action: TransactionActionEnum
+    currency: CurrencyEnum | string
+    amounts: Array<{
+        amount: number
+        action: TransactionActionEnum
+        financialAccountId: string
+    }>
+}
 
 export type FilterField =
     | {
