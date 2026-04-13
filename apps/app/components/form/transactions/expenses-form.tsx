@@ -23,9 +23,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
     const { financialAccountCacheList } = useFinancialAccountStore()
     const { form, file, fieldArray, setFile, handleSubmit, calculateTotal } = useTransactionForm('EXPENSES', props)
 
-    const [multipleAmount, setMultipleAmount] = useState(
-        () => (props.initialData?.amounts?.length ?? 1) > 1
-    )
+    const [multipleAmount, setMultipleAmount] = useState(() => (props.initialData?.amounts?.length ?? 1) > 1)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
@@ -94,12 +92,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                         <div className='flex flex-row items-center justify-between'>
                             <FormLabel mandatory>{t('form.amount.label')}</FormLabel>
                             <div className='flex flex-row'>
-                                <Button
-                                    type='button'
-                                    size='sm'
-                                    variant='ghost'
-                                    onClick={() => toggleMultipleAmount()}
-                                >
+                                <Button type='button' size='sm' variant='ghost' onClick={() => toggleMultipleAmount()}>
                                     {!multipleAmount ? <Split /> : <Merge />}
                                 </Button>
                                 <div className='hr vertical'></div>
@@ -227,22 +220,18 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger variant={inputStyle}>
-                                                            <SelectValue
-                                                                placeholder={t('form.account.placeholder')}
-                                                            />
+                                                            <SelectValue placeholder={t('form.account.placeholder')} />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {financialAccountCacheList.map(
-                                                            (item: FinancialAccountData) => (
-                                                                <SelectItem key={item.id} value={item.id}>
-                                                                    <div className='flex items-center flex-row space-x-4'>
-                                                                        <BrandIcon icon={item.logoIcon} size='sm' />
-                                                                        <span>{item.title}</span>
-                                                                    </div>
-                                                                </SelectItem>
-                                                            )
-                                                        )}
+                                                        {financialAccountCacheList.map((item: FinancialAccountData) => (
+                                                            <SelectItem key={item.id} value={item.id}>
+                                                                <div className='flex items-center flex-row space-x-4'>
+                                                                    <BrandIcon icon={item.logoIcon} size='sm' />
+                                                                    <span>{item.title}</span>
+                                                                </div>
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
