@@ -31,7 +31,7 @@ function getSchema(type: TransactionActionEnum) {
 function getDefaultValues(type: TransactionActionEnum, currency: CurrencyEnum): TransactionForm {
     const base: Omit<TransactionForm, 'amounts' | 'action'> = {
         title: '',
-        date: new Date().toISOString().split('T')[0]!,
+        date: new Date().toISOString(),
         categoryId: null,
         subcategoryId: null,
         note: null,

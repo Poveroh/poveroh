@@ -100,7 +100,7 @@ export const TransactionSchema = z
     .object({
         id: z.string(),
         userId: z.string(),
-        date: z.string().datetime(),
+        date: z.iso.datetime().nonempty(),
         title: z.string().nonempty(),
         note: z.string().nullable(),
         icon: z.string().nullable(),
@@ -170,13 +170,13 @@ export const TransactionAmountSchema = z
  */
 export const TransactionFormSchema = TransactionSchema.pick({
     title: true,
-    date: true,
     categoryId: true,
     subcategoryId: true,
     note: true,
     ignore: true
 })
     .extend({
+        date: z.iso.date().nonempty(),
         action: TransactionActionEnum,
         currency: CurrencyEnum,
         amounts: z.array(TransactionAmountSchema)

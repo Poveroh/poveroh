@@ -20,7 +20,7 @@ export function AmountField<T extends FieldValues = FieldValues>({
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel mandatory={mandatory}>{label}</FormLabel>
+                    {label && <FormLabel mandatory={mandatory}>{label}</FormLabel>}
                     <FormControl>
                         <Input
                             type='number'

@@ -103,7 +103,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
     const onSubmit = form.handleSubmit(
         values => handleSubmit(values, props.dataCallback),
         errors => {
-            logger.debug('Form validation errors on submit:', errors)
+            logger.error('Form validation errors on submit:', errors)
         }
     )
 

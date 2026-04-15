@@ -10,25 +10,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BrandIcon } from '@/components/icon/brand-icon'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { CurrencyField, DateField, NoteField, TextField, IgnoreField, FileUploadField } from '@/components/fields'
+import {
+    CurrencyField,
+    DateField,
+    NoteField,
+    TextField,
+    IgnoreField,
+    FileUploadField,
+    AccountField,
+    AmountField
+} from '@/components/fields'
 import { useFinancialAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 import { useTransactionForm } from '@/hooks/form/use-transaction-form'
 import { FinancialAccountData } from '@poveroh/types'
 
 export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
-    const { dataCallback } = props
-
     const t = useTranslations()
     const { financialAccountCacheList } = useFinancialAccountStore()
-    const { form, file, fieldArray, setFile, handleSubmit, calculateTotal } = useTransactionForm('EXPENSES', props)
+    const { form, file, fieldArray, setFile, onSubmit, calculateTotal } = useTransactionForm('EXPENSES', props)
 
     const [multipleAmount, setMultipleAmount] = useState(() => (props.initialData?.amounts?.length ?? 1) > 1)
 
     useImperativeHandle(ref, () => ({
-        submit: () => {
-            form.handleSubmit(values => handleSubmit(values, dataCallback))()
-        },
+        submit: onSubmit,
         reset: () => {
             form.reset()
         }
@@ -88,7 +93,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                         variant={inputStyle}
                     />
 
-                    <div>
+                    <div className='flex flex-col space-y-2'>
                         <div className='flex flex-row items-center justify-between'>
                             <FormLabel mandatory>{t('form.amount.label')}</FormLabel>
                             <div className='flex flex-row'>
@@ -112,67 +117,12 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                         </div>
 
                         {!multipleAmount ? (
-                            <>
-                                <FormField
-                                    control={form.control}
-                                    name='amounts.0.amount'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Input
-                                                    type='number'
-                                                    step='0.01'
-                                                    min='0'
-                                                    variant={inputStyle}
-                                                    {...field}
-                                                    value={
-                                                        Number.isNaN(field.value) || field.value === undefined
-                                                            ? ''
-                                                            : field.value
-                                                    }
-                                                    onChange={e => {
-                                                        field.onChange(parseFloat(e.target.value))
-                                                    }}
-                                                    placeholder={t('form.amount.placeholder')}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name='amounts.0.financialAccountId'
-                                    render={({ field }) => (
-                                        <FormItem className='mt-4'>
-                                            <FormLabel mandatory>{t('form.account.label')}</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                value={field.value}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger variant={inputStyle}>
-                                                        <SelectValue placeholder={t('form.account.placeholder')} />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {financialAccountCacheList.map((item: FinancialAccountData) => (
-                                                        <SelectItem key={item.id} value={item.id}>
-                                                            <div className='flex items-center flex-row space-x-4'>
-                                                                <BrandIcon icon={item.logoIcon} size='sm' />
-                                                                <span>{item.title}</span>
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </>
+                            <AmountField
+                                control={form.control}
+                                name='amounts.0.amount'
+                                placeholder={t('form.amount.placeholder')}
+                                mandatory={true}
+                            />
                         ) : (
                             fields.map((field: unknown, index: number) => (
                                 <div
@@ -180,64 +130,20 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                     key={`field-${index}`}
                                 >
                                     <Image src='/icon/arrow-link.svg' alt='logo' width={50} height={50} />
-                                    <FormField
+                                    <AmountField
                                         control={form.control}
                                         name={`amounts.${index}.amount`}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <Input
-                                                        type='number'
-                                                        step='0.01'
-                                                        min='0'
-                                                        {...field}
-                                                        value={
-                                                            Number.isNaN(field.value) || field.value === undefined
-                                                                ? ''
-                                                                : field.value
-                                                        }
-                                                        variant={inputStyle}
-                                                        onChange={e => {
-                                                            field.onChange(parseFloat(e.target.value))
-                                                        }}
-                                                        placeholder={t('form.amount.placeholder')}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                        placeholder={t('form.amount.placeholder')}
+                                        mandatory={true}
                                     />
 
-                                    <FormField
+                                    <AccountField
                                         control={form.control}
                                         name={`amounts.${index}.financialAccountId`}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={field.value}
-                                                    value={field.value}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger variant={inputStyle}>
-                                                            <SelectValue placeholder={t('form.account.placeholder')} />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {financialAccountCacheList.map((item: FinancialAccountData) => (
-                                                            <SelectItem key={item.id} value={item.id}>
-                                                                <div className='flex items-center flex-row space-x-4'>
-                                                                    <BrandIcon icon={item.logoIcon} size='sm' />
-                                                                    <span>{item.title}</span>
-                                                                </div>
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                        placeholder={t('form.account.placeholder')}
+                                        mandatory={true}
                                     />
+
                                     <Button
                                         type='button'
                                         size='sm'
@@ -253,13 +159,22 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                                 </div>
                             ))
                         )}
-
-                        {multipleAmount && (
-                            <div className='mt-2 text-sm text-muted-foreground'>
-                                {t('form.amount.label')}: {calculateTotal()}
-                            </div>
-                        )}
                     </div>
+
+                    {multipleAmount && (
+                        <AccountField
+                            control={form.control}
+                            name='amounts.0.financialAccountId'
+                            placeholder={t('form.account.placeholder')}
+                            mandatory={true}
+                        />
+                    )}
+
+                    {multipleAmount && (
+                        <div className='mt-2 text-sm text-muted-foreground'>
+                            {t('form.amount.label')}: {calculateTotal()}
+                        </div>
+                    )}
 
                     <CategorySubcategoryField
                         form={form}

@@ -9,14 +9,14 @@ export default function ZodLocaleProvider() {
     const locale = useLocale()
 
     useEffect(() => {
-        setErrorMap(((issue: any, _ctx: any) => {
+        setErrorMap(((issue: any) => {
             if (issue.code === ZodIssueCode.invalid_type) {
                 return { message: t('messages.errors.required') }
             }
 
             if (issue.code === ZodIssueCode.invalid_format) {
                 if (issue.format === 'email') return { message: t('messages.errors.email') }
-                return { message: _ctx.defaultError }
+                return undefined
             }
 
             if (issue.code === ZodIssueCode.too_small) {
@@ -24,7 +24,7 @@ export default function ZodLocaleProvider() {
                 return { message: t('messages.errors.passwordAtLeastChar', { a: min }) }
             }
 
-            return { message: _ctx.defaultError }
+            return undefined
         }) as any)
     }, [t, locale])
 
