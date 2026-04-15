@@ -1,4 +1,3 @@
-import { useFinancialAccount } from '@/hooks/use-account'
 import { useCategory } from '@/hooks/use-category'
 
 import { useEffect, useRef, useState } from 'react'
@@ -23,7 +22,7 @@ import {
     AlertDialogTrigger
 } from '@poveroh/ui/components/alert-dialog'
 import { useImport } from '@/hooks/use-imports'
-import { CategoryData, TransactionData, TransactionStatusEnum } from '@poveroh/types'
+import { CategoryData, CreateUpdateTransactionRequest, TransactionData, TransactionStatusEnum } from '@poveroh/types'
 
 type TransactionItemProps = {
     transaction: TransactionData
@@ -70,16 +69,14 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         fetchData()
     }, [transaction])
 
-    const handleEditTransaction = async (data: FormData | Partial<TransactionData>) => {
-        // For now, we only handle FormData case since updatePendingTransaction expects FormData
-        if (data instanceof FormData) {
-            const editedTransaction = await updatePendingTransaction(transaction.id, data)
-
-            if (!editedTransaction) return
-
-            //TODO: we might want to update the item in place instead of refetching the whole list
-            // onEdit(editedTransaction)
-        }
+    const handleEditTransaction = async (payload: CreateUpdateTransactionRequest, files: File[]) => {
+        // // For now, we only handle FormData case since updatePendingTransaction expects FormData
+        // if (data instanceof FormData) {
+        //     const editedTransaction = await updatePendingTransaction(transaction.id, data)
+        //     if (!editedTransaction) return
+        //     //TODO: we might want to update the item in place instead of refetching the whole list
+        //     // onEdit(editedTransaction)
+        // }
     }
 
     const handleDeleteTransaction = async () => {

@@ -1,4 +1,4 @@
-import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
+import { OpenAPIRegistry, zodToOpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import * as schemas from './schemas'
 import {
     registerCategoryPath,
@@ -14,28 +14,22 @@ import {
     registerUserPath
 } from './paths'
 
-type OpenApiAwareSchema = {
-    _def?: {
-        openapi?: {
-            _internal?: {
-                refId?: string
-            }
-        }
-    }
-}
-
-const isOpenApiAwareSchema = (value: unknown): value is OpenApiAwareSchema => {
+const isZodSchema = (value: unknown): boolean => {
     return typeof value === 'object' && value !== null && typeof value !== 'function' && '_def' in value
 }
 
 const registerAllSchemas = (registry: OpenAPIRegistry) => {
-    for (const [exportName, schema] of Object.entries(schemas)) {
-        if (!isOpenApiAwareSchema(schema)) {
+    for (const schema of Object.values(schemas) as any[]) {
+        if (!isZodSchema(schema)) {
             continue
         }
 
-        const schemaName = schema._def?.openapi?._internal?.refId ?? exportName
-        registry.register(schemaName, schema as any)
+        const refId = zodToOpenAPIRegistry.get(schema)?._internal?.refId
+        if (!refId) {
+            continue
+        }
+
+        registry.register(refId, schema)
     }
 }
 

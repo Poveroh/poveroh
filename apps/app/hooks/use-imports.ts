@@ -191,14 +191,15 @@ export const useImport = () => {
                         throw new Error('Missing transaction ID')
                     }
 
-                    const response = await updatePendingTransactionMutationHook.mutateAsync({
-                        path: { id: transactionId },
-                        body: transaction
-                    })
+                    // const response = await updatePendingTransactionMutationHook.mutateAsync({
+                    //     path: { id: transactionId },
+                    //     body: transaction
+                    // })
 
-                    const updated = (response?.data ?? transaction) as TransactionData
-                    importStore.updatePendingTransaction(updated)
-                    return updated
+                    // const updated = (response?.data ?? transaction) as TransactionData
+                    // importStore.updatePendingTransaction(updated)
+                    // return updated
+                    return null
                 })
             )
 

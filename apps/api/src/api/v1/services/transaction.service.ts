@@ -1,7 +1,7 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere2 } from '../../../helpers/filter.helper'
 import { TransactionHelper } from '../helpers/transaction.helper'
-import { FilterOptions, QueryTransactionFilters, TransactionDataResponse, TransactionFilters } from '@poveroh/types'
+import { FilterOptions, QueryTransactionFilters, TransactionData, TransactionFilters } from '@poveroh/types'
 import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
 
@@ -57,13 +57,13 @@ export class TransactionService extends BaseService {
      * @param id The ID of the transaction to retrieve
      * @returns The transaction data response if found, or null if not found
      */
-    async getTransactionById(id: string): Promise<TransactionDataResponse | null> {
+    async getTransactionById(id: string): Promise<TransactionData | null> {
         const userId = this.getUserId()
         return (await prisma.transaction.findFirst({
             where: { id, userId },
             omit: { userId: true, deletedAt: true },
             include: { amounts: true, media: true }
-        })) as unknown as TransactionDataResponse | null
+        })) as unknown as TransactionData | null
     }
 
     /**

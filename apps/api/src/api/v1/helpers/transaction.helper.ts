@@ -1,6 +1,6 @@
 import prisma from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { TransactionFormData } from '@poveroh/types'
+import { TransactionForm } from '@poveroh/types'
 import { BalanceHelper } from './balance.helper'
 
 //TODO - complete files
@@ -16,7 +16,7 @@ export const TransactionHelper = {
      * @param transactionId - Optional ID for updating existing transactions
      * @returns Promise resolving to the created/updated transaction with amounts
      */
-    async handleTransaction(data: TransactionFormData, userId: string, transactionId?: string) {
+    async handleTransaction(data: TransactionForm, userId: string, transactionId?: string) {
         this.validateTransactionData(data)
 
         if (!userId) {
@@ -34,7 +34,7 @@ export const TransactionHelper = {
         }
     },
 
-    validateTransactionData(data: TransactionFormData): void {
+    validateTransactionData(data: TransactionForm): void {
         if (!data.title || data.title.trim().length === 0) {
             throw new Error('Transaction title is required')
         }
@@ -80,7 +80,7 @@ export const TransactionHelper = {
     /**
      * Handles INCOME and EXPENSES transactions (single or split amounts)
      */
-    async handleStandardTransaction(data: TransactionFormData, userId: string, transactionId?: string) {
+    async handleStandardTransaction(data: TransactionForm, userId: string, transactionId?: string) {
         let resultTransactionId = transactionId || ''
 
         try {
@@ -154,7 +154,7 @@ export const TransactionHelper = {
         }
     },
 
-    async handleTransferTransaction(data: TransactionFormData, userId: string, transactionId?: string) {
+    async handleTransferTransaction(data: TransactionForm, userId: string, transactionId?: string) {
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { timezone: true }
@@ -284,9 +284,9 @@ export const TransactionHelper = {
     },
 
     /**
-     * Builds amount entries from the unified TransactionFormData amounts array
+     * Builds amount entries from the unified TransactionForm amounts array
      */
-    buildAmounts(transactionId: string, data: TransactionFormData) {
+    buildAmounts(transactionId: string, data: TransactionForm) {
         const amountsData = data.amounts.map(element =>
             this.createAmountData({
                 transactionId,
@@ -377,7 +377,7 @@ export const TransactionHelper = {
         return transaction
     },
 
-    normalizeTransaction(data: TransactionFormData) {
+    normalizeTransaction(data: TransactionForm) {
         const baseData = {
             title: data.title,
             action: data.action,

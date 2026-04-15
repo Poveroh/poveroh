@@ -571,11 +571,12 @@ export const updateTransaction = <ThrowOnError extends boolean = false>(
     options: Options<UpdateTransactionData, ThrowOnError>
 ) =>
     (options.client ?? client).patch<UpdateTransactionResponses, UpdateTransactionErrors, ThrowOnError>({
+        ...formDataBodySerializer,
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/transactions/{id}',
         ...options,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': null,
             ...options.headers
         }
     })
@@ -864,6 +865,20 @@ export const getImportTransactionsById = <ThrowOnError extends boolean = false>(
     (options.client ?? client).get<GetImportTransactionsByIdResponses, GetImportTransactionsByIdErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/imports/{id}/transactions',
+        ...options
+    })
+
+/**
+ * Create import template
+ *
+ * Create a new import template with the provided data
+ */
+export const createImportTemplate = <ThrowOnError extends boolean = false>(
+    options: Options<CreateImportTemplateData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateImportTemplateResponses, CreateImportTemplateErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports/template/{action}',
         ...options
     })
 
@@ -1397,19 +1412,5 @@ export const getAuthError = <ThrowOnError extends boolean = false>(options?: Opt
     (options?.client ?? client).get<GetAuthErrorResponses, GetAuthErrorErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/auth/error',
-        ...options
-    })
-
-/**
- * Create import template
- *
- * Create a new import template with the provided data
- */
-export const createImportTemplate = <ThrowOnError extends boolean = false>(
-    options: Options<CreateImportTemplateData, ThrowOnError>
-) =>
-    (options.client ?? client).post<CreateImportTemplateResponses, CreateImportTemplateErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/imports/template/{action}',
         ...options
     })

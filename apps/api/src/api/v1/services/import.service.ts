@@ -13,7 +13,7 @@ import {
     ImportFilters,
     TransactionActionEnum,
     TransactionStatusEnum,
-    TransactionDataResponse,
+    TransactionData,
     TransactionFilters,
     CategoryData
 } from '@poveroh/types'
@@ -220,7 +220,7 @@ export class ImportService extends BaseService {
      * @param filters The filters to apply to the transaction query
      * @returns The list of pending transactions
      */
-    async getPendingTransactions(id: string, filters: TransactionFilters): Promise<TransactionDataResponse[]> {
+    async getPendingTransactions(id: string, filters: TransactionFilters): Promise<TransactionData[]> {
         const userId = this.getUserId()
         const where = buildWhere(filters)
 
@@ -239,7 +239,7 @@ export class ImportService extends BaseService {
             },
             include: { amounts: true },
             orderBy: { createdAt: 'desc' }
-        })) as unknown as TransactionDataResponse[]
+        })) as unknown as TransactionData[]
     }
 
     /**
@@ -258,8 +258,8 @@ export class ImportService extends BaseService {
      * @param payload The pending transactions payload as a JSON string
      * @returns The updated transactions
      */
-    async editPendingTransactions(payload: string): Promise<TransactionDataResponse[]> {
-        const parsedData: TransactionDataResponse[] = JSON.parse(payload)
+    async editPendingTransactions(payload: string): Promise<TransactionData[]> {
+        const parsedData: TransactionData[] = JSON.parse(payload)
 
         const updatedTransactions = await prisma.$transaction(async tx => {
             const results = []
@@ -295,7 +295,7 @@ export class ImportService extends BaseService {
             return results
         })
 
-        return updatedTransactions as unknown as TransactionDataResponse[]
+        return updatedTransactions as unknown as TransactionData[]
     }
 
     /**

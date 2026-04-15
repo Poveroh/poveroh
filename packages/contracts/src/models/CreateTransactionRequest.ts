@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CurrencyEnum } from './CurrencyEnum'
 import type { TransactionActionEnum } from './TransactionActionEnum'
 import type { TransactionAmount } from './TransactionAmount'
 export type CreateTransactionRequest = {
@@ -12,5 +13,6 @@ export type CreateTransactionRequest = {
     note: string | null
     ignore: boolean
     action: TransactionActionEnum
+    currency: CurrencyEnum
     amounts: Array<TransactionAmount>
 }

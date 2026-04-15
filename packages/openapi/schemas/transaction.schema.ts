@@ -178,6 +178,7 @@ export const TransactionFormSchema = TransactionSchema.pick({
 })
     .extend({
         action: TransactionActionEnum,
+        currency: CurrencyEnum,
         amounts: z.array(TransactionAmountSchema)
     })
     .openapi('TransactionForm')
@@ -204,10 +205,22 @@ export const CreateTransactionResponseSchema =
  */
 export const UpdateTransactionRequestSchema = TransactionFormSchema.partial().openapi('UpdateTransactionRequest')
 
+export const UpdateTransactionMultipartRequestSchema = MultipartRequestSchema(UpdateTransactionRequestSchema).openapi(
+    'UpdateTransactionMultipartRequest'
+)
 /**
  * Response schema for updating an existing transaction
  */
 export const UpdateTransactionResponseSchema = SuccessResponseSchema().openapi('UpdateTransactionResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Union schema for create and update transaction requests, used for form validation when the same form is used for both creating and editing transactions
+ */
+export const CreateUpdateTransactionRequestSchema = z
+    .union([CreateTransactionRequestSchema, UpdateTransactionRequestSchema])
+    .openapi('CreateUpdateTransactionRequest')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

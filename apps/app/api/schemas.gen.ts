@@ -79,8 +79,7 @@ export const UserSchema = {
         'dateFormat',
         'country',
         'timezone'
-    ],
-    description: 'Response data'
+    ]
 } as const
 
 export const SessionSchema = {
@@ -199,46 +198,6 @@ export const VerificationSchema = {
     required: ['identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
 } as const
 
-export const TransactionActionEnumSchema = {
-    type: 'string',
-    enum: ['EXPENSES', 'INCOME', 'TRANSFER']
-} as const
-
-export const SubcategorySchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
-} as const
-
 export const CategorySchema = {
     type: 'object',
     properties: {
@@ -286,6 +245,46 @@ export const CategorySchema = {
         }
     },
     required: ['id', 'userId', 'title', 'for', 'icon', 'createdAt', 'updatedAt']
+} as const
+
+export const TransactionActionEnumSchema = {
+    type: 'string',
+    enum: ['EXPENSES', 'INCOME', 'TRANSFER']
+} as const
+
+export const SubcategorySchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        categoryId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        icon: {
+            type: 'string',
+            minLength: 1
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
 } as const
 
 export const CategoryDataSchema = {
@@ -424,6 +423,46 @@ export const CreateCategoryResponseSchema = {
     required: ['success', 'message', 'data']
 } as const
 
+export const CreateCategoryTemplateRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        icon: {
+            type: 'string',
+            minLength: 1
+        },
+        color: {
+            type: 'string',
+            minLength: 1,
+            default: '#8B5CF6'
+        },
+        subcategories: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    title: {
+                        type: 'string',
+                        minLength: 1
+                    },
+                    icon: {
+                        type: 'string',
+                        minLength: 1
+                    }
+                },
+                required: ['title', 'icon']
+            }
+        }
+    },
+    required: ['title', 'for', 'icon']
+} as const
+
 export const UpdateCategoryRequestSchema = {
     type: 'object',
     properties: {
@@ -495,6 +534,21 @@ export const CategoryParamsIdSchema = {
     required: ['id']
 } as const
 
+export const CategoryFiltersSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            $ref: '#/components/schemas/CategoryParamsId'
+        },
+        title: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        for: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        }
+    }
+} as const
+
 export const StringFilterSchema = {
     type: 'object',
     properties: {
@@ -507,17 +561,14 @@ export const StringFilterSchema = {
     }
 } as const
 
-export const CategoryFiltersSchema = {
+export const QueryCategoryFiltersSchema = {
     type: 'object',
     properties: {
-        id: {
-            $ref: '#/components/schemas/CategoryParamsId'
+        filter: {
+            $ref: '#/components/schemas/CategoryFilters'
         },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
+        options: {
+            $ref: '#/components/schemas/FilterOptions'
         }
     }
 } as const
@@ -548,18 +599,6 @@ export const FilterOptionsSchema = {
     }
 } as const
 
-export const QueryCategoryFiltersSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/CategoryFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
 export const CategoryFormSchema = {
     type: 'object',
     properties: {
@@ -583,24 +622,15 @@ export const CategoryFormSchema = {
     required: ['title', 'for', 'icon']
 } as const
 
-export const DashboardWidgetEnumSchema = {
-    type: 'string',
-    enum: [
-        'net-worth-evolution',
-        'kpi-row',
-        'liquidity-evolution',
-        'income-expense-month',
-        'month-comparison',
-        'category-trend',
-        'account-balances',
-        'expense-macro-distribution',
-        'recent-transactions'
+export const CreateUpdateCategoryRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateCategoryRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateCategoryRequest'
+        }
     ]
-} as const
-
-export const ColSpanEnumSchema = {
-    type: 'string',
-    enum: ['3', '4', '6', '12']
 } as const
 
 export const DashboardLayoutItemSchema = {
@@ -621,6 +651,26 @@ export const DashboardLayoutItemSchema = {
         }
     },
     required: ['id', 'colSpan', 'minHeight']
+} as const
+
+export const DashboardWidgetEnumSchema = {
+    type: 'string',
+    enum: [
+        'net-worth-evolution',
+        'kpi-row',
+        'liquidity-evolution',
+        'income-expense-month',
+        'month-comparison',
+        'category-trend',
+        'account-balances',
+        'expense-macro-distribution',
+        'recent-transactions'
+    ]
+} as const
+
+export const ColSpanEnumSchema = {
+    type: 'string',
+    enum: ['3', '4', '6', '12']
 } as const
 
 export const DashboardLayoutSchema = {
@@ -668,8 +718,7 @@ export const GetDashboardLayoutSchema = {
             type: 'number'
         }
     },
-    required: ['layout', 'version'],
-    description: 'Response data'
+    required: ['layout', 'version']
 } as const
 
 export const GetDashboardLayoutResponseSchema = {
@@ -684,7 +733,14 @@ export const GetDashboardLayoutResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/GetDashboardLayout'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/GetDashboardLayout'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -1492,6 +1548,24 @@ export const UpdateFinancialAccountRequestSchema = {
     }
 } as const
 
+export const UpdateFinancialAccountMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
+        }
+    },
+    required: ['file']
+} as const
+
 export const UpdateFinancialAccountResponseSchema = {
     type: 'object',
     properties: {
@@ -1586,6 +1660,17 @@ export const FinancialAccountFormSchema = {
     required: ['title', 'type', 'logoIcon']
 } as const
 
+export const CreateUpdateFinancialAccountRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateFinancialAccountRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
+        }
+    ]
+} as const
+
 export const ImportFileSchema = {
     type: 'object',
     properties: {
@@ -1621,68 +1706,38 @@ export const ImportFileSchema = {
     required: ['id', 'importId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
 } as const
 
-export const TransactionMediaSchema = {
+export const ImportSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string'
-        },
-        transactionId: {
             type: 'string',
             format: 'uuid'
         },
-        filename: {
-            type: 'string'
-        },
-        filetype: {
-            type: 'string'
-        },
-        path: {
-            type: 'string',
-            format: 'uri'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'transactionId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
-} as const
-
-export const AmountSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        transactionId: {
+        userId: {
             type: 'string',
             format: 'uuid'
         },
-        amount: {
-            type: 'number'
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
+        title: {
+            type: 'string'
         },
         financialAccountId: {
             type: 'string',
             format: 'uuid'
         },
-        importReferenceId: {
-            type: 'string',
-            nullable: true
+        status: {
+            $ref: '#/components/schemas/TransactionStatusEnum'
+        },
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/Transaction'
+            }
+        },
+        files: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportFile'
+            }
         },
         createdAt: {
             type: 'string',
@@ -1697,17 +1752,7 @@ export const AmountSchema = {
             format: 'date-time'
         }
     },
-    required: [
-        'id',
-        'transactionId',
-        'amount',
-        'currency',
-        'action',
-        'financialAccountId',
-        'importReferenceId',
-        'createdAt',
-        'updatedAt'
-    ]
+    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
 } as const
 
 export const TransactionSchema = {
@@ -1811,38 +1856,25 @@ export const TransactionSchema = {
     ]
 } as const
 
-export const ImportSchema = {
+export const TransactionMediaSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
             type: 'string'
         },
-        financialAccountId: {
+        transactionId: {
             type: 'string',
             format: 'uuid'
         },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
+        filename: {
+            type: 'string'
         },
-        transactions: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Transaction'
-            }
+        filetype: {
+            type: 'string'
         },
-        files: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportFile'
-            }
+        path: {
+            type: 'string',
+            format: 'uri'
         },
         createdAt: {
             type: 'string',
@@ -1857,7 +1889,60 @@ export const ImportSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+    required: ['id', 'transactionId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
+} as const
+
+export const AmountSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        transactionId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        importReferenceId: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'transactionId',
+        'amount',
+        'currency',
+        'action',
+        'financialAccountId',
+        'importReferenceId',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const
 
 export const ImportDataSchema = {
@@ -2220,6 +2305,54 @@ export const QueryImportFiltersSchema = {
     }
 } as const
 
+export const CreateUpdateImportRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateImportRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateImportRequest'
+        }
+    ]
+} as const
+
+export const ImportTemplateActionEnumSchema = {
+    type: 'string',
+    enum: ['categories']
+} as const
+
+export const ImportTemplateActionParamsSchema = {
+    type: 'object',
+    properties: {
+        action: {
+            $ref: '#/components/schemas/ImportTemplateActionEnum'
+        }
+    },
+    required: ['action']
+} as const
+
+export const CreateImportTemplateResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/CategoryData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
 export const NetWorthEvolutionSchema = {
     type: 'object',
     properties: {
@@ -2247,8 +2380,7 @@ export const NetWorthEvolutionReportSchema = {
             }
         }
     },
-    required: ['currentNetWorth', 'evolution'],
-    description: 'Response data'
+    required: ['currentNetWorth', 'evolution']
 } as const
 
 export const GetNetWorthEvolutionReportResponseSchema = {
@@ -2263,7 +2395,14 @@ export const GetNetWorthEvolutionReportResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/NetWorthEvolutionReport'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/NetWorthEvolutionReport'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -2430,8 +2569,7 @@ export const SnapshotSchema = {
         'assetValues',
         'createdAt',
         'updatedAt'
-    ],
-    description: 'Response data'
+    ]
 } as const
 
 export const SnapshotDataSchema = {
@@ -2523,7 +2661,14 @@ export const CreateSnapshotAccountBalanceResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/Snapshot'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/Snapshot'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -2795,6 +2940,17 @@ export const SubcategoryFormSchema = {
         }
     },
     required: ['categoryId', 'title', 'icon']
+} as const
+
+export const CreateUpdateSubcategoryRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateSubcategoryRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateSubcategoryRequest'
+        }
+    ]
 } as const
 
 export const SubscriptionSchema = {
@@ -3175,6 +3331,24 @@ export const UpdateSubscriptionRequestSchema = {
     }
 } as const
 
+export const UpdateSubscriptionMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/UpdateSubscriptionRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
+        }
+    },
+    required: ['file']
+} as const
+
 export const UpdateSubscriptionResponseSchema = {
     type: 'object',
     properties: {
@@ -3317,6 +3491,17 @@ export const SubscriptionFormSchema = {
         'rememberPeriod',
         'financialAccountId',
         'isEnabled'
+    ]
+} as const
+
+export const CreateUpdateSubscriptionRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateSubscriptionRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateSubscriptionRequest'
+        }
     ]
 } as const
 
@@ -3526,96 +3711,22 @@ export const TransactionDataSchema = {
     ]
 } as const
 
-export const TransactionDataResponseSchema = {
+export const TransactionListDataSchema = {
     type: 'object',
     properties: {
-        id: {
-            type: 'string'
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        title: {
-            type: 'string'
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        importId: {
-            type: 'string',
-            nullable: true
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        media: {
+        data: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/TransactionMedia'
+                $ref: '#/components/schemas/TransactionData'
             }
         },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Amount'
-            }
-        },
-        transferId: {
-            type: 'string',
-            nullable: true
-        },
-        transferHash: {
-            type: 'string',
-            nullable: true
+        total: {
+            type: 'integer',
+            minimum: 0,
+            description: 'Total number of transactions matching the filters'
         }
     },
-    required: [
-        'id',
-        'date',
-        'title',
-        'note',
-        'icon',
-        'categoryId',
-        'subcategoryId',
-        'importId',
-        'action',
-        'status',
-        'ignore',
-        'createdAt',
-        'updatedAt',
-        'media',
-        'amounts',
-        'transferId',
-        'transferHash'
-    ]
+    required: ['data', 'total']
 } as const
 
 export const GetTransactionListResponseSchema = {
@@ -3630,7 +3741,14 @@ export const GetTransactionListResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/TransactionListData'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/TransactionListData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -3659,6 +3777,65 @@ export const GetTransactionResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
+} as const
+
+export const TransactionAmountSchema = {
+    type: 'object',
+    properties: {
+        amount: {
+            type: 'number'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['amount', 'action', 'financialAccountId']
+} as const
+
+export const TransactionFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        ignore: {
+            type: 'boolean'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        amounts: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/TransactionAmount'
+            }
+        }
+    },
+    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'currency', 'amounts']
 } as const
 
 export const CreateTransactionRequestSchema = {
@@ -3690,6 +3867,9 @@ export const CreateTransactionRequestSchema = {
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
         amounts: {
             type: 'array',
             items: {
@@ -3697,7 +3877,7 @@ export const CreateTransactionRequestSchema = {
             }
         }
     },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'amounts']
+    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'currency', 'amounts']
 } as const
 
 export const CreateTransactionMultipartRequestSchema = {
@@ -3772,6 +3952,9 @@ export const UpdateTransactionRequestSchema = {
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
         amounts: {
             type: 'array',
             items: {
@@ -3779,6 +3962,24 @@ export const UpdateTransactionRequestSchema = {
             }
         }
     }
+} as const
+
+export const UpdateTransactionMultipartRequestSchema = {
+    type: 'object',
+    properties: {
+        data: {
+            $ref: '#/components/schemas/UpdateTransactionRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
+        }
+    },
+    required: ['file']
 } as const
 
 export const UpdateTransactionResponseSchema = {
@@ -3798,6 +3999,17 @@ export const UpdateTransactionResponseSchema = {
         }
     },
     required: ['success', 'message']
+} as const
+
+export const CreateUpdateTransactionRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateTransactionRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateTransactionRequest'
+        }
+    ]
 } as const
 
 export const DeleteTransactionResponseSchema = {
@@ -3874,44 +4086,6 @@ export const QueryTransactionFiltersSchema = {
     }
 } as const
 
-export const TransactionFormSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string'
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionAmount'
-            }
-        }
-    },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'amounts']
-} as const
-
 export const UserPreferencesSchema = {
     type: 'object',
     properties: {
@@ -3949,7 +4123,14 @@ export const GetUserResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/User'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/User'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -4031,7 +4212,14 @@ export const UpdateUserResponseSchema = {
             description: 'Optional success message'
         },
         data: {
-            $ref: '#/components/schemas/User'
+            allOf: [
+                {
+                    $ref: '#/components/schemas/User'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
     required: ['success', 'message', 'data']
@@ -4048,25 +4236,27 @@ export const UserSessionSchema = {
                     format: 'uuid'
                 },
                 createdAt: {
-                    type: 'string'
+                    type: 'string',
+                    format: 'date-time'
                 },
                 updatedAt: {
-                    type: 'string'
+                    type: 'string',
+                    format: 'date-time'
                 },
                 userId: {
                     type: 'string',
                     format: 'uuid'
                 },
                 expiresAt: {
-                    type: 'string'
+                    type: 'string',
+                    format: 'date-time'
                 },
                 token: {
                     type: 'string'
                 },
                 ipAddress: {
                     type: 'string',
-                    nullable: true,
-                    format: 'ip'
+                    nullable: true
                 },
                 userAgent: {
                     type: 'string',
@@ -4158,3765 +4348,6 @@ export const UserProfileFormSchema = {
 } as const
 
 export const UserProfileSecurityFormSchema = {
-    type: 'object',
-    properties: {
-        oldPassword: {
-            type: 'string',
-            minLength: 6
-        },
-        newPassword: {
-            type: 'string',
-            minLength: 6
-        },
-        confirmPassword: {
-            type: 'string',
-            minLength: 6
-        }
-    },
-    required: ['oldPassword', 'newPassword', 'confirmPassword']
-} as const
-
-export const CreateUpdateFinancialAccountRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateFinancialAccountRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
-        }
-    ]
-} as const
-
-export const CreateUpdateCategoryRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateCategoryRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateCategoryRequest'
-        }
-    ]
-} as const
-
-export const CreateUpdateSubcategoryRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateSubcategoryRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateSubcategoryRequest'
-        }
-    ]
-} as const
-
-export const CreateUpdateSubscriptionRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateSubscriptionRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateSubscriptionRequest'
-        }
-    ]
-} as const
-
-export const CreateUpdateImportRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateImportRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateImportRequest'
-        }
-    ]
-} as const
-
-export const UpdateFinancialAccountMultipartRequestSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const ImportTemplateActionEnumSchema = {
-    type: 'string',
-    enum: ['categories']
-} as const
-
-export const ImportTemplateActionParamsSchema = {
-    type: 'object',
-    properties: {
-        action: {
-            $ref: '#/components/schemas/ImportTemplateActionEnum'
-        }
-    },
-    required: ['action']
-} as const
-
-export const CreateImportTemplateResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/CategoryData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateCategoryTemplateSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string'
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            format: 'uri'
-        },
-        color: {
-            type: 'string',
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
-        }
-    },
-    required: ['title', 'for', 'icon']
-} as const
-
-export const CreateCategoryTemplateRequestSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    title: {
-                        type: 'string',
-                        minLength: 1
-                    },
-                    icon: {
-                        type: 'string',
-                        minLength: 1
-                    }
-                },
-                required: ['title', 'icon']
-            }
-        }
-    },
-    required: ['title', 'for', 'icon']
-} as const
-
-export const UpdateSubscriptionMultipartRequestSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/UpdateSubscriptionRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const TransactionListDataSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionData'
-            }
-        },
-        total: {
-            type: 'integer',
-            minimum: 0,
-            description: 'Total number of transactions matching the filters'
-        }
-    },
-    required: ['data', 'total'],
-    description: 'Response data'
-} as const
-
-export const ExpensesAmountSchema = {
-    type: 'object',
-    properties: {
-        amount: {
-            type: 'number'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        }
-    },
-    required: ['amount', 'action', 'financialAccountId']
-} as const
-
-export const TransactionAmountSchema = {
-    type: 'object',
-    properties: {
-        amount: {
-            type: 'number'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        }
-    },
-    required: ['amount', 'action', 'financialAccountId']
-} as const
-
-export const CategorySchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'userId', 'title', 'for', 'icon', 'createdAt', 'updatedAt']
-} as const
-
-export const CategoryDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Subcategory'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'for', 'icon', 'createdAt', 'updatedAt']
-} as const
-
-export const GetCategoryListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/CategoryData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetCategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/CategoryData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateCategoryRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        }
-    },
-    required: ['title', 'for', 'icon']
-} as const
-
-export const CreateCategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/CategoryData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateCategoryTemplateSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        },
-        subcategories: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    title: {
-                        type: 'string',
-                        minLength: 1
-                    },
-                    icon: {
-                        type: 'string',
-                        minLength: 1
-                    }
-                },
-                required: ['title', 'icon']
-            }
-        }
-    },
-    required: ['title', 'for', 'icon']
-} as const
-
-export const UpdateCategoryRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        }
-    }
-} as const
-
-export const UpdateCategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteCategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const CategoryFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/CategoryParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        }
-    }
-} as const
-
-export const QueryCategoryFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/CategoryFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const CategoryFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        for: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        color: {
-            type: 'string',
-            minLength: 1,
-            default: '#8B5CF6'
-        }
-    },
-    required: ['title', 'for', 'icon']
-} as const
-
-export const CreateUpdateCategoryRequestSchemaSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateCategoryRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateCategoryRequest'
-        }
-    ]
-} as const
-
-export const DashboardLayoutItemSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/DashboardWidgetEnum'
-        },
-        colSpan: {
-            $ref: '#/components/schemas/ColSpanEnum'
-        },
-        minHeight: {
-            type: 'number'
-        },
-        visible: {
-            type: 'boolean',
-            default: true
-        }
-    },
-    required: ['id', 'colSpan', 'minHeight']
-} as const
-
-export const DashboardLayoutSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        version: {
-            type: 'number'
-        },
-        layout: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/DashboardLayoutItem'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'userId', 'version', 'layout', 'createdAt', 'updatedAt']
-} as const
-
-export const GetDashboardLayoutSchemaSchema = {
-    type: 'object',
-    properties: {
-        layout: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/DashboardLayoutItem'
-            }
-        },
-        version: {
-            type: 'number'
-        }
-    },
-    required: ['layout', 'version']
-} as const
-
-export const GetDashboardLayoutResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/GetDashboardLayout'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateDashboardLayoutRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        version: {
-            type: 'number'
-        },
-        layout: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/DashboardLayoutItem'
-            }
-        }
-    },
-    required: ['version', 'layout']
-} as const
-
-export const UpdateDashboardLayoutResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const ErrorResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            enum: [false],
-            description: 'Always false for error responses'
-        },
-        message: {
-            type: 'string',
-            description: 'Error message describing what went wrong'
-        },
-        error: {
-            nullable: true,
-            description: 'Optional additional error details or context'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const StringFilterSchemaSchema = {
-    type: 'object',
-    properties: {
-        equals: {
-            type: 'string'
-        },
-        contains: {
-            type: 'string'
-        }
-    }
-} as const
-
-export const FilterOptionsSchemaSchema = {
-    type: 'object',
-    properties: {
-        skip: {
-            type: 'integer',
-            minimum: 0,
-            default: 0
-        },
-        take: {
-            type: 'integer',
-            minimum: 0,
-            exclusiveMinimum: true,
-            default: 20
-        },
-        sortBy: {
-            type: 'string',
-            default: 'createdAt'
-        },
-        sortOrder: {
-            type: 'string',
-            enum: ['asc', 'desc'],
-            default: 'desc'
-        }
-    }
-} as const
-
-export const DateFilterSchemaSchema = {
-    type: 'object',
-    properties: {
-        gte: {
-            type: 'string',
-            format: 'date-time'
-        },
-        lte: {
-            type: 'string',
-            format: 'date-time'
-        }
-    }
-} as const
-
-export const FinancialAccountSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        balance: {
-            type: 'number'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'userId', 'title', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
-} as const
-
-export const FinancialAccountDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        balance: {
-            type: 'number'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'balance', 'type', 'logoIcon', 'createdAt', 'updatedAt']
-} as const
-
-export const GetFinancialAccountListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/FinancialAccountData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetFinancialAccountResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/FinancialAccountData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateFinancialAccountRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['title', 'type', 'logoIcon']
-} as const
-
-export const CreateFinancialAccountMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateFinancialAccountRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const CreateFinancialAccountResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/FinancialAccountData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateFinancialAccountRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
-        }
-    }
-} as const
-
-export const UpdateFinancialAccountMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const UpdateFinancialAccountResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteFinancialAccountResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const FinancialAccountFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/FinancialAccountParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        }
-    }
-} as const
-
-export const QueryFinancialAccountFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/FinancialAccountFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const FinancialAccountFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['title', 'type', 'logoIcon']
-} as const
-
-export const CreateUpdateFinancialAccountRequestSchemaSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateFinancialAccountRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateFinancialAccountRequest'
-        }
-    ]
-} as const
-
-export const ImportFileSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        importId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        filename: {
-            type: 'string'
-        },
-        filetype: {
-            $ref: '#/components/schemas/FileTypeEnum'
-        },
-        path: {
-            type: 'string'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'importId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
-} as const
-
-export const ImportSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        transactions: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Transaction'
-            }
-        },
-        files: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportFile'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
-} as const
-
-export const ImportDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        transactions: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Transaction'
-            }
-        },
-        files: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportFile'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
-} as const
-
-export const ImportTransactionDataResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        media: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionMedia'
-            }
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Amount'
-            }
-        },
-        transferId: {
-            type: 'string',
-            nullable: true
-        },
-        transferHash: {
-            type: 'string',
-            nullable: true
-        }
-    },
-    required: [
-        'id',
-        'date',
-        'title',
-        'note',
-        'icon',
-        'categoryId',
-        'subcategoryId',
-        'action',
-        'status',
-        'ignore',
-        'createdAt',
-        'updatedAt',
-        'media',
-        'amounts',
-        'transferId',
-        'transferHash'
-    ]
-} as const
-
-export const GetImportListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetImportResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/ImportData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetImportTransactionsResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/ImportTransactionDataResponse'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateImportRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        }
-    },
-    required: ['financialAccountId']
-} as const
-
-export const CreateImportMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateImportRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const CreateImportResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/ImportData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateImportRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string'
-        }
-    }
-} as const
-
-export const UpdateImportResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/ImportData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const DeleteImportResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const ImportFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/ImportParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        date: {
-            $ref: '#/components/schemas/DateFilter'
-        },
-        includeTransactions: {
-            type: 'boolean',
-            default: true
-        }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            },
-            {
-                $ref: '#/components/schemas/DateFilter'
-            }
-        ]
-    }
-} as const
-
-export const QueryImportFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/ImportFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const CreateUpdateImportRequestSchemaSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateImportRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateImportRequest'
-        }
-    ]
-} as const
-
-export const CreateImportTemplateResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/CategoryData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const NetWorthEvolutionSchemaSchema = {
-    type: 'object',
-    properties: {
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        netWorth: {
-            type: 'number'
-        }
-    },
-    required: ['date', 'netWorth']
-} as const
-
-export const NetWorthEvolutionReportSchemaSchema = {
-    type: 'object',
-    properties: {
-        currentNetWorth: {
-            type: 'number'
-        },
-        evolution: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/NetWorthEvolution'
-            }
-        }
-    },
-    required: ['currentNetWorth', 'evolution']
-} as const
-
-export const GetNetWorthEvolutionReportResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/NetWorthEvolutionReport'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const NetWorthEvolutionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        date: {
-            $ref: '#/components/schemas/DateFilter'
-        }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/DateFilter'
-            }
-        ]
-    }
-} as const
-
-export const QueryNetWorthEvolutionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/NetWorthEvolutionFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const SimpleSuccessResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const SnapshotAccountBalanceSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        accountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        balance: {
-            type: 'number'
-        }
-    },
-    required: ['id', 'snapshotId', 'accountId', 'balance']
-} as const
-
-export const SnapshotAssetValueSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        assetId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        quantity: {
-            type: 'number'
-        },
-        unitPrice: {
-            type: 'number'
-        },
-        totalValue: {
-            type: 'number'
-        }
-    },
-    required: ['id', 'snapshotId', 'assetId', 'quantity', 'unitPrice', 'totalValue']
-} as const
-
-export const SnapshotSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        totalCash: {
-            type: 'number'
-        },
-        totalInvestments: {
-            type: 'number'
-        },
-        totalNetWorth: {
-            type: 'number'
-        },
-        accountBalances: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAccountBalance'
-            }
-        },
-        assetValues: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAssetValue'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'userId',
-        'snapshotDate',
-        'note',
-        'totalCash',
-        'totalInvestments',
-        'totalNetWorth',
-        'accountBalances',
-        'assetValues',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const SnapshotDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        totalCash: {
-            type: 'number'
-        },
-        totalInvestments: {
-            type: 'number'
-        },
-        totalNetWorth: {
-            type: 'number'
-        },
-        accountBalances: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAccountBalance'
-            }
-        },
-        assetValues: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SnapshotAssetValue'
-            }
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'snapshotDate',
-        'note',
-        'totalCash',
-        'totalInvestments',
-        'totalNetWorth',
-        'accountBalances',
-        'assetValues',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const CreateSnapshotAccountBalanceRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        accountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        balance: {
-            type: 'number'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['accountId', 'balance', 'snapshotDate']
-} as const
-
-export const CreateSnapshotAccountBalanceResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/Snapshot'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const StatusResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        status: {
-            type: 'string'
-        },
-        uptime: {
-            type: 'number'
-        },
-        version: {
-            type: 'string'
-        },
-        timestamp: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['status', 'uptime', 'version', 'timestamp']
-} as const
-
-export const SubcategorySchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
-} as const
-
-export const SubcategoryDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'categoryId', 'title', 'icon', 'createdAt', 'updatedAt']
-} as const
-
-export const GetSubcategoryListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SubcategoryData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetSubcategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/SubcategoryData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateSubcategoryRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['categoryId', 'title', 'icon']
-} as const
-
-export const CreateSubcategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/SubcategoryData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateSubcategoryRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        }
-    }
-} as const
-
-export const UpdateSubcategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteSubcategoryResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const SubcategoryFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/SubcategoryParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        categoryId: {
-            type: 'object',
-            properties: {
-                categoryId: {
-                    type: 'string',
-                    format: 'uuid'
-                }
-            },
-            required: ['categoryId']
-        }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            }
-        ]
-    }
-} as const
-
-export const QuerySubcategoryFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/SubcategoryFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const SubcategoryFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        icon: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['categoryId', 'title', 'icon']
-} as const
-
-export const CreateUpdateSubcategoryRequestSchemaSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateSubcategoryRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateSubcategoryRequest'
-        }
-    ]
-} as const
-
-export const SubscriptionSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        userId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        appearanceIconColor: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            minLength: 1
-        },
-        isEnabled: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'userId',
-        'title',
-        'description',
-        'amount',
-        'currency',
-        'appearanceMode',
-        'appearanceLogoIcon',
-        'appearanceIconColor',
-        'firstPayment',
-        'cycleNumber',
-        'cyclePeriod',
-        'rememberPeriod',
-        'financialAccountId',
-        'isEnabled',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const SubscriptionDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        appearanceIconColor: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            minLength: 1
-        },
-        isEnabled: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'title',
-        'description',
-        'amount',
-        'currency',
-        'appearanceMode',
-        'appearanceLogoIcon',
-        'appearanceIconColor',
-        'firstPayment',
-        'cycleNumber',
-        'cyclePeriod',
-        'rememberPeriod',
-        'financialAccountId',
-        'isEnabled',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const GetSubscriptionListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/SubscriptionData'
-            },
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetSubscriptionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/SubscriptionData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateSubscriptionRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        appearanceIconColor: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            minLength: 1
-        },
-        isEnabled: {
-            type: 'boolean'
-        }
-    },
-    required: [
-        'title',
-        'description',
-        'amount',
-        'currency',
-        'appearanceMode',
-        'appearanceLogoIcon',
-        'appearanceIconColor',
-        'firstPayment',
-        'cycleNumber',
-        'cyclePeriod',
-        'rememberPeriod',
-        'financialAccountId',
-        'isEnabled'
-    ]
-} as const
-
-export const CreateSubscriptionMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateSubscriptionRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const CreateSubscriptionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/SubscriptionData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateSubscriptionRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        appearanceIconColor: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            minLength: 1
-        },
-        isEnabled: {
-            type: 'boolean'
-        }
-    }
-} as const
-
-export const UpdateSubscriptionMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/UpdateSubscriptionRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const UpdateSubscriptionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteSubscriptionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const SubscriptionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/SubscriptionParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        description: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        type: {
-            $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        }
-    }
-} as const
-
-export const QuerySubscriptionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/SubscriptionFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const SubscriptionFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        description: {
-            type: 'string'
-        },
-        amount: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        appearanceMode: {
-            $ref: '#/components/schemas/AppearanceModeEnum'
-        },
-        appearanceLogoIcon: {
-            type: 'string'
-        },
-        appearanceIconColor: {
-            type: 'string'
-        },
-        firstPayment: {
-            type: 'string',
-            format: 'date-time'
-        },
-        cycleNumber: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        cyclePeriod: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        rememberPeriod: {
-            $ref: '#/components/schemas/RememberPeriodEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            minLength: 1
-        },
-        isEnabled: {
-            type: 'boolean'
-        }
-    },
-    required: [
-        'title',
-        'description',
-        'amount',
-        'currency',
-        'appearanceMode',
-        'appearanceLogoIcon',
-        'appearanceIconColor',
-        'firstPayment',
-        'cycleNumber',
-        'cyclePeriod',
-        'rememberPeriod',
-        'financialAccountId',
-        'isEnabled'
-    ]
-} as const
-
-export const CreateUpdateSubscriptionRequestSchemaSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateSubscriptionRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateSubscriptionRequest'
-        }
-    ]
-} as const
-
-export const TransactionMediaSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        transactionId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        filename: {
-            type: 'string'
-        },
-        filetype: {
-            type: 'string'
-        },
-        path: {
-            type: 'string',
-            format: 'uri'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['id', 'transactionId', 'filename', 'filetype', 'path', 'createdAt', 'updatedAt']
-} as const
-
-export const CreateTransactionMediaRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        transactionId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        filename: {
-            type: 'string'
-        },
-        filetype: {
-            type: 'string'
-        },
-        path: {
-            type: 'string',
-            format: 'uri'
-        }
-    },
-    required: ['transactionId', 'filename', 'filetype', 'path']
-} as const
-
-export const CreateTransactionMediaMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateTransactionMediaRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const TransactionMediaFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/TransactionMediaParamsId'
-        },
-        transactionId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        filetype: {
-            $ref: '#/components/schemas/StringFilter'
-        }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            }
-        ]
-    }
-} as const
-
-export const AmountSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        transactionId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        amount: {
-            type: 'number'
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        importReferenceId: {
-            type: 'string',
-            nullable: true
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: [
-        'id',
-        'transactionId',
-        'amount',
-        'currency',
-        'action',
-        'financialAccountId',
-        'importReferenceId',
-        'createdAt',
-        'updatedAt'
-    ]
-} as const
-
-export const CreateAmountRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        transactionId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        amount: {
-            type: 'number'
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        importReferenceId: {
-            type: 'string',
-            nullable: true
-        }
-    },
-    required: ['transactionId', 'amount', 'currency', 'action', 'financialAccountId', 'importReferenceId']
-} as const
-
-export const TransactionSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        userId: {
-            type: 'string'
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        importId: {
-            type: 'string',
-            nullable: true
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        deletedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        media: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionMedia'
-            }
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Amount'
-            }
-        },
-        transferId: {
-            type: 'string',
-            nullable: true
-        },
-        transferHash: {
-            type: 'string',
-            nullable: true
-        }
-    },
-    required: [
-        'id',
-        'userId',
-        'date',
-        'title',
-        'note',
-        'icon',
-        'categoryId',
-        'subcategoryId',
-        'importId',
-        'action',
-        'status',
-        'ignore',
-        'createdAt',
-        'updatedAt',
-        'media',
-        'amounts',
-        'transferId',
-        'transferHash'
-    ]
-} as const
-
-export const TransactionDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string'
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        icon: {
-            type: 'string',
-            nullable: true
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        importId: {
-            type: 'string',
-            nullable: true
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        media: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionMedia'
-            }
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/Amount'
-            }
-        },
-        transferId: {
-            type: 'string',
-            nullable: true
-        },
-        transferHash: {
-            type: 'string',
-            nullable: true
-        }
-    },
-    required: [
-        'id',
-        'date',
-        'title',
-        'note',
-        'icon',
-        'categoryId',
-        'subcategoryId',
-        'importId',
-        'action',
-        'status',
-        'ignore',
-        'createdAt',
-        'updatedAt',
-        'media',
-        'amounts',
-        'transferId',
-        'transferHash'
-    ]
-} as const
-
-export const TransactionListDataSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionData'
-            }
-        },
-        total: {
-            type: 'integer',
-            minimum: 0,
-            description: 'Total number of transactions matching the filters'
-        }
-    },
-    required: ['data', 'total']
-} as const
-
-export const GetTransactionListResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/TransactionListData'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const GetTransactionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/TransactionData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const TransactionAmountSchemaSchema = {
-    type: 'object',
-    properties: {
-        amount: {
-            type: 'number'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        }
-    },
-    required: ['amount', 'action', 'financialAccountId']
-} as const
-
-export const TransactionFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionAmount'
-            }
-        }
-    },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'amounts']
-} as const
-
-export const CreateTransactionRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionAmount'
-            }
-        }
-    },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'amounts']
-} as const
-
-export const CreateTransactionMultipartRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        data: {
-            $ref: '#/components/schemas/CreateTransactionRequest'
-        },
-        file: {
-            type: 'array',
-            items: {
-                type: 'string',
-                format: 'binary',
-                description: 'Optional file upload'
-            }
-        }
-    },
-    required: ['file']
-} as const
-
-export const CreateTransactionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/TransactionData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateTransactionRequestSchemaSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
-        categoryId: {
-            type: 'string',
-            nullable: true
-        },
-        subcategoryId: {
-            type: 'string',
-            nullable: true
-        },
-        note: {
-            type: 'string',
-            nullable: true
-        },
-        ignore: {
-            type: 'boolean'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        amounts: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/TransactionAmount'
-            }
-        }
-    }
-} as const
-
-export const UpdateTransactionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteTransactionResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const TransactionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            $ref: '#/components/schemas/TransactionParamsId'
-        },
-        title: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        note: {
-            $ref: '#/components/schemas/StringFilter'
-        },
-        action: {
-            $ref: '#/components/schemas/TransactionActionEnum'
-        },
-        categoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        subcategoryId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        financialAccountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        date: {
-            $ref: '#/components/schemas/DateFilter'
-        }
-    }
-} as const
-
-export const QueryTransactionFiltersSchemaSchema = {
-    type: 'object',
-    properties: {
-        filter: {
-            $ref: '#/components/schemas/TransactionFilters'
-        },
-        options: {
-            $ref: '#/components/schemas/FilterOptions'
-        }
-    }
-} as const
-
-export const UserPreferencesSchemaSchema = {
-    type: 'object',
-    properties: {
-        snapshotFrequency: {
-            $ref: '#/components/schemas/SnapshotFrequencyEnum'
-        },
-        preferredCurrency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        preferredLanguage: {
-            $ref: '#/components/schemas/LanguageEnum'
-        },
-        dateFormat: {
-            $ref: '#/components/schemas/DateFormatEnum'
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        },
-        timezone: {
-            $ref: '#/components/schemas/TimezoneEnum'
-        }
-    },
-    required: ['snapshotFrequency', 'preferredCurrency', 'preferredLanguage', 'dateFormat', 'country', 'timezone']
-} as const
-
-export const UserSchemaSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        name: {
-            type: 'string',
-            minLength: 1
-        },
-        surname: {
-            type: 'string',
-            minLength: 1
-        },
-        email: {
-            type: 'string',
-            format: 'email'
-        },
-        emailVerified: {
-            type: 'boolean'
-        },
-        onBoardingStep: {
-            $ref: '#/components/schemas/OnBoardingStepEnum'
-        },
-        onBoardingAt: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
-        },
-        image: {
-            type: 'string',
-            nullable: true,
-            format: 'uri'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        snapshotFrequency: {
-            $ref: '#/components/schemas/SnapshotFrequencyEnum'
-        },
-        preferredCurrency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        preferredLanguage: {
-            $ref: '#/components/schemas/LanguageEnum'
-        },
-        dateFormat: {
-            $ref: '#/components/schemas/DateFormatEnum'
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        },
-        timezone: {
-            $ref: '#/components/schemas/TimezoneEnum'
-        }
-    },
-    required: [
-        'id',
-        'name',
-        'surname',
-        'email',
-        'emailVerified',
-        'onBoardingStep',
-        'onBoardingAt',
-        'image',
-        'createdAt',
-        'updatedAt',
-        'snapshotFrequency',
-        'preferredCurrency',
-        'preferredLanguage',
-        'dateFormat',
-        'country',
-        'timezone'
-    ]
-} as const
-
-export const GetUserResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/User'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateUserSchemaRequestSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
-        name: {
-            type: 'string',
-            minLength: 1
-        },
-        surname: {
-            type: 'string',
-            minLength: 1
-        },
-        email: {
-            type: 'string',
-            format: 'email'
-        },
-        emailVerified: {
-            type: 'boolean'
-        },
-        onBoardingStep: {
-            $ref: '#/components/schemas/OnBoardingStepEnum'
-        },
-        onBoardingAt: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
-        },
-        image: {
-            type: 'string',
-            nullable: true,
-            format: 'uri'
-        },
-        createdAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        updatedAt: {
-            type: 'string',
-            format: 'date-time'
-        },
-        snapshotFrequency: {
-            $ref: '#/components/schemas/SnapshotFrequencyEnum'
-        },
-        preferredCurrency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        preferredLanguage: {
-            $ref: '#/components/schemas/LanguageEnum'
-        },
-        dateFormat: {
-            $ref: '#/components/schemas/DateFormatEnum'
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        },
-        timezone: {
-            $ref: '#/components/schemas/TimezoneEnum'
-        }
-    }
-} as const
-
-export const UpdateUserResponseSchemaSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            $ref: '#/components/schemas/User'
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UserSessionSchemaSchema = {
-    type: 'object',
-    properties: {
-        session: {
-            type: 'object',
-            properties: {
-                id: {
-                    type: 'string',
-                    format: 'uuid'
-                },
-                createdAt: {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                updatedAt: {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                userId: {
-                    type: 'string',
-                    format: 'uuid'
-                },
-                expiresAt: {
-                    type: 'string',
-                    format: 'date-time'
-                },
-                token: {
-                    type: 'string'
-                },
-                ipAddress: {
-                    type: 'string',
-                    nullable: true
-                },
-                userAgent: {
-                    type: 'string',
-                    nullable: true
-                }
-            },
-            required: ['id', 'createdAt', 'updatedAt', 'userId', 'expiresAt', 'token', 'ipAddress', 'userAgent']
-        },
-        user: {
-            $ref: '#/components/schemas/User'
-        }
-    },
-    required: ['session', 'user']
-} as const
-
-export const UserLoginSchemaSchema = {
-    type: 'object',
-    properties: {
-        email: {
-            type: 'string',
-            minLength: 1,
-            format: 'email'
-        },
-        password: {
-            type: 'string',
-            minLength: 6
-        }
-    },
-    required: ['email', 'password']
-} as const
-
-export const UserFormPreferencesFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        preferredCurrency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        preferredLanguage: {
-            $ref: '#/components/schemas/LanguageEnum'
-        },
-        dateFormat: {
-            $ref: '#/components/schemas/DateFormatEnum'
-        },
-        timezone: {
-            $ref: '#/components/schemas/TimezoneEnum'
-        }
-    },
-    required: ['preferredCurrency', 'preferredLanguage', 'dateFormat', 'timezone']
-} as const
-
-export const UserFormGeneralitiesFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        name: {
-            type: 'string',
-            minLength: 1
-        },
-        surname: {
-            type: 'string',
-            minLength: 1
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        }
-    },
-    required: ['name', 'surname', 'country']
-} as const
-
-export const UserProfileFormSchemaSchema = {
-    type: 'object',
-    properties: {
-        name: {
-            type: 'string',
-            minLength: 1
-        },
-        surname: {
-            type: 'string',
-            minLength: 1
-        },
-        email: {
-            type: 'string',
-            format: 'email'
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        }
-    },
-    required: ['name', 'surname', 'email', 'country']
-} as const
-
-export const UserProfileSecurityFormSchemaSchema = {
     type: 'object',
     properties: {
         oldPassword: {

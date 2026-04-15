@@ -8,7 +8,12 @@ import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { DeleteModal } from '../modal/delete-modal'
 import { useError } from '@/hooks/use-error'
-import { TransactionData } from '@poveroh/types'
+import {
+    CreateTransactionRequest,
+    CreateUpdateTransactionRequest,
+    TransactionData,
+    UpdateTransactionRequest
+} from '@poveroh/types'
 import { MODAL_IDS } from '@/types/constant'
 import { FormRef } from '@/types'
 
@@ -22,14 +27,11 @@ export function TransactionDialog() {
 
     const formRef = useRef<FormRef | null>(null)
 
-    const onCreate = async (formData: FormData) => {
-        const bodyData = JSON.parse(String(formData.get('data') || '{}'))
-        const files = formData.getAll('file').filter(item => item instanceof File)
-
+    const onCreate = async (payload: CreateTransactionRequest, files: File[]) => {
         const response = await createMutation.mutateAsync({
             body: {
-                data: bodyData,
-                file: files as Array<Blob | File>
+                data: payload,
+                file: files
             }
         })
 
@@ -44,19 +46,20 @@ export function TransactionDialog() {
             modalManager.closeModal()
         }
 
-        toast.success(t('messages.successfully', { a: bodyData.title ?? '', b: t('messages.uploaded') }))
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
     }
 
-    const onUpdate = async (formData: FormData) => {
+    const onUpdate = async (payload: UpdateTransactionRequest, files: File[]) => {
         if (!modalManager.item) {
             throw new Error('No item to update')
         }
 
-        const bodyData = JSON.parse(String(formData.get('data') || '{}'))
-
         const response = await updateMutation.mutateAsync({
             path: { id: modalManager.item.id },
-            body: bodyData
+            body: {
+                data: payload,
+                file: files
+            }
         })
 
         if (!response?.success) {
@@ -64,19 +67,19 @@ export function TransactionDialog() {
         }
 
         modalManager.closeModal()
-        toast.success(t('messages.successfully', { a: bodyData.title ?? '', b: t('messages.saved') }))
+        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
     }
 
-    const handleFormSubmit = async (formData: FormData) => {
+    const handleFormSubmit = async (payload: CreateUpdateTransactionRequest, files: File[]) => {
         if (modalManager.loading) return
 
         try {
             modalManager.setLoading(true)
 
             if (modalManager.inEditingMode) {
-                await onUpdate(formData)
+                await onUpdate(payload as UpdateTransactionRequest, files)
             } else {
-                await onCreate(formData)
+                await onCreate(payload as CreateTransactionRequest, files)
             }
         } catch (error) {
             handleError(error)

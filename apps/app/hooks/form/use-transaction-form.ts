@@ -2,7 +2,7 @@ import { useFieldArray } from 'react-hook-form'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useConfig } from '../use-config'
-import { TransactionActionEnum, TransactionData, TransactionFormData } from '@poveroh/types'
+import { CurrencyEnum, TransactionActionEnum, TransactionData, TransactionForm } from '@poveroh/types'
 import { TransactionFormSchema } from '@poveroh/schemas'
 
 function getSchema(type: TransactionActionEnum) {
@@ -28,13 +28,13 @@ function getSchema(type: TransactionActionEnum) {
     }
 }
 
-function getDefaultValues(type: TransactionActionEnum, currency: string): TransactionFormData {
-    const base: Omit<TransactionFormData, 'amounts' | 'action'> = {
+function getDefaultValues(type: TransactionActionEnum, currency: CurrencyEnum): TransactionForm {
+    const base: Omit<TransactionForm, 'amounts' | 'action'> = {
         title: '',
         date: new Date().toISOString().split('T')[0]!,
-        categoryId: '',
-        subcategoryId: '',
-        note: '',
+        categoryId: null,
+        subcategoryId: null,
+        note: null,
         ignore: false,
         currency
     }
@@ -64,15 +64,15 @@ function getDefaultValues(type: TransactionActionEnum, currency: string): Transa
     }
 }
 
-function transformInitialData(type: TransactionActionEnum, data: TransactionData): TransactionFormData {
-    const base: Omit<TransactionFormData, 'amounts' | 'action'> = {
+function transformInitialData(type: TransactionActionEnum, data: TransactionData): TransactionForm {
+    const base: Omit<TransactionForm, 'amounts' | 'action'> = {
         title: data.title || '',
         date: data.date ? data.date.split('T')[0]! : new Date().toISOString().split('T')[0]!,
-        categoryId: data.categoryId || '',
-        subcategoryId: data.subcategoryId || '',
-        note: data.note || '',
+        categoryId: data.categoryId ?? null,
+        subcategoryId: data.subcategoryId ?? null,
+        note: data.note ?? null,
         ignore: data.ignore || false,
-        currency: data.amounts?.[0]?.currency || ''
+        currency: (data.amounts?.[0]?.currency as CurrencyEnum) ?? ('UNKNOWN' as CurrencyEnum)
     }
 
     const amounts = data.amounts as
@@ -137,16 +137,16 @@ function transformInitialData(type: TransactionActionEnum, data: TransactionData
 export function useTransactionForm(type: TransactionActionEnum, props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()
 
-    const defaultValues = getDefaultValues(type, preferedCurrency)
+    const defaultValues = getDefaultValues(type, preferedCurrency as CurrencyEnum)
 
-    const config: BaseTransactionFormConfig<TransactionFormData> = {
+    const config: BaseTransactionFormConfig<TransactionForm> = {
         type,
         defaultValues,
         schema: getSchema(type),
         transformInitialData: (data: TransactionData) => transformInitialData(type, data)
     }
 
-    const baseForm = useBaseTransactionForm<TransactionFormData>(config, props)
+    const baseForm = useBaseTransactionForm<TransactionForm>(config, props)
 
     const fieldArray = useFieldArray({
         name: 'amounts',

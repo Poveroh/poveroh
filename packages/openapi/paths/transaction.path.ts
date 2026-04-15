@@ -4,12 +4,12 @@ import {
     CreateTransactionMultipartRequestSchema,
     QueryTransactionFiltersSchema,
     TransactionParamsId,
-    UpdateTransactionRequestSchema,
     GetTransactionListResponseSchema,
     GetTransactionResponseSchema,
     CreateTransactionResponseSchema,
     UpdateTransactionResponseSchema,
-    DeleteTransactionResponseSchema
+    DeleteTransactionResponseSchema,
+    UpdateTransactionMultipartRequestSchema
 } from '../schemas'
 
 export const registerTransactionPath = (registry: OpenAPIRegistry) => {
@@ -194,8 +194,13 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 description: 'Transaction data to update',
                 required: true,
                 content: {
-                    'application/json': {
-                        schema: UpdateTransactionRequestSchema
+                    'multipart/form-data': {
+                        schema: UpdateTransactionMultipartRequestSchema,
+                        encoding: {
+                            data: {
+                                contentType: 'application/json'
+                            }
+                        }
                     }
                 }
             }
@@ -226,7 +231,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 }
             },
             404: {
-                description: 'Financial account not found',
+                description: 'Transaction not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema
@@ -280,7 +285,7 @@ export const registerTransactionPath = (registry: OpenAPIRegistry) => {
                 }
             },
             404: {
-                description: 'Financial account not found',
+                description: 'Transaction not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema

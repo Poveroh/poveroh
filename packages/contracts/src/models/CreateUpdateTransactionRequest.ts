@@ -3,7 +3,5 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CreateTransactionRequest } from './CreateTransactionRequest'
-export type CreateTransactionMultipartRequestSchema = {
-    data?: CreateTransactionRequest
-    file: Array<Blob>
-}
+import type { UpdateTransactionRequest } from './UpdateTransactionRequest'
+export type CreateUpdateTransactionRequest = CreateTransactionRequest | UpdateTransactionRequest

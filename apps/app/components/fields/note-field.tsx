@@ -20,7 +20,13 @@ export function NoteField<T extends FieldValues = FieldValues>({
                 <FormItem>
                     <FormLabel mandatory={mandatory}>{label}</FormLabel>
                     <FormControl>
-                        <Textarea placeholder={placeholder} {...field} variant={variant} disabled={disabled} />
+                        <Textarea
+                            placeholder={placeholder}
+                            {...field}
+                            value={field.value ?? ''}
+                            variant={variant}
+                            disabled={disabled}
+                        />
                     </FormControl>
                     <FormMessage />
                 </FormItem>

@@ -1405,6 +1405,31 @@ export const getImportTransactionsByIdOptions = (options: Options<GetImportTrans
     })
 
 /**
+ * Create import template
+ *
+ * Create a new import template with the provided data
+ */
+export const createImportTemplateMutation = (
+    options?: Partial<Options<CreateImportTemplateData>>
+): UseMutationOptions<CreateImportTemplateResponse2, CreateImportTemplateError, Options<CreateImportTemplateData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateImportTemplateResponse2,
+        CreateImportTemplateError,
+        Options<CreateImportTemplateData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createImportTemplate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
  * Complete import
  *
  * Mark an existing import as complete
@@ -2257,28 +2282,3 @@ export const getAuthErrorOptions = (options?: Options<GetAuthErrorData>) =>
         },
         queryKey: getAuthErrorQueryKey(options)
     })
-
-/**
- * Create import template
- *
- * Create a new import template with the provided data
- */
-export const createImportTemplateMutation = (
-    options?: Partial<Options<CreateImportTemplateData>>
-): UseMutationOptions<CreateImportTemplateResponse2, CreateImportTemplateError, Options<CreateImportTemplateData>> => {
-    const mutationOptions: UseMutationOptions<
-        CreateImportTemplateResponse2,
-        CreateImportTemplateError,
-        Options<CreateImportTemplateData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createImportTemplate({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}

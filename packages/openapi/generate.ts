@@ -151,7 +151,17 @@ const generate = async () => {
         tags: existing.tags
     })
 
-    let merged = mergeOpenApi(existing, generated as OpenApiDocument)
+    // Treat code as authoritative: drop previously generated schemas so that renames/removals
+    // in the Zod sources are reflected instead of being preserved as stale entries.
+    const existingWithoutSchemas: OpenApiDocument = {
+        ...existing,
+        components: {
+            ...(existing.components ?? {}),
+            schemas: {}
+        }
+    }
+
+    let merged = mergeOpenApi(existingWithoutSchemas, generated as OpenApiDocument)
 
     const betterAuthSchema = await loadBetterAuthOpenApi()
     if (betterAuthSchema) {

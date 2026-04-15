@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
-import { TransactionData } from '@poveroh/types'
+import { CreateUpdateTransactionRequest } from '@poveroh/types'
 /**
  * Custom hook for managing base transaction form state and operations.
  *
@@ -43,24 +43,19 @@ export function useBaseTransactionForm<T extends FieldValues>(
         mode: 'onBlur'
     })
 
-    const handleSubmit = async (values: T, dataCallback: (formData: FormData) => Promise<void>) => {
+    const handleSubmit = async (
+        values: T,
+        dataCallback: (payload: CreateUpdateTransactionRequest, files: File[]) => Promise<void>
+    ) => {
         setLoading(true)
         try {
-            let localTransaction: T = { ...values }
-            if (props.initialData && config.transformInitialData && props.inEditingMode) {
-                const transformInitialData = config.transformInitialData(props.initialData as TransactionData)
-                localTransaction = { ...transformInitialData, ...localTransaction }
-            }
+            // let localTransaction: T = { ...values }
+            // if (props.initialData && config.transformInitialData && props.inEditingMode) {
+            //     const transformInitialData = config.transformInitialData(props.initialData as TransactionData)
+            //     localTransaction = { ...transformInitialData, ...localTransaction }
+            // }
 
-            const formData = new FormData()
-
-            formData.append('data', JSON.stringify(localTransaction))
-
-            if (file && file[0]) {
-                formData.append('file', file[0])
-            }
-
-            await dataCallback(formData)
+            await dataCallback(values, Array.from(file || []))
         } catch (error) {
             handleError(error, 'Form error')
         } finally {
