@@ -20,15 +20,11 @@ import { CategorySubcategoryField } from '@/components/fields/category-subcatego
 import { useTransactionForm } from '@/hooks/form/use-transaction-form'
 
 export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
-    const { dataCallback } = props
-
     const t = useTranslations()
-    const { form, file, setFile, handleSubmit } = useTransactionForm('INCOME', props)
+    const { form, file, setFile, onSubmit } = useTransactionForm('INCOME', props)
 
     useImperativeHandle(ref, () => ({
-        submit: () => {
-            form.handleSubmit(values => handleSubmit(values, dataCallback))()
-        },
+        submit: onSubmit,
         reset: () => {
             form.reset()
         }
@@ -119,6 +115,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                         }}
                         toUploadMessage={t('messages.toUpload')}
                         mandatory={false}
+                        multiple
                     />
 
                     <IgnoreField

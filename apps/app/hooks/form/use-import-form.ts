@@ -14,7 +14,7 @@ export function useImportForm(initialData: ImportData | null) {
     const { handleError } = useError()
     const { createImportFromFile } = useImport()
 
-    const [files, setFiles] = useState<FileList | null>(null)
+    const [files, setFiles] = useState<File[] | null>(null)
     const [loading, setLoading] = useState(false)
 
     const form = useForm<ImportData>({

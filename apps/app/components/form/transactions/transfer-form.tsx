@@ -18,21 +18,17 @@ import {
 import { useTransactionForm } from '@/hooks/form/use-transaction-form'
 
 export const TransferForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
-    const { dataCallback } = props
-
     const t = useTranslations()
-    const { form, handleSubmit } = useTransactionForm('TRANSFER', props)
+    const { form, onSubmit } = useTransactionForm('TRANSFER', props)
+
+    const inputStyle = props.inputStyle
 
     useImperativeHandle(ref, () => ({
-        submit: () => {
-            form.handleSubmit(values => handleSubmit(values, dataCallback))()
-        },
+        submit: onSubmit,
         reset: () => {
             form.reset()
         }
     }))
-
-    const inputStyle = props.inputStyle
 
     return (
         <Form {...form}>

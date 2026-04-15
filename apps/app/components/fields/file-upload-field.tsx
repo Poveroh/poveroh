@@ -17,10 +17,10 @@ export function FileUploadField({
 }: FileUploadFieldProps) {
     const t = useTranslations()
 
-    const [fileList, setFileList] = useState<FileList | null>(file || null)
+    const [fileList, setFileList] = useState<File[] | null>(file || null)
     const [fileError, setFileError] = useState(false)
 
-    const handleFileChange = (files: FileList | null) => {
+    const handleFileChange = (files: File[] | null) => {
         setFileList(files)
         setFileError(!files || files.length === 0)
         onFileChange?.(files)
@@ -31,25 +31,34 @@ export function FileUploadField({
             <FormItem>
                 <FormLabel mandatory={mandatory}>{label}</FormLabel>
                 <FormControl>
-                    <FileInput onChange={e => handleFileChange(e.target.files)} accept={accept} multiple={multiple} />
+                    <FileInput
+                        onChange={e => handleFileChange(e.target.files ? Array.from(e.target.files) : null)}
+                        accept={accept}
+                        multiple={multiple}
+                    />
                 </FormControl>
                 {fileError && <p className='danger'>{t('messages.errors.required')}</p>}
             </FormItem>
 
             {fileList && (
-                <div className='flex flex-row items-center space-x-2'>
+                <div className='flex flex-wrap gap-2'>
                     <p>{toUploadMessage}:</p>
-                    <Badge className='flex items-center gap-1 w-fit'>
-                        {fileList?.item(0)?.name}
-                        <button
-                            onClick={() => onFileChange(null)}
-                            className='ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5 transition-colors'
-                            aria-label='Remove'
-                            type='button'
-                        >
-                            <X className='h-3 w-3' />
-                        </button>
-                    </Badge>
+                    {fileList.map((file, index) => (
+                        <Badge key={index} className='flex items-center gap-1 w-fit'>
+                            {file.name}
+                            <button
+                                onClick={() => {
+                                    const newFileList = fileList.filter((_, i) => i !== index)
+                                    handleFileChange(newFileList)
+                                }}
+                                className='ml-1 rounded-full hover:bg-primary-foreground/20 p-0.5 transition-colors'
+                                aria-label='Remove'
+                                type='button'
+                            >
+                                <X className='h-3 w-3' />
+                            </button>
+                        </Badge>
+                    ))}
                 </div>
             )}
         </div>

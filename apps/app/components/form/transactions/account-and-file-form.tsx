@@ -46,7 +46,7 @@ export const AccountAndFileForm = forwardRef<FormRef, AccountAndFileFormProps>(
                         <div className='flex flex-col space-y-4'>
                             <FileUploadField
                                 label={t('form.file.label')}
-                                file={files ? (files as unknown as FileList) : null}
+                                file={files ? (files as unknown as File[]) : null}
                                 onFileChange={newFiles => {
                                     if (newFiles) {
                                         setFiles(newFiles)

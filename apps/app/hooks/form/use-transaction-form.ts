@@ -31,7 +31,7 @@ function getSchema(type: TransactionActionEnum) {
 function getDefaultValues(type: TransactionActionEnum, currency: CurrencyEnum): TransactionForm {
     const base: Omit<TransactionForm, 'amounts' | 'action'> = {
         title: '',
-        date: new Date().toISOString(),
+        date: new Date().toISOString().split('T')[0]!,
         categoryId: null,
         subcategoryId: null,
         note: null,
@@ -153,6 +153,23 @@ export function useTransactionForm(type: TransactionActionEnum, props: Transacti
         control: baseForm.form.control
     })
 
+    const onSubmit =
+        type === 'TRANSFER'
+            ? baseForm.form.handleSubmit(
+                  async values => {
+                      const amount = values.amounts[0]?.amount ?? 0
+                      const synced = {
+                          ...values,
+                          amounts: values.amounts.map(a => ({ ...a, amount }))
+                      }
+                      await baseForm.handleSubmit(synced, props.dataCallback)
+                  },
+                  errors => {
+                      console.error('Form validation errors on submit:', errors)
+                  }
+              )
+            : baseForm.onSubmit
+
     const calculateTotal = () => {
         const values = baseForm.form.getValues()
         if (values.amounts && Array.isArray(values.amounts)) {
@@ -163,6 +180,7 @@ export function useTransactionForm(type: TransactionActionEnum, props: Transacti
 
     return {
         ...baseForm,
+        onSubmit,
         fieldArray,
         calculateTotal
     }

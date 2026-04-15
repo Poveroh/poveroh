@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { QueryTransactionFilters } from '@poveroh/types'
+import { CreateUpdateTransactionRequest, QueryTransactionFilters } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
-import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
+import { BadRequestError, ResponseHelper } from '@/src/utils'
 import { TransactionService } from '../services/transaction.service'
 
 export class TransactionController {
@@ -12,14 +12,10 @@ export class TransactionController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const { data } = req.body
-
-            if (!data) {
-                throw new BadRequestError('Data not provided')
-            }
+            const payload: CreateUpdateTransactionRequest = JSON.parse(req.body.data)
 
             const transactionService = new TransactionService(req.user.id)
-            const result = await transactionService.handleTransaction(data)
+            const result = await transactionService.handleTransaction(payload, req.files as Express.Multer.File[])
 
             return ResponseHelper.success(res, result)
         } catch (error) {
@@ -34,15 +30,15 @@ export class TransactionController {
                 throw new BadRequestError('Data not provided')
             }
 
+            const payload: CreateUpdateTransactionRequest = JSON.parse(req.body.data)
             const id = getParamString(req.params, 'id')
-            const { data } = req.body
 
-            if (!id || !data) {
-                throw new BadRequestError('Missing transaction ID or data')
+            if (!id) {
+                throw new BadRequestError('Missing transaction ID')
             }
 
             const transactionService = new TransactionService(req.user.id)
-            const result = await transactionService.handleTransaction(data, id)
+            const result = await transactionService.handleTransaction(payload, req.files as Express.Multer.File[], id)
 
             return ResponseHelper.success(res, result)
         } catch (error) {
@@ -91,10 +87,6 @@ export class TransactionController {
 
             const transactionService = new TransactionService(req.user.id)
             const data = await transactionService.getTransactionById(id)
-
-            if (!data) {
-                throw new NotFoundError('Transaction not found')
-            }
 
             return ResponseHelper.success(res, data)
         } catch (error) {

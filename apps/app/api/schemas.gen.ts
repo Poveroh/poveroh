@@ -1766,6 +1766,7 @@ export const TransactionSchema = {
         },
         date: {
             type: 'string',
+            minLength: 1,
             format: 'date-time'
         },
         title: {
@@ -1863,8 +1864,7 @@ export const TransactionMediaSchema = {
             type: 'string'
         },
         transactionId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         filename: {
             type: 'string'
@@ -1899,8 +1899,7 @@ export const AmountSchema = {
             type: 'string'
         },
         transactionId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         amount: {
             type: 'number'
@@ -1912,8 +1911,7 @@ export const AmountSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         financialAccountId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         importReferenceId: {
             type: 'string',
@@ -1994,6 +1992,7 @@ export const ImportTransactionDataResponseSchema = {
         },
         date: {
             type: 'string',
+            minLength: 1,
             format: 'date-time'
         },
         title: {
@@ -3509,8 +3508,7 @@ export const CreateTransactionMediaRequestSchema = {
     type: 'object',
     properties: {
         transactionId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         filename: {
             type: 'string'
@@ -3561,8 +3559,7 @@ export const TransactionMediaFiltersSchema = {
             $ref: '#/components/schemas/TransactionMediaParamsId'
         },
         transactionId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         filetype: {
             $ref: '#/components/schemas/StringFilter'
@@ -3584,8 +3581,7 @@ export const CreateAmountRequestSchema = {
     type: 'object',
     properties: {
         transactionId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         amount: {
             type: 'number'
@@ -3597,8 +3593,7 @@ export const CreateAmountRequestSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         financialAccountId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         importReferenceId: {
             type: 'string',
@@ -3626,6 +3621,7 @@ export const TransactionDataSchema = {
         },
         date: {
             type: 'string',
+            minLength: 1,
             format: 'date-time'
         },
         title: {
@@ -3783,14 +3779,16 @@ export const TransactionAmountSchema = {
     type: 'object',
     properties: {
         amount: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         }
     },
     required: ['amount', 'action', 'financialAccountId']
@@ -3803,10 +3801,6 @@ export const TransactionFormSchema = {
             type: 'string',
             minLength: 1
         },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
         categoryId: {
             type: 'string',
             nullable: true
@@ -3822,6 +3816,11 @@ export const TransactionFormSchema = {
         ignore: {
             type: 'boolean'
         },
+        date: {
+            type: 'string',
+            minLength: 1,
+            format: 'date'
+        },
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
@@ -3832,10 +3831,11 @@ export const TransactionFormSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/TransactionAmount'
-            }
+            },
+            minItems: 1
         }
     },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'currency', 'amounts']
+    required: ['title', 'categoryId', 'subcategoryId', 'note', 'ignore', 'date', 'action', 'currency', 'amounts']
 } as const
 
 export const CreateTransactionRequestSchema = {
@@ -3845,10 +3845,6 @@ export const CreateTransactionRequestSchema = {
             type: 'string',
             minLength: 1
         },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
         categoryId: {
             type: 'string',
             nullable: true
@@ -3864,6 +3860,11 @@ export const CreateTransactionRequestSchema = {
         ignore: {
             type: 'boolean'
         },
+        date: {
+            type: 'string',
+            minLength: 1,
+            format: 'date'
+        },
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
@@ -3874,10 +3875,11 @@ export const CreateTransactionRequestSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/TransactionAmount'
-            }
+            },
+            minItems: 1
         }
     },
-    required: ['title', 'date', 'categoryId', 'subcategoryId', 'note', 'ignore', 'action', 'currency', 'amounts']
+    required: ['title', 'categoryId', 'subcategoryId', 'note', 'ignore', 'date', 'action', 'currency', 'amounts']
 } as const
 
 export const CreateTransactionMultipartRequestSchema = {
@@ -3930,10 +3932,6 @@ export const UpdateTransactionRequestSchema = {
             type: 'string',
             minLength: 1
         },
-        date: {
-            type: 'string',
-            format: 'date-time'
-        },
         categoryId: {
             type: 'string',
             nullable: true
@@ -3949,6 +3947,11 @@ export const UpdateTransactionRequestSchema = {
         ignore: {
             type: 'boolean'
         },
+        date: {
+            type: 'string',
+            minLength: 1,
+            format: 'date'
+        },
         action: {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
@@ -3959,7 +3962,8 @@ export const UpdateTransactionRequestSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/TransactionAmount'
-            }
+            },
+            minItems: 1
         }
     }
 } as const
@@ -4057,16 +4061,13 @@ export const TransactionFiltersSchema = {
             $ref: '#/components/schemas/TransactionActionEnum'
         },
         categoryId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         subcategoryId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         financialAccountId: {
-            type: 'string',
-            format: 'uuid'
+            type: 'string'
         },
         date: {
             $ref: '#/components/schemas/DateFilter'

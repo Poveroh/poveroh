@@ -89,7 +89,7 @@ export default function TransactionsView() {
             .sort(([a], [b]) => b.localeCompare(a))
             .map(([date, dayTransactions]) => {
                 const dailyTotal = dayTransactions.reduce((sum, transaction) => {
-                    const amount = Number(transaction.amounts[0]?.amount || 0)
+                    const amount = transaction.amounts.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
                     if (transaction.action === 'EXPENSES') return sum - amount
                     if (transaction.action === 'INCOME') return sum + amount
                     return sum

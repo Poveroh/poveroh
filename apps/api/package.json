@@ -19,6 +19,7 @@
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^8.5.0",
         "@poveroh/prisma": "*",
+        "@poveroh/schemas": "*",
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^7.6.0",

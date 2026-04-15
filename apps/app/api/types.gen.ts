@@ -1698,11 +1698,11 @@ export type TransactionAmount = {
 
 export type TransactionForm = {
     title: string
-    date: string
     categoryId: string | null
     subcategoryId: string | null
     note: string | null
     ignore: boolean
+    date: string
     action: TransactionActionEnum
     currency: CurrencyEnum
     amounts: Array<TransactionAmount>
@@ -1710,11 +1710,11 @@ export type TransactionForm = {
 
 export type CreateTransactionRequest = {
     title: string
-    date: string
     categoryId: string | null
     subcategoryId: string | null
     note: string | null
     ignore: boolean
+    date: string
     action: TransactionActionEnum
     currency: CurrencyEnum
     amounts: Array<TransactionAmount>
@@ -1739,11 +1739,11 @@ export type CreateTransactionResponse = {
 
 export type UpdateTransactionRequest = {
     title?: string
-    date?: string
     categoryId?: string | null
     subcategoryId?: string | null
     note?: string | null
     ignore?: boolean
+    date?: string
     action?: TransactionActionEnum
     currency?: CurrencyEnum
     amounts?: Array<TransactionAmount>

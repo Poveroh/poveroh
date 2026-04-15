@@ -47,7 +47,10 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
         let amount = { ...transaction.amounts[0] }
 
         if (transaction.action === 'EXPENSES') {
-            amount = { ...amount, amount: transaction.amounts.reduce((acc, curr) => acc + (curr.amount || 0), 0) }
+            amount = {
+                ...amount,
+                amount: transaction.amounts.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
+            }
         } else {
             if (!amount) return defaultValues
         }

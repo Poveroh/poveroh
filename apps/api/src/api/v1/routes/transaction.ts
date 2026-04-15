@@ -7,8 +7,8 @@ const router: Router = Router()
 
 router.get('/', AuthMiddleware.isAuthenticated, TransactionController.readTransactions)
 router.get('/:id', AuthMiddleware.isAuthenticated, TransactionController.readTransactionById)
-router.post('/', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.createTransaction)
-router.patch('/:id', AuthMiddleware.isAuthenticated, upload.single('file'), TransactionController.updateTransaction)
+router.post('/', AuthMiddleware.isAuthenticated, upload.array('file'), TransactionController.createTransaction)
+router.patch('/:id', AuthMiddleware.isAuthenticated, upload.array('file'), TransactionController.updateTransaction)
 router.delete('/:id', AuthMiddleware.isAuthenticated, TransactionController.deleteTransaction)
 router.delete('/', AuthMiddleware.isAuthenticated, TransactionController.deleteAllTransactions)
 

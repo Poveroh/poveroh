@@ -3,11 +3,8 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { FormRef, TransactionFormProps } from '@/types/form'
 import { Button } from '@poveroh/ui/components/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Input } from '@poveroh/ui/components/input'
+import { Form, FormLabel } from '@poveroh/ui/components/form'
 import { Merge, Plus, Split, Trash2 } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@poveroh/ui/components/select'
-import { BrandIcon } from '@/components/icon/brand-icon'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
@@ -20,14 +17,11 @@ import {
     AccountField,
     AmountField
 } from '@/components/fields'
-import { useFinancialAccountStore } from '@/store/account.store'
 import { CategorySubcategoryField } from '@/components/fields/category-subcategory-field'
 import { useTransactionForm } from '@/hooks/form/use-transaction-form'
-import { FinancialAccountData } from '@poveroh/types'
 
 export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, ref) => {
     const t = useTranslations()
-    const { financialAccountCacheList } = useFinancialAccountStore()
     const { form, file, fieldArray, setFile, onSubmit, calculateTotal } = useTransactionForm('EXPENSES', props)
 
     const [multipleAmount, setMultipleAmount] = useState(() => (props.initialData?.amounts?.length ?? 1) > 1)
@@ -161,10 +155,11 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                         )}
                     </div>
 
-                    {multipleAmount && (
+                    {!multipleAmount && (
                         <AccountField
                             control={form.control}
                             name='amounts.0.financialAccountId'
+                            label={t('form.account.label')}
                             placeholder={t('form.account.placeholder')}
                             mandatory={true}
                         />
@@ -202,6 +197,7 @@ export const ExpensesForm = forwardRef<FormRef, TransactionFormProps>((props, re
                         }}
                         toUploadMessage={t('messages.toUpload')}
                         mandatory={false}
+                        multiple
                     />
 
                     <IgnoreField

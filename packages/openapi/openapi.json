@@ -1956,6 +1956,7 @@
                     },
                     "date": {
                         "type": "string",
+                        "minLength": 1,
                         "format": "date-time"
                     },
                     "title": {
@@ -2052,8 +2053,7 @@
                         "type": "string"
                     },
                     "transactionId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "filename": {
                         "type": "string"
@@ -2095,8 +2095,7 @@
                         "type": "string"
                     },
                     "transactionId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "amount": {
                         "type": "number"
@@ -2108,8 +2107,7 @@
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
                     "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "importReferenceId": {
                         "type": "string",
@@ -2195,6 +2193,7 @@
                     },
                     "date": {
                         "type": "string",
+                        "minLength": 1,
                         "format": "date-time"
                     },
                     "title": {
@@ -3787,8 +3786,7 @@
                 "type": "object",
                 "properties": {
                     "transactionId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "filename": {
                         "type": "string"
@@ -3845,8 +3843,7 @@
                         "$ref": "#/components/schemas/TransactionMediaParamsId"
                     },
                     "transactionId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "filetype": {
                         "$ref": "#/components/schemas/StringFilter"
@@ -3867,8 +3864,7 @@
                 "type": "object",
                 "properties": {
                     "transactionId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "amount": {
                         "type": "number"
@@ -3880,8 +3876,7 @@
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
                     "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "importReferenceId": {
                         "type": "string",
@@ -3916,6 +3911,7 @@
                     },
                     "date": {
                         "type": "string",
+                        "minLength": 1,
                         "format": "date-time"
                     },
                     "title": {
@@ -4080,14 +4076,16 @@
                 "type": "object",
                 "properties": {
                     "amount": {
-                        "type": "number"
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
                     "action": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
                     "financialAccountId": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 1
                     }
                 },
                 "required": [
@@ -4103,10 +4101,6 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "categoryId": {
                         "type": "string",
                         "nullable": true
@@ -4122,6 +4116,11 @@
                     "ignore": {
                         "type": "boolean"
                     },
+                    "date": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "date"
+                    },
                     "action": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
@@ -4132,16 +4131,17 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/TransactionAmount"
-                        }
+                        },
+                        "minItems": 1
                     }
                 },
                 "required": [
                     "title",
-                    "date",
                     "categoryId",
                     "subcategoryId",
                     "note",
                     "ignore",
+                    "date",
                     "action",
                     "currency",
                     "amounts"
@@ -4154,10 +4154,6 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "categoryId": {
                         "type": "string",
                         "nullable": true
@@ -4173,6 +4169,11 @@
                     "ignore": {
                         "type": "boolean"
                     },
+                    "date": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "date"
+                    },
                     "action": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
@@ -4183,16 +4184,17 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/TransactionAmount"
-                        }
+                        },
+                        "minItems": 1
                     }
                 },
                 "required": [
                     "title",
-                    "date",
                     "categoryId",
                     "subcategoryId",
                     "note",
                     "ignore",
+                    "date",
                     "action",
                     "currency",
                     "amounts"
@@ -4252,10 +4254,6 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "categoryId": {
                         "type": "string",
                         "nullable": true
@@ -4271,6 +4269,11 @@
                     "ignore": {
                         "type": "boolean"
                     },
+                    "date": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "date"
+                    },
                     "action": {
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
@@ -4281,7 +4284,8 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/TransactionAmount"
-                        }
+                        },
+                        "minItems": 1
                     }
                 }
             },
@@ -4383,16 +4387,13 @@
                         "$ref": "#/components/schemas/TransactionActionEnum"
                     },
                     "categoryId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "subcategoryId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "financialAccountId": {
-                        "type": "string",
-                        "format": "uuid"
+                        "type": "string"
                     },
                     "date": {
                         "$ref": "#/components/schemas/DateFilter"

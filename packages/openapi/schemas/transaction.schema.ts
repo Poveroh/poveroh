@@ -10,7 +10,7 @@ import { SuccessResponseSchema } from './response.schema'
 export const TransactionMediaSchema = z
     .object({
         id: z.string(),
-        transactionId: z.string().uuid(),
+        transactionId: z.string(),
         filename: z.string(),
         filetype: z.string(),
         path: z.string().url(),
@@ -47,7 +47,7 @@ export const TransactionMediaParamsId = TransactionMediaSchema.pick({
 export const TransactionMediaFiltersSchema = z
     .object({
         id: TransactionMediaParamsId,
-        transactionId: z.string().uuid(),
+        transactionId: z.string(),
         filetype: StringFilterSchema.optional()
     })
     .partial()
@@ -62,11 +62,11 @@ export const TransactionMediaFiltersSchema = z
 export const AmountSchema = z
     .object({
         id: z.string(),
-        transactionId: z.string().uuid(),
+        transactionId: z.string(),
         amount: z.number(),
         currency: CurrencyEnum,
         action: TransactionActionEnum,
-        financialAccountId: z.string().uuid(),
+        financialAccountId: z.string(),
         importReferenceId: z.string().nullable(),
         createdAt: z.string().datetime(),
         updatedAt: z.string().datetime(),
@@ -159,9 +159,9 @@ export const GetTransactionResponseSchema =
  */
 export const TransactionAmountSchema = z
     .object({
-        amount: z.number(),
+        amount: z.number().positive(),
         action: TransactionActionEnum,
-        financialAccountId: z.string().uuid()
+        financialAccountId: z.string().nonempty()
     })
     .openapi('TransactionAmount')
 
@@ -176,17 +176,55 @@ export const TransactionFormSchema = TransactionSchema.pick({
     ignore: true
 })
     .extend({
+        title: z.string().nonempty(),
         date: z.iso.date().nonempty(),
         action: TransactionActionEnum,
         currency: CurrencyEnum,
-        amounts: z.array(TransactionAmountSchema)
+        amounts: z.array(TransactionAmountSchema).nonempty()
     })
     .openapi('TransactionForm')
 
 /**
+ * Cross-field rules applied on top of TransactionFormSchema:
+ * - TRANSFER requires one EXPENSES and one INCOME amount on different accounts
+ * - INCOME/EXPENSES require a categoryId
+ */
+const refineTransactionRules = <T extends z.ZodType<any>>(schema: T) =>
+    schema.superRefine((data: any, ctx) => {
+        if (!data) return
+
+        if (data.action === 'TRANSFER' && Array.isArray(data.amounts)) {
+            const from = data.amounts.find((a: any) => a.action === 'EXPENSES')
+            const to = data.amounts.find((a: any) => a.action === 'INCOME')
+            if (!from || !to) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['amounts'],
+                    message: 'Transfer requires both EXPENSES (source) and INCOME (destination) amounts'
+                })
+            } else if (from.financialAccountId === to.financialAccountId) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['amounts'],
+                    message: 'Source and destination accounts cannot be the same'
+                })
+            }
+        }
+
+        if ((data.action === 'INCOME' || data.action === 'EXPENSES') && !data.categoryId) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['categoryId'],
+                message: 'Category is required'
+            })
+        }
+    })
+
+/**
  * Create transaction request schema representing the structure of a request to create a new transaction
  */
-export const CreateTransactionRequestSchema = TransactionFormSchema.openapi('CreateTransactionRequest')
+export const CreateTransactionRequestSchema =
+    refineTransactionRules(TransactionFormSchema).openapi('CreateTransactionRequest')
 
 export const CreateTransactionMultipartRequestSchema = MultipartRequestSchema(CreateTransactionRequestSchema).openapi(
     'CreateTransactionMultipartRequest'
@@ -201,9 +239,12 @@ export const CreateTransactionResponseSchema =
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
- * Request schema for updating an existing transaction
+ * Request schema for updating an existing transaction. Cross-field rules are
+ * enforced only when the relevant fields are provided.
  */
-export const UpdateTransactionRequestSchema = TransactionFormSchema.partial().openapi('UpdateTransactionRequest')
+export const UpdateTransactionRequestSchema = refineTransactionRules(TransactionFormSchema.partial()).openapi(
+    'UpdateTransactionRequest'
+)
 
 export const UpdateTransactionMultipartRequestSchema = MultipartRequestSchema(UpdateTransactionRequestSchema).openapi(
     'UpdateTransactionMultipartRequest'
@@ -247,9 +288,9 @@ export const TransactionFiltersSchema = z
         title: StringFilterSchema,
         note: StringFilterSchema,
         action: TransactionActionEnum,
-        categoryId: z.string().uuid(),
-        subcategoryId: z.string().uuid(),
-        financialAccountId: z.string().uuid(),
+        categoryId: z.string(),
+        subcategoryId: z.string(),
+        financialAccountId: z.string(),
         date: DateFilterSchema
     })
     .partial()

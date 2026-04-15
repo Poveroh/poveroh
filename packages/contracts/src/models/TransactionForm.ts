@@ -7,11 +7,11 @@ import type { TransactionActionEnum } from './TransactionActionEnum'
 import type { TransactionAmount } from './TransactionAmount'
 export type TransactionForm = {
     title: string
-    date: string
     categoryId: string | null
     subcategoryId: string | null
     note: string | null
     ignore: boolean
+    date: string
     action: TransactionActionEnum
     currency: CurrencyEnum
     amounts: Array<TransactionAmount>

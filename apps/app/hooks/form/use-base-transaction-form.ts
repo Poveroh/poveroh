@@ -27,7 +27,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
 ) {
     const { handleError } = useError()
 
-    const [file, setFile] = useState<FileList | null>(null)
+    const [file, setFile] = useState<File[] | null>(null)
     const [loading, setLoading] = useState(false)
 
     const getInitialValues = (): T => {
@@ -55,7 +55,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
             //     localTransaction = { ...transformInitialData, ...localTransaction }
             // }
 
-            await dataCallback(values, Array.from(file || []))
+            await dataCallback(values, file || [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {
