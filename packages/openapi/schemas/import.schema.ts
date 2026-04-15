@@ -161,6 +161,11 @@ export const CreateUpdateImportRequestSchema = z
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
+ * Import form schema representing the data structure for import creation and editing forms
+ */
+export const ImportFormSchema = CreateImportRequestSchema.openapi('ImportForm')
+
+/**
  * Enum representing the available template import actions that can be performed when importing templates
  */
 export const ImportTemplateActionEnum = z.enum(['categories']).openapi('ImportTemplateActionEnum')

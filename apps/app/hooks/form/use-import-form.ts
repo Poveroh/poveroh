@@ -9,8 +9,9 @@ import logger from '@/lib/logger'
 import { useImport } from '../use-imports'
 import { CreateImportRequest, ImportData } from '@poveroh/types'
 import { ImportDataSchema } from '@poveroh/schemas'
+import { ImportFormProps } from '@/types'
 
-export function useImportForm(initialData: ImportData | null) {
+export function useImportForm(props: ImportFormProps) {
     const { handleError } = useError()
     const { createImportFromFile } = useImport()
 
@@ -20,7 +21,7 @@ export function useImportForm(initialData: ImportData | null) {
     const form = useForm<ImportData>({
         resolver: zodResolver(ImportDataSchema),
         defaultValues: {
-            financialAccountId: initialData?.financialAccountId || ''
+            financialAccountId: props.initialData?.financialAccountId || ''
         }
     })
 
@@ -59,11 +60,18 @@ export function useImportForm(initialData: ImportData | null) {
         }
     }
 
+    const onSubmit = form.handleSubmit(
+        values => handleParseForm(values, props.dataCallback),
+        errors => {
+            logger.error('Form validation errors on submit:', errors)
+        }
+    )
+
     return {
         form,
         files,
         loading,
         setFiles,
-        handleParseForm
+        onSubmit
     }
 }

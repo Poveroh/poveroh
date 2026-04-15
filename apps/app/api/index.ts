@@ -416,6 +416,7 @@ export type {
     ImportData,
     ImportFile,
     ImportFilters,
+    ImportForm,
     ImportParamsId,
     ImportTemplateActionEnum,
     ImportTemplateActionParams,

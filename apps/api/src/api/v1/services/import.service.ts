@@ -1,6 +1,5 @@
 import prisma from '@poveroh/prisma'
 import { buildWhere } from '../../../helpers/filter.helper'
-import { TransactionHelper } from '../helpers/transaction.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
@@ -17,7 +16,6 @@ import {
     TransactionFilters,
     CategoryData
 } from '@poveroh/types'
-import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
 import { CategoryService } from './category.service'
 

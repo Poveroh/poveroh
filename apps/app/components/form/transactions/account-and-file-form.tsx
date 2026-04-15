@@ -4,68 +4,53 @@ import { Form } from '@poveroh/ui/components/form'
 import { AccountField, FileUploadField } from '@/components/fields'
 import { useImportForm } from '@/hooks/form/use-import-form'
 import { forwardRef, useImperativeHandle } from 'react'
-import { FormProps, FormRef } from '@/types/form'
-import { CreateImportRequest, ImportData } from '@poveroh/types'
+import { FormRef, ImportFormProps } from '@/types/form'
 
-type AccountAndFileFormProps = FormProps<ImportData, CreateImportRequest>
+export const AccountAndFileForm = forwardRef<FormRef, ImportFormProps>((props: ImportFormProps, ref) => {
+    const t = useTranslations()
+    const { form, files, onSubmit, setFiles } = useImportForm(props)
 
-export const AccountAndFileForm = forwardRef<FormRef, AccountAndFileFormProps>(
-    (props: AccountAndFileFormProps, ref) => {
-        const { dataCallback } = props
+    useImperativeHandle(ref, () => ({
+        submit: onSubmit,
+        reset: () => {
+            form.reset()
+        }
+    }))
 
-        const t = useTranslations()
-        const { form, handleParseForm, files, setFiles } = useImportForm(null)
+    return (
+        <Form {...form}>
+            <form
+                className='flex flex-col space-y-10'
+                onSubmit={e => {
+                    e.preventDefault()
+                }}
+            >
+                <div className='flex flex-col space-y-6'>
+                    <AccountField
+                        form={form}
+                        control={form.control}
+                        name='financialAccountId'
+                        label={t('form.account.label')}
+                        placeholder={t('form.account.placeholder')}
+                        mandatory={true}
+                    />
 
-        useImperativeHandle(ref, () => ({
-            submit: () => {
-                form.handleSubmit(values => handleParseForm(values, dataCallback))()
-            },
-            reset: () => {
-                form.reset()
-            }
-        }))
-
-        return (
-            <Form {...form}>
-                <form
-                    className='flex flex-col space-y-10'
-                    onSubmit={e => {
-                        e.preventDefault()
-                    }}
-                >
-                    <div className='flex flex-col space-y-6'>
-                        <AccountField
-                            form={form}
-                            control={form.control}
-                            name='financialAccountId'
-                            label={t('form.account.label')}
-                            placeholder={t('form.account.placeholder')}
+                    <div className='flex flex-col space-y-4'>
+                        <FileUploadField
+                            label={t('form.file.label')}
+                            file={files}
+                            onFileChange={setFiles}
+                            accept={
+                                '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+                            }
+                            multiple={true}
                             mandatory={true}
                         />
-
-                        <div className='flex flex-col space-y-4'>
-                            <FileUploadField
-                                label={t('form.file.label')}
-                                file={files ? (files as unknown as File[]) : null}
-                                onFileChange={newFiles => {
-                                    if (newFiles) {
-                                        setFiles(newFiles)
-                                    } else {
-                                        setFiles(null)
-                                    }
-                                }}
-                                accept={
-                                    '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                                }
-                                multiple={true}
-                                mandatory={true}
-                            />
-                        </div>
                     </div>
-                </form>
-            </Form>
-        )
-    }
-)
+                </div>
+            </form>
+        </Form>
+    )
+})
 
 AccountAndFileForm.displayName = 'AccountAndFileForm'

@@ -2315,6 +2315,17 @@ export const CreateUpdateImportRequestSchema = {
     ]
 } as const
 
+export const ImportFormSchema = {
+    type: 'object',
+    properties: {
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['financialAccountId']
+} as const
+
 export const ImportTemplateActionEnumSchema = {
     type: 'string',
     enum: ['categories']

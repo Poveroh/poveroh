@@ -2531,6 +2531,18 @@
                     }
                 ]
             },
+            "ImportForm": {
+                "type": "object",
+                "properties": {
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "financialAccountId"
+                ]
+            },
             "ImportTemplateActionEnum": {
                 "type": "string",
                 "enum": [

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import { FilterOptions, ImportFilters } from '@/api/types.gen'
 import type { Import, Transaction } from '@/lib/api-client'
 import { useError } from './use-error'
@@ -15,9 +15,11 @@ import {
     deleteImportMutation,
     getImportTransactionsByIdOptions,
     getImportsOptions,
-    updateTransactionMutation
+    updateTransactionMutation,
+    getImportsQueryKey
 } from '@/api/@tanstack/react-query.gen'
 import { TransactionData } from '@poveroh/types'
+import { useFilters } from './use-filters'
 
 type ImportLoadingState = {
     fetchImports: boolean
@@ -36,6 +38,19 @@ export const useImport = () => {
 
     const importStore = useImportStore()
 
+    const filters = useFilters<ImportFilters>(text => ({
+        title: { contains: text }
+    }))
+
+    const [importQuery] = useQueries({
+        queries: [
+            {
+                ...getImportsOptions(filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined),
+                staleTime: Infinity
+            }
+        ]
+    })
+
     const [importLoading, setImportLoading] = useState<ImportLoadingState>({
         fetchImports: false,
         deleteImport: false,
@@ -47,20 +62,22 @@ export const useImport = () => {
         createImportFromFile: false
     })
 
-    const createImportMutationHook = useMutation({
+    const createImport = useMutation({
         ...createImportMutation(),
         onError: error => {
             handleError(error, 'Error parsing transaction from file')
         }
     })
 
-    const deleteImportMutationHook = useMutation({
+    const deleteAllMutation = useMutation({
         ...deleteImportMutation(),
         onSuccess: (_, variables) => {
             importStore.removeImport(variables.path.id)
+
+            queryClient.invalidateQueries({ queryKey: getImportsQueryKey() })
         },
         onError: error => {
-            handleError(error, 'Error deleting import')
+            handleError(error, 'Error deleting all imports')
         }
     })
 
@@ -334,8 +351,14 @@ export const useImport = () => {
     }
 
     return {
-        importLoading,
+        filters,
         importStore,
+        importQuery,
+        importData: importQuery.data?.data ?? [],
+        createImport,
+        deleteAllMutation,
+
+        // ----
         fetchImports,
         deleteImport,
         appendImports,

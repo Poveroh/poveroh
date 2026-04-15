@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Upload } from 'lucide-react'
@@ -18,36 +17,10 @@ import { ImportData } from '@poveroh/types'
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importStore, importLoading, fetchImports, getImportTransactions } = useImport()
+    const { importData, importQuery, createImport, deleteAllMutation, importStore } = useImport()
 
     const { openDrawer } = useDrawer<ImportData>()
     const { openModal: openDeleteModal } = useDeleteModal<ImportData>()
-
-    const [localImports, setLocalImports] = useState<ImportData[]>([])
-
-    useEffect(() => {
-        fetchImports()
-    }, [])
-
-    useEffect(() => {
-        setLocalImports(importStore.importCacheList)
-    }, [importStore.importCacheList])
-
-    const handleItemToItEdit = async (item: ImportData) => {
-        const readedTransactions = await getImportTransactions(item.id)
-
-        if (!readedTransactions) {
-            return
-        }
-
-        const itemToEdit: ImportData = {
-            ...item,
-            transactions: readedTransactions
-        }
-
-        importStore.setCurrentImport(itemToEdit)
-        openDrawer('edit', itemToEdit)
-    }
 
     return (
         <>
@@ -61,33 +34,32 @@ export default function ImportsView() {
                         { label: t('imports.title') }
                     ]}
                     fetchAction={{
-                        onClick: () => {
-                            fetchImports()
-                        },
-                        loading: importLoading.fetchImports
+                        onClick: () => importQuery.refetch,
+                        loading: importQuery.isFetching
                     }}
                     addAction={{
                         onClick: () => openDrawer('create'),
-                        loading: importLoading.appendImports
+                        loading: createImport.isPending
                     }}
                     onDeleteAll={{
                         onClick: openDeleteModal,
-                        loading: importLoading.deleteImport
+                        loading: deleteAllMutation.isPending
                     }}
                 />
 
-                {localImports.length > 0 ? (
+                {importData.length > 0 ? (
                     <Box>
-                        <>
-                            {localImports.map(imports => (
-                                <ImportsItem
-                                    key={imports.id}
-                                    imports={imports}
-                                    openEdit={handleItemToItEdit}
-                                    openDelete={x => openDeleteModal(x)}
-                                />
-                            ))}
-                        </>
+                        {importData.map(imports => (
+                            <ImportsItem
+                                key={imports.id}
+                                imports={imports}
+                                openEdit={(x: ImportData) => {
+                                    importStore.setCurrentImport(x)
+                                    openDrawer('edit', x)
+                                }}
+                                openDelete={x => openDeleteModal(x)}
+                            />
+                        ))}
                     </Box>
                 ) : (
                     <div className='flex justify-center w-full pt-20'>

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CreateUpdateTransactionRequest, InputVariantStyle } from '@poveroh/types'
+import { CreateImportRequest, CreateUpdateTransactionRequest, ImportData, InputVariantStyle } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
 import { FieldValues } from 'react-hook-form'
@@ -41,6 +41,8 @@ export type FormRef = {
 export type TransactionFormProps = FormProps<TransactionData, CreateUpdateTransactionRequest> & {
     inputStyle?: InputVariantStyle
 }
+
+export type ImportFormProps = FormProps<ImportData, CreateImportRequest>
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     startIcon?: LucideIcon

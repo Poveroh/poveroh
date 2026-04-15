@@ -1161,6 +1161,10 @@ export type QueryImportFilters = {
 
 export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportRequest
 
+export type ImportForm = {
+    financialAccountId: string
+}
+
 export type ImportTemplateActionEnum = 'categories'
 
 export type ImportTemplateActionParams = {
