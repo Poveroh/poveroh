@@ -1,7 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import moment from 'moment-timezone'
 import { buildWhere2 } from '../../../helpers/filter.helper'
-import { TransactionHelper } from '../helpers/transaction.helper'
 import {
     Amount,
     CreateTransactionRequest,
@@ -16,7 +15,6 @@ import {
     UpdateTransactionRequest
 } from '@poveroh/types'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
-import { TransactionWithAmounts } from '@/types/transactions'
 import { BaseService } from './base.service'
 import { BalanceHelper } from '../helpers/balance.helper'
 
@@ -250,6 +248,42 @@ export class TransactionService extends BaseService {
     }
 
     /**
+     * Merges TRANSFER transactions that share the same transferId into a single transaction object.
+     * The merged transaction will contain both amounts (INCOME and EXPENSES).
+     */
+    mergeTransferTransactions<
+        T extends { action: TransactionActionEnum; transferId: string | null; amounts: unknown[] }
+    >(transactions: T[]): T[] {
+        const transferMap = new Map<string, T>()
+        const result: T[] = []
+
+        for (const transaction of transactions) {
+            // If it's not a TRANSFER or has no transferId, add it as-is
+            if (transaction.action !== 'TRANSFER' || !transaction.transferId) {
+                result.push(transaction)
+                continue
+            }
+
+            const transferId = transaction.transferId
+
+            // Check if we already have a transaction with this transferId
+            if (transferMap.has(transferId)) {
+                // Merge amounts into the existing transaction
+                const existing = transferMap.get(transferId)!
+                existing.amounts.push(...transaction.amounts)
+            } else {
+                // First time seeing this transferId, store it
+                transferMap.set(transferId, { ...transaction })
+            }
+        }
+
+        // Add all merged transfer transactions to the result
+        result.push(...Array.from(transferMap.values()))
+
+        return result
+    }
+
+    /**
      * Replaces amounts for a transaction and updates the affected account
      * balances. If `originalAmounts` is provided the old values are reverted
      * before the new ones are applied.
@@ -402,74 +436,71 @@ export class TransactionService extends BaseService {
     async getTransactions(query: QueryTransactionFilters) {
         const userId = this.getUserId()
 
-        const filters = (query.filter || {}) as TransactionFilters
-        const options = (query.options || {}) as FilterOptions
+        const filter = (query.filter ?? {}) as TransactionFilters
+        const options = (query.options ?? {}) as FilterOptions
 
-        const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
-        const take = isNaN(Number(options.take)) ? undefined : Number(options.take)
-        const sortBy = options.sortBy || 'date'
-        const sortOrder = options.sortOrder || 'desc'
+        const parsedSkip = Number(options.skip)
+        const parsedTake = Number(options.take)
+        const skip = Number.isNaN(parsedSkip) ? 0 : parsedSkip
+        const take = Number.isNaN(parsedTake) ? undefined : parsedTake
+        const sortBy = options.sortBy ?? 'date'
+        const sortOrder: Prisma.SortOrder = options.sortOrder ?? 'desc'
 
-        const { financialAccountId, ...otherFilters } = filters
-
-        const allFilters: Record<string, any> = {
-            ...otherFilters,
+        const { financialAccountId, ...baseFilter } = filter
+        const wherePayload: Record<string, unknown> = {
+            ...baseFilter,
             userId,
             status: 'APPROVED'
         }
 
         if (financialAccountId) {
-            allFilters.amounts = { some: { financialAccountId } }
+            wherePayload.amounts = {
+                some: { financialAccountId }
+            }
         }
 
-        const where = buildWhere2(allFilters, [])
+        const where = buildWhere2(wherePayload, [])
 
-        const stableTieBreakers = [{ createdAt: sortOrder }, { id: sortOrder }]
-        let orderBy: any[]
-        let sortInMemory = false
-
-        if (sortBy === 'category') {
-            orderBy = [{ category: { title: sortOrder } }, ...stableTieBreakers]
-        } else if (sortBy === 'subcategory') {
-            orderBy = [{ subcategory: { title: sortOrder } }, ...stableTieBreakers]
-        } else if (sortBy === 'amount') {
-            sortInMemory = true
-            orderBy = [{ date: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }]
-        } else {
-            orderBy = [{ [sortBy]: sortOrder }, ...stableTieBreakers]
+        const mustSortByAmount = sortBy === 'amount'
+        const stableOrder: Prisma.TransactionOrderByWithRelationInput[] = [{ date: 'desc' }, { id: 'desc' }]
+        const relationalOrderMap: Record<string, Prisma.TransactionOrderByWithRelationInput> = {
+            category: { category: { title: sortOrder } },
+            subcategory: { subcategory: { title: sortOrder } }
         }
 
-        const queryOptions: any = {
+        const orderBy: Prisma.TransactionOrderByWithRelationInput[] = mustSortByAmount
+            ? stableOrder
+            : [
+                  relationalOrderMap[sortBy] ?? ({ [sortBy]: sortOrder } as Prisma.TransactionOrderByWithRelationInput),
+                  { createdAt: sortOrder },
+                  { id: sortOrder }
+              ]
+
+        const list = await prisma.transaction.findMany({
             where,
             include: { amounts: true, media: true },
             omit: { userId: true, deletedAt: true },
             orderBy,
-            skip: sortInMemory ? 0 : skip
-        }
+            skip: mustSortByAmount ? 0 : skip,
+            ...(mustSortByAmount || !take || take <= 0 ? {} : { take })
+        })
+        const total = await prisma.transaction.count({ where })
 
-        if (!sortInMemory && take && take > 0) {
-            queryOptions.take = take
-        }
-
-        const [rawData, total] = await Promise.all([
-            prisma.transaction.findMany(queryOptions),
-            prisma.transaction.count({ where })
-        ])
-
-        const data = rawData as TransactionWithAmounts[]
-
-        let finalData: TransactionWithAmounts[] = data
-        if (sortInMemory && sortBy === 'amount') {
-            finalData = data.sort((a, b) => {
-                const amountA = Number(a.amounts[0]?.amount || 0)
-                const amountB = Number(b.amounts[0]?.amount || 0)
-                return sortOrder === 'asc' ? amountA - amountB : amountB - amountA
+        let transactions = list
+        if (mustSortByAmount) {
+            transactions = [...transactions].sort((left, right) => {
+                const leftAmount = Number(left.amounts[0]?.amount ?? 0)
+                const rightAmount = Number(right.amounts[0]?.amount ?? 0)
+                return sortOrder === 'asc' ? leftAmount - rightAmount : rightAmount - leftAmount
             })
-            finalData = finalData.slice(skip, take ? skip + take : undefined)
+
+            const end = take && take > 0 ? skip + take : undefined
+            transactions = transactions.slice(skip, end)
         }
 
-        const mergedData = TransactionHelper.mergeTransferTransactions(finalData)
-
-        return { data: mergedData, total }
+        return {
+            data: this.mergeTransferTransactions(transactions) as unknown as TransactionData[],
+            total
+        }
     }
 }
