@@ -9,6 +9,7 @@ router.post('/', AuthMiddleware.isAuthenticated, upload.array('file'), ImportCon
 router.post('/template/:action', AuthMiddleware.isAuthenticated, ImportController.importTemplates)
 router.get('/', AuthMiddleware.isAuthenticated, ImportController.readImports)
 router.get('/:id', AuthMiddleware.isAuthenticated, ImportController.readImportById)
+router.get('/:id/transactions', AuthMiddleware.isAuthenticated, ImportController.readImportTransactions)
 router.patch('/complete/:id', AuthMiddleware.isAuthenticated, ImportController.completeImport)
 router.put('/:id', AuthMiddleware.isAuthenticated, ImportController.updateImport)
 router.delete('/:id', AuthMiddleware.isAuthenticated, ImportController.deleteImport)

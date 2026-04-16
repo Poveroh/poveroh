@@ -1,20 +1,19 @@
-import prisma from '@poveroh/prisma'
-import { buildWhere } from '../../../helpers/filter.helper'
+import prisma, { Prisma } from '@poveroh/prisma'
+import { buildWhere, buildWhere2 } from '../../../helpers/filter.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
 import { BalanceHelper } from '../helpers/balance.helper'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import {
+    Amount,
     CreateImportRequest,
     ImportData,
-    ImportFile,
     ImportFilters,
-    TransactionActionEnum,
+    ImportTransactionDataResponse,
     TransactionStatusEnum,
-    TransactionData,
-    TransactionFilters,
-    CategoryData
+    CategoryData,
+    UpdateImportRequest
 } from '@poveroh/types'
 import { BaseService } from './base.service'
 import { CategoryService } from './category.service'
@@ -24,29 +23,12 @@ import { CategoryService } from './category.service'
  * All methods automatically retrieve the user ID from the request context.
  */
 export class ImportService extends BaseService {
-    /**
-     * Initializes the ImportService with the user ID from the request context
-     * @param userId The ID of the authenticated user
-     */
     constructor(userId: string) {
         super(userId, 'import')
     }
 
     /**
-     * Creates or updates a transaction during the import flow
-     * @param payload The transaction payload as a JSON string (includes action)
-     * @returns The created or updated transaction result
-     */
-    async handleImportTransaction(payload: string): Promise<unknown> {
-        const userId = this.getUserId()
-        const parsedData = JSON.parse(payload)
-        return TransactionHelper.handleTransaction(parsedData, userId)
-    }
-
-    /**
      * Completes an import by approving transactions and removing pending or rejected ones
-     * @param id The ID of the import to complete
-     * @returns The updated import data response
      */
     async completeImport(id: string): Promise<ImportData> {
         const userId = this.getUserId()
@@ -59,10 +41,10 @@ export class ImportService extends BaseService {
         }
 
         return (await prisma.$transaction(async tx => {
-            const approvedTransactions = (await tx.transaction.findMany({
+            const approvedTransactions = await tx.transaction.findMany({
                 where: { status: 'IMPORT_APPROVED' as TransactionStatusEnum, importId: id, userId },
                 include: { amounts: true }
-            })) as TransactionWithAmounts[]
+            })
 
             await tx.transaction.updateMany({
                 where: { status: 'IMPORT_APPROVED' as TransactionStatusEnum, importId: id, userId },
@@ -71,9 +53,8 @@ export class ImportService extends BaseService {
                 }
             })
 
-            const flatAmounts = approvedTransactions.flatMap(t => t.amounts)
-            const amountsToUpdate = flatAmounts.map(amount => TransactionHelper.createAmountData({ dbAmount: amount }))
-            await BalanceHelper.updateAccountBalances(amountsToUpdate, undefined, tx)
+            const approvedAmounts = approvedTransactions.flatMap(t => t.amounts) as unknown as Amount[]
+            await BalanceHelper.updateAccountBalances(approvedAmounts, undefined, tx)
 
             await tx.amount.deleteMany({
                 where: {
@@ -96,7 +77,6 @@ export class ImportService extends BaseService {
 
     /**
      * Deletes an import and all associated records for the authenticated user
-     * @param id The ID of the import to delete
      */
     async deleteImport(id: string): Promise<void> {
         const userId = this.getUserId()
@@ -152,24 +132,19 @@ export class ImportService extends BaseService {
 
     /**
      * Retrieves an import by its ID for the authenticated user
-     * @param id The ID of the import to retrieve
-     * @returns The import data response if found, or null if not found
      */
     async getImportById(id: string): Promise<ImportData | null> {
         const userId = this.getUserId()
         return (await prisma.import.findFirst({
             where: { id, userId },
-            include: { files: true }
+            include: { files: true, transactions: { include: { amounts: true, media: true } } }
         })) as unknown as ImportData | null
     }
 
     /**
      * Updates an import with the provided payload for the authenticated user
-     * @param id The ID of the import to update
-     * @param payload The payload to update the import with
-     * @returns The updated import data response
      */
-    async updateImport(id: string, payload: Record<string, unknown>): Promise<ImportData> {
+    async updateImport(id: string, payload: UpdateImportRequest): Promise<ImportData> {
         const userId = this.getUserId()
         return (await prisma.import.update({
             where: { id, userId },
@@ -179,52 +154,29 @@ export class ImportService extends BaseService {
 
     /**
      * Retrieves imports for the authenticated user based on the provided filters and pagination
-     * @param filters The filters to apply to the import query
-     * @param skip The number of imports to skip for pagination
-     * @param take The number of imports to take for pagination
-     * @returns An object containing the import data and the total count
      */
-    async getImports(
-        filters: ImportFilters,
-        skip: number,
-        take: number
-    ): Promise<{ data: ImportData[]; total: number }> {
+    async getImports(filters: ImportFilters, skip: number, take: number): Promise<ImportData[]> {
         const userId = this.getUserId()
-        const where = {
-            ...buildWhere(filters),
-            userId
-        }
 
-        const [data, total] = await Promise.all([
-            prisma.import.findMany({
-                where,
-                include: { files: true },
-                orderBy: { createdAt: 'desc' },
-                skip,
-                take
-            }),
-            prisma.import.count({ where })
-        ])
+        const whereCondition = buildWhere2({ ...filters, deletedAt: null, userId }, ['title'])
 
-        return {
-            data: data as unknown as ImportData[],
-            total
-        }
+        return prisma.import.findMany({
+            where: whereCondition,
+            include: { files: true, transactions: { include: { amounts: true, media: true } } },
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take
+        }) as unknown as ImportData[]
     }
 
     /**
-     * Retrieves pending transactions for an import based on filters
-     * @param id The ID of the import to retrieve pending transactions for
-     * @param filters The filters to apply to the transaction query
-     * @returns The list of pending transactions
+     * Retrieves all transactions (pending, approved, rejected) for an import
      */
-    async getPendingTransactions(id: string, filters: TransactionFilters): Promise<TransactionData[]> {
+    async getImportTransactions(id: string): Promise<ImportTransactionDataResponse[]> {
         const userId = this.getUserId()
-        const where = buildWhere(filters)
 
         return (await prisma.transaction.findMany({
             where: {
-                ...where,
                 importId: id,
                 userId,
                 status: {
@@ -235,72 +187,14 @@ export class ImportService extends BaseService {
                     ]
                 }
             },
-            include: { amounts: true },
+            omit: { userId: true, importId: true, deletedAt: true },
+            include: { amounts: true, media: true },
             orderBy: { createdAt: 'desc' }
-        })) as unknown as TransactionData[]
-    }
-
-    /**
-     * Deletes a pending transaction with the specified ID for the authenticated user
-     * @param transactionId The ID of the pending transaction to delete
-     */
-    async deletePendingTransaction(transactionId: string): Promise<void> {
-        const userId = this.getUserId()
-        await prisma.transaction.deleteMany({
-            where: { id: transactionId, userId }
-        })
-    }
-
-    /**
-     * Updates pending transactions with the provided payload
-     * @param payload The pending transactions payload as a JSON string
-     * @returns The updated transactions
-     */
-    async editPendingTransactions(payload: string): Promise<TransactionData[]> {
-        const parsedData: TransactionData[] = JSON.parse(payload)
-
-        const updatedTransactions = await prisma.$transaction(async tx => {
-            const results = []
-
-            for (const transaction of parsedData) {
-                const { amounts, media, ...transactionData } = transaction
-
-                const updatedTransaction = await tx.transaction.update({
-                    where: { id: transaction.id },
-                    data: transactionData
-                })
-
-                if (media && Array.isArray(media)) {
-                    await tx.transactionMedia.deleteMany({
-                        where: { transactionId: transaction.id }
-                    })
-
-                    if (media.length > 0) {
-                        await tx.transactionMedia.createMany({
-                            data: media.map(transactionMedia => ({
-                                transactionId: transaction.id,
-                                filename: transactionMedia.filename,
-                                filetype: transactionMedia.filetype,
-                                path: transactionMedia.path
-                            }))
-                        })
-                    }
-                }
-
-                results.push(updatedTransaction)
-            }
-
-            return results
-        })
-
-        return updatedTransactions as unknown as TransactionData[]
+        })) as unknown as ImportTransactionDataResponse[]
     }
 
     /**
      * Creates an import with the provided payload and uploaded files
-     * @param payload The create import request payload
-     * @param files The uploaded files
-     * @returns The created import data response
      */
     async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportData> {
         const userId = this.getUserId()
@@ -323,72 +217,53 @@ export class ImportService extends BaseService {
         )
 
         const savedFiles = fileResults.map(fileResult => fileResult.filePath)
-        const allTransactions = fileResults.flatMap(fileResult => fileResult.transactions)
+        const allRawTransactions = fileResults.flatMap(fileResult => fileResult.transactions)
 
-        const parsedTransactions = await ImportHelper.normalizeTransaction(
-            userId,
-            payload.financialAccountId,
-            allTransactions
-        )
+        const { transactions: transactionsToCreate, amounts: amountsToCreate } =
+            await ImportHelper.normalizeTransaction(userId, payload.financialAccountId, importId, allRawTransactions)
 
-        const importFiles: ImportFile[] = savedFiles.map((path, idx) => ({
-            id: uuidv4(),
+        const importFiles: Prisma.ImportFileCreateManyInput[] = savedFiles.map((path, idx) => ({
             importId,
             filename: files[idx]?.originalname || '',
             filetype: 'CSV',
-            path,
-            createdAt: now.toISOString(),
-            updatedAt: now.toISOString()
+            path
         }))
 
-        const imports = await prisma.import.create({
-            data: {
-                id: importId,
-                userId,
-                financialAccountId: payload.financialAccountId,
-                title: `Import at ${now.toISOString()}`,
-                status: 'IMPORT_PENDING' as TransactionStatusEnum,
-                createdAt: now
+        await prisma.$transaction(async tx => {
+            await tx.import.create({
+                data: {
+                    id: importId,
+                    userId,
+                    financialAccountId: payload.financialAccountId,
+                    title: `Import at ${now.toISOString()}`,
+                    status: 'IMPORT_PENDING' as TransactionStatusEnum,
+                    createdAt: now
+                }
+            })
+
+            if (importFiles.length > 0) {
+                await tx.importFile.createMany({ data: importFiles })
+            }
+
+            if (transactionsToCreate.length > 0) {
+                await tx.transaction.createMany({ data: transactionsToCreate })
+            }
+
+            if (amountsToCreate.length > 0) {
+                await tx.amount.createMany({ data: amountsToCreate })
             }
         })
 
-        await prisma.importFile.createMany({ data: importFiles })
-
-        await prisma.transaction.createMany({
-            data: parsedTransactions.map(({ amounts, ...transaction }) => ({
-                ...transaction,
-                importId
-            }))
+        const created = await prisma.import.findUniqueOrThrow({
+            where: { id: importId, userId },
+            include: { files: true, transactions: { include: { amounts: true, media: true } } }
         })
 
-        const allAmounts = parsedTransactions.flatMap(transaction =>
-            transaction.amounts.map((amount: any) => ({
-                transactionId: amount.transactionId,
-                amount: amount.amount,
-                currency: amount.currency,
-                action: amount.action as TransactionActionEnum,
-                financialAccountId: amount.financialAccountId,
-                importReference: amount.importReference
-            }))
-        )
-
-        if (allAmounts.length > 0) {
-            await prisma.amount.createMany({ data: allAmounts })
-        }
-
-        return {
-            ...({
-                ...(imports as unknown as Record<string, unknown>),
-                files: importFiles,
-                transactions: parsedTransactions
-            } as unknown as ImportData)
-        }
+        return created as unknown as ImportData
     }
 
     /**
      * Imports template data based on the specified action
-     * @param action The template import action
-     * @returns Whether the import succeeded
      */
     async importTemplates(action: string): Promise<CategoryData[] | null> {
         const userId = this.getUserId()

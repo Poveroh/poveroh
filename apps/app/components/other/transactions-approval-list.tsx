@@ -1,57 +1,42 @@
 import { Button } from '@poveroh/ui/components/button'
 import { useTranslations } from 'next-intl'
 import { TransactionApprovalItem } from '../item/transaction-approval-item'
-import { useImport } from '@/hooks/use-imports'
-import type { Transaction } from '@/lib/api-client'
+import { useImportTransactions } from '@/hooks/use-import-transactions'
 
-export function TransactionsApprovalList() {
+type TransactionsApprovalListProps = {
+    importId: string
+}
+
+export function TransactionsApprovalList({ importId }: TransactionsApprovalListProps) {
     const t = useTranslations()
+    const { transactions, approve, approveAll } = useImportTransactions(importId)
 
-    const {
-        handleAllApproveTransactions,
-        handleApproveTransaction,
-        handleDeleteTransaction,
-        handleEditTransaction,
-        importStore
-    } = useImport()
-
-    if (importStore.pendingTransactions.length === 0) {
-        return null
-    }
+    if (transactions.length === 0) return null
 
     return (
         <div className='flex flex-col space-y-4 h-full'>
             <div className='flex flex-row items-center justify-between flex-shrink-0'>
-                <p>{t('transactions.approvalList.transactionFound', { a: importStore.pendingTransactions.length })}</p>
+                <p>{t('transactions.approvalList.transactionFound', { a: transactions.length })}</p>
                 <div className='flex flex-row justify-between space-x-2'>
-                    <Button variant='danger' size='sm' onClick={() => handleAllApproveTransactions(false)}>
+                    <Button variant='danger' size='sm' onClick={() => approveAll(false)}>
                         {t('transactions.approvalList.rejectAll')}
                     </Button>
-                    <Button variant='success' size='sm' onClick={() => handleAllApproveTransactions(true)}>
+                    <Button variant='success' size='sm' onClick={() => approveAll(true)}>
                         {t('transactions.approvalList.approveAll')}
                     </Button>
                 </div>
             </div>
 
             <div className='flex flex-col overflow-y-auto space-y-2 flex-1'>
-                {importStore.pendingTransactions.map((transaction, index) => {
-                    return (
-                        <TransactionApprovalItem
-                            key={transaction.id}
-                            index={index}
-                            transaction={transaction}
-                            onApprove={(transactionId, newValue) => {
-                                if (newValue === 'IMPORT_APPROVED' || newValue === 'IMPORT_REJECTED') {
-                                    void handleApproveTransaction(transactionId, newValue)
-                                }
-                            }}
-                            onDelete={handleDeleteTransaction}
-                            onEdit={item => {
-                                handleEditTransaction(item as unknown as Transaction)
-                            }}
-                        ></TransactionApprovalItem>
-                    )
-                })}
+                {transactions.map((transaction, index) => (
+                    <TransactionApprovalItem
+                        key={transaction.id}
+                        index={index}
+                        transaction={transaction}
+                        importId={importId}
+                        onApprove={approve}
+                    />
+                ))}
             </div>
         </div>
     )

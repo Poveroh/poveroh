@@ -110,9 +110,7 @@ export const IncomeForm = forwardRef<FormRef, TransactionFormProps>((props, ref)
                     <FileUploadField
                         label={t('form.file.label')}
                         file={file}
-                        onFileChange={files => {
-                            setFile(files)
-                        }}
+                        onFileChange={setFile}
                         toUploadMessage={t('messages.toUpload')}
                         mandatory={false}
                         multiple

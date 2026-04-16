@@ -4,22 +4,20 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { useError } from '@/hooks/use-error'
 import logger from '@/lib/logger'
-import { useImport } from '../use-imports'
-import { CreateImportRequest, ImportData } from '@poveroh/types'
-import { ImportDataSchema } from '@poveroh/schemas'
+import { ImportForm } from '@poveroh/types'
+import { ImportFormSchema } from '@poveroh/schemas'
 import { ImportFormProps } from '@/types'
+import { useError } from '../use-error'
 
 export function useImportForm(props: ImportFormProps) {
     const { handleError } = useError()
-    const { createImportFromFile } = useImport()
 
-    const [files, setFiles] = useState<File[] | null>(null)
+    const [files, setFiles] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
 
-    const form = useForm<ImportData>({
-        resolver: zodResolver(ImportDataSchema),
+    const form = useForm<ImportForm>({
+        resolver: zodResolver(ImportFormSchema),
         defaultValues: {
             financialAccountId: props.initialData?.financialAccountId || ''
         }
@@ -31,29 +29,15 @@ export function useImportForm(props: ImportFormProps) {
         }
     }, [form.formState.errors])
 
-    const handleParseForm = async (
-        values: ImportData,
-        dataCallback: (formData: CreateImportRequest, files: File[]) => Promise<void>
+    const handleSubmit = async (
+        values: ImportForm,
+        dataCallback: (formData: ImportForm, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            const formData = new FormData()
-
-            formData.append('financialAccountId', values.financialAccountId)
-
-            if (files) {
-                Array.from(files).forEach(file => {
-                    formData.append('files', file)
-                })
-            }
-
-            await createImportFromFile(formData)
-            setLoading(false)
-
-            await dataCallback(values, files ? Array.from(files) : [])
+            await dataCallback(values, files)
         } catch (error) {
-            setLoading(false)
             handleError(error, 'Form error')
         } finally {
             setLoading(false)
@@ -61,7 +45,7 @@ export function useImportForm(props: ImportFormProps) {
     }
 
     const onSubmit = form.handleSubmit(
-        values => handleParseForm(values, props.dataCallback),
+        values => handleSubmit(values, props.dataCallback),
         errors => {
             logger.error('Form validation errors on submit:', errors)
         }

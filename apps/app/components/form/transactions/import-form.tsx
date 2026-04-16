@@ -6,7 +6,7 @@ import { useImportForm } from '@/hooks/form/use-import-form'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, ImportFormProps } from '@/types/form'
 
-export const AccountAndFileForm = forwardRef<FormRef, ImportFormProps>((props: ImportFormProps, ref) => {
+export const ImportForm = forwardRef<FormRef, ImportFormProps>((props, ref) => {
     const t = useTranslations()
     const { form, files, onSubmit, setFiles } = useImportForm(props)
 
@@ -53,4 +53,4 @@ export const AccountAndFileForm = forwardRef<FormRef, ImportFormProps>((props: I
     )
 })
 
-AccountAndFileForm.displayName = 'AccountAndFileForm'
+ImportForm.displayName = 'ImportForm'

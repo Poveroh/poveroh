@@ -17,12 +17,12 @@ export function FileUploadField({
 }: FileUploadFieldProps) {
     const t = useTranslations()
 
-    const [fileList, setFileList] = useState<File[] | null>(file || null)
+    const [fileList, setFileList] = useState<File[]>(file || [])
     const [fileError, setFileError] = useState(false)
 
-    const handleFileChange = (files: File[] | null) => {
+    const handleFileChange = (files: File[]) => {
         setFileList(files)
-        setFileError(!files || files.length === 0)
+        setFileError(files.length === 0)
         onFileChange?.(files)
     }
 
@@ -32,7 +32,7 @@ export function FileUploadField({
                 <FormLabel mandatory={mandatory}>{label}</FormLabel>
                 <FormControl>
                     <FileInput
-                        onChange={e => handleFileChange(e.target.files ? Array.from(e.target.files) : null)}
+                        onChange={e => handleFileChange(e.target.files ? Array.from(e.target.files) : [])}
                         accept={accept}
                         multiple={multiple}
                     />

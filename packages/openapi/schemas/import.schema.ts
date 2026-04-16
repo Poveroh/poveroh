@@ -143,7 +143,6 @@ export const ImportFiltersSchema = z
         includeTransactions: z.boolean().optional().default(true)
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema, DateFilterSchema]))
     .openapi('ImportFilters')
 
 /**

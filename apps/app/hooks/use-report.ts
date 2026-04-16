@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useError } from '@/hooks/use-error'
 import { getTrendReportOptions } from '@/api/@tanstack/react-query.gen'
-import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@/api/types.gen'
+import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
 
 export const useReport = () => {
     const { handleError } = useError()

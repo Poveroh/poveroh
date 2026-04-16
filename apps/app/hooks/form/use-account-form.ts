@@ -12,7 +12,7 @@ import { FinancialAccountFormSchema } from '@poveroh/schemas'
 export const useFinancialAccountForm = (initialData: FinancialAccountData | null) => {
     const { handleError } = useError()
 
-    const [file, setFile] = useState<File[] | null>(null)
+    const [file, setFile] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
 
     const defaultValues: FinancialAccountForm = initialData || {

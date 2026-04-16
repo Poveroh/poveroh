@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateImportRequest, ImportFilters, TransactionFilters, UpdateImportRequest } from '@poveroh/types'
+import { CreateImportRequest, ImportFilters, UpdateImportRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { ImportService } from '../services/import.service'
@@ -14,10 +14,7 @@ export class ImportController {
                 }
 
                 const files = req.files as Express.Multer.File[]
-                const payload = req.body as CreateImportRequest
-                if (!payload.financialAccountId) {
-                    throw new BadRequestError('Missing financialAccountId')
-                }
+                const payload: CreateImportRequest = JSON.parse(req.body.data)
 
                 const importService = new ImportService(req.user.id)
                 const data = await importService.createImport(payload, files)
@@ -44,7 +41,7 @@ export class ImportController {
                 throw new BadRequestError('Data not provided')
             }
 
-            const payload = req.body as UpdateImportRequest
+            const payload: UpdateImportRequest = JSON.parse(req.body.data)
 
             const importService = new ImportService(req.user.id)
             const data = await importService.updateImport(id, payload)
@@ -134,6 +131,24 @@ export class ImportController {
             if (!data) {
                 throw new NotFoundError('Import not found')
             }
+            return ResponseHelper.success(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //GET /:id/transactions
+    static async readImportTransactions(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing import ID')
+            }
+
+            const importService = new ImportService(req.user.id)
+            const data = await importService.getImportTransactions(id)
+
             return ResponseHelper.success(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)

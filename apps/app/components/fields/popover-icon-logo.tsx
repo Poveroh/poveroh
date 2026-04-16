@@ -23,7 +23,7 @@ type PopoverIconLogoProps<T extends FieldValues> = {
     selectedColor?: string
     logoUrl?: string
     onIconChange?: (iconName: string) => void
-    onFileChange?: (files: File[] | null) => void
+    onFileChange?: (files: File[]) => void
     enableIcon?: boolean
     enableLogo?: boolean
     inEditingMode?: boolean
@@ -45,7 +45,7 @@ export function PopoverIconLogo<T extends FieldValues>({
 
     const [activeTab, setActiveTab] = useState<ActiveTab>(logoUrl && enableLogo ? 'logo' : enableIcon ? 'icon' : 'logo')
     const [previewLogoUrl, setPreviewLogoUrl] = useState<string | undefined>(logoUrl)
-    const [selectedFile, setSelectedFile] = useState<File[] | null>(null)
+    const [selectedFile, setSelectedFile] = useState<File[]>([])
 
     useEffect(() => {
         setPreviewLogoUrl(logoUrl)
@@ -57,7 +57,7 @@ export function PopoverIconLogo<T extends FieldValues>({
     const fileInputRef = useRef<HTMLInputElement>(null)
     const logoOnly = enableLogo && !enableIcon
 
-    const handleFileChange = (files: File[] | null) => {
+    const handleFileChange = (files: File[]) => {
         setSelectedFile(files)
         if (files && files.length > 0) {
             const url = URL.createObjectURL(files[0]!)

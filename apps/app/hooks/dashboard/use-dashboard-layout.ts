@@ -6,7 +6,7 @@ import { DashboardLayoutItem } from '@poveroh/types'
 import { DASHBOARD_DEFAULT_LAYOUT } from '@/components/dashboard/layout'
 import { getDashboardLayoutOptions, getDashboardLayoutQueryKey } from '@/api/@tanstack/react-query.gen'
 import { updateDashboardLayout } from '@/api/sdk.gen'
-import type { DashboardLayoutItem as ApiDashboardLayoutItem } from '@/api/types.gen'
+import type { DashboardLayoutItem as ApiDashboardLayoutItem } from '@poveroh/types'
 
 type DashboardLayout = {
     items: DashboardLayoutItem[]

@@ -1151,7 +1151,6 @@ export type ImportFilters = {
     title?: StringFilter
     date?: DateFilter
     includeTransactions?: boolean
-    [key: string]: string | StringFilter | DateFilter | ImportParamsId | StringFilter | DateFilter | boolean | undefined
 }
 
 export type QueryImportFilters = {

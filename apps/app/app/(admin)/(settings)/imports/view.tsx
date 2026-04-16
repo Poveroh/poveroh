@@ -17,7 +17,7 @@ import { ImportData } from '@poveroh/types'
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importData, importQuery, createImport, deleteAllMutation, importStore } = useImport()
+    const { importData, importQuery, createImport, deleteAllMutation } = useImport()
 
     const { openDrawer } = useDrawer<ImportData>()
     const { openModal: openDeleteModal } = useDeleteModal<ImportData>()
@@ -53,10 +53,7 @@ export default function ImportsView() {
                             <ImportsItem
                                 key={imports.id}
                                 imports={imports}
-                                openEdit={(x: ImportData) => {
-                                    importStore.setCurrentImport(x)
-                                    openDrawer('edit', x)
-                                }}
+                                openEdit={(x: ImportData) => openDrawer('edit', x)}
                                 openDelete={x => openDeleteModal(x)}
                             />
                         ))}

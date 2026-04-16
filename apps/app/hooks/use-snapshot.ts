@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
 import { createSnapshotAccountBalanceMutation } from '@/api/@tanstack/react-query.gen'
-import { CreateSnapshotAccountBalanceRequest } from '@/api/types.gen'
+import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
 import type { Snapshot } from '@/lib/api-client'
 
 type SnapshotLoadingState = {

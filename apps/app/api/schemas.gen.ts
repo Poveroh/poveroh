@@ -2276,19 +2276,6 @@ export const ImportFiltersSchema = {
             type: 'boolean',
             default: true
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            },
-            {
-                $ref: '#/components/schemas/DateFilter'
-            }
-        ]
     }
 } as const
 

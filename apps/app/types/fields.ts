@@ -173,12 +173,12 @@ export type MultipleAmountFieldProps<T extends FieldValues = FieldValues> = Base
  */
 export type FileUploadFieldProps = {
     label?: string
-    file?: File[] | null
+    file?: File[]
     toUploadMessage?: string
     accept?: string
     multiple?: boolean
     mandatory?: boolean
-    onFileChange: (files: File[] | null) => void
+    onFileChange: (files: File[]) => void
 }
 
 /**

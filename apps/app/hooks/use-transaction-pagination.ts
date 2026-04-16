@@ -6,7 +6,7 @@ import { type SortingState } from '@tanstack/react-table'
 import { getTransactions } from '@/api/sdk.gen'
 import { getTransactionsQueryKey } from '@/api/@tanstack/react-query.gen'
 import { TransactionData, TransactionFilters, TransactionListData } from '@poveroh/types'
-import { FilterOptions } from '@/api/types.gen'
+import { FilterOptions } from '@poveroh/types'
 import { ViewModeType } from '@/types'
 import { storage } from '@/lib/storage'
 

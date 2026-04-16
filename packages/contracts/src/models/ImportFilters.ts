@@ -3,5 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { DateFilter } from './DateFilter'
+import type { ImportParamsId } from './ImportParamsId'
 import type { StringFilter } from './StringFilter'
-export type ImportFilters = Record<string, string | StringFilter | DateFilter>
+export type ImportFilters = {
+    id?: ImportParamsId
+    title?: StringFilter
+    date?: DateFilter
+    includeTransactions?: boolean
+}

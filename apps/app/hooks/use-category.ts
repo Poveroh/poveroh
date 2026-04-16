@@ -2,9 +2,9 @@
 
 import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import { useError } from './use-error'
-import { useImport } from './use-imports'
 import {
     createCategoryMutation,
+    createImportTemplateMutation,
     deleteCategoriesMutation,
     deleteCategoryMutation,
     getCategoriesOptions,
@@ -19,7 +19,6 @@ import { useFilters } from './use-filters'
 export const useCategory = () => {
     const queryClient = useQueryClient()
     const { handleError } = useError()
-    const { importTemplates: importFromTemplate } = useImport()
 
     const filters = useFilters<CategoryFilters>(text => ({
         title: { contains: text }
@@ -95,17 +94,17 @@ export const useCategory = () => {
         }
     }
 
-    const importTemplates = async () => {
-        try {
-            const res = await importFromTemplate('categories')
-            if (res) {
-                queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
-            }
-            return res
-        } catch (error) {
-            return handleError(error, 'Error importing categories from template')
+    const importTemplateMutation = useMutation({
+        ...createImportTemplateMutation(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: getCategoriesQueryKey() })
+        },
+        onError: error => {
+            handleError(error, 'Error importing categories from template')
         }
-    }
+    })
+
+    const importTemplates = () => importTemplateMutation.mutateAsync({ path: { action: 'categories' } })
 
     return {
         ...filters,

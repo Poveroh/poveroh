@@ -21,7 +21,7 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
     const { handleError } = useError()
 
     const [icon, setIcon] = useState(iconList[0])
-    const [file, setFile] = useState<File[] | null>(null)
+    const [file, setFile] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
 
     const formSchema = SubscriptionFormSchema.refine(
@@ -82,7 +82,7 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
         setIcon(newIcon)
     }
 
-    const handleFileChange = (newFile: File[] | null) => {
+    const handleFileChange = (newFile: File[]) => {
         setFile(newFile)
     }
 

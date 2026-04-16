@@ -27,7 +27,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
 ) {
     const { handleError } = useError()
 
-    const [file, setFile] = useState<File[] | null>(null)
+    const [file, setFile] = useState<File[]>([])
     const [loading, setLoading] = useState(false)
 
     const getInitialValues = (): T => {

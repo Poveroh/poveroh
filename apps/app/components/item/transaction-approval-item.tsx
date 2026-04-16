@@ -21,22 +21,22 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from '@poveroh/ui/components/alert-dialog'
-import { useImport } from '@/hooks/use-imports'
-import { CategoryData, CreateUpdateTransactionRequest, TransactionData, TransactionStatusEnum } from '@poveroh/types'
+import { CategoryData, TransactionData, TransactionStatusEnum } from '@poveroh/types'
+import { useImportTransactions } from '@/hooks/use-import-transactions'
+import type { ImportTransactionDataResponse } from '@poveroh/types'
 
 type TransactionItemProps = {
-    transaction: TransactionData
+    transaction: ImportTransactionDataResponse
     index: number
-    onDelete: (transactionId: string) => void
-    onEdit: (item: TransactionData) => void
+    importId: string
     onApprove: (transactionId: string, newValue: TransactionStatusEnum) => void
 }
 
-export function TransactionApprovalItem({ transaction, index, onApprove, onDelete, onEdit }: TransactionItemProps) {
+export function TransactionApprovalItem({ transaction, index, importId, onApprove }: TransactionItemProps) {
     const t = useTranslations()
 
     const { getCategoryById } = useCategory()
-    const { updatePendingTransaction, deletePendingTransaction } = useImport()
+    const { deletePendingTransaction } = useImportTransactions(importId)
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -69,23 +69,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
         fetchData()
     }, [transaction])
 
-    const handleEditTransaction = async (payload: CreateUpdateTransactionRequest, files: File[]) => {
-        // // For now, we only handle FormData case since updatePendingTransaction expects FormData
-        // if (data instanceof FormData) {
-        //     const editedTransaction = await updatePendingTransaction(transaction.id, data)
-        //     if (!editedTransaction) return
-        //     //TODO: we might want to update the item in place instead of refetching the whole list
-        //     // onEdit(editedTransaction)
-        // }
-    }
-
-    const handleDeleteTransaction = async () => {
-        const editedTransaction = await deletePendingTransaction(transaction.id)
-
-        if (!editedTransaction) return
-
-        onDelete(transaction.id)
-    }
+    const handleDeleteTransaction = () => deletePendingTransaction.mutateAsync({ path: { id: transaction.id } })
 
     return (
         <div className='w-full p-5 bg-input rounded-md'>
@@ -93,12 +77,14 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                 <div className='flex flex-col space-y-4 items-center w-full'>
                     <TransactionForm
                         ref={formRef}
-                        initialData={transaction}
+                        initialData={{ ...transaction, importId: null } as TransactionData}
                         inEditingMode={true}
                         inputStyle='outlined'
-                        dataCallback={handleEditTransaction}
-                    ></TransactionForm>
-                    <Divider></Divider>
+                        dataCallback={async () => {
+                            setEditingMode(false)
+                        }}
+                    />
+                    <Divider />
                     <div className='flex flex-row items-center justify-between w-full'>
                         <AlertDialog>
                             <AlertDialogTrigger className={buttonVariants({ variant: 'danger' })}>
@@ -120,7 +106,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                                     <AlertDialogCancel>{t('buttons.cancel')}</AlertDialogCancel>
                                     <AlertDialogAction
                                         className={buttonVariants({ variant: 'danger' })}
-                                        onClick={() => handleDeleteTransaction}
+                                        onClick={handleDeleteTransaction}
                                     >
                                         {t('buttons.delete')}
                                     </AlertDialogAction>
@@ -128,22 +114,10 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             </AlertDialogContent>
                         </AlertDialog>
                         <div className='flex flex-row items-center space-x-2'>
-                            <Button
-                                variant='outline'
-                                onClick={async () => {
-                                    setEditingMode(false)
-                                }}
-                            >
+                            <Button variant='outline' onClick={() => setEditingMode(false)}>
                                 {t('buttons.cancel')}
                             </Button>
-                            <Button
-                                onClick={async () => {
-                                    formRef.current?.submit()
-                                    // setEditingMode(false)
-                                }}
-                            >
-                                {t('buttons.save')}
-                            </Button>
+                            <Button onClick={() => formRef.current?.submit()}>{t('buttons.save')}</Button>
                         </div>
                     </div>
                 </div>
@@ -157,11 +131,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             <div className='flex flex-col space-y-1'>
                                 <div className='flex flex-row space-x-2 items-center'>
                                     <p>{transaction.title}</p>
-                                    <Pencil
-                                        size='15'
-                                        className='cursor-pointer'
-                                        onClick={() => setEditingMode(true)}
-                                    ></Pencil>
+                                    <Pencil size='15' className='cursor-pointer' onClick={() => setEditingMode(true)} />
                                 </div>
                                 <div className='flex flex-row space-x-2'>
                                     {<p className='sub'>{new Date(transaction.date).toLocaleString()}</p>}
@@ -187,7 +157,7 @@ export function TransactionApprovalItem({ transaction, index, onApprove, onDelet
                             </div>
                         </div>
                     </div>
-                    <Divider></Divider>
+                    <Divider />
                     <div className='flex flex-row items-center justify-between w-full'>
                         <div className='flex items-center space-x-2'>
                             <Checkbox checked={false} onCheckedChange={() => {}} />
