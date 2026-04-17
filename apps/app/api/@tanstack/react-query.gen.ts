@@ -1514,35 +1514,6 @@ export const updateDashboardLayoutMutation = (
     return mutationOptions
 }
 
-/**
- * Create snapshot account balance
- *
- * Create a new snapshot account balance with the provided data
- */
-export const createSnapshotAccountBalanceMutation = (
-    options?: Partial<Options<CreateSnapshotAccountBalanceData>>
-): UseMutationOptions<
-    CreateSnapshotAccountBalanceResponse2,
-    CreateSnapshotAccountBalanceError,
-    Options<CreateSnapshotAccountBalanceData>
-> => {
-    const mutationOptions: UseMutationOptions<
-        CreateSnapshotAccountBalanceResponse2,
-        CreateSnapshotAccountBalanceError,
-        Options<CreateSnapshotAccountBalanceData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createSnapshotAccountBalance({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
 export const getTrendReportQueryKey = (options?: Options<GetTrendReportData>) =>
     createQueryKey('getTrendReport', options)
 
@@ -2306,6 +2277,35 @@ export const approveImportTransactionsMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await approveImportTransactions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Create snapshot account balance
+ *
+ * Create a new snapshot account balance with the provided data
+ */
+export const createSnapshotAccountBalanceMutation = (
+    options?: Partial<Options<CreateSnapshotAccountBalanceData>>
+): UseMutationOptions<
+    CreateSnapshotAccountBalanceResponse2,
+    CreateSnapshotAccountBalanceError,
+    Options<CreateSnapshotAccountBalanceData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateSnapshotAccountBalanceResponse2,
+        CreateSnapshotAccountBalanceError,
+        Options<CreateSnapshotAccountBalanceData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createSnapshotAccountBalance({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

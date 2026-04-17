@@ -5,33 +5,29 @@ import { useTranslations } from 'next-intl'
 import { Form } from '@poveroh/ui/components/form'
 import { AccountField } from '../fields/account-field'
 import { AmountField } from '../fields/amount-field'
-import { FormProps, FormRef } from '@/types'
+import { DateField } from '../fields/date-field'
+import { FormRef } from '@/types'
 import { useAccountBalanceSnapshotForm } from '@/hooks/form/use-account-balance-snapshot-form'
 import { CreateSnapshotAccountBalanceRequest, SnapshotAccountBalance } from '@poveroh/types'
 
-type AccountBalanceSnapshotFormProps = FormProps<SnapshotAccountBalance, CreateSnapshotAccountBalanceRequest> & {
+type AccountBalanceSnapshotFormProps = {
+    initialData: SnapshotAccountBalance | null
     initialAccountId?: string
+    dataCallback: (payload: CreateSnapshotAccountBalanceRequest) => Promise<void>
 }
 
 export const AccountBalanceSnapshotForm = forwardRef<FormRef, AccountBalanceSnapshotFormProps>((props, ref) => {
     const { initialData, dataCallback } = props
 
     const t = useTranslations()
-    const { form, handleSubmit } = useAccountBalanceSnapshotForm(
-        initialData,
-        Boolean(initialData),
-        props.initialAccountId
-    )
+    const { form, handleSubmit } = useAccountBalanceSnapshotForm(initialData, props.initialAccountId)
 
     useImperativeHandle(ref, () => ({
         submit: () => {
             form.handleSubmit(values => handleSubmit(values, dataCallback))()
         },
         reset: () => {
-            form.reset({
-                accountId: initialData?.accountId ?? '',
-                balance: 0
-            })
+            form.reset()
         }
     }))
 
@@ -61,6 +57,13 @@ export const AccountBalanceSnapshotForm = forwardRef<FormRef, AccountBalanceSnap
                         mandatory
                         min={0}
                         step='0.01'
+                    />
+
+                    <DateField
+                        control={form.control}
+                        name='snapshotDate'
+                        label={t('form.date.label')}
+                        mandatory
                     />
                 </div>
             </form>

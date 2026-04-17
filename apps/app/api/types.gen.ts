@@ -3621,44 +3621,6 @@ export type UpdateDashboardLayoutResponses = {
 
 export type UpdateDashboardLayoutResponse2 = UpdateDashboardLayoutResponses[keyof UpdateDashboardLayoutResponses]
 
-export type CreateSnapshotAccountBalanceData = {
-    /**
-     * Snapshot account balance data to create
-     */
-    body: CreateSnapshotAccountBalanceRequest
-    path?: never
-    query?: never
-    url: '/account-balances'
-}
-
-export type CreateSnapshotAccountBalanceErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSnapshotAccountBalanceError =
-    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
-
-export type CreateSnapshotAccountBalanceResponses = {
-    /**
-     * Snapshot account balance created
-     */
-    200: CreateSnapshotAccountBalanceResponse
-}
-
-export type CreateSnapshotAccountBalanceResponse2 =
-    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
-
 export type GetTrendReportData = {
     body?: never
     path?: never
@@ -6004,3 +5966,41 @@ export type ApproveImportTransactionsResponses = {
 
 export type ApproveImportTransactionsResponse2 =
     ApproveImportTransactionsResponses[keyof ApproveImportTransactionsResponses]
+
+export type CreateSnapshotAccountBalanceData = {
+    /**
+     * Snapshot account balance data to create
+     */
+    body: CreateSnapshotAccountBalanceRequest
+    path?: never
+    query?: never
+    url: '/snapshots/account-balance'
+}
+
+export type CreateSnapshotAccountBalanceErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateSnapshotAccountBalanceError =
+    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
+
+export type CreateSnapshotAccountBalanceResponses = {
+    /**
+     * Snapshot account balance created
+     */
+    200: CreateSnapshotAccountBalanceResponse
+}
+
+export type CreateSnapshotAccountBalanceResponse2 =
+    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]

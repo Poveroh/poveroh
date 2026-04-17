@@ -1,24 +1,15 @@
 import prisma from '@poveroh/prisma'
-import { CreateSnapshotAccountBalanceRequest, Snapshot, SnapshotAccountBalance } from '@poveroh/types'
+import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
 import { NotFoundError } from '@/src/utils'
 import { RedisHelper } from '../helpers/redis.helper'
 import { recalculateSubsequentSnapshots } from '../helpers/snapshot.helper'
 import { BaseService } from './base.service'
-
-export type SnapshotAccountBalanceResponse = {
-    snapshot: Snapshot
-    accountBalance: SnapshotAccountBalance
-}
 
 /**
  * Service class for managing snapshots, including creating account balance snapshots for the authenticated user
  * All methods automatically retrieve the user ID from the request context.
  */
 export class SnapshotService extends BaseService {
-    /**
-     * Initializes the SnapshotService with the user ID from the request context
-     * @param userId The ID of the authenticated user
-     */
     constructor(userId: string) {
         super(userId, 'snapshot')
     }
@@ -26,11 +17,9 @@ export class SnapshotService extends BaseService {
     /**
      * Creates or updates a snapshot account balance for the authenticated user
      * @param payload The account balance snapshot data
-     * @returns The created snapshot and account balance data
+     * @returns The full snapshot with all account balances and asset values
      */
-    async addAccountBalanceSnapshot(
-        payload: CreateSnapshotAccountBalanceRequest
-    ): Promise<SnapshotAccountBalanceResponse> {
+    async addAccountBalanceSnapshot(payload: CreateSnapshotAccountBalanceRequest) {
         const userId = this.getUserId()
         const { accountId, balance, snapshotDate } = payload
 
@@ -62,7 +51,7 @@ export class SnapshotService extends BaseService {
             }
         })
 
-        const accountBalance = await prisma.snapshotAccountBalance.upsert({
+        await prisma.snapshotAccountBalance.upsert({
             where: {
                 snapshotId_accountId: {
                     snapshotId: snapshot.id,
@@ -109,9 +98,12 @@ export class SnapshotService extends BaseService {
             await RedisHelper.delete(`balance:${accountId}`)
         }
 
-        return {
-            snapshot: snapshot as unknown as Snapshot,
-            accountBalance: accountBalance as unknown as SnapshotAccountBalance
-        }
+        return prisma.snapshot.findUniqueOrThrow({
+            where: { id: snapshot.id },
+            include: {
+                accountBalances: true,
+                assetValues: true
+            }
+        })
     }
 }

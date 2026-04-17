@@ -25,11 +25,11 @@ export const useSnapshot = () => {
         }
     })
 
-    const createSnapshotAccountBalance = async (data: Partial<CreateSnapshotAccountBalanceRequest>) => {
+    const createSnapshotAccountBalance = async (data: CreateSnapshotAccountBalanceRequest) => {
         setSnapshotLoading(prev => ({ ...prev, createSnapshotAccountBalance: true }))
         try {
             const response = await createSnapshotAccountBalanceMutationHook.mutateAsync({
-                body: data as any
+                body: data
             })
 
             return (response?.data ?? null) as Snapshot | null

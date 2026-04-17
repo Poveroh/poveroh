@@ -7,45 +7,46 @@ import Modal from '@/components/modal/modal'
 import { AccountBalanceSnapshotForm } from '@/components/form/account-balance-snapshot-form'
 import { useSnapshot } from '@/hooks/use-snapshot'
 import { useModal } from '@/hooks/use-modal'
-import { SnapshotAccountBalance } from '@poveroh/types'
-import { CreateSnapshotAccountBalanceRequest } from '@/lib/api-client'
+import { useError } from '@/hooks/use-error'
+import { CreateSnapshotAccountBalanceRequest, SnapshotAccountBalance } from '@poveroh/types'
+import { FormRef } from '@/types'
 
 export function AccountBalanceSnapshotDialog() {
     const t = useTranslations()
     const { createSnapshotAccountBalance } = useSnapshot()
+    const { handleError } = useError()
 
     const modalId = 'account-snapshot'
     const modalManager = useModal<SnapshotAccountBalance>(modalId)
 
-    const formRef = useRef<HTMLFormElement | null>(null)
+    const formRef = useRef<FormRef | null>(null)
 
-    const handleOpenChange = (nextOpen: boolean) => {
-        if (!nextOpen) {
+    const handleSubmit = async (payload: CreateSnapshotAccountBalanceRequest) => {
+        if (modalManager.loading) return
+
+        try {
+            modalManager.setLoading(true)
+
+            const res = await createSnapshotAccountBalance(payload)
+
+            if (!res) return
+
             formRef.current?.reset()
+
+            toast.success(t('accounts.snapshot.success'))
+
             modalManager.closeModal()
+        } catch (error) {
+            handleError(error)
+        } finally {
+            modalManager.setLoading(false)
         }
-    }
-
-    const handleSubmit = async (data: FormData | Partial<SnapshotAccountBalance>) => {
-        modalManager.setLoading(true)
-
-        const res = await createSnapshotAccountBalance(data as Partial<CreateSnapshotAccountBalanceRequest>)
-
-        if (!res) return
-
-        formRef.current?.reset()
-
-        toast.success(t('accounts.snapshot.success'))
-
-        modalManager.setLoading(false)
-        modalManager.closeModal()
     }
 
     return (
         <Modal
             modalId={modalId}
             open={modalManager.isOpen}
-            onOpenChange={handleOpenChange}
             title={t('accounts.snapshot.modal.title')}
             description={t('accounts.snapshot.modal.description')}
             footer={{
@@ -58,7 +59,6 @@ export function AccountBalanceSnapshotDialog() {
                     ref={formRef}
                     initialData={modalManager.item ?? null}
                     initialAccountId={modalManager.preConfig?.accountId}
-                    inEditingMode={modalManager.inEditingMode}
                     dataCallback={handleSubmit}
                 />
             </div>

@@ -932,28 +932,6 @@ export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
     })
 
 /**
- * Create snapshot account balance
- *
- * Create a new snapshot account balance with the provided data
- */
-export const createSnapshotAccountBalance = <ThrowOnError extends boolean = false>(
-    options: Options<CreateSnapshotAccountBalanceData, ThrowOnError>
-) =>
-    (options.client ?? client).post<
-        CreateSnapshotAccountBalanceResponses,
-        CreateSnapshotAccountBalanceErrors,
-        ThrowOnError
-    >({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/account-balances',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
  * Get trend report
  *
  * Retrieve a trend report based on the users imports
@@ -1437,3 +1415,25 @@ export const approveImportTransactions = <ThrowOnError extends boolean = false>(
             }
         }
     )
+
+/**
+ * Create snapshot account balance
+ *
+ * Create a new snapshot account balance with the provided data
+ */
+export const createSnapshotAccountBalance = <ThrowOnError extends boolean = false>(
+    options: Options<CreateSnapshotAccountBalanceData, ThrowOnError>
+) =>
+    (options.client ?? client).post<
+        CreateSnapshotAccountBalanceResponses,
+        CreateSnapshotAccountBalanceErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/snapshots/account-balance',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
