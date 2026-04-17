@@ -248,7 +248,7 @@ In running order:
 - [x] Subscriptions
 - [x] Transaction
     - [x] Manual insert
-    - [ ] Upload from CSV or PDF
+    - [x] Upload from CSV or PDF
 - [ ] Month's snapshot
 - [ ] Reports
 - [ ] Investments
