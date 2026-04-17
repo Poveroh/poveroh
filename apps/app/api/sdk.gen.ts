@@ -3,6 +3,9 @@
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client'
 import { client } from './client.gen'
 import type {
+    ApproveImportTransactionsData,
+    ApproveImportTransactionsErrors,
+    ApproveImportTransactionsResponses,
     ChangeEmailData,
     ChangeEmailErrors,
     ChangeEmailResponses,
@@ -1414,3 +1417,23 @@ export const getAuthError = <ThrowOnError extends boolean = false>(options?: Opt
         url: '/auth/error',
         ...options
     })
+
+/**
+ * Approve or reject import transactions
+ *
+ * Bulk approve or reject transactions for a specific import
+ */
+export const approveImportTransactions = <ThrowOnError extends boolean = false>(
+    options: Options<ApproveImportTransactionsData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<ApproveImportTransactionsResponses, ApproveImportTransactionsErrors, ThrowOnError>(
+        {
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/imports/{id}/transactions/approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        }
+    )

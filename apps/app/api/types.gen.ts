@@ -473,6 +473,8 @@ export type FinancialAccountTypeEnum =
 
 export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
 
+export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
+
 export type CurrencyEnum =
     | 'USD'
     | 'EUR'
@@ -1162,6 +1164,30 @@ export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportReques
 
 export type ImportForm = {
     financialAccountId: string
+}
+
+export type ApproveImportTransactionItem = {
+    transactionId: string
+    status: ImportTransactionStatusEnum
+}
+
+export type ApproveImportTransactionsRequest = {
+    transactions: Array<ApproveImportTransactionItem>
+}
+
+export type ApproveImportTransactionsResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<ImportTransactionDataResponse>
 }
 
 export type ImportTemplateActionEnum = 'categories'
@@ -5935,3 +5961,46 @@ export type GetAuthErrorResponses = {
 }
 
 export type GetAuthErrorResponse = GetAuthErrorResponses[keyof GetAuthErrorResponses]
+
+export type ApproveImportTransactionsData = {
+    /**
+     * List of transactions with their new statuses
+     */
+    body: ApproveImportTransactionsRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/{id}/transactions/approve'
+}
+
+export type ApproveImportTransactionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type ApproveImportTransactionsError = ApproveImportTransactionsErrors[keyof ApproveImportTransactionsErrors]
+
+export type ApproveImportTransactionsResponses = {
+    /**
+     * Transactions updated
+     */
+    200: ApproveImportTransactionsResponse
+}
+
+export type ApproveImportTransactionsResponse2 =
+    ApproveImportTransactionsResponses[keyof ApproveImportTransactionsResponses]

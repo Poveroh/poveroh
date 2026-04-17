@@ -7,6 +7,7 @@ import { BalanceHelper } from '../helpers/balance.helper'
 import HowIParsedYourDataAlgorithm from '../helpers/parser.helper'
 import {
     Amount,
+    ApproveImportTransactionsRequest,
     CreateImportRequest,
     ImportData,
     ImportFilters,
@@ -73,6 +74,32 @@ export class ImportService extends BaseService {
                 }
             })
         })) as unknown as ImportData
+    }
+
+    /**
+     * Bulk approve or reject import transactions
+     */
+    async approveImportTransactions(
+        importId: string,
+        payload: ApproveImportTransactionsRequest
+    ): Promise<ImportTransactionDataResponse[]> {
+        const userId = this.getUserId()
+        const allowedStatuses: TransactionStatusEnum[] = ['IMPORT_APPROVED', 'IMPORT_REJECTED']
+
+        await prisma.$transaction(async tx => {
+            for (const item of payload.transactions) {
+                if (!allowedStatuses.includes(item.status as TransactionStatusEnum)) {
+                    throw new Error(`Invalid status: ${item.status}`)
+                }
+
+                await tx.transaction.update({
+                    where: { id: item.transactionId, importId, userId },
+                    data: { status: item.status as TransactionStatusEnum }
+                })
+            }
+        })
+
+        return this.getImportTransactions(importId)
     }
 
     /**

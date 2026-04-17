@@ -4,6 +4,7 @@ import { queryOptions, type UseMutationOptions } from '@tanstack/react-query'
 
 import { client } from '../client.gen'
 import {
+    approveImportTransactions,
     changeEmail,
     changePassword,
     completeImport,
@@ -86,6 +87,9 @@ import {
     verifyPassword
 } from '../sdk.gen'
 import type {
+    ApproveImportTransactionsData,
+    ApproveImportTransactionsError,
+    ApproveImportTransactionsResponse2,
     ChangeEmailData,
     ChangeEmailError,
     ChangeEmailResponse,
@@ -2282,3 +2286,32 @@ export const getAuthErrorOptions = (options?: Options<GetAuthErrorData>) =>
         },
         queryKey: getAuthErrorQueryKey(options)
     })
+
+/**
+ * Approve or reject import transactions
+ *
+ * Bulk approve or reject transactions for a specific import
+ */
+export const approveImportTransactionsMutation = (
+    options?: Partial<Options<ApproveImportTransactionsData>>
+): UseMutationOptions<
+    ApproveImportTransactionsResponse2,
+    ApproveImportTransactionsError,
+    Options<ApproveImportTransactionsData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        ApproveImportTransactionsResponse2,
+        ApproveImportTransactionsError,
+        Options<ApproveImportTransactionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await approveImportTransactions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}

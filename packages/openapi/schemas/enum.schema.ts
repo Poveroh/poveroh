@@ -223,6 +223,13 @@ export const TransactionStatusEnum = z
     .openapi('TransactionStatusEnum')
 
 /**
+ * Import transaction status enum representing the allowed statuses when approving/rejecting import transactions
+ */
+export const ImportTransactionStatusEnum = z
+    .enum(['IMPORT_APPROVED', 'IMPORT_REJECTED'])
+    .openapi('ImportTransactionStatusEnum')
+
+/**
  * Currency enum representing the supported currencies in the application
  */
 export const CurrencyEnum = z

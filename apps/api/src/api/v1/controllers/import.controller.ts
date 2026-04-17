@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { CreateImportRequest, ImportFilters, UpdateImportRequest } from '@poveroh/types'
+import { ApproveImportTransactionsRequest, CreateImportRequest, ImportFilters, UpdateImportRequest } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { ImportService } from '../services/import.service'
@@ -65,6 +65,26 @@ export class ImportController {
             const imports = await importService.completeImport(id)
 
             return ResponseHelper.success(res, imports)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    //PATCH /:id/transactions/approve
+    static async approveImportTransactions(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing import ID')
+            }
+
+            const payload: ApproveImportTransactionsRequest = req.body
+
+            const importService = new ImportService(req.user.id)
+            const data = await importService.approveImportTransactions(id, payload)
+
+            return ResponseHelper.success(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

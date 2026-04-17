@@ -1,9 +1,10 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { GetImportTransactionsResponse, ImportTransactionDataResponse } from '@poveroh/types'
+import { GetImportTransactionsResponse, ImportTransactionDataResponse, ImportTransactionStatusEnum } from '@poveroh/types'
 import { useError } from './use-error'
 import {
+    approveImportTransactionsMutation,
     deleteTransactionMutation,
     getImportsQueryKey,
     getImportTransactionsByIdOptions,
@@ -46,12 +47,41 @@ export const useImportTransactions = (importId: string | undefined) => {
         })
     }
 
+    const approveTransactions = useMutation({
+        ...approveImportTransactionsMutation(),
+        onError: error => {
+            queryClient.invalidateQueries({ queryKey })
+            handleError(error, 'Error updating transaction status')
+        }
+    })
+
     const approve = (transactionId: string, newStatus: ImportTransactionDataResponse['status']) => {
+        if (!importId) return
+
         setStatus(transaction => transaction.id === transactionId, newStatus)
+
+        approveTransactions.mutate({
+            path: { id: importId },
+            body: {
+                transactions: [{ transactionId, status: newStatus as ImportTransactionStatusEnum }]
+            }
+        })
     }
 
-    const approveAll = (approveAll: boolean) => {
-        setStatus(() => true, approveAll ? 'IMPORT_APPROVED' : 'IMPORT_REJECTED')
+    const approveAll = (shouldApprove: boolean) => {
+        if (!importId) return
+
+        const transactions = transactionsQuery.data?.data ?? []
+        const newStatus: ImportTransactionStatusEnum = shouldApprove ? 'IMPORT_APPROVED' : 'IMPORT_REJECTED'
+
+        setStatus(() => true, newStatus)
+
+        approveTransactions.mutate({
+            path: { id: importId },
+            body: {
+                transactions: transactions.map(t => ({ transactionId: t.id, status: newStatus }))
+            }
+        })
     }
 
     const deletePendingTransaction = useMutation({

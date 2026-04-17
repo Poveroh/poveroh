@@ -1,5 +1,5 @@
 import { z } from '../zod'
-import { FileTypeEnum, TransactionStatusEnum } from './enum.schema'
+import { FileTypeEnum, ImportTransactionStatusEnum, TransactionStatusEnum } from './enum.schema'
 import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.schema'
 import { MultipartRequestSchema } from './media.schema'
 import { SuccessResponseSchema } from './response.schema'
@@ -163,6 +163,36 @@ export const CreateUpdateImportRequestSchema = z
  * Import form schema representing the data structure for import creation and editing forms
  */
 export const ImportFormSchema = CreateImportRequestSchema.openapi('ImportForm')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Single item in the bulk approve/reject request
+ */
+export const ApproveImportTransactionItemSchema = z
+    .object({
+        transactionId: z.string().nonempty(),
+        status: ImportTransactionStatusEnum
+    })
+    .openapi('ApproveImportTransactionItem')
+
+/**
+ * Request schema for bulk approving/rejecting import transactions
+ */
+export const ApproveImportTransactionsRequestSchema = z
+    .object({
+        transactions: z.array(ApproveImportTransactionItemSchema).nonempty()
+    })
+    .openapi('ApproveImportTransactionsRequest')
+
+/**
+ * Response schema for bulk approving/rejecting import transactions
+ */
+export const ApproveImportTransactionsResponseSchema = SuccessResponseSchema(
+    ImportTransactionDataResponseSchema.array()
+).openapi('ApproveImportTransactionsResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
  * Enum representing the available template import actions that can be performed when importing templates

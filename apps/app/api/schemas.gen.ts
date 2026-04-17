@@ -971,6 +971,11 @@ export const TransactionStatusEnumSchema = {
     enum: ['APPROVED', 'REJECTED', 'IMPORT_PENDING', 'IMPORT_REJECTED', 'IMPORT_APPROVED']
 } as const
 
+export const ImportTransactionStatusEnumSchema = {
+    type: 'string',
+    enum: ['IMPORT_APPROVED', 'IMPORT_REJECTED']
+} as const
+
 export const CurrencyEnumSchema = {
     type: 'string',
     enum: [
@@ -2311,6 +2316,56 @@ export const ImportFormSchema = {
         }
     },
     required: ['financialAccountId']
+} as const
+
+export const ApproveImportTransactionItemSchema = {
+    type: 'object',
+    properties: {
+        transactionId: {
+            type: 'string',
+            minLength: 1
+        },
+        status: {
+            $ref: '#/components/schemas/ImportTransactionStatusEnum'
+        }
+    },
+    required: ['transactionId', 'status']
+} as const
+
+export const ApproveImportTransactionsRequestSchema = {
+    type: 'object',
+    properties: {
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ApproveImportTransactionItem'
+            },
+            minItems: 1
+        }
+    },
+    required: ['transactions']
+} as const
+
+export const ApproveImportTransactionsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportTransactionDataResponse'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
 } as const
 
 export const ImportTemplateActionEnumSchema = {

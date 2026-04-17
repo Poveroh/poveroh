@@ -12,7 +12,9 @@ import {
     UpdateImportRequestSchema,
     GetImportTransactionsResponseSchema,
     ImportTemplateActionParams,
-    CreateImportTemplateResponseSchema
+    CreateImportTemplateResponseSchema,
+    ApproveImportTransactionsRequestSchema,
+    ApproveImportTransactionsResponseSchema
 } from '../schemas'
 
 export const registerImportPath = (registry: OpenAPIRegistry) => {
@@ -162,6 +164,69 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
             },
             404: {
                 description: 'Import transactions not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
+        method: 'patch',
+        path: '/imports/{id}/transactions/approve',
+        tags: ['Import'],
+        operationId: 'approveImportTransactions',
+        summary: 'Approve or reject import transactions',
+        description: 'Bulk approve or reject transactions for a specific import',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import'),
+            body: {
+                description: 'List of transactions with their new statuses',
+                required: true,
+                content: {
+                    'application/json': {
+                        schema: ApproveImportTransactionsRequestSchema
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Transactions updated',
+                content: {
+                    'application/json': {
+                        schema: ApproveImportTransactionsResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
                 content: {
                     'application/json': {
                         schema: ErrorResponseSchema

@@ -1097,6 +1097,13 @@
                     "IMPORT_APPROVED"
                 ]
             },
+            "ImportTransactionStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "IMPORT_APPROVED",
+                    "IMPORT_REJECTED"
+                ]
+            },
             "CurrencyEnum": {
                 "type": "string",
                 "enum": [
@@ -2528,6 +2535,62 @@
                 },
                 "required": [
                     "financialAccountId"
+                ]
+            },
+            "ApproveImportTransactionItem": {
+                "type": "object",
+                "properties": {
+                    "transactionId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ImportTransactionStatusEnum"
+                    }
+                },
+                "required": [
+                    "transactionId",
+                    "status"
+                ]
+            },
+            "ApproveImportTransactionsRequest": {
+                "type": "object",
+                "properties": {
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApproveImportTransactionItem"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "transactions"
+                ]
+            },
+            "ApproveImportTransactionsResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportTransactionDataResponse"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
                 ]
             },
             "ImportTemplateActionEnum": {
@@ -13296,6 +13359,95 @@
                             }
                         },
                         "description": "Internal Server Error. This is a problem with the server that you cannot fix."
+                    }
+                }
+            }
+        },
+        "/imports/{id}/transactions/approve": {
+            "patch": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "approveImportTransactions",
+                "summary": "Approve or reject import transactions",
+                "description": "Bulk approve or reject transactions for a specific import",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "description": "List of transactions with their new statuses",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApproveImportTransactionsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transactions updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApproveImportTransactionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Import not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
