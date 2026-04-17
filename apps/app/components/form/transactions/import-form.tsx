@@ -35,18 +35,16 @@ export const ImportForm = forwardRef<FormRef, ImportFormProps>((props, ref) => {
                         mandatory={true}
                     />
 
-                    <div className='flex flex-col space-y-4'>
-                        <FileUploadField
-                            label={t('form.file.label')}
-                            file={files}
-                            onFileChange={setFiles}
-                            accept={
-                                '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                            }
-                            multiple={true}
-                            mandatory={true}
-                        />
-                    </div>
+                    <FileUploadField
+                        label={t('form.file.label')}
+                        file={files}
+                        onFileChange={setFiles}
+                        accept={
+                            '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+                        }
+                        multiple={true}
+                        mandatory={true}
+                    />
                 </div>
             </form>
         </Form>

@@ -20,6 +20,7 @@ import { DeleteModal } from '../modal/delete-modal'
 import { cn } from '@poveroh/ui/lib/utils'
 import { CreateImportRequest, ImportData } from '@poveroh/types'
 import { useError } from '@/hooks/use-error'
+import { TransactionsApprovalList } from '../other/transactions-approval-list'
 
 export function ImportDrawer() {
     const t = useTranslations()
@@ -129,12 +130,19 @@ export function ImportDrawer() {
                             </DrawerDescription>
                         </DrawerHeader>
                         <div className='flex-1 overflow-auto'>
-                            <ImportForm
-                                ref={formRef}
-                                inEditingMode={false}
-                                initialData={null}
-                                dataCallback={handleFormSubmit}
-                            />
+                            <div className='flex flex-col space-y-6 h-full'>
+                                <ImportForm
+                                    ref={formRef}
+                                    inEditingMode={false}
+                                    initialData={drawerManager.item ?? null}
+                                    dataCallback={handleFormSubmit}
+                                />
+                                <div className='flex-1'>
+                                    {drawerManager.item?.id && (
+                                        <TransactionsApprovalList importId={drawerManager.item.id} />
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         <DrawerFooter className='flex-shrink-0'>
                             <DrawerClose asChild>

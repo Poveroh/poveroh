@@ -40,9 +40,9 @@ export function FileUploadField({
                 {fileError && <p className='danger'>{t('messages.errors.required')}</p>}
             </FormItem>
 
-            {fileList && (
+            {fileList.length > 0 && (
                 <div className='flex flex-wrap gap-2'>
-                    <p>{toUploadMessage}:</p>
+                    <p>{toUploadMessage}</p>
                     {fileList.map((file, index) => (
                         <Badge key={index} className='flex items-center gap-1 w-fit'>
                             {file.name}
