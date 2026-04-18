@@ -159,28 +159,33 @@ npm run prisma:studio         # Verify schema visually
 ### Checklist
 
 **Architecture**
+
 - [ ] Business logic is in services, not controllers
 - [ ] Shared types use Zod schemas + OpenAPI codegen, not manual type files
 - [ ] Reusable components are in `packages/ui/`, not `apps/app/`
 - [ ] No barrel imports — direct path imports only
 
 **Type Safety**
+
 - [ ] No `as any` type casts
 - [ ] `import type` used for type-only imports
 - [ ] Prisma queries use `select` when full record is not needed
 
 **Security**
+
 - [ ] No secrets, API keys, or `.env` files committed
 - [ ] No sensitive fields exposed in API responses (passwords, tokens, keys)
 - [ ] Auth middleware applied to all protected routes
 - [ ] User data isolated by `userId` in all queries
 
 **Error Handling**
+
 - [ ] `HttpError` subclasses used (not generic `Error`)
 - [ ] Controllers wrapped in `try/catch` with `ResponseHelper.handleError()`
 - [ ] Descriptive error messages with context
 
 **Code Quality**
+
 - [ ] Comments explain WHY, not WHAT
 - [ ] Service and helper functions have comments
 - [ ] No commented-out code left behind
@@ -188,6 +193,7 @@ npm run prisma:studio         # Verify schema visually
 - [ ] Conventional commit message format
 
 **PR Hygiene**
+
 - [ ] Under 500 lines changed (excluding generated files)
 - [ ] Under 10 code files changed
 - [ ] Single responsibility — PR does one thing

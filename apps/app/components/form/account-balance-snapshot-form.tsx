@@ -59,12 +59,7 @@ export const AccountBalanceSnapshotForm = forwardRef<FormRef, AccountBalanceSnap
                         step='0.01'
                     />
 
-                    <DateField
-                        control={form.control}
-                        name='snapshotDate'
-                        label={t('form.date.label')}
-                        mandatory
-                    />
+                    <DateField control={form.control} name='snapshotDate' label={t('form.date.label')} mandatory />
                 </div>
             </form>
         </Form>
