@@ -3,4 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { StringFilter } from './StringFilter'
-export type SubcategoryFilters = Record<string, string | StringFilter>
+import type { SubcategoryParamsId } from './SubcategoryParamsId'
+export type SubcategoryFilters = {
+    id?: SubcategoryParamsId
+    title?: StringFilter
+    categoryId?: string
+}

@@ -1419,18 +1419,7 @@ export type SubcategoryParamsId = {
 export type SubcategoryFilters = {
     id?: SubcategoryParamsId
     title?: StringFilter
-    categoryId?: {
-        categoryId: string
-    }
-    [key: string]:
-        | string
-        | StringFilter
-        | SubcategoryParamsId
-        | StringFilter
-        | {
-              categoryId: string
-          }
-        | undefined
+    categoryId?: string
 }
 
 export type QuerySubcategoryFilters = {

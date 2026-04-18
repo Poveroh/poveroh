@@ -101,10 +101,9 @@ export const SubcategoryFiltersSchema = z
     .object({
         id: SubcategoryParamsId,
         title: StringFilterSchema.optional(),
-        categoryId: SubcategorySchema.pick({ categoryId: true }).optional()
+        categoryId: z.string()
     })
     .partial()
-    .catchall(z.union([z.string(), StringFilterSchema]))
     .openapi('SubcategoryFilters')
 
 /**

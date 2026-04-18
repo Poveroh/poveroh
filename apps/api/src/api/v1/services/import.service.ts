@@ -1,5 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
-import { buildWhere, buildWhere2 } from '../../../helpers/filter.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
 import { ImportHelper } from '../helpers/import.helper'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaHelper } from '../../../helpers/media.helper'
@@ -185,7 +185,7 @@ export class ImportService extends BaseService {
     async getImports(filters: ImportFilters, skip: number, take: number): Promise<ImportData[]> {
         const userId = this.getUserId()
 
-        const whereCondition = buildWhere2({ ...filters, deletedAt: null, userId }, ['title'])
+        const whereCondition = buildWhere({ ...filters, deletedAt: null, userId }, ['title'])
 
         return prisma.import.findMany({
             where: whereCondition,

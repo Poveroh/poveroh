@@ -125,14 +125,11 @@ export class SubcategoryService extends BaseService {
     async getSubcategories(filters: SubcategoryFilters, skip: number, take: number): Promise<SubcategoryData[]> {
         const userId = this.getUserId()
 
-        const where = {
-            ...buildWhere(filters),
-            category: { userId },
-            deletedAt: null
-        }
+        const whereCondition = buildWhere({ ...filters, deletedAt: null, userId }, ['title'])
 
         return (await prisma.subcategory.findMany({
-            where,
+            where: whereCondition,
+            omit: { deletedAt: true },
             orderBy: { createdAt: 'desc' },
             skip,
             take

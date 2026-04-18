@@ -1,5 +1,5 @@
 import prisma from '@poveroh/prisma'
-import { buildWhere, buildWhere2 } from '../../../helpers/filter.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
 import {
     CreateFinancialAccountRequest,
     FinancialAccountData,
@@ -124,7 +124,7 @@ export class FinancialAccountService extends BaseService {
     ): Promise<FinancialAccountData[]> {
         const userId = this.getUserId()
 
-        const whereCondition = buildWhere2({ ...filters, deletedAt: null, userId }, ['title'])
+        const whereCondition = buildWhere({ ...filters, deletedAt: null, userId }, ['title'])
 
         return (await prisma.financialAccount.findMany({
             where: whereCondition,

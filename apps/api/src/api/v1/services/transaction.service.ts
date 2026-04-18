@@ -1,6 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { buildWhere2 } from '../../../helpers/filter.helper'
+import { buildWhere } from '../../../helpers/filter.helper'
 import {
     Amount,
     CreateTransactionRequest,
@@ -459,7 +459,7 @@ export class TransactionService extends BaseService {
             }
         }
 
-        const where = buildWhere2(wherePayload, [])
+        const where = buildWhere(wherePayload, [])
 
         const mustSortByAmount = sortBy === 'amount'
         const stableOrder: Prisma.TransactionOrderByWithRelationInput[] = [{ date: 'desc' }, { id: 'desc' }]

@@ -2941,25 +2941,8 @@ export const SubcategoryFiltersSchema = {
             $ref: '#/components/schemas/StringFilter'
         },
         categoryId: {
-            type: 'object',
-            properties: {
-                categoryId: {
-                    type: 'string',
-                    format: 'uuid'
-                }
-            },
-            required: ['categoryId']
+            type: 'string'
         }
-    },
-    additionalProperties: {
-        anyOf: [
-            {
-                type: 'string'
-            },
-            {
-                $ref: '#/components/schemas/StringFilter'
-            }
-        ]
     }
 } as const
 

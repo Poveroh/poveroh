@@ -1,7 +1,7 @@
 import prisma from '@poveroh/prisma'
-import { buildWhere } from '../../../helpers/filter.helper'
 import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
 import { BaseService } from './base.service'
+import { buildWhere } from '@/src/helpers/filter.helper'
 
 /**
  * Service class for generating reports for the authenticated user
@@ -24,21 +24,14 @@ export class ReportService extends BaseService {
     async getNetWorthTrend(filters: Partial<NetWorthEvolutionFilters>): Promise<NetWorthEvolutionReport> {
         const userId = this.getUserId()
 
+        const { date, ...rest } = filters
         const whereFilters = {
-            ...filters,
-            ...(filters?.date ? { snapshotDate: filters.date } : {})
-        }
-
-        if (filters?.date) {
-            delete (whereFilters as Partial<NetWorthEvolutionFilters>).date
-        }
-
-        const where = buildWhere(whereFilters)
-
-        const whereCondition = {
-            ...where,
+            ...rest,
+            ...(date ? { snapshotDate: date } : {}),
             userId
         }
+
+        const whereCondition = buildWhere(whereFilters, [])
 
         const data = await prisma.snapshot.findMany({
             where: whereCondition,
