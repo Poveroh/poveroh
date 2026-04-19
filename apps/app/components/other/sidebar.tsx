@@ -12,13 +12,15 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarTrigger
+    SidebarTrigger,
+    useSidebar
 } from '@poveroh/ui/components/sidebar'
 import { Logo } from '@poveroh/ui/components/logo'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+import { PanelLeft } from 'lucide-react'
 import DynamicIcon from '../icon/dynamic-icon'
 
 type SidebarProps = {
@@ -29,6 +31,7 @@ type SidebarProps = {
 export function Sidebar({ content, footer }: SidebarProps) {
     const t = useTranslations()
     const pathname = usePathname()
+    const sidebar = useSidebar()
 
     return (
         <ShadcnSidebar
@@ -38,10 +41,24 @@ export function Sidebar({ content, footer }: SidebarProps) {
         >
             <SidebarHeader>
                 <div className='flex items-center justify-between gap-2 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0'>
-                    <Link href='/dashboard' className='flex items-center group-data-[collapsible=icon]:hidden'>
-                        <Logo color='white' mode='horizontal' width={120} height={40} />
-                    </Link>
-                    <SidebarTrigger />
+                    {sidebar.open ? (
+                        <Link href='/dashboard' className='flex items-center'>
+                            <Logo color='white' mode='horizontal' width={120} height={40} />
+                        </Link>
+                    ) : (
+                        <button
+                            type='button'
+                            onClick={sidebar.toggleSidebar}
+                            aria-label='Toggle Sidebar'
+                            className='group/logo-trigger relative flex h-10 w-10 items-center justify-center'
+                        >
+                            <span className='flex items-center justify-center transition-opacity group-hover/logo-trigger:opacity-0'>
+                                <Logo color='white' mode='symbol' width={25} height={40} />
+                            </span>
+                            <PanelLeft className='absolute size-5 opacity-0 transition-opacity group-hover/logo-trigger:opacity-100' />
+                        </button>
+                    )}
+                    {sidebar.open && <SidebarTrigger />}
                 </div>
             </SidebarHeader>
             <SidebarContent className='gap-2 px-2 py-4'>

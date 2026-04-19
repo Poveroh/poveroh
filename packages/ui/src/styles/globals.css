@@ -59,6 +59,7 @@
     --chart-4-color: #8e40c8;
     --chart-5-color: #e63a79;
 
+    --sidebar-width-icon: 5rem;
     --sidebar-background: var(--box-color);
     --sidebar-foreground: var(--white-color);
     --sidebar-primary: var(--primary-color);

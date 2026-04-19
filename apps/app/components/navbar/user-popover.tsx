@@ -2,6 +2,7 @@
 
 import { Popover, PopoverContent, PopoverTrigger } from '@poveroh/ui/components/popover'
 import { Button } from '@poveroh/ui/components/button'
+import { useSidebar } from '@poveroh/ui/components/sidebar'
 import { useTranslations } from 'next-intl'
 import { LogOut, Settings } from 'lucide-react'
 import { ReactNode } from 'react'
@@ -53,15 +54,25 @@ export function UserPopoverContent({ user, link }: UserPopoverContentProps) {
 
 export function UserPopover() {
     const { user } = useUser()
+    const { state, isMobile } = useSidebar()
+    const isCollapsed = state === 'collapsed' && !isMobile
+
+    const initials = `${user.name?.[0] ?? ''}${user.surname?.[0] ?? ''}`.toUpperCase()
 
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <Button variant='secondary'>
-                    {user.name} {user.surname}
+                <Button variant='secondary' className={'w-full'} aria-label={`${user.name} ${user.surname}`}>
+                    {isCollapsed ? (
+                        <span className='text-xs font-semibold'>{initials}</span>
+                    ) : (
+                        <span className='truncate'>
+                            {user.name} {user.surname}
+                        </span>
+                    )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align='end'>
+            <PopoverContent align='end' side={isCollapsed ? 'right' : 'top'}>
                 <UserPopoverContent user={user} />
             </PopoverContent>
         </Popover>

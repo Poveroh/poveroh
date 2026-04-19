@@ -31,7 +31,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <Sidebar
                     content={content}
                     footer={
-                        <div className='flex flex-col gap-2 p-2'>
+                        <div className='flex flex-col gap-2 p-2 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:p-0'>
                             <UserPopover />
                         </div>
                     }
