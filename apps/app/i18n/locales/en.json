@@ -321,7 +321,10 @@
     "dashboard": {
         "title": "Dashboard",
         "welcome": "Welcome back, {a}!",
-        "subtitle": "Here's a summary of your financial activity."
+        "morning": "Good morning, {a}!",
+        "afternoon": "Good afternoon, {a}!",
+        "evening": "Good evening, {a}!",
+        "subtitle": "Here's what's happening with your finances today."
     },
     "widget": {
         "trend": "Trend",

@@ -28,7 +28,7 @@ type HeaderProps = {
     title: string
     titleSize?: 'default' | 'compact'
     subtitle?: string
-    breadcrumbs: IBreadcrumb[]
+    breadcrumbs?: IBreadcrumb[]
     fetchAction?: HeaderAction
     uploadAction?: HeaderAction
     downloadAction?: HeaderAction
@@ -49,24 +49,28 @@ export function Header(props: HeaderProps) {
         <>
             <header className={cn('flex flex-row items-end', showHeaderActions ? 'justify-between' : 'justify-start')}>
                 <div className='flex flex-col space-y-3'>
-                    {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}
-                    {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            {breadcrumbs?.map((item, index) => (
-                                <React.Fragment key={index}>
-                                    <BreadcrumbItem>
-                                        {item.href ? (
-                                            <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
-                                        ) : (
-                                            <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                                        )}
-                                    </BreadcrumbItem>
-                                    {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-                                </React.Fragment>
-                            ))}
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                    <div className='flex flex-col space-y-1'>
+                        {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}
+                        {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
+                    </div>
+                    {breadcrumbs && (
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                {breadcrumbs.map((item, index) => (
+                                    <React.Fragment key={index}>
+                                        <BreadcrumbItem>
+                                            {item.href ? (
+                                                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                                            ) : (
+                                                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                            )}
+                                        </BreadcrumbItem>
+                                        {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                                    </React.Fragment>
+                                ))}
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    )}
                 </div>
                 {showHeaderActions ? (
                     <div className='flex flex-row items-center space-x-4'>
