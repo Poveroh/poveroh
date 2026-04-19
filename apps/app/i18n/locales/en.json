@@ -315,6 +315,9 @@
             }
         }
     },
+    "navigation": {
+        "title": "Navigation"
+    },
     "dashboard": {
         "title": "Dashboard",
         "welcome": "Welcome back, {a}!",

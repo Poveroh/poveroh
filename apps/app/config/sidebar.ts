@@ -1,4 +1,29 @@
-export const SETTINGS_SIDEBAR = [
+import { SidebarSection } from '@poveroh/types'
+
+export const MAIN_SIDEBAR: SidebarSection[] = [
+    {
+        title: 'navigation.title',
+        items: [
+            {
+                title: 'dashboard.title',
+                href: '/dashboard',
+                icon: 'layout-dashboard'
+            },
+            {
+                title: 'transactions.title',
+                href: '/transactions',
+                icon: 'credit-card'
+            },
+            {
+                title: 'subscriptions.title',
+                href: '/subscriptions',
+                icon: 'repeat'
+            }
+        ]
+    }
+]
+
+export const SETTINGS_SIDEBAR: SidebarSection[] = [
     {
         title: 'settings.account.title',
         items: [

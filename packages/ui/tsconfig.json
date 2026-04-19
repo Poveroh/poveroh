@@ -3,7 +3,9 @@
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist",
-        "baseUrl": "."
+        "paths": {
+            "@poveroh/ui/*": ["./src/*"]
+        }
     },
     "include": ["./src"],
     "exclude": ["node_modules", "dist"]
