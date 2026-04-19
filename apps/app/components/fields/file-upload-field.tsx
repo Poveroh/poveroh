@@ -4,7 +4,6 @@ import { Badge } from '@poveroh/ui/components/badge'
 import { X } from 'lucide-react'
 import { FileUploadFieldProps } from '@/types'
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
 
 export function FileUploadField({
     label,
@@ -13,16 +12,13 @@ export function FileUploadField({
     toUploadMessage = 'To upload:',
     accept,
     multiple = false,
-    mandatory = false
+    mandatory = false,
+    error
 }: FileUploadFieldProps) {
-    const t = useTranslations()
-
     const [fileList, setFileList] = useState<File[]>(file || [])
-    const [fileError, setFileError] = useState(false)
 
     const handleFileChange = (files: File[]) => {
         setFileList(files)
-        setFileError(files.length === 0)
         onFileChange?.(files)
     }
 
@@ -37,7 +33,7 @@ export function FileUploadField({
                         multiple={multiple}
                     />
                 </FormControl>
-                {fileError && <p className='danger'>{t('messages.errors.required')}</p>}
+                {error && <p className='danger'>{error}</p>}
             </FormItem>
 
             {fileList.length > 0 && (

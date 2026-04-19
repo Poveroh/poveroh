@@ -69,6 +69,7 @@ import {
     requestPasswordReset,
     resetPassword,
     resetPasswordCallback,
+    rollbackImport,
     sendVerificationEmail,
     signInEmail,
     signOut,
@@ -277,6 +278,9 @@ import type {
     ResetPasswordData,
     ResetPasswordError,
     ResetPasswordResponse,
+    RollbackImportData,
+    RollbackImportError,
+    RollbackImportResponse,
     SendVerificationEmailData,
     SendVerificationEmailError,
     SendVerificationEmailResponse,
@@ -2306,6 +2310,31 @@ export const createSnapshotAccountBalanceMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await createSnapshotAccountBalance({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Rollback import
+ *
+ * Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes
+ */
+export const rollbackImportMutation = (
+    options?: Partial<Options<RollbackImportData>>
+): UseMutationOptions<RollbackImportResponse, RollbackImportError, Options<RollbackImportData>> => {
+    const mutationOptions: UseMutationOptions<
+        RollbackImportResponse,
+        RollbackImportError,
+        Options<RollbackImportData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await rollbackImport({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

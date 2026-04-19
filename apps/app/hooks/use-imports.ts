@@ -10,7 +10,8 @@ import {
     deleteImportMutation,
     deleteImportsMutation,
     getImportsOptions,
-    getImportsQueryKey
+    getImportsQueryKey,
+    rollbackImportMutation
 } from '@/api/@tanstack/react-query.gen'
 import { useFilters } from './use-filters'
 
@@ -18,9 +19,12 @@ export const useImport = () => {
     const queryClient = useQueryClient()
     const { handleError } = useError()
 
-    const filters = useFilters<ImportFilters>(text => ({
-        title: { contains: text }
-    }))
+    const filters = useFilters<ImportFilters>(
+        text => ({
+            title: { contains: text }
+        }),
+        { includeTransactions: false }
+    )
 
     const [importQuery] = useQueries({
         queries: [
@@ -73,6 +77,16 @@ export const useImport = () => {
         }
     })
 
+    const rollbackImport = useMutation({
+        ...rollbackImportMutation(),
+        onSuccess: () => {
+            invalidateImports()
+        },
+        onError: error => {
+            handleError(error, 'Error rolling back import')
+        }
+    })
+
     const importTemplate = useMutation({
         ...createImportTemplateMutation(),
         onError: error => {
@@ -88,6 +102,7 @@ export const useImport = () => {
         deleteImport,
         deleteAllMutation,
         completeImport,
+        rollbackImport,
         importTemplate,
         invalidateImports
     }

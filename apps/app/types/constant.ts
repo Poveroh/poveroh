@@ -3,5 +3,6 @@ export const MODAL_IDS = {
     CATEGORY: 'category-dialog',
     SUBCATEGORY: 'subcategory-dialog',
     SUBSCRIPTION: 'subscription-dialog',
-    TRANSACTION: 'transaction-dialog'
+    TRANSACTION: 'transaction-dialog',
+    IMPORT_ROLLBACK_CONFIRM: 'import-dialog'
 }

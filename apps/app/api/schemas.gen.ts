@@ -1727,7 +1727,7 @@ export const ImportSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         status: {
             $ref: '#/components/schemas/TransactionStatusEnum'
@@ -1960,7 +1960,7 @@ export const ImportDataSchema = {
         },
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         },
         status: {
             $ref: '#/components/schemas/TransactionStatusEnum'
@@ -2152,7 +2152,7 @@ export const CreateImportRequestSchema = {
     properties: {
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         }
     },
     required: ['financialAccountId']
@@ -2312,7 +2312,7 @@ export const ImportFormSchema = {
     properties: {
         financialAccountId: {
             type: 'string',
-            format: 'uuid'
+            minLength: 1
         }
     },
     required: ['financialAccountId']

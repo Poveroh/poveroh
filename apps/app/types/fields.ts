@@ -178,6 +178,7 @@ export type FileUploadFieldProps = {
     accept?: string
     multiple?: boolean
     mandatory?: boolean
+    error?: string
     onFileChange: (files: File[]) => void
 }
 

@@ -5993,3 +5993,42 @@ export type CreateSnapshotAccountBalanceResponses = {
 
 export type CreateSnapshotAccountBalanceResponse2 =
     CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
+
+export type RollbackImportData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/rollback/{id}'
+}
+
+export type RollbackImportErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type RollbackImportError = RollbackImportErrors[keyof RollbackImportErrors]
+
+export type RollbackImportResponses = {
+    /**
+     * Import rolled back
+     */
+    200: UpdateImportResponse
+}
+
+export type RollbackImportResponse = RollbackImportResponses[keyof RollbackImportResponses]

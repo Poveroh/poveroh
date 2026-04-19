@@ -193,6 +193,9 @@ import type {
     ResetPasswordData,
     ResetPasswordErrors,
     ResetPasswordResponses,
+    RollbackImportData,
+    RollbackImportErrors,
+    RollbackImportResponses,
     SendVerificationEmailData,
     SendVerificationEmailErrors,
     SendVerificationEmailResponses,
@@ -1436,4 +1439,18 @@ export const createSnapshotAccountBalance = <ThrowOnError extends boolean = fals
             'Content-Type': 'application/json',
             ...options.headers
         }
+    })
+
+/**
+ * Rollback import
+ *
+ * Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes
+ */
+export const rollbackImport = <ThrowOnError extends boolean = false>(
+    options: Options<RollbackImportData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<RollbackImportResponses, RollbackImportErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports/rollback/{id}',
+        ...options
     })

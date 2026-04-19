@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 
 import logger from '@/lib/logger'
 import { ImportForm } from '@poveroh/types'
@@ -12,8 +13,10 @@ import { useError } from '../use-error'
 
 export function useImportForm(props: ImportFormProps) {
     const { handleError } = useError()
+    const t = useTranslations()
 
     const [files, setFiles] = useState<File[]>([])
+    const [fileError, setFileError] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState(false)
 
     const form = useForm<ImportForm>({
@@ -29,11 +32,22 @@ export function useImportForm(props: ImportFormProps) {
         }
     }, [form.formState.errors])
 
+    // Clear the inline file error as soon as the user picks at least one file
+    const handleSetFiles = (next: File[]) => {
+        setFiles(next)
+        if (next.length > 0) setFileError(undefined)
+    }
+
     const handleSubmit = async (
         values: ImportForm,
         dataCallback: (formData: ImportForm, files: File[]) => Promise<void>
     ) => {
         try {
+            if (files.length === 0) {
+                setFileError(t('messages.errors.required'))
+                return
+            }
+
             setLoading(true)
 
             await dataCallback(values, files)
@@ -47,15 +61,19 @@ export function useImportForm(props: ImportFormProps) {
     const onSubmit = form.handleSubmit(
         values => handleSubmit(values, props.dataCallback),
         errors => {
-            logger.error('Form validation errors on submit:', errors)
+            if (files.length === 0) setFileError(t('messages.errors.required'))
+            if (Object.keys(errors).length > 0) {
+                logger.error('Form validation errors on submit:', errors)
+            }
         }
     )
 
     return {
         form,
         files,
+        fileError,
         loading,
-        setFiles,
+        setFiles: handleSetFiles,
         onSubmit
     }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import {
     ApproveImportTransactionsRequest,
     CreateImportRequest,
+    FilterOptions,
     ImportFilters,
     UpdateImportRequest
 } from '@poveroh/types'
@@ -75,6 +76,30 @@ export class ImportController {
         }
     }
 
+    //PATCH /rollback/:id
+    static async rollbackImport(req: Request, res: Response) {
+        try {
+            const id = getParamString(req.params, 'id')
+
+            if (!id) {
+                throw new BadRequestError('Missing import ID')
+            }
+
+            const importService = new ImportService(req.user.id)
+
+            const exist = await importService.doesImportExist(id)
+            if (!exist) {
+                throw new NotFoundError('Import not found')
+            }
+
+            const data = await importService.rollbackImport(id)
+
+            return ResponseHelper.success(res, data)
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
     //PATCH /:id/transactions/approve
     static async approveImportTransactions(req: Request, res: Response) {
         try {
@@ -128,9 +153,10 @@ export class ImportController {
     //GET /
     static async readImports(req: Request, res: Response) {
         try {
-            const filters = req.query as unknown as ImportFilters
-            const skip = Number(req.query.skip) || 0
-            const take = Number(req.query.take) || 20
+            const filters = (req.query.filter || {}) as ImportFilters
+            const options = (req.query.options || {}) as FilterOptions
+            const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
+            const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 
             const importService = new ImportService(req.user.id)
             const data = await importService.getImports(filters, skip, take)

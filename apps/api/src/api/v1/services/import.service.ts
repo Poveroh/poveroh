@@ -18,6 +18,7 @@ import {
 } from '@poveroh/types'
 import { BaseService } from './base.service'
 import { CategoryService } from './category.service'
+import { toBoolean } from '@poveroh/utils'
 
 /**
  * Service class for managing imports, including creating, updating, deleting, and retrieving imports for the authenticated user
@@ -77,6 +78,55 @@ export class ImportService extends BaseService {
     }
 
     /**
+     * Rolls back a completed import: moves the import and its approved transactions back to pending,
+     * and reverts the balance changes that were applied when the import was completed.
+     */
+    async rollbackImport(id: string): Promise<ImportData> {
+        const userId = this.getUserId()
+
+        return (await prisma.$transaction(async tx => {
+            const existing = await tx.import.findFirst({ where: { id, userId } })
+
+            if (!existing) {
+                throw new Error('Import not found')
+            }
+
+            if (existing.status !== 'APPROVED') {
+                throw new Error('Only completed imports can be rolled back')
+            }
+
+            // Fetch the transactions that were approved when the import was completed,
+            // so we can revert the corresponding account balances.
+            const approvedTransactions = await tx.transaction.findMany({
+                where: { importId: id, userId, status: 'APPROVED' },
+                include: { amounts: true }
+            })
+
+            // Revert balances by applying the opposite action (INCOME -> EXPENSES and vice versa).
+            const reversalAmounts = approvedTransactions.flatMap(t =>
+                t.amounts.map(a => ({
+                    ...a,
+                    action: a.action === 'INCOME' ? 'EXPENSES' : 'INCOME'
+                }))
+            ) as unknown as Amount[]
+
+            if (reversalAmounts.length > 0) {
+                await BalanceHelper.updateAccountBalances(reversalAmounts, undefined, tx)
+            }
+
+            await tx.transaction.updateMany({
+                where: { importId: id, userId, status: 'APPROVED' },
+                data: { status: 'IMPORT_PENDING' }
+            })
+
+            return tx.import.update({
+                where: { id, userId },
+                data: { status: 'IMPORT_PENDING' }
+            })
+        })) as unknown as ImportData
+    }
+
+    /**
      * Bulk approve or reject import transactions
      */
     async approveImportTransactions(
@@ -88,13 +138,13 @@ export class ImportService extends BaseService {
 
         await prisma.$transaction(async tx => {
             for (const item of payload.transactions) {
-                if (!allowedStatuses.includes(item.status as TransactionStatusEnum)) {
+                if (!allowedStatuses.includes(item.status)) {
                     throw new Error(`Invalid status: ${item.status}`)
                 }
 
                 await tx.transaction.update({
                     where: { id: item.transactionId, importId, userId },
-                    data: { status: item.status as TransactionStatusEnum }
+                    data: { status: item.status }
                 })
             }
         })
@@ -185,11 +235,18 @@ export class ImportService extends BaseService {
     async getImports(filters: ImportFilters, skip: number, take: number): Promise<ImportData[]> {
         const userId = this.getUserId()
 
-        const whereCondition = buildWhere({ ...filters, deletedAt: null, userId }, ['title'])
+        const { includeTransactions, ...filterRest } = filters
+
+        const shouldIncludeTransactions = toBoolean(String(includeTransactions))
+
+        const whereCondition = buildWhere({ ...filterRest, deletedAt: null, userId }, ['title'])
 
         return prisma.import.findMany({
             where: whereCondition,
-            include: { files: true, transactions: { include: { amounts: true, media: true } } },
+            include: {
+                files: true,
+                transactions: shouldIncludeTransactions ? { include: { amounts: true, media: true } } : true
+            },
             orderBy: { createdAt: 'desc' },
             skip,
             take
@@ -262,7 +319,7 @@ export class ImportService extends BaseService {
                     id: importId,
                     userId,
                     financialAccountId: payload.financialAccountId,
-                    title: `Import at ${now.toISOString()}`,
+                    title: `Import at ${now.toLocaleString()}`,
                     status: 'IMPORT_PENDING' as TransactionStatusEnum,
                     createdAt: now
                 }
@@ -301,5 +358,13 @@ export class ImportService extends BaseService {
             default:
                 return null
         }
+    }
+
+    async doesImportExist(id: string): Promise<boolean> {
+        const userId = this.getUserId()
+        const count = await prisma.import.count({
+            where: { id, userId, deletedAt: null }
+        })
+        return count > 0
     }
 }

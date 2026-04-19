@@ -12,6 +12,7 @@ router.get('/:id', AuthMiddleware.isAuthenticated, ImportController.readImportBy
 router.get('/:id/transactions', AuthMiddleware.isAuthenticated, ImportController.readImportTransactions)
 router.patch('/:id/transactions/approve', AuthMiddleware.isAuthenticated, ImportController.approveImportTransactions)
 router.patch('/complete/:id', AuthMiddleware.isAuthenticated, ImportController.completeImport)
+router.patch('/rollback/:id', AuthMiddleware.isAuthenticated, ImportController.rollbackImport)
 router.put('/:id', AuthMiddleware.isAuthenticated, ImportController.updateImport)
 router.delete('/:id', AuthMiddleware.isAuthenticated, ImportController.deleteImport)
 router.delete('/', AuthMiddleware.isAuthenticated, ImportController.deleteAllImports)

@@ -13,14 +13,29 @@ import { useDrawer } from '@/hooks/use-drawer'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
 import { ImportData } from '@poveroh/types'
+import { useModal } from '@/hooks/use-modal'
+import { ConfirmModal } from '@/components/modal/confirm-modal'
+import { MODAL_IDS } from '@/types/constant'
 
 export default function ImportsView() {
     const t = useTranslations()
 
-    const { importData, importQuery, createImport, deleteAllMutation } = useImport()
+    const { importData, importQuery, createImport, deleteAllMutation, rollbackImport } = useImport()
 
     const { openDrawer } = useDrawer<ImportData>()
     const { openModal: openDeleteModal } = useDeleteModal<ImportData>()
+    const rollbackManager = useModal<ImportData>(MODAL_IDS.IMPORT_ROLLBACK_CONFIRM)
+
+    const handleRollbackImport = async () => {
+        if (!rollbackManager.item) return
+
+        rollbackManager.setLoading(true)
+
+        await rollbackImport.mutateAsync({ path: { id: rollbackManager.item.id } })
+
+        rollbackManager.setLoading(false)
+        rollbackManager.closeModal()
+    }
 
     return (
         <>
@@ -55,6 +70,7 @@ export default function ImportsView() {
                                 imports={imports}
                                 openEdit={(x: ImportData) => openDrawer('edit', x)}
                                 openDelete={x => openDeleteModal(x)}
+                                onRollback={x => rollbackManager.openModal('confirm', x)}
                             />
                         ))}
                     </Box>
@@ -72,6 +88,16 @@ export default function ImportsView() {
                     </div>
                 )}
             </PageWrapper>
+
+            <ConfirmModal
+                title={t('imports.rollback.dialog.title')}
+                description={t('imports.rollback.dialog.description')}
+                loading={rollbackManager.loading}
+                open={rollbackManager.isOpen}
+                closeDialog={rollbackManager.closeModal}
+                onConfirm={handleRollbackImport}
+                buttonConfirmLabel={t('buttons.rollback')}
+            />
 
             <ImportDrawer></ImportDrawer>
         </>

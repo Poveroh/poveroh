@@ -21,6 +21,8 @@ import { cn } from '@poveroh/ui/lib/utils'
 import { CreateImportRequest, ImportData } from '@poveroh/types'
 import { useError } from '@/hooks/use-error'
 import { TransactionsApprovalList } from '../other/transactions-approval-list'
+import { ConfirmModal } from '../modal/confirm-modal'
+import { useModal } from '@/hooks/use-modal'
 
 export function ImportDrawer() {
     const t = useTranslations()
@@ -30,6 +32,7 @@ export function ImportDrawer() {
 
     const drawerManager = useDrawer<ImportData>()
     const deleteModalManager = useDeleteModal<ImportData>()
+    const confirmModalManager = useModal()
 
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -79,6 +82,7 @@ export function ImportDrawer() {
             )
 
             drawerManager.closeDrawer()
+            confirmModalManager.closeModal()
         } finally {
             drawerManager.setLoading(false)
         }
@@ -106,7 +110,7 @@ export function ImportDrawer() {
         if (pendingTransactions.length === 0) {
             formRef.current?.submit()
         } else {
-            handleCompleteImport()
+            confirmModalManager.openModal('confirm')
         }
     }
 
@@ -151,12 +155,22 @@ export function ImportDrawer() {
                                 </Button>
                             </DrawerClose>
                             <Button className='w-full' onClick={handleSubmit}>
-                                {t('buttons.submit')}
+                                {drawerManager.item ? t('buttons.complete') : t('buttons.analyzeAndParse')}
                             </Button>
                         </DrawerFooter>
                     </div>
                 </DrawerContent>
             </Drawer>
+
+            <ConfirmModal
+                title={t('imports.confirmationDialog.title')}
+                description={t('imports.confirmationDialog.description')}
+                loading={confirmModalManager.loading}
+                open={confirmModalManager.isOpen}
+                closeDialog={confirmModalManager.closeModal}
+                onConfirm={handleCompleteImport}
+                buttonConfirmLabel={t('buttons.complete')}
+            />
 
             <DeleteModal
                 title={deleteModalManager.item ? deleteModalManager.item.title : ''}

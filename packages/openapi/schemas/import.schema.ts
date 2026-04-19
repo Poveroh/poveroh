@@ -32,7 +32,7 @@ export const ImportSchema = z
         id: z.string().uuid(),
         userId: z.string().uuid(),
         title: z.string(),
-        financialAccountId: z.string().uuid(),
+        financialAccountId: z.string().nonempty(),
         status: TransactionStatusEnum,
         transactions: z.array(TransactionSchema).optional(),
         files: z.array(ImportFileSchema).optional(),

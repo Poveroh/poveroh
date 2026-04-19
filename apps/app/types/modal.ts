@@ -68,6 +68,6 @@ export type ModalState<T = unknown> = {
     showSaveButton: boolean
 }
 
-export type ModalMode = 'edit' | 'create'
+export type ModalMode = 'edit' | 'create' | 'confirm' | 'view'
 
 export type ActiveTab = 'icon' | 'logo'

@@ -8,7 +8,7 @@ import { FormRef, ImportFormProps } from '@/types/form'
 
 export const ImportForm = forwardRef<FormRef, ImportFormProps>((props, ref) => {
     const t = useTranslations()
-    const { form, files, onSubmit, setFiles } = useImportForm(props)
+    const { form, files, fileError, onSubmit, setFiles } = useImportForm(props)
 
     useImperativeHandle(ref, () => ({
         submit: onSubmit,
@@ -44,6 +44,7 @@ export const ImportForm = forwardRef<FormRef, ImportFormProps>((props, ref) => {
                         }
                         multiple={true}
                         mandatory={true}
+                        error={fileError}
                     />
                 </div>
             </form>

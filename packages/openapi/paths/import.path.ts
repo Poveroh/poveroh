@@ -403,6 +403,61 @@ export const registerImportPath = (registry: OpenAPIRegistry) => {
         }
     })
     registry.registerPath({
+        method: 'patch',
+        path: '/imports/rollback/{id}',
+        tags: ['Import'],
+        operationId: 'rollbackImport',
+        summary: 'Rollback import',
+        description:
+            'Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: ImportParamsId.describe('ID of the import to rollback')
+        },
+        responses: {
+            200: {
+                description: 'Import rolled back',
+                content: {
+                    'application/json': {
+                        schema: UpdateImportResponseSchema
+                    }
+                }
+            },
+            400: {
+                description: 'Invalid request',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            401: {
+                description: 'Unauthorized',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            404: {
+                description: 'Import not found',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            },
+            500: {
+                description: 'Internal server error',
+                content: {
+                    'application/json': {
+                        schema: ErrorResponseSchema
+                    }
+                }
+            }
+        }
+    })
+    registry.registerPath({
         method: 'put',
         path: '/imports/{id}',
         tags: ['Import'],

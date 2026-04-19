@@ -1912,7 +1912,7 @@
                     },
                     "financialAccountId": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 1
                     },
                     "status": {
                         "$ref": "#/components/schemas/TransactionStatusEnum"
@@ -2157,7 +2157,7 @@
                     },
                     "financialAccountId": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 1
                     },
                     "status": {
                         "$ref": "#/components/schemas/TransactionStatusEnum"
@@ -2363,7 +2363,7 @@
                 "properties": {
                     "financialAccountId": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 1
                     }
                 },
                 "required": [
@@ -2530,7 +2530,7 @@
                 "properties": {
                     "financialAccountId": {
                         "type": "string",
-                        "format": "uuid"
+                        "minLength": 1
                     }
                 },
                 "required": [
@@ -13412,6 +13412,84 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/imports/rollback/{id}": {
+            "patch": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "rollbackImport",
+                "summary": "Rollback import",
+                "description": "Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Import rolled back",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateImportResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Import not found",
                         "content": {
                             "application/json": {
                                 "schema": {

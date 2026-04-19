@@ -3,12 +3,15 @@
 import { useState } from 'react'
 import { useDebounce } from './use-debounce'
 
-export function useFilters<T extends object>(searchTransform?: (text: string) => Partial<T>) {
-    const [filters, setFilters] = useState<T>({} as T)
+export function useFilters<T extends object>(
+    searchTransform?: (text: string) => Partial<T>,
+    defaultFilters?: Partial<T>
+) {
+    const [filters, setFilters] = useState<T>((defaultFilters ?? {}) as T)
     const [searchText, setSearchText] = useState('')
     const debouncedSearch = useDebounce(searchText)
 
-    const updateFilters = (newFilters: T) => setFilters(newFilters)
+    const updateFilters = (newFilters: T) => setFilters({ ...(defaultFilters ?? {}), ...newFilters } as T)
 
     const removeFilter = (key: keyof T) => {
         setFilters(prev => {
