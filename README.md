@@ -33,7 +33,7 @@
 ## :star2: About Poveroh
 
 <div align="center"> 
-  <img src="./assets/dashboard_screenshot.jpg" alt="screenshot" />
+  <img src="./assets/dashboard_screenshot.png" alt="screenshot" />
 </div>
 
 Poveroh is an open-source, web-based platform for tracking personal finances.
