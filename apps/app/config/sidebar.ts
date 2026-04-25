@@ -2,7 +2,7 @@ import { SidebarSection } from '@poveroh/types'
 
 export const MAIN_SIDEBAR: SidebarSection[] = [
     {
-        title: 'navigation.title',
+        title: 'dashboard.title',
         items: [
             {
                 title: 'dashboard.title',
@@ -15,6 +15,26 @@ export const MAIN_SIDEBAR: SidebarSection[] = [
                 icon: 'credit-card'
             },
             {
+                title: 'investments.title',
+                href: '/investments',
+                icon: 'chart-line'
+            }
+        ]
+    },
+    {
+        title: 'settings.finance.title',
+        items: [
+            {
+                title: 'accounts.title',
+                href: '/accounts',
+                icon: 'landmark'
+            },
+            {
+                title: 'categories.title',
+                href: '/categories',
+                icon: 'shapes'
+            },
+            {
                 title: 'subscriptions.title',
                 href: '/subscriptions',
                 icon: 'repeat'
@@ -24,6 +44,15 @@ export const MAIN_SIDEBAR: SidebarSection[] = [
 ]
 
 export const SETTINGS_SIDEBAR: SidebarSection[] = [
+    {
+        items: [
+            {
+                title: 'buttons.back',
+                href: '/dashboard',
+                icon: 'arrow-left'
+            }
+        ]
+    },
     {
         title: 'settings.account.title',
         items: [
@@ -40,7 +69,7 @@ export const SETTINGS_SIDEBAR: SidebarSection[] = [
         ]
     },
     {
-        title: 'settings.manage.title',
+        title: 'settings.finance.title',
         items: [
             {
                 title: 'settings.manage.account.title',

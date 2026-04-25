@@ -92,6 +92,7 @@
         "loadMore": "Load more",
         "refresh": "Refresh",
         "rollback": "Rollback",
+        "back": "Back",
         "analyzeAndParse": "Analyze and parse",
         "addFromTemplates": "Add from templates",
         "add": {
@@ -374,6 +375,9 @@
                 "title": "Global preferences",
                 "subtitle": "Set appearance, time zones, and currency."
             }
+        },
+        "finance": {
+            "title": "Finance"
         }
     },
     "transactions": {
