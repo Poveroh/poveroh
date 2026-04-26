@@ -167,7 +167,6 @@ model Asset {
     user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
     autoDepreciations AutoDepreciation[]
 
-    @@index([userId])
     @@index([userId, type])
     @@index([userId, deletedAt])
 }
@@ -295,7 +294,6 @@ model AssetTransaction {
     asset            Asset             @relation(fields: [assetId], references: [id], onDelete: Cascade)
     financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([assetId])
     @@index([assetId, type])
     @@index([assetId, date(sort: Desc)])
     @@index([financialAccountId])
@@ -317,7 +315,6 @@ model AutoDepreciation {
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
-    @@index([assetId])
     @@index([assetId, startDate, endDate])
 }
 
@@ -351,7 +348,6 @@ model Liability {
     user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
     financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([userId])
     @@index([userId, type])
     @@index([userId, deletedAt])
     @@index([financialAccountId])
@@ -407,7 +403,6 @@ model LiabilityTransaction {
     liability        Liability         @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
     financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([liabilityId])
     @@index([liabilityId, type])
     @@index([liabilityId, date(sort: Desc)])
     @@index([financialAccountId])
@@ -419,7 +414,7 @@ model LiabilityTransaction {
 model Snapshot {
     id                 String                     @id @default(uuid())
     userId             String
-    snapshotDate       DateTime                   @db.Timestamptz
+    snapshotDate       DateTime                   @db.Date
     note               String?
     totalCash          Decimal                    @default(0) @db.Decimal(20, 2)
     totalInvestments   Decimal                    @default(0) @db.Decimal(20, 2)
@@ -439,16 +434,19 @@ model Snapshot {
 }
 
 model SnapshotAccountBalance {
-    id         String    @id @default(uuid())
-    snapshotId String
-    accountId  String
-    balance    Decimal   @db.Decimal(20, 2)
-    createdAt  DateTime  @default(now())
-    updatedAt  DateTime  @updatedAt
-    deletedAt  DateTime? @db.Timestamptz
+    id               String    @id @default(uuid())
+    snapshotId       String
+    accountId        String?
+    balance          Decimal   @db.Decimal(20, 2)
+    originalCurrency Currency?
+    originalValue    Decimal?  @db.Decimal(20, 2)
+    fxRate           Decimal?  @db.Decimal(20, 10)
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime  @updatedAt
+    deletedAt        DateTime? @db.Timestamptz
 
-    snapshot Snapshot         @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    account  FinancialAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    snapshot Snapshot          @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    account  FinancialAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
 
     @@unique([snapshotId, accountId])
 }
@@ -456,7 +454,7 @@ model SnapshotAccountBalance {
 model SnapshotAssetValue {
     id               String      @id @default(uuid())
     snapshotId       String
-    assetId          String
+    assetId          String?
     quantity         Decimal?    @db.Decimal(20, 10)
     unitPrice        Decimal?    @db.Decimal(20, 8)
     totalValue       Decimal     @db.Decimal(20, 2)
@@ -469,7 +467,7 @@ model SnapshotAssetValue {
     deletedAt        DateTime?   @db.Timestamptz
 
     snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    asset    Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+    asset    Asset?   @relation(fields: [assetId], references: [id], onDelete: SetNull)
 
     @@unique([snapshotId, assetId])
 }
@@ -477,7 +475,7 @@ model SnapshotAssetValue {
 model SnapshotLiabilityBalance {
     id               String    @id @default(uuid())
     snapshotId       String
-    liabilityId      String
+    liabilityId      String?
     balance          Decimal   @db.Decimal(20, 2)
     originalCurrency Currency?
     originalValue    Decimal?  @db.Decimal(20, 2)
@@ -486,8 +484,8 @@ model SnapshotLiabilityBalance {
     updatedAt        DateTime  @updatedAt
     deletedAt        DateTime? @db.Timestamptz
 
-    snapshot  Snapshot  @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
+    snapshot  Snapshot   @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+    liability Liability? @relation(fields: [liabilityId], references: [id], onDelete: SetNull)
 
     @@unique([snapshotId, liabilityId])
 }
@@ -565,20 +563,17 @@ model Transaction {
     amounts       Amount[]
 
     transferId   String?
-    transferHash String? @db.VarChar(64)
 
     user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
     category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
     subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
     import       Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
+    transfer     Transfer?    @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
     fromTransfer Transfer?    @relation("FromLeg")
     toTransfer   Transfer?    @relation("ToLeg")
 
-    @@index([userId])
-    @@index([date])
     @@index([userId, date])
     @@index([transferId])
-    @@index([transferHash])
     @@index([importId])
     @@index([categoryId])
     @@index([subcategoryId])
@@ -595,11 +590,11 @@ model Transfer {
     updatedAt         DateTime  @updatedAt
     deletedAt         DateTime? @db.Timestamptz
 
-    user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    fromTransaction Transaction? @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
-    toTransaction   Transaction? @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
+    user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    fromTransaction Transaction?  @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
+    toTransaction   Transaction?  @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
+    transactions    Transaction[] @relation("TransferTransactions")
 
-    @@index([userId])
     @@index([transferDate])
     @@index([fromTransactionId])
     @@index([toTransactionId])
@@ -655,7 +650,7 @@ model Subscription {
     appearanceLogoIcon  String
     appearanceIconColor String         @default("#818a66")
     firstPayment        DateTime
-    cycleNumber         Decimal
+    cycleNumber         Int            @default(1)
     cyclePeriod         CyclePeriod
     rememberPeriod      RememberPeriod
     financialAccountId  String
