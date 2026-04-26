@@ -6,11 +6,15 @@ type CardProp = {
     logo?: string
     title: string
     subtitle?: string
+    onClick?: () => void
 }
 
 export function Card(props: CardProp) {
     return (
-        <div className='flex flex-col space-y-10 h-full p-10 bg-box border border-hr rounded-lg w-full'>
+        <div
+            className='flex flex-col space-y-10 h-full p-10 bg-box border border-hr rounded-lg w-full'
+            onClick={props.onClick}
+        >
             {props.icon}
             {props.logo && <BrandIcon icon={props.logo}></BrandIcon>}
             <div className='flex flex-col space-y-1'>

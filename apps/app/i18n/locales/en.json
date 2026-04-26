@@ -479,7 +479,40 @@
         }
     },
     "investments": {
-        "title": "Investments"
+        "title": "Investments",
+        "assets": {
+            "title": "Assets",
+            "modal": {
+                "newTitle": "New asset",
+                "newSubtitle": "Select the type of asset you want to add",
+                "editTitle": "Edit {a}",
+                "deleteDescription": "This action cannot be undone. This will permanently delete the asset."
+            },
+            "ticket-symbol": {
+                "title": "Ticket symbol",
+                "subtitle": "Stock, ETF, bond etc"
+            },
+            "crypto": {
+                "title": "Crypto",
+                "subtitle": "Bitcoin, Ethereum, etc"
+            },
+            "property": {
+                "title": "Property",
+                "subtitle": "Real estate, car, etc"
+            },
+            "vehicle": {
+                "title": "Vehicle",
+                "subtitle": "Car, motorcycle, etc"
+            },
+            "valuable": {
+                "title": "Valuable",
+                "subtitle": "Jewelry, art, etc"
+            },
+            "other": {
+                "title": "Other assets",
+                "subtitle": "Other types of assets"
+            }
+        }
     },
     "reports": {
         "title": "Reports"

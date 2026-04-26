@@ -1,4 +1,5 @@
 export * from './action.js'
+export * from './asset.js'
 export * from './brands.js'
 export * from './category.js'
 export * from './constants.js'
