@@ -633,6 +633,1823 @@ export const CreateUpdateCategoryRequestSchema = {
     ]
 } as const
 
+export const MarketableAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        symbol: {
+            type: 'string',
+            nullable: true
+        },
+        isin: {
+            type: 'string',
+            nullable: true
+        },
+        exchange: {
+            type: 'string',
+            nullable: true
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        sector: {
+            type: 'string',
+            nullable: true
+        },
+        region: {
+            type: 'string',
+            nullable: true
+        },
+        lastPriceSync: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'symbol',
+        'isin',
+        'exchange',
+        'assetClass',
+        'sector',
+        'region',
+        'lastPriceSync',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const MarketableAssetClassEnumSchema = {
+    type: 'string',
+    nullable: true,
+    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
+} as const
+
+export const RealEstateAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        address: {
+            type: 'string',
+            nullable: true
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'address',
+        'type',
+        'purchasePrice',
+        'purchaseDate',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const RealEstateTypeEnumSchema = {
+    type: 'string',
+    enum: ['PRIMARY_HOUSE', 'SECONDARY_HOUSE', 'RENTAL_PROPERTY']
+} as const
+
+export const CollectibleAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        acquisitionCost: {
+            type: 'number',
+            nullable: true
+        },
+        acquisitionDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        appraisalValue: {
+            type: 'number',
+            nullable: true
+        },
+        appraisalDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'acquisitionCost',
+        'acquisitionDate',
+        'appraisalValue',
+        'appraisalDate',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const PrivateDealAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        committedAmount: {
+            type: 'number',
+            nullable: true
+        },
+        calledAmount: {
+            type: 'number',
+            nullable: true
+        },
+        latestNav: {
+            type: 'number',
+            nullable: true
+        },
+        navDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'committedAmount',
+        'calledAmount',
+        'latestNav',
+        'navDate',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const VehicleAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        brand: {
+            type: 'string'
+        },
+        model: {
+            type: 'string'
+        },
+        type: {
+            $ref: '#/components/schemas/VehicleTypeEnum'
+        },
+        year: {
+            type: 'integer',
+            nullable: true
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        plateNumber: {
+            type: 'string',
+            nullable: true
+        },
+        vin: {
+            type: 'string',
+            nullable: true
+        },
+        mileage: {
+            type: 'integer',
+            nullable: true
+        },
+        condition: {
+            $ref: '#/components/schemas/AssetConditionEnum'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'brand',
+        'model',
+        'type',
+        'year',
+        'purchasePrice',
+        'purchaseDate',
+        'plateNumber',
+        'vin',
+        'mileage',
+        'condition',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const VehicleTypeEnumSchema = {
+    type: 'string',
+    enum: ['CAR', 'BOAT', 'MOTORCYCLE', 'SNOWMOBILE', 'BIKE', 'OTHER']
+} as const
+
+export const AssetConditionEnumSchema = {
+    type: 'string',
+    nullable: true,
+    enum: ['NEW', 'EXCELLENT', 'GOOD', 'FAIR', 'POOR', null]
+} as const
+
+export const InsuranceAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        insurer: {
+            type: 'string',
+            nullable: true
+        },
+        policyType: {
+            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
+        },
+        policyNumber: {
+            type: 'string',
+            nullable: true
+        },
+        startDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        endDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        beneficiary: {
+            type: 'string',
+            nullable: true
+        },
+        premiumPaid: {
+            type: 'number',
+            nullable: true
+        },
+        premiumFrequency: {
+            type: 'string',
+            nullable: true,
+            enum: ['DAY', 'WEEK', 'MONTH', 'YEAR', null]
+        },
+        surrenderValue: {
+            type: 'number',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'insurer',
+        'policyType',
+        'policyNumber',
+        'startDate',
+        'endDate',
+        'beneficiary',
+        'premiumPaid',
+        'premiumFrequency',
+        'surrenderValue',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const InsurancePolicyTypeEnumSchema = {
+    type: 'string',
+    nullable: true,
+    enum: ['LIFE', 'UNIT_LINKED', 'INDEX_LINKED', 'PURE_RISK', null]
+} as const
+
+export const AssetPositionSummarySchema = {
+    type: 'object',
+    properties: {
+        quantity: {
+            type: 'number',
+            nullable: true
+        },
+        investedAmount: {
+            type: 'number',
+            nullable: true
+        },
+        proceedsAmount: {
+            type: 'number',
+            nullable: true
+        },
+        netContribution: {
+            type: 'number',
+            nullable: true
+        },
+        averageCost: {
+            type: 'number',
+            nullable: true
+        },
+        realizedCashFlow: {
+            type: 'number',
+            nullable: true
+        },
+        lastTransactionAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'quantity',
+        'investedAmount',
+        'proceedsAmount',
+        'netContribution',
+        'averageCost',
+        'realizedCashFlow',
+        'lastTransactionAt'
+    ]
+} as const
+
+export const AssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        userId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValue: {
+            type: 'number',
+            nullable: true
+        },
+        currentValueAsOf: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        marketable: {
+            $ref: '#/components/schemas/MarketableAsset'
+        },
+        realEstate: {
+            $ref: '#/components/schemas/RealEstateAsset'
+        },
+        collectible: {
+            $ref: '#/components/schemas/CollectibleAsset'
+        },
+        privateDeal: {
+            $ref: '#/components/schemas/PrivateDealAsset'
+        },
+        vehicle: {
+            $ref: '#/components/schemas/VehicleAsset'
+        },
+        insurance: {
+            $ref: '#/components/schemas/InsuranceAsset'
+        },
+        position: {
+            $ref: '#/components/schemas/AssetPositionSummary'
+        }
+    },
+    required: [
+        'id',
+        'userId',
+        'title',
+        'type',
+        'currency',
+        'currentValue',
+        'currentValueAsOf',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const AssetTypeEnumSchema = {
+    type: 'string',
+    enum: [
+        'STOCK',
+        'BOND',
+        'ETF',
+        'MUTUAL_FUND',
+        'CRYPTOCURRENCY',
+        'REAL_ESTATE',
+        'COLLECTIBLE',
+        'VEHICLE',
+        'PRIVATE_EQUITY',
+        'VENTURE_CAPITAL',
+        'PRIVATE_DEBT',
+        'P2P_LENDING',
+        'INSURANCE_POLICY',
+        'OTHER'
+    ]
+} as const
+
+export const CurrencyEnumSchema = {
+    type: 'string',
+    enum: [
+        'USD',
+        'EUR',
+        'GBP',
+        'JPY',
+        'CNY',
+        'INR',
+        'AUD',
+        'CAD',
+        'CHF',
+        'SEK',
+        'NZD',
+        'MXN',
+        'SGD',
+        'HKD',
+        'NOK',
+        'KRW',
+        'TRY',
+        'UNKNOWN'
+    ]
+} as const
+
+export const AssetDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValue: {
+            type: 'number',
+            nullable: true
+        },
+        currentValueAsOf: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        marketable: {
+            $ref: '#/components/schemas/MarketableAsset'
+        },
+        realEstate: {
+            $ref: '#/components/schemas/RealEstateAsset'
+        },
+        collectible: {
+            $ref: '#/components/schemas/CollectibleAsset'
+        },
+        privateDeal: {
+            $ref: '#/components/schemas/PrivateDealAsset'
+        },
+        vehicle: {
+            $ref: '#/components/schemas/VehicleAsset'
+        },
+        insurance: {
+            $ref: '#/components/schemas/InsuranceAsset'
+        },
+        position: {
+            $ref: '#/components/schemas/AssetPositionSummary'
+        }
+    },
+    required: ['id', 'title', 'type', 'currency', 'currentValue', 'currentValueAsOf', 'createdAt', 'updatedAt']
+} as const
+
+export const AssetByTypeSummarySchema = {
+    type: 'object',
+    properties: {
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        count: {
+            type: 'integer',
+            minimum: 0
+        },
+        totalCurrentValue: {
+            type: 'number'
+        }
+    },
+    required: ['type', 'count', 'totalCurrentValue']
+} as const
+
+export const PortfolioSummarySchema = {
+    type: 'object',
+    properties: {
+        totalAssets: {
+            type: 'integer',
+            minimum: 0
+        },
+        totalCurrentValue: {
+            type: 'number'
+        },
+        totalWithLiveMarketData: {
+            type: 'number'
+        },
+        byType: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AssetByTypeSummary'
+            }
+        }
+    },
+    required: ['totalAssets', 'totalCurrentValue', 'totalWithLiveMarketData', 'byType']
+} as const
+
+export const GetAssetListResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AssetData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const GetAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/AssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const GetPortfolioSummaryResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/PortfolioSummary'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CreateMarketableAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        symbol: {
+            type: 'string',
+            nullable: true
+        },
+        isin: {
+            type: 'string',
+            nullable: true
+        },
+        exchange: {
+            type: 'string',
+            nullable: true
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        sector: {
+            type: 'string',
+            nullable: true
+        },
+        region: {
+            type: 'string',
+            nullable: true
+        },
+        lastPriceSync: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: ['symbol', 'isin', 'exchange', 'assetClass', 'sector', 'region', 'lastPriceSync']
+} as const
+
+export const CreateRealEstateAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        address: {
+            type: 'string',
+            nullable: true
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
+} as const
+
+export const CreateCollectibleAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        acquisitionCost: {
+            type: 'number',
+            nullable: true
+        },
+        acquisitionDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        appraisalValue: {
+            type: 'number',
+            nullable: true
+        },
+        appraisalDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
+} as const
+
+export const CreatePrivateDealAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        committedAmount: {
+            type: 'number',
+            nullable: true
+        },
+        calledAmount: {
+            type: 'number',
+            nullable: true
+        },
+        latestNav: {
+            type: 'number',
+            nullable: true
+        },
+        navDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
+} as const
+
+export const CreateVehicleAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        brand: {
+            type: 'string'
+        },
+        model: {
+            type: 'string'
+        },
+        type: {
+            $ref: '#/components/schemas/VehicleTypeEnum'
+        },
+        year: {
+            type: 'integer',
+            nullable: true
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        plateNumber: {
+            type: 'string',
+            nullable: true
+        },
+        vin: {
+            type: 'string',
+            nullable: true
+        },
+        mileage: {
+            type: 'integer',
+            nullable: true
+        },
+        condition: {
+            $ref: '#/components/schemas/AssetConditionEnum'
+        }
+    },
+    required: [
+        'brand',
+        'model',
+        'type',
+        'year',
+        'purchasePrice',
+        'purchaseDate',
+        'plateNumber',
+        'vin',
+        'mileage',
+        'condition'
+    ]
+} as const
+
+export const CreateInsuranceAssetDetailsSchema = {
+    type: 'object',
+    properties: {
+        insurer: {
+            type: 'string',
+            nullable: true
+        },
+        policyType: {
+            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
+        },
+        policyNumber: {
+            type: 'string',
+            nullable: true
+        },
+        startDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        endDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        beneficiary: {
+            type: 'string',
+            nullable: true
+        },
+        premiumPaid: {
+            type: 'number',
+            nullable: true
+        },
+        premiumFrequency: {
+            type: 'string',
+            nullable: true,
+            enum: ['DAY', 'WEEK', 'MONTH', 'YEAR', null]
+        },
+        surrenderValue: {
+            type: 'number',
+            nullable: true
+        }
+    },
+    required: [
+        'insurer',
+        'policyType',
+        'policyNumber',
+        'startDate',
+        'endDate',
+        'beneficiary',
+        'premiumPaid',
+        'premiumFrequency',
+        'surrenderValue'
+    ]
+} as const
+
+export const AssetFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValue: {
+            type: 'number',
+            nullable: true
+        },
+        currentValueAsOf: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        marketable: {
+            $ref: '#/components/schemas/CreateMarketableAssetDetails'
+        },
+        realEstate: {
+            $ref: '#/components/schemas/CreateRealEstateAssetDetails'
+        },
+        collectible: {
+            $ref: '#/components/schemas/CreateCollectibleAssetDetails'
+        },
+        privateDeal: {
+            $ref: '#/components/schemas/CreatePrivateDealAssetDetails'
+        },
+        vehicle: {
+            $ref: '#/components/schemas/CreateVehicleAssetDetails'
+        },
+        insurance: {
+            $ref: '#/components/schemas/CreateInsuranceAssetDetails'
+        }
+    },
+    required: ['title', 'type']
+} as const
+
+export const CreateAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValue: {
+            type: 'number',
+            nullable: true
+        },
+        currentValueAsOf: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        marketable: {
+            $ref: '#/components/schemas/CreateMarketableAssetDetails'
+        },
+        realEstate: {
+            $ref: '#/components/schemas/CreateRealEstateAssetDetails'
+        },
+        collectible: {
+            $ref: '#/components/schemas/CreateCollectibleAssetDetails'
+        },
+        privateDeal: {
+            $ref: '#/components/schemas/CreatePrivateDealAssetDetails'
+        },
+        vehicle: {
+            $ref: '#/components/schemas/CreateVehicleAssetDetails'
+        },
+        insurance: {
+            $ref: '#/components/schemas/CreateInsuranceAssetDetails'
+        }
+    },
+    required: ['title', 'type']
+} as const
+
+export const UpdateAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValue: {
+            type: 'number',
+            nullable: true
+        },
+        currentValueAsOf: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        marketable: {
+            $ref: '#/components/schemas/CreateMarketableAssetDetails'
+        },
+        realEstate: {
+            $ref: '#/components/schemas/CreateRealEstateAssetDetails'
+        },
+        collectible: {
+            $ref: '#/components/schemas/CreateCollectibleAssetDetails'
+        },
+        privateDeal: {
+            $ref: '#/components/schemas/CreatePrivateDealAssetDetails'
+        },
+        vehicle: {
+            $ref: '#/components/schemas/CreateVehicleAssetDetails'
+        },
+        insurance: {
+            $ref: '#/components/schemas/CreateInsuranceAssetDetails'
+        }
+    }
+} as const
+
+export const CreateAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/AssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            nullable: true,
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const DeleteAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            nullable: true,
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const AssetParamsIdSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['id']
+} as const
+
+export const AssetFiltersSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            $ref: '#/components/schemas/AssetParamsId'
+        },
+        title: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        symbol: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        currentValueAsOf: {
+            $ref: '#/components/schemas/DateFilter'
+        }
+    }
+} as const
+
+export const DateFilterSchema = {
+    type: 'object',
+    properties: {
+        gte: {
+            type: 'string',
+            format: 'date-time'
+        },
+        lte: {
+            type: 'string',
+            format: 'date-time'
+        }
+    }
+} as const
+
+export const QueryAssetFiltersSchema = {
+    type: 'object',
+    properties: {
+        filter: {
+            $ref: '#/components/schemas/AssetFilters'
+        },
+        options: {
+            $ref: '#/components/schemas/FilterOptions'
+        }
+    }
+} as const
+
+export const CreateUpdateAssetRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateAssetRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateAssetRequest'
+        }
+    ]
+} as const
+
+export const AssetTransactionSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        settlementDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        quantityChange: {
+            type: 'number',
+            nullable: true
+        },
+        unitPrice: {
+            type: 'number',
+            nullable: true
+        },
+        totalAmount: {
+            type: 'number',
+            nullable: true
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        fxRate: {
+            type: 'number',
+            nullable: true
+        },
+        fees: {
+            type: 'number',
+            nullable: true
+        },
+        taxAmount: {
+            type: 'number',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'type',
+        'date',
+        'settlementDate',
+        'quantityChange',
+        'unitPrice',
+        'totalAmount',
+        'currency',
+        'fxRate',
+        'fees',
+        'taxAmount',
+        'financialAccountId',
+        'note',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const AssetTransactionTypeEnumSchema = {
+    type: 'string',
+    enum: [
+        'BUY',
+        'SELL',
+        'DIVIDEND',
+        'INTEREST',
+        'FEE',
+        'DEPOSIT',
+        'WITHDRAWAL',
+        'VALUATION_ADJUSTMENT',
+        'CAPITAL_CALL',
+        'DISTRIBUTION'
+    ]
+} as const
+
+export const AssetTransactionDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        settlementDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        quantityChange: {
+            type: 'number',
+            nullable: true
+        },
+        unitPrice: {
+            type: 'number',
+            nullable: true
+        },
+        totalAmount: {
+            type: 'number',
+            nullable: true
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        fxRate: {
+            type: 'number',
+            nullable: true
+        },
+        fees: {
+            type: 'number',
+            nullable: true
+        },
+        taxAmount: {
+            type: 'number',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'type',
+        'date',
+        'settlementDate',
+        'quantityChange',
+        'unitPrice',
+        'totalAmount',
+        'currency',
+        'fxRate',
+        'fees',
+        'taxAmount',
+        'financialAccountId',
+        'note',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
+export const GetAssetTransactionListResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AssetTransactionData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const GetAssetTransactionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/AssetTransactionData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const AssetTransactionFormSchema = {
+    type: 'object',
+    properties: {
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        settlementDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        quantityChange: {
+            type: 'number',
+            nullable: true
+        },
+        unitPrice: {
+            type: 'number',
+            nullable: true
+        },
+        totalAmount: {
+            type: 'number',
+            nullable: true
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        fxRate: {
+            type: 'number',
+            nullable: true
+        },
+        fees: {
+            type: 'number',
+            nullable: true
+        },
+        taxAmount: {
+            type: 'number',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'assetId',
+        'type',
+        'date',
+        'settlementDate',
+        'quantityChange',
+        'unitPrice',
+        'totalAmount',
+        'currency',
+        'fxRate',
+        'fees',
+        'taxAmount',
+        'financialAccountId',
+        'note'
+    ]
+} as const
+
+export const CreateAssetTransactionRequestSchema = {
+    type: 'object',
+    properties: {
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        settlementDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        quantityChange: {
+            type: 'number',
+            nullable: true
+        },
+        unitPrice: {
+            type: 'number',
+            nullable: true
+        },
+        totalAmount: {
+            type: 'number',
+            nullable: true
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        fxRate: {
+            type: 'number',
+            nullable: true
+        },
+        fees: {
+            type: 'number',
+            nullable: true
+        },
+        taxAmount: {
+            type: 'number',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'assetId',
+        'type',
+        'date',
+        'settlementDate',
+        'quantityChange',
+        'unitPrice',
+        'totalAmount',
+        'currency',
+        'fxRate',
+        'fees',
+        'taxAmount',
+        'financialAccountId',
+        'note'
+    ]
+} as const
+
+export const UpdateAssetTransactionRequestSchema = {
+    type: 'object',
+    properties: {
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        settlementDate: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        quantityChange: {
+            type: 'number',
+            nullable: true
+        },
+        unitPrice: {
+            type: 'number',
+            nullable: true
+        },
+        totalAmount: {
+            type: 'number',
+            nullable: true
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        fxRate: {
+            type: 'number',
+            nullable: true
+        },
+        fees: {
+            type: 'number',
+            nullable: true
+        },
+        taxAmount: {
+            type: 'number',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    }
+} as const
+
+export const CreateAssetTransactionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/AssetTransactionData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateAssetTransactionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            nullable: true,
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const DeleteAssetTransactionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            nullable: true,
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const AssetTransactionParamsIdSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['id']
+} as const
+
+export const AssetTransactionFiltersSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            $ref: '#/components/schemas/AssetTransactionParamsId'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/AssetTransactionTypeEnum'
+        },
+        date: {
+            $ref: '#/components/schemas/DateFilter'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        note: {
+            $ref: '#/components/schemas/StringFilter'
+        }
+    }
+} as const
+
+export const QueryAssetTransactionFiltersSchema = {
+    type: 'object',
+    properties: {
+        filter: {
+            $ref: '#/components/schemas/AssetTransactionFilters'
+        },
+        options: {
+            $ref: '#/components/schemas/FilterOptions'
+        }
+    }
+} as const
+
+export const CreateUpdateAssetTransactionRequestSchema = {
+    anyOf: [
+        {
+            $ref: '#/components/schemas/CreateAssetTransactionRequest'
+        },
+        {
+            $ref: '#/components/schemas/UpdateAssetTransactionRequest'
+        }
+    ]
+} as const
+
 export const DashboardLayoutItemSchema = {
     type: 'object',
     properties: {
@@ -941,24 +2758,19 @@ export const SnapshotFrequencyEnumSchema = {
     enum: ['NONE', 'DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'SEMIANNUAL', 'ANNUAL']
 } as const
 
-export const AssetTypeEnumSchema = {
+export const ValueSourceEnumSchema = {
     type: 'string',
-    enum: [
-        'STOCK',
-        'BOND',
-        'ETF',
-        'MUTUAL_FUND',
-        'CRYPTOCURRENCY',
-        'REAL_ESTATE',
-        'COLLECTIBLE',
-        'PRIVATE_EQUITY',
-        'VENTURE_CAPITAL',
-        'PRIVATE_DEBT',
-        'P2P_LENDING',
-        'INSURANCE_POLICY',
-        'AGRICULTURAL_LAND',
-        'OTHER'
-    ]
+    enum: ['MANUAL', 'MARKET', 'APPRAISAL', 'DEPRECIATION', 'IMPORT', 'CALCULATED']
+} as const
+
+export const MarketDataTransportEnumSchema = {
+    type: 'string',
+    enum: ['HTTP', 'WS', 'HYBRID']
+} as const
+
+export const MarketStateEnumSchema = {
+    type: 'string',
+    enum: ['OPEN', 'CLOSED', 'PRE_MARKET', 'POST_MARKET', 'UNKNOWN']
 } as const
 
 export const FinancialAccountTypeEnumSchema = {
@@ -974,30 +2786,6 @@ export const TransactionStatusEnumSchema = {
 export const ImportTransactionStatusEnumSchema = {
     type: 'string',
     enum: ['IMPORT_APPROVED', 'IMPORT_REJECTED']
-} as const
-
-export const CurrencyEnumSchema = {
-    type: 'string',
-    enum: [
-        'USD',
-        'EUR',
-        'GBP',
-        'JPY',
-        'CNY',
-        'INR',
-        'AUD',
-        'CAD',
-        'CHF',
-        'SEK',
-        'NZD',
-        'MXN',
-        'SGD',
-        'HKD',
-        'NOK',
-        'KRW',
-        'TRY',
-        'UNKNOWN'
-    ]
 } as const
 
 export const RememberPeriodEnumSchema = {
@@ -1338,20 +3126,6 @@ export const ErrorResponseSchema = {
         }
     },
     required: ['success', 'message']
-} as const
-
-export const DateFilterSchema = {
-    type: 'object',
-    properties: {
-        gte: {
-            type: 'string',
-            format: 'date-time'
-        },
-        lte: {
-            type: 'string',
-            format: 'date-time'
-        }
-    }
 } as const
 
 export const FinancialAccountSchema = {
@@ -2403,6 +4177,299 @@ export const CreateImportTemplateResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
+} as const
+
+export const MarketDataProviderSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            minLength: 1
+        },
+        label: {
+            type: 'string',
+            minLength: 1
+        },
+        transport: {
+            $ref: '#/components/schemas/MarketDataTransportEnum'
+        },
+        enabled: {
+            type: 'boolean'
+        },
+        supportsSearch: {
+            type: 'boolean'
+        },
+        supportsQuotes: {
+            type: 'boolean'
+        },
+        supportsStreaming: {
+            type: 'boolean'
+        },
+        supportedAssetTypes: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AssetTypeEnum'
+            }
+        }
+    },
+    required: [
+        'id',
+        'label',
+        'transport',
+        'enabled',
+        'supportsSearch',
+        'supportsQuotes',
+        'supportsStreaming',
+        'supportedAssetTypes'
+    ]
+} as const
+
+export const MarketInstrumentSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        providerInstrumentId: {
+            type: 'string',
+            minLength: 1
+        },
+        symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        displayName: {
+            type: 'string',
+            minLength: 1
+        },
+        assetType: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        exchange: {
+            type: 'string',
+            nullable: true
+        },
+        market: {
+            type: 'string',
+            nullable: true
+        },
+        metadata: {
+            type: 'object',
+            additionalProperties: {
+                type: 'string'
+            },
+            default: {}
+        }
+    },
+    required: [
+        'providerId',
+        'providerInstrumentId',
+        'symbol',
+        'displayName',
+        'assetType',
+        'currency',
+        'exchange',
+        'market'
+    ]
+} as const
+
+export const MarketQuoteSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        assetType: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        price: {
+            type: 'number'
+        },
+        changePercent: {
+            type: 'number',
+            nullable: true
+        },
+        marketState: {
+            $ref: '#/components/schemas/MarketStateEnum'
+        },
+        asOf: {
+            type: 'string',
+            format: 'date-time'
+        },
+        valueSource: {
+            $ref: '#/components/schemas/ValueSourceEnum'
+        },
+        displayName: {
+            type: 'string',
+            nullable: true
+        },
+        exchange: {
+            type: 'string',
+            nullable: true
+        },
+        market: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'providerId',
+        'symbol',
+        'assetType',
+        'currency',
+        'price',
+        'changePercent',
+        'marketState',
+        'asOf',
+        'valueSource',
+        'displayName',
+        'exchange',
+        'market'
+    ]
+} as const
+
+export const GetMarketDataProvidersResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/MarketDataProvider'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const SearchMarketInstrumentsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/MarketInstrument'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const GetMarketQuotesResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/MarketQuote'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const MarketDataProviderQuerySchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string'
+        },
+        assetType: {
+            $ref: '#/components/schemas/AssetTypeEnum'
+        }
+    }
+} as const
+
+export const SearchMarketInstrumentsQuerySchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/MarketDataProviderQuery'
+        },
+        {
+            type: 'object',
+            properties: {
+                q: {
+                    type: 'string',
+                    minLength: 1
+                },
+                limit: {
+                    type: 'integer',
+                    minimum: 0,
+                    exclusiveMinimum: true,
+                    maximum: 50
+                }
+            },
+            required: ['q']
+        }
+    ]
+} as const
+
+export const GetMarketQuotesQuerySchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/MarketDataProviderQuery'
+        },
+        {
+            type: 'object',
+            properties: {
+                symbols: {
+                    anyOf: [
+                        {
+                            type: 'string',
+                            minLength: 1
+                        },
+                        {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                                minLength: 1
+                            },
+                            minItems: 1
+                        }
+                    ]
+                }
+            },
+            required: ['symbols']
+        }
+    ]
 } as const
 
 export const NetWorthEvolutionSchema = {

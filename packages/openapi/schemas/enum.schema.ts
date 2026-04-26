@@ -183,15 +183,85 @@ export const AssetTypeEnum = z
         'CRYPTOCURRENCY',
         'REAL_ESTATE',
         'COLLECTIBLE',
+        'VEHICLE',
         'PRIVATE_EQUITY',
         'VENTURE_CAPITAL',
         'PRIVATE_DEBT',
         'P2P_LENDING',
         'INSURANCE_POLICY',
-        'AGRICULTURAL_LAND',
         'OTHER'
     ])
     .openapi('AssetTypeEnum')
+
+/**
+ * Marketable asset class enum representing grouped market instrument families
+ */
+export const MarketableAssetClassEnum = z
+    .enum(['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED'])
+    .openapi('MarketableAssetClassEnum')
+
+/**
+ * Insurance policy type enum representing the supported insurance product categories
+ */
+export const InsurancePolicyTypeEnum = z
+    .enum(['LIFE', 'UNIT_LINKED', 'INDEX_LINKED', 'PURE_RISK'])
+    .openapi('InsurancePolicyTypeEnum')
+
+/**
+ * Asset transaction type enum representing supported portfolio movements
+ */
+export const AssetTransactionTypeEnum = z
+    .enum([
+        'BUY',
+        'SELL',
+        'DIVIDEND',
+        'INTEREST',
+        'FEE',
+        'DEPOSIT',
+        'WITHDRAWAL',
+        'VALUATION_ADJUSTMENT',
+        'CAPITAL_CALL',
+        'DISTRIBUTION'
+    ])
+    .openapi('AssetTransactionTypeEnum')
+
+/**
+ * Asset condition enum representing the state of a physical asset
+ */
+export const AssetConditionEnum = z.enum(['NEW', 'EXCELLENT', 'GOOD', 'FAIR', 'POOR']).openapi('AssetConditionEnum')
+
+/**
+ * Vehicle type enum representing supported vehicle categories
+ */
+export const VehicleTypeEnum = z
+    .enum(['CAR', 'BOAT', 'MOTORCYCLE', 'SNOWMOBILE', 'BIKE', 'OTHER'])
+    .openapi('VehicleTypeEnum')
+
+/**
+ * Real estate type enum representing supported property categories
+ */
+export const RealEstateTypeEnum = z
+    .enum(['PRIMARY_HOUSE', 'SECONDARY_HOUSE', 'RENTAL_PROPERTY'])
+    .openapi('RealEstateTypeEnum')
+
+/**
+ * Value source enum representing how an asset value was produced
+ */
+export const ValueSourceEnum = z
+    .enum(['MANUAL', 'MARKET', 'APPRAISAL', 'DEPRECIATION', 'IMPORT', 'CALCULATED'])
+    .openapi('ValueSourceEnum')
+
+/**
+ * Market data transport enum representing how provider data is fetched
+ */
+export const MarketDataTransportEnum = z.enum(['HTTP', 'WS', 'HYBRID']).openapi('MarketDataTransportEnum')
+
+/**
+ * Market state enum representing the exchange or venue availability
+ */
+export const MarketStateEnum = z
+    .enum(['OPEN', 'CLOSED', 'PRE_MARKET', 'POST_MARKET', 'UNKNOWN'])
+    .openapi('MarketStateEnum')
 
 /**
  * Financial account type enum representing the supported account categories

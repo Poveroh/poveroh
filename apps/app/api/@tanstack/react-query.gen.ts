@@ -8,6 +8,8 @@ import {
     changeEmail,
     changePassword,
     completeImport,
+    createAsset,
+    createAssetTransaction,
     createCategory,
     createFinancialAccount,
     createImport,
@@ -16,6 +18,10 @@ import {
     createSubcategory,
     createSubscription,
     createTransaction,
+    deleteAsset,
+    deleteAssets,
+    deleteAssetTransaction,
+    deleteAssetTransactions,
     deleteCategories,
     deleteCategory,
     deleteFinancialAccount,
@@ -29,6 +35,10 @@ import {
     deleteTransaction,
     deleteTransactions,
     deleteUser,
+    getAssetById,
+    getAssets,
+    getAssetTransactionById,
+    getAssetTransactions,
     getAuthAccountInfo,
     getAuthCallbackById,
     getAuthDeleteUserCallback,
@@ -44,6 +54,9 @@ import {
     getImportById,
     getImports,
     getImportTransactionsById,
+    getMarketDataProviders,
+    getMarketQuotes,
+    getPortfolioSummary,
     getRootStatus,
     getSession,
     getSession2,
@@ -70,11 +83,14 @@ import {
     resetPassword,
     resetPasswordCallback,
     rollbackImport,
+    searchMarketInstruments,
     sendVerificationEmail,
     signInEmail,
     signOut,
     signUpWithEmailAndPassword,
     socialSignIn,
+    updateAsset,
+    updateAssetTransaction,
     updateAuthenticatedUser,
     updateCategory,
     updateDashboardLayout,
@@ -100,6 +116,12 @@ import type {
     CompleteImportData,
     CompleteImportError,
     CompleteImportResponse,
+    CreateAssetData,
+    CreateAssetError,
+    CreateAssetResponse2,
+    CreateAssetTransactionData,
+    CreateAssetTransactionError,
+    CreateAssetTransactionResponse2,
     CreateCategoryData,
     CreateCategoryError,
     CreateCategoryResponse2,
@@ -124,6 +146,18 @@ import type {
     CreateTransactionData,
     CreateTransactionError,
     CreateTransactionResponse2,
+    DeleteAssetData,
+    DeleteAssetError,
+    DeleteAssetResponse2,
+    DeleteAssetsData,
+    DeleteAssetsError,
+    DeleteAssetsResponse,
+    DeleteAssetTransactionData,
+    DeleteAssetTransactionError,
+    DeleteAssetTransactionResponse2,
+    DeleteAssetTransactionsData,
+    DeleteAssetTransactionsError,
+    DeleteAssetTransactionsResponse,
     DeleteCategoriesData,
     DeleteCategoriesError,
     DeleteCategoriesResponse,
@@ -163,6 +197,18 @@ import type {
     DeleteUserData,
     DeleteUserError,
     DeleteUserResponse,
+    GetAssetByIdData,
+    GetAssetByIdError,
+    GetAssetByIdResponse,
+    GetAssetsData,
+    GetAssetsError,
+    GetAssetsResponse,
+    GetAssetTransactionByIdData,
+    GetAssetTransactionByIdError,
+    GetAssetTransactionByIdResponse,
+    GetAssetTransactionsData,
+    GetAssetTransactionsError,
+    GetAssetTransactionsResponse,
     GetAuthAccountInfoData,
     GetAuthAccountInfoError,
     GetAuthAccountInfoResponse,
@@ -207,6 +253,15 @@ import type {
     GetImportTransactionsByIdData,
     GetImportTransactionsByIdError,
     GetImportTransactionsByIdResponse,
+    GetMarketDataProvidersData,
+    GetMarketDataProvidersError,
+    GetMarketDataProvidersResponse2,
+    GetMarketQuotesData,
+    GetMarketQuotesError,
+    GetMarketQuotesResponse2,
+    GetPortfolioSummaryData,
+    GetPortfolioSummaryError,
+    GetPortfolioSummaryResponse2,
     GetRootStatusData,
     GetRootStatusError,
     GetRootStatusResponse,
@@ -281,6 +336,9 @@ import type {
     RollbackImportData,
     RollbackImportError,
     RollbackImportResponse,
+    SearchMarketInstrumentsData,
+    SearchMarketInstrumentsError,
+    SearchMarketInstrumentsResponse2,
     SendVerificationEmailData,
     SendVerificationEmailError,
     SendVerificationEmailResponse,
@@ -296,6 +354,12 @@ import type {
     SocialSignInData,
     SocialSignInError,
     SocialSignInResponse,
+    UpdateAssetData,
+    UpdateAssetError,
+    UpdateAssetResponse2,
+    UpdateAssetTransactionData,
+    UpdateAssetTransactionError,
+    UpdateAssetTransactionResponse2,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserError,
     UpdateAuthenticatedUserResponse,
@@ -2344,3 +2408,412 @@ export const rollbackImportMutation = (
     }
     return mutationOptions
 }
+
+/**
+ * Delete all assets
+ *
+ * Soft delete all assets for the authenticated user
+ */
+export const deleteAssetsMutation = (
+    options?: Partial<Options<DeleteAssetsData>>
+): UseMutationOptions<DeleteAssetsResponse, DeleteAssetsError, Options<DeleteAssetsData>> => {
+    const mutationOptions: UseMutationOptions<DeleteAssetsResponse, DeleteAssetsError, Options<DeleteAssetsData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteAssets({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAssetsQueryKey = (options?: Options<GetAssetsData>) => createQueryKey('getAssets', options)
+
+/**
+ * Get all assets
+ *
+ * Retrieve the investment assets associated with the authenticated user
+ */
+export const getAssetsOptions = (options?: Options<GetAssetsData>) =>
+    queryOptions<GetAssetsResponse, GetAssetsError, GetAssetsResponse, ReturnType<typeof getAssetsQueryKey>>({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAssets({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAssetsQueryKey(options)
+    })
+
+/**
+ * Create asset
+ *
+ * Create a new asset with subtype details
+ */
+export const createAssetMutation = (
+    options?: Partial<Options<CreateAssetData>>
+): UseMutationOptions<CreateAssetResponse2, CreateAssetError, Options<CreateAssetData>> => {
+    const mutationOptions: UseMutationOptions<CreateAssetResponse2, CreateAssetError, Options<CreateAssetData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await createAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getPortfolioSummaryQueryKey = (options?: Options<GetPortfolioSummaryData>) =>
+    createQueryKey('getPortfolioSummary', options)
+
+/**
+ * Get portfolio summary
+ *
+ * Retrieve aggregated metrics for the investment portfolio
+ */
+export const getPortfolioSummaryOptions = (options?: Options<GetPortfolioSummaryData>) =>
+    queryOptions<
+        GetPortfolioSummaryResponse2,
+        GetPortfolioSummaryError,
+        GetPortfolioSummaryResponse2,
+        ReturnType<typeof getPortfolioSummaryQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getPortfolioSummary({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getPortfolioSummaryQueryKey(options)
+    })
+
+/**
+ * Delete asset
+ *
+ * Soft delete an asset
+ */
+export const deleteAssetMutation = (
+    options?: Partial<Options<DeleteAssetData>>
+): UseMutationOptions<DeleteAssetResponse2, DeleteAssetError, Options<DeleteAssetData>> => {
+    const mutationOptions: UseMutationOptions<DeleteAssetResponse2, DeleteAssetError, Options<DeleteAssetData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAssetByIdQueryKey = (options: Options<GetAssetByIdData>) => createQueryKey('getAssetById', options)
+
+/**
+ * Get asset by ID
+ *
+ * Retrieve a single asset and its normalized subtype data
+ */
+export const getAssetByIdOptions = (options: Options<GetAssetByIdData>) =>
+    queryOptions<
+        GetAssetByIdResponse,
+        GetAssetByIdError,
+        GetAssetByIdResponse,
+        ReturnType<typeof getAssetByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAssetById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAssetByIdQueryKey(options)
+    })
+
+/**
+ * Update asset
+ *
+ * Update an existing asset and its subtype details
+ */
+export const updateAssetMutation = (
+    options?: Partial<Options<UpdateAssetData>>
+): UseMutationOptions<UpdateAssetResponse2, UpdateAssetError, Options<UpdateAssetData>> => {
+    const mutationOptions: UseMutationOptions<UpdateAssetResponse2, UpdateAssetError, Options<UpdateAssetData>> = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete all asset transactions
+ *
+ * Soft delete all asset transactions for the authenticated user
+ */
+export const deleteAssetTransactionsMutation = (
+    options?: Partial<Options<DeleteAssetTransactionsData>>
+): UseMutationOptions<
+    DeleteAssetTransactionsResponse,
+    DeleteAssetTransactionsError,
+    Options<DeleteAssetTransactionsData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteAssetTransactionsResponse,
+        DeleteAssetTransactionsError,
+        Options<DeleteAssetTransactionsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteAssetTransactions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAssetTransactionsQueryKey = (options?: Options<GetAssetTransactionsData>) =>
+    createQueryKey('getAssetTransactions', options)
+
+/**
+ * Get asset transactions
+ *
+ * Retrieve the asset transactions associated with the authenticated user
+ */
+export const getAssetTransactionsOptions = (options?: Options<GetAssetTransactionsData>) =>
+    queryOptions<
+        GetAssetTransactionsResponse,
+        GetAssetTransactionsError,
+        GetAssetTransactionsResponse,
+        ReturnType<typeof getAssetTransactionsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAssetTransactions({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAssetTransactionsQueryKey(options)
+    })
+
+/**
+ * Create asset transaction
+ *
+ * Create a new transaction for an asset
+ */
+export const createAssetTransactionMutation = (
+    options?: Partial<Options<CreateAssetTransactionData>>
+): UseMutationOptions<
+    CreateAssetTransactionResponse2,
+    CreateAssetTransactionError,
+    Options<CreateAssetTransactionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateAssetTransactionResponse2,
+        CreateAssetTransactionError,
+        Options<CreateAssetTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createAssetTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Delete asset transaction
+ *
+ * Soft delete an asset transaction
+ */
+export const deleteAssetTransactionMutation = (
+    options?: Partial<Options<DeleteAssetTransactionData>>
+): UseMutationOptions<
+    DeleteAssetTransactionResponse2,
+    DeleteAssetTransactionError,
+    Options<DeleteAssetTransactionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteAssetTransactionResponse2,
+        DeleteAssetTransactionError,
+        Options<DeleteAssetTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteAssetTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAssetTransactionByIdQueryKey = (options: Options<GetAssetTransactionByIdData>) =>
+    createQueryKey('getAssetTransactionById', options)
+
+/**
+ * Get asset transaction by ID
+ *
+ * Retrieve a single asset transaction
+ */
+export const getAssetTransactionByIdOptions = (options: Options<GetAssetTransactionByIdData>) =>
+    queryOptions<
+        GetAssetTransactionByIdResponse,
+        GetAssetTransactionByIdError,
+        GetAssetTransactionByIdResponse,
+        ReturnType<typeof getAssetTransactionByIdQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAssetTransactionById({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAssetTransactionByIdQueryKey(options)
+    })
+
+/**
+ * Update asset transaction
+ *
+ * Update an existing transaction for an asset
+ */
+export const updateAssetTransactionMutation = (
+    options?: Partial<Options<UpdateAssetTransactionData>>
+): UseMutationOptions<
+    UpdateAssetTransactionResponse2,
+    UpdateAssetTransactionError,
+    Options<UpdateAssetTransactionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateAssetTransactionResponse2,
+        UpdateAssetTransactionError,
+        Options<UpdateAssetTransactionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateAssetTransaction({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getMarketDataProvidersQueryKey = (options?: Options<GetMarketDataProvidersData>) =>
+    createQueryKey('getMarketDataProviders', options)
+
+/**
+ * Get market data providers
+ *
+ * List the enabled raw market data providers and their capabilities
+ */
+export const getMarketDataProvidersOptions = (options?: Options<GetMarketDataProvidersData>) =>
+    queryOptions<
+        GetMarketDataProvidersResponse2,
+        GetMarketDataProvidersError,
+        GetMarketDataProvidersResponse2,
+        ReturnType<typeof getMarketDataProvidersQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getMarketDataProviders({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getMarketDataProvidersQueryKey(options)
+    })
+
+export const searchMarketInstrumentsQueryKey = (options: Options<SearchMarketInstrumentsData>) =>
+    createQueryKey('searchMarketInstruments', options)
+
+/**
+ * Search instruments
+ *
+ * Search provider instruments and return a normalized instrument list
+ */
+export const searchMarketInstrumentsOptions = (options: Options<SearchMarketInstrumentsData>) =>
+    queryOptions<
+        SearchMarketInstrumentsResponse2,
+        SearchMarketInstrumentsError,
+        SearchMarketInstrumentsResponse2,
+        ReturnType<typeof searchMarketInstrumentsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await searchMarketInstruments({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: searchMarketInstrumentsQueryKey(options)
+    })
+
+export const getMarketQuotesQueryKey = (options: Options<GetMarketQuotesData>) =>
+    createQueryKey('getMarketQuotes', options)
+
+/**
+ * Get quotes
+ *
+ * Fetch normalized live quotes using the selected provider
+ */
+export const getMarketQuotesOptions = (options: Options<GetMarketQuotesData>) =>
+    queryOptions<
+        GetMarketQuotesResponse2,
+        GetMarketQuotesError,
+        GetMarketQuotesResponse2,
+        ReturnType<typeof getMarketQuotesQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getMarketQuotes({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getMarketQuotesQueryKey(options)
+    })
