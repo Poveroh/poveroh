@@ -28,6 +28,7 @@ import {
     deleteFinancialAccounts,
     deleteImport,
     deleteImports,
+    deleteMarketDataProviderCredential,
     deleteSubcategories,
     deleteSubcategory,
     deleteSubscription,
@@ -83,6 +84,7 @@ import {
     resetPassword,
     resetPasswordCallback,
     rollbackImport,
+    saveMarketDataProviderCredential,
     searchMarketInstruments,
     sendVerificationEmail,
     signInEmail,
@@ -176,6 +178,9 @@ import type {
     DeleteImportsData,
     DeleteImportsError,
     DeleteImportsResponse,
+    DeleteMarketDataProviderCredentialData,
+    DeleteMarketDataProviderCredentialError,
+    DeleteMarketDataProviderCredentialResponse2,
     DeleteSubcategoriesData,
     DeleteSubcategoriesError,
     DeleteSubcategoriesResponse,
@@ -336,6 +341,9 @@ import type {
     RollbackImportData,
     RollbackImportError,
     RollbackImportResponse,
+    SaveMarketDataProviderCredentialData,
+    SaveMarketDataProviderCredentialError,
+    SaveMarketDataProviderCredentialResponse2,
     SearchMarketInstrumentsData,
     SearchMarketInstrumentsError,
     SearchMarketInstrumentsResponse2,
@@ -2817,3 +2825,61 @@ export const getMarketQuotesOptions = (options: Options<GetMarketQuotesData>) =>
         },
         queryKey: getMarketQuotesQueryKey(options)
     })
+
+/**
+ * Delete market data provider credential
+ *
+ * Delete the authenticated users encrypted provider API key
+ */
+export const deleteMarketDataProviderCredentialMutation = (
+    options?: Partial<Options<DeleteMarketDataProviderCredentialData>>
+): UseMutationOptions<
+    DeleteMarketDataProviderCredentialResponse2,
+    DeleteMarketDataProviderCredentialError,
+    Options<DeleteMarketDataProviderCredentialData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteMarketDataProviderCredentialResponse2,
+        DeleteMarketDataProviderCredentialError,
+        Options<DeleteMarketDataProviderCredentialData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteMarketDataProviderCredential({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Save market data provider credential
+ *
+ * Encrypt and store the authenticated users provider API key server-side
+ */
+export const saveMarketDataProviderCredentialMutation = (
+    options?: Partial<Options<SaveMarketDataProviderCredentialData>>
+): UseMutationOptions<
+    SaveMarketDataProviderCredentialResponse2,
+    SaveMarketDataProviderCredentialError,
+    Options<SaveMarketDataProviderCredentialData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        SaveMarketDataProviderCredentialResponse2,
+        SaveMarketDataProviderCredentialError,
+        Options<SaveMarketDataProviderCredentialData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await saveMarketDataProviderCredential({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}

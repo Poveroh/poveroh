@@ -9,6 +9,8 @@ export type MarketDataProvider = {
     label: string
     transport: MarketDataTransportEnum
     enabled: boolean
+    configured: boolean
+    requiresCredentials: boolean
     supportsSearch: boolean
     supportsQuotes: boolean
     supportsStreaming: boolean

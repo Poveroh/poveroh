@@ -21,6 +21,8 @@ export type User = {
     dateFormat: DateFormatEnum
     country: CountriesEnum
     timezone: TimezoneEnum
+    preferredMarketDataProviderId: string | null
+    marketDataFallbackEnabled: boolean
 }
 
 export type Session = {
@@ -1766,6 +1768,8 @@ export type MarketDataProvider = {
     label: string
     transport: MarketDataTransportEnum
     enabled: boolean
+    configured: boolean
+    requiresCredentials: boolean
     supportsSearch: boolean
     supportsQuotes: boolean
     supportsStreaming: boolean
@@ -1844,6 +1848,36 @@ export type GetMarketQuotesResponse = {
      * Response data
      */
     data: Array<MarketQuote>
+}
+
+export type SaveMarketDataProviderPathParams = {
+    providerId: string
+}
+
+export type SaveMarketDataProviderCredentialRequest = {
+    apiKey: string
+}
+
+export type SaveMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type DeleteMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
 }
 
 export type MarketDataProviderQuery = {
@@ -2480,6 +2514,8 @@ export type UserPreferences = {
     dateFormat: DateFormatEnum
     country: CountriesEnum
     timezone: TimezoneEnum
+    preferredMarketDataProviderId: string | null
+    marketDataFallbackEnabled: boolean
 }
 
 export type GetUserResponse = {
@@ -2511,6 +2547,8 @@ export type UpdateUserRequest = {
     dateFormat?: DateFormatEnum
     country?: CountriesEnum
     timezone?: TimezoneEnum
+    preferredMarketDataProviderId?: string | null
+    marketDataFallbackEnabled?: boolean
 }
 
 export type UpdateUserResponse = {
@@ -7244,3 +7282,77 @@ export type GetMarketQuotesResponses = {
 }
 
 export type GetMarketQuotesResponse2 = GetMarketQuotesResponses[keyof GetMarketQuotesResponses]
+
+export type DeleteMarketDataProviderCredentialData = {
+    body?: never
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/market-data/providers/{providerId}/credential'
+}
+
+export type DeleteMarketDataProviderCredentialErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteMarketDataProviderCredentialError =
+    DeleteMarketDataProviderCredentialErrors[keyof DeleteMarketDataProviderCredentialErrors]
+
+export type DeleteMarketDataProviderCredentialResponses = {
+    /**
+     * Credential deleted
+     */
+    200: DeleteMarketDataProviderCredentialResponse
+}
+
+export type DeleteMarketDataProviderCredentialResponse2 =
+    DeleteMarketDataProviderCredentialResponses[keyof DeleteMarketDataProviderCredentialResponses]
+
+export type SaveMarketDataProviderCredentialData = {
+    body?: SaveMarketDataProviderCredentialRequest
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/market-data/providers/{providerId}/credential'
+}
+
+export type SaveMarketDataProviderCredentialErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type SaveMarketDataProviderCredentialError =
+    SaveMarketDataProviderCredentialErrors[keyof SaveMarketDataProviderCredentialErrors]
+
+export type SaveMarketDataProviderCredentialResponses = {
+    /**
+     * Credential saved
+     */
+    200: SaveMarketDataProviderCredentialResponse
+}
+
+export type SaveMarketDataProviderCredentialResponse2 =
+    SaveMarketDataProviderCredentialResponses[keyof SaveMarketDataProviderCredentialResponses]

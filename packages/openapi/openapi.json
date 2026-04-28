@@ -87,6 +87,14 @@
                     },
                     "timezone": {
                         "$ref": "#/components/schemas/TimezoneEnum"
+                    },
+                    "preferredMarketDataProviderId": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                    },
+                    "marketDataFallbackEnabled": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -105,7 +113,9 @@
                     "preferredLanguage",
                     "dateFormat",
                     "country",
-                    "timezone"
+                    "timezone",
+                    "preferredMarketDataProviderId",
+                    "marketDataFallbackEnabled"
                 ]
             },
             "Session": {
@@ -4526,6 +4536,12 @@
                     "enabled": {
                         "type": "boolean"
                     },
+                    "configured": {
+                        "type": "boolean"
+                    },
+                    "requiresCredentials": {
+                        "type": "boolean"
+                    },
                     "supportsSearch": {
                         "type": "boolean"
                     },
@@ -4547,6 +4563,8 @@
                     "label",
                     "transport",
                     "enabled",
+                    "configured",
+                    "requiresCredentials",
                     "supportsSearch",
                     "supportsQuotes",
                     "supportsStreaming",
@@ -4740,6 +4758,64 @@
                     "success",
                     "message",
                     "data"
+                ]
+            },
+            "SaveMarketDataProviderPathParams": {
+                "type": "object",
+                "properties": {
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "providerId"
+                ]
+            },
+            "SaveMarketDataProviderCredentialRequest": {
+                "type": "object",
+                "properties": {
+                    "apiKey": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "apiKey"
+                ]
+            },
+            "SaveMarketDataProviderCredentialResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message"
+                ]
+            },
+            "DeleteMarketDataProviderCredentialResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message"
                 ]
             },
             "MarketDataProviderQuery": {
@@ -6648,6 +6724,14 @@
                     },
                     "timezone": {
                         "$ref": "#/components/schemas/TimezoneEnum"
+                    },
+                    "preferredMarketDataProviderId": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                    },
+                    "marketDataFallbackEnabled": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -6656,7 +6740,9 @@
                     "preferredLanguage",
                     "dateFormat",
                     "country",
-                    "timezone"
+                    "timezone",
+                    "preferredMarketDataProviderId",
+                    "marketDataFallbackEnabled"
                 ]
             },
             "GetUserResponse": {
@@ -6747,6 +6833,14 @@
                     },
                     "timezone": {
                         "$ref": "#/components/schemas/TimezoneEnum"
+                    },
+                    "preferredMarketDataProviderId": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                    },
+                    "marketDataFallbackEnabled": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -16783,6 +16877,149 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/GetMarketQuotesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/market-data/providers/{providerId}/credential": {
+            "put": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "saveMarketDataProviderCredential",
+                "summary": "Save market data provider credential",
+                "description": "Encrypt and store the authenticated users provider API key server-side",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveMarketDataProviderCredentialRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credential saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SaveMarketDataProviderCredentialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "deleteMarketDataProviderCredential",
+                "summary": "Delete market data provider credential",
+                "description": "Delete the authenticated users encrypted provider API key",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Credential deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteMarketDataProviderCredentialResponse"
                                 }
                             }
                         }

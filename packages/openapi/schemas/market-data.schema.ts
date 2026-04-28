@@ -1,6 +1,6 @@
 import { z } from '../zod'
 import { AssetTypeEnum, CurrencyEnum, MarketDataTransportEnum, MarketStateEnum, ValueSourceEnum } from './enum.schema'
-import { SuccessResponseSchema } from './response.schema'
+import { SimpleSuccessResponseSchema, SuccessResponseSchema } from './response.schema'
 
 /**
  * Market data provider schema representing an available raw data provider
@@ -11,6 +11,8 @@ export const MarketDataProviderSchema = z
         label: z.string().nonempty(),
         transport: MarketDataTransportEnum,
         enabled: z.boolean(),
+        configured: z.boolean(),
+        requiresCredentials: z.boolean(),
         supportsSearch: z.boolean(),
         supportsQuotes: z.boolean(),
         supportsStreaming: z.boolean(),
@@ -74,6 +76,38 @@ export const SearchMarketInstrumentsResponseSchema = SuccessResponseSchema(Marke
  */
 export const GetMarketQuotesResponseSchema = SuccessResponseSchema(MarketQuoteSchema.array()).openapi(
     'GetMarketQuotesResponse'
+)
+
+/**
+ * Path params schema for provider credential operations
+ */
+export const SaveMarketDataProviderPathParamsSchema = z
+    .object({
+        providerId: z.string().nonempty()
+    })
+    .openapi('SaveMarketDataProviderPathParams')
+
+/**
+ * Request schema for securely saving a per-user provider credential
+ */
+export const SaveMarketDataProviderCredentialRequestSchema = z
+    .object({
+        apiKey: z.string().trim().min(1)
+    })
+    .openapi('SaveMarketDataProviderCredentialRequest')
+
+/**
+ * Response schema for provider credential updates
+ */
+export const SaveMarketDataProviderCredentialResponseSchema = SimpleSuccessResponseSchema.openapi(
+    'SaveMarketDataProviderCredentialResponse'
+)
+
+/**
+ * Response schema for provider credential deletion
+ */
+export const DeleteMarketDataProviderCredentialResponseSchema = SimpleSuccessResponseSchema.openapi(
+    'DeleteMarketDataProviderCredentialResponse'
 )
 
 // ------------------------------------------------------------------------------------------------------------------------------ //

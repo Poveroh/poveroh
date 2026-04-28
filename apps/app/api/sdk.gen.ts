@@ -75,6 +75,9 @@ import type {
     DeleteImportsData,
     DeleteImportsErrors,
     DeleteImportsResponses,
+    DeleteMarketDataProviderCredentialData,
+    DeleteMarketDataProviderCredentialErrors,
+    DeleteMarketDataProviderCredentialResponses,
     DeleteSubcategoriesData,
     DeleteSubcategoriesErrors,
     DeleteSubcategoriesResponses,
@@ -235,6 +238,9 @@ import type {
     RollbackImportData,
     RollbackImportErrors,
     RollbackImportResponses,
+    SaveMarketDataProviderCredentialData,
+    SaveMarketDataProviderCredentialErrors,
+    SaveMarketDataProviderCredentialResponses,
     SearchMarketInstrumentsData,
     SearchMarketInstrumentsErrors,
     SearchMarketInstrumentsResponses,
@@ -1729,4 +1735,44 @@ export const getMarketQuotes = <ThrowOnError extends boolean = false>(
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/market-data/quotes',
         ...options
+    })
+
+/**
+ * Delete market data provider credential
+ *
+ * Delete the authenticated users encrypted provider API key
+ */
+export const deleteMarketDataProviderCredential = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteMarketDataProviderCredentialData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<
+        DeleteMarketDataProviderCredentialResponses,
+        DeleteMarketDataProviderCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/providers/{providerId}/credential',
+        ...options
+    })
+
+/**
+ * Save market data provider credential
+ *
+ * Encrypt and store the authenticated users provider API key server-side
+ */
+export const saveMarketDataProviderCredential = <ThrowOnError extends boolean = false>(
+    options: Options<SaveMarketDataProviderCredentialData, ThrowOnError>
+) =>
+    (options.client ?? client).put<
+        SaveMarketDataProviderCredentialResponses,
+        SaveMarketDataProviderCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/providers/{providerId}/credential',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
     })

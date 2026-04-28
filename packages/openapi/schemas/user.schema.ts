@@ -20,7 +20,9 @@ export const UserPreferencesSchema = z
         preferredLanguage: LanguageEnum,
         dateFormat: DateFormatEnum,
         country: CountriesEnum,
-        timezone: TimezoneEnum
+        timezone: TimezoneEnum,
+        preferredMarketDataProviderId: z.string().trim().min(1).nullable(),
+        marketDataFallbackEnabled: z.boolean()
     })
     .openapi('UserPreferences')
 

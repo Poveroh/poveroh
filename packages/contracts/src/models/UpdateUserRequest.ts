@@ -26,4 +26,6 @@ export type UpdateUserRequest = {
     dateFormat?: DateFormatEnum
     country?: CountriesEnum
     timezone?: TimezoneEnum
+    preferredMarketDataProviderId?: string | null
+    marketDataFallbackEnabled?: boolean
 }

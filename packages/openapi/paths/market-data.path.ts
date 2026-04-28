@@ -1,9 +1,13 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import {
+    DeleteMarketDataProviderCredentialResponseSchema,
     ErrorResponseSchema,
     GetMarketDataProvidersResponseSchema,
     GetMarketQuotesQuerySchema,
     GetMarketQuotesResponseSchema,
+    SaveMarketDataProviderCredentialRequestSchema,
+    SaveMarketDataProviderCredentialResponseSchema,
+    SaveMarketDataProviderPathParamsSchema,
     SearchMarketInstrumentsQuerySchema,
     SearchMarketInstrumentsResponseSchema
 } from '../schemas'
@@ -25,6 +29,69 @@ export const registerMarketDataPath = (registry: OpenAPIRegistry) => {
                     'application/json': { schema: GetMarketDataProvidersResponseSchema }
                 }
             },
+            401: { description: 'Unauthorized', content: { 'application/json': { schema: ErrorResponseSchema } } },
+            500: {
+                description: 'Internal server error',
+                content: { 'application/json': { schema: ErrorResponseSchema } }
+            }
+        }
+    })
+
+    // PUT /market-data/providers/{providerId}/credential
+    registry.registerPath({
+        method: 'put',
+        path: '/market-data/providers/{providerId}/credential',
+        tags: ['Market Data'],
+        operationId: 'saveMarketDataProviderCredential',
+        summary: 'Save market data provider credential',
+        description: 'Encrypt and store the authenticated users provider API key server-side',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: SaveMarketDataProviderPathParamsSchema,
+            body: {
+                content: {
+                    'application/json': {
+                        schema: SaveMarketDataProviderCredentialRequestSchema
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'Credential saved',
+                content: {
+                    'application/json': { schema: SaveMarketDataProviderCredentialResponseSchema }
+                }
+            },
+            400: { description: 'Invalid request', content: { 'application/json': { schema: ErrorResponseSchema } } },
+            401: { description: 'Unauthorized', content: { 'application/json': { schema: ErrorResponseSchema } } },
+            500: {
+                description: 'Internal server error',
+                content: { 'application/json': { schema: ErrorResponseSchema } }
+            }
+        }
+    })
+
+    // DELETE /market-data/providers/{providerId}/credential
+    registry.registerPath({
+        method: 'delete',
+        path: '/market-data/providers/{providerId}/credential',
+        tags: ['Market Data'],
+        operationId: 'deleteMarketDataProviderCredential',
+        summary: 'Delete market data provider credential',
+        description: 'Delete the authenticated users encrypted provider API key',
+        security: [{ bearerAuth: [] }],
+        request: {
+            params: SaveMarketDataProviderPathParamsSchema
+        },
+        responses: {
+            200: {
+                description: 'Credential deleted',
+                content: {
+                    'application/json': { schema: DeleteMarketDataProviderCredentialResponseSchema }
+                }
+            },
+            400: { description: 'Invalid request', content: { 'application/json': { schema: ErrorResponseSchema } } },
             401: { description: 'Unauthorized', content: { 'application/json': { schema: ErrorResponseSchema } } },
             500: {
                 description: 'Internal server error',

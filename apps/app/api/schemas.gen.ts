@@ -60,6 +60,14 @@ export const UserSchema = {
         },
         timezone: {
             $ref: '#/components/schemas/TimezoneEnum'
+        },
+        preferredMarketDataProviderId: {
+            type: 'string',
+            nullable: true,
+            minLength: 1
+        },
+        marketDataFallbackEnabled: {
+            type: 'boolean'
         }
     },
     required: [
@@ -78,7 +86,9 @@ export const UserSchema = {
         'preferredLanguage',
         'dateFormat',
         'country',
-        'timezone'
+        'timezone',
+        'preferredMarketDataProviderId',
+        'marketDataFallbackEnabled'
     ]
 } as const
 
@@ -4196,6 +4206,12 @@ export const MarketDataProviderSchema = {
         enabled: {
             type: 'boolean'
         },
+        configured: {
+            type: 'boolean'
+        },
+        requiresCredentials: {
+            type: 'boolean'
+        },
         supportsSearch: {
             type: 'boolean'
         },
@@ -4217,6 +4233,8 @@ export const MarketDataProviderSchema = {
         'label',
         'transport',
         'enabled',
+        'configured',
+        'requiresCredentials',
         'supportsSearch',
         'supportsQuotes',
         'supportsStreaming',
@@ -4404,6 +4422,58 @@ export const GetMarketQuotesResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
+} as const
+
+export const SaveMarketDataProviderPathParamsSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            minLength: 1
+        }
+    },
+    required: ['providerId']
+} as const
+
+export const SaveMarketDataProviderCredentialRequestSchema = {
+    type: 'object',
+    properties: {
+        apiKey: {
+            type: 'string',
+            minLength: 1
+        }
+    },
+    required: ['apiKey']
+} as const
+
+export const SaveMarketDataProviderCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const DeleteMarketDataProviderCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
 } as const
 
 export const MarketDataProviderQuerySchema = {
@@ -6210,9 +6280,26 @@ export const UserPreferencesSchema = {
         },
         timezone: {
             $ref: '#/components/schemas/TimezoneEnum'
+        },
+        preferredMarketDataProviderId: {
+            type: 'string',
+            nullable: true,
+            minLength: 1
+        },
+        marketDataFallbackEnabled: {
+            type: 'boolean'
         }
     },
-    required: ['snapshotFrequency', 'preferredCurrency', 'preferredLanguage', 'dateFormat', 'country', 'timezone']
+    required: [
+        'snapshotFrequency',
+        'preferredCurrency',
+        'preferredLanguage',
+        'dateFormat',
+        'country',
+        'timezone',
+        'preferredMarketDataProviderId',
+        'marketDataFallbackEnabled'
+    ]
 } as const
 
 export const GetUserResponseSchema = {
@@ -6300,6 +6387,14 @@ export const UpdateUserRequestSchema = {
         },
         timezone: {
             $ref: '#/components/schemas/TimezoneEnum'
+        },
+        preferredMarketDataProviderId: {
+            type: 'string',
+            nullable: true,
+            minLength: 1
+        },
+        marketDataFallbackEnabled: {
+            type: 'boolean'
         }
     }
 } as const
