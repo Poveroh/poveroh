@@ -263,6 +263,7 @@ docs/                            # ENV_SETUP.md, CONTRIBUTING.md, API_AUTH.md
 - Types/Classes: PascalCase (suffix component props with Props, e.g. ButtonProps)
 - Files/directories: kebab-case with descriptive suffixes, hook included (.component.tsx, .- service.ts, .entity.ts, .dto.ts, .module.ts). Example `use-category.ts`
 - TypeScript generics: descriptive names
+- When creating a new Zod schema, use the prefixes **Create**, **Get**, **Update**, or **Delete** when appropriate.
 
 ## Comments
 
