@@ -65,9 +65,6 @@ export const UserSchema = {
             type: 'string',
             nullable: true,
             minLength: 1
-        },
-        marketDataFallbackEnabled: {
-            type: 'boolean'
         }
     },
     required: [
@@ -87,8 +84,7 @@ export const UserSchema = {
         'dateFormat',
         'country',
         'timezone',
-        'preferredMarketDataProviderId',
-        'marketDataFallbackEnabled'
+        'preferredMarketDataProviderId'
     ]
 } as const
 
@@ -4200,6 +4196,10 @@ export const MarketDataProviderSchema = {
             type: 'string',
             minLength: 1
         },
+        logoUrl: {
+            type: 'string',
+            format: 'uri'
+        },
         transport: {
             $ref: '#/components/schemas/MarketDataTransportEnum'
         },
@@ -4231,6 +4231,7 @@ export const MarketDataProviderSchema = {
     required: [
         'id',
         'label',
+        'logoUrl',
         'transport',
         'enabled',
         'configured',
@@ -4424,7 +4425,7 @@ export const GetMarketQuotesResponseSchema = {
     required: ['success', 'message', 'data']
 } as const
 
-export const SaveMarketDataProviderPathParamsSchema = {
+export const UpdateMarketDataProviderPathParamsSchema = {
     type: 'object',
     properties: {
         providerId: {
@@ -4435,7 +4436,7 @@ export const SaveMarketDataProviderPathParamsSchema = {
     required: ['providerId']
 } as const
 
-export const SaveMarketDataProviderCredentialRequestSchema = {
+export const UpdateMarketDataProviderCredentialRequestSchema = {
     type: 'object',
     properties: {
         apiKey: {
@@ -4446,7 +4447,7 @@ export const SaveMarketDataProviderCredentialRequestSchema = {
     required: ['apiKey']
 } as const
 
-export const SaveMarketDataProviderCredentialResponseSchema = {
+export const UpdateMarketDataProviderCredentialResponseSchema = {
     type: 'object',
     properties: {
         success: {
@@ -6285,9 +6286,6 @@ export const UserPreferencesSchema = {
             type: 'string',
             nullable: true,
             minLength: 1
-        },
-        marketDataFallbackEnabled: {
-            type: 'boolean'
         }
     },
     required: [
@@ -6297,8 +6295,7 @@ export const UserPreferencesSchema = {
         'dateFormat',
         'country',
         'timezone',
-        'preferredMarketDataProviderId',
-        'marketDataFallbackEnabled'
+        'preferredMarketDataProviderId'
     ]
 } as const
 
@@ -6392,9 +6389,6 @@ export const UpdateUserRequestSchema = {
             type: 'string',
             nullable: true,
             minLength: 1
-        },
-        marketDataFallbackEnabled: {
-            type: 'boolean'
         }
     }
 } as const

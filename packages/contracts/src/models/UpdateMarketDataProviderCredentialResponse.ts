@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SaveMarketDataProviderCredentialResponse = {
+export type UpdateMarketDataProviderCredentialResponse = {
     /**
      * Indicates if the request was successful
      */

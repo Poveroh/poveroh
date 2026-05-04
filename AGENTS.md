@@ -46,6 +46,7 @@ The platform is designed for a single user (or household) who self-hosts the ins
 - Never import from `packages/contracts` directly in the frontend — use `@poveroh/types` instead
 - Never add comments that simply restate what the code does
 - Never create types that are shared between API and APP in specific file. Use Zod schemas and generate it `npm run openapi:generate`
+- Never create type in a specific file, unless is a props. If is shared, put in Zod schemas and generate; otherwise create or use relative files in `types` folder
 
 ## PR Size Guidelines
 

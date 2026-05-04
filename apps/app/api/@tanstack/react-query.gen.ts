@@ -343,7 +343,7 @@ import type {
     RollbackImportResponse,
     SaveMarketDataProviderCredentialData,
     SaveMarketDataProviderCredentialError,
-    SaveMarketDataProviderCredentialResponse2,
+    SaveMarketDataProviderCredentialResponse,
     SearchMarketInstrumentsData,
     SearchMarketInstrumentsError,
     SearchMarketInstrumentsResponse2,
@@ -2863,12 +2863,12 @@ export const deleteMarketDataProviderCredentialMutation = (
 export const saveMarketDataProviderCredentialMutation = (
     options?: Partial<Options<SaveMarketDataProviderCredentialData>>
 ): UseMutationOptions<
-    SaveMarketDataProviderCredentialResponse2,
+    SaveMarketDataProviderCredentialResponse,
     SaveMarketDataProviderCredentialError,
     Options<SaveMarketDataProviderCredentialData>
 > => {
     const mutationOptions: UseMutationOptions<
-        SaveMarketDataProviderCredentialResponse2,
+        SaveMarketDataProviderCredentialResponse,
         SaveMarketDataProviderCredentialError,
         Options<SaveMarketDataProviderCredentialData>
     > = {

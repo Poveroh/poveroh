@@ -27,5 +27,4 @@ export type User = {
     country: CountriesEnum
     timezone: TimezoneEnum
     preferredMarketDataProviderId: string | null
-    marketDataFallbackEnabled: boolean
 }

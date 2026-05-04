@@ -5,12 +5,11 @@
     "private": true,
     "main": "index.js",
     "files": [
-      "base.json",
-      "nextjs.json",
-      "react-library.json"
+        "base.json",
+        "nextjs.json",
+        "react-library.json"
     ],
     "devDependencies": {
-      "tsconfig-paths": "^4.1.0"
+        "tsconfig-paths": "^4.1.0"
     }
-  }
-  
+}

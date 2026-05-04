@@ -22,7 +22,6 @@ export type User = {
     country: CountriesEnum
     timezone: TimezoneEnum
     preferredMarketDataProviderId: string | null
-    marketDataFallbackEnabled: boolean
 }
 
 export type Session = {
@@ -1766,6 +1765,7 @@ export type CreateImportTemplateResponse = {
 export type MarketDataProvider = {
     id: string
     label: string
+    logoUrl: string
     transport: MarketDataTransportEnum
     enabled: boolean
     configured: boolean
@@ -1850,15 +1850,15 @@ export type GetMarketQuotesResponse = {
     data: Array<MarketQuote>
 }
 
-export type SaveMarketDataProviderPathParams = {
+export type UpdateMarketDataProviderPathParams = {
     providerId: string
 }
 
-export type SaveMarketDataProviderCredentialRequest = {
+export type UpdateMarketDataProviderCredentialRequest = {
     apiKey: string
 }
 
-export type SaveMarketDataProviderCredentialResponse = {
+export type UpdateMarketDataProviderCredentialResponse = {
     /**
      * Indicates if the request was successful
      */
@@ -2515,7 +2515,6 @@ export type UserPreferences = {
     country: CountriesEnum
     timezone: TimezoneEnum
     preferredMarketDataProviderId: string | null
-    marketDataFallbackEnabled: boolean
 }
 
 export type GetUserResponse = {
@@ -2548,7 +2547,6 @@ export type UpdateUserRequest = {
     country?: CountriesEnum
     timezone?: TimezoneEnum
     preferredMarketDataProviderId?: string | null
-    marketDataFallbackEnabled?: boolean
 }
 
 export type UpdateUserResponse = {
@@ -7321,7 +7319,7 @@ export type DeleteMarketDataProviderCredentialResponse2 =
     DeleteMarketDataProviderCredentialResponses[keyof DeleteMarketDataProviderCredentialResponses]
 
 export type SaveMarketDataProviderCredentialData = {
-    body?: SaveMarketDataProviderCredentialRequest
+    body?: UpdateMarketDataProviderCredentialRequest
     path: {
         providerId: string
     }
@@ -7351,8 +7349,8 @@ export type SaveMarketDataProviderCredentialResponses = {
     /**
      * Credential saved
      */
-    200: SaveMarketDataProviderCredentialResponse
+    200: UpdateMarketDataProviderCredentialResponse
 }
 
-export type SaveMarketDataProviderCredentialResponse2 =
+export type SaveMarketDataProviderCredentialResponse =
     SaveMarketDataProviderCredentialResponses[keyof SaveMarketDataProviderCredentialResponses]

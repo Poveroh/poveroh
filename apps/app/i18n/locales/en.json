@@ -549,5 +549,42 @@
             "IMPORT_REJECTED": "Import rejected",
             "IMPORT_APPROVED": "Import approved"
         }
+    },
+    "providers": {
+        "title": "Stock provider",
+        "breadcrumb": {
+            "advanced": "Advanced"
+        },
+        "select": {
+            "title": "Select provider",
+            "subtitle": "Select the source to fetch stock market data from. Each provider may differ in coverage, update frequency, and usage limits.",
+            "placeholder": "Select a value"
+        },
+        "list": {
+            "title": "Providers",
+            "finnhub": {
+                "setup": "Setup instructions:\n1. Visit the Finnhub dashboard to get your API credentials\n2. Your API key is required to enable stock market sync\n3. The free tier supports limited symbols and request volume"
+            },
+            "massive": {
+                "setup": "Setup instructions:\n1. Visit the Massive dashboard to get your API credentials\n2. Your API key is required to enable stock market sync\n3. For production use, set environment to 'production', for testing use 'sandbox'"
+            }
+        },
+        "status": {
+            "configured": "Configured and ready to use",
+            "notConfigured": "Not configured"
+        },
+        "fields": {
+            "apiKey": "Api key",
+            "apiKeyPlaceholder": "Paste your provider api key"
+        },
+        "actions": {
+            "connect": "Connect",
+            "update": "Update",
+            "disconnect": "Disconnect"
+        },
+        "toast": {
+            "saved": "{a} api key saved",
+            "deleted": "{a} api key removed"
+        }
     }
 }

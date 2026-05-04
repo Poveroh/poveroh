@@ -9,6 +9,7 @@ export const MarketDataProviderSchema = z
     .object({
         id: z.string().nonempty(),
         label: z.string().nonempty(),
+        logoUrl: z.string().url(),
         transport: MarketDataTransportEnum,
         enabled: z.boolean(),
         configured: z.boolean(),
@@ -81,26 +82,26 @@ export const GetMarketQuotesResponseSchema = SuccessResponseSchema(MarketQuoteSc
 /**
  * Path params schema for provider credential operations
  */
-export const SaveMarketDataProviderPathParamsSchema = z
+export const UpdateMarketDataProviderPathParamsSchema = z
     .object({
         providerId: z.string().nonempty()
     })
-    .openapi('SaveMarketDataProviderPathParams')
+    .openapi('UpdateMarketDataProviderPathParams')
 
 /**
- * Request schema for securely saving a per-user provider credential
+ * Request schema for securely saving a per-user provider credential.
  */
-export const SaveMarketDataProviderCredentialRequestSchema = z
+export const UpdateMarketDataProviderCredentialRequestSchema = z
     .object({
         apiKey: z.string().trim().min(1)
     })
-    .openapi('SaveMarketDataProviderCredentialRequest')
+    .openapi('UpdateMarketDataProviderCredentialRequest')
 
 /**
  * Response schema for provider credential updates
  */
-export const SaveMarketDataProviderCredentialResponseSchema = SimpleSuccessResponseSchema.openapi(
-    'SaveMarketDataProviderCredentialResponse'
+export const UpdateMarketDataProviderCredentialResponseSchema = SimpleSuccessResponseSchema.openapi(
+    'UpdateMarketDataProviderCredentialResponse'
 )
 
 /**

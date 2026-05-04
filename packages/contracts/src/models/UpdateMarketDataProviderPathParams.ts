@@ -2,6 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SaveMarketDataProviderCredentialRequest = {
-    apiKey: string
+export type UpdateMarketDataProviderPathParams = {
+    providerId: string
 }

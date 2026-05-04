@@ -7,6 +7,7 @@ import type { MarketDataTransportEnum } from './MarketDataTransportEnum'
 export type MarketDataProvider = {
     id: string
     label: string
+    logoUrl: string
     transport: MarketDataTransportEnum
     enabled: boolean
     configured: boolean

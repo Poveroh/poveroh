@@ -10,38 +10,40 @@ generator client {
 // USER & AUTHENTICATION
 // ===========================================================================
 model User {
-    id                String             @id @default(uuid())
-    name              String
-    surname           String
-    email             String             @unique
-    emailVerified     Boolean            @default(false)
-    onBoardingStep    OnBoardingStep     @default(GENERALITES)
-    onBoardingAt      DateTime?
-    image             String?
-    snapshotFrequency SnapshotFrequency  @default(MONTHLY)
+    id                            String                         @id @default(uuid())
+    name                          String
+    surname                       String
+    email                         String                         @unique
+    emailVerified                 Boolean                        @default(false)
+    onBoardingStep                OnBoardingStep                 @default(GENERALITES)
+    onBoardingAt                  DateTime?
+    image                         String?
+    snapshotFrequency             SnapshotFrequency              @default(MONTHLY)
     // User Configuration Settings
-    preferredCurrency Currency           @default(EUR)
-    preferredLanguage Language           @default(EN)
-    dateFormat        DateFormat         @default(DD_MM_YYYY)
-    country           Countries          @default(ITALY)
-    timezone          Timezone           @default(ETC_UTC)
+    preferredCurrency             Currency                       @default(EUR)
+    preferredLanguage             Language                       @default(EN)
+    dateFormat                    DateFormat                     @default(DD_MM_YYYY)
+    country                       Countries                      @default(ITALY)
+    timezone                      Timezone                       @default(ETC_UTC)
+    preferredMarketDataProviderId String?                        @default("yahoo-finance")
     //Other
-    createdAt         DateTime           @default(now())
-    updatedAt         DateTime           @updatedAt
-    deletedAt         DateTime?          @db.Timestamptz
-    transactions      Transaction[]
-    transfers         Transfer[]
-    subscriptions     Subscription[]
-    categories        Category[]
-    financialAccounts FinancialAccount[]
-    imports           Import[]
-    sessions          Session[]
-    accounts          Account[]
-    verifications     Verification[]
-    assets            Asset[]
-    liabilities       Liability[]
-    snapshots         Snapshot[]
-    dashboardLayout   DashboardLayout?
+    createdAt                     DateTime                       @default(now())
+    updatedAt                     DateTime                       @updatedAt
+    deletedAt                     DateTime?                      @db.Timestamptz
+    transactions                  Transaction[]
+    transfers                     Transfer[]
+    subscriptions                 Subscription[]
+    categories                    Category[]
+    financialAccounts             FinancialAccount[]
+    imports                       Import[]
+    sessions                      Session[]
+    accounts                      Account[]
+    verifications                 Verification[]
+    assets                        Asset[]
+    liabilities                   Liability[]
+    snapshots                     Snapshot[]
+    dashboardLayout               DashboardLayout?
+    marketDataCredentials         MarketDataProviderCredential[]
 
     @@index([surname])
     @@index([createdAt])
@@ -118,15 +120,15 @@ model Verification {
 // FINANCIAL ACCOUNTS
 // ===========================================================================
 model FinancialAccount {
-    id               String                   @id @default(uuid())
-    userId           String
-    title            String
-    balance          Decimal                  @default(0) @db.Decimal(20, 2)
-    type             FinancialAccountType     @default(BANK_ACCOUNT)
-    logoIcon         String?
-    createdAt        DateTime                 @default(now())
-    updatedAt        DateTime                 @updatedAt
-    deletedAt        DateTime?                @db.Timestamptz
+    id                    String                   @id @default(uuid())
+    userId                String
+    title                 String
+    balance               Decimal                  @default(0) @db.Decimal(20, 2)
+    type                  FinancialAccountType     @default(BANK_ACCOUNT)
+    logoIcon              String?
+    createdAt             DateTime                 @default(now())
+    updatedAt             DateTime                 @updatedAt
+    deletedAt             DateTime?                @db.Timestamptz
     subscriptions         Subscription[]
     amounts               Amount[]
     imports               Import[]
@@ -172,8 +174,8 @@ model Asset {
 }
 
 model MarketableAsset {
-    id            String               @id @default(uuid())
-    assetId       String               @unique
+    id            String                @id @default(uuid())
+    assetId       String                @unique
     symbol        String?
     isin          String?
     exchange      String?
@@ -181,9 +183,9 @@ model MarketableAsset {
     sector        String?
     region        String?
     lastPriceSync DateTime?
-    createdAt     DateTime             @default(now())
-    updatedAt     DateTime             @updatedAt
-    deletedAt     DateTime?            @db.Timestamptz
+    createdAt     DateTime              @default(now())
+    updatedAt     DateTime              @updatedAt
+    deletedAt     DateTime?             @db.Timestamptz
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
@@ -254,20 +256,20 @@ model VehicleAsset {
 }
 
 model InsuranceAsset {
-    id               String              @id @default(uuid())
-    assetId          String              @unique
+    id               String               @id @default(uuid())
+    assetId          String               @unique
     insurer          String?
     policyType       InsurancePolicyType?
     policyNumber     String?
     startDate        DateTime?
     endDate          DateTime?
     beneficiary      String?
-    premiumPaid      Decimal?            @db.Decimal(20, 2)
+    premiumPaid      Decimal?             @db.Decimal(20, 2)
     premiumFrequency CyclePeriod?
-    surrenderValue   Decimal?            @db.Decimal(20, 2)
-    createdAt        DateTime            @default(now())
-    updatedAt        DateTime            @updatedAt
-    deletedAt        DateTime?           @db.Timestamptz
+    surrenderValue   Decimal?             @db.Decimal(20, 2)
+    createdAt        DateTime             @default(now())
+    updatedAt        DateTime             @updatedAt
+    deletedAt        DateTime?            @db.Timestamptz
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
@@ -322,23 +324,23 @@ model AutoDepreciation {
 // LIABILITY SYSTEM (debts: mortgages, loans, credit lines)
 // ===========================================================================
 model Liability {
-    id                 String              @id @default(uuid())
+    id                 String            @id @default(uuid())
     userId             String
     title              String
     type               LiabilityType
-    currency           Currency            @default(EUR)
-    principalAmount    Decimal             @db.Decimal(20, 2)
-    currentBalance     Decimal             @db.Decimal(20, 2)
-    interestRate       Decimal?            @db.Decimal(8, 5)
+    currency           Currency          @default(EUR)
+    principalAmount    Decimal           @db.Decimal(20, 2)
+    currentBalance     Decimal           @db.Decimal(20, 2)
+    interestRate       Decimal?          @db.Decimal(8, 5)
     interestRateType   InterestRateType?
     startDate          DateTime
     endDate            DateTime?
     durationMonths     Int?
-    monthlyPayment     Decimal?            @db.Decimal(20, 2)
+    monthlyPayment     Decimal?          @db.Decimal(20, 2)
     financialAccountId String?
-    createdAt          DateTime            @default(now())
-    updatedAt          DateTime            @updatedAt
-    deletedAt          DateTime?           @db.Timestamptz
+    createdAt          DateTime          @default(now())
+    updatedAt          DateTime          @updatedAt
+    deletedAt          DateTime?         @db.Timestamptz
 
     mortgage         MortgageLiability?
     loan             LoanLiability?
@@ -354,18 +356,18 @@ model Liability {
 }
 
 model MortgageLiability {
-    id                String        @id @default(uuid())
-    liabilityId       String        @unique
+    id                String       @id @default(uuid())
+    liabilityId       String       @unique
     mortgageType      MortgageType
     lender            String?
     propertyAddress   String?
-    ltv               Decimal?      @db.Decimal(5, 2)
+    ltv               Decimal?     @db.Decimal(5, 2)
     fixedPeriodMonths Int?
     indexedTo         String?
-    spread            Decimal?      @db.Decimal(8, 5)
-    createdAt         DateTime      @default(now())
-    updatedAt         DateTime      @updatedAt
-    deletedAt         DateTime?     @db.Timestamptz
+    spread            Decimal?     @db.Decimal(8, 5)
+    createdAt         DateTime     @default(now())
+    updatedAt         DateTime     @updatedAt
+    deletedAt         DateTime?    @db.Timestamptz
 
     liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
 }
@@ -412,20 +414,20 @@ model LiabilityTransaction {
 // SNAPSHOT (historical wealth)
 // ===========================================================================
 model Snapshot {
-    id                 String                     @id @default(uuid())
-    userId             String
-    snapshotDate       DateTime                   @db.Date
-    note               String?
-    totalCash          Decimal                    @default(0) @db.Decimal(20, 2)
-    totalInvestments   Decimal                    @default(0) @db.Decimal(20, 2)
-    totalLiabilities   Decimal                    @default(0) @db.Decimal(20, 2)
-    totalNetWorth      Decimal                    @default(0) @db.Decimal(20, 2)
-    accountBalances    SnapshotAccountBalance[]
-    assetValues        SnapshotAssetValue[]
-    liabilityBalances  SnapshotLiabilityBalance[]
-    createdAt          DateTime                   @default(now())
-    updatedAt          DateTime                   @updatedAt
-    deletedAt          DateTime?                  @db.Timestamptz
+    id                String                     @id @default(uuid())
+    userId            String
+    snapshotDate      DateTime                   @db.Date
+    note              String?
+    totalCash         Decimal                    @default(0) @db.Decimal(20, 2)
+    totalInvestments  Decimal                    @default(0) @db.Decimal(20, 2)
+    totalLiabilities  Decimal                    @default(0) @db.Decimal(20, 2)
+    totalNetWorth     Decimal                    @default(0) @db.Decimal(20, 2)
+    accountBalances   SnapshotAccountBalance[]
+    assetValues       SnapshotAssetValue[]
+    liabilityBalances SnapshotLiabilityBalance[]
+    createdAt         DateTime                   @default(now())
+    updatedAt         DateTime                   @updatedAt
+    deletedAt         DateTime?                  @db.Timestamptz
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -562,7 +564,7 @@ model Transaction {
     media         TransactionMedia[]
     amounts       Amount[]
 
-    transferId   String?
+    transferId String?
 
     user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
     category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
@@ -702,6 +704,26 @@ model Subcategory {
     category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
     @@index([categoryId])
+}
+
+// ===========================================================================
+// MARKET DATA PROVIDERS
+// ===========================================================================
+model MarketDataProviderCredential {
+    id         String   @id @default(uuid())
+    userId     String
+    providerId String
+    ciphertext Bytes
+    iv         Bytes
+    authTag    Bytes
+    algo       String   @default("aes256gcm-v1")
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, providerId])
+    @@index([userId])
 }
 
 // ===========================================================================

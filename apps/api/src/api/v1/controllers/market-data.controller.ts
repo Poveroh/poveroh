@@ -1,14 +1,17 @@
 import type { Request, Response } from 'express'
 import type { AssetTypeEnum } from '@poveroh/types'
+
 import { BadRequestError, ResponseHelper } from '@/src/utils'
+import { getParamString } from '@/src/utils/request'
 import { MarketDataService } from '../services/market-data.service'
+import { MarketDataCredentialService } from '../services/market-data-credential.service'
 
 export class MarketDataController {
-    // Lists available market data providers.
+    // Lists available market data providers, including a per-user `configured` flag.
     static async readProviders(req: Request, res: Response) {
         try {
-            const marketDataService = new MarketDataService()
-            const providers = marketDataService.getProviders()
+            const marketDataService = new MarketDataService(req.user.id)
+            const providers = await marketDataService.getProviders()
 
             return ResponseHelper.success(res, providers)
         } catch (error) {
@@ -16,7 +19,41 @@ export class MarketDataController {
         }
     }
 
-    // Searches provider instruments and returns normalized market instruments.
+    // Encrypts and stores the user's API key for the requested provider.
+    static async saveProviderCredential(req: Request, res: Response) {
+        try {
+            const providerId = getParamString(req.params, 'providerId')
+            if (!providerId) throw new BadRequestError('Missing provider ID in path')
+
+            const apiKey = typeof req.body?.apiKey === 'string' ? req.body.apiKey.trim() : ''
+
+            if (!apiKey) throw new BadRequestError('apiKey is required')
+
+            const credentialService = new MarketDataCredentialService(req.user.id)
+            await credentialService.saveCredential(providerId, { apiKey })
+
+            return ResponseHelper.success(res, { success: true })
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    // Deletes the encrypted credential row. Does not require the password.
+    static async deleteProviderCredential(req: Request, res: Response) {
+        try {
+            const providerId = getParamString(req.params, 'providerId')
+            if (!providerId) throw new BadRequestError('Missing provider ID in path')
+
+            const credentialService = new MarketDataCredentialService(req.user.id)
+            await credentialService.deleteCredential(providerId)
+
+            return ResponseHelper.success(res, { success: true })
+        } catch (error) {
+            return ResponseHelper.handleError(res, error)
+        }
+    }
+
+    // Searches provider instruments. Currently a stub until provider clients are implemented.
     static async searchInstruments(req: Request, res: Response) {
         try {
             const query = typeof req.query.q === 'string' ? req.query.q : ''
@@ -29,7 +66,7 @@ export class MarketDataController {
                 typeof req.query.assetType === 'string' ? (req.query.assetType as AssetTypeEnum) : undefined
             const limit = typeof req.query.limit === 'string' ? Number(req.query.limit) : undefined
 
-            const marketDataService = new MarketDataService()
+            const marketDataService = new MarketDataService(req.user.id)
             const instruments = await marketDataService.searchInstruments({
                 providerId,
                 assetType,
@@ -43,7 +80,7 @@ export class MarketDataController {
         }
     }
 
-    // Fetches normalized quotes for one or more symbols.
+    // Fetches normalized quotes. Currently a stub until provider clients are implemented.
     static async readQuotes(req: Request, res: Response) {
         try {
             const rawSymbols = req.query.symbols
@@ -62,7 +99,7 @@ export class MarketDataController {
             const assetType =
                 typeof req.query.assetType === 'string' ? (req.query.assetType as AssetTypeEnum) : undefined
 
-            const marketDataService = new MarketDataService()
+            const marketDataService = new MarketDataService(req.user.id)
             const quotes = await marketDataService.getQuotes({
                 providerId,
                 assetType,

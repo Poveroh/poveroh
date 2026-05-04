@@ -5,9 +5,9 @@ import {
     GetMarketDataProvidersResponseSchema,
     GetMarketQuotesQuerySchema,
     GetMarketQuotesResponseSchema,
-    SaveMarketDataProviderCredentialRequestSchema,
-    SaveMarketDataProviderCredentialResponseSchema,
-    SaveMarketDataProviderPathParamsSchema,
+    UpdateMarketDataProviderCredentialRequestSchema,
+    UpdateMarketDataProviderCredentialResponseSchema,
+    UpdateMarketDataProviderPathParamsSchema,
     SearchMarketInstrumentsQuerySchema,
     SearchMarketInstrumentsResponseSchema
 } from '../schemas'
@@ -47,11 +47,11 @@ export const registerMarketDataPath = (registry: OpenAPIRegistry) => {
         description: 'Encrypt and store the authenticated users provider API key server-side',
         security: [{ bearerAuth: [] }],
         request: {
-            params: SaveMarketDataProviderPathParamsSchema,
+            params: UpdateMarketDataProviderPathParamsSchema,
             body: {
                 content: {
                     'application/json': {
-                        schema: SaveMarketDataProviderCredentialRequestSchema
+                        schema: UpdateMarketDataProviderCredentialRequestSchema
                     }
                 }
             }
@@ -60,7 +60,7 @@ export const registerMarketDataPath = (registry: OpenAPIRegistry) => {
             200: {
                 description: 'Credential saved',
                 content: {
-                    'application/json': { schema: SaveMarketDataProviderCredentialResponseSchema }
+                    'application/json': { schema: UpdateMarketDataProviderCredentialResponseSchema }
                 }
             },
             400: { description: 'Invalid request', content: { 'application/json': { schema: ErrorResponseSchema } } },
@@ -82,7 +82,7 @@ export const registerMarketDataPath = (registry: OpenAPIRegistry) => {
         description: 'Delete the authenticated users encrypted provider API key',
         security: [{ bearerAuth: [] }],
         request: {
-            params: SaveMarketDataProviderPathParamsSchema
+            params: UpdateMarketDataProviderPathParamsSchema
         },
         responses: {
             200: {

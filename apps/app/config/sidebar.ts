@@ -94,6 +94,16 @@ export const SETTINGS_SIDEBAR: SidebarSection[] = [
         ]
     },
     {
+        title: 'settings.account.title',
+        items: [
+            {
+                title: 'providers.title',
+                href: '/settings/providers',
+                icon: 'user'
+            }
+        ]
+    },
+    {
         title: 'settings.system.title',
         items: [
             {

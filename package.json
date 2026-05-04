@@ -41,7 +41,7 @@
         "clean:env": "find . -name '.env' -type f -exec rm -f {} +",
         "clean:data": "node ./scripts/data/clean-db.js",
         "clean:docker-cache": "docker system prune -a",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "format": "prettier --write \"**/*.{ts,tsx,md,prisma,json}\"",
         "format:contracts": "prettier --write \"packages/contracts/**/*.{ts,tsx,md}\"",
         "docker:create-network": "docker network inspect poveroh_network || docker network create poveroh_network",
         "docker-dev:db": "npm run docker:create-network && cd ./docker && docker compose --env-file ../.env -f docker-compose.local.yml up -d --build db",
