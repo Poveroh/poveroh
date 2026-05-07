@@ -480,6 +480,20 @@
     },
     "investments": {
         "title": "Investments",
+        "empty": {
+            "title": "Add your first asset",
+            "subtitle": "Click the + Add button to create a new investment asset"
+        },
+        "search": {
+            "placeholder": "Search for this item"
+        },
+        "filters": {
+            "other": "Other filters"
+        },
+        "summary": {
+            "balance": "Total investment balance",
+            "live": "Live"
+        },
         "assets": {
             "title": "Assets",
             "modal": {
@@ -487,6 +501,48 @@
                 "newSubtitle": "Select the type of asset you want to add",
                 "editTitle": "Edit {a}",
                 "deleteDescription": "This action cannot be undone. This will permanently delete the asset."
+            },
+            "table": {
+                "name": "Name",
+                "year": "Year",
+                "buyDate": "Buy date",
+                "quantity": "Quantity",
+                "price": "Price",
+                "weight": "Weight",
+                "total": "Total"
+            },
+            "form": {
+                "transactionType": {
+                    "buy": "Buy",
+                    "sell": "Sell"
+                },
+                "symbol": {
+                    "label": "Ticket symbol"
+                },
+                "quantity": {
+                    "label": "Quantity"
+                },
+                "unitPrice": {
+                    "label": "Price per share"
+                },
+                "fees": {
+                    "label": "Fee"
+                },
+                "summary": {
+                    "unitPrice": "Price per share",
+                    "quantity": "Quantity",
+                    "fees": "Transaction fee",
+                    "total": "Total transaction"
+                }
+            },
+            "groups": {
+                "stock": "Stock",
+                "bond": "Bond",
+                "etf": "ETF",
+                "crypto": "Crypto",
+                "property": "Property",
+                "vehicle": "Vehicle",
+                "valuables": "Valuables"
             },
             "ticket-symbol": {
                 "title": "Ticket symbol",

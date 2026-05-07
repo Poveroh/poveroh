@@ -1,74 +1,52 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Input } from '@poveroh/ui/components/input'
-import { Landmark, Search } from 'lucide-react'
-
-import { useSubscription } from '@/hooks/use-subscriptions'
-import { useModal } from '@/hooks/use-modal'
-import { useDeleteModal } from '@/hooks/use-delete-modal'
-
-import { SubscriptionDialog } from '@/components/dialog/subscription-dialog'
-import SkeletonItem from '@/components/skeleton/skeleton-item'
-import Box from '@/components/box/box-wrapper'
-import { SubscriptionItem } from '@/components/item/subscriptions-item'
 import { Header } from '@/components/other/header-page'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { SubscriptionData } from '@poveroh/types'
+import { InvestmentAssetDialog } from '@/components/dialog/investment-asset-dialog'
+
+import { AssetContent } from '@/components/investments/asset-content'
+import { InvestmentSummary } from '@/components/investments/investment-summary'
+import { InvestmentToolbar } from '@/components/investments/investment-toolbar'
+import { ASSET_GROUPS, getLiveAssetsCount, getPortfolioValue } from '@/components/investments/investment-utils'
+import { useAsset } from '@/hooks/use-asset'
+import { useModal } from '@/hooks/use-modal'
 import { MODAL_IDS } from '@/types/constant'
+import type { AssetData } from '@poveroh/types'
+import { CryptoDialog } from '@/components/dialog/investment/crypto-symbol-dialog'
+import { PropertyAssetDialog } from '@/components/dialog/investment/property-asset-dialog'
+import { TicketSymbolDialog } from '@/components/dialog/investment/ticket-symbol-dialog'
+import { ValuableAssetDialog, OtherAssetDialog } from '@/components/dialog/investment/valuable-asset-dialog'
+import { VehicleAssetDialog } from '@/components/dialog/investment/vehicle-asset-dialog'
 
 export default function InvestmentsView() {
     const t = useTranslations()
+    const [year, setYear] = useState('2026')
+    const { assetQuery, portfolioSummaryQuery, deleteAllMutation, onSearch } = useAsset()
+    const { openModal } = useModal<AssetData>(MODAL_IDS.INVESTMENT_ASSET)
 
-    const { subscriptionQuery, createMutation, deleteMutation, deleteAllMutation, onSearch } = useSubscription()
-
-    const { openModal } = useModal<SubscriptionData>(MODAL_IDS.SUBSCRIPTION)
-    const { openModal: openDeleteModal } = useDeleteModal<SubscriptionData>()
-
-    const subscriptionsTotal = useMemo(() => {
-        if (!subscriptionQuery.data?.data) return 0
-        const total = (subscriptionQuery.data.data as SubscriptionData[]).reduce(
-            (sum, sub) => sum + Number(sub.amount || 0),
-            0
-        )
-        return parseFloat(total.toFixed(2))
-    }, [subscriptionQuery.data])
-
-    const pageContent = useMemo(() => {
-        if (subscriptionQuery.isFetching) {
-            return <SkeletonItem repeat={5} />
-        }
-
-        // if (subscriptionQuery.data && subscriptionQuery.data?.data.length > 0) {
-        //     return (
-        //         <Box>
-        //             {(subscriptionQuery.data.data as SubscriptionData[]).map(item => (
-        //                 <SubscriptionItem
-        //                     key={item.id}
-        //                     subscription={item}
-        //                     openEdit={(item: SubscriptionData) => {
-        //                         openModal('edit', item)
-        //                     }}
-        //                     openDelete={openDeleteModal}
-        //                 />
-        //             ))}
-        //         </Box>
-        //     )
-        // }
-
-        return (
-            <></>
-            // <div className='flex flex-col items-center space-y-8 justify-center h-[300px]'>
-            //     <Landmark />
-            //     <div className='flex flex-col items-center space-y-2 justify-center'>
-            //         <h4>{t('subscriptions.empty.title')}</h4>
-            //         <p>{t('subscriptions.empty.subtitle')}</p>
-            //     </div>
-            // </div>
-        )
-    }, [subscriptionQuery.isFetching, subscriptionQuery.data])
+    const assets = useMemo(() => (assetQuery.data?.data ?? []) as AssetData[], [assetQuery.data])
+    const totalValue = portfolioSummaryQuery.data?.data?.totalCurrentValue ?? getPortfolioValue(assets)
+    const liveAssets = portfolioSummaryQuery.data?.data?.totalWithLiveMarketData ?? getLiveAssetsCount(assets)
+    const summaryLabels = {
+        balance: t('investments.summary.balance'),
+        live: t('investments.summary.live')
+    }
+    const tableLabels = {
+        name: t('investments.assets.table.name'),
+        year: t('investments.assets.table.year'),
+        buyDate: t('investments.assets.table.buyDate'),
+        quantity: t('investments.assets.table.quantity'),
+        price: t('investments.assets.table.price'),
+        weight: t('investments.assets.table.weight'),
+        total: t('investments.assets.table.total')
+    }
+    const groupLabels = ASSET_GROUPS.reduce<Record<string, string>>((labels, group) => {
+        labels[group.key] = t(group.titleKey)
+        return labels
+    }, {})
 
     return (
         <>
@@ -77,32 +55,58 @@ export default function InvestmentsView() {
                     title={t('investments.title')}
                     breadcrumbs={[{ label: t('dashboard.title'), href: '/' }, { label: t('investments.title') }]}
                     fetchAction={{
-                        onClick: subscriptionQuery.refetch,
-                        loading: subscriptionQuery.isFetching
+                        onClick: assetQuery.refetch,
+                        loading: assetQuery.isFetching
                     }}
                     addAction={{
                         onClick: () => openModal('create'),
-                        loading: createMutation.isPending
+                        loading: false
                     }}
                     onDeleteAll={{
                         onClick: () => deleteAllMutation.mutate({}),
-                        loading: deleteMutation.isPending
+                        loading: deleteAllMutation.isPending,
+                        disabled: assets.length === 0
                     }}
                 />
 
-                <div className='flex flex-row items-center justify-between'>
-                    <div className='flex flex-row space-x-3'>
-                        <Input
-                            startIcon={Search}
-                            placeholder={t('messages.search')}
-                            className='w-[20vw]'
-                            onChange={onSearch}
-                        />
-                    </div>
-                </div>
+                <InvestmentSummary
+                    totalValue={totalValue}
+                    liveAssets={liveAssets}
+                    year={year}
+                    onYearChange={setYear}
+                    labels={summaryLabels}
+                />
 
-                {pageContent}
+                <section className='rounded-lg bg-box p-8'>
+                    <div className='space-y-8'>
+                        <InvestmentToolbar
+                            searchPlaceholder={t('investments.search.placeholder')}
+                            filterLabel={t('investments.filters.other')}
+                            onSearch={onSearch}
+                        />
+
+                        <div className='space-y-10'>
+                            <AssetContent
+                                isLoading={assetQuery.isFetching}
+                                assets={assets}
+                                totalValue={totalValue}
+                                labels={tableLabels}
+                                groupLabels={groupLabels}
+                                emptyTitle={t('investments.empty.title')}
+                                emptySubtitle={t('investments.empty.subtitle')}
+                            />
+                        </div>
+                    </div>
+                </section>
             </PageWrapper>
+
+            <InvestmentAssetDialog />
+            <TicketSymbolDialog />
+            <CryptoDialog />
+            <PropertyAssetDialog />
+            <VehicleAssetDialog />
+            <ValuableAssetDialog />
+            <OtherAssetDialog />
         </>
     )
 }

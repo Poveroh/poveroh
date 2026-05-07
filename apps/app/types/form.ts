@@ -1,9 +1,18 @@
 import { z } from 'zod'
-import { CreateImportRequest, CreateUpdateTransactionRequest, ImportData, InputVariantStyle } from '@poveroh/types'
+import type {
+    AssetTransactionTypeEnum,
+    CreateAssetRequest,
+    CreateAssetTransactionRequest,
+    CreateImportRequest,
+    CreateUpdateTransactionRequest,
+    CurrencyEnum,
+    ImportData,
+    InputVariantStyle
+} from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
 import { FieldValues } from 'react-hook-form'
-import { TransactionActionEnum, TransactionData } from '@poveroh/types'
+import type { TransactionActionEnum, TransactionData } from '@poveroh/types'
 
 type AmountSchemaErrors = {
     required_error: string
@@ -48,4 +57,20 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     startIcon?: LucideIcon
     variant?: InputVariantStyle
     endIcon?: LucideIcon
+}
+
+export type MarketableAssetFormValues = {
+    transactionType: Extract<AssetTransactionTypeEnum, 'BUY' | 'SELL'>
+    symbol: string
+    title: string
+    date: string
+    quantity: number
+    unitPrice: number
+    fees: number
+    currency: CurrencyEnum
+}
+
+export type MarketableAssetSubmitPayload = {
+    asset: CreateAssetRequest
+    transaction: Omit<CreateAssetTransactionRequest, 'assetId'>
 }

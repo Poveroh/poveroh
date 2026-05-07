@@ -11,14 +11,15 @@ export const AssetSelector = ({ dataCallback }: FormProps) => {
     const t = useTranslations()
 
     return (
-        <div className='flex flex-col space-y-4 h-full overflow-y-hidden'>
+        <div className='flex flex-col space-y-6 h-full overflow-y-hidden'>
             <div className='overflow-y-auto grow'>
-                <div className='grid grid-cols-2 gap-2'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     {ASSETS_CONFIG.map((asset, index) => (
                         <Card
                             key={index}
                             title={t(asset.title)}
-                            logo={asset.icons}
+                            subtitle={t(asset.subtitle)}
+                            icon={asset.icons}
                             onClick={() => dataCallback(asset.modalId)}
                         />
                     ))}

@@ -32,6 +32,10 @@ The platform is designed for a single user (or household) who self-hosts the ins
 - Instantiate services with userId: `new CategoryService(req.user.id)`
 - Use Zod schemas from `@poveroh/schemas` for both API input validation and frontend form validation
 - Use Zod schemas to add new types, then generate it using `npm run openapi:generate`
+- Keep each component in its own file by default; move constants to `constants.ts`, configuration to `config/`, and shared functions to `utils/`
+- Keep route files in `apps/app/app/**` focused on page composition, data wiring, and routing only
+- Put app-specific UI components in `apps/app/components/<feature-or-category>/`, not inside route-local `_components` folders
+- Put investment page components in `apps/app/components/investments/` and investment dialogs in `apps/app/components/dialog/investment/`
 - Always add comments before function in API function like services function, helpers function
 - Where possible and needed, add comments before function in frontend APP function
 
@@ -43,6 +47,7 @@ The platform is designed for a single user (or household) who self-hosts the ins
 - Never put business logic in controllers — that belongs in services
 - Never skip the build before pushing — the pre-commit hook runs `npm run build` and `npm run format`
 - Never create UI components in `apps/app/` that should be reusable — put them in `packages/ui`
+- Never create route-local component folders like `apps/app/app/**/_components`; use `apps/app/components/` grouped by feature/category
 - Never import from `packages/contracts` directly in the frontend — use `@poveroh/types` instead
 - Never add comments that simply restate what the code does
 - Never create types that are shared between API and APP in specific file. Use Zod schemas and generate it `npm run openapi:generate`
