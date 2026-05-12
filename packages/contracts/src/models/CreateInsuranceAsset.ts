@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { InsurancePolicyTypeEnum } from './InsurancePolicyTypeEnum'
-export type CreateInsuranceAssetDetails = {
+export type CreateInsuranceAsset = {
     insurer: string | null
     policyType: InsurancePolicyTypeEnum
     policyNumber: string | null

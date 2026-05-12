@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AssetPositionSummary } from './AssetPositionSummary'
+import type { AssetTransaction } from './AssetTransaction'
 import type { AssetTypeEnum } from './AssetTypeEnum'
 import type { CollectibleAsset } from './CollectibleAsset'
 import type { CurrencyEnum } from './CurrencyEnum'
@@ -28,5 +28,5 @@ export type Asset = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
-    position?: AssetPositionSummary
+    transactions: Array<AssetTransaction>
 }

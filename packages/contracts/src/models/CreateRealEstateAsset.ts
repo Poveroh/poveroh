@@ -3,9 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { RealEstateTypeEnum } from './RealEstateTypeEnum'
-export type CreateRealEstateAssetDetails = {
-    address: string | null
-    type: RealEstateTypeEnum
-    purchasePrice: number | null
+export type CreateRealEstateAsset = {
+    assetName: string
+    propertyType: RealEstateTypeEnum
+    purchasePrice: number
     purchaseDate: string | null
+    address: string
 }

@@ -60,569 +60,6 @@ export type Verification = {
     updatedAt: string
 }
 
-export type Category = {
-    id: string
-    userId: string
-    title: string
-    for: TransactionActionEnum
-    icon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-    deletedAt?: string
-}
-
-export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER'
-
-export type Subcategory = {
-    id: string
-    categoryId: string
-    title: string
-    icon: string
-    createdAt: string
-    updatedAt: string
-    deletedAt?: string
-}
-
-export type CategoryData = {
-    id: string
-    title: string
-    for: TransactionActionEnum
-    icon: string
-    color?: string
-    subcategories?: Array<Subcategory>
-    createdAt: string
-    updatedAt: string
-}
-
-export type GetCategoryListResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data: Array<CategoryData>
-}
-
-export type GetCategoryResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: CategoryData & unknown
-}
-
-export type CreateCategoryRequest = {
-    title: string
-    for: TransactionActionEnum
-    icon: string
-    color?: string
-}
-
-export type CreateCategoryResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: CategoryData & unknown
-}
-
-export type CreateCategoryTemplateRequest = {
-    title: string
-    for: TransactionActionEnum
-    icon: string
-    color?: string
-    subcategories?: Array<{
-        title: string
-        icon: string
-    }>
-}
-
-export type UpdateCategoryRequest = {
-    title?: string
-    for?: TransactionActionEnum
-    icon?: string
-    color?: string
-}
-
-export type UpdateCategoryResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data?: unknown
-}
-
-export type DeleteCategoryResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data?: unknown
-}
-
-export type CategoryParamsId = {
-    id: string
-}
-
-export type CategoryFilters = {
-    id?: CategoryParamsId
-    title?: StringFilter
-    for?: TransactionActionEnum
-}
-
-export type StringFilter = {
-    equals?: string
-    contains?: string
-}
-
-export type QueryCategoryFilters = {
-    filter?: CategoryFilters
-    options?: FilterOptions
-}
-
-export type FilterOptions = {
-    skip?: number
-    take?: number
-    sortBy?: string
-    sortOrder?: 'asc' | 'desc'
-}
-
-export type CategoryForm = {
-    title: string
-    for: TransactionActionEnum
-    icon: string
-    color?: string
-}
-
-export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategoryRequest
-
-export type MarketableAsset = {
-    id: string
-    assetId: string
-    symbol: string | null
-    isin: string | null
-    exchange: string | null
-    assetClass: MarketableAssetClassEnum
-    sector: string | null
-    region: string | null
-    lastPriceSync: string | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
-
-export type RealEstateAsset = {
-    id: string
-    assetId: string
-    address: string | null
-    type: RealEstateTypeEnum
-    purchasePrice: number | null
-    purchaseDate: string | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type RealEstateTypeEnum = 'PRIMARY_HOUSE' | 'SECONDARY_HOUSE' | 'RENTAL_PROPERTY'
-
-export type CollectibleAsset = {
-    id: string
-    assetId: string
-    acquisitionCost: number | null
-    acquisitionDate: string | null
-    appraisalValue: number | null
-    appraisalDate: string | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type PrivateDealAsset = {
-    id: string
-    assetId: string
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type VehicleAsset = {
-    id: string
-    assetId: string
-    brand: string
-    model: string
-    type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
-    vin: string | null
-    mileage: number | null
-    condition: AssetConditionEnum
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type VehicleTypeEnum = 'CAR' | 'BOAT' | 'MOTORCYCLE' | 'SNOWMOBILE' | 'BIKE' | 'OTHER'
-
-export type AssetConditionEnum = 'NEW' | 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' | null
-
-export type InsuranceAsset = {
-    id: string
-    assetId: string
-    insurer: string | null
-    policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-}
-
-export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 'PURE_RISK' | null
-
-export type AssetPositionSummary = {
-    quantity: number | null
-    investedAmount: number | null
-    proceedsAmount: number | null
-    netContribution: number | null
-    averageCost: number | null
-    realizedCashFlow: number | null
-    lastTransactionAt: string | null
-}
-
-export type Asset = {
-    id: string
-    userId: string
-    title: string
-    type: AssetTypeEnum
-    currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
-    marketable?: MarketableAsset
-    realEstate?: RealEstateAsset
-    collectible?: CollectibleAsset
-    privateDeal?: PrivateDealAsset
-    vehicle?: VehicleAsset
-    insurance?: InsuranceAsset
-    position?: AssetPositionSummary
-}
-
-export type AssetTypeEnum =
-    | 'STOCK'
-    | 'BOND'
-    | 'ETF'
-    | 'MUTUAL_FUND'
-    | 'CRYPTOCURRENCY'
-    | 'REAL_ESTATE'
-    | 'COLLECTIBLE'
-    | 'VEHICLE'
-    | 'PRIVATE_EQUITY'
-    | 'VENTURE_CAPITAL'
-    | 'PRIVATE_DEBT'
-    | 'P2P_LENDING'
-    | 'INSURANCE_POLICY'
-    | 'OTHER'
-
-export type CurrencyEnum =
-    | 'USD'
-    | 'EUR'
-    | 'GBP'
-    | 'JPY'
-    | 'CNY'
-    | 'INR'
-    | 'AUD'
-    | 'CAD'
-    | 'CHF'
-    | 'SEK'
-    | 'NZD'
-    | 'MXN'
-    | 'SGD'
-    | 'HKD'
-    | 'NOK'
-    | 'KRW'
-    | 'TRY'
-    | 'UNKNOWN'
-
-export type AssetData = {
-    id: string
-    title: string
-    type: AssetTypeEnum
-    currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
-    createdAt: string
-    updatedAt: string
-    marketable?: MarketableAsset
-    realEstate?: RealEstateAsset
-    collectible?: CollectibleAsset
-    privateDeal?: PrivateDealAsset
-    vehicle?: VehicleAsset
-    insurance?: InsuranceAsset
-    position?: AssetPositionSummary
-}
-
-export type AssetByTypeSummary = {
-    type: AssetTypeEnum
-    count: number
-    totalCurrentValue: number
-}
-
-export type PortfolioSummary = {
-    totalAssets: number
-    totalCurrentValue: number
-    totalWithLiveMarketData: number
-    byType: Array<AssetByTypeSummary>
-}
-
-export type GetAssetListResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data: Array<AssetData>
-}
-
-export type GetAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: AssetData & unknown
-}
-
-export type GetPortfolioSummaryResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: PortfolioSummary & unknown
-}
-
-export type CreateMarketableAssetDetails = {
-    symbol: string | null
-    isin: string | null
-    exchange: string | null
-    assetClass: MarketableAssetClassEnum
-    sector: string | null
-    region: string | null
-    lastPriceSync: string | null
-}
-
-export type CreateRealEstateAssetDetails = {
-    address: string | null
-    type: RealEstateTypeEnum
-    purchasePrice: number | null
-    purchaseDate: string | null
-}
-
-export type CreateCollectibleAssetDetails = {
-    acquisitionCost: number | null
-    acquisitionDate: string | null
-    appraisalValue: number | null
-    appraisalDate: string | null
-}
-
-export type CreatePrivateDealAssetDetails = {
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
-}
-
-export type CreateVehicleAssetDetails = {
-    brand: string
-    model: string
-    type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
-    vin: string | null
-    mileage: number | null
-    condition: AssetConditionEnum
-}
-
-export type CreateInsuranceAssetDetails = {
-    insurer: string | null
-    policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
-}
-
-export type AssetForm = {
-    title: string
-    type: AssetTypeEnum
-    currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
-    marketable?: CreateMarketableAssetDetails
-    realEstate?: CreateRealEstateAssetDetails
-    collectible?: CreateCollectibleAssetDetails
-    privateDeal?: CreatePrivateDealAssetDetails
-    vehicle?: CreateVehicleAssetDetails
-    insurance?: CreateInsuranceAssetDetails
-}
-
-export type CreateAssetRequest = {
-    title: string
-    type: AssetTypeEnum
-    currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
-    marketable?: CreateMarketableAssetDetails
-    realEstate?: CreateRealEstateAssetDetails
-    collectible?: CreateCollectibleAssetDetails
-    privateDeal?: CreatePrivateDealAssetDetails
-    vehicle?: CreateVehicleAssetDetails
-    insurance?: CreateInsuranceAssetDetails
-}
-
-export type UpdateAssetRequest = {
-    title?: string
-    type?: AssetTypeEnum
-    currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
-    marketable?: CreateMarketableAssetDetails
-    realEstate?: CreateRealEstateAssetDetails
-    collectible?: CreateCollectibleAssetDetails
-    privateDeal?: CreatePrivateDealAssetDetails
-    vehicle?: CreateVehicleAssetDetails
-    insurance?: CreateInsuranceAssetDetails
-}
-
-export type CreateAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: AssetData & unknown
-}
-
-export type UpdateAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data?: unknown
-}
-
-export type DeleteAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    /**
-     * Response data
-     */
-    data?: unknown
-}
-
-export type AssetParamsId = {
-    id: string
-}
-
-export type AssetFilters = {
-    id?: AssetParamsId
-    title?: StringFilter
-    type?: AssetTypeEnum
-    symbol?: StringFilter
-    currency?: CurrencyEnum
-    currentValueAsOf?: DateFilter
-}
-
-export type DateFilter = {
-    gte?: string
-    lte?: string
-}
-
-export type QueryAssetFilters = {
-    filter?: AssetFilters
-    options?: FilterOptions
-}
-
-export type CreateUpdateAssetRequest = CreateAssetRequest | UpdateAssetRequest
-
 export type AssetTransaction = {
     id: string
     assetId: string
@@ -654,6 +91,26 @@ export type AssetTransactionTypeEnum =
     | 'VALUATION_ADJUSTMENT'
     | 'CAPITAL_CALL'
     | 'DISTRIBUTION'
+
+export type CurrencyEnum =
+    | 'USD'
+    | 'EUR'
+    | 'GBP'
+    | 'JPY'
+    | 'CNY'
+    | 'INR'
+    | 'AUD'
+    | 'CAD'
+    | 'CHF'
+    | 'SEK'
+    | 'NZD'
+    | 'MXN'
+    | 'SGD'
+    | 'HKD'
+    | 'NOK'
+    | 'KRW'
+    | 'TRY'
+    | 'UNKNOWN'
 
 export type AssetTransactionData = {
     id: string
@@ -804,12 +261,541 @@ export type AssetTransactionFilters = {
     note?: StringFilter
 }
 
+export type DateFilter = {
+    gte?: string
+    lte?: string
+}
+
+export type StringFilter = {
+    equals?: string
+    contains?: string
+}
+
 export type QueryAssetTransactionFilters = {
     filter?: AssetTransactionFilters
     options?: FilterOptions
 }
 
+export type FilterOptions = {
+    skip?: number
+    take?: number
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
+}
+
 export type CreateUpdateAssetTransactionRequest = CreateAssetTransactionRequest | UpdateAssetTransactionRequest
+
+export type Asset = {
+    id: string
+    userId: string
+    title: string
+    type: AssetTypeEnum
+    currency: CurrencyEnum
+    currentValue: number | null
+    currentValueAsOf: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+    marketable?: MarketableAsset
+    realEstate?: RealEstateAsset
+    collectible?: CollectibleAsset
+    privateDeal?: PrivateDealAsset
+    vehicle?: VehicleAsset
+    insurance?: InsuranceAsset
+    transactions: Array<AssetTransaction>
+}
+
+export type AssetTypeEnum =
+    | 'STOCK'
+    | 'BOND'
+    | 'ETF'
+    | 'MUTUAL_FUND'
+    | 'CRYPTOCURRENCY'
+    | 'REAL_ESTATE'
+    | 'COLLECTIBLE'
+    | 'VEHICLE'
+    | 'PRIVATE_EQUITY'
+    | 'VENTURE_CAPITAL'
+    | 'PRIVATE_DEBT'
+    | 'P2P_LENDING'
+    | 'INSURANCE_POLICY'
+    | 'OTHER'
+
+export type MarketableAsset = {
+    id: string
+    assetId: string
+    symbol: string | null
+    isin: string | null
+    exchange: string | null
+    assetClass: MarketableAssetClassEnum
+    sector: string | null
+    region: string | null
+    lastPriceSync: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
+
+export type RealEstateAsset = {
+    id: string
+    assetId: string
+    address: string | null
+    type: RealEstateTypeEnum
+    purchasePrice: number | null
+    purchaseDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type RealEstateTypeEnum = 'PRIMARY_HOUSE' | 'SECONDARY_HOUSE' | 'RENTAL_PROPERTY'
+
+export type CollectibleAsset = {
+    id: string
+    assetId: string
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type PrivateDealAsset = {
+    id: string
+    assetId: string
+    committedAmount: number | null
+    calledAmount: number | null
+    latestNav: number | null
+    navDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type VehicleAsset = {
+    id: string
+    assetId: string
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number | null
+    purchasePrice: number | null
+    purchaseDate: string | null
+    plateNumber: string | null
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type VehicleTypeEnum = 'CAR' | 'BOAT' | 'MOTORCYCLE' | 'SNOWMOBILE' | 'BIKE' | 'OTHER'
+
+export type AssetConditionEnum = 'NEW' | 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' | null
+
+export type InsuranceAsset = {
+    id: string
+    assetId: string
+    insurer: string | null
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string | null
+    startDate: string | null
+    endDate: string | null
+    beneficiary: string | null
+    premiumPaid: number | null
+    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
+    surrenderValue: number | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 'PURE_RISK' | null
+
+export type AssetData = {
+    id: string
+    title: string
+    type: AssetTypeEnum
+    currency: CurrencyEnum
+    currentValue: number | null
+    currentValueAsOf: string | null
+    createdAt: string
+    updatedAt: string
+    marketable?: MarketableAsset
+    realEstate?: RealEstateAsset
+    collectible?: CollectibleAsset
+    privateDeal?: PrivateDealAsset
+    vehicle?: VehicleAsset
+    insurance?: InsuranceAsset
+    transactions: Array<AssetTransaction>
+}
+
+export type AssetByTypeSummary = {
+    type: AssetTypeEnum
+    count: number
+    totalCurrentValue: number
+}
+
+export type PortfolioSummary = {
+    totalAssets: number
+    totalCurrentValue: number
+    totalWithLiveMarketData: number
+    byType: Array<AssetByTypeSummary>
+}
+
+export type GetAssetListResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<AssetData>
+}
+
+export type GetAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AssetData & unknown
+}
+
+export type GetPortfolioSummaryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: PortfolioSummary & unknown
+}
+
+export type CreateAssetRequest = {
+    title: string
+    currency: CurrencyEnum
+    currentValue: number | null
+    currentValueAsOf: string | null
+    type: AssetTypeEnum
+    marketable?: CreateMarketableAsset
+    realEstate?: CreateRealEstateAsset
+    collectible?: CreateCollectibleAssetDetails
+    privateDeal?: CreatePrivateDealAsset
+    vehicle?: CreateVehicleAsset
+    insurance?: CreateInsuranceAsset
+}
+
+export type CreateMarketableAsset = {
+    transactionType: AssetMarketDataTypeEnum
+    symbol: string
+    date: string
+    quantity: number
+    unitPrice: number
+    fees: number
+    currency: CurrencyEnum
+}
+
+export type AssetMarketDataTypeEnum = 'BUY' | 'SELL'
+
+export type CreateRealEstateAsset = {
+    assetName: string
+    propertyType: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string | null
+    address: string
+}
+
+export type CreateCollectibleAssetDetails = {
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
+}
+
+export type CreatePrivateDealAsset = {
+    committedAmount: number | null
+    calledAmount: number | null
+    latestNav: number | null
+    navDate: string | null
+}
+
+export type CreateVehicleAsset = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number | null
+    purchasePrice: number | null
+    purchaseDate: string | null
+    plateNumber: string | null
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
+}
+
+export type CreateInsuranceAsset = {
+    insurer: string | null
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string | null
+    startDate: string | null
+    endDate: string | null
+    beneficiary: string | null
+    premiumPaid: number | null
+    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
+    surrenderValue: number | null
+}
+
+export type CreateAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AssetData & unknown
+}
+
+export type UpdateAssetRequest = {
+    title?: string
+    currency?: CurrencyEnum
+    currentValue?: number | null
+    currentValueAsOf?: string | null
+    type?: AssetTypeEnum
+    marketable?: CreateMarketableAsset
+    realEstate?: CreateRealEstateAsset
+    collectible?: CreateCollectibleAssetDetails
+    privateDeal?: CreatePrivateDealAsset
+    vehicle?: CreateVehicleAsset
+    insurance?: CreateInsuranceAsset
+}
+
+export type UpdateAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type AssetParamsId = {
+    id: string
+}
+
+export type AssetFilters = {
+    id?: AssetParamsId
+    title?: StringFilter
+    type?: AssetTypeEnum
+    symbol?: StringFilter
+    currency?: CurrencyEnum
+    currentValueAsOf?: DateFilter
+}
+
+export type QueryAssetFilters = {
+    filter?: AssetFilters
+    options?: FilterOptions
+}
+
+export type CreateUpdateAssetRequest = CreateAssetRequest | UpdateAssetRequest
+
+export type Category = {
+    id: string
+    userId: string
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type TransactionActionEnum = 'EXPENSES' | 'INCOME' | 'TRANSFER'
+
+export type Subcategory = {
+    id: string
+    categoryId: string
+    title: string
+    icon: string
+    createdAt: string
+    updatedAt: string
+    deletedAt?: string
+}
+
+export type CategoryData = {
+    id: string
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<Subcategory>
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetCategoryListResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<CategoryData>
+}
+
+export type GetCategoryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CategoryData & unknown
+}
+
+export type CreateCategoryRequest = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+}
+
+export type CreateCategoryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CategoryData & unknown
+}
+
+export type CreateCategoryTemplateRequest = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+    subcategories?: Array<{
+        title: string
+        icon: string
+    }>
+}
+
+export type UpdateCategoryRequest = {
+    title?: string
+    for?: TransactionActionEnum
+    icon?: string
+    color?: string
+}
+
+export type UpdateCategoryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteCategoryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type CategoryParamsId = {
+    id: string
+}
+
+export type CategoryFilters = {
+    id?: CategoryParamsId
+    title?: StringFilter
+    for?: TransactionActionEnum
+}
+
+export type QueryCategoryFilters = {
+    filter?: CategoryFilters
+    options?: FilterOptions
+}
+
+export type CategoryForm = {
+    title: string
+    for: TransactionActionEnum
+    icon: string
+    color?: string
+}
+
+export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategoryRequest
+
+export type CollectibleAssetForm = {
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
+}
 
 export type DashboardLayoutItem = {
     id: DashboardWidgetEnum
@@ -1762,6 +1748,18 @@ export type CreateImportTemplateResponse = {
     data: Array<CategoryData>
 }
 
+export type InsuranceAssetForm = {
+    insurer: string | null
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string | null
+    startDate: string | null
+    endDate: string | null
+    beneficiary: string | null
+    premiumPaid: number | null
+    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
+    surrenderValue: number | null
+}
+
 export type MarketDataProvider = {
     id: string
     label: string
@@ -1892,6 +1890,31 @@ export type SearchMarketInstrumentsQuery = MarketDataProviderQuery & {
 
 export type GetMarketQuotesQuery = MarketDataProviderQuery & {
     symbols: string | Array<string>
+}
+
+export type MarketableAssetForm = {
+    transactionType: AssetMarketDataTypeEnum
+    symbol: string
+    date: string
+    quantity: number
+    unitPrice: number
+    fees: number
+    currency: CurrencyEnum
+}
+
+export type PrivateDealAssetForm = {
+    committedAmount: number | null
+    calledAmount: number | null
+    latestNav: number | null
+    navDate: string | null
+}
+
+export type RealEstateAssetForm = {
+    assetName: string
+    propertyType: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string | null
+    address: string
 }
 
 export type NetWorthEvolution = {
@@ -2604,6 +2627,19 @@ export type UserProfileSecurityForm = {
     oldPassword: string
     newPassword: string
     confirmPassword: string
+}
+
+export type VehicleAssetForm = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number | null
+    purchasePrice: number | null
+    purchaseDate: string | null
+    plateNumber: string | null
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
 }
 
 export type GetRootStatusData = {

@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreatePrivateDealAssetDetails = {
+export type CreatePrivateDealAsset = {
     committedAmount: number | null
     calledAmount: number | null
     latestNav: number | null

@@ -4,22 +4,22 @@
 /* eslint-disable */
 import type { AssetTypeEnum } from './AssetTypeEnum'
 import type { CreateCollectibleAssetDetails } from './CreateCollectibleAssetDetails'
-import type { CreateInsuranceAssetDetails } from './CreateInsuranceAssetDetails'
-import type { CreateMarketableAssetDetails } from './CreateMarketableAssetDetails'
-import type { CreatePrivateDealAssetDetails } from './CreatePrivateDealAssetDetails'
-import type { CreateRealEstateAssetDetails } from './CreateRealEstateAssetDetails'
-import type { CreateVehicleAssetDetails } from './CreateVehicleAssetDetails'
+import type { CreateInsuranceAsset } from './CreateInsuranceAsset'
+import type { CreateMarketableAsset } from './CreateMarketableAsset'
+import type { CreatePrivateDealAsset } from './CreatePrivateDealAsset'
+import type { CreateRealEstateAsset } from './CreateRealEstateAsset'
+import type { CreateVehicleAsset } from './CreateVehicleAsset'
 import type { CurrencyEnum } from './CurrencyEnum'
 export type CreateAssetRequest = {
     title: string
+    currency: CurrencyEnum
+    currentValue: number | null
+    currentValueAsOf: string | null
     type: AssetTypeEnum
-    currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
-    marketable?: CreateMarketableAssetDetails
-    realEstate?: CreateRealEstateAssetDetails
+    marketable?: CreateMarketableAsset
+    realEstate?: CreateRealEstateAsset
     collectible?: CreateCollectibleAssetDetails
-    privateDeal?: CreatePrivateDealAssetDetails
-    vehicle?: CreateVehicleAssetDetails
-    insurance?: CreateInsuranceAssetDetails
+    privateDeal?: CreatePrivateDealAsset
+    vehicle?: CreateVehicleAsset
+    insurance?: CreateInsuranceAsset
 }

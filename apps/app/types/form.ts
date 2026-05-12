@@ -62,7 +62,6 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 export type MarketableAssetFormValues = {
     transactionType: Extract<AssetTransactionTypeEnum, 'BUY' | 'SELL'>
     symbol: string
-    title: string
     date: string
     quantity: number
     unitPrice: number

@@ -8,12 +8,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@poveroh/ui/components/input'
 import { cn } from '@poveroh/ui/lib/utils'
 
-import { AmountField, CurrencyField, DateField, TextField } from '@/components/fields'
+import { AmountField, CurrencyField, DateField } from '@/components/fields'
 import { useMarketableAssetForm } from '@/hooks/form/use-marketable-asset-form'
-import type { FormProps, FormRef, MarketableAssetFormValues, MarketableAssetSubmitPayload } from '@/types'
-import type { AssetData, AssetTypeEnum, MarketableAssetClassEnum } from '@poveroh/types'
+import type { FormProps, FormRef, MarketableAssetFormValues } from '@/types'
+import {
+    AssetTypeCatalog,
+    type AssetData,
+    type AssetTypeEnum,
+    type MarketableAssetClassEnum,
+    CreateUpdateAssetRequest
+} from '@poveroh/types'
+import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 
-type MarketableAssetFormProps = FormProps<AssetData, MarketableAssetSubmitPayload> & {
+type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateAssetRequest> & {
     assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
     assetClass: Extract<MarketableAssetClassEnum, 'EQUITY' | 'CRYPTO'>
     defaultSymbol: string
@@ -21,14 +28,13 @@ type MarketableAssetFormProps = FormProps<AssetData, MarketableAssetSubmitPayloa
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
-        const { initialData, assetType, assetClass, defaultSymbol, dataCallback } = props
+        const { initialData, assetType, defaultSymbol, dataCallback } = props
 
         const t = useTranslations()
         const { form, currency, quantity, unitPrice, fees, total, defaultValues, handleSubmit } =
             useMarketableAssetForm({
                 initialData,
                 assetType,
-                assetClass,
                 defaultSymbol
             })
 
@@ -55,6 +61,15 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
+                                    <Tabs defaultValue={field.value} value={field.value} onValueChange={field.onChange}>
+                                        <TabsList className='grid w-full grid-cols-3'>
+                                            {AssetTypeCatalog.map(item => (
+                                                <TabsTrigger key={item.value} value={item.value.toString()}>
+                                                    {item.label}
+                                                </TabsTrigger>
+                                            ))}
+                                        </TabsList>
+                                    </Tabs>
                                     <div className='grid grid-cols-2 rounded-md bg-muted p-1'>
                                         {(['BUY', 'SELL'] as const).map(type => (
                                             <Button
@@ -87,20 +102,12 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                                         onChange={event => {
                                             const symbol = event.target.value.toUpperCase()
                                             field.onChange(symbol)
-                                            form.setValue('title', symbol, { shouldDirty: true, shouldValidate: true })
                                         }}
                                     />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />
-
-                    <TextField<MarketableAssetFormValues>
-                        control={form.control}
-                        name='title'
-                        label={t('form.title.label')}
-                        mandatory
                     />
 
                     <DateField<MarketableAssetFormValues>

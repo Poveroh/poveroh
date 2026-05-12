@@ -2,5 +2,6 @@
     "spellright.language": ["en"],
     "spellright.documentTypes": ["markdown", "latex", "plaintext"],
     "git.allowNoVerifyCommit": true,
-    "prisma.pinToPrisma6": false
+    "prisma.pinToPrisma6": false,
+    "prismaERDPreviewer.preferredTheme": "dark"
 }

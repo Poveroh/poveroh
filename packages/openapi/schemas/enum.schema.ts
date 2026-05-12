@@ -226,6 +226,11 @@ export const AssetTransactionTypeEnum = z
     .openapi('AssetTransactionTypeEnum')
 
 /**
+ * Asset market data type enum
+ */
+export const AssetMarketDataTypeEnum = z.enum(['BUY', 'SELL']).openapi('AssetMarketDataTypeEnum')
+
+/**
  * Asset condition enum representing the state of a physical asset
  */
 export const AssetConditionEnum = z.enum(['NEW', 'EXCELLENT', 'GOOD', 'FAIR', 'POOR']).openapi('AssetConditionEnum')

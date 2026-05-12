@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { AssetConditionEnum } from './AssetConditionEnum'
 import type { VehicleTypeEnum } from './VehicleTypeEnum'
-export type CreateVehicleAssetDetails = {
+export type VehicleAssetForm = {
     brand: string
     model: string
     type: VehicleTypeEnum
