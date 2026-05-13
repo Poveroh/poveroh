@@ -2,15 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CyclePeriodEnum } from './CyclePeriodEnum'
 import type { InsurancePolicyTypeEnum } from './InsurancePolicyTypeEnum'
 export type InsuranceAssetForm = {
-    insurer: string | null
+    insurer: string
     policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
 }

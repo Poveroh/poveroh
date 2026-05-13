@@ -1,5 +1,5 @@
 import { z } from '../zod'
-import { AssetTransactionSchema } from './asset-transaction.schema'
+import { AssetTransactionDataSchema } from './asset-transaction.schema'
 import { CollectibleAssetSchema, CreateCollectibleAssetSchema } from './collectible-asset.schema'
 import { AssetTypeEnum, CurrencyEnum } from './enum.schema'
 import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.schema'
@@ -11,42 +11,29 @@ import { SuccessResponseSchema } from './response.schema'
 import { CreateVehicleAssetSchema, VehicleAssetSchema } from './vehicle-asset.schema'
 
 /**
- * Derived position metrics computed from the asset's transaction history
- */
-export const AssetPositionSchema = z
-    .object({
-        quantity: z.number().nullable(),
-        investedAmount: z.number().nullable(),
-        proceedsAmount: z.number().nullable(),
-        netContribution: z.number().nullable(),
-        averageCost: z.number().nullable(),
-        realizedCashFlow: z.number().nullable(),
-        lastTransactionAt: z.string().datetime().nullable()
-    })
-    .openapi('AssetPosition')
-
-/**
  * Asset schema representing a user's investment or non-cash asset
  */
 export const AssetSchema = z
     .object({
-        id: z.string().uuid(),
-        userId: z.string().uuid(),
+        id: z.uuid(),
+        userId: z.uuid(),
         title: z.string().nonempty(),
         type: AssetTypeEnum,
         currency: CurrencyEnum,
-        currentValue: z.number().nullable(),
-        currentValueAsOf: z.string().datetime().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable(),
+        currentValue: z.number(),
+        currentValueAsOf: z.string(),
+        quantity: z.number().min(0),
+        totalInvested: z.number().min(0),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable(),
         marketable: MarketableAssetSchema.optional(),
         realEstate: RealEstateAssetSchema.optional(),
         collectible: CollectibleAssetSchema.optional(),
         privateDeal: PrivateDealAssetSchema.optional(),
         vehicle: VehicleAssetSchema.optional(),
         insurance: InsuranceAssetSchema.optional(),
-        transactions: AssetTransactionSchema.array()
+        transactions: AssetTransactionDataSchema.array()
     })
     .openapi('Asset')
 

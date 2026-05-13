@@ -6,15 +6,15 @@ import { RealEstateTypeEnum } from './enum.schema'
  */
 export const RealEstateAssetSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
-        address: z.string().nullable(),
+        id: z.uuid(),
+        assetId: z.uuid(),
+        address: z.string(),
         type: RealEstateTypeEnum,
-        purchasePrice: z.number().nullable(),
-        purchaseDate: z.string().datetime().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        purchasePrice: z.number(),
+        purchaseDate: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable()
     })
     .openapi('RealEstateAsset')
 
@@ -28,7 +28,7 @@ export const CreateRealEstateAssetSchema = z
         assetName: z.string().trim().min(1),
         propertyType: RealEstateTypeEnum,
         purchasePrice: z.number().positive(),
-        purchaseDate: z.string().nullable(),
+        purchaseDate: z.string(),
         address: z.string().trim().min(1)
     })
     .openapi('CreateRealEstateAsset')

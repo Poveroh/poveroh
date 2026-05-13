@@ -36,11 +36,11 @@ export const UserSchema = z
         email: z.string().email(),
         emailVerified: z.boolean(),
         onBoardingStep: OnBoardingStepEnum,
-        onBoardingAt: z.date().nullable(),
+        onBoardingAt: z.string().nullable(),
         image: z.string().url().nullable(),
 
-        createdAt: z.date(),
-        updatedAt: z.date()
+        createdAt: z.string(),
+        updatedAt: z.string()
     })
     .extend(UserPreferencesSchema.shape)
     .openapi('User')
@@ -71,10 +71,10 @@ export const UserSessionSchema = z
     .object({
         session: z.object({
             id: z.string().uuid(),
-            createdAt: z.date(),
-            updatedAt: z.date(),
+            createdAt: z.string(),
+            updatedAt: z.string(),
             userId: z.string().uuid(),
-            expiresAt: z.date(),
+            expiresAt: z.string(),
             token: z.string(),
             ipAddress: z.string().nullable(),
             userAgent: z.string().nullable()

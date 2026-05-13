@@ -8,23 +8,23 @@ import { SuccessResponseSchema } from './response.schema'
  */
 export const AssetTransactionSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
+        id: z.uuid(),
+        assetId: z.uuid(),
         type: AssetTransactionTypeEnum,
-        date: z.string().datetime(),
-        settlementDate: z.string().datetime().nullable(),
-        quantityChange: z.number().nullable(),
-        unitPrice: z.number().nullable(),
-        totalAmount: z.number().nullable(),
+        date: z.string(),
+        settlementDate: z.string(),
+        quantityChange: z.number(),
+        unitPrice: z.number(),
+        totalAmount: z.number(),
         currency: CurrencyEnum,
         fxRate: z.number().nullable(),
         fees: z.number().nullable(),
         taxAmount: z.number().nullable(),
-        financialAccountId: z.string().uuid().nullable(),
+        financialAccountId: z.uuid().nullable(),
         note: z.string().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable()
     })
     .openapi('AssetTransaction')
 

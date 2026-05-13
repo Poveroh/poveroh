@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AssetTransaction } from './AssetTransaction'
+import type { AssetTransactionData } from './AssetTransactionData'
 import type { AssetTypeEnum } from './AssetTypeEnum'
 import type { CollectibleAsset } from './CollectibleAsset'
 import type { CurrencyEnum } from './CurrencyEnum'
@@ -16,8 +16,10 @@ export type AssetData = {
     title: string
     type: AssetTypeEnum
     currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
+    currentValue: number
+    currentValueAsOf: string
+    quantity: number
+    totalInvested: number
     createdAt: string
     updatedAt: string
     marketable?: MarketableAsset
@@ -26,5 +28,5 @@ export type AssetData = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
-    transactions: Array<AssetTransaction>
+    transactions: Array<AssetTransactionData>
 }

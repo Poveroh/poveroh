@@ -8,10 +8,10 @@ export type AssetTransactionForm = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string | null
-    quantityChange: number | null
-    unitPrice: number | null
-    totalAmount: number | null
+    settlementDate: string
+    quantityChange: number
+    unitPrice: number
+    totalAmount: number
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null

@@ -65,10 +65,10 @@ export type AssetTransaction = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string | null
-    quantityChange: number | null
-    unitPrice: number | null
-    totalAmount: number | null
+    settlementDate: string
+    quantityChange: number
+    unitPrice: number
+    totalAmount: number
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null
@@ -117,10 +117,10 @@ export type AssetTransactionData = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string | null
-    quantityChange: number | null
-    unitPrice: number | null
-    totalAmount: number | null
+    settlementDate: string
+    quantityChange: number
+    unitPrice: number
+    totalAmount: number
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null
@@ -162,10 +162,10 @@ export type AssetTransactionForm = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string | null
-    quantityChange: number | null
-    unitPrice: number | null
-    totalAmount: number | null
+    settlementDate: string
+    quantityChange: number
+    unitPrice: number
+    totalAmount: number
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null
@@ -178,10 +178,10 @@ export type CreateAssetTransactionRequest = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string | null
-    quantityChange: number | null
-    unitPrice: number | null
-    totalAmount: number | null
+    settlementDate: string
+    quantityChange: number
+    unitPrice: number
+    totalAmount: number
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null
@@ -194,10 +194,10 @@ export type UpdateAssetTransactionRequest = {
     assetId?: string
     type?: AssetTransactionTypeEnum
     date?: string
-    settlementDate?: string | null
-    quantityChange?: number | null
-    unitPrice?: number | null
-    totalAmount?: number | null
+    settlementDate?: string
+    quantityChange?: number
+    unitPrice?: number
+    totalAmount?: number
     currency?: CurrencyEnum
     fxRate?: number | null
     fees?: number | null
@@ -291,8 +291,10 @@ export type Asset = {
     title: string
     type: AssetTypeEnum
     currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
+    currentValue: number
+    currentValueAsOf: string
+    quantity: number
+    totalInvested: number
     createdAt: string
     updatedAt: string
     deletedAt: string | null
@@ -302,7 +304,7 @@ export type Asset = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
-    transactions: Array<AssetTransaction>
+    transactions: Array<AssetTransactionData>
 }
 
 export type AssetTypeEnum =
@@ -324,27 +326,27 @@ export type AssetTypeEnum =
 export type MarketableAsset = {
     id: string
     assetId: string
-    symbol: string | null
-    isin: string | null
-    exchange: string | null
+    symbol: string
+    isin: string
+    exchange: string
     assetClass: MarketableAssetClassEnum
-    sector: string | null
-    region: string | null
-    lastPriceSync: string | null
+    sector: string
+    region: string
+    lastPriceSync: string
     createdAt: string
     updatedAt: string
     deletedAt: string | null
 }
 
-export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
+export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED'
 
 export type RealEstateAsset = {
     id: string
     assetId: string
-    address: string | null
+    address: string
     type: RealEstateTypeEnum
-    purchasePrice: number | null
-    purchaseDate: string | null
+    purchasePrice: number
+    purchaseDate: string
     createdAt: string
     updatedAt: string
     deletedAt: string | null
@@ -355,22 +357,22 @@ export type RealEstateTypeEnum = 'PRIMARY_HOUSE' | 'SECONDARY_HOUSE' | 'RENTAL_P
 export type CollectibleAsset = {
     id: string
     assetId: string
-    acquisitionCost: number | null
-    acquisitionDate: string | null
-    appraisalValue: number | null
-    appraisalDate: string | null
+    acquisitionCost: number
+    acquisitionDate: string
+    appraisalValue: number
+    appraisalDate: string
     createdAt: string
     updatedAt: string
-    deletedAt: string | null
+    deletedAt: string
 }
 
 export type PrivateDealAsset = {
     id: string
     assetId: string
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
     createdAt: string
     updatedAt: string
     deletedAt: string | null
@@ -382,10 +384,10 @@ export type VehicleAsset = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
@@ -401,29 +403,33 @@ export type AssetConditionEnum = 'NEW' | 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' 
 export type InsuranceAsset = {
     id: string
     assetId: string
-    insurer: string | null
+    insurer: string
     policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
     createdAt: string
     updatedAt: string
     deletedAt: string | null
 }
 
-export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 'PURE_RISK' | null
+export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 'PURE_RISK'
+
+export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
 export type AssetData = {
     id: string
     title: string
     type: AssetTypeEnum
     currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
+    currentValue: number
+    currentValueAsOf: string
+    quantity: number
+    totalInvested: number
     createdAt: string
     updatedAt: string
     marketable?: MarketableAsset
@@ -432,7 +438,7 @@ export type AssetData = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
-    transactions: Array<AssetTransaction>
+    transactions: Array<AssetTransactionData>
 }
 
 export type AssetByTypeSummary = {
@@ -490,8 +496,8 @@ export type GetPortfolioSummaryResponse = {
 export type CreateAssetRequest = {
     title: string
     currency: CurrencyEnum
-    currentValue: number | null
-    currentValueAsOf: string | null
+    currentValue: number
+    currentValueAsOf: string
     type: AssetTypeEnum
     marketable?: CreateMarketableAsset
     realEstate?: CreateRealEstateAsset
@@ -517,47 +523,47 @@ export type CreateRealEstateAsset = {
     assetName: string
     propertyType: RealEstateTypeEnum
     purchasePrice: number
-    purchaseDate: string | null
+    purchaseDate: string
     address: string
 }
 
 export type CreateCollectibleAssetDetails = {
-    acquisitionCost: number | null
-    acquisitionDate: string | null
-    appraisalValue: number | null
-    appraisalDate: string | null
+    acquisitionCost: number
+    acquisitionDate: string
+    appraisalValue: number
+    appraisalDate: string
 }
 
 export type CreatePrivateDealAsset = {
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
 }
 
 export type CreateVehicleAsset = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
 }
 
 export type CreateInsuranceAsset = {
-    insurer: string | null
+    insurer: string
     policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
 }
 
 export type CreateAssetResponse = {
@@ -575,8 +581,8 @@ export type CreateAssetResponse = {
 export type UpdateAssetRequest = {
     title?: string
     currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
+    currentValue?: number
+    currentValueAsOf?: string
     type?: AssetTypeEnum
     marketable?: CreateMarketableAsset
     realEstate?: CreateRealEstateAsset
@@ -791,10 +797,10 @@ export type CategoryForm = {
 export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategoryRequest
 
 export type CollectibleAssetForm = {
-    acquisitionCost: number | null
-    acquisitionDate: string | null
-    appraisalValue: number | null
-    appraisalDate: string | null
+    acquisitionCost: number
+    acquisitionDate: string
+    appraisalValue: number
+    appraisalDate: string
 }
 
 export type DashboardLayoutItem = {
@@ -1044,8 +1050,6 @@ export type RememberPeriodEnum =
     | 'FOURTEEN_DAYS'
     | 'THIRTY_DAYS'
     | 'NINETY_DAYS'
-
-export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
 export type AppearanceModeEnum = 'LOGO' | 'ICON'
 
@@ -1749,15 +1753,15 @@ export type CreateImportTemplateResponse = {
 }
 
 export type InsuranceAssetForm = {
-    insurer: string | null
+    insurer: string
     policyType: InsurancePolicyTypeEnum
-    policyNumber: string | null
-    startDate: string | null
-    endDate: string | null
-    beneficiary: string | null
-    premiumPaid: number | null
-    premiumFrequency: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR' | null
-    surrenderValue: number | null
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
 }
 
 export type MarketDataProvider = {
@@ -1892,6 +1896,16 @@ export type GetMarketQuotesQuery = MarketDataProviderQuery & {
     symbols: string | Array<string>
 }
 
+export type MarketableAssetData = {
+    symbol: string
+    isin: string
+    exchange: string
+    assetClass: MarketableAssetClassEnum
+    sector: string
+    region: string
+    lastPriceSync: string
+}
+
 export type MarketableAssetForm = {
     transactionType: AssetMarketDataTypeEnum
     symbol: string
@@ -1903,17 +1917,17 @@ export type MarketableAssetForm = {
 }
 
 export type PrivateDealAssetForm = {
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
 }
 
 export type RealEstateAssetForm = {
     assetName: string
     propertyType: RealEstateTypeEnum
     purchasePrice: number
-    purchaseDate: string | null
+    purchaseDate: string
     address: string
 }
 
@@ -2633,10 +2647,10 @@ export type VehicleAssetForm = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum

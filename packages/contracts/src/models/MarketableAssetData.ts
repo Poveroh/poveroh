@@ -3,9 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { MarketableAssetClassEnum } from './MarketableAssetClassEnum'
-export type MarketableAsset = {
-    id: string
-    assetId: string
+export type MarketableAssetData = {
     symbol: string
     isin: string
     exchange: string
@@ -13,7 +11,4 @@ export type MarketableAsset = {
     sector: string
     region: string
     lastPriceSync: string
-    createdAt: string
-    updatedAt: string
-    deletedAt: string | null
 }

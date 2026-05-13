@@ -5,10 +5,10 @@
 export type PrivateDealAsset = {
     id: string
     assetId: string
-    committedAmount: number | null
-    calledAmount: number | null
-    latestNav: number | null
-    navDate: string | null
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
     createdAt: string
     updatedAt: string
     deletedAt: string | null

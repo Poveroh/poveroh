@@ -579,6 +579,7 @@ export type {
     ListUserSessionsResponses,
     MarketableAsset,
     MarketableAssetClassEnum,
+    MarketableAssetData,
     MarketableAssetForm,
     MarketDataProvider,
     MarketDataProviderQuery,

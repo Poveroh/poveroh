@@ -13,8 +13,8 @@ import type { CurrencyEnum } from './CurrencyEnum'
 export type UpdateAssetRequest = {
     title?: string
     currency?: CurrencyEnum
-    currentValue?: number | null
-    currentValueAsOf?: string | null
+    currentValue?: number
+    currentValueAsOf?: string
     type?: AssetTypeEnum
     marketable?: CreateMarketableAsset
     realEstate?: CreateRealEstateAsset

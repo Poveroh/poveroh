@@ -5,15 +5,15 @@ import { z } from '../zod'
  */
 export const PrivateDealAssetSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
-        committedAmount: z.number().nullable(),
-        calledAmount: z.number().nullable(),
-        latestNav: z.number().nullable(),
-        navDate: z.string().datetime().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        id: z.uuid(),
+        assetId: z.uuid(),
+        committedAmount: z.number(),
+        calledAmount: z.number(),
+        latestNav: z.number(),
+        navDate: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable()
     })
     .openapi('PrivateDealAsset')
 
@@ -24,10 +24,10 @@ export const PrivateDealAssetSchema = z
  */
 export const CreatePrivateDealAssetSchema = z
     .object({
-        committedAmount: z.number().nullable(),
-        calledAmount: z.number().nullable(),
-        latestNav: z.number().nullable(),
-        navDate: z.string().nullable()
+        committedAmount: z.number(),
+        calledAmount: z.number(),
+        latestNav: z.number(),
+        navDate: z.string()
     })
     .openapi('CreatePrivateDealAsset')
 

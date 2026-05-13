@@ -8,35 +8,21 @@ import { Input } from '@poveroh/ui/components/input'
 
 import { AmountField, CurrencyField, DateField } from '@/components/fields'
 import { useMarketableAssetForm } from '@/hooks/form/use-marketable-asset-form'
-import type { FormProps, FormRef, MarketableAssetFormValues } from '@/types'
-import { type AssetData, type AssetTypeEnum, CreateUpdateAssetRequest } from '@poveroh/types'
+import type { FormRef, MarketableAssetFormProps, MarketableAssetFormValues } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { useAsset } from '@/hooks/use-asset'
 import { SummaryRow } from '../investments/summary-row'
 import Box from '../box/box-wrapper'
 
-type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateAssetRequest> & {
-    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
-    defaultSymbol: string
-}
-
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
-        const { initialData, assetType, defaultSymbol, dataCallback } = props
-
         const t = useTranslations()
         const { ASSET_TYPE_CATALOG } = useAsset()
-        const { form, currency, quantity, unitPrice, fees, total, defaultValues, handleSubmit } =
-            useMarketableAssetForm({
-                initialData,
-                assetType,
-                defaultSymbol
-            })
+        const { form, currency, quantity, unitPrice, fees, total, defaultValues, onSubmit } =
+            useMarketableAssetForm(props)
 
         useImperativeHandle(ref, () => ({
-            submit: () => {
-                form.handleSubmit(values => handleSubmit(values, dataCallback))()
-            },
+            submit: onSubmit,
             reset: () => {
                 form.reset(defaultValues)
             }
@@ -100,7 +86,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                                     <Input
                                         {...field}
                                         variant='contained'
-                                        placeholder={defaultSymbol}
+                                        placeholder={props.defaultSymbol}
                                         onChange={event => {
                                             const symbol = event.target.value.toUpperCase()
                                             field.onChange(symbol)

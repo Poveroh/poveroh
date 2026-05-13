@@ -6,10 +6,10 @@ import type { RealEstateTypeEnum } from './RealEstateTypeEnum'
 export type RealEstateAsset = {
     id: string
     assetId: string
-    address: string | null
+    address: string
     type: RealEstateTypeEnum
-    purchasePrice: number | null
-    purchaseDate: string | null
+    purchasePrice: number
+    purchaseDate: string
     createdAt: string
     updatedAt: string
     deletedAt: string | null

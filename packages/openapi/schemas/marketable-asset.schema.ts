@@ -6,20 +6,32 @@ import { AssetMarketDataTypeEnum, CurrencyEnum, MarketableAssetClassEnum } from 
  */
 export const MarketableAssetSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
-        symbol: z.string().nullable(),
-        isin: z.string().nullable(),
-        exchange: z.string().nullable(),
-        assetClass: MarketableAssetClassEnum.nullable(),
-        sector: z.string().nullable(),
-        region: z.string().nullable(),
-        lastPriceSync: z.string().datetime().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        id: z.uuid(),
+        assetId: z.uuid(),
+        symbol: z.string(),
+        isin: z.string(),
+        exchange: z.string(),
+        assetClass: MarketableAssetClassEnum,
+        sector: z.string(),
+        region: z.string(),
+        lastPriceSync: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable()
     })
     .openapi('MarketableAsset')
+
+/**
+ * Marketable asset metadata schema representing the metadata fields of a marketable asset that can be updated independently from the transaction history
+ * This is used for the updateMarketableAsset endpoint, which allows updating the metadata fields without affecting the transaction history or current price data
+ */
+export const MarketableAssetDataSchema = MarketableAssetSchema.omit({
+    id: true,
+    assetId: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true
+}).openapi('MarketableAssetData')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -30,7 +42,7 @@ export const CreateMarketableAssetSchema = z
     .object({
         transactionType: AssetMarketDataTypeEnum,
         symbol: z.string().trim().min(1),
-        date: z.string().min(1),
+        date: z.string(),
         quantity: z.number().positive(),
         unitPrice: z.number().positive(),
         fees: z.number().min(0),

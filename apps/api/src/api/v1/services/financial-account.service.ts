@@ -7,6 +7,7 @@ import {
     UpdateFinancialAccountRequest
 } from '@poveroh/types'
 import { BaseService } from './base.service'
+import { NotFoundError } from '@/src/utils'
 
 /**
  * Service class for managing financial accounts, including creating, updating, deleting, and retrieving financial accounts for the authenticated user
@@ -133,5 +134,26 @@ export class FinancialAccountService extends BaseService {
             skip,
             take
         })) as unknown as FinancialAccountData[]
+    }
+
+    /**
+     * Ensures that the specified financial account ID belongs to the authenticated user and is not deleted
+     * @param financialAccountId The ID of the financial account to check ownership for
+     * @param userId The ID of the authenticated user
+     * @returns Resolves if the financial account belongs to the user, or throws a NotFoundError if it does not exist or does not belong to the user
+     */
+    async ensureFinancialAccountOwnership(financialAccountId: string | null | undefined, userId: string) {
+        if (!financialAccountId) {
+            return
+        }
+
+        const financialAccount = await prisma.financialAccount.findFirst({
+            where: { id: financialAccountId, userId, deletedAt: null },
+            select: { id: true }
+        })
+
+        if (!financialAccount) {
+            throw new NotFoundError('Financial account not found')
+        }
     }
 }

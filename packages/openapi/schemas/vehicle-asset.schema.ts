@@ -6,21 +6,21 @@ import { AssetConditionEnum, VehicleTypeEnum } from './enum.schema'
  */
 export const VehicleAssetSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
+        id: z.uuid(),
+        assetId: z.uuid(),
         brand: z.string(),
         model: z.string(),
         type: VehicleTypeEnum,
-        year: z.number().int().nullable(),
-        purchasePrice: z.number().nullable(),
-        purchaseDate: z.string().datetime().nullable(),
-        plateNumber: z.string().nullable(),
+        year: z.number().int(),
+        purchasePrice: z.number(),
+        purchaseDate: z.string(),
+        plateNumber: z.string(),
         vin: z.string().nullable(),
         mileage: z.number().int().nullable(),
         condition: AssetConditionEnum.nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string().nullable()
     })
     .openapi('VehicleAsset')
 
@@ -34,10 +34,10 @@ export const CreateVehicleAssetSchema = z
         brand: z.string().trim().min(1),
         model: z.string().trim().min(1),
         type: VehicleTypeEnum,
-        year: z.number().int().nullable(),
-        purchasePrice: z.number().nullable(),
-        purchaseDate: z.string().nullable(),
-        plateNumber: z.string().trim().min(1).nullable(),
+        year: z.number().int(),
+        purchasePrice: z.number(),
+        purchaseDate: z.string(),
+        plateNumber: z.string().trim().min(1),
         vin: z.string().trim().min(1).nullable(),
         mileage: z.number().int().nullable(),
         condition: AssetConditionEnum.nullable()

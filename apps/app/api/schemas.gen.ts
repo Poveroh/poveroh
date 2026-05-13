@@ -27,8 +27,7 @@ export const UserSchema = {
         },
         onBoardingAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         },
         image: {
             type: 'string',
@@ -36,12 +35,10 @@ export const UserSchema = {
             format: 'uri'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         snapshotFrequency: {
             $ref: '#/components/schemas/SnapshotFrequencyEnum'
@@ -219,25 +216,19 @@ export const AssetTransactionSchema = {
             $ref: '#/components/schemas/AssetTransactionTypeEnum'
         },
         date: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         settlementDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         quantityChange: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         unitPrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         totalAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -264,17 +255,14 @@ export const AssetTransactionSchema = {
             nullable: true
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -353,25 +341,19 @@ export const AssetTransactionDataSchema = {
             $ref: '#/components/schemas/AssetTransactionTypeEnum'
         },
         date: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         settlementDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         quantityChange: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         unitPrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         totalAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -398,12 +380,10 @@ export const AssetTransactionDataSchema = {
             nullable: true
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         }
     },
     required: [
@@ -484,25 +464,19 @@ export const AssetTransactionFormSchema = {
             $ref: '#/components/schemas/AssetTransactionTypeEnum'
         },
         date: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         settlementDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         quantityChange: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         unitPrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         totalAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -557,25 +531,19 @@ export const CreateAssetTransactionRequestSchema = {
             $ref: '#/components/schemas/AssetTransactionTypeEnum'
         },
         date: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         settlementDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         quantityChange: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         unitPrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         totalAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -630,25 +598,19 @@ export const UpdateAssetTransactionRequestSchema = {
             $ref: '#/components/schemas/AssetTransactionTypeEnum'
         },
         date: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         settlementDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         quantityChange: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         unitPrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         totalAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -874,26 +836,28 @@ export const AssetSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         },
         currentValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currentValueAsOf: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0
+        },
+        totalInvested: {
+            type: 'number',
+            minimum: 0
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         },
         marketable: {
             $ref: '#/components/schemas/MarketableAsset'
@@ -916,7 +880,7 @@ export const AssetSchema = {
         transactions: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/AssetTransaction'
+                $ref: '#/components/schemas/AssetTransactionData'
             }
         }
     },
@@ -928,6 +892,8 @@ export const AssetSchema = {
         'currency',
         'currentValue',
         'currentValueAsOf',
+        'quantity',
+        'totalInvested',
         'createdAt',
         'updatedAt',
         'deletedAt',
@@ -967,45 +933,35 @@ export const MarketableAssetSchema = {
             format: 'uuid'
         },
         symbol: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         isin: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         exchange: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
         sector: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         region: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         lastPriceSync: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -1026,8 +982,7 @@ export const MarketableAssetSchema = {
 
 export const MarketableAssetClassEnumSchema = {
     type: 'string',
-    nullable: true,
-    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
+    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED']
 } as const
 
 export const RealEstateAssetSchema = {
@@ -1042,33 +997,26 @@ export const RealEstateAssetSchema = {
             format: 'uuid'
         },
         address: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         type: {
             $ref: '#/components/schemas/RealEstateTypeEnum'
         },
         purchasePrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -1101,35 +1049,25 @@ export const CollectibleAssetSchema = {
             format: 'uuid'
         },
         acquisitionCost: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         acquisitionDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         appraisalValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         appraisalDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         }
     },
     required: [
@@ -1157,34 +1095,26 @@ export const PrivateDealAssetSchema = {
             format: 'uuid'
         },
         committedAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         calledAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         latestNav: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         navDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -1221,21 +1151,16 @@ export const VehicleAssetSchema = {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
         year: {
-            type: 'integer',
-            nullable: true
+            type: 'integer'
         },
         purchasePrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         plateNumber: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         vin: {
             type: 'string',
@@ -1249,17 +1174,14 @@ export const VehicleAssetSchema = {
             $ref: '#/components/schemas/AssetConditionEnum'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -1304,55 +1226,41 @@ export const InsuranceAssetSchema = {
             format: 'uuid'
         },
         insurer: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         policyType: {
             $ref: '#/components/schemas/InsurancePolicyTypeEnum'
         },
         policyNumber: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         startDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         endDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         beneficiary: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         premiumPaid: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         premiumFrequency: {
-            type: 'string',
-            nullable: true,
-            enum: ['DAY', 'WEEK', 'MONTH', 'YEAR', null]
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         surrenderValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         deletedAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         }
     },
     required: [
@@ -1375,8 +1283,12 @@ export const InsuranceAssetSchema = {
 
 export const InsurancePolicyTypeEnumSchema = {
     type: 'string',
-    nullable: true,
-    enum: ['LIFE', 'UNIT_LINKED', 'INDEX_LINKED', 'PURE_RISK', null]
+    enum: ['LIFE', 'UNIT_LINKED', 'INDEX_LINKED', 'PURE_RISK']
+} as const
+
+export const CyclePeriodEnumSchema = {
+    type: 'string',
+    enum: ['DAY', 'WEEK', 'MONTH', 'YEAR']
 } as const
 
 export const AssetDataSchema = {
@@ -1397,21 +1309,24 @@ export const AssetDataSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         },
         currentValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currentValueAsOf: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0
+        },
+        totalInvested: {
+            type: 'number',
+            minimum: 0
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         marketable: {
             $ref: '#/components/schemas/MarketableAsset'
@@ -1434,7 +1349,7 @@ export const AssetDataSchema = {
         transactions: {
             type: 'array',
             items: {
-                $ref: '#/components/schemas/AssetTransaction'
+                $ref: '#/components/schemas/AssetTransactionData'
             }
         }
     },
@@ -1445,6 +1360,8 @@ export const AssetDataSchema = {
         'currency',
         'currentValue',
         'currentValueAsOf',
+        'quantity',
+        'totalInvested',
         'createdAt',
         'updatedAt',
         'transactions'
@@ -1574,13 +1491,10 @@ export const CreateAssetRequestSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         },
         currentValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currentValueAsOf: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         type: {
             $ref: '#/components/schemas/AssetTypeEnum'
@@ -1618,8 +1532,7 @@ export const CreateMarketableAssetSchema = {
             minLength: 1
         },
         date: {
-            type: 'string',
-            minLength: 1
+            type: 'string'
         },
         quantity: {
             type: 'number',
@@ -1663,8 +1576,7 @@ export const CreateRealEstateAssetSchema = {
             exclusiveMinimum: true
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         address: {
             type: 'string',
@@ -1678,20 +1590,16 @@ export const CreateCollectibleAssetDetailsSchema = {
     type: 'object',
     properties: {
         acquisitionCost: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         acquisitionDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         appraisalValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         appraisalDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         }
     },
     required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
@@ -1701,20 +1609,16 @@ export const CreatePrivateDealAssetSchema = {
     type: 'object',
     properties: {
         committedAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         calledAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         latestNav: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         navDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         }
     },
     required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
@@ -1735,20 +1639,16 @@ export const CreateVehicleAssetSchema = {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
         year: {
-            type: 'integer',
-            nullable: true
+            type: 'integer'
         },
         purchasePrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         plateNumber: {
             type: 'string',
-            nullable: true,
             minLength: 1
         },
         vin: {
@@ -1782,42 +1682,31 @@ export const CreateInsuranceAssetSchema = {
     type: 'object',
     properties: {
         insurer: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         policyType: {
             $ref: '#/components/schemas/InsurancePolicyTypeEnum'
         },
         policyNumber: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         startDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         endDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         beneficiary: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         premiumPaid: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         premiumFrequency: {
-            type: 'string',
-            nullable: true,
-            enum: ['DAY', 'WEEK', 'MONTH', 'YEAR', null]
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         surrenderValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         }
     },
     required: [
@@ -1869,13 +1758,10 @@ export const UpdateAssetRequestSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         },
         currentValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         currentValueAsOf: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         type: {
             $ref: '#/components/schemas/AssetTypeEnum'
@@ -2398,20 +2284,16 @@ export const CollectibleAssetFormSchema = {
     type: 'object',
     properties: {
         acquisitionCost: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         acquisitionDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         appraisalValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         appraisalDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         }
     },
     required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
@@ -2758,11 +2640,6 @@ export const ImportTransactionStatusEnumSchema = {
 export const RememberPeriodEnumSchema = {
     type: 'string',
     enum: ['SAME_DAY', 'THREE_DAYS', 'SEVEN_DAYS', 'FOURTEEN_DAYS', 'THIRTY_DAYS', 'NINETY_DAYS']
-} as const
-
-export const CyclePeriodEnumSchema = {
-    type: 'string',
-    enum: ['DAY', 'WEEK', 'MONTH', 'YEAR']
 } as const
 
 export const AppearanceModeEnumSchema = {
@@ -4150,42 +4027,31 @@ export const InsuranceAssetFormSchema = {
     type: 'object',
     properties: {
         insurer: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         policyType: {
             $ref: '#/components/schemas/InsurancePolicyTypeEnum'
         },
         policyNumber: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         startDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         endDate: {
-            type: 'string',
-            nullable: true,
-            format: 'date-time'
+            type: 'string'
         },
         beneficiary: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         premiumPaid: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         premiumFrequency: {
-            type: 'string',
-            nullable: true,
-            enum: ['DAY', 'WEEK', 'MONTH', 'YEAR', null]
+            $ref: '#/components/schemas/CyclePeriodEnum'
         },
         surrenderValue: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         }
     },
     required: [
@@ -4206,7 +4072,7 @@ export const MarketDataProviderSchema = {
     properties: {
         id: {
             type: 'string',
-            minLength: 1
+            format: 'uuid'
         },
         label: {
             type: 'string',
@@ -4264,11 +4130,11 @@ export const MarketInstrumentSchema = {
     properties: {
         providerId: {
             type: 'string',
-            minLength: 1
+            format: 'uuid'
         },
         providerInstrumentId: {
             type: 'string',
-            minLength: 1
+            format: 'uuid'
         },
         symbol: {
             type: 'string',
@@ -4317,7 +4183,7 @@ export const MarketQuoteSchema = {
     properties: {
         providerId: {
             type: 'string',
-            minLength: 1
+            format: 'uuid'
         },
         symbol: {
             type: 'string',
@@ -4446,7 +4312,7 @@ export const UpdateMarketDataProviderPathParamsSchema = {
     properties: {
         providerId: {
             type: 'string',
-            minLength: 1
+            format: 'uuid'
         }
     },
     required: ['providerId']
@@ -4497,7 +4363,8 @@ export const MarketDataProviderQuerySchema = {
     type: 'object',
     properties: {
         providerId: {
-            type: 'string'
+            type: 'string',
+            format: 'uuid'
         },
         assetType: {
             $ref: '#/components/schemas/AssetTypeEnum'
@@ -4559,6 +4426,34 @@ export const GetMarketQuotesQuerySchema = {
     ]
 } as const
 
+export const MarketableAssetDataSchema = {
+    type: 'object',
+    properties: {
+        symbol: {
+            type: 'string'
+        },
+        isin: {
+            type: 'string'
+        },
+        exchange: {
+            type: 'string'
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        sector: {
+            type: 'string'
+        },
+        region: {
+            type: 'string'
+        },
+        lastPriceSync: {
+            type: 'string'
+        }
+    },
+    required: ['symbol', 'isin', 'exchange', 'assetClass', 'sector', 'region', 'lastPriceSync']
+} as const
+
 export const MarketableAssetFormSchema = {
     type: 'object',
     properties: {
@@ -4570,8 +4465,7 @@ export const MarketableAssetFormSchema = {
             minLength: 1
         },
         date: {
-            type: 'string',
-            minLength: 1
+            type: 'string'
         },
         quantity: {
             type: 'number',
@@ -4598,20 +4492,16 @@ export const PrivateDealAssetFormSchema = {
     type: 'object',
     properties: {
         committedAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         calledAmount: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         latestNav: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         navDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         }
     },
     required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
@@ -4633,8 +4523,7 @@ export const RealEstateAssetFormSchema = {
             exclusiveMinimum: true
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         address: {
             type: 'string',
@@ -6452,8 +6341,7 @@ export const UpdateUserRequestSchema = {
         },
         onBoardingAt: {
             type: 'string',
-            nullable: true,
-            format: 'date-time'
+            nullable: true
         },
         image: {
             type: 'string',
@@ -6461,12 +6349,10 @@ export const UpdateUserRequestSchema = {
             format: 'uri'
         },
         createdAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         updatedAt: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
         },
         snapshotFrequency: {
             $ref: '#/components/schemas/SnapshotFrequencyEnum'
@@ -6530,20 +6416,17 @@ export const UserSessionSchema = {
                     format: 'uuid'
                 },
                 createdAt: {
-                    type: 'string',
-                    format: 'date-time'
+                    type: 'string'
                 },
                 updatedAt: {
-                    type: 'string',
-                    format: 'date-time'
+                    type: 'string'
                 },
                 userId: {
                     type: 'string',
                     format: 'uuid'
                 },
                 expiresAt: {
-                    type: 'string',
-                    format: 'date-time'
+                    type: 'string'
                 },
                 token: {
                     type: 'string'
@@ -6675,20 +6558,16 @@ export const VehicleAssetFormSchema = {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
         year: {
-            type: 'integer',
-            nullable: true
+            type: 'integer'
         },
         purchasePrice: {
-            type: 'number',
-            nullable: true
+            type: 'number'
         },
         purchaseDate: {
-            type: 'string',
-            nullable: true
+            type: 'string'
         },
         plateNumber: {
             type: 'string',
-            nullable: true,
             minLength: 1
         },
         vin: {

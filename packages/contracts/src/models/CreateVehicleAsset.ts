@@ -8,10 +8,10 @@ export type CreateVehicleAsset = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number | null
-    purchasePrice: number | null
-    purchaseDate: string | null
-    plateNumber: string | null
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum

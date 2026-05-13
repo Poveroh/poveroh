@@ -7,7 +7,7 @@ import { SimpleSuccessResponseSchema, SuccessResponseSchema } from './response.s
  */
 export const MarketDataProviderSchema = z
     .object({
-        id: z.string().nonempty(),
+        id: z.uuid(),
         label: z.string().nonempty(),
         logoUrl: z.string().url(),
         transport: MarketDataTransportEnum,
@@ -26,8 +26,8 @@ export const MarketDataProviderSchema = z
  */
 export const MarketInstrumentSchema = z
     .object({
-        providerId: z.string().nonempty(),
-        providerInstrumentId: z.string().nonempty(),
+        providerId: z.uuid(),
+        providerInstrumentId: z.uuid(),
         symbol: z.string().nonempty(),
         displayName: z.string().nonempty(),
         assetType: AssetTypeEnum,
@@ -43,7 +43,7 @@ export const MarketInstrumentSchema = z
  */
 export const MarketQuoteSchema = z
     .object({
-        providerId: z.string().nonempty(),
+        providerId: z.uuid(),
         symbol: z.string().nonempty(),
         assetType: AssetTypeEnum,
         currency: CurrencyEnum,
@@ -84,7 +84,7 @@ export const GetMarketQuotesResponseSchema = SuccessResponseSchema(MarketQuoteSc
  */
 export const UpdateMarketDataProviderPathParamsSchema = z
     .object({
-        providerId: z.string().nonempty()
+        providerId: z.uuid()
     })
     .openapi('UpdateMarketDataProviderPathParams')
 
@@ -118,7 +118,7 @@ export const DeleteMarketDataProviderCredentialResponseSchema = SimpleSuccessRes
  */
 export const MarketDataProviderQuerySchema = z
     .object({
-        providerId: z.string().optional(),
+        providerId: z.uuid().optional(),
         assetType: AssetTypeEnum.optional()
     })
     .openapi('MarketDataProviderQuery')

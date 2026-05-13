@@ -5,15 +5,15 @@ import { z } from '../zod'
  */
 export const CollectibleAssetSchema = z
     .object({
-        id: z.string().uuid(),
-        assetId: z.string().uuid(),
-        acquisitionCost: z.number().nullable(),
-        acquisitionDate: z.string().datetime().nullable(),
-        appraisalValue: z.number().nullable(),
-        appraisalDate: z.string().datetime().nullable(),
-        createdAt: z.string().datetime(),
-        updatedAt: z.string().datetime(),
-        deletedAt: z.string().datetime().nullable()
+        id: z.uuid(),
+        assetId: z.uuid(),
+        acquisitionCost: z.number(),
+        acquisitionDate: z.string(),
+        appraisalValue: z.number(),
+        appraisalDate: z.string(),
+        createdAt: z.string(),
+        updatedAt: z.string(),
+        deletedAt: z.string()
     })
     .openapi('CollectibleAsset')
 
@@ -24,10 +24,10 @@ export const CollectibleAssetSchema = z
  */
 export const CreateCollectibleAssetSchema = z
     .object({
-        acquisitionCost: z.number().nullable(),
-        acquisitionDate: z.string().nullable(),
-        appraisalValue: z.number().nullable(),
-        appraisalDate: z.string().nullable()
+        acquisitionCost: z.number(),
+        acquisitionDate: z.string(),
+        appraisalValue: z.number(),
+        appraisalDate: z.string()
     })
     .openapi('CreateCollectibleAssetDetails')
 

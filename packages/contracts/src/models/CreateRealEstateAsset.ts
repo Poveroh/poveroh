@@ -7,6 +7,6 @@ export type CreateRealEstateAsset = {
     assetName: string
     propertyType: RealEstateTypeEnum
     purchasePrice: number
-    purchaseDate: string | null
+    purchaseDate: string
     address: string
 }

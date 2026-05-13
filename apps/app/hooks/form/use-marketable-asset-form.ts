@@ -7,22 +7,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useError } from '@/hooks/use-error'
 import { CreateAssetRequestSchema, MarketableAssetFormSchema } from '@poveroh/schemas'
 import type {
-    AssetData,
-    AssetTypeEnum,
     CreateAssetRequest,
     MarketableAssetForm,
     AssetMarketDataTypeEnum,
     CreateUpdateAssetRequest
 } from '@poveroh/types'
+import logger from '@/lib/logger'
+import { MarketableAssetFormProps } from '@/types'
 
-type UseMarketableAssetFormProps = {
-    initialData: AssetData | null
-    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
-    defaultSymbol: string
-}
-
-export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }: UseMarketableAssetFormProps) => {
+export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
     const { handleError } = useError()
+
+    const { initialData, assetType, defaultSymbol } = props
 
     const [loading, setLoading] = useState(false)
 
@@ -31,7 +27,7 @@ export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }
             transactionType: initialData ? (initialData.type as AssetMarketDataTypeEnum) : 'BUY',
             symbol: initialData ? initialData.marketable?.symbol || initialData.title : defaultSymbol,
             date: initialData?.currentValueAsOf?.split('T')[0] ?? '',
-            quantity: 0, //initialData?.position?.quantity ?? 0,
+            quantity: 0,
             unitPrice: 0,
             fees: 0,
             currency: initialData?.currency ?? 'EUR'
@@ -65,7 +61,7 @@ export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }
                 title: values.symbol,
                 type: assetType,
                 currency: values.currency,
-                currentValue: total || null,
+                currentValue: total,
                 currentValueAsOf: values.date,
                 marketable: {
                     transactionType: values.transactionType,
@@ -86,6 +82,15 @@ export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }
         }
     }
 
+    const onSubmit = form.handleSubmit(
+        values => handleSubmit(values, props.dataCallback),
+        errors => {
+            if (Object.keys(errors).length > 0) {
+                logger.error('Form validation errors on submit:', errors)
+            }
+        }
+    )
+
     return {
         form,
         loading,
@@ -95,6 +100,6 @@ export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }
         fees,
         total,
         defaultValues,
-        handleSubmit
+        onSubmit
     }
 }

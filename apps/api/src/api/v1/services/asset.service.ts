@@ -10,8 +10,10 @@ import type {
     AssetFilters,
     AssetTransactionData,
     AssetTransactionFilters,
+    AssetTypeEnum,
     CreateAssetRequest,
     CreateAssetTransactionRequest,
+    CreateUpdateAssetRequest,
     PortfolioSummary,
     UpdateAssetRequest,
     UpdateAssetTransactionRequest
@@ -151,113 +153,6 @@ const buildPositionMap = (transactions: AssetTransactionData[]) => {
     return positions
 }
 
-// Converts an asset row with optional subtype relations into the public API DTO.
-const mapAsset = (asset: AssetWithRelations, position: AssetData['position'] | null): AssetData => ({
-    id: asset.id,
-    title: asset.title,
-    type: asset.type,
-    currency: asset.currency,
-    currentValue: toNumber(asset.currentValue),
-    currentValueAsOf: toIsoString(asset.currentValueAsOf),
-    createdAt: asset.createdAt.toISOString(),
-    updatedAt: asset.updatedAt.toISOString(),
-    ...(asset.marketable && {
-        marketable: {
-            id: asset.marketable.id,
-            assetId: asset.marketable.assetId,
-            symbol: asset.marketable.symbol ?? null,
-            isin: asset.marketable.isin ?? null,
-            exchange: asset.marketable.exchange ?? null,
-            assetClass: asset.marketable.assetClass ?? null,
-            sector: asset.marketable.sector ?? null,
-            region: asset.marketable.region ?? null,
-            lastPriceSync: toIsoString(asset.marketable.lastPriceSync),
-            createdAt: asset.marketable.createdAt.toISOString(),
-            updatedAt: asset.marketable.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.marketable.deletedAt)
-        }
-    }),
-    ...(asset.realEstate && {
-        realEstate: {
-            id: asset.realEstate.id,
-            assetId: asset.realEstate.assetId,
-            address: asset.realEstate.address ?? null,
-            type: asset.realEstate.type,
-            purchasePrice: toNumber(asset.realEstate.purchasePrice),
-            purchaseDate: toIsoString(asset.realEstate.purchaseDate),
-            createdAt: asset.realEstate.createdAt.toISOString(),
-            updatedAt: asset.realEstate.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.realEstate.deletedAt)
-        }
-    }),
-    ...(asset.collectible && {
-        collectible: {
-            id: asset.collectible.id,
-            assetId: asset.collectible.assetId,
-            acquisitionCost: toNumber(asset.collectible.acquisitionCost),
-            acquisitionDate: toIsoString(asset.collectible.acquisitionDate),
-            appraisalValue: toNumber(asset.collectible.appraisalValue),
-            appraisalDate: toIsoString(asset.collectible.appraisalDate),
-            createdAt: asset.collectible.createdAt.toISOString(),
-            updatedAt: asset.collectible.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.collectible.deletedAt)
-        }
-    }),
-    ...(asset.privateDeal && {
-        privateDeal: {
-            id: asset.privateDeal.id,
-            assetId: asset.privateDeal.assetId,
-            committedAmount: toNumber(asset.privateDeal.committedAmount),
-            calledAmount: toNumber(asset.privateDeal.calledAmount),
-            latestNav: toNumber(asset.privateDeal.latestNav),
-            navDate: toIsoString(asset.privateDeal.navDate),
-            createdAt: asset.privateDeal.createdAt.toISOString(),
-            updatedAt: asset.privateDeal.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.privateDeal.deletedAt)
-        }
-    }),
-    ...(asset.vehicle && {
-        vehicle: {
-            id: asset.vehicle.id,
-            assetId: asset.vehicle.assetId,
-            brand: asset.vehicle.brand,
-            model: asset.vehicle.model,
-            type: asset.vehicle.type,
-            year: asset.vehicle.year ?? null,
-            purchasePrice: toNumber(asset.vehicle.purchasePrice),
-            purchaseDate: toIsoString(asset.vehicle.purchaseDate),
-            plateNumber: asset.vehicle.plateNumber ?? null,
-            vin: asset.vehicle.vin ?? null,
-            mileage: asset.vehicle.mileage ?? null,
-            condition: asset.vehicle.condition ?? null,
-            createdAt: asset.vehicle.createdAt.toISOString(),
-            updatedAt: asset.vehicle.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.vehicle.deletedAt)
-        }
-    }),
-    ...(asset.insurance && {
-        insurance: {
-            id: asset.insurance.id,
-            assetId: asset.insurance.assetId,
-            insurer: asset.insurance.insurer ?? null,
-            policyType: asset.insurance.policyType ?? null,
-            policyNumber: asset.insurance.policyNumber ?? null,
-            startDate: toIsoString(asset.insurance.startDate),
-            endDate: toIsoString(asset.insurance.endDate),
-            beneficiary: asset.insurance.beneficiary ?? null,
-            premiumPaid: toNumber(asset.insurance.premiumPaid),
-            premiumFrequency: asset.insurance.premiumFrequency ?? null,
-            surrenderValue: toNumber(asset.insurance.surrenderValue),
-            createdAt: asset.insurance.createdAt.toISOString(),
-            updatedAt: asset.insurance.updatedAt.toISOString(),
-            deletedAt: toIsoString(asset.insurance.deletedAt)
-        }
-    }),
-    ...(position && {
-        position
-    })
-})
-
 // Converts an asset transaction row into the public API DTO.
 const mapAssetTransaction = (
     transaction: Prisma.AssetTransactionGetPayload<Record<string, never>>
@@ -297,8 +192,10 @@ export class AssetService extends BaseService {
                     title: parsed.title,
                     type: parsed.type,
                     currency: parsed.currency,
-                    currentValue: parsed.currentValue ?? null,
-                    currentValueAsOf: parsed.currentValueAsOf ? new Date(parsed.currentValueAsOf) : null
+                    currentValue: parsed.currentValue,
+                    currentValueAsOf: new Date(parsed.currentValueAsOf),
+                    quantity: 0,
+                    totalInvested: 0
                 },
                 include: assetInclude
             })
@@ -311,7 +208,7 @@ export class AssetService extends BaseService {
             })
         })
 
-        return mapAsset(asset, null)
+        return asset
     }
 
     // Updates an asset and keeps subtype records aligned when the asset family changes.
@@ -376,7 +273,10 @@ export class AssetService extends BaseService {
         })
     }
 
-    // Soft deletes all assets and their subtype rows for the authenticated user.
+    /**
+     * Soft deletes all assets for the authenticated user. The assets are not permanently removed from the database, but are marked as deleted and excluded from future queries.
+     * @returns void
+     */
     async deleteAllAssets(): Promise<void> {
         const userId = this.getUserId()
         const deletedAt = new Date()
@@ -402,7 +302,11 @@ export class AssetService extends BaseService {
         })
     }
 
-    // Retrieves a single asset with subtype details and derived position metrics.
+    /**
+     * Soft deletes a single asset transaction. The transaction is not permanently removed from the database, but is marked as deleted and excluded from future queries.
+     * @param id The ID of the asset transaction to delete
+     * @returns void
+     */
     async getAssetById(id: string): Promise<AssetData | null> {
         const userId = this.getUserId()
         const asset = await prisma.asset.findFirst({
@@ -717,8 +621,8 @@ export class AssetService extends BaseService {
     private async persistSubtypeDetails(
         tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
         assetId: string,
-        type: CreateAssetRequest['type'] | UpdateAssetRequest['type'],
-        payload: CreateAssetRequest | UpdateAssetRequest,
+        type: AssetTypeEnum,
+        payload: CreateUpdateAssetRequest,
         isUpdate: boolean
     ) {
         const subtypeKey = getSubtypeKeyByAssetType(type)
@@ -742,11 +646,29 @@ export class AssetService extends BaseService {
                     return
                 }
 
+                // Only symbol is stored on the instrument record; the opening transaction
+                // is created separately by MarketableAssetService.createMarketableAsset.
                 await tx.marketableAsset.upsert({
                     where: { assetId },
-                    create: { assetId, ...marketablePayload },
-                    update: { ...marketablePayload, deletedAt: null }
+                    create: { assetId, symbol: marketablePayload.symbol },
+                    update: { symbol: marketablePayload.symbol, deletedAt: null }
                 })
+
+                if (!isUpdate) {
+                    // Create the opening BUY/SELL transaction from the form payload.
+                    await tx.assetTransaction.create({
+                        data: {
+                            assetId,
+                            type: marketablePayload.transactionType,
+                            date: new Date(marketablePayload.date),
+                            quantityChange: marketablePayload.quantity,
+                            unitPrice: marketablePayload.unitPrice,
+                            totalAmount: marketablePayload.quantity * marketablePayload.unitPrice,
+                            fees: marketablePayload.fees,
+                            currency: marketablePayload.currency
+                        }
+                    })
+                }
                 return
             }
             case 'realEstate': {
@@ -870,7 +792,7 @@ export class AssetService extends BaseService {
     }
 
     // Verifies that the target asset belongs to the authenticated user.
-    private async ensureAssetOwnership(assetId: string, userId: string) {
+    async ensureAssetOwnership(assetId: string, userId: string) {
         const asset = await prisma.asset.findFirst({
             where: { id: assetId, userId, deletedAt: null },
             select: { id: true }
@@ -878,22 +800,6 @@ export class AssetService extends BaseService {
 
         if (!asset) {
             throw new NotFoundError('Asset not found')
-        }
-    }
-
-    // Verifies that the linked cash account, when provided, belongs to the authenticated user.
-    private async ensureFinancialAccountOwnership(financialAccountId: string | null | undefined, userId: string) {
-        if (!financialAccountId) {
-            return
-        }
-
-        const financialAccount = await prisma.financialAccount.findFirst({
-            where: { id: financialAccountId, userId, deletedAt: null },
-            select: { id: true }
-        })
-
-        if (!financialAccount) {
-            throw new NotFoundError('Financial account not found')
         }
     }
 }

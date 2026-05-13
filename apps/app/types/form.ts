@@ -1,9 +1,12 @@
 import { z } from 'zod'
 import type {
+    AssetData,
     AssetTransactionTypeEnum,
+    AssetTypeEnum,
     CreateAssetRequest,
     CreateAssetTransactionRequest,
     CreateImportRequest,
+    CreateUpdateAssetRequest,
     CreateUpdateTransactionRequest,
     CurrencyEnum,
     ImportData,
@@ -72,4 +75,9 @@ export type MarketableAssetFormValues = {
 export type MarketableAssetSubmitPayload = {
     asset: CreateAssetRequest
     transaction: Omit<CreateAssetTransactionRequest, 'assetId'>
+}
+
+export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateAssetRequest> & {
+    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
+    defaultSymbol: string
 }
