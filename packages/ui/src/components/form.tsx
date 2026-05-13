@@ -83,7 +83,7 @@ const FormLabel = React.forwardRef<
 
     return (
         <>
-            <div className='flex flex-row space-x-2'>
+            <div className='flex flex-row space-x-2 h-[20px]'>
                 <Label ref={ref} className={cn(className)} htmlFor={formItemId} {...props} />
                 {mandatory && (
                     <TooltipProvider>

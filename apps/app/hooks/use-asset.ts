@@ -15,11 +15,14 @@ import {
 } from '@/api/@tanstack/react-query.gen'
 import { useError } from './use-error'
 import { useFilters } from './use-filters'
-import type { AssetFilters } from '@poveroh/types'
+import { ASSET_TYPE_CATALOG, type AssetFilters } from '@poveroh/types'
+import { useMemo } from 'react'
+import { useUtils } from './use-utils'
 
 export const useAsset = () => {
     const queryClient = useQueryClient()
     const { handleError } = useError()
+    const { renderItemsLabel } = useUtils()
 
     const filters = useFilters<AssetFilters>(text => ({
         title: { contains: text },
@@ -92,6 +95,7 @@ export const useAsset = () => {
         updateMutation,
         deleteMutation,
         deleteAllMutation,
-        createTransactionMutation
+        createTransactionMutation,
+        ASSET_TYPE_CATALOG: useMemo(() => renderItemsLabel(ASSET_TYPE_CATALOG), [])
     }
 }

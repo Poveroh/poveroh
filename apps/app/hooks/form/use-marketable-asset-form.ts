@@ -11,7 +11,8 @@ import type {
     AssetTypeEnum,
     CreateAssetRequest,
     MarketableAssetForm,
-    AssetMarketDataTypeEnum
+    AssetMarketDataTypeEnum,
+    CreateUpdateAssetRequest
 } from '@poveroh/types'
 
 type UseMarketableAssetFormProps = {
@@ -55,7 +56,7 @@ export const useMarketableAssetForm = ({ initialData, assetType, defaultSymbol }
 
     const handleSubmit = async (
         values: MarketableAssetForm,
-        dataCallback: (payload: CreateAssetRequest, files: File[]) => Promise<void>
+        dataCallback: (payload: CreateUpdateAssetRequest, files: File[]) => Promise<void>
     ) => {
         try {
             setLoading(true)

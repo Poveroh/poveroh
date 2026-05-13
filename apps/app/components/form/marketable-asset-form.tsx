@@ -1,28 +1,22 @@
 'use client'
 
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
-import { Button } from '@poveroh/ui/components/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 import { Input } from '@poveroh/ui/components/input'
-import { cn } from '@poveroh/ui/lib/utils'
 
 import { AmountField, CurrencyField, DateField } from '@/components/fields'
 import { useMarketableAssetForm } from '@/hooks/form/use-marketable-asset-form'
 import type { FormProps, FormRef, MarketableAssetFormValues } from '@/types'
-import {
-    AssetTypeCatalog,
-    type AssetData,
-    type AssetTypeEnum,
-    type MarketableAssetClassEnum,
-    CreateUpdateAssetRequest
-} from '@poveroh/types'
+import { type AssetData, type AssetTypeEnum, CreateUpdateAssetRequest } from '@poveroh/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
+import { useAsset } from '@/hooks/use-asset'
+import { SummaryRow } from '../investments/summary-row'
+import Box from '../box/box-wrapper'
 
 type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateAssetRequest> & {
     assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
-    assetClass: Extract<MarketableAssetClassEnum, 'EQUITY' | 'CRYPTO'>
     defaultSymbol: string
 }
 
@@ -31,6 +25,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
         const { initialData, assetType, defaultSymbol, dataCallback } = props
 
         const t = useTranslations()
+        const { ASSET_TYPE_CATALOG } = useAsset()
         const { form, currency, quantity, unitPrice, fees, total, defaultValues, handleSubmit } =
             useMarketableAssetForm({
                 initialData,
@@ -47,6 +42,27 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
             }
         }))
 
+        const summaryContent = useMemo(() => {
+            return (
+                <Box>
+                    <SummaryRow
+                        label={t('investments.assets.form.summary.unitPrice')}
+                        value={`${currency} ${unitPrice.toFixed(2)}`}
+                    />
+                    <SummaryRow label={t('investments.assets.form.summary.quantity')} value={quantity.toString()} />
+                    <SummaryRow
+                        label={t('investments.assets.form.summary.fees')}
+                        value={`${currency} ${fees.toFixed(2)}`}
+                    />
+                    <SummaryRow
+                        label={t('investments.assets.form.summary.total')}
+                        value={`${currency} ${total.toFixed(2)}`}
+                        strong
+                    />
+                </Box>
+            )
+        }, [currency, quantity, unitPrice, fees, total])
+
         return (
             <Form {...form}>
                 <form
@@ -60,29 +76,15 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         name='transactionType'
                         render={({ field }) => (
                             <FormItem>
-                                <FormControl>
-                                    <Tabs defaultValue={field.value} value={field.value} onValueChange={field.onChange}>
-                                        <TabsList className='grid w-full grid-cols-3'>
-                                            {AssetTypeCatalog.map(item => (
-                                                <TabsTrigger key={item.value} value={item.value.toString()}>
-                                                    {item.label}
-                                                </TabsTrigger>
-                                            ))}
-                                        </TabsList>
-                                    </Tabs>
-                                    <div className='grid grid-cols-2 rounded-md bg-muted p-1'>
-                                        {(['BUY', 'SELL'] as const).map(type => (
-                                            <Button
-                                                key={type}
-                                                type='button'
-                                                variant={field.value === type ? 'secondary' : 'ghost'}
-                                                onClick={() => field.onChange(type)}
-                                            >
-                                                {t(`investments.assets.form.transactionType.${type.toLowerCase()}`)}
-                                            </Button>
+                                <Tabs defaultValue={field.value} value={field.value} onValueChange={field.onChange}>
+                                    <TabsList className='grid w-full grid-cols-2'>
+                                        {ASSET_TYPE_CATALOG.map(item => (
+                                            <TabsTrigger key={item.value} value={item.value.toString()}>
+                                                {item.label}
+                                            </TabsTrigger>
                                         ))}
-                                    </div>
-                                </FormControl>
+                                    </TabsList>
+                                </Tabs>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -151,22 +153,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         />
                     </div>
 
-                    <div className='rounded-md bg-muted/50 px-6 py-3'>
-                        <SummaryRow
-                            label={t('investments.assets.form.summary.unitPrice')}
-                            value={`${currency} ${unitPrice.toFixed(2)}`}
-                        />
-                        <SummaryRow label={t('investments.assets.form.summary.quantity')} value={quantity.toString()} />
-                        <SummaryRow
-                            label={t('investments.assets.form.summary.fees')}
-                            value={`${currency} ${fees.toFixed(2)}`}
-                        />
-                        <SummaryRow
-                            label={t('investments.assets.form.summary.total')}
-                            value={`${currency} ${total.toFixed(2)}`}
-                            strong
-                        />
-                    </div>
+                    {summaryContent}
                 </form>
             </Form>
         )
@@ -174,12 +161,3 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
 )
 
 MarketableAssetForm.displayName = 'MarketableAssetForm'
-
-function SummaryRow({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
-    return (
-        <div className='flex items-center justify-between border-b border-hr py-3 last:border-b-0'>
-            <p className={cn(strong && 'font-semibold', !strong && 'text-muted-foreground')}>{label}</p>
-            <p className={cn(strong && 'font-semibold')}>{value}</p>
-        </div>
-    )
-}

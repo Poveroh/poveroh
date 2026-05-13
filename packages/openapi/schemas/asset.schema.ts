@@ -11,6 +11,21 @@ import { SuccessResponseSchema } from './response.schema'
 import { CreateVehicleAssetSchema, VehicleAssetSchema } from './vehicle-asset.schema'
 
 /**
+ * Derived position metrics computed from the asset's transaction history
+ */
+export const AssetPositionSchema = z
+    .object({
+        quantity: z.number().nullable(),
+        investedAmount: z.number().nullable(),
+        proceedsAmount: z.number().nullable(),
+        netContribution: z.number().nullable(),
+        averageCost: z.number().nullable(),
+        realizedCashFlow: z.number().nullable(),
+        lastTransactionAt: z.string().datetime().nullable()
+    })
+    .openapi('AssetPosition')
+
+/**
  * Asset schema representing a user's investment or non-cash asset
  */
 export const AssetSchema = z

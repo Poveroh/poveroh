@@ -7,7 +7,6 @@ export function CryptoDialog() {
             modalId={MODAL_IDS.CRYPTO_DIALOG}
             title='Add crypto'
             assetType='CRYPTOCURRENCY'
-            assetClass='CRYPTO'
             defaultSymbol='BTC'
         />
     )

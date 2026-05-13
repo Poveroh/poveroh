@@ -8,7 +8,7 @@ export type AssetConfig = {
     icons: string
 }
 
-export const AssetTypeCatalog: Item<AssetTransactionTypeEnum>[] = [
+export const ASSET_TYPE_CATALOG: Item<AssetTransactionTypeEnum>[] = [
     { label: 'investments.assets.form.transactionType.buy', value: 'BUY' },
     { label: 'investments.assets.form.transactionType.sell', value: 'SELL' }
 ]
