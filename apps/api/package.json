@@ -24,7 +24,7 @@
         "@poveroh/utils": "*",
         "@prisma/client": "^7.6.0",
         "bcryptjs": "^3.0.2",
-        "better-auth": "^1.4.0",
+        "better-auth": "^1.6.2",
         "beycloud": "^1.1.2",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",

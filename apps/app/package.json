@@ -24,7 +24,7 @@
         "@tanstack/react-query": "^5.94.4",
         "@tanstack/react-table": "^8.21.3",
         "axios": "^1.15.2",
-        "better-auth": "^1.4.0",
+        "better-auth": "^1.6.2",
         "currency-icons": "^1.0.14",
         "dotenv": "^16.4.7",
         "js-cookie": "^3.0.5",
