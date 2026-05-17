@@ -1,0 +1,10 @@
+{
+    "extends": "@poveroh/tsconfig/base.json",
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "outDir": "dist"
+    },
+    "include": ["src"],
+    "exclude": ["dist", "build", "node_modules"]
+}

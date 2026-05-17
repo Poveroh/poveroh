@@ -4,7 +4,14 @@ import config from '../utils/environment'
 import { auth } from '../lib/auth'
 import { fromNodeHeaders } from 'better-auth/node'
 import { ResponseHelper } from '../utils'
-import logger from '../utils/logger'
+import { logger } from '@poveroh/logger'
+import { runWithContext, type RequestUser } from '../api/v1/context'
+
+// Runs the rest of the request pipeline inside a request-scoped AsyncLocalStorage so
+// services and helpers can resolve the current user without taking it as a parameter.
+function continueWithUserContext(user: RequestUser, next: NextFunction) {
+    runWithContext({ user }, () => next())
+}
 
 export class AuthMiddleware {
     static async isAuthenticated(req: Request, res: Response, next: NextFunction) {
@@ -23,7 +30,7 @@ export class AuthMiddleware {
                     surname: (session.user as any).surname || '',
                     createdAt: session.user.createdAt
                 }
-                return next()
+                return continueWithUserContext(req.user as RequestUser, next)
             }
 
             // Fallback to legacy JWT token for backward compatibility during migration
@@ -36,7 +43,7 @@ export class AuthMiddleware {
                         return ResponseHelper.forbidden(res, 'Invalid token')
                     }
                     req.user = user
-                    next()
+                    continueWithUserContext(user as RequestUser, next)
                 })
                 return
             }
@@ -63,7 +70,7 @@ export class AuthMiddleware {
             }
 
             req.user = user
-            next()
+            continueWithUserContext(user as RequestUser, next)
         })
     }
 }

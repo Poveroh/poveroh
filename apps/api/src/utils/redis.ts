@@ -1,27 +1,12 @@
-import { createClient, RedisClientType } from 'redis'
+import { createRedisClient } from '@poveroh/redis'
+import { type RedisConnectionConfig } from '@poveroh/types'
 import config from './environment'
 
-let redisClient: RedisClientType | null = null
+// Reads connection settings from env so the API and BullMQ workers share the same config.
+export const getRedisConnectionConfig = (): RedisConnectionConfig => ({
+    url: config.REDIS_URL ?? 'redis://localhost:6379',
+    password: config.REDIS_PASSWORD || undefined
+})
 
-export const getRedisClient = async (): Promise<RedisClientType> => {
-    if (!redisClient) {
-        redisClient = createClient({
-            url: config.REDIS_URL,
-            password: config.REDIS_PASSWORD || undefined
-        })
-
-        redisClient.on('error', err => {
-            console.error('Redis Client Error', err)
-        })
-
-        await redisClient.connect()
-    }
-    return redisClient
-}
-
-export const closeRedisClient = async (): Promise<void> => {
-    if (redisClient) {
-        await redisClient.disconnect()
-        redisClient = null
-    }
-}
+// Initializes the shared Redis client using the API's env-derived config. Called once at startup.
+export const initRedisClient = () => createRedisClient(getRedisConnectionConfig())

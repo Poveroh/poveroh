@@ -1,0 +1,49 @@
+import prisma from '@poveroh/prisma'
+import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
+import { BaseService } from '../base/base.service'
+import { buildWhere } from '@/src/helpers/filter.helper'
+
+/**
+ * Service class for generating reports for the authenticated user
+ * All methods automatically retrieve the user ID from the request context.
+ */
+export class ReportService extends BaseService {
+    constructor() {
+        super('report')
+    }
+
+    /**
+     * Retrieves the net worth trend report for the authenticated user
+     * @param filters The filters to apply to the report query
+     * @returns The net worth evolution report
+     */
+    async getNetWorthTrend(filters: Partial<NetWorthEvolutionFilters>): Promise<NetWorthEvolutionReport> {
+        const userId = this.getUserId()
+
+        const { date, ...rest } = filters
+        const whereFilters = {
+            ...rest,
+            ...(date ? { snapshotDate: date } : {}),
+            userId
+        }
+
+        const whereCondition = buildWhere(whereFilters, [])
+
+        const data = await prisma.snapshot.findMany({
+            where: whereCondition,
+            orderBy: { snapshotDate: 'asc' }
+        })
+
+        const evolution = data.map(snapshot => ({
+            date: snapshot.snapshotDate.toISOString(),
+            netWorth: Number(snapshot.totalNetWorth)
+        }))
+
+        const currentNetWorth = evolution.length > 0 ? evolution[evolution.length - 1].netWorth : 0
+
+        return {
+            currentNetWorth,
+            evolution
+        }
+    }
+}

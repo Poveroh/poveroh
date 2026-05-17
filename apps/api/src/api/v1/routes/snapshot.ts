@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
-import { SnapshotController } from '../controllers/snapshot.controller'
+import { SnapshotController } from '../modules/snapshots/snapshot.controller'
 
 const router: Router = Router()
 

@@ -7,3 +7,7 @@ export const EMAIL_REGEX: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const SESSION_CHECK_INTERVAL = 60 * 1000
 
 export const AUTH_TOKEN_STORAGE_KEY = 'auth_token'
+
+export const DEFAULT_TTL_SECONDS = 3600
+
+export const DEFAULT_QUEUE_NAME = 'poveroh.jobs'

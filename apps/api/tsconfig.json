@@ -2,20 +2,38 @@
     "compilerOptions": {
         "target": "es2016",
         "module": "commonjs",
+        "rootDir": "../..",
         "outDir": "dist",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
         "skipLibCheck": true,
-        "typeRoots": ["./node_modules/@types", "./types"],
-        "baseUrl": ".",
+        "typeRoots": ["./node_modules/@types", "src/types"],
         "paths": {
+            "@/v1": ["./src/api/v1"],
+            "@/v1/*": ["./src/api/v1/*"],
+            "@/helpers": ["./src/helpers"],
+            "@/helpers/*": ["./src/helpers/*"],
+            "@/lib": ["./src/lib"],
+            "@/lib/*": ["./src/lib/*"],
+            "@/middleware": ["./src/middleware"],
+            "@/middleware/*": ["./src/middleware/*"],
+            "@/types": ["./src/types"],
+            "@/types/*": ["./src/types/*"],
+            "@/utils": ["./src/utils"],
+            "@/utils/*": ["./src/utils/*"],
             "@/*": ["./*"],
             "@poveroh/prisma": ["../../packages/prisma/src"],
             "@poveroh/prisma/*": ["../../packages/prisma/src/*"],
+            "@poveroh/queue": ["../../packages/queue/src"],
+            "@poveroh/queue/*": ["../../packages/queue/src/*"],
+            "@poveroh/redis": ["../../packages/redis/src"],
+            "@poveroh/redis/*": ["../../packages/redis/src/*"],
+            "@poveroh/schemas": ["../../packages/schemas/src"],
+            "@poveroh/schemas/*": ["../../packages/schemas/src/*"],
             "@poveroh/types": ["../../packages/types/src"],
             "@poveroh/types/*": ["../../packages/types/src/*"]
         }
     },
-    "include": ["src", "types"]
+    "include": ["src", "types", "utils"]
 }

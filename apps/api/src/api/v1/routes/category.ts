@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
 import { upload } from '../../../middleware/upload.middleware'
-import { CategoryController } from '../controllers/category.controller'
+import { CategoryController } from '../modules/categories/category.controller'
 
 const router: Router = Router()
 

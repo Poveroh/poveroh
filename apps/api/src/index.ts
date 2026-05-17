@@ -7,7 +7,7 @@ import config from './utils/environment'
 import v1Route from './api/v1'
 import cors from 'cors'
 import qs from 'qs'
-import { getRedisClient } from './utils/redis'
+import { initRedisClient } from './utils/redis'
 
 const app = express()
 
@@ -49,7 +49,7 @@ app.use('/v1', v1Route)
 const startServer = async () => {
     try {
         // Initialize Redis connection
-        await getRedisClient()
+        await initRedisClient()
         console.log('✅ Redis connected')
 
         app.listen(config.PORT, () => {

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
 import { upload } from '../../../middleware/upload.middleware'
-import { SubcategoryController } from '../controllers/subcategory.controller'
+import { SubcategoryController } from '../modules/subcategories/subcategory.controller'
 
 const router: Router = Router()
 

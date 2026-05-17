@@ -3,9 +3,10 @@ import { bearer, customSession, openAPI } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
 import config from '../utils/environment'
-import { DashboardTemplate } from '../api/v1/content/template/dashboard'
-import { UserService } from '../api/v1/services/user.service'
-import { DashboardService } from '../api/v1/services/dashboard.service'
+import { UserService } from '../api/v1/modules/users/user.service'
+import { DashboardService } from '../api/v1/modules/dashboard/dashboard.service'
+import { runWithContext } from '@/v1/context'
+import { DashboardTemplate } from '@/v1/content'
 
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
@@ -45,8 +46,9 @@ export const auth = betterAuth({
         openAPI(),
         bearer(),
         customSession(async ({ user, session }) => {
-            const userService = new UserService(user.id)
-            const readedUser = await userService.getUser(user.id)
+            // Better-auth hooks run outside the HTTP request context, so we open a
+            // user-scoped context here for the service to read.
+            const readedUser = await runWithContext({ user: { id: user.id } }, () => new UserService().getUser(user.id))
 
             return {
                 user: readedUser,
@@ -86,10 +88,10 @@ export const auth = betterAuth({
                     user.surname = ''
                 },
                 after: async (user, ctx) => {
-                    const dashboardService = new DashboardService(user.id)
-                    dashboardService.saveDashboardLayout(DashboardTemplate)
-
-                    return
+                    // Hook runs outside any HTTP request context; supply one for the service.
+                    await runWithContext({ user: { id: user.id } }, () =>
+                        new DashboardService().saveDashboardLayout(DashboardTemplate)
+                    )
                 }
             },
             update: {
