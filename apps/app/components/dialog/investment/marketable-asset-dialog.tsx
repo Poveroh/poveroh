@@ -14,9 +14,8 @@ import type { FormRef } from '@/types'
 import type {
     AssetData,
     AssetTypeEnum,
-    CreateUpdateAssetRequest,
-    UpdateAssetRequest,
-    CreateAssetRequest
+    CreateMarketableAssetRequest,
+    UpdateMarketableAssetRequest
 } from '@poveroh/types'
 
 type MarketableDialogProps = {
@@ -28,14 +27,14 @@ type MarketableDialogProps = {
 
 export function MarketableDialog({ modalId, title, assetType, defaultSymbol }: MarketableDialogProps) {
     const t = useTranslations()
-    const { createMutation, updateMutation } = useAsset()
+    const { createMarketableMutation, updateMarketableMutation } = useAsset()
     const { handleError } = useError()
 
     const modalManager = useModal<AssetData>(modalId)
     const formRef = useRef<FormRef | null>(null)
 
-    const onCreate = async (payload: CreateAssetRequest) => {
-        const response = await createMutation.mutateAsync({
+    const onCreate = async (payload: CreateMarketableAssetRequest) => {
+        const response = await createMarketableMutation.mutateAsync({
             body: payload
         })
 
@@ -50,15 +49,15 @@ export function MarketableDialog({ modalId, title, assetType, defaultSymbol }: M
             modalManager.closeModal()
         }
 
-        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.uploaded') }))
+        toast.success(t('messages.successfully', { a: payload.symbol ?? '', b: t('messages.uploaded') }))
     }
 
-    const onUpdate = async (payload: UpdateAssetRequest) => {
+    const onUpdate = async (payload: UpdateMarketableAssetRequest) => {
         if (!modalManager.item) {
             throw new Error('No item to update')
         }
 
-        const response = await updateMutation.mutateAsync({
+        const response = await updateMarketableMutation.mutateAsync({
             path: { id: modalManager.item.id },
             body: payload
         })
@@ -68,19 +67,19 @@ export function MarketableDialog({ modalId, title, assetType, defaultSymbol }: M
         }
 
         modalManager.closeModal()
-        toast.success(t('messages.successfully', { a: payload.title ?? '', b: t('messages.saved') }))
+        toast.success(t('messages.successfully', { a: payload.symbol ?? '', b: t('messages.saved') }))
     }
 
-    const handleFormSubmit = async (payload: CreateUpdateAssetRequest) => {
+    const handleFormSubmit = async (payload: CreateMarketableAssetRequest | UpdateMarketableAssetRequest) => {
         if (modalManager.loading) return
 
         try {
             modalManager.setLoading(true)
 
             if (modalManager.inEditingMode) {
-                await onUpdate(payload as UpdateAssetRequest)
+                await onUpdate(payload as UpdateMarketableAssetRequest)
             } else {
-                await onCreate(payload as CreateAssetRequest)
+                await onCreate(payload as CreateMarketableAssetRequest)
             }
         } catch (error) {
             handleError(error)

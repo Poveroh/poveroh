@@ -5,11 +5,11 @@
 export type CollectibleAsset = {
     id: string
     assetId: string
-    acquisitionCost: number
-    acquisitionDate: string
-    appraisalValue: number
-    appraisalDate: string
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
     createdAt: string
     updatedAt: string
-    deletedAt: string
+    deletedAt: string | null
 }

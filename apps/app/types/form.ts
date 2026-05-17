@@ -3,14 +3,13 @@ import type {
     AssetData,
     AssetTransactionTypeEnum,
     AssetTypeEnum,
-    CreateAssetRequest,
-    CreateAssetTransactionRequest,
     CreateImportRequest,
-    CreateUpdateAssetRequest,
+    CreateMarketableAssetRequest,
     CreateUpdateTransactionRequest,
     CurrencyEnum,
     ImportData,
-    InputVariantStyle
+    InputVariantStyle,
+    UpdateMarketableAssetRequest
 } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
@@ -72,12 +71,9 @@ export type MarketableAssetFormValues = {
     currency: CurrencyEnum
 }
 
-export type MarketableAssetSubmitPayload = {
-    asset: CreateAssetRequest
-    transaction: Omit<CreateAssetTransactionRequest, 'assetId'>
-}
+export type CreateUpdateMarketableAssetRequest = CreateMarketableAssetRequest | UpdateMarketableAssetRequest
 
-export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateAssetRequest> & {
+export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateMarketableAssetRequest> & {
     assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
     defaultSymbol: string
 }

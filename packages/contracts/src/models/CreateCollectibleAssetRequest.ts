@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateCollectibleAssetDetails = {
+export type CreateCollectibleAssetRequest = {
     acquisitionCost: number
     acquisitionDate: string
     appraisalValue: number

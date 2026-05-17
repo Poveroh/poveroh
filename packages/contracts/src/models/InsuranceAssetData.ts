@@ -4,12 +4,12 @@
 /* eslint-disable */
 import type { CyclePeriodEnum } from './CyclePeriodEnum'
 import type { InsurancePolicyTypeEnum } from './InsurancePolicyTypeEnum'
-export type CreateInsuranceAsset = {
+export type InsuranceAssetData = {
     insurer: string
     policyType: InsurancePolicyTypeEnum
     policyNumber: string
-    startDate: string
-    endDate: string
+    startDate: string | null
+    endDate: string | null
     beneficiary: string
     premiumPaid: number
     premiumFrequency: CyclePeriodEnum

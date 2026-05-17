@@ -7,7 +7,7 @@ import type {
 } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
-import { AssetService } from '../services/asset.service'
+import { AssetTransactionService } from '../services/asset-transaction.service'
 
 export class AssetTransactionController {
     // Creates a new asset transaction.
@@ -18,8 +18,8 @@ export class AssetTransactionController {
             }
 
             const payload = req.body as CreateAssetTransactionRequest
-            const assetService = new AssetService(req.user.id)
-            const transaction = await assetService.createAssetTransaction(payload)
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            const transaction = await assetTransactionService.createAssetTransaction(payload)
 
             return ResponseHelper.success(res, transaction)
         } catch (error) {
@@ -40,8 +40,8 @@ export class AssetTransactionController {
             }
 
             const payload = req.body as UpdateAssetTransactionRequest
-            const assetService = new AssetService(req.user.id)
-            await assetService.updateAssetTransaction(id, payload)
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            await assetTransactionService.updateAssetTransaction(id, payload)
 
             return ResponseHelper.success(res)
         } catch (error) {
@@ -57,8 +57,8 @@ export class AssetTransactionController {
                 throw new BadRequestError('Missing asset transaction ID in path')
             }
 
-            const assetService = new AssetService(req.user.id)
-            await assetService.deleteAssetTransaction(id)
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            await assetTransactionService.deleteAssetTransaction(id)
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -69,8 +69,8 @@ export class AssetTransactionController {
     // Soft deletes all asset transactions for the authenticated user.
     static async deleteAllAssetTransactions(req: Request, res: Response) {
         try {
-            const assetService = new AssetService(req.user.id)
-            await assetService.deleteAllAssetTransactions()
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            await assetTransactionService.deleteAllAssetTransactions()
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -86,8 +86,8 @@ export class AssetTransactionController {
                 throw new BadRequestError('Missing asset transaction ID in path')
             }
 
-            const assetService = new AssetService(req.user.id)
-            const transaction = await assetService.getAssetTransactionById(id)
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            const transaction = await assetTransactionService.getAssetTransactionById(id)
 
             if (!transaction) {
                 throw new NotFoundError('Asset transaction not found')
@@ -107,8 +107,8 @@ export class AssetTransactionController {
             const skip = Number.isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = Number.isNaN(Number(options.take)) ? 20 : Number(options.take)
 
-            const assetService = new AssetService(req.user.id)
-            const transactions = await assetService.getAssetTransactions(filters, skip, take)
+            const assetTransactionService = new AssetTransactionService(req.user.id)
+            const transactions = await assetTransactionService.getAssetTransactions(filters, skip, take)
 
             return ResponseHelper.success(res, transactions)
         } catch (error) {

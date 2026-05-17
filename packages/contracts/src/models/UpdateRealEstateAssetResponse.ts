@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PortfolioSummary } from './PortfolioSummary'
-export type GetPortfolioSummaryResponse = {
+import type { RealEstateAssetData } from './RealEstateAssetData'
+export type UpdateRealEstateAssetResponse = {
     /**
      * Indicates if the request was successful
      */
@@ -12,5 +12,5 @@ export type GetPortfolioSummaryResponse = {
      * Optional success message
      */
     message: string
-    data: PortfolioSummary
+    data: RealEstateAssetData
 }

@@ -260,16 +260,20 @@
                         "type": "string"
                     },
                     "settlementDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "quantityChange": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "unitPrice": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "totalAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "currency": {
                         "$ref": "#/components/schemas/CurrencyEnum"
@@ -382,16 +386,20 @@
                         "type": "string"
                     },
                     "settlementDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "quantityChange": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "unitPrice": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "totalAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "currency": {
                         "$ref": "#/components/schemas/CurrencyEnum"
@@ -510,16 +518,20 @@
                         "type": "string"
                     },
                     "settlementDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "quantityChange": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "unitPrice": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "totalAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "currency": {
                         "$ref": "#/components/schemas/CurrencyEnum"
@@ -576,16 +588,20 @@
                         "type": "string"
                     },
                     "settlementDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "quantityChange": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "unitPrice": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "totalAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "currency": {
                         "$ref": "#/components/schemas/CurrencyEnum"
@@ -642,16 +658,20 @@
                         "type": "string"
                     },
                     "settlementDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "quantityChange": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "unitPrice": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "totalAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "currency": {
                         "$ref": "#/components/schemas/CurrencyEnum"
@@ -979,22 +999,27 @@
                         "type": "string"
                     },
                     "isin": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "exchange": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "assetClass": {
                         "$ref": "#/components/schemas/MarketableAssetClassEnum"
                     },
                     "sector": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "region": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "lastPriceSync": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "createdAt": {
                         "type": "string"
@@ -1024,6 +1049,7 @@
             },
             "MarketableAssetClassEnum": {
                 "type": "string",
+                "nullable": true,
                 "enum": [
                     "EQUITY",
                     "BOND",
@@ -1031,7 +1057,8 @@
                     "CRYPTO",
                     "COMMODITY",
                     "REIT",
-                    "MIXED"
+                    "MIXED",
+                    null
                 ]
             },
             "RealEstateAsset": {
@@ -1055,7 +1082,8 @@
                         "type": "number"
                     },
                     "purchaseDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "createdAt": {
                         "type": "string"
@@ -1100,16 +1128,20 @@
                         "format": "uuid"
                     },
                     "acquisitionCost": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "acquisitionDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "appraisalValue": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "appraisalDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "createdAt": {
                         "type": "string"
@@ -1118,7 +1150,8 @@
                         "type": "string"
                     },
                     "deletedAt": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -1145,16 +1178,20 @@
                         "format": "uuid"
                     },
                     "committedAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "calledAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "latestNav": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "navDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "createdAt": {
                         "type": "string"
@@ -1206,7 +1243,8 @@
                         "type": "number"
                     },
                     "purchaseDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "plateNumber": {
                         "type": "string"
@@ -1295,10 +1333,12 @@
                         "type": "string"
                     },
                     "startDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "endDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "beneficiary": {
                         "type": "string"
@@ -1434,53 +1474,6 @@
                     "transactions"
                 ]
             },
-            "AssetByTypeSummary": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/AssetTypeEnum"
-                    },
-                    "count": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "totalCurrentValue": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "type",
-                    "count",
-                    "totalCurrentValue"
-                ]
-            },
-            "PortfolioSummary": {
-                "type": "object",
-                "properties": {
-                    "totalAssets": {
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "totalCurrentValue": {
-                        "type": "number"
-                    },
-                    "totalWithLiveMarketData": {
-                        "type": "number"
-                    },
-                    "byType": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/AssetByTypeSummary"
-                        }
-                    }
-                },
-                "required": [
-                    "totalAssets",
-                    "totalCurrentValue",
-                    "totalWithLiveMarketData",
-                    "byType"
-                ]
-            },
             "GetAssetListResponse": {
                 "type": "object",
                 "properties": {
@@ -1532,389 +1525,6 @@
                     "success",
                     "message",
                     "data"
-                ]
-            },
-            "GetPortfolioSummaryResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/PortfolioSummary"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
-                    }
-                },
-                "required": [
-                    "success",
-                    "message",
-                    "data"
-                ]
-            },
-            "CreateAssetRequest": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "currentValue": {
-                        "type": "number"
-                    },
-                    "currentValueAsOf": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/AssetTypeEnum"
-                    },
-                    "marketable": {
-                        "$ref": "#/components/schemas/CreateMarketableAsset"
-                    },
-                    "realEstate": {
-                        "$ref": "#/components/schemas/CreateRealEstateAsset"
-                    },
-                    "collectible": {
-                        "$ref": "#/components/schemas/CreateCollectibleAssetDetails"
-                    },
-                    "privateDeal": {
-                        "$ref": "#/components/schemas/CreatePrivateDealAsset"
-                    },
-                    "vehicle": {
-                        "$ref": "#/components/schemas/CreateVehicleAsset"
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/CreateInsuranceAsset"
-                    }
-                },
-                "required": [
-                    "title",
-                    "currency",
-                    "currentValue",
-                    "currentValueAsOf",
-                    "type"
-                ]
-            },
-            "CreateMarketableAsset": {
-                "type": "object",
-                "properties": {
-                    "transactionType": {
-                        "$ref": "#/components/schemas/AssetMarketDataTypeEnum"
-                    },
-                    "symbol": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "date": {
-                        "type": "string"
-                    },
-                    "quantity": {
-                        "type": "number",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "unitPrice": {
-                        "type": "number",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "fees": {
-                        "type": "number",
-                        "minimum": 0
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    }
-                },
-                "required": [
-                    "transactionType",
-                    "symbol",
-                    "date",
-                    "quantity",
-                    "unitPrice",
-                    "fees",
-                    "currency"
-                ]
-            },
-            "AssetMarketDataTypeEnum": {
-                "type": "string",
-                "enum": [
-                    "BUY",
-                    "SELL"
-                ]
-            },
-            "CreateRealEstateAsset": {
-                "type": "object",
-                "properties": {
-                    "assetName": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "propertyType": {
-                        "$ref": "#/components/schemas/RealEstateTypeEnum"
-                    },
-                    "purchasePrice": {
-                        "type": "number",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "purchaseDate": {
-                        "type": "string"
-                    },
-                    "address": {
-                        "type": "string",
-                        "minLength": 1
-                    }
-                },
-                "required": [
-                    "assetName",
-                    "propertyType",
-                    "purchasePrice",
-                    "purchaseDate",
-                    "address"
-                ]
-            },
-            "CreateCollectibleAssetDetails": {
-                "type": "object",
-                "properties": {
-                    "acquisitionCost": {
-                        "type": "number"
-                    },
-                    "acquisitionDate": {
-                        "type": "string"
-                    },
-                    "appraisalValue": {
-                        "type": "number"
-                    },
-                    "appraisalDate": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "acquisitionCost",
-                    "acquisitionDate",
-                    "appraisalValue",
-                    "appraisalDate"
-                ]
-            },
-            "CreatePrivateDealAsset": {
-                "type": "object",
-                "properties": {
-                    "committedAmount": {
-                        "type": "number"
-                    },
-                    "calledAmount": {
-                        "type": "number"
-                    },
-                    "latestNav": {
-                        "type": "number"
-                    },
-                    "navDate": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "committedAmount",
-                    "calledAmount",
-                    "latestNav",
-                    "navDate"
-                ]
-            },
-            "CreateVehicleAsset": {
-                "type": "object",
-                "properties": {
-                    "brand": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "model": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/VehicleTypeEnum"
-                    },
-                    "year": {
-                        "type": "integer"
-                    },
-                    "purchasePrice": {
-                        "type": "number"
-                    },
-                    "purchaseDate": {
-                        "type": "string"
-                    },
-                    "plateNumber": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "vin": {
-                        "type": "string",
-                        "nullable": true,
-                        "minLength": 1
-                    },
-                    "mileage": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "condition": {
-                        "$ref": "#/components/schemas/AssetConditionEnum"
-                    }
-                },
-                "required": [
-                    "brand",
-                    "model",
-                    "type",
-                    "year",
-                    "purchasePrice",
-                    "purchaseDate",
-                    "plateNumber",
-                    "vin",
-                    "mileage",
-                    "condition"
-                ]
-            },
-            "CreateInsuranceAsset": {
-                "type": "object",
-                "properties": {
-                    "insurer": {
-                        "type": "string"
-                    },
-                    "policyType": {
-                        "$ref": "#/components/schemas/InsurancePolicyTypeEnum"
-                    },
-                    "policyNumber": {
-                        "type": "string"
-                    },
-                    "startDate": {
-                        "type": "string"
-                    },
-                    "endDate": {
-                        "type": "string"
-                    },
-                    "beneficiary": {
-                        "type": "string"
-                    },
-                    "premiumPaid": {
-                        "type": "number"
-                    },
-                    "premiumFrequency": {
-                        "$ref": "#/components/schemas/CyclePeriodEnum"
-                    },
-                    "surrenderValue": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "insurer",
-                    "policyType",
-                    "policyNumber",
-                    "startDate",
-                    "endDate",
-                    "beneficiary",
-                    "premiumPaid",
-                    "premiumFrequency",
-                    "surrenderValue"
-                ]
-            },
-            "CreateAssetResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/AssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
-                    }
-                },
-                "required": [
-                    "success",
-                    "message",
-                    "data"
-                ]
-            },
-            "UpdateAssetRequest": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "currency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "currentValue": {
-                        "type": "number"
-                    },
-                    "currentValueAsOf": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/AssetTypeEnum"
-                    },
-                    "marketable": {
-                        "$ref": "#/components/schemas/CreateMarketableAsset"
-                    },
-                    "realEstate": {
-                        "$ref": "#/components/schemas/CreateRealEstateAsset"
-                    },
-                    "collectible": {
-                        "$ref": "#/components/schemas/CreateCollectibleAssetDetails"
-                    },
-                    "privateDeal": {
-                        "$ref": "#/components/schemas/CreatePrivateDealAsset"
-                    },
-                    "vehicle": {
-                        "$ref": "#/components/schemas/CreateVehicleAsset"
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/CreateInsuranceAsset"
-                    }
-                }
-            },
-            "UpdateAssetResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "nullable": true,
-                        "description": "Response data"
-                    }
-                },
-                "required": [
-                    "success",
-                    "message"
                 ]
             },
             "DeleteAssetResponse": {
@@ -1983,16 +1593,6 @@
                         "$ref": "#/components/schemas/FilterOptions"
                     }
                 }
-            },
-            "CreateUpdateAssetRequest": {
-                "anyOf": [
-                    {
-                        "$ref": "#/components/schemas/CreateAssetRequest"
-                    },
-                    {
-                        "$ref": "#/components/schemas/UpdateAssetRequest"
-                    }
-                ]
             },
             "Category": {
                 "type": "object",
@@ -2435,17 +2035,152 @@
                     }
                 ]
             },
-            "CollectibleAssetForm": {
+            "CollectibleAssetData": {
                 "type": "object",
                 "properties": {
                     "acquisitionCost": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "acquisitionDate": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "appraisalValue": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "appraisalDate": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "acquisitionCost",
+                    "acquisitionDate",
+                    "appraisalValue",
+                    "appraisalDate"
+                ]
+            },
+            "CreateCollectibleAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "acquisitionCost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
                     "acquisitionDate": {
                         "type": "string"
                     },
                     "appraisalValue": {
-                        "type": "number"
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "appraisalDate": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "acquisitionCost",
+                    "acquisitionDate",
+                    "appraisalValue",
+                    "appraisalDate"
+                ]
+            },
+            "CreateCollectibleAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CollectibleAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "UpdateCollectibleAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "acquisitionCost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "acquisitionDate": {
+                        "type": "string"
+                    },
+                    "appraisalValue": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "appraisalDate": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateCollectibleAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CollectibleAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "CollectibleAssetForm": {
+                "type": "object",
+                "properties": {
+                    "acquisitionCost": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "acquisitionDate": {
+                        "type": "string"
+                    },
+                    "appraisalValue": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
                     "appraisalDate": {
                         "type": "string"
@@ -2791,6 +2526,13 @@
                     "QUARTERLY",
                     "SEMIANNUAL",
                     "ANNUAL"
+                ]
+            },
+            "AssetMarketDataTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "BUY",
+                    "SELL"
                 ]
             },
             "ValueSourceEnum": {
@@ -4339,7 +4081,7 @@
                     "data"
                 ]
             },
-            "InsuranceAssetForm": {
+            "InsuranceAssetData": {
                 "type": "object",
                 "properties": {
                     "insurer": {
@@ -4352,10 +4094,12 @@
                         "type": "string"
                     },
                     "startDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "endDate": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "beneficiary": {
                         "type": "string"
@@ -4368,6 +4112,198 @@
                     },
                     "surrenderValue": {
                         "type": "number"
+                    }
+                },
+                "required": [
+                    "insurer",
+                    "policyType",
+                    "policyNumber",
+                    "startDate",
+                    "endDate",
+                    "beneficiary",
+                    "premiumPaid",
+                    "premiumFrequency",
+                    "surrenderValue"
+                ]
+            },
+            "CreateInsuranceAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "insurer": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "policyType": {
+                        "$ref": "#/components/schemas/InsurancePolicyTypeEnum"
+                    },
+                    "policyNumber": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "startDate": {
+                        "type": "string"
+                    },
+                    "endDate": {
+                        "type": "string"
+                    },
+                    "beneficiary": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "premiumPaid": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "premiumFrequency": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "surrenderValue": {
+                        "type": "number",
+                        "minimum": 0
+                    }
+                },
+                "required": [
+                    "insurer",
+                    "policyType",
+                    "policyNumber",
+                    "startDate",
+                    "endDate",
+                    "beneficiary",
+                    "premiumPaid",
+                    "premiumFrequency",
+                    "surrenderValue"
+                ]
+            },
+            "CreateInsuranceAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/InsuranceAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "UpdateInsuranceAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "insurer": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "policyType": {
+                        "$ref": "#/components/schemas/InsurancePolicyTypeEnum"
+                    },
+                    "policyNumber": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "startDate": {
+                        "type": "string"
+                    },
+                    "endDate": {
+                        "type": "string"
+                    },
+                    "beneficiary": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "premiumPaid": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "premiumFrequency": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "surrenderValue": {
+                        "type": "number",
+                        "minimum": 0
+                    }
+                }
+            },
+            "UpdateInsuranceAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/InsuranceAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "InsuranceAssetForm": {
+                "type": "object",
+                "properties": {
+                    "insurer": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "policyType": {
+                        "$ref": "#/components/schemas/InsurancePolicyTypeEnum"
+                    },
+                    "policyNumber": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "startDate": {
+                        "type": "string"
+                    },
+                    "endDate": {
+                        "type": "string"
+                    },
+                    "beneficiary": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "premiumPaid": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "premiumFrequency": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "surrenderValue": {
+                        "type": "number",
+                        "minimum": 0
                     }
                 },
                 "required": [
@@ -4761,22 +4697,27 @@
                         "type": "string"
                     },
                     "isin": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "exchange": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "assetClass": {
                         "$ref": "#/components/schemas/MarketableAssetClassEnum"
                     },
                     "sector": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "region": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "lastPriceSync": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -4794,6 +4735,9 @@
                 "properties": {
                     "transactionType": {
                         "$ref": "#/components/schemas/AssetMarketDataTypeEnum"
+                    },
+                    "assetClass": {
+                        "$ref": "#/components/schemas/MarketableAssetClassEnum"
                     },
                     "symbol": {
                         "type": "string",
@@ -4830,17 +4774,127 @@
                     "currency"
                 ]
             },
-            "PrivateDealAssetForm": {
+            "CreateMarketableAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "transactionType": {
+                        "$ref": "#/components/schemas/AssetMarketDataTypeEnum"
+                    },
+                    "assetClass": {
+                        "$ref": "#/components/schemas/MarketableAssetClassEnum"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "unitPrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "fees": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    }
+                },
+                "required": [
+                    "transactionType",
+                    "symbol",
+                    "date",
+                    "quantity",
+                    "unitPrice",
+                    "fees",
+                    "currency"
+                ]
+            },
+            "UpdateMarketableAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "transactionType": {
+                        "$ref": "#/components/schemas/AssetMarketDataTypeEnum"
+                    },
+                    "assetClass": {
+                        "$ref": "#/components/schemas/MarketableAssetClassEnum"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "unitPrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "fees": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    }
+                }
+            },
+            "PrivateDealAssetData": {
                 "type": "object",
                 "properties": {
                     "committedAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "calledAmount": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
                     },
                     "latestNav": {
-                        "type": "number"
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "navDate": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "committedAmount",
+                    "calledAmount",
+                    "latestNav",
+                    "navDate"
+                ]
+            },
+            "CreatePrivateDealAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "committedAmount": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "calledAmount": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "latestNav": {
+                        "type": "number",
+                        "minimum": 0
                     },
                     "navDate": {
                         "type": "string"
@@ -4853,14 +4907,142 @@
                     "navDate"
                 ]
             },
-            "RealEstateAssetForm": {
+            "CreatePrivateDealAssetResponse": {
                 "type": "object",
                 "properties": {
-                    "assetName": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PrivateDealAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "UpdatePrivateDealAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "committedAmount": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "calledAmount": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "latestNav": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "navDate": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdatePrivateDealAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PrivateDealAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "PrivateDealAssetForm": {
+                "type": "object",
+                "properties": {
+                    "committedAmount": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "calledAmount": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "latestNav": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "navDate": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "committedAmount",
+                    "calledAmount",
+                    "latestNav",
+                    "navDate"
+                ]
+            },
+            "RealEstateAssetData": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RealEstateTypeEnum"
+                    },
+                    "purchasePrice": {
+                        "type": "number"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "address",
+                    "type",
+                    "purchasePrice",
+                    "purchaseDate"
+                ]
+            },
+            "CreateRealEstateAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "address": {
                         "type": "string",
                         "minLength": 1
                     },
-                    "propertyType": {
+                    "type": {
                         "$ref": "#/components/schemas/RealEstateTypeEnum"
                     },
                     "purchasePrice": {
@@ -4870,18 +5052,115 @@
                     },
                     "purchaseDate": {
                         "type": "string"
-                    },
-                    "address": {
-                        "type": "string",
-                        "minLength": 1
                     }
                 },
                 "required": [
-                    "assetName",
-                    "propertyType",
+                    "address",
+                    "type",
                     "purchasePrice",
-                    "purchaseDate",
-                    "address"
+                    "purchaseDate"
+                ]
+            },
+            "CreateRealEstateAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RealEstateAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "UpdateRealEstateAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RealEstateTypeEnum"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateRealEstateAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RealEstateAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "RealEstateAssetForm": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RealEstateTypeEnum"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "address",
+                    "type",
+                    "purchasePrice",
+                    "purchaseDate"
                 ]
             },
             "NetWorthEvolution": {
@@ -7026,6 +7305,210 @@
                     "confirmPassword"
                 ]
             },
+            "VehicleAssetData": {
+                "type": "object",
+                "properties": {
+                    "brand": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/VehicleTypeEnum"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "purchasePrice": {
+                        "type": "number"
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "plateNumber": {
+                        "type": "string"
+                    },
+                    "vin": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mileage": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "condition": {
+                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    }
+                },
+                "required": [
+                    "brand",
+                    "model",
+                    "type",
+                    "year",
+                    "purchasePrice",
+                    "purchaseDate",
+                    "plateNumber",
+                    "vin",
+                    "mileage",
+                    "condition"
+                ]
+            },
+            "CreateVehicleAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "brand": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "model": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/VehicleTypeEnum"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "plateNumber": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "vin": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                    },
+                    "mileage": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "condition": {
+                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    }
+                },
+                "required": [
+                    "brand",
+                    "model",
+                    "type",
+                    "year",
+                    "purchasePrice",
+                    "purchaseDate",
+                    "plateNumber",
+                    "vin",
+                    "mileage",
+                    "condition"
+                ]
+            },
+            "CreateVehicleAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
+            "UpdateVehicleAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "brand": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "model": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/VehicleTypeEnum"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "plateNumber": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "vin": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                    },
+                    "mileage": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "condition": {
+                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    }
+                }
+            },
+            "UpdateVehicleAssetResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/VehicleAssetData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "data"
+                ]
+            },
             "VehicleAssetForm": {
                 "type": "object",
                 "properties": {
@@ -7044,7 +7527,9 @@
                         "type": "integer"
                     },
                     "purchasePrice": {
-                        "type": "number"
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
                     "purchaseDate": {
                         "type": "string"
@@ -7280,6 +7765,860 @@
                     },
                     "404": {
                         "description": "Authenticated user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets": {
+            "get": {
+                "tags": [
+                    "Asset"
+                ],
+                "operationId": "getAssets",
+                "summary": "Get all assets",
+                "description": "Retrieve the investment assets associated with the authenticated user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/AssetFilters"
+                        },
+                        "required": false,
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        },
+                        "required": false,
+                        "name": "options",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Asset"
+                ],
+                "operationId": "deleteAssets",
+                "summary": "Delete all assets",
+                "description": "Soft delete all assets for the authenticated user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Assets deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}": {
+            "get": {
+                "tags": [
+                    "Asset"
+                ],
+                "operationId": "getAssetById",
+                "summary": "Get asset by ID",
+                "description": "Retrieve a single asset and its normalized subtype data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Asset"
+                ],
+                "operationId": "deleteAsset",
+                "summary": "Delete asset",
+                "description": "Soft delete an asset",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/marketable": {
+            "post": {
+                "tags": [
+                    "Marketable Asset"
+                ],
+                "operationId": "createMarketableAsset",
+                "summary": "Create marketable asset",
+                "description": "Create a marketable asset with its opening transaction",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMarketableAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Marketable asset created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/marketable": {
+            "patch": {
+                "tags": [
+                    "Marketable Asset"
+                ],
+                "operationId": "updateMarketableAsset",
+                "summary": "Update marketable asset",
+                "description": "Update marketable asset metadata without creating transactions",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMarketableAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Marketable asset updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Marketable asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/transactions": {
+            "get": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "getAssetTransactions",
+                "summary": "Get asset transactions",
+                "description": "Retrieve the asset transactions associated with the authenticated user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/AssetTransactionFilters"
+                        },
+                        "required": false,
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/FilterOptions"
+                        },
+                        "required": false,
+                        "name": "options",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset transaction list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetTransactionListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "createAssetTransaction",
+                "summary": "Create asset transaction",
+                "description": "Create a new transaction for an asset",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAssetTransactionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Asset transaction created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateAssetTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "deleteAssetTransactions",
+                "summary": "Delete all asset transactions",
+                "description": "Soft delete all asset transactions for the authenticated user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset transactions deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteAssetTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/transactions/{id}": {
+            "get": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "getAssetTransactionById",
+                "summary": "Get asset transaction by ID",
+                "description": "Retrieve a single asset transaction",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset transaction found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asset transaction not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "updateAssetTransaction",
+                "summary": "Update asset transaction",
+                "description": "Update an existing transaction for an asset",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAssetTransactionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Asset transaction updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateAssetTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asset transaction not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Asset Transaction"
+                ],
+                "operationId": "deleteAssetTransaction",
+                "summary": "Delete asset transaction",
+                "description": "Soft delete an asset transaction",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset transaction deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteAssetTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asset transaction not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -10098,6 +11437,95 @@
                 }
             }
         },
+        "/imports/{id}/transactions/approve": {
+            "patch": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "approveImportTransactions",
+                "summary": "Approve or reject import transactions",
+                "description": "Bulk approve or reject transactions for a specific import",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "description": "List of transactions with their new statuses",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApproveImportTransactionsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transactions updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApproveImportTransactionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Import not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/imports/template/{action}": {
             "post": {
                 "tags": [
@@ -10243,6 +11671,467 @@
                 }
             }
         },
+        "/imports/rollback/{id}": {
+            "patch": {
+                "tags": [
+                    "Import"
+                ],
+                "operationId": "rollbackImport",
+                "summary": "Rollback import",
+                "description": "Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Import rolled back",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateImportResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Import not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/market-data/providers": {
+            "get": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "getMarketDataProviders",
+                "summary": "Get market data providers",
+                "description": "List the enabled raw market data providers and their capabilities",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Provider list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetMarketDataProvidersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/market-data/providers/{providerId}/credential": {
+            "put": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "saveMarketDataProviderCredential",
+                "summary": "Save market data provider credential",
+                "description": "Encrypt and store the authenticated users provider API key server-side",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMarketDataProviderCredentialRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credential saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateMarketDataProviderCredentialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "deleteMarketDataProviderCredential",
+                "summary": "Delete market data provider credential",
+                "description": "Delete the authenticated users encrypted provider API key",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Credential deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteMarketDataProviderCredentialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/market-data/instruments": {
+            "get": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "searchMarketInstruments",
+                "summary": "Search instruments",
+                "description": "Search provider instruments and return a normalized instrument list",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": false,
+                        "name": "providerId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/AssetTypeEnum"
+                        },
+                        "required": false,
+                        "name": "assetType",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "required": true,
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": true,
+                            "maximum": 50
+                        },
+                        "required": false,
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Instrument list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SearchMarketInstrumentsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/market-data/quotes": {
+            "get": {
+                "tags": [
+                    "Market Data"
+                ],
+                "operationId": "getMarketQuotes",
+                "summary": "Get quotes",
+                "description": "Fetch normalized live quotes using the selected provider",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": false,
+                        "name": "providerId",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/AssetTypeEnum"
+                        },
+                        "required": false,
+                        "name": "assetType",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "minItems": 1
+                                }
+                            ]
+                        },
+                        "required": true,
+                        "name": "symbols",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quote list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetMarketQuotesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/dashboard": {
             "get": {
                 "tags": [
@@ -10365,6 +12254,79 @@
                     },
                     "404": {
                         "description": "Dashboard layout not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/snapshots/account-balance": {
+            "post": {
+                "tags": [
+                    "Snapshot"
+                ],
+                "operationId": "createSnapshotAccountBalance",
+                "summary": "Create snapshot account balance",
+                "description": "Create a new snapshot account balance with the provided data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Snapshot account balance data to create",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSnapshotAccountBalanceRequest"
+                            },
+                            "encoding": {
+                                "data": {
+                                    "contentType": "application/json"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Snapshot account balance created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateSnapshotAccountBalanceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -15574,1526 +17536,6 @@
                             }
                         },
                         "description": "Internal Server Error. This is a problem with the server that you cannot fix."
-                    }
-                }
-            }
-        },
-        "/imports/{id}/transactions/approve": {
-            "patch": {
-                "tags": [
-                    "Import"
-                ],
-                "operationId": "approveImportTransactions",
-                "summary": "Approve or reject import transactions",
-                "description": "Bulk approve or reject transactions for a specific import",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "requestBody": {
-                    "description": "List of transactions with their new statuses",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ApproveImportTransactionsRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Transactions updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApproveImportTransactionsResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Import not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/snapshots/account-balance": {
-            "post": {
-                "tags": [
-                    "Snapshot"
-                ],
-                "operationId": "createSnapshotAccountBalance",
-                "summary": "Create snapshot account balance",
-                "description": "Create a new snapshot account balance with the provided data",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "description": "Snapshot account balance data to create",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateSnapshotAccountBalanceRequest"
-                            },
-                            "encoding": {
-                                "data": {
-                                    "contentType": "application/json"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Snapshot account balance created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CreateSnapshotAccountBalanceResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/imports/rollback/{id}": {
-            "patch": {
-                "tags": [
-                    "Import"
-                ],
-                "operationId": "rollbackImport",
-                "summary": "Rollback import",
-                "description": "Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Import rolled back",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UpdateImportResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Import not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/assets": {
-            "get": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "getAssets",
-                "summary": "Get all assets",
-                "description": "Retrieve the investment assets associated with the authenticated user",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/AssetFilters"
-                        },
-                        "required": false,
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/FilterOptions"
-                        },
-                        "required": false,
-                        "name": "options",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetAssetListResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "createAsset",
-                "summary": "Create asset",
-                "description": "Create a new asset with subtype details",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateAssetRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Asset created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CreateAssetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "deleteAssets",
-                "summary": "Delete all assets",
-                "description": "Soft delete all assets for the authenticated user",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assets deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteAssetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/assets/summary/portfolio": {
-            "get": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "getPortfolioSummary",
-                "summary": "Get portfolio summary",
-                "description": "Retrieve aggregated metrics for the investment portfolio",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Portfolio summary",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetPortfolioSummaryResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/assets/{id}": {
-            "get": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "getAssetById",
-                "summary": "Get asset by ID",
-                "description": "Retrieve a single asset and its normalized subtype data",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetAssetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "updateAsset",
-                "summary": "Update asset",
-                "description": "Update an existing asset and its subtype details",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateAssetRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Asset updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UpdateAssetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Asset"
-                ],
-                "operationId": "deleteAsset",
-                "summary": "Delete asset",
-                "description": "Soft delete an asset",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteAssetResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/asset-transactions": {
-            "get": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "getAssetTransactions",
-                "summary": "Get asset transactions",
-                "description": "Retrieve the asset transactions associated with the authenticated user",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/AssetTransactionFilters"
-                        },
-                        "required": false,
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/FilterOptions"
-                        },
-                        "required": false,
-                        "name": "options",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset transaction list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetAssetTransactionListResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "createAssetTransaction",
-                "summary": "Create asset transaction",
-                "description": "Create a new transaction for an asset",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateAssetTransactionRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Asset transaction created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/CreateAssetTransactionResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "deleteAssetTransactions",
-                "summary": "Delete all asset transactions",
-                "description": "Soft delete all asset transactions for the authenticated user",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset transactions deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteAssetTransactionResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/asset-transactions/{id}": {
-            "get": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "getAssetTransactionById",
-                "summary": "Get asset transaction by ID",
-                "description": "Retrieve a single asset transaction",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset transaction found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetAssetTransactionResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset transaction not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "updateAssetTransaction",
-                "summary": "Update asset transaction",
-                "description": "Update an existing transaction for an asset",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateAssetTransactionRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Asset transaction updated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UpdateAssetTransactionResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset transaction not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Asset Transaction"
-                ],
-                "operationId": "deleteAssetTransaction",
-                "summary": "Delete asset transaction",
-                "description": "Soft delete an asset transaction",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Asset transaction deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteAssetTransactionResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Asset transaction not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/market-data/providers": {
-            "get": {
-                "tags": [
-                    "Market Data"
-                ],
-                "operationId": "getMarketDataProviders",
-                "summary": "Get market data providers",
-                "description": "List the enabled raw market data providers and their capabilities",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Provider list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetMarketDataProvidersResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/market-data/instruments": {
-            "get": {
-                "tags": [
-                    "Market Data"
-                ],
-                "operationId": "searchMarketInstruments",
-                "summary": "Search instruments",
-                "description": "Search provider instruments and return a normalized instrument list",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": false,
-                        "name": "providerId",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/AssetTypeEnum"
-                        },
-                        "required": false,
-                        "name": "assetType",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "type": "string",
-                            "minLength": 1
-                        },
-                        "required": true,
-                        "name": "q",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "exclusiveMinimum": true,
-                            "maximum": 50
-                        },
-                        "required": false,
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Instrument list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SearchMarketInstrumentsResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/market-data/quotes": {
-            "get": {
-                "tags": [
-                    "Market Data"
-                ],
-                "operationId": "getMarketQuotes",
-                "summary": "Get quotes",
-                "description": "Fetch normalized live quotes using the selected provider",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": false,
-                        "name": "providerId",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "$ref": "#/components/schemas/AssetTypeEnum"
-                        },
-                        "required": false,
-                        "name": "assetType",
-                        "in": "query"
-                    },
-                    {
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string",
-                                    "minLength": 1
-                                },
-                                {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string",
-                                        "minLength": 1
-                                    },
-                                    "minItems": 1
-                                }
-                            ]
-                        },
-                        "required": true,
-                        "name": "symbols",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Quote list",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GetMarketQuotesResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/market-data/providers/{providerId}/credential": {
-            "put": {
-                "tags": [
-                    "Market Data"
-                ],
-                "operationId": "saveMarketDataProviderCredential",
-                "summary": "Save market data provider credential",
-                "description": "Encrypt and store the authenticated users provider API key server-side",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "providerId",
-                        "in": "path"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateMarketDataProviderCredentialRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Credential saved",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UpdateMarketDataProviderCredentialResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Market Data"
-                ],
-                "operationId": "deleteMarketDataProviderCredential",
-                "summary": "Delete market data provider credential",
-                "description": "Delete the authenticated users encrypted provider API key",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        },
-                        "required": true,
-                        "name": "providerId",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Credential deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/DeleteMarketDataProviderCredentialResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
                     }
                 }
             }

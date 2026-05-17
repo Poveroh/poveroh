@@ -9,10 +9,10 @@ export type AssetTransactionData = {
     assetId: string
     type: AssetTransactionTypeEnum
     date: string
-    settlementDate: string
-    quantityChange: number
-    unitPrice: number
-    totalAmount: number
+    settlementDate: string | null
+    quantityChange: number | null
+    unitPrice: number | null
+    totalAmount: number | null
     currency: CurrencyEnum
     fxRate: number | null
     fees: number | null

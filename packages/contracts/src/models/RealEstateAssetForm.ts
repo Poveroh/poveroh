@@ -4,9 +4,8 @@
 /* eslint-disable */
 import type { RealEstateTypeEnum } from './RealEstateTypeEnum'
 export type RealEstateAssetForm = {
-    assetName: string
-    propertyType: RealEstateTypeEnum
+    address: string
+    type: RealEstateTypeEnum
     purchasePrice: number
     purchaseDate: string
-    address: string
 }

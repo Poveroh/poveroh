@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateAssetResponse = {
+import type { InsuranceAssetData } from './InsuranceAssetData'
+export type UpdateInsuranceAssetResponse = {
     /**
      * Indicates if the request was successful
      */
@@ -11,8 +12,5 @@ export type UpdateAssetResponse = {
      * Optional success message
      */
     message: string
-    /**
-     * Response data
-     */
-    data?: any
+    data: InsuranceAssetData
 }

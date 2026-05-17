@@ -19,168 +19,31 @@ import type {
     UpdateAssetTransactionRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/src/utils'
+import {
+    assetInclude,
+    buildPositionMap,
+    getSubtypeKeyByAssetType,
+    isMarketableType,
+    mapAsset,
+    mapAssetTransaction,
+    toNumber
+} from '../helpers/asset.helper'
 import { BaseService } from './base.service'
-
-const assetInclude = {
-    marketable: true,
-    realEstate: true,
-    collectible: true,
-    privateDeal: true,
-    vehicle: true,
-    insurance: true
-} satisfies Prisma.AssetInclude
-
-type AssetWithRelations = Prisma.AssetGetPayload<{ include: typeof assetInclude }>
-
-type AssetSubtypeKey = 'marketable' | 'realEstate' | 'collectible' | 'privateDeal' | 'vehicle' | 'insurance'
-
-// Converts nullable Prisma decimals into plain numbers for API responses.
-const toNumber = (value: Prisma.Decimal | number | string | null | undefined) => {
-    if (value == null) {
-        return null
-    }
-
-    return Number(value)
-}
-
-// Normalizes nullable dates into ISO strings so the contract is stable for the frontend.
-const toIsoString = (value: Date | null | undefined) => value?.toISOString() ?? null
-
-// Maps an asset type to the Prisma subtype relation that should contain its extra fields.
-const getSubtypeKeyByAssetType = (
-    type: CreateAssetRequest['type'] | UpdateAssetRequest['type']
-): AssetSubtypeKey | null => {
-    switch (type) {
-        case 'STOCK':
-        case 'BOND':
-        case 'ETF':
-        case 'MUTUAL_FUND':
-        case 'CRYPTOCURRENCY':
-            return 'marketable'
-        case 'REAL_ESTATE':
-            return 'realEstate'
-        case 'COLLECTIBLE':
-            return 'collectible'
-        case 'VEHICLE':
-            return 'vehicle'
-        case 'PRIVATE_EQUITY':
-        case 'VENTURE_CAPITAL':
-        case 'PRIVATE_DEBT':
-        case 'P2P_LENDING':
-            return 'privateDeal'
-        case 'INSURANCE_POLICY':
-            return 'insurance'
-        default:
-            return null
-    }
-}
-
-// Applies business semantics to quantity changes so position metrics stay consistent even if payload quantities are positive.
-const normalizeQuantityDelta = (type: AssetTransactionData['type'], quantityChange: number | null) => {
-    if (quantityChange == null) {
-        return 0
-    }
-
-    const absoluteQuantity = Math.abs(quantityChange)
-    switch (type) {
-        case 'SELL':
-        case 'WITHDRAWAL':
-        case 'DISTRIBUTION':
-            return absoluteQuantity * -1
-        default:
-            return absoluteQuantity
-    }
-}
-
-// Builds the summary block used by asset responses and the investments overview.
-const buildPositionMap = (transactions: AssetTransactionData[]) => {
-    const positions = new Map<string, AssetData['position']>()
-
-    for (const transaction of transactions) {
-        const current = positions.get(transaction.assetId) ?? {
-            quantity: 0,
-            investedAmount: 0,
-            proceedsAmount: 0,
-            netContribution: 0,
-            averageCost: null,
-            realizedCashFlow: 0,
-            lastTransactionAt: null
-        }
-
-        const quantityDelta = normalizeQuantityDelta(transaction.type, transaction.quantityChange)
-        const totalAmount = transaction.totalAmount ?? 0
-        const fees = transaction.fees ?? 0
-        const taxes = transaction.taxAmount ?? 0
-
-        current.quantity = (current.quantity ?? 0) + quantityDelta
-
-        switch (transaction.type) {
-            case 'BUY':
-            case 'DEPOSIT':
-            case 'CAPITAL_CALL':
-                current.investedAmount = (current.investedAmount ?? 0) + totalAmount
-                current.netContribution = (current.netContribution ?? 0) + totalAmount
-                break
-            case 'SELL':
-            case 'WITHDRAWAL':
-            case 'DISTRIBUTION':
-                current.proceedsAmount = (current.proceedsAmount ?? 0) + totalAmount
-                current.netContribution = (current.netContribution ?? 0) - totalAmount
-                break
-            case 'DIVIDEND':
-            case 'INTEREST':
-                current.realizedCashFlow = (current.realizedCashFlow ?? 0) + totalAmount
-                break
-            default:
-                break
-        }
-
-        current.realizedCashFlow = (current.realizedCashFlow ?? 0) - fees - taxes
-        current.lastTransactionAt =
-            !current.lastTransactionAt || current.lastTransactionAt < transaction.date
-                ? transaction.date
-                : current.lastTransactionAt
-
-        if (current.quantity && current.quantity > 0 && current.investedAmount != null) {
-            current.averageCost = current.investedAmount / current.quantity
-        } else {
-            current.averageCost = null
-        }
-
-        positions.set(transaction.assetId, current)
-    }
-
-    return positions
-}
-
-// Converts an asset transaction row into the public API DTO.
-const mapAssetTransaction = (
-    transaction: Prisma.AssetTransactionGetPayload<Record<string, never>>
-): AssetTransactionData => ({
-    id: transaction.id,
-    assetId: transaction.assetId,
-    type: transaction.type,
-    date: transaction.date.toISOString(),
-    settlementDate: toIsoString(transaction.settlementDate),
-    quantityChange: toNumber(transaction.quantityChange),
-    unitPrice: toNumber(transaction.unitPrice),
-    totalAmount: toNumber(transaction.totalAmount),
-    currency: transaction.currency,
-    fxRate: toNumber(transaction.fxRate),
-    fees: toNumber(transaction.fees),
-    taxAmount: toNumber(transaction.taxAmount),
-    financialAccountId: transaction.financialAccountId ?? null,
-    note: transaction.note ?? null,
-    createdAt: transaction.createdAt.toISOString(),
-    updatedAt: transaction.updatedAt.toISOString()
-})
+import { FinancialAccountService } from './financial-account.service'
 
 export class AssetService extends BaseService {
+    private financialAccountService: FinancialAccountService
+
+    /**
+     * Initializes the service with the authenticated user's ID and sets up related services.
+     * @param userId The ID of the authenticated user, used for scoping all operations to their data
+     */
     constructor(userId: string) {
         super(userId, 'asset')
+        this.financialAccountService = new FinancialAccountService(userId)
     }
 
-    // Creates an asset and persists the correct subtype table in the same transaction.
+    // Creates a new non-marketable asset and persists its subtype details.
     async createAsset(payload: CreateAssetRequest): Promise<AssetData> {
         const userId = this.getUserId()
         const parsed = CreateAssetRequestSchema.parse(payload) as CreateAssetRequest
@@ -196,8 +59,7 @@ export class AssetService extends BaseService {
                     currentValueAsOf: new Date(parsed.currentValueAsOf),
                     quantity: 0,
                     totalInvested: 0
-                },
-                include: assetInclude
+                }
             })
 
             await this.persistSubtypeDetails(tx, createdAsset.id, parsed.type, parsed, false)
@@ -208,10 +70,10 @@ export class AssetService extends BaseService {
             })
         })
 
-        return asset
+        return mapAsset(asset)
     }
 
-    // Updates an asset and keeps subtype records aligned when the asset family changes.
+    // Updates an existing non-marketable asset and keeps subtype records aligned when its family changes.
     async updateAsset(id: string, payload: UpdateAssetRequest): Promise<void> {
         const userId = this.getUserId()
         const parsed = UpdateAssetRequestSchema.parse(payload) as UpdateAssetRequest
@@ -225,6 +87,10 @@ export class AssetService extends BaseService {
             throw new NotFoundError('Asset not found')
         }
 
+        if (isMarketableType(parsed.type ?? existingAsset.type)) {
+            throw new BadRequestError('Use /assets/{id}/marketable to update marketable assets')
+        }
+
         await prisma.$transaction(async tx => {
             await tx.asset.update({
                 where: { id },
@@ -234,7 +100,7 @@ export class AssetService extends BaseService {
                     ...(parsed.currency !== undefined && { currency: parsed.currency }),
                     ...(parsed.currentValue !== undefined && { currentValue: parsed.currentValue }),
                     ...(parsed.currentValueAsOf !== undefined && {
-                        currentValueAsOf: parsed.currentValueAsOf ? new Date(parsed.currentValueAsOf) : null
+                        currentValueAsOf: new Date(parsed.currentValueAsOf)
                     })
                 }
             })
@@ -246,7 +112,7 @@ export class AssetService extends BaseService {
                 await this.softDeleteSubtypeDetails(tx, id)
             }
 
-            await this.persistSubtypeDetails(tx, id, effectiveType, parsed, true)
+            await this.persistSubtypeDetails(tx, id, effectiveType, parsed, !assetTypeChanged)
         })
     }
 
@@ -274,8 +140,7 @@ export class AssetService extends BaseService {
     }
 
     /**
-     * Soft deletes all assets for the authenticated user. The assets are not permanently removed from the database, but are marked as deleted and excluded from future queries.
-     * @returns void
+     * Soft deletes all assets for the authenticated user.
      */
     async deleteAllAssets(): Promise<void> {
         const userId = this.getUserId()
@@ -302,11 +167,7 @@ export class AssetService extends BaseService {
         })
     }
 
-    /**
-     * Soft deletes a single asset transaction. The transaction is not permanently removed from the database, but is marked as deleted and excluded from future queries.
-     * @param id The ID of the asset transaction to delete
-     * @returns void
-     */
+    // Retrieves a single asset with its subtype details and computed position metrics.
     async getAssetById(id: string): Promise<AssetData | null> {
         const userId = this.getUserId()
         const asset = await prisma.asset.findFirst({
@@ -374,7 +235,7 @@ export class AssetService extends BaseService {
         return assets.map(asset => mapAsset(asset, positionMap.get(asset.id) ?? null))
     }
 
-    // Aggregates the high-level metrics needed by the investments overview screen.
+    // GET /portfolio/summary
     async getPortfolioSummary(): Promise<PortfolioSummary> {
         const userId = this.getUserId()
         const assets = await prisma.asset.findMany({
@@ -420,188 +281,7 @@ export class AssetService extends BaseService {
         }
     }
 
-    // Creates a new asset transaction after verifying asset and linked account ownership.
-    async createAssetTransaction(payload: CreateAssetTransactionRequest): Promise<AssetTransactionData> {
-        const userId = this.getUserId()
-        const parsed = CreateAssetTransactionRequestSchema.parse(payload) as CreateAssetTransactionRequest
-
-        await this.ensureAssetOwnership(parsed.assetId, userId)
-        await this.ensureFinancialAccountOwnership(parsed.financialAccountId, userId)
-
-        const createdTransaction = await prisma.assetTransaction.create({
-            data: {
-                assetId: parsed.assetId,
-                type: parsed.type,
-                date: new Date(parsed.date),
-                settlementDate: parsed.settlementDate ? new Date(parsed.settlementDate) : null,
-                quantityChange: parsed.quantityChange ?? null,
-                unitPrice: parsed.unitPrice ?? null,
-                totalAmount: parsed.totalAmount ?? null,
-                currency: parsed.currency,
-                fxRate: parsed.fxRate ?? null,
-                fees: parsed.fees ?? null,
-                taxAmount: parsed.taxAmount ?? null,
-                financialAccountId: parsed.financialAccountId ?? null,
-                note: parsed.note ?? null
-            }
-        })
-
-        return mapAssetTransaction(createdTransaction)
-    }
-
-    // Updates an existing asset transaction and keeps ownership constraints enforced.
-    async updateAssetTransaction(id: string, payload: UpdateAssetTransactionRequest): Promise<void> {
-        const userId = this.getUserId()
-        const parsed = UpdateAssetTransactionRequestSchema.parse(payload) as UpdateAssetTransactionRequest
-
-        const existingTransaction = await prisma.assetTransaction.findFirst({
-            where: {
-                id,
-                deletedAt: null,
-                asset: {
-                    userId,
-                    deletedAt: null
-                }
-            },
-            select: {
-                id: true,
-                assetId: true
-            }
-        })
-
-        if (!existingTransaction) {
-            throw new NotFoundError('Asset transaction not found')
-        }
-
-        const targetAssetId = parsed.assetId ?? existingTransaction.assetId
-        await this.ensureAssetOwnership(targetAssetId, userId)
-        await this.ensureFinancialAccountOwnership(parsed.financialAccountId, userId)
-
-        await prisma.assetTransaction.update({
-            where: { id },
-            data: {
-                ...(parsed.assetId !== undefined && { assetId: parsed.assetId }),
-                ...(parsed.type !== undefined && { type: parsed.type }),
-                ...(parsed.date !== undefined && { date: new Date(parsed.date) }),
-                ...(parsed.settlementDate !== undefined && {
-                    settlementDate: parsed.settlementDate ? new Date(parsed.settlementDate) : null
-                }),
-                ...(parsed.quantityChange !== undefined && { quantityChange: parsed.quantityChange }),
-                ...(parsed.unitPrice !== undefined && { unitPrice: parsed.unitPrice }),
-                ...(parsed.totalAmount !== undefined && { totalAmount: parsed.totalAmount }),
-                ...(parsed.currency !== undefined && { currency: parsed.currency }),
-                ...(parsed.fxRate !== undefined && { fxRate: parsed.fxRate }),
-                ...(parsed.fees !== undefined && { fees: parsed.fees }),
-                ...(parsed.taxAmount !== undefined && { taxAmount: parsed.taxAmount }),
-                ...(parsed.financialAccountId !== undefined && { financialAccountId: parsed.financialAccountId }),
-                ...(parsed.note !== undefined && { note: parsed.note })
-            }
-        })
-    }
-
-    // Soft deletes a single asset transaction.
-    async deleteAssetTransaction(id: string): Promise<void> {
-        const userId = this.getUserId()
-
-        const existingTransaction = await prisma.assetTransaction.findFirst({
-            where: {
-                id,
-                deletedAt: null,
-                asset: {
-                    userId,
-                    deletedAt: null
-                }
-            },
-            select: { id: true }
-        })
-
-        if (!existingTransaction) {
-            throw new NotFoundError('Asset transaction not found')
-        }
-
-        await prisma.assetTransaction.update({
-            where: { id },
-            data: { deletedAt: new Date() }
-        })
-    }
-
-    // Soft deletes all asset transactions for the authenticated user.
-    async deleteAllAssetTransactions(): Promise<void> {
-        const userId = this.getUserId()
-
-        await prisma.assetTransaction.updateMany({
-            where: {
-                deletedAt: null,
-                asset: {
-                    userId,
-                    deletedAt: null
-                }
-            },
-            data: { deletedAt: new Date() }
-        })
-    }
-
-    // Retrieves one asset transaction by ID.
-    async getAssetTransactionById(id: string): Promise<AssetTransactionData | null> {
-        const userId = this.getUserId()
-        const transaction = await prisma.assetTransaction.findFirst({
-            where: {
-                id,
-                deletedAt: null,
-                asset: {
-                    userId,
-                    deletedAt: null
-                }
-            }
-        })
-
-        return transaction ? mapAssetTransaction(transaction) : null
-    }
-
-    // Retrieves filtered asset transactions and can optionally scope the query to a known asset ID list.
-    async getAssetTransactions(
-        filters: AssetTransactionFilters,
-        skip: number,
-        take: number,
-        assetIds?: string[]
-    ): Promise<AssetTransactionData[]> {
-        const userId = this.getUserId()
-        const where: Prisma.AssetTransactionWhereInput = {
-            deletedAt: null,
-            ...(filters.id?.id && { id: filters.id.id }),
-            ...(filters.assetId && { assetId: filters.assetId }),
-            ...(assetIds && assetIds.length > 0 && { assetId: { in: assetIds } }),
-            ...(filters.type && { type: filters.type }),
-            ...(filters.financialAccountId && { financialAccountId: filters.financialAccountId }),
-            ...(filters.note && {
-                note: {
-                    ...(filters.note.equals && { equals: filters.note.equals }),
-                    ...(filters.note.contains && { contains: filters.note.contains, mode: 'insensitive' })
-                }
-            }),
-            ...(filters.date && {
-                date: {
-                    ...(filters.date.gte && { gte: new Date(filters.date.gte) }),
-                    ...(filters.date.lte && { lte: new Date(filters.date.lte) })
-                }
-            }),
-            asset: {
-                userId,
-                deletedAt: null
-            }
-        }
-
-        const transactions = await prisma.assetTransaction.findMany({
-            where,
-            orderBy: { date: 'desc' },
-            skip,
-            take
-        })
-
-        return transactions.map(mapAssetTransaction)
-    }
-
-    // Soft deletes all subtype rows so an asset can safely switch family without stale related data.
+    // Soft deletes all subtype rows for an asset so it can safely switch type without stale data.
     private async softDeleteSubtypeDetails(
         tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
         assetId: string,
@@ -631,6 +311,10 @@ export class AssetService extends BaseService {
             return
         }
 
+        if (subtypeKey === 'marketable') {
+            throw new BadRequestError('Use the dedicated marketable asset endpoint')
+        }
+
         const subtypePayload = payload[subtypeKey]
         if (!subtypePayload) {
             if (!isUpdate) {
@@ -640,63 +324,43 @@ export class AssetService extends BaseService {
         }
 
         switch (subtypeKey) {
-            case 'marketable': {
-                const marketablePayload = payload.marketable
-                if (!marketablePayload) {
-                    return
-                }
-
-                // Only symbol is stored on the instrument record; the opening transaction
-                // is created separately by MarketableAssetService.createMarketableAsset.
-                await tx.marketableAsset.upsert({
-                    where: { assetId },
-                    create: { assetId, symbol: marketablePayload.symbol },
-                    update: { symbol: marketablePayload.symbol, deletedAt: null }
-                })
-
-                if (!isUpdate) {
-                    // Create the opening BUY/SELL transaction from the form payload.
-                    await tx.assetTransaction.create({
-                        data: {
-                            assetId,
-                            type: marketablePayload.transactionType,
-                            date: new Date(marketablePayload.date),
-                            quantityChange: marketablePayload.quantity,
-                            unitPrice: marketablePayload.unitPrice,
-                            totalAmount: marketablePayload.quantity * marketablePayload.unitPrice,
-                            fees: marketablePayload.fees,
-                            currency: marketablePayload.currency
-                        }
-                    })
-                }
-                return
-            }
             case 'realEstate': {
                 const realEstatePayload = payload.realEstate
-                if (!realEstatePayload) {
+                if (!realEstatePayload) return
+
+                if (isUpdate) {
+                    await tx.realEstateAsset.updateMany({
+                        where: { assetId, deletedAt: null },
+                        data: {
+                            ...realEstatePayload,
+                            purchaseDate: realEstatePayload.purchaseDate
+                                ? new Date(realEstatePayload.purchaseDate)
+                                : null,
+                            deletedAt: null
+                        }
+                    })
                     return
                 }
 
-                await tx.realEstateAsset.upsert({
-                    where: { assetId },
-                    create: {
+                const { address, type: realEstateType, purchasePrice } = realEstatePayload
+                if (!address || !realEstateType || purchasePrice === undefined) {
+                    throw new BadRequestError('Missing real estate subtype payload')
+                }
+
+                await tx.realEstateAsset.create({
+                    data: {
                         assetId,
-                        ...realEstatePayload,
+                        address,
+                        type: realEstateType,
+                        purchasePrice,
                         purchaseDate: realEstatePayload.purchaseDate ? new Date(realEstatePayload.purchaseDate) : null
-                    },
-                    update: {
-                        ...realEstatePayload,
-                        purchaseDate: realEstatePayload.purchaseDate ? new Date(realEstatePayload.purchaseDate) : null,
-                        deletedAt: null
                     }
                 })
                 return
             }
             case 'collectible': {
                 const collectiblePayload = payload.collectible
-                if (!collectiblePayload) {
-                    return
-                }
+                if (!collectiblePayload) return
 
                 await tx.collectibleAsset.upsert({
                     where: { assetId },
@@ -725,9 +389,7 @@ export class AssetService extends BaseService {
             }
             case 'privateDeal': {
                 const privateDealPayload = payload.privateDeal
-                if (!privateDealPayload) {
-                    return
-                }
+                if (!privateDealPayload) return
 
                 await tx.privateDealAsset.upsert({
                     where: { assetId },
@@ -746,44 +408,100 @@ export class AssetService extends BaseService {
             }
             case 'vehicle': {
                 const vehiclePayload = payload.vehicle
-                if (!vehiclePayload) {
+                if (!vehiclePayload) return
+
+                if (isUpdate) {
+                    await tx.vehicleAsset.updateMany({
+                        where: { assetId, deletedAt: null },
+                        data: {
+                            ...vehiclePayload,
+                            purchaseDate: vehiclePayload.purchaseDate ? new Date(vehiclePayload.purchaseDate) : null,
+                            deletedAt: null
+                        }
+                    })
                     return
                 }
 
-                await tx.vehicleAsset.upsert({
-                    where: { assetId },
-                    create: {
+                const { brand, model, type: vehicleType, year, purchasePrice, plateNumber } = vehiclePayload
+                if (
+                    !brand ||
+                    !model ||
+                    !vehicleType ||
+                    year === undefined ||
+                    purchasePrice === undefined ||
+                    !plateNumber
+                ) {
+                    throw new BadRequestError('Missing vehicle subtype payload')
+                }
+
+                await tx.vehicleAsset.create({
+                    data: {
                         assetId,
-                        ...vehiclePayload,
+                        brand,
+                        model,
+                        type: vehicleType,
+                        year,
+                        purchasePrice,
+                        plateNumber,
+                        vin: vehiclePayload.vin ?? null,
+                        mileage: vehiclePayload.mileage ?? null,
+                        condition: vehiclePayload.condition ?? null,
                         purchaseDate: vehiclePayload.purchaseDate ? new Date(vehiclePayload.purchaseDate) : null
-                    },
-                    update: {
-                        ...vehiclePayload,
-                        purchaseDate: vehiclePayload.purchaseDate ? new Date(vehiclePayload.purchaseDate) : null,
-                        deletedAt: null
                     }
                 })
                 return
             }
             case 'insurance': {
                 const insurancePayload = payload.insurance
-                if (!insurancePayload) {
+                if (!insurancePayload) return
+
+                if (isUpdate) {
+                    await tx.insuranceAsset.updateMany({
+                        where: { assetId, deletedAt: null },
+                        data: {
+                            ...insurancePayload,
+                            startDate: insurancePayload.startDate ? new Date(insurancePayload.startDate) : null,
+                            endDate: insurancePayload.endDate ? new Date(insurancePayload.endDate) : null,
+                            deletedAt: null
+                        }
+                    })
                     return
                 }
 
-                await tx.insuranceAsset.upsert({
-                    where: { assetId },
-                    create: {
+                const {
+                    insurer,
+                    policyType,
+                    policyNumber,
+                    beneficiary,
+                    premiumPaid,
+                    premiumFrequency,
+                    surrenderValue
+                } = insurancePayload
+
+                if (
+                    !insurer ||
+                    !policyType ||
+                    !policyNumber ||
+                    !beneficiary ||
+                    premiumPaid === undefined ||
+                    !premiumFrequency ||
+                    surrenderValue === undefined
+                ) {
+                    throw new BadRequestError('Missing insurance subtype payload')
+                }
+
+                await tx.insuranceAsset.create({
+                    data: {
                         assetId,
-                        ...insurancePayload,
+                        insurer,
+                        policyType,
+                        policyNumber,
+                        beneficiary,
+                        premiumPaid,
+                        premiumFrequency,
+                        surrenderValue,
                         startDate: insurancePayload.startDate ? new Date(insurancePayload.startDate) : null,
                         endDate: insurancePayload.endDate ? new Date(insurancePayload.endDate) : null
-                    },
-                    update: {
-                        ...insurancePayload,
-                        startDate: insurancePayload.startDate ? new Date(insurancePayload.startDate) : null,
-                        endDate: insurancePayload.endDate ? new Date(insurancePayload.endDate) : null,
-                        deletedAt: null
                     }
                 })
                 return

@@ -9,7 +9,7 @@ export type RealEstateAsset = {
     address: string
     type: RealEstateTypeEnum
     purchasePrice: number
-    purchaseDate: string
+    purchaseDate: string | null
     createdAt: string
     updatedAt: string
     deletedAt: string | null

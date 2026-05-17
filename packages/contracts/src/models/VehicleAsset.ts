@@ -12,7 +12,7 @@ export type VehicleAsset = {
     type: VehicleTypeEnum
     year: number
     purchasePrice: number
-    purchaseDate: string
+    purchaseDate: string | null
     plateNumber: string
     vin: string | null
     mileage: number | null

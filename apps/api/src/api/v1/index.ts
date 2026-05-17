@@ -4,7 +4,6 @@ import userRoutes from './routes/user'
 import categoryRoutes from './routes/category'
 import subcategoryRoutes from './routes/subcategory'
 import assetRoutes from './routes/asset'
-import assetTransactionRoutes from './routes/asset-transaction'
 import financialAccountRoutes from './routes/financial-account'
 import transactionRoutes from './routes/transaction'
 import subscriptionRoutes from './routes/subscription'
@@ -23,7 +22,6 @@ router.use('/status', statusRoutes)
 router.use('/auth', authRoutes)
 router.use('/user', userRoutes)
 router.use('/assets', assetRoutes)
-router.use('/assets/transactions', assetTransactionRoutes)
 router.use('/categories', categoryRoutes)
 router.use('/subcategories', subcategoryRoutes)
 router.use('/transactions', transactionRoutes)

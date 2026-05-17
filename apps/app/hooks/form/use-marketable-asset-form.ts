@@ -5,13 +5,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { useError } from '@/hooks/use-error'
-import { CreateAssetRequestSchema, MarketableAssetFormSchema } from '@poveroh/schemas'
-import type {
-    CreateAssetRequest,
-    MarketableAssetForm,
-    AssetMarketDataTypeEnum,
-    CreateUpdateAssetRequest
-} from '@poveroh/types'
+import {
+    CreateMarketableAssetRequestSchema,
+    MarketableAssetFormSchema,
+    UpdateMarketableAssetRequestSchema
+} from '@poveroh/schemas'
+import type { MarketableAssetForm, CreateMarketableAssetRequest, UpdateMarketableAssetRequest } from '@poveroh/types'
 import logger from '@/lib/logger'
 import { MarketableAssetFormProps } from '@/types'
 
@@ -24,7 +23,7 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
 
     const defaultValues = useMemo<MarketableAssetForm>(
         () => ({
-            transactionType: initialData ? (initialData.type as AssetMarketDataTypeEnum) : 'BUY',
+            transactionType: 'BUY',
             symbol: initialData ? initialData.marketable?.symbol || initialData.title : defaultSymbol,
             date: initialData?.currentValueAsOf?.split('T')[0] ?? '',
             quantity: 0,
@@ -52,29 +51,35 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
 
     const handleSubmit = async (
         values: MarketableAssetForm,
-        dataCallback: (payload: CreateUpdateAssetRequest, files: File[]) => Promise<void>
+        dataCallback: (
+            payload: CreateMarketableAssetRequest | UpdateMarketableAssetRequest,
+            files: File[]
+        ) => Promise<void>
     ) => {
         try {
             setLoading(true)
 
-            const asset = CreateAssetRequestSchema.parse({
+            const basePayload = {
                 title: values.symbol,
-                type: assetType,
                 currency: values.currency,
                 currentValue: total,
                 currentValueAsOf: values.date,
-                marketable: {
-                    transactionType: values.transactionType,
-                    symbol: values.symbol,
-                    date: values.date,
-                    quantity: values.quantity,
-                    unitPrice: values.unitPrice,
-                    fees: values.fees,
-                    currency: values.currency
-                }
-            } satisfies CreateAssetRequest)
+                symbol: values.symbol
+            }
 
-            await dataCallback(asset, [])
+            const payload = props.inEditingMode
+                ? UpdateMarketableAssetRequestSchema.parse(basePayload)
+                : CreateMarketableAssetRequestSchema.parse({
+                      ...basePayload,
+                      type: assetType,
+                      transactionType: values.transactionType,
+                      date: values.date,
+                      quantity: values.quantity,
+                      unitPrice: values.unitPrice,
+                      fees: values.fees
+                  })
+
+            await dataCallback(payload, [])
         } catch (error) {
             handleError(error, 'Form error')
         } finally {

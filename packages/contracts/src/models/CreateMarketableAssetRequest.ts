@@ -4,8 +4,10 @@
 /* eslint-disable */
 import type { AssetMarketDataTypeEnum } from './AssetMarketDataTypeEnum'
 import type { CurrencyEnum } from './CurrencyEnum'
-export type CreateMarketableAsset = {
+import type { MarketableAssetClassEnum } from './MarketableAssetClassEnum'
+export type CreateMarketableAssetRequest = {
     transactionType: AssetMarketDataTypeEnum
+    assetClass?: MarketableAssetClassEnum
     symbol: string
     date: string
     quantity: number

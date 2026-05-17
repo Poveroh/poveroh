@@ -176,18 +176,18 @@ model Asset {
 }
 
 model MarketableAsset {
-    id            String               @id @default(uuid())
-    assetId       String               @unique
+    id            String                @id @default(uuid())
+    assetId       String                @unique
     symbol        String
-    isin          String
-    exchange      String
-    assetClass    MarketableAssetClass
-    sector        String
-    region        String
-    lastPriceSync DateTime
-    createdAt     DateTime             @default(now())
-    updatedAt     DateTime             @updatedAt
-    deletedAt     DateTime?            @db.Timestamptz
+    isin          String?
+    exchange      String?
+    assetClass    MarketableAssetClass?
+    sector        String?
+    region        String?
+    lastPriceSync DateTime?
+    createdAt     DateTime              @default(now())
+    updatedAt     DateTime              @updatedAt
+    deletedAt     DateTime?             @db.Timestamptz
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
@@ -196,15 +196,15 @@ model MarketableAsset {
 }
 
 model RealEstateAsset {
-    id            String         @id @default(uuid())
-    assetId       String         @unique
+    id            String          @id @default(uuid())
+    assetId       String          @unique
     address       String
     type          RealEstateType
-    purchasePrice Decimal        @db.Decimal(20, 2)
-    purchaseDate  DateTime
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
-    deletedAt     DateTime?      @db.Timestamptz
+    purchasePrice Decimal         @db.Decimal(20, 2)
+    purchaseDate  DateTime?
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    deletedAt     DateTime?       @db.Timestamptz
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
@@ -212,10 +212,10 @@ model RealEstateAsset {
 model CollectibleAsset {
     id              String    @id @default(uuid())
     assetId         String    @unique
-    acquisitionCost Decimal   @db.Decimal(20, 2)
-    acquisitionDate DateTime
-    appraisalValue  Decimal   @db.Decimal(20, 2)
-    appraisalDate   DateTime
+    acquisitionCost Decimal?  @db.Decimal(20, 2)
+    acquisitionDate DateTime?
+    appraisalValue  Decimal?  @db.Decimal(20, 2)
+    appraisalDate   DateTime?
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
     deletedAt       DateTime? @db.Timestamptz
@@ -226,10 +226,10 @@ model CollectibleAsset {
 model PrivateDealAsset {
     id              String    @id @default(uuid())
     assetId         String    @unique
-    committedAmount Decimal   @db.Decimal(20, 2)
-    calledAmount    Decimal   @db.Decimal(20, 2)
-    latestNav       Decimal   @db.Decimal(20, 2)
-    navDate         DateTime
+    committedAmount Decimal?  @db.Decimal(20, 2)
+    calledAmount    Decimal?  @db.Decimal(20, 2)
+    latestNav       Decimal?  @db.Decimal(20, 2)
+    navDate         DateTime?
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
     deletedAt       DateTime? @db.Timestamptz
@@ -245,7 +245,7 @@ model VehicleAsset {
     type          VehicleType
     year          Int
     purchasePrice Decimal         @db.Decimal(20, 2)
-    purchaseDate  DateTime
+    purchaseDate  DateTime?
     plateNumber   String
     vin           String?
     mileage       Int?
@@ -263,8 +263,8 @@ model InsuranceAsset {
     insurer          String
     policyType       InsurancePolicyType
     policyNumber     String
-    startDate        DateTime
-    endDate          DateTime
+    startDate        DateTime?
+    endDate          DateTime?
     beneficiary      String
     premiumPaid      Decimal             @db.Decimal(20, 2)
     premiumFrequency CyclePeriod
@@ -281,10 +281,10 @@ model AssetTransaction {
     assetId            String
     type               AssetTransactionType
     date               DateTime
-    settlementDate     DateTime
-    quantityChange     Decimal              @db.Decimal(20, 10)
-    unitPrice          Decimal              @db.Decimal(20, 8)
-    totalAmount        Decimal              @db.Decimal(20, 2)
+    settlementDate     DateTime?
+    quantityChange     Decimal?             @db.Decimal(20, 10)
+    unitPrice          Decimal?             @db.Decimal(20, 8)
+    totalAmount        Decimal?             @db.Decimal(20, 2)
     currency           Currency             @default(EUR)
     fxRate             Decimal?             @db.Decimal(20, 10)
     fees               Decimal?             @db.Decimal(10, 2)

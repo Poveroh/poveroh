@@ -4,13 +4,13 @@
 /* eslint-disable */
 import type { AssetConditionEnum } from './AssetConditionEnum'
 import type { VehicleTypeEnum } from './VehicleTypeEnum'
-export type CreateVehicleAsset = {
+export type VehicleAssetData = {
     brand: string
     model: string
     type: VehicleTypeEnum
     year: number
     purchasePrice: number
-    purchaseDate: string
+    purchaseDate: string | null
     plateNumber: string
     vin: string | null
     mileage: number | null

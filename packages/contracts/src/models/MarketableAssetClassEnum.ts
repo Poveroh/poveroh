@@ -2,4 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED'
+export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null

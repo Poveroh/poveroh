@@ -10,8 +10,8 @@ export type InsuranceAsset = {
     insurer: string
     policyType: InsurancePolicyTypeEnum
     policyNumber: string
-    startDate: string
-    endDate: string
+    startDate: string | null
+    endDate: string | null
     beneficiary: string
     premiumPaid: number
     premiumFrequency: CyclePeriodEnum

@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AssetData } from './AssetData'
-export type CreateAssetResponse = {
+import type { CollectibleAssetData } from './CollectibleAssetData'
+export type UpdateCollectibleAssetResponse = {
     /**
      * Indicates if the request was successful
      */
@@ -12,5 +12,5 @@ export type CreateAssetResponse = {
      * Optional success message
      */
     message: string
-    data: AssetData
+    data: CollectibleAssetData
 }

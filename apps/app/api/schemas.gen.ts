@@ -219,16 +219,20 @@ export const AssetTransactionSchema = {
             type: 'string'
         },
         settlementDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         quantityChange: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         unitPrice: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         totalAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -344,16 +348,20 @@ export const AssetTransactionDataSchema = {
             type: 'string'
         },
         settlementDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         quantityChange: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         unitPrice: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         totalAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -467,16 +475,20 @@ export const AssetTransactionFormSchema = {
             type: 'string'
         },
         settlementDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         quantityChange: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         unitPrice: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         totalAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -534,16 +546,20 @@ export const CreateAssetTransactionRequestSchema = {
             type: 'string'
         },
         settlementDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         quantityChange: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         unitPrice: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         totalAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -601,16 +617,20 @@ export const UpdateAssetTransactionRequestSchema = {
             type: 'string'
         },
         settlementDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         quantityChange: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         unitPrice: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         totalAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         currency: {
             $ref: '#/components/schemas/CurrencyEnum'
@@ -936,22 +956,27 @@ export const MarketableAssetSchema = {
             type: 'string'
         },
         isin: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         exchange: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
         sector: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         region: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         lastPriceSync: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         createdAt: {
             type: 'string'
@@ -982,7 +1007,8 @@ export const MarketableAssetSchema = {
 
 export const MarketableAssetClassEnumSchema = {
     type: 'string',
-    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED']
+    nullable: true,
+    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
 } as const
 
 export const RealEstateAssetSchema = {
@@ -1006,7 +1032,8 @@ export const RealEstateAssetSchema = {
             type: 'number'
         },
         purchaseDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         createdAt: {
             type: 'string'
@@ -1049,16 +1076,20 @@ export const CollectibleAssetSchema = {
             format: 'uuid'
         },
         acquisitionCost: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         acquisitionDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         appraisalValue: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         appraisalDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         createdAt: {
             type: 'string'
@@ -1067,7 +1098,8 @@ export const CollectibleAssetSchema = {
             type: 'string'
         },
         deletedAt: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         }
     },
     required: [
@@ -1095,16 +1127,20 @@ export const PrivateDealAssetSchema = {
             format: 'uuid'
         },
         committedAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         calledAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         latestNav: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         navDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         createdAt: {
             type: 'string'
@@ -1157,7 +1193,8 @@ export const VehicleAssetSchema = {
             type: 'number'
         },
         purchaseDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         plateNumber: {
             type: 'string'
@@ -1235,10 +1272,12 @@ export const InsuranceAssetSchema = {
             type: 'string'
         },
         startDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         endDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         beneficiary: {
             type: 'string'
@@ -1368,46 +1407,6 @@ export const AssetDataSchema = {
     ]
 } as const
 
-export const AssetByTypeSummarySchema = {
-    type: 'object',
-    properties: {
-        type: {
-            $ref: '#/components/schemas/AssetTypeEnum'
-        },
-        count: {
-            type: 'integer',
-            minimum: 0
-        },
-        totalCurrentValue: {
-            type: 'number'
-        }
-    },
-    required: ['type', 'count', 'totalCurrentValue']
-} as const
-
-export const PortfolioSummarySchema = {
-    type: 'object',
-    properties: {
-        totalAssets: {
-            type: 'integer',
-            minimum: 0
-        },
-        totalCurrentValue: {
-            type: 'number'
-        },
-        totalWithLiveMarketData: {
-            type: 'number'
-        },
-        byType: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/AssetByTypeSummary'
-            }
-        }
-    },
-    required: ['totalAssets', 'totalCurrentValue', 'totalWithLiveMarketData', 'byType']
-} as const
-
 export const GetAssetListResponseSchema = {
     type: 'object',
     properties: {
@@ -1453,357 +1452,6 @@ export const GetAssetResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
-} as const
-
-export const GetPortfolioSummaryResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/PortfolioSummary'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const CreateAssetRequestSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        currentValue: {
-            type: 'number'
-        },
-        currentValueAsOf: {
-            type: 'string'
-        },
-        type: {
-            $ref: '#/components/schemas/AssetTypeEnum'
-        },
-        marketable: {
-            $ref: '#/components/schemas/CreateMarketableAsset'
-        },
-        realEstate: {
-            $ref: '#/components/schemas/CreateRealEstateAsset'
-        },
-        collectible: {
-            $ref: '#/components/schemas/CreateCollectibleAssetDetails'
-        },
-        privateDeal: {
-            $ref: '#/components/schemas/CreatePrivateDealAsset'
-        },
-        vehicle: {
-            $ref: '#/components/schemas/CreateVehicleAsset'
-        },
-        insurance: {
-            $ref: '#/components/schemas/CreateInsuranceAsset'
-        }
-    },
-    required: ['title', 'currency', 'currentValue', 'currentValueAsOf', 'type']
-} as const
-
-export const CreateMarketableAssetSchema = {
-    type: 'object',
-    properties: {
-        transactionType: {
-            $ref: '#/components/schemas/AssetMarketDataTypeEnum'
-        },
-        symbol: {
-            type: 'string',
-            minLength: 1
-        },
-        date: {
-            type: 'string'
-        },
-        quantity: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        unitPrice: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        fees: {
-            type: 'number',
-            minimum: 0
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        }
-    },
-    required: ['transactionType', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
-} as const
-
-export const AssetMarketDataTypeEnumSchema = {
-    type: 'string',
-    enum: ['BUY', 'SELL']
-} as const
-
-export const CreateRealEstateAssetSchema = {
-    type: 'object',
-    properties: {
-        assetName: {
-            type: 'string',
-            minLength: 1
-        },
-        propertyType: {
-            $ref: '#/components/schemas/RealEstateTypeEnum'
-        },
-        purchasePrice: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        purchaseDate: {
-            type: 'string'
-        },
-        address: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['assetName', 'propertyType', 'purchasePrice', 'purchaseDate', 'address']
-} as const
-
-export const CreateCollectibleAssetDetailsSchema = {
-    type: 'object',
-    properties: {
-        acquisitionCost: {
-            type: 'number'
-        },
-        acquisitionDate: {
-            type: 'string'
-        },
-        appraisalValue: {
-            type: 'number'
-        },
-        appraisalDate: {
-            type: 'string'
-        }
-    },
-    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
-} as const
-
-export const CreatePrivateDealAssetSchema = {
-    type: 'object',
-    properties: {
-        committedAmount: {
-            type: 'number'
-        },
-        calledAmount: {
-            type: 'number'
-        },
-        latestNav: {
-            type: 'number'
-        },
-        navDate: {
-            type: 'string'
-        }
-    },
-    required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
-} as const
-
-export const CreateVehicleAssetSchema = {
-    type: 'object',
-    properties: {
-        brand: {
-            type: 'string',
-            minLength: 1
-        },
-        model: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/VehicleTypeEnum'
-        },
-        year: {
-            type: 'integer'
-        },
-        purchasePrice: {
-            type: 'number'
-        },
-        purchaseDate: {
-            type: 'string'
-        },
-        plateNumber: {
-            type: 'string',
-            minLength: 1
-        },
-        vin: {
-            type: 'string',
-            nullable: true,
-            minLength: 1
-        },
-        mileage: {
-            type: 'integer',
-            nullable: true
-        },
-        condition: {
-            $ref: '#/components/schemas/AssetConditionEnum'
-        }
-    },
-    required: [
-        'brand',
-        'model',
-        'type',
-        'year',
-        'purchasePrice',
-        'purchaseDate',
-        'plateNumber',
-        'vin',
-        'mileage',
-        'condition'
-    ]
-} as const
-
-export const CreateInsuranceAssetSchema = {
-    type: 'object',
-    properties: {
-        insurer: {
-            type: 'string'
-        },
-        policyType: {
-            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
-        },
-        policyNumber: {
-            type: 'string'
-        },
-        startDate: {
-            type: 'string'
-        },
-        endDate: {
-            type: 'string'
-        },
-        beneficiary: {
-            type: 'string'
-        },
-        premiumPaid: {
-            type: 'number'
-        },
-        premiumFrequency: {
-            $ref: '#/components/schemas/CyclePeriodEnum'
-        },
-        surrenderValue: {
-            type: 'number'
-        }
-    },
-    required: [
-        'insurer',
-        'policyType',
-        'policyNumber',
-        'startDate',
-        'endDate',
-        'beneficiary',
-        'premiumPaid',
-        'premiumFrequency',
-        'surrenderValue'
-    ]
-} as const
-
-export const CreateAssetResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/AssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const UpdateAssetRequestSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        currency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        currentValue: {
-            type: 'number'
-        },
-        currentValueAsOf: {
-            type: 'string'
-        },
-        type: {
-            $ref: '#/components/schemas/AssetTypeEnum'
-        },
-        marketable: {
-            $ref: '#/components/schemas/CreateMarketableAsset'
-        },
-        realEstate: {
-            $ref: '#/components/schemas/CreateRealEstateAsset'
-        },
-        collectible: {
-            $ref: '#/components/schemas/CreateCollectibleAssetDetails'
-        },
-        privateDeal: {
-            $ref: '#/components/schemas/CreatePrivateDealAsset'
-        },
-        vehicle: {
-            $ref: '#/components/schemas/CreateVehicleAsset'
-        },
-        insurance: {
-            $ref: '#/components/schemas/CreateInsuranceAsset'
-        }
-    }
-} as const
-
-export const UpdateAssetResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            nullable: true,
-            description: 'Response data'
-        }
-    },
-    required: ['success', 'message']
 } as const
 
 export const DeleteAssetResponseSchema = {
@@ -1870,17 +1518,6 @@ export const QueryAssetFiltersSchema = {
             $ref: '#/components/schemas/FilterOptions'
         }
     }
-} as const
-
-export const CreateUpdateAssetRequestSchema = {
-    anyOf: [
-        {
-            $ref: '#/components/schemas/CreateAssetRequest'
-        },
-        {
-            $ref: '#/components/schemas/UpdateAssetRequest'
-        }
-    ]
 } as const
 
 export const CategorySchema = {
@@ -2280,17 +1917,139 @@ export const CreateUpdateCategoryRequestSchema = {
     ]
 } as const
 
-export const CollectibleAssetFormSchema = {
+export const CollectibleAssetDataSchema = {
     type: 'object',
     properties: {
         acquisitionCost: {
-            type: 'number'
+            type: 'number',
+            nullable: true
+        },
+        acquisitionDate: {
+            type: 'string',
+            nullable: true
+        },
+        appraisalValue: {
+            type: 'number',
+            nullable: true
+        },
+        appraisalDate: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
+} as const
+
+export const CreateCollectibleAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        acquisitionCost: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         acquisitionDate: {
             type: 'string'
         },
         appraisalValue: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        appraisalDate: {
+            type: 'string'
+        }
+    },
+    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
+} as const
+
+export const CreateCollectibleAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/CollectibleAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateCollectibleAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        acquisitionCost: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        acquisitionDate: {
+            type: 'string'
+        },
+        appraisalValue: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        appraisalDate: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const UpdateCollectibleAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/CollectibleAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CollectibleAssetFormSchema = {
+    type: 'object',
+    properties: {
+        acquisitionCost: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        acquisitionDate: {
+            type: 'string'
+        },
+        appraisalValue: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         appraisalDate: {
             type: 'string'
@@ -2605,6 +2364,11 @@ export const TimezoneEnumSchema = {
 export const SnapshotFrequencyEnumSchema = {
     type: 'string',
     enum: ['NONE', 'DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'SEMIANNUAL', 'ANNUAL']
+} as const
+
+export const AssetMarketDataTypeEnumSchema = {
+    type: 'string',
+    enum: ['BUY', 'SELL']
 } as const
 
 export const ValueSourceEnumSchema = {
@@ -4023,7 +3787,7 @@ export const CreateImportTemplateResponseSchema = {
     required: ['success', 'message', 'data']
 } as const
 
-export const InsuranceAssetFormSchema = {
+export const InsuranceAssetDataSchema = {
     type: 'object',
     properties: {
         insurer: {
@@ -4036,10 +3800,12 @@ export const InsuranceAssetFormSchema = {
             type: 'string'
         },
         startDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         endDate: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         beneficiary: {
             type: 'string'
@@ -4052,6 +3818,195 @@ export const InsuranceAssetFormSchema = {
         },
         surrenderValue: {
             type: 'number'
+        }
+    },
+    required: [
+        'insurer',
+        'policyType',
+        'policyNumber',
+        'startDate',
+        'endDate',
+        'beneficiary',
+        'premiumPaid',
+        'premiumFrequency',
+        'surrenderValue'
+    ]
+} as const
+
+export const CreateInsuranceAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        insurer: {
+            type: 'string',
+            minLength: 1
+        },
+        policyType: {
+            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
+        },
+        policyNumber: {
+            type: 'string',
+            minLength: 1
+        },
+        startDate: {
+            type: 'string'
+        },
+        endDate: {
+            type: 'string'
+        },
+        beneficiary: {
+            type: 'string',
+            minLength: 1
+        },
+        premiumPaid: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        premiumFrequency: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        surrenderValue: {
+            type: 'number',
+            minimum: 0
+        }
+    },
+    required: [
+        'insurer',
+        'policyType',
+        'policyNumber',
+        'startDate',
+        'endDate',
+        'beneficiary',
+        'premiumPaid',
+        'premiumFrequency',
+        'surrenderValue'
+    ]
+} as const
+
+export const CreateInsuranceAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/InsuranceAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateInsuranceAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        insurer: {
+            type: 'string',
+            minLength: 1
+        },
+        policyType: {
+            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
+        },
+        policyNumber: {
+            type: 'string',
+            minLength: 1
+        },
+        startDate: {
+            type: 'string'
+        },
+        endDate: {
+            type: 'string'
+        },
+        beneficiary: {
+            type: 'string',
+            minLength: 1
+        },
+        premiumPaid: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        premiumFrequency: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        surrenderValue: {
+            type: 'number',
+            minimum: 0
+        }
+    }
+} as const
+
+export const UpdateInsuranceAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/InsuranceAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const InsuranceAssetFormSchema = {
+    type: 'object',
+    properties: {
+        insurer: {
+            type: 'string',
+            minLength: 1
+        },
+        policyType: {
+            $ref: '#/components/schemas/InsurancePolicyTypeEnum'
+        },
+        policyNumber: {
+            type: 'string',
+            minLength: 1
+        },
+        startDate: {
+            type: 'string'
+        },
+        endDate: {
+            type: 'string'
+        },
+        beneficiary: {
+            type: 'string',
+            minLength: 1
+        },
+        premiumPaid: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        premiumFrequency: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        surrenderValue: {
+            type: 'number',
+            minimum: 0
         }
     },
     required: [
@@ -4433,22 +4388,27 @@ export const MarketableAssetDataSchema = {
             type: 'string'
         },
         isin: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         exchange: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
         sector: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         region: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         },
         lastPriceSync: {
-            type: 'string'
+            type: 'string',
+            nullable: true
         }
     },
     required: ['symbol', 'isin', 'exchange', 'assetClass', 'sector', 'region', 'lastPriceSync']
@@ -4459,6 +4419,9 @@ export const MarketableAssetFormSchema = {
     properties: {
         transactionType: {
             $ref: '#/components/schemas/AssetMarketDataTypeEnum'
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
         symbol: {
             type: 'string',
@@ -4488,17 +4451,117 @@ export const MarketableAssetFormSchema = {
     required: ['transactionType', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
 } as const
 
-export const PrivateDealAssetFormSchema = {
+export const CreateMarketableAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        transactionType: {
+            $ref: '#/components/schemas/AssetMarketDataTypeEnum'
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        date: {
+            type: 'string'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        unitPrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        fees: {
+            type: 'number',
+            minimum: 0
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        }
+    },
+    required: ['transactionType', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
+} as const
+
+export const UpdateMarketableAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        transactionType: {
+            $ref: '#/components/schemas/AssetMarketDataTypeEnum'
+        },
+        assetClass: {
+            $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        date: {
+            type: 'string'
+        },
+        quantity: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        unitPrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        fees: {
+            type: 'number',
+            minimum: 0
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        }
+    }
+} as const
+
+export const PrivateDealAssetDataSchema = {
     type: 'object',
     properties: {
         committedAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         calledAmount: {
-            type: 'number'
+            type: 'number',
+            nullable: true
         },
         latestNav: {
-            type: 'number'
+            type: 'number',
+            nullable: true
+        },
+        navDate: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
+} as const
+
+export const CreatePrivateDealAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        committedAmount: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        calledAmount: {
+            type: 'number',
+            minimum: 0
+        },
+        latestNav: {
+            type: 'number',
+            minimum: 0
         },
         navDate: {
             type: 'string'
@@ -4507,14 +4570,129 @@ export const PrivateDealAssetFormSchema = {
     required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
 } as const
 
-export const RealEstateAssetFormSchema = {
+export const CreatePrivateDealAssetResponseSchema = {
     type: 'object',
     properties: {
-        assetName: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/PrivateDealAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdatePrivateDealAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        committedAmount: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        calledAmount: {
+            type: 'number',
+            minimum: 0
+        },
+        latestNav: {
+            type: 'number',
+            minimum: 0
+        },
+        navDate: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const UpdatePrivateDealAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/PrivateDealAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const PrivateDealAssetFormSchema = {
+    type: 'object',
+    properties: {
+        committedAmount: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        calledAmount: {
+            type: 'number',
+            minimum: 0
+        },
+        latestNav: {
+            type: 'number',
+            minimum: 0
+        },
+        navDate: {
+            type: 'string'
+        }
+    },
+    required: ['committedAmount', 'calledAmount', 'latestNav', 'navDate']
+} as const
+
+export const RealEstateAssetDataSchema = {
+    type: 'object',
+    properties: {
+        address: {
+            type: 'string'
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        purchasePrice: {
+            type: 'number'
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
+} as const
+
+export const CreateRealEstateAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        address: {
             type: 'string',
             minLength: 1
         },
-        propertyType: {
+        type: {
             $ref: '#/components/schemas/RealEstateTypeEnum'
         },
         purchasePrice: {
@@ -4524,13 +4702,102 @@ export const RealEstateAssetFormSchema = {
         },
         purchaseDate: {
             type: 'string'
+        }
+    },
+    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
+} as const
+
+export const CreateRealEstateAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
         },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/RealEstateAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateRealEstateAssetRequestSchema = {
+    type: 'object',
+    properties: {
         address: {
             type: 'string',
             minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        purchasePrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const UpdateRealEstateAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/RealEstateAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
         }
     },
-    required: ['assetName', 'propertyType', 'purchasePrice', 'purchaseDate', 'address']
+    required: ['success', 'message', 'data']
+} as const
+
+export const RealEstateAssetFormSchema = {
+    type: 'object',
+    properties: {
+        address: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        purchasePrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        }
+    },
+    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
 } as const
 
 export const NetWorthEvolutionSchema = {
@@ -6543,6 +6810,207 @@ export const UserProfileSecurityFormSchema = {
     required: ['oldPassword', 'newPassword', 'confirmPassword']
 } as const
 
+export const VehicleAssetDataSchema = {
+    type: 'object',
+    properties: {
+        brand: {
+            type: 'string'
+        },
+        model: {
+            type: 'string'
+        },
+        type: {
+            $ref: '#/components/schemas/VehicleTypeEnum'
+        },
+        year: {
+            type: 'integer'
+        },
+        purchasePrice: {
+            type: 'number'
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true
+        },
+        plateNumber: {
+            type: 'string'
+        },
+        vin: {
+            type: 'string',
+            nullable: true
+        },
+        mileage: {
+            type: 'integer',
+            nullable: true
+        },
+        condition: {
+            $ref: '#/components/schemas/AssetConditionEnum'
+        }
+    },
+    required: [
+        'brand',
+        'model',
+        'type',
+        'year',
+        'purchasePrice',
+        'purchaseDate',
+        'plateNumber',
+        'vin',
+        'mileage',
+        'condition'
+    ]
+} as const
+
+export const CreateVehicleAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        brand: {
+            type: 'string',
+            minLength: 1
+        },
+        model: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/VehicleTypeEnum'
+        },
+        year: {
+            type: 'integer'
+        },
+        purchasePrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        plateNumber: {
+            type: 'string',
+            minLength: 1
+        },
+        vin: {
+            type: 'string',
+            nullable: true,
+            minLength: 1
+        },
+        mileage: {
+            type: 'integer',
+            nullable: true
+        },
+        condition: {
+            $ref: '#/components/schemas/AssetConditionEnum'
+        }
+    },
+    required: [
+        'brand',
+        'model',
+        'type',
+        'year',
+        'purchasePrice',
+        'purchaseDate',
+        'plateNumber',
+        'vin',
+        'mileage',
+        'condition'
+    ]
+} as const
+
+export const CreateVehicleAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/VehicleAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateVehicleAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        brand: {
+            type: 'string',
+            minLength: 1
+        },
+        model: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/VehicleTypeEnum'
+        },
+        year: {
+            type: 'integer'
+        },
+        purchasePrice: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        plateNumber: {
+            type: 'string',
+            minLength: 1
+        },
+        vin: {
+            type: 'string',
+            nullable: true,
+            minLength: 1
+        },
+        mileage: {
+            type: 'integer',
+            nullable: true
+        },
+        condition: {
+            $ref: '#/components/schemas/AssetConditionEnum'
+        }
+    }
+} as const
+
+export const UpdateVehicleAssetResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/VehicleAssetData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
 export const VehicleAssetFormSchema = {
     type: 'object',
     properties: {
@@ -6561,7 +7029,9 @@ export const VehicleAssetFormSchema = {
             type: 'integer'
         },
         purchasePrice: {
-            type: 'number'
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
         },
         purchaseDate: {
             type: 'string'

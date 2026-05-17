@@ -5,10 +5,10 @@
 import type { MarketableAssetClassEnum } from './MarketableAssetClassEnum'
 export type MarketableAssetData = {
     symbol: string
-    isin: string
-    exchange: string
+    isin: string | null
+    exchange: string | null
     assetClass: MarketableAssetClassEnum
-    sector: string
-    region: string
-    lastPriceSync: string
+    sector: string | null
+    region: string | null
+    lastPriceSync: string | null
 }

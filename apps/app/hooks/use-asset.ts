@@ -3,15 +3,13 @@
 import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 
 import {
-    createAssetMutation,
     createAssetTransactionMutation,
+    createMarketableAssetMutation,
     deleteAssetMutation,
     deleteAssetsMutation,
     getAssetsOptions,
     getAssetsQueryKey,
-    getPortfolioSummaryOptions,
-    getPortfolioSummaryQueryKey,
-    updateAssetMutation
+    updateMarketableAssetMutation
 } from '@/api/@tanstack/react-query.gen'
 import { useError } from './use-error'
 import { useFilters } from './use-filters'
@@ -29,14 +27,10 @@ export const useAsset = () => {
         symbol: { contains: text }
     }))
 
-    const [assetQuery, portfolioSummaryQuery] = useQueries({
+    const [assetQuery] = useQueries({
         queries: [
             {
                 ...getAssetsOptions(filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined),
-                staleTime: Infinity
-            },
-            {
-                ...getPortfolioSummaryOptions(),
                 staleTime: Infinity
             }
         ]
@@ -44,22 +38,21 @@ export const useAsset = () => {
 
     const invalidateAssets = () => {
         queryClient.invalidateQueries({ queryKey: getAssetsQueryKey() })
-        queryClient.invalidateQueries({ queryKey: getPortfolioSummaryQueryKey() })
     }
 
-    const createMutation = useMutation({
-        ...createAssetMutation(),
+    const createMarketableMutation = useMutation({
+        ...createMarketableAssetMutation(),
         onSuccess: invalidateAssets,
         onError: error => {
-            handleError(error, 'Error creating asset')
+            handleError(error, 'Error creating marketable asset')
         }
     })
 
-    const updateMutation = useMutation({
-        ...updateAssetMutation(),
+    const updateMarketableMutation = useMutation({
+        ...updateMarketableAssetMutation(),
         onSuccess: invalidateAssets,
         onError: error => {
-            handleError(error, 'Error updating asset')
+            handleError(error, 'Error updating marketable asset')
         }
     })
 
@@ -90,9 +83,8 @@ export const useAsset = () => {
     return {
         ...filters,
         assetQuery,
-        portfolioSummaryQuery,
-        createMutation,
-        updateMutation,
+        createMarketableMutation,
+        updateMarketableMutation,
         deleteMutation,
         deleteAllMutation,
         createTransactionMutation,

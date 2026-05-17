@@ -1,58 +1,11 @@
 import type { Request, Response } from 'express'
-import type {
-    AssetFilters,
-    AssetTransactionFilters,
-    CreateAssetRequest,
-    CreateAssetTransactionRequest,
-    FilterOptions,
-    UpdateAssetRequest,
-    UpdateAssetTransactionRequest
-} from '@poveroh/types'
+import type { AssetFilters, FilterOptions } from '@poveroh/types'
 import { getParamString } from '../../../utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
 import { AssetService } from '../services/asset.service'
 
 export class AssetController {
-    // Creates a new asset with its subtype payload.
-    static async createAsset(req: Request, res: Response) {
-        try {
-            if (!req.body) {
-                throw new BadRequestError('Data not provided')
-            }
-
-            const payload: CreateAssetRequest = JSON.parse(req.body.data)
-            const assetService = new AssetService(req.user.id)
-            const asset = await assetService.createAsset(payload)
-
-            return ResponseHelper.success(res, asset)
-        } catch (error) {
-            return ResponseHelper.handleError(res, error)
-        }
-    }
-
-    // Updates a single asset.
-    static async updateAsset(req: Request, res: Response) {
-        try {
-            if (!req.body) {
-                throw new BadRequestError('Data not provided')
-            }
-
-            const id = getParamString(req.params, 'id')
-            if (!id) {
-                throw new BadRequestError('Missing asset ID in path')
-            }
-
-            const payload: UpdateAssetRequest = JSON.parse(req.body.data)
-            const assetService = new AssetService(req.user.id)
-            await assetService.updateAsset(id, payload)
-
-            return ResponseHelper.success(res)
-        } catch (error) {
-            return ResponseHelper.handleError(res, error)
-        }
-    }
-
-    // Soft deletes a single asset.
+    // DELETE /:id
     static async deleteAsset(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
@@ -69,7 +22,7 @@ export class AssetController {
         }
     }
 
-    // Soft deletes all assets for the authenticated user.
+    // DELETE /
     static async deleteAllAssets(req: Request, res: Response) {
         try {
             const assetService = new AssetService(req.user.id)
@@ -81,7 +34,7 @@ export class AssetController {
         }
     }
 
-    // Retrieves a single asset by ID.
+    // GET /:id
     static async readAssetById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
@@ -102,7 +55,7 @@ export class AssetController {
         }
     }
 
-    // Retrieves the asset list using optional filters and pagination.
+    // GET /
     static async readAssets(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as AssetFilters
@@ -119,7 +72,7 @@ export class AssetController {
         }
     }
 
-    // Returns the aggregated investment overview values.
+    // GET /portfolio/summary
     static async readPortfolioSummary(req: Request, res: Response) {
         try {
             const assetService = new AssetService(req.user.id)
