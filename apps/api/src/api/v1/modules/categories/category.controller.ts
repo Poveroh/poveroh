@@ -1,19 +1,18 @@
 import { CreateCategoryRequestSchema, UpdateCategoryRequestSchema } from '@poveroh/schemas'
-import { BadRequestError, NotFoundError, ResponseHelper, getParamString } from '@/utils'
+import { BadRequestError, NotFoundError, ResponseHelper, getParamString, parseRequestBody } from '@/utils'
 import type { CategoryData, CategoryFilters } from '@poveroh/types'
 import { CategoryService } from './category.service'
 import type { Request, Response } from 'express'
-import { parseRequestBody } from '@/utils/validation'
 
 export class CategoryController {
-    private static readonly service = new CategoryService()
+    private static readonly categoryService = new CategoryService()
 
     // POST /
     static async createCategory(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateCategoryRequestSchema, req.body)
 
-            const category = await this.service.createCategory(payload, req.file)
+            const category = await this.categoryService.createCategory(payload, req.file)
 
             return ResponseHelper.success<CategoryData>(res, category)
         } catch (error) {
@@ -28,7 +27,7 @@ export class CategoryController {
             if (!id) throw new BadRequestError('Missing category ID in path')
 
             const payload = parseRequestBody(UpdateCategoryRequestSchema, req.body)
-            await this.service.updateCategory(id, payload, req.file)
+            await this.categoryService.updateCategory(id, payload, req.file)
 
             return ResponseHelper.success(res)
         } catch (error) {
@@ -42,7 +41,7 @@ export class CategoryController {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing category ID in path')
 
-            await this.service.deleteCategory(id)
+            await this.categoryService.deleteCategory(id)
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -53,7 +52,7 @@ export class CategoryController {
     // DELETE /
     static async deleteAllCategories(req: Request, res: Response) {
         try {
-            await this.service.deleteAllCategories()
+            await this.categoryService.deleteAllCategories()
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -67,7 +66,7 @@ export class CategoryController {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing category ID in path')
 
-            const data = await this.service.getCategoryById(id)
+            const data = await this.categoryService.getCategoryById(id)
             if (!data) throw new NotFoundError('Category not found')
 
             return ResponseHelper.success<CategoryData>(res, data)
@@ -83,7 +82,7 @@ export class CategoryController {
             const skip = Number(req.query.skip) || 0
             const take = Number(req.query.take) || 20
 
-            const data = await this.service.getCategories(filters, skip, take)
+            const data = await this.categoryService.getCategories(filters, skip, take)
 
             return ResponseHelper.success<CategoryData[]>(res, data)
         } catch (error) {

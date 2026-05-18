@@ -2,12 +2,15 @@ import { NotFoundError } from '@/src/utils'
 import prisma from '@poveroh/prisma'
 import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
 import { BaseService } from '../base/base.service'
+import { DashboardRepository } from './dashboard.repository'
 
 /**
  * Service responsible for handling dashboard-related operations, such as retrieving and saving the dashboard layout for the authenticated user.
  * All methods automatically retrieve the user ID from the request context to ensure operations are performed for the correct user.
  */
 export class DashboardService extends BaseService {
+    private readonly dashboardRepository = new DashboardRepository()
+
     constructor() {
         super('dashboard-layout')
     }
@@ -20,9 +23,7 @@ export class DashboardService extends BaseService {
     async getDashboardLayout(): Promise<GetDashboardLayout> {
         const userId = this.context.currentUser.id
 
-        const layout = (await prisma.dashboardLayout.findUnique({
-            where: { userId }
-        })) as unknown as GetDashboardLayout | null
+        const layout = await this.dashboardRepository.getDashboardLayout(userId)
 
         if (!layout) {
             throw new NotFoundError('Dashboard layout not found')
@@ -41,17 +42,6 @@ export class DashboardService extends BaseService {
     async saveDashboardLayout(payload: UpdateDashboardLayoutRequest): Promise<void> {
         const userId = this.context.currentUser.id
 
-        await prisma.dashboardLayout.upsert({
-            where: { userId },
-            update: {
-                layout: payload.layout,
-                version: payload.version || 1
-            },
-            create: {
-                userId,
-                layout: payload.layout,
-                version: payload.version || 1
-            }
-        })
+        await this.dashboardRepository.saveDashboardLayout(userId, payload)
     }
 }

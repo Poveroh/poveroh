@@ -2,7 +2,8 @@ import type { AppContext, User } from '@poveroh/types'
 import { AsyncLocalStorage } from 'async_hooks'
 
 /**
- * ContextService manages the application context using AsyncLocalStorage, allowing services and helpers to access the current user without passing it through every method call.
+ * ContextService manages the application context using AsyncLocalStorage,
+ * allowing services and helpers to access the current user without passing it through every method call.
  */
 export class ContextService {
     private static readonly storage = new AsyncLocalStorage<AppContext>()
@@ -56,14 +57,6 @@ export class ContextService {
             throw new Error('Request context is not available. Did you forget to wrap the call in runWithContext?')
         }
         return context
-    }
-
-    /**
-     * Reads the current authenticated user ID for helpers that do not need the full application context.
-     * @returns The current authenticated user ID.
-     */
-    getCurrentUserId(): string {
-        return this.currentUser.id
     }
 }
 
