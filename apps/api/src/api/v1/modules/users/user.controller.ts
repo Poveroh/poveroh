@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ResponseHelper, BadRequestError, NotFoundError } from '@/src/utils'
 import { UpdateUserRequest, User } from '@poveroh/types'
-import { UserService } from '@/src/api/v1/modules/dashboard/services/user.service'
+import { UserService } from '@/src/api/v1/modules/users/user.service'
 
 export class UserController {
     // GET /me

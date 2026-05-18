@@ -1,10 +1,10 @@
-import type {@/src/api/v1/modules/base/base.service
+import type {
     CreateSubscriptionRequest,
     SubscriptionData,
     SubscriptionFilters,
     UpdateSubscriptionRequest
 } from '@poveroh/types'
-import { BaseService } from '@/src/api/v1/services/base.service'
+import { BaseService } from '@/src/api/v1/modules/base/base.service'
 import { eventBus } from '@/src/api/v1/events/event-bus'
 import { SubscriptionRepository } from './subscription.repository'
 

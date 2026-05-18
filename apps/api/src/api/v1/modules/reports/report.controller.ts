@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { NetWorthEvolutionFilters } from '@poveroh/types'
 import { ResponseHelper } from '@/src/utils'
-import { ReportService } from '@/src/api/v1/modules/dashboard/services/report.service'
+import { ReportService } from '@/src/api/v1/modules/reports/report.service'
 
 export class ReportController {
     // GET /report/trend

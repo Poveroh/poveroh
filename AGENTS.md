@@ -21,6 +21,9 @@ This file defines specialized agent profiles for working on the Poveroh codebase
 - Use `select` in Prisma queries when you don't need all fields
 - Import Prisma client from `@poveroh/prisma`, never instantiate `PrismaClient` directly
 - Add comments before every service and helper function explaining the business logic
+- Keep request context centralized in `apps/api/src/api/v1/modules/base/context.service.ts`; do not add facade files or wrapper functions that duplicate `ContextService` methods
+- Use the shared `AppContext` and `User` types from `@poveroh/types` for application context; do not create parallel context/user types such as `RequestContext` or `RequestUser`
+- API service and helper comments use JSDoc blocks with `@param` and `@returns` where applicable, and must stay consistent with surrounding project style
 - New shared types must be defined as Zod schemas in `packages/schemas/`, then generated with `npm run openapi:generate`
 
 ### Verification

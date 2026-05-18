@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
 import { getParamString } from '@/src/utils/request'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
-import { SnapshotService } from '@/src/api/v1/modules/dashboard/services/snapshot.service'
+import { SnapshotService } from '@/src/api/v1/modules/snapshots/snapshot.service'
 
 export class SnapshotController {
     // POST /account-balance

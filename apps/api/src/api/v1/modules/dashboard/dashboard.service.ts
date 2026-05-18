@@ -18,7 +18,8 @@ export class DashboardService extends BaseService {
      * @returns A promise that resolves to the dashboard layout of the user
      */
     async getDashboardLayout(): Promise<GetDashboardLayout> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
+
         const layout = (await prisma.dashboardLayout.findUnique({
             where: { userId }
         })) as unknown as GetDashboardLayout | null
@@ -38,7 +39,7 @@ export class DashboardService extends BaseService {
      * @returns A promise that resolves when the dashboard layout has been saved
      */
     async saveDashboardLayout(payload: UpdateDashboardLayoutRequest): Promise<void> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
 
         await prisma.dashboardLayout.upsert({
             where: { userId },

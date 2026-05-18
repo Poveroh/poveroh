@@ -1,10 +1,10 @@
-import type {@/src/api/v1/modules/base/base.service
+import type {
     CreateSubcategoryRequest,
     SubcategoryData,
     SubcategoryFilters,
     UpdateSubcategoryRequest
 } from '@poveroh/types'
-import { BaseService } from '@/src/api/v1/services/base.service'
+import { BaseService } from '@/src/api/v1/modules/base/base.service'
 import { NotFoundError } from '@/src/utils'
 import { eventBus } from '@/src/api/v1/events/event-bus'
 import { CategoryRepository } from '../categories/category.repository'

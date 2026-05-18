@@ -2,10 +2,11 @@ import { betterAuth } from 'better-auth'
 import { bearer, customSession, openAPI } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@poveroh/prisma'
+import { DEFAULT_USER } from '@poveroh/types'
 import config from '../utils/environment'
 import { UserService } from '../api/v1/modules/users/user.service'
 import { DashboardService } from '../api/v1/modules/dashboard/dashboard.service'
-import { runWithContext } from '@/v1/context'
+import { contextService } from '@/v1/modules/base/context.service'
 import { DashboardTemplate } from '@/v1/content'
 
 const isProduction = config.NODE_ENV === 'production'
@@ -48,7 +49,9 @@ export const auth = betterAuth({
         customSession(async ({ user, session }) => {
             // Better-auth hooks run outside the HTTP request context, so we open a
             // user-scoped context here for the service to read.
-            const readedUser = await runWithContext({ user: { id: user.id } }, () => new UserService().getUser(user.id))
+            const readedUser = await contextService.runWithContext({ user: { ...DEFAULT_USER, id: user.id } }, () =>
+                new UserService().getUser(user.id)
+            )
 
             return {
                 user: readedUser,
@@ -89,7 +92,7 @@ export const auth = betterAuth({
                 },
                 after: async (user, ctx) => {
                     // Hook runs outside any HTTP request context; supply one for the service.
-                    await runWithContext({ user: { id: user.id } }, () =>
+                    await contextService.runWithContext({ user: { ...DEFAULT_USER, id: user.id } }, () =>
                         new DashboardService().saveDashboardLayout(DashboardTemplate)
                     )
                 }

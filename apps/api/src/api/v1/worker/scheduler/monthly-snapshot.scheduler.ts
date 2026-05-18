@@ -1,4 +1,4 @@
-import type { JobDispatcher } from '@poveroh/queue'
+import type { JobDispatcher } from '@poveroh/types'
 
 export async function scheduleMonthlySnapshot(
     jobDispatcher: JobDispatcher,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
-import { DashboardService } from '@/src/api/v1/modules/dashboard/services/dashboard.service'
+import { DashboardService } from '@/src/api/v1/modules/dashboard/dashboard.service'
 
 export class DashboardController {
     // GET /

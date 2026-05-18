@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { CreateUpdateTransactionRequest, QueryTransactionFilters } from '@poveroh/types'
 import { getParamString } from '@/src/utils/request'
 import { BadRequestError, ResponseHelper } from '@/src/utils'
-import { TransactionService } from '@/src/api/v1/modules/dashboard/services/transaction.service'
+import { TransactionService } from '@/src/api/v1/modules/transactions/transaction.service'
 
 export class TransactionController {
     //POST /

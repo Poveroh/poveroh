@@ -17,13 +17,13 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves to the data of the newly created category, including any generated identifiers and the URL of the uploaded icon if a file was provided. This data can be used by the caller to confirm the successful creation of the category and to display or further process the new category information as needed.
      */
     async createCategory(payload: CreateCategoryRequest, file?: Express.Multer.File): Promise<CategoryData> {
-        const userId = this.getCurrentUserId()
+        const userId = this.context.currentUser.id
 
         const generatedId = crypto.randomUUID()
         const payloadWithIcon = { ...payload }
 
         if (file) {
-            payloadWithIcon.icon = await this.saveFile(generatedId, file)
+            payloadWithIcon.icon = await this.media.saveFile(generatedId, file)
         }
 
         const category = await this.categoryRepository.create(userId, generatedId, payloadWithIcon)
@@ -37,9 +37,7 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves to an array of category data created from the template. Each element in the array represents a newly created category, including any generated identifiers and associated data.
      */
     async createFromTemplate(): Promise<CategoryData[]> {
-        const userId = this.getCurrentUserId()
-
-        return this.categoryRepository.createFromTemplate(userId)
+        return this.categoryRepository.createFromTemplate(this.context.currentUser.id)
     }
 
     /**
@@ -49,11 +47,11 @@ export class CategoryService extends BaseService {
      * @param file An optional file object representing the uploaded icon for the category. If provided, this file will be processed and saved using the saveFile method, and the resulting URL or identifier will be associated with the category being updated. This allows users to customize their categories with icons, enhancing the visual organization of their data.
      */
     async updateCategory(id: string, payload: UpdateCategoryRequest, file?: Express.Multer.File): Promise<void> {
-        const userId = this.getCurrentUserId()
-
         if (file) {
-            payload.icon = await this.saveFile(id, file)
+            payload.icon = await this.media.saveFile(id, file)
         }
+
+        const userId = this.context.currentUser.id
 
         await this.categoryRepository.update(userId, id, payload)
         await eventBus.emit('category.updated', { categoryId: id, userId })
@@ -64,8 +62,7 @@ export class CategoryService extends BaseService {
      * @param id The unique identifier of the category to be deleted. This ID is used to locate the existing category in the repository and apply the soft-delete operation.
      */
     async deleteCategory(id: string): Promise<void> {
-        const userId = this.getCurrentUserId()
-
+        const userId = this.context.currentUser.id
         await this.categoryRepository.softDelete(userId, id, new Date())
         await eventBus.emit('category.deleted', { categoryId: id, userId })
     }
@@ -75,8 +72,7 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves when all categories have been soft-deleted.
      */
     async deleteAllCategories(): Promise<void> {
-        const userId = this.getCurrentUserId()
-        await this.categoryRepository.softDeleteAll(userId, new Date())
+        await this.categoryRepository.softDeleteAll(this.context.currentUser.id, new Date())
     }
 
     /**
@@ -85,8 +81,7 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves to the category data if found, or null if the category does not exist.
      */
     async getCategoryById(id: string): Promise<CategoryData | null> {
-        const userId = this.getCurrentUserId()
-        return this.categoryRepository.findById(userId, id)
+        return this.categoryRepository.findById(this.context.currentUser.id, id)
     }
 
     /**
@@ -97,8 +92,7 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves to an array of category data matching the specified filters and pagination parameters.
      */
     async getCategories(filters: CategoryFilters, skip: number, take: number): Promise<CategoryData[]> {
-        const userId = this.getCurrentUserId()
-        return this.categoryRepository.findMany(userId, filters, skip, take)
+        return this.categoryRepository.findMany(this.context.currentUser.id, filters, skip, take)
     }
 
     /**
@@ -107,7 +101,6 @@ export class CategoryService extends BaseService {
      * @returns A promise that resolves to true if the category exists for the current user, or false if it does not exist.
      */
     async doesCategoryExist(id: string): Promise<boolean> {
-        const userId = this.getCurrentUserId()
-        return Boolean(await this.categoryRepository.findById(userId, id))
+        return Boolean(await this.categoryRepository.findById(this.context.currentUser.id, id))
     }
 }

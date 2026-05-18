@@ -8,7 +8,7 @@ import {
 } from '@poveroh/types'
 import { getParamString } from '@/src/utils/request'
 import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
-import { ImportService } from '@/src/api/v1/modules/dashboard/services/import.service'
+import { ImportService } from '@/src/api/v1/modules/imports/import.service'
 
 export class ImportController {
     //POST /

@@ -1,4 +1,4 @@
-import type { JobHandlers } from '@poveroh/queue'
+import type { JobHandlers } from '@poveroh/types'
 import { logger } from '@poveroh/logger'
 
 export const importJobHandlers: JobHandlers = {
