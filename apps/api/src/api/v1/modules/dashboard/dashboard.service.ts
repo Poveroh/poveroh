@@ -1,6 +1,5 @@
-import { NotFoundError } from '@/src/utils'
-import prisma from '@poveroh/prisma'
 import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
+import { NotFoundError } from '@/utils'
 import { BaseService } from '../base/base.service'
 import { DashboardRepository } from './dashboard.repository'
 
@@ -17,7 +16,6 @@ export class DashboardService extends BaseService {
 
     /**
      * Retrieves the dashboard layout for the authenticated user.
-     * User ID is automatically retrieved from request context
      * @returns A promise that resolves to the dashboard layout of the user
      */
     async getDashboardLayout(): Promise<GetDashboardLayout> {
@@ -34,7 +32,6 @@ export class DashboardService extends BaseService {
 
     /**
      * Saves the dashboard layout for the authenticated user.
-     * User ID is automatically retrieved from request context
      * If a layout already exists, it will be updated; otherwise, a new layout will be created.
      * @param payload The dashboard layout data to be saved
      * @returns A promise that resolves when the dashboard layout has been saved

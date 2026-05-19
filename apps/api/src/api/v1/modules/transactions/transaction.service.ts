@@ -1,7 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import moment from 'moment-timezone'
-import { buildWhere } from '../../../../helpers/filter.helper'
-import {
+import type {
     Amount,
     CreateTransactionRequest,
     CreateUpdateTransactionRequest,
@@ -14,9 +13,11 @@ import {
     TransactionFilters,
     UpdateTransactionRequest
 } from '@poveroh/types'
-import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
-import { BaseService } from '../base/base.service'
+import { BadRequestError, NotFoundError } from '@/utils'
 import { BalanceHelper } from '../../helpers/balance.helper'
+import { BaseService } from '../base/base.service'
+import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
+import { TransactionRepository } from './transaction.repository'
 
 /**
  * Service for managing transactions (create, update, delete, read).
@@ -24,16 +25,25 @@ import { BalanceHelper } from '../../helpers/balance.helper'
  * and update (all optional). The presence of `transactionId` selects the branch.
  */
 export class TransactionService extends BaseService {
+    private readonly transactionRepository = new TransactionRepository()
+
     constructor() {
         super('transaction')
     }
 
+    /**
+     * Dispatches an incoming transaction payload to the correct create or update branch based on the supplied transaction id and resolved action.
+     * @param payload The transaction payload, optionally including an id when the caller is updating an existing transaction.
+     * @param files The list of files uploaded alongside the request to be persisted as transaction media.
+     * @param transactionId The unique identifier of the transaction to be updated when the caller is updating.
+     * @returns A promise that resolves to the resulting transaction data.
+     */
     async handleTransaction(
         payload: CreateUpdateTransactionRequest,
         files?: Express.Multer.File[],
         transactionId?: string
     ) {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
 
         if (transactionId) {
             const parsed = UpdateTransactionRequestSchema.parse(payload) as UpdateTransactionRequest
@@ -48,23 +58,24 @@ export class TransactionService extends BaseService {
             case 'EXPENSES':
                 return this.createStandard(parsed, userId, files)
             default:
-                throw new Error(`Invalid transaction action: ${parsed.action}`)
+                throw new BadRequestError(`Invalid transaction action: ${parsed.action}`)
         }
     }
 
-    // ------------------------------------------------------------------ //
-    // CREATE
-    // ------------------------------------------------------------------ //
-
+    /**
+     * Creates a standard INCOME or EXPENSES transaction along with its amounts and persists any uploaded files as transaction media.
+     * @param payload The create payload for the transaction.
+     * @param userId The ID of the user who owns the transaction being created.
+     * @param files The list of files uploaded alongside the request to be persisted as transaction media.
+     * @returns A promise that resolves to the newly created transaction enriched with amounts and media.
+     */
     private async createStandard(payload: CreateTransactionRequest, userId: string, files?: Express.Multer.File[]) {
         const normalized = this.normalize(payload) as Prisma.TransactionCreateManyInput
         let resultId = ''
 
         await prisma.$transaction(
             async tx => {
-                const transaction = await tx.transaction.create({
-                    data: { ...normalized, userId }
-                })
+                const transaction = await this.transactionRepository.create(tx, { ...normalized, userId })
 
                 const amountsData = this.buildAmounts(transaction.id, payload.amounts, payload.currency)
                 await this.persistAmounts(tx, transaction.id, amountsData)
@@ -77,18 +88,23 @@ export class TransactionService extends BaseService {
         return this.getTransactionById(resultId)
     }
 
+    /**
+     * Creates a transfer between two financial accounts as two linked transactions, updating balances and persisting any uploaded files as transaction media on both sides.
+     * @param payload The create payload for the transfer.
+     * @param userId The ID of the user who owns the transfer being created.
+     * @param files The list of files uploaded alongside the request to be persisted as transaction media.
+     * @returns A promise that resolves to the merged transfer transaction data.
+     */
     private async createTransfer(payload: CreateTransactionRequest, userId: string, files?: Express.Multer.File[]) {
         const { fromAmount, toAmount } = this.splitTransferAmounts(payload.amounts)
-        const utcDate = await this.resolveUtcDate(payload.date, userId)
+        const utcDate = this.resolveUtcDate(payload.date)
         const normalized = { ...this.normalize(payload), userId } as Prisma.TransactionCreateManyInput
         let transferId = ''
         let transactionIds: string[] = []
 
         await prisma.$transaction(
             async tx => {
-                const transactions = await tx.transaction.createManyAndReturn({
-                    data: [normalized, normalized]
-                })
+                const transactions = await this.transactionRepository.createManyAndReturn(tx, [normalized, normalized])
 
                 const amountsData = this.buildTransferAmounts(
                     transactions[0].id,
@@ -97,23 +113,18 @@ export class TransactionService extends BaseService {
                     toAmount,
                     payload.currency
                 )
-                await tx.amount.createMany({ data: amountsData })
+                await this.transactionRepository.createAmounts(tx, amountsData)
                 await BalanceHelper.updateAccountBalances(amountsData as unknown as Amount[], undefined, tx)
 
-                const transfer = await tx.transfer.create({
-                    data: {
-                        transferDate: utcDate,
-                        note: payload.note,
-                        fromTransactionId: transactions[0].id,
-                        toTransactionId: transactions[1].id,
-                        userId
-                    }
+                const transfer = await this.transactionRepository.createTransfer(tx, {
+                    transferDate: utcDate,
+                    note: payload.note,
+                    fromTransactionId: transactions[0].id,
+                    toTransactionId: transactions[1].id,
+                    userId
                 })
 
-                await tx.transaction.updateMany({
-                    where: { id: { in: [transactions[0].id, transactions[1].id] } },
-                    data: { transferId: transfer.id }
-                })
+                await this.transactionRepository.linkTransfer(tx, [transactions[0].id, transactions[1].id], transfer.id)
 
                 transferId = transfer.id
                 transactionIds = [transactions[0].id, transactions[1].id]
@@ -125,23 +136,24 @@ export class TransactionService extends BaseService {
         return this.fetchTransferTransactionByTransferId(transferId)
     }
 
-    // ------------------------------------------------------------------ //
-    // UPDATE
-    // ------------------------------------------------------------------ //
-
+    /**
+     * Updates an existing transaction, applying any changes to its amounts and balances and persisting any uploaded files as transaction media.
+     * @param transactionId The unique identifier of the transaction being updated.
+     * @param payload The update payload to be applied.
+     * @param userId The ID of the user who owns the transaction being updated.
+     * @param files The list of files uploaded alongside the request to be persisted as transaction media.
+     * @returns A promise that resolves to the updated transaction or the merged transfer transaction when the update targets a transfer.
+     */
     private async updateTransaction(
         transactionId: string,
         payload: UpdateTransactionRequest,
         userId: string,
         files?: Express.Multer.File[]
     ) {
-        const existing = await prisma.transaction.findFirst({
-            where: { id: transactionId, userId },
-            include: { amounts: true }
-        })
+        const existing = await this.transactionRepository.findByIdWithAmounts(prisma, userId, transactionId)
 
         if (!existing) {
-            throw new Error(`Transaction with id ${transactionId} not found`)
+            throw new NotFoundError(`Transaction with id ${transactionId} not found`)
         }
 
         const effectiveAction = (payload.action ?? existing.action) as TransactionActionEnum
@@ -152,10 +164,7 @@ export class TransactionService extends BaseService {
         await prisma.$transaction(
             async tx => {
                 if (Object.keys(updateData).length > 0) {
-                    await tx.transaction.update({
-                        where: { id: transactionId, userId },
-                        data: updateData
-                    })
+                    await this.transactionRepository.update(tx, userId, transactionId, updateData)
                 }
 
                 if (!hasAmounts) return
@@ -187,27 +196,34 @@ export class TransactionService extends BaseService {
         return this.getTransactionById(transactionId)
     }
 
-    // ------------------------------------------------------------------ //
-    // HELPERS
-    // ------------------------------------------------------------------ //
-
+    /**
+     * Splits a transfer amounts payload into its outgoing (EXPENSES) and incoming (INCOME) sides.
+     * @param amounts The list of amounts attached to a transfer payload.
+     * @returns An object exposing the from (EXPENSES) and to (INCOME) amounts of the transfer.
+     */
     private splitTransferAmounts(amounts: TransactionAmount[]) {
         const fromAmount = amounts.find(a => a.action === 'EXPENSES')!
         const toAmount = amounts.find(a => a.action === 'INCOME')!
         return { fromAmount, toAmount }
     }
 
-    private async resolveUtcDate(date: string, userId: string) {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { timezone: true }
-        })
-        if (!user) {
-            throw new Error('User not found')
-        }
-        return moment.tz(date, user.timezone).utc().toISOString()
+    /**
+     * Converts the supplied local date to its UTC ISO representation using the timezone of the authenticated user from the active request context.
+     * @param date The local date to be converted.
+     * @returns The UTC ISO date string of the supplied local date in the user's timezone.
+     */
+    private resolveUtcDate(date: string): string {
+        const { timezone } = this.context.currentUser
+        return moment.tz(date, timezone).utc().toISOString()
     }
 
+    /**
+     * Builds the amount rows associated with a standard transaction using the supplied amounts payload and currency.
+     * @param transactionId The unique identifier of the transaction the amounts belong to.
+     * @param amounts The amounts payload supplied with the transaction.
+     * @param currency The currency to apply to the amounts.
+     * @returns The list of amount rows ready to be persisted.
+     */
     private buildAmounts(
         transactionId: string,
         amounts: TransactionAmount[],
@@ -222,6 +238,15 @@ export class TransactionService extends BaseService {
         }))
     }
 
+    /**
+     * Builds the two amount rows associated with a transfer (one EXPENSES, one INCOME) linked to the supplied source and destination transactions.
+     * @param fromTransactionId The unique identifier of the source transaction of the transfer.
+     * @param toTransactionId The unique identifier of the destination transaction of the transfer.
+     * @param fromAmount The outgoing side of the transfer payload.
+     * @param toAmount The incoming side of the transfer payload.
+     * @param currency The currency to apply to the amounts.
+     * @returns The list of amount rows ready to be persisted.
+     */
     private buildTransferAmounts(
         fromTransactionId: string,
         toTransactionId: string,
@@ -248,8 +273,9 @@ export class TransactionService extends BaseService {
     }
 
     /**
-     * Merges TRANSFER transactions that share the same transferId into a single transaction object.
-     * The merged transaction will contain both amounts (INCOME and EXPENSES).
+     * Merges TRANSFER transactions that share the same transferId into a single transaction object so the consumer sees one row per transfer with both amounts.
+     * @param transactions The list of transactions to merge.
+     * @returns The list of transactions where transfer pairs have been combined.
      */
     mergeTransferTransactions<
         T extends { action: TransactionActionEnum; transferId: string | null; amounts: unknown[] }
@@ -258,7 +284,6 @@ export class TransactionService extends BaseService {
         const result: T[] = []
 
         for (const transaction of transactions) {
-            // If it's not a TRANSFER or has no transferId, add it as-is
             if (transaction.action !== 'TRANSFER' || !transaction.transferId) {
                 result.push(transaction)
                 continue
@@ -266,38 +291,37 @@ export class TransactionService extends BaseService {
 
             const transferId = transaction.transferId
 
-            // Check if we already have a transaction with this transferId
             if (transferMap.has(transferId)) {
-                // Merge amounts into the existing transaction
                 const existing = transferMap.get(transferId)!
                 existing.amounts.push(...transaction.amounts)
             } else {
-                // First time seeing this transferId, store it
                 transferMap.set(transferId, { ...transaction })
             }
         }
 
-        // Add all merged transfer transactions to the result
         result.push(...Array.from(transferMap.values()))
 
         return result
     }
 
     /**
-     * Replaces amounts for a transaction and updates the affected account
-     * balances. If `originalAmounts` is provided the old values are reverted
-     * before the new ones are applied.
+     * Replaces the amounts of a transaction and updates the affected financial account balances. When originalAmounts is supplied the old values are reverted before the new ones are applied.
+     * @param tx The Prisma client used to run the persistence inside an active transaction.
+     * @param transactionId The unique identifier of the transaction whose amounts must be replaced.
+     * @param amountsData The list of new amount rows to be persisted.
+     * @param originalAmounts The original amount rows used to compute the balance reversal when updating.
+     * @returns A promise that resolves when the amounts have been replaced and the balances updated.
      */
     private async persistAmounts(
-        tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+        tx: Prisma.TransactionClient,
         transactionId: string,
         amountsData: Prisma.AmountCreateManyInput[],
         originalAmounts?: { transactionId: string; amount: unknown }[]
-    ) {
+    ): Promise<void> {
         if (originalAmounts) {
-            await tx.amount.deleteMany({ where: { transactionId } })
+            await this.transactionRepository.deleteAmountsByTransactionId(tx, transactionId)
         }
-        await tx.amount.createMany({ data: amountsData })
+        await this.transactionRepository.createAmounts(tx, amountsData)
 
         const originalMap = originalAmounts
             ? new Map(originalAmounts.map(a => [a.transactionId, Number(a.amount)]))
@@ -306,6 +330,11 @@ export class TransactionService extends BaseService {
         await BalanceHelper.updateAccountBalances(amountsData as unknown as Amount[], originalMap, tx)
     }
 
+    /**
+     * Normalises the create or update payload into a partial Prisma input, clearing category and subcategory when the action is TRANSFER.
+     * @param data The create or update payload to normalise.
+     * @returns The partial Prisma input ready to be passed to a create or update call.
+     */
     private normalize(
         data: CreateTransactionRequest | UpdateTransactionRequest
     ): Partial<Omit<Prisma.TransactionCreateManyInput, 'userId'>> {
@@ -321,15 +350,17 @@ export class TransactionService extends BaseService {
     }
 
     /**
-     * Uploads files via BaseService.saveFile and persists a TransactionMedia
-     * row for each upload. No-op if no files are provided.
+     * Uploads the supplied files via the media service and persists a transaction media row for each upload. No-op when no files are provided.
+     * @param transactionId The unique identifier of the transaction the uploaded files must be attached to.
+     * @param files The list of files to be uploaded.
+     * @returns A promise that resolves when the transaction media rows have been created.
      */
-    async saveTransactionMedia(transactionId: string, files?: Express.Multer.File[]) {
+    async saveTransactionMedia(transactionId: string, files?: Express.Multer.File[]): Promise<void> {
         if (!files || files.length === 0) return
 
         const mediaData = await Promise.all(
             files.map(async file => {
-                const path = await this.saveFile(transactionId, file)
+                const path = await this.media.saveFile(transactionId, file)
                 return {
                     transactionId,
                     filename: file.originalname,
@@ -339,24 +370,19 @@ export class TransactionService extends BaseService {
             })
         )
 
-        await prisma.transactionMedia.createMany({ data: mediaData })
+        await this.transactionRepository.createTransactionMedia(mediaData)
     }
 
-    // ------------------------------------------------------------------ //
-    // READ / DELETE
-    // ------------------------------------------------------------------ //
-
+    /**
+     * Reads the transfer pair referenced by the supplied transfer id and merges its two sides into the public transfer transaction DTO shape.
+     * @param transferId The unique identifier of the transfer to be retrieved.
+     * @returns A promise that resolves to the merged transfer transaction DTO.
+     */
     private async fetchTransferTransactionByTransferId(transferId: string) {
-        const transfer = await prisma.transfer.findUnique({
-            where: { id: transferId },
-            include: {
-                fromTransaction: { include: { amounts: true, media: true } },
-                toTransaction: { include: { amounts: true, media: true } }
-            }
-        })
+        const transfer = await this.transactionRepository.findTransferById(transferId)
 
         if (!transfer || !transfer.fromTransaction || !transfer.toTransaction) {
-            throw new Error(`Transfer not found for id ${transferId}`)
+            throw new NotFoundError(`Transfer not found for id ${transferId}`)
         }
 
         const mapAmount = (a: any) => ({
@@ -387,54 +413,42 @@ export class TransactionService extends BaseService {
     }
 
     /**
-     * Deletes a transaction by ID. If the transaction is part of a transfer, both sides of the transfer are deleted.
-     * @param id transaction ID
+     * Deletes a transaction owned by the authenticated user.
+     * @param id The unique identifier of the transaction to be deleted.
+     * @returns A promise that resolves when the transaction has been deleted.
      */
     async deleteTransaction(id: string): Promise<void> {
-        const userId = this.getUserId()
-        await prisma.transaction.delete({
-            where: { id, userId }
-        })
+        await this.transactionRepository.delete(this.context.currentUser.id, id)
     }
 
     /**
-     * Deletes all transactions for the user. Use with caution. This is used when deleting a financial account, to delete all transactions linked to that account.
+     * Deletes every transaction owned by the authenticated user.
+     * @returns A promise that resolves when the transactions have been deleted.
      */
     async deleteAllTransactions(): Promise<void> {
-        const userId = this.getUserId()
-        await prisma.transaction.deleteMany({
-            where: { userId }
-        })
+        await this.transactionRepository.deleteAll(this.context.currentUser.id)
     }
 
     /**
-     * Fetches a transaction by ID. If it's part of a transfer, the full transfer details are included.
-     * @param id transaction ID
-     * @returns transaction details with amounts and media, or transfer details if it's a transfer transaction
+     * Retrieves a transaction by its unique identifier for the authenticated user, including its amounts and media.
+     * @param id The unique identifier of the transaction to retrieve.
+     * @returns A promise that resolves to the transaction data.
      */
     async getTransactionById(id: string): Promise<TransactionData> {
-        const userId = this.getUserId()
-
-        const transaction = await prisma.transaction.findFirst({
-            where: { id, userId },
-            omit: { userId: true, deletedAt: true },
-            include: { amounts: true, media: true }
-        })
-
+        const transaction = await this.transactionRepository.findById(this.context.currentUser.id, id)
         if (!transaction) {
-            throw new Error(`Transaction with id ${id} not found`)
+            throw new NotFoundError(`Transaction with id ${id} not found`)
         }
-
-        return transaction as unknown as TransactionData
+        return transaction
     }
 
     /**
-     * Fetches a transaction by ID. If it's part of a transfer, the full transfer details are included.
-     * @param query filters and options for fetching transactions, including pagination and sorting
-     * @returns a paginated list of transactions matching the filters, with total count for pagination
+     * Retrieves a paginated list of approved transactions for the authenticated user using the supplied query filters and sorting options, merging transfer pairs into single rows.
+     * @param query The query payload including filters and pagination options.
+     * @returns A promise that resolves to an object containing the list of transactions and the total count for pagination.
      */
-    async getTransactions(query: QueryTransactionFilters) {
-        const userId = this.getUserId()
+    async getTransactions(query: QueryTransactionFilters): Promise<{ data: TransactionData[]; total: number }> {
+        const userId = this.context.currentUser.id
 
         const filter = (query.filter ?? {}) as TransactionFilters
         const options = (query.options ?? {}) as FilterOptions
@@ -446,20 +460,11 @@ export class TransactionService extends BaseService {
         const sortBy = options.sortBy ?? 'date'
         const sortOrder: Prisma.SortOrder = options.sortOrder ?? 'desc'
 
-        const { financialAccountId, ...baseFilter } = filter
-        const wherePayload: Record<string, unknown> = {
-            ...baseFilter,
+        const where = this.transactionRepository.buildListWhere({
+            ...filter,
             userId,
             status: 'APPROVED'
-        }
-
-        if (financialAccountId) {
-            wherePayload.amounts = {
-                some: { financialAccountId }
-            }
-        }
-
-        const where = buildWhere(wherePayload, [])
+        })
 
         const mustSortByAmount = sortBy === 'amount'
         const stableOrder: Prisma.TransactionOrderByWithRelationInput[] = [{ date: 'desc' }, { id: 'desc' }]
@@ -476,15 +481,11 @@ export class TransactionService extends BaseService {
                   { id: sortOrder }
               ]
 
-        const list = await prisma.transaction.findMany({
-            where,
-            include: { amounts: true, media: true },
-            omit: { userId: true, deletedAt: true },
-            orderBy,
-            skip: mustSortByAmount ? 0 : skip,
-            ...(mustSortByAmount || !take || take <= 0 ? {} : { take })
-        })
-        const total = await prisma.transaction.count({ where })
+        const effectiveSkip = mustSortByAmount ? 0 : skip
+        const effectiveTake = mustSortByAmount || !take || take <= 0 ? undefined : take
+
+        const list = await this.transactionRepository.findMany(where, orderBy, effectiveSkip, effectiveTake)
+        const total = await this.transactionRepository.count(where)
 
         let transactions = list
         if (mustSortByAmount) {

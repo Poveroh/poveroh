@@ -1,34 +1,32 @@
 import type { Request, Response } from 'express'
 import type { FilterOptions, SubscriptionData, SubscriptionFilters } from '@poveroh/types'
-import { getParamString } from '@/src/utils/request'
-import { BadRequestError, NotFoundError, ResponseHelper } from '@/utils'
-import { parseRequestBody } from '@/utils/validation'
 import { CreateSubscriptionRequestSchema, UpdateSubscriptionRequestSchema } from '@poveroh/schemas'
 import { SubscriptionService } from './subscription.service'
+import { parseRequestBody, ResponseHelper, getParamString, BadRequestError, NotFoundError } from '@/utils'
 
 export class SubscriptionController {
-    // Creates a subscription from multipart form data.
+    private static readonly subscriptionService = new SubscriptionService()
+
+    // POST /
     static async createSubscription(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateSubscriptionRequestSchema, req.body)
-            const subscriptionService = new SubscriptionService()
-            const subscription = await subscriptionService.createSubscription(payload, req.file)
+            const subscription = await this.subscriptionService.createSubscription(payload, req.file)
 
-            return ResponseHelper.success(res, subscription)
+            return ResponseHelper.success<SubscriptionData>(res, subscription)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    // Updates a user-owned subscription.
+    // PATCH /:id
     static async updateSubscription(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
 
             const payload = parseRequestBody(UpdateSubscriptionRequestSchema, req.body)
-            const subscriptionService = new SubscriptionService()
-            await subscriptionService.updateSubscription(id, payload, req.file)
+            await this.subscriptionService.updateSubscription(id, payload, req.file)
 
             return ResponseHelper.success(res)
         } catch (error) {
@@ -36,14 +34,13 @@ export class SubscriptionController {
         }
     }
 
-    // Soft-deletes one subscription.
+    // DELETE /:id
     static async deleteSubscription(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
 
-            const subscriptionService = new SubscriptionService()
-            await subscriptionService.deleteSubscription(id)
+            await this.subscriptionService.deleteSubscription(id)
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -51,11 +48,10 @@ export class SubscriptionController {
         }
     }
 
-    // Soft-deletes all subscriptions owned by the current user.
+    // DELETE /
     static async deleteAllSubscriptions(req: Request, res: Response) {
         try {
-            const subscriptionService = new SubscriptionService()
-            await subscriptionService.deleteAllSubscriptions()
+            await this.subscriptionService.deleteAllSubscriptions()
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -63,14 +59,13 @@ export class SubscriptionController {
         }
     }
 
-    // Reads one subscription by user-scoped id.
+    // GET /:id
     static async readSubscriptionById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
 
-            const subscriptionService = new SubscriptionService()
-            const data = await subscriptionService.getSubscriptionById(id)
+            const data = await this.subscriptionService.getSubscriptionById(id)
             if (!data) throw new NotFoundError('Subscription not found')
 
             return ResponseHelper.success<SubscriptionData>(res, data)
@@ -79,7 +74,7 @@ export class SubscriptionController {
         }
     }
 
-    // Reads subscriptions using the existing query shape.
+    // GET /
     static async readSubscriptions(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as SubscriptionFilters
@@ -87,8 +82,7 @@ export class SubscriptionController {
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 
-            const subscriptionService = new SubscriptionService()
-            const data = await subscriptionService.getSubscriptions(filters, skip, take)
+            const data = await this.subscriptionService.getSubscriptions(filters, skip, take)
 
             return ResponseHelper.success<SubscriptionData[]>(res, data)
         } catch (error) {

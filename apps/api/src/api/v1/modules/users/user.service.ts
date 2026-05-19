@@ -1,53 +1,48 @@
-import prisma from '@poveroh/prisma'
-import { NotFoundError } from '@/src/utils'
-import { UpdateUserRequest, User } from '@poveroh/types'
+import type { UpdateUserRequest, User } from '@poveroh/types'
+import { BadRequestError } from '@/utils'
 import { BaseService } from '../base/base.service'
+import { UserRepository } from './user.repository'
 
 /**
- * Service class for managing users, including retrieving and updating user data
+ * Service class for managing users, including retrieving and updating user data.
  * All methods automatically retrieve the user ID from the request context when needed.
  */
 export class UserService extends BaseService {
+    private readonly userRepository = new UserRepository()
+
     constructor() {
         super('user')
     }
 
     /**
-     * Retrieves a user
-     * @param id The ID of the user to retrieve
-     * @returns The user data response
+     * Retrieves a user by its unique identifier.
+     * @param id The unique identifier of the user to retrieve.
+     * @returns A promise that resolves to the user data, or null when no user is found.
      */
     async getUser(id: string): Promise<User | null> {
-        return (await prisma.user.findUnique({
-            where: { id }
-        })) as unknown as User | null
+        return this.userRepository.findById(id)
     }
 
     /**
-     * Retrieves a user by email
-     * @param email The email of the user to retrieve
-     * @returns The user data response
+     * Retrieves a user by its email address.
+     * @param email The email address of the user to retrieve.
+     * @returns A promise that resolves to the user data, or null when no user is found.
      */
     async getUserByEmail(email: string): Promise<User | null> {
-        return (await prisma.user.findUnique({
-            where: { email }
-        })) as unknown as User | null
+        return this.userRepository.findByEmail(email)
     }
 
     /**
-     * Updates a user by ID
-     * @param id The ID of the user to update
-     * @param payload The data to update the user with
-     * @returns The updated user data response
+     * Updates a user identified by the provided id with the fields contained in the payload.
+     * @param id The unique identifier of the user to be updated.
+     * @param payload The data to update the user with.
+     * @returns A promise that resolves when the user has been updated.
      */
     async updateUser(id: string, payload: UpdateUserRequest): Promise<void> {
         if (!payload) {
-            throw new NotFoundError('Payload not provided')
+            throw new BadRequestError('Payload not provided')
         }
 
-        await prisma.user.update({
-            where: { id },
-            data: payload
-        })
+        await this.userRepository.update(id, payload)
     }
 }

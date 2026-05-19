@@ -5,7 +5,7 @@ import type {
     SubcategoryFilters,
     UpdateSubcategoryRequest
 } from '@poveroh/types'
-import { buildWhere } from '@/src/helpers/filter.helper'
+import { buildWhere } from '@/helpers/filter.helper'
 
 const subcategorySelect = {
     id: true,
@@ -16,31 +16,25 @@ const subcategorySelect = {
     updatedAt: true
 } satisfies Prisma.SubcategorySelect
 
-type SubcategoryRow = Prisma.SubcategoryGetPayload<{ select: typeof subcategorySelect }>
-
-// Prisma returns Date for timestamps; the API contract uses ISO strings.
-function toData(row: SubcategoryRow): SubcategoryData {
-    return {
-        id: row.id,
-        categoryId: row.categoryId,
-        title: row.title,
-        icon: row.icon,
-        createdAt: row.createdAt.toISOString(),
-        updatedAt: row.updatedAt.toISOString()
-    }
-}
-
 export class SubcategoryRepository {
-    // Subcategories inherit ownership through their category.
+    /** Creates a new subcategory with the provided data and returns the created subcategory data.
+     * @param id The unique identifier for the new subcategory.
+     * @param payload The data required to create a new subcategory.
+     * @returns A promise that resolves to the data of the newly created subcategory.
+     */
     async create(id: string, payload: CreateSubcategoryRequest): Promise<SubcategoryData> {
-        const row = await prisma.subcategory.create({
+        return (await prisma.subcategory.create({
             data: { ...payload, id },
             select: subcategorySelect
-        })
-        return toData(row)
+        })) as unknown as SubcategoryData
     }
 
-    // Updates are scoped through the parent category owner.
+    /**
+     * Updates an existing subcategory with the provided data. The update is scoped to the user who owns the parent category of the subcategory.
+     * @param userId The unique identifier of the user who owns the parent category.
+     * @param id The unique identifier of the subcategory to update.
+     * @param payload The data to update the subcategory with.
+     */
     async update(userId: string, id: string, payload: UpdateSubcategoryRequest): Promise<void> {
         await prisma.subcategory.update({
             where: { id, category: { userId }, deletedAt: null },
@@ -48,7 +42,11 @@ export class SubcategoryRepository {
         })
     }
 
-    // Soft delete keeps category history stable.
+    /** Soft deletes a subcategory by setting its deletedAt timestamp. The deletion is scoped to the user who owns the parent category of the subcategory.
+     * @param userId The unique identifier of the user who owns the parent category.
+     * @param id The unique identifier of the subcategory to delete.
+     * @param deletedAt The timestamp to set for the deletedAt field, indicating when the subcategory was soft deleted.
+     */
     async softDelete(userId: string, id: string, deletedAt: Date): Promise<void> {
         await prisma.subcategory.update({
             where: { id, category: { userId }, deletedAt: null },
@@ -56,7 +54,10 @@ export class SubcategoryRepository {
         })
     }
 
-    // Bulk deletes are scoped by parent category owner.
+    /** Soft deletes all subcategories belonging to categories owned by the specified user by setting their deletedAt timestamp.
+     * @param userId The unique identifier of the user whose subcategories should be soft deleted.
+     * @param deletedAt The timestamp to set for the deletedAt field, indicating when the subcategories were soft deleted.
+     */
     async softDeleteAll(userId: string, deletedAt: Date): Promise<void> {
         await prisma.subcategory.updateMany({
             where: { category: { userId }, deletedAt: null },
@@ -64,16 +65,25 @@ export class SubcategoryRepository {
         })
     }
 
-    // Reads require both id and parent category owner.
+    /** Finds a subcategory by its ID, scoped to the user who owns the parent category.
+     * @param userId The unique identifier of the user who owns the parent category.
+     * @param id The unique identifier of the subcategory to find.
+     * @returns A promise that resolves to the subcategory data if found, or null if not found.
+     */
     async findById(userId: string, id: string): Promise<SubcategoryData | null> {
-        const row = await prisma.subcategory.findFirst({
+        return (await prisma.subcategory.findFirst({
             where: { id, category: { userId }, deletedAt: null },
             select: subcategorySelect
-        })
-        return row ? toData(row) : null
+        })) as unknown as SubcategoryData | null
     }
 
-    // Filters are combined with ownership and soft-delete conditions in one place.
+    /** Finds multiple subcategories based on filters, scoped to the user who owns the parent category.
+     * @param userId The unique identifier of the user who owns the parent category.
+     * @param filters The filters to apply when searching for subcategories.
+     * @param skip The number of records to skip for pagination.
+     * @param take The number of records to take for pagination.
+     * @returns A promise that resolves to an array of subcategory data.
+     */
     async findMany(
         userId: string,
         filters: SubcategoryFilters,
@@ -82,7 +92,7 @@ export class SubcategoryRepository {
     ): Promise<SubcategoryData[]> {
         const filterWhere = buildWhere({ ...filters, deletedAt: null }, ['title'])
 
-        const rows = await prisma.subcategory.findMany({
+        return (await prisma.subcategory.findMany({
             where: {
                 ...filterWhere,
                 category: { userId }
@@ -91,7 +101,6 @@ export class SubcategoryRepository {
             orderBy: { createdAt: 'desc' },
             skip,
             take
-        })
-        return rows.map(toData)
+        })) as unknown as SubcategoryData[]
     }
 }

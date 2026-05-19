@@ -15,17 +15,23 @@ export class FinancialAccountService extends BaseService {
         super('financial-account')
     }
 
-    // Creates an account and stores an uploaded icon under the generated account id.
+    /**
+     *  Creates a new financial account for the authenticated user, optionally handling an uploaded logo file.
+     * @param payload The data required to create a new financial account
+     * @param file An optional file object representing the uploaded logo for the financial account.
+     * @returns A promise that resolves to the data of the newly created financial account
+     */
     async createFinancialAccount(
         payload: CreateFinancialAccountRequest,
         file?: Express.Multer.File
     ): Promise<FinancialAccountData> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
+
         const generatedId = crypto.randomUUID()
         const payloadWithIcon = { ...payload }
 
         if (file) {
-            payloadWithIcon.logoIcon = await this.saveFile(generatedId, file)
+            payloadWithIcon.logoIcon = await this.media.saveFile(generatedId, file)
         }
 
         const account = await this.financialAccountRepository.create(userId, generatedId, payloadWithIcon)
@@ -34,46 +40,70 @@ export class FinancialAccountService extends BaseService {
         return account
     }
 
-    // Updates only the account owned by the authenticated user.
+    /**
+     * Updates an existing financial account for the authenticated user, optionally handling an uploaded logo file.
+     * @param id The ID of the financial account to update.
+     * @param payload The data to update the financial account with.
+     * @param file An optional file object representing the uploaded logo for the financial account.
+     * @returns A promise that resolves when the financial account has been updated.
+     */
     async updateFinancialAccount(
         id: string,
         payload: UpdateFinancialAccountRequest,
         file?: Express.Multer.File
     ): Promise<void> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
         const payloadWithIcon = { ...payload }
 
         if (file) {
-            payloadWithIcon.logoIcon = await this.saveFile(id, file)
+            payloadWithIcon.logoIcon = await this.media.saveFile(id, file)
         }
 
         await this.financialAccountRepository.update(userId, id, payloadWithIcon)
         await eventBus.emit('financial-account.updated', { financialAccountId: id, userId })
     }
 
-    // Financial accounts are soft-deleted to preserve historical transaction context.
+    /**
+     * Soft deletes a financial account for the authenticated user.
+     * @param id The ID of the financial account to delete.
+     */
     async deleteFinancialAccount(id: string): Promise<void> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
         await this.financialAccountRepository.softDelete(userId, id, new Date())
         await eventBus.emit('financial-account.deleted', { financialAccountId: id, userId })
     }
 
-    // Bulk delete keeps behavior compatible while still preserving history.
+    /**
+     * Soft deletes all financial accounts for the authenticated user.
+     */
     async deleteAllFinancialAccounts(): Promise<void> {
-        await this.financialAccountRepository.softDeleteAll(this.getUserId(), new Date())
+        const userId = this.context.currentUser.id
+        await this.financialAccountRepository.softDeleteAll(userId, new Date())
     }
 
-    // Reads return response DTOs instead of database records.
+    /**
+     * Retrieves a financial account by its user-scoped ID for the authenticated user.
+     * @param id The ID of the financial account to retrieve.
+     * @returns A promise that resolves to the financial account data or null if not found.
+     */
     async getFinancialAccountById(id: string): Promise<FinancialAccountData | null> {
-        return this.financialAccountRepository.findById(this.getUserId(), id)
+        const userId = this.context.currentUser.id
+        return this.financialAccountRepository.findById(userId, id)
     }
 
-    // List reads keep filtering and pagination in the repository.
+    /**
+     * Retrieves financial accounts for the authenticated user based on provided filters and pagination options.
+     * @param filters The filters to apply when retrieving financial accounts.
+     * @param skip The number of records to skip for pagination.
+     * @param take The number of records to take for pagination.
+     * @returns A promise that resolves to an array of financial account data matching the criteria.
+     */
     async getFinancialAccounts(
         filters: FinancialAccountFilters,
         skip: number,
         take: number
     ): Promise<FinancialAccountData[]> {
-        return this.financialAccountRepository.findMany(this.getUserId(), filters, skip, take)
+        const userId = this.context.currentUser.id
+        return this.financialAccountRepository.findMany(userId, filters, skip, take)
     }
 }

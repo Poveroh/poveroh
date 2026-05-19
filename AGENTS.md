@@ -15,7 +15,7 @@ This file defines specialized agent profiles for working on the Poveroh codebase
 - API features live in `apps/api/src/api/v1/modules/<feature>/` with colocated `*.controller.ts`, `*.service.ts`, and, when Prisma access is non-trivial, `*.repository.ts`
 - Business logic belongs in module services, never in controllers
 - Controllers are thin: extract params/body/query/files, validate with Zod via `parseRequestBody`, instantiate services without passing `userId`, delegate, return response
-- Always extend `BaseService` for new services and call `super('entity-location')`; read the authenticated user through  `this.context.currentUser`
+- Always extend `BaseService` for new services and call `super('entity-location')`; read the authenticated user through `this.context.currentUser`
 - Use `this.saveFile(entityId, file)` or `this.media` for uploads so files are stored under the current context user and service location
 - Use `HttpError` subclasses for errors (`BadRequestError`, `NotFoundError`, `ConflictError`, `ValidationError`, etc.)
 - Always wrap controller bodies in `try/catch` with `ResponseHelper.handleError(res, error)` in the catch

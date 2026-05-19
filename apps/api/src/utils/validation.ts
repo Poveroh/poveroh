@@ -10,12 +10,17 @@ import type { z } from 'zod'
 export function parseRequestBody<TSchema extends z.ZodType>(schema: TSchema, body: unknown): z.infer<TSchema> {
     try {
         const payload = isMultipartBody(body) ? JSON.parse(body.data) : body
-        return schema.parse(payload)
+        return schema.parse(payload) as z.infer<TSchema>
     } catch (error) {
         throw new BadRequestError('Invalid request body', error)
     }
 }
 
+/**
+ * Type guard to check if the request body is in multipart form data format, which is expected to have a 'data' field containing a JSON string.
+ * @param body The raw request body to check
+ * @returns A boolean indicating whether the body is in multipart form data format
+ */
 function isMultipartBody(body: unknown): body is { data: string } {
     return typeof body === 'object' && body !== null && 'data' in body && typeof body.data === 'string'
 }

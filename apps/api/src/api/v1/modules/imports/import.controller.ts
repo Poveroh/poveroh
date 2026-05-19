@@ -1,136 +1,102 @@
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
+import type { FilterOptions, ImportData, ImportFilters, ImportTransactionDataResponse } from '@poveroh/types'
 import {
-    ApproveImportTransactionsRequest,
-    CreateImportRequest,
-    FilterOptions,
-    ImportFilters,
-    UpdateImportRequest
-} from '@poveroh/types'
-import { getParamString } from '@/src/utils/request'
-import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
-import { ImportService } from '@/src/api/v1/modules/imports/import.service'
+    ApproveImportTransactionsRequestSchema,
+    CreateImportRequestSchema,
+    UpdateImportRequestSchema
+} from '@poveroh/schemas'
+import { ImportService } from './import.service'
+import { BadRequestError, parseRequestBody, ResponseHelper, getParamString, NotFoundError } from '@/utils'
 
 export class ImportController {
-    //POST /
+    private static readonly importService = new ImportService()
+
+    // POST /
     static async createImport(req: Request, res: Response) {
         try {
-            try {
-                if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
-                    throw new BadRequestError('No files provided')
-                }
-
-                const files = req.files as Express.Multer.File[]
-                const payload: CreateImportRequest = JSON.parse(req.body.data)
-
-                const importService = new ImportService()
-                const data = await importService.createImport(payload, files)
-
-                return ResponseHelper.success(res, data)
-            } catch (error) {
-                return ResponseHelper.handleError(res, error)
+            if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+                throw new BadRequestError('No files provided')
             }
+
+            const files = req.files as Express.Multer.File[]
+            const payload = parseRequestBody(CreateImportRequestSchema, req.body)
+
+            const data = await this.importService.createImport(payload, files)
+
+            return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //PUT /:id
+    // PUT /:id
     static async updateImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const payload = parseRequestBody(UpdateImportRequestSchema, req.body)
+            const data = await this.importService.updateImport(id, payload)
 
-            if (!req.body) {
-                throw new BadRequestError('Data not provided')
-            }
-
-            const payload: UpdateImportRequest = JSON.parse(req.body.data)
-
-            const importService = new ImportService()
-            const data = await importService.updateImport(id, payload)
-
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //PATCH /complete/:id
+    // PATCH /complete/:id
     static async completeImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const data = await this.importService.completeImport(id)
 
-            const importService = new ImportService()
-            const imports = await importService.completeImport(id)
-
-            return ResponseHelper.success(res, imports)
+            return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //PATCH /rollback/:id
+    // PATCH /rollback/:id
     static async rollbackImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const exist = await this.importService.doesImportExist(id)
+            if (!exist) throw new NotFoundError('Import not found')
 
-            const importService = new ImportService()
+            const data = await this.importService.rollbackImport(id)
 
-            const exist = await importService.doesImportExist(id)
-            if (!exist) {
-                throw new NotFoundError('Import not found')
-            }
-
-            const data = await importService.rollbackImport(id)
-
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //PATCH /:id/transactions/approve
+    // PATCH /:id/transactions/approve
     static async approveImportTransactions(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const payload = parseRequestBody(ApproveImportTransactionsRequestSchema, req.body)
+            const data = await this.importService.approveImportTransactions(id, payload)
 
-            const payload: ApproveImportTransactionsRequest = req.body
-
-            const importService = new ImportService()
-            const data = await importService.approveImportTransactions(id, payload)
-
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportTransactionDataResponse[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //DELETE /:id
+    // DELETE /:id
     static async deleteImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
-
-            const importService = new ImportService()
-            await importService.deleteImport(id)
+            await this.importService.deleteImport(id)
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -138,11 +104,10 @@ export class ImportController {
         }
     }
 
-    //DELETE /
+    // DELETE /
     static async deleteAllImports(req: Request, res: Response) {
         try {
-            const importService = new ImportService()
-            await importService.deleteAllImports()
+            await this.importService.deleteAllImports()
 
             return ResponseHelper.success(res, true)
         } catch (error) {
@@ -150,7 +115,7 @@ export class ImportController {
         }
     }
 
-    //GET /
+    // GET /
     static async readImports(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as ImportFilters
@@ -158,69 +123,51 @@ export class ImportController {
             const skip = isNaN(Number(options.skip)) ? 0 : Number(options.skip)
             const take = isNaN(Number(options.take)) ? 20 : Number(options.take)
 
-            const importService = new ImportService()
-            const data = await importService.getImports(filters, skip, take)
+            const data = await this.importService.getImports(filters, skip, take)
 
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportData[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //GET /:id
+    // GET /:id
     static async readImportById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const data = await this.importService.getImportById(id)
+            if (!data) throw new NotFoundError('Import not found')
 
-            const importService = new ImportService()
-            const data = await importService.getImportById(id)
-
-            if (!data) {
-                throw new NotFoundError('Import not found')
-            }
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //GET /:id/transactions
+    // GET /:id/transactions
     static async readImportTransactions(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
+            if (!id) throw new BadRequestError('Missing import ID')
 
-            if (!id) {
-                throw new BadRequestError('Missing import ID')
-            }
+            const data = await this.importService.getImportTransactions(id)
 
-            const importService = new ImportService()
-            const data = await importService.getImportTransactions(id)
-
-            return ResponseHelper.success(res, data)
+            return ResponseHelper.success<ImportTransactionDataResponse[]>(res, data)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }
     }
 
-    //POST /template
+    // POST /template/:action
     static async importTemplates(req: Request, res: Response) {
         try {
             const action = getParamString(req.params, 'action')
+            if (!action) throw new BadRequestError('Invalid action for template import')
 
-            if (!action) {
-                throw new BadRequestError('Invalid action for template import')
-            }
-
-            const importService = new ImportService()
-            const result = await importService.importTemplates(action)
-
-            if (!result) {
-                throw new BadRequestError('Invalid action for template import')
-            }
+            const result = await this.importService.importTemplates(action)
+            if (!result) throw new BadRequestError('Invalid action for template import')
 
             return ResponseHelper.success(res, result)
         } catch (error) {

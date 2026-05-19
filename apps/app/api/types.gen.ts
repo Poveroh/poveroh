@@ -3729,13 +3729,13 @@ export type SocialSignInError = SocialSignInErrors[keyof SocialSignInErrors]
 
 export type SocialSignInResponses = {
     /**
-     * Session response when idToken is provided
+     * Returns session details when idToken is provided, or an authorize URL otherwise
      */
     200: {
-        token: string
-        user: User
+        token?: string
+        user?: User
         url?: string
-        redirect: false
+        redirect: boolean
     }
 }
 
@@ -3891,13 +3891,8 @@ export type GetSessionResponses = {
     /**
      * Success
      */
-    200: {
-        session: Session
-        user: User
-    } | null
+    200: unknown
 }
-
-export type GetSessionResponse = GetSessionResponses[keyof GetSessionResponses]
 
 export type GetSession2Data = {
     body?: {
@@ -3953,13 +3948,8 @@ export type GetSession2Responses = {
     /**
      * Success
      */
-    200: {
-        session: Session
-        user: User
-    } | null
+    200: unknown
 }
-
-export type GetSession2Response = GetSession2Responses[keyof GetSession2Responses]
 
 export type SignOutData = {
     body?: {

@@ -1,18 +1,18 @@
-import { Request, Response } from 'express'
-import { NetWorthEvolutionFilters } from '@poveroh/types'
-import { ResponseHelper } from '@/src/utils'
-import { ReportService } from '@/src/api/v1/modules/reports/report.service'
+import type { Request, Response } from 'express'
+import type { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
+import { ResponseHelper } from '@/utils'
+import { ReportService } from './report.service'
 
 export class ReportController {
-    // GET /report/trend
+    private static readonly reportService = new ReportService()
+
+    // GET /trend
     static async readTrend(req: Request, res: Response) {
         try {
             const filters = (req.query.filter ?? {}) as Partial<NetWorthEvolutionFilters>
+            const report = await this.reportService.getNetWorthTrend(filters)
 
-            const reportService = new ReportService()
-            const report = await reportService.getNetWorthTrend(filters)
-
-            return ResponseHelper.success(res, report)
+            return ResponseHelper.success<NetWorthEvolutionReport>(res, report)
         } catch (error) {
             return ResponseHelper.handleError(res, error)
         }

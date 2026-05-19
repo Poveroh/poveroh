@@ -14,7 +14,6 @@ export class CategoryService extends BaseService {
      * Creates a new category for the current user, optionally handling an uploaded icon file.
      * @param payload The data required to create a new category
      * @param file An optional file object representing the uploaded icon for the category.
-     * If provided, this file will be processed and saved using the saveFile method, and the resulting URL or identifier will be associated with the category being created.
      * @returns A promise that resolves to the data of the newly created category
      */
     async createCategory(payload: CreateCategoryRequest, file?: Express.Multer.File): Promise<CategoryData> {
@@ -46,7 +45,6 @@ export class CategoryService extends BaseService {
      * @param id The unique identifier of the category to be updated.
      * @param payload The data required to update the category.
      * @param file An optional file object representing the uploaded icon for the category.
-     * If provided, this file will be processed and saved using the saveFile method, and the resulting URL or identifier will be associated with the category being updated.
      */
     async updateCategory(id: string, payload: UpdateCategoryRequest, file?: Express.Multer.File): Promise<void> {
         if (file) {

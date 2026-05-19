@@ -1,40 +1,29 @@
-import prisma from '@poveroh/prisma'
-import { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
+import type { NetWorthEvolutionFilters, NetWorthEvolutionReport } from '@poveroh/types'
 import { BaseService } from '../base/base.service'
-import { buildWhere } from '@/src/helpers/filter.helper'
+import { ReportRepository } from './report.repository'
 
 /**
- * Service class for generating reports for the authenticated user
+ * Service class for generating reports for the authenticated user.
  * All methods automatically retrieve the user ID from the request context.
  */
 export class ReportService extends BaseService {
+    private readonly reportRepository = new ReportRepository()
+
     constructor() {
         super('report')
     }
 
     /**
-     * Retrieves the net worth trend report for the authenticated user
-     * @param filters The filters to apply to the report query
-     * @returns The net worth evolution report
+     * Retrieves the net worth evolution report for the authenticated user, mapping the underlying snapshots into a public report shape.
+     * @param filters The filters to apply when querying snapshots that compose the report.
+     * @returns A promise that resolves to the net worth evolution report containing the current net worth and the historical evolution series.
      */
     async getNetWorthTrend(filters: Partial<NetWorthEvolutionFilters>): Promise<NetWorthEvolutionReport> {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
 
-        const { date, ...rest } = filters
-        const whereFilters = {
-            ...rest,
-            ...(date ? { snapshotDate: date } : {}),
-            userId
-        }
+        const snapshots = await this.reportRepository.findSnapshotsForNetWorth(userId, filters)
 
-        const whereCondition = buildWhere(whereFilters, [])
-
-        const data = await prisma.snapshot.findMany({
-            where: whereCondition,
-            orderBy: { snapshotDate: 'asc' }
-        })
-
-        const evolution = data.map(snapshot => ({
+        const evolution = snapshots.map(snapshot => ({
             date: snapshot.snapshotDate.toISOString(),
             netWorth: Number(snapshot.totalNetWorth)
         }))

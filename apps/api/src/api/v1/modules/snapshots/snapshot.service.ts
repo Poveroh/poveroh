@@ -1,109 +1,47 @@
-import prisma from '@poveroh/prisma'
-import { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
-import { NotFoundError } from '@/src/utils'
+import type { CreateSnapshotAccountBalanceRequest } from '@poveroh/types'
+import { NotFoundError } from '@/utils'
 import { RedisHelper } from '@poveroh/redis'
 import { recalculateSubsequentSnapshots } from '../../helpers/snapshot.helper'
 import { BaseService } from '../base/base.service'
+import { SnapshotRepository } from './snapshot.repository'
 
-/**
- * Service class for managing snapshots, including creating account balance snapshots for the authenticated user
- * All methods automatically retrieve the user ID from the request context.
- */
 export class SnapshotService extends BaseService {
+    private readonly snapshotRepository = new SnapshotRepository()
+
     constructor() {
         super('snapshot')
     }
 
     /**
-     * Creates or updates a snapshot account balance for the authenticated user
-     * @param payload The account balance snapshot data
-     * @returns The full snapshot with all account balances and asset values
+     * Creates or updates the account balance snapshot for the authenticated user, refreshing totals and the cached account balance when the snapshot is the most recent one.
+     * @param payload The account balance snapshot data, including the financial account id, the balance and the snapshot date.
+     * @returns A promise that resolves to the full snapshot enriched with account balances and asset values.
      */
     async addAccountBalanceSnapshot(payload: CreateSnapshotAccountBalanceRequest) {
-        const userId = this.getUserId()
+        const userId = this.context.currentUser.id
         const { accountId, balance, snapshotDate } = payload
 
         const parsedBalance = Number(balance)
 
-        const account = await prisma.financialAccount.findFirst({
-            where: { id: accountId, userId },
-            select: { id: true }
-        })
-
+        const account = await this.snapshotRepository.findAccountById(userId, accountId)
         if (!account) {
             throw new NotFoundError('Financial account not found')
         }
 
-        const snapshot = await prisma.snapshot.upsert({
-            where: {
-                userId_snapshotDate: {
-                    userId,
-                    snapshotDate
-                }
-            },
-            update: {},
-            create: {
-                userId,
-                snapshotDate,
-                totalCash: 0,
-                totalInvestments: 0,
-                totalNetWorth: 0
-            }
-        })
+        const snapshot = await this.snapshotRepository.upsertSnapshot(userId, snapshotDate)
 
-        await prisma.snapshotAccountBalance.upsert({
-            where: {
-                snapshotId_accountId: {
-                    snapshotId: snapshot.id,
-                    accountId
-                }
-            },
-            update: { balance: parsedBalance },
-            create: {
-                snapshotId: snapshot.id,
-                accountId,
-                balance: parsedBalance
-            }
-        })
-
-        const aggregate = await prisma.snapshotAccountBalance.aggregate({
-            where: { snapshotId: snapshot.id },
-            _sum: { balance: true }
-        })
-
-        const totalCash = aggregate._sum.balance ?? 0
-
-        await prisma.snapshot.update({
-            where: { id: snapshot.id },
-            data: {
-                totalCash,
-                totalInvestments: 0,
-                totalNetWorth: totalCash
-            }
-        })
+        await this.snapshotRepository.upsertAccountBalance(snapshot.id, accountId, parsedBalance)
+        await this.snapshotRepository.refreshSnapshotTotals(snapshot.id)
 
         await recalculateSubsequentSnapshots(accountId, snapshotDate, parsedBalance, userId)
 
-        const latestSnapshot = await prisma.snapshotAccountBalance.findFirst({
-            where: { accountId },
-            include: { snapshot: { select: { snapshotDate: true } } },
-            orderBy: { snapshot: { snapshotDate: 'desc' } }
-        })
+        const latestSnapshot = await this.snapshotRepository.findLatestSnapshotForAccount(accountId)
 
         if (latestSnapshot?.snapshot.snapshotDate.getTime() === new Date(snapshotDate).getTime()) {
-            await prisma.financialAccount.update({
-                where: { id: accountId },
-                data: { balance: parsedBalance }
-            })
+            await this.snapshotRepository.updateAccountBalance(accountId, parsedBalance)
             await RedisHelper.delete(`balance:${accountId}`)
         }
 
-        return prisma.snapshot.findUniqueOrThrow({
-            where: { id: snapshot.id },
-            include: {
-                accountBalances: true,
-                assetValues: true
-            }
-        })
+        return this.snapshotRepository.findSnapshotWithDetails(snapshot.id)
     }
 }

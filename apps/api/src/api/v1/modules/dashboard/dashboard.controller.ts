@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
-import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types'
-import { BadRequestError, ResponseHelper } from '@/utils'
+import { GetDashboardLayout } from '@poveroh/types'
+import { BadRequestError, parseRequestBody, ResponseHelper } from '@/utils'
 import { DashboardService } from '@/v1/modules/dashboard/dashboard.service'
+import { UpdateDashboardLayoutRequestSchema } from '@poveroh/schemas'
 
 export class DashboardController {
     private static readonly dashboardService = new DashboardService()
@@ -19,7 +20,7 @@ export class DashboardController {
     // PUT /
     static async updateDashboard(req: Request, res: Response) {
         try {
-            const payload = req.body as UpdateDashboardLayoutRequest
+            const payload = parseRequestBody(UpdateDashboardLayoutRequestSchema, req.body)
 
             if (!payload) {
                 throw new BadRequestError('Layout not provided')

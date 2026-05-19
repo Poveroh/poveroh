@@ -35,7 +35,7 @@ export class CategoryRepository {
      * Creates a new category in the database, associating it with the specified user and using the provided payload for the category details.
      * @param userId The ID of the user who is creating the category.
      * @param id The unique identifier for the category being created.
-     * @param payload An object containing the details of the category to be created, such as the title, icon, color, and any other relevant information that defines the category.
+     * @param payload An object containing the details of the category to be created.
      * @returns A promise that resolves to a CategoryData object representing the newly created category.
      */
     async create(userId: string, id: string, payload: CreateCategoryRequest): Promise<CategoryData> {
@@ -77,7 +77,7 @@ export class CategoryRepository {
      * Updates an existing category in the database, ensuring that the category belongs to the specified user and is not soft-deleted.
      * @param userId The ID of the user who owns the category being updated.
      * @param id The unique identifier of the category that is being updated.
-     * @param payload  An object containing the new details for the category.
+     * @param payload An object containing the new details for the category.
      */
     async update(userId: string, id: string, payload: UpdateCategoryRequest): Promise<void> {
         await prisma.category.update({

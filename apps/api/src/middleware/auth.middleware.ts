@@ -1,27 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
-import config from '../utils/environment'
-import { auth } from '../lib/auth'
 import { fromNodeHeaders } from 'better-auth/node'
-import { ResponseHelper } from '../utils'
 import { logger } from '@poveroh/logger'
-import { DEFAULT_USER, type User } from '@poveroh/types'
-import { contextService } from '../api/v1/modules/base/context.service'
+import { type User } from '@poveroh/types'
+import { auth } from '@/lib'
+import { contextService } from '@/v1/modules/base/context.service'
+import { ResponseHelper } from '@/utils'
 
-type AuthUserPayload = Pick<User, 'id'> & Partial<User>
-
-// Builds a complete shared User object from auth providers that may only return identity fields.
-function buildContextUser(user: AuthUserPayload): User {
-    return {
-        ...DEFAULT_USER,
-        ...user,
-        createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : DEFAULT_USER.createdAt,
-        updatedAt: user.updatedAt ? new Date(user.updatedAt).toISOString() : DEFAULT_USER.updatedAt
-    }
-}
-
-// Runs the rest of the request pipeline inside a request-scoped AsyncLocalStorage so
-// services and helpers can resolve the current user without taking it as a parameter.
+/**
+ * Helper function to continue the request processing with the authenticated user context. It takes the authenticated user and the next function from Express middleware, sets up the context for the request using the ContextService, and then calls the next middleware in the chain.
+ * @param user The authenticated user object to be set in the context for the request. This should contain at least the user's ID and any other relevant information needed for authorization and processing in downstream handlers.
+ * @param next The next function from Express middleware, which should be called to continue processing the request after setting up the user context. This allows the request to proceed to the next middleware or route handler with the authenticated user information available in the context.
+ */
 function continueWithUserContext(user: User, next: NextFunction) {
     contextService.runWithContext({ user }, () => next())
 }
@@ -35,32 +24,9 @@ export class AuthMiddleware {
             })
 
             if (session?.user) {
-                const sessionUser = session.user as typeof session.user & { surname?: string }
+                req.user = session.user as User
 
-                // Attach user to request object for compatibility with existing code
-                req.user = buildContextUser({
-                    id: session.user.id,
-                    email: session.user.email,
-                    name: session.user.name,
-                    surname: sessionUser.surname || '',
-                    createdAt: session.user.createdAt
-                })
                 return continueWithUserContext(req.user, next)
-            }
-
-            // Fallback to legacy JWT token for backward compatibility during migration
-            const authHeader = req.headers.authorization
-            const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : undefined
-            const token = bearerToken || req.cookies.token
-            if (token) {
-                jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
-                    if (err) {
-                        return ResponseHelper.forbidden(res, 'Invalid token')
-                    }
-                    req.user = buildContextUser(user)
-                    continueWithUserContext(req.user, next)
-                })
-                return
             }
 
             // No valid session found
@@ -69,23 +35,5 @@ export class AuthMiddleware {
             logger.error('Auth middleware error:', error)
             return ResponseHelper.forbidden(res, 'Invalid session')
         }
-    }
-
-    // Optional: Keep legacy method for gradual migration
-    static isAuthenticatedLegacy(req: Request, res: Response, next: NextFunction) {
-        const token = req.cookies.token
-
-        if (!token) {
-            return ResponseHelper.unauthorized(res, 'No token provided')
-        }
-
-        jwt.verify(token, config.JWT_SECRET, (err: any, user: any) => {
-            if (err) {
-                return ResponseHelper.forbidden(res, 'Invalid token')
-            }
-
-            req.user = buildContextUser(user)
-            continueWithUserContext(req.user, next)
-        })
     }
 }
