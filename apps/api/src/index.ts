@@ -1,7 +1,11 @@
-import express from 'express'
-import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 dotenv.config()
+
+// Telemetry must load before any instrumented module (express, http, pg, ioredis, ...).
+import './utils/telemetry'
+
+import express from 'express'
+import cookieParser from 'cookie-parser'
 
 import config from './utils/environment'
 import v1Route from './api/v1'
