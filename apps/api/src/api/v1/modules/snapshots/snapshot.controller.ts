@@ -4,10 +4,10 @@ import { CreateSnapshotAccountBalanceRequestSchema } from '@poveroh/schemas'
 import { SnapshotService } from './snapshot.service'
 
 export class SnapshotController {
-    private static readonly snapshotService = new SnapshotService()
+    private readonly snapshotService = new SnapshotService()
 
     // POST /account-balance
-    static async addAccountBalanceSnapshot(req: Request, res: Response) {
+    async addAccountBalanceSnapshot(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateSnapshotAccountBalanceRequestSchema, req.body)
             const data = await this.snapshotService.addAccountBalanceSnapshot(payload)

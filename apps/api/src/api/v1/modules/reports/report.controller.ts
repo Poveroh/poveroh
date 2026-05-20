@@ -4,10 +4,10 @@ import { ResponseHelper } from '@/utils'
 import { ReportService } from './report.service'
 
 export class ReportController {
-    private static readonly reportService = new ReportService()
+    private readonly reportService = new ReportService()
 
     // GET /trend
-    static async readTrend(req: Request, res: Response) {
+    async readTrend(req: Request, res: Response) {
         try {
             const filters = (req.query.filter ?? {}) as Partial<NetWorthEvolutionFilters>
             const report = await this.reportService.getNetWorthTrend(filters)

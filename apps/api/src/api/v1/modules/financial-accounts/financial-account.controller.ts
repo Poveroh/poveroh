@@ -7,10 +7,10 @@ import { CreateFinancialAccountRequestSchema, UpdateFinancialAccountRequestSchem
 import { FinancialAccountService } from './financial-account.service'
 
 export class FinancialAccountController {
-    private static readonly financialAccountService = new FinancialAccountService()
+    private readonly financialAccountService = new FinancialAccountService()
 
     // POST /
-    static async createFinancialAccount(req: Request, res: Response) {
+    createFinancialAccount = async (req: Request, res: Response) => {
         try {
             const payload = parseRequestBody(CreateFinancialAccountRequestSchema, req.body)
             const account = await this.financialAccountService.createFinancialAccount(payload, req.file)
@@ -22,7 +22,7 @@ export class FinancialAccountController {
     }
 
     // PATCH /:id
-    static async updateFinancialAccount(req: Request, res: Response) {
+    updateFinancialAccount = async (req: Request, res: Response) => {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing financial account ID in path')
@@ -37,7 +37,7 @@ export class FinancialAccountController {
     }
 
     // DELETE /:id
-    static async deleteFinancialAccount(req: Request, res: Response) {
+    async deleteFinancialAccount(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing financial account ID')
@@ -51,7 +51,7 @@ export class FinancialAccountController {
     }
 
     // DELETE /
-    static async deleteAllFinancialAccounts(req: Request, res: Response) {
+    async deleteAllFinancialAccounts(req: Request, res: Response) {
         try {
             await this.financialAccountService.deleteAllFinancialAccounts()
 
@@ -62,7 +62,7 @@ export class FinancialAccountController {
     }
 
     // GET /:id
-    static async readFinancialAccountById(req: Request, res: Response) {
+    async readFinancialAccountById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing financial account ID')
@@ -77,7 +77,7 @@ export class FinancialAccountController {
     }
 
     // GET /
-    static async readFinancialAccounts(req: Request, res: Response) {
+    async readFinancialAccounts(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as FinancialAccountFilters
             const options = (req.query.options || {}) as FilterOptions

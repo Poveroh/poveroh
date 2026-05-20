@@ -7,10 +7,10 @@ import { CreateUpdateTransactionRequestSchema } from '@poveroh/schemas'
 import { TransactionService } from './transaction.service'
 
 export class TransactionController {
-    private static readonly transactionService = new TransactionService()
+    private readonly transactionService = new TransactionService()
 
     // POST /
-    static async createTransaction(req: Request, res: Response) {
+    async createTransaction(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateUpdateTransactionRequestSchema, req.body)
             const result = await this.transactionService.handleTransaction(payload, req.files as Express.Multer.File[])
@@ -22,7 +22,7 @@ export class TransactionController {
     }
 
     // PATCH /:id
-    static async updateTransaction(req: Request, res: Response) {
+    async updateTransaction(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing transaction ID')
@@ -41,7 +41,7 @@ export class TransactionController {
     }
 
     // DELETE /:id
-    static async deleteTransaction(req: Request, res: Response) {
+    async deleteTransaction(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing transaction ID')
@@ -55,7 +55,7 @@ export class TransactionController {
     }
 
     // DELETE /
-    static async deleteAllTransactions(req: Request, res: Response) {
+    async deleteAllTransactions(req: Request, res: Response) {
         try {
             await this.transactionService.deleteAllTransactions()
 
@@ -66,7 +66,7 @@ export class TransactionController {
     }
 
     // GET /:id
-    static async readTransactionById(req: Request, res: Response) {
+    async readTransactionById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing transaction ID')
@@ -80,7 +80,7 @@ export class TransactionController {
     }
 
     // GET /
-    static async readTransactions(req: Request, res: Response) {
+    async readTransactions(req: Request, res: Response) {
         try {
             const queryFilters = req.query as QueryTransactionFilters
             const data = await this.transactionService.getTransactions(queryFilters)

@@ -9,10 +9,10 @@ import { ImportService } from './import.service'
 import { BadRequestError, parseRequestBody, ResponseHelper, getParamString, NotFoundError } from '@/utils'
 
 export class ImportController {
-    private static readonly importService = new ImportService()
+    private readonly importService = new ImportService()
 
     // POST /
-    static async createImport(req: Request, res: Response) {
+    async createImport(req: Request, res: Response) {
         try {
             if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
                 throw new BadRequestError('No files provided')
@@ -30,7 +30,7 @@ export class ImportController {
     }
 
     // PUT /:id
-    static async updateImport(req: Request, res: Response) {
+    async updateImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -45,7 +45,7 @@ export class ImportController {
     }
 
     // PATCH /complete/:id
-    static async completeImport(req: Request, res: Response) {
+    async completeImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -59,7 +59,7 @@ export class ImportController {
     }
 
     // PATCH /rollback/:id
-    static async rollbackImport(req: Request, res: Response) {
+    async rollbackImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -76,7 +76,7 @@ export class ImportController {
     }
 
     // PATCH /:id/transactions/approve
-    static async approveImportTransactions(req: Request, res: Response) {
+    async approveImportTransactions(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -91,7 +91,7 @@ export class ImportController {
     }
 
     // DELETE /:id
-    static async deleteImport(req: Request, res: Response) {
+    async deleteImport(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -105,7 +105,7 @@ export class ImportController {
     }
 
     // DELETE /
-    static async deleteAllImports(req: Request, res: Response) {
+    async deleteAllImports(req: Request, res: Response) {
         try {
             await this.importService.deleteAllImports()
 
@@ -116,7 +116,7 @@ export class ImportController {
     }
 
     // GET /
-    static async readImports(req: Request, res: Response) {
+    async readImports(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as ImportFilters
             const options = (req.query.options || {}) as FilterOptions
@@ -132,7 +132,7 @@ export class ImportController {
     }
 
     // GET /:id
-    static async readImportById(req: Request, res: Response) {
+    async readImportById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -147,7 +147,7 @@ export class ImportController {
     }
 
     // GET /:id/transactions
-    static async readImportTransactions(req: Request, res: Response) {
+    async readImportTransactions(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing import ID')
@@ -161,7 +161,7 @@ export class ImportController {
     }
 
     // POST /template/:action
-    static async importTemplates(req: Request, res: Response) {
+    async importTemplates(req: Request, res: Response) {
         try {
             const action = getParamString(req.params, 'action')
             if (!action) throw new BadRequestError('Invalid action for template import')

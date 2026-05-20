@@ -5,10 +5,10 @@ import { SubcategoryService } from './subcategory.service'
 import { parseRequestBody, ResponseHelper, getParamString, BadRequestError, NotFoundError } from '@/utils'
 
 export class SubcategoryController {
-    private static readonly subcategoryService = new SubcategoryService()
+    private readonly subcategoryService = new SubcategoryService()
 
     // POST /
-    static async createSubcategory(req: Request, res: Response) {
+    async createSubcategory(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateSubcategoryRequestSchema, req.body)
             const subcategory = await this.subcategoryService.createSubcategory(payload, req.file)
@@ -20,7 +20,7 @@ export class SubcategoryController {
     }
 
     // PATCH /:id
-    static async updateSubcategory(req: Request, res: Response) {
+    async updateSubcategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subcategory ID in path')
@@ -35,7 +35,7 @@ export class SubcategoryController {
     }
 
     // DELETE /:id
-    static async deleteSubcategory(req: Request, res: Response) {
+    async deleteSubcategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subcategory ID in path')
@@ -49,7 +49,7 @@ export class SubcategoryController {
     }
 
     // DELETE /
-    static async deleteAllSubcategories(req: Request, res: Response) {
+    async deleteAllSubcategories(req: Request, res: Response) {
         try {
             await this.subcategoryService.deleteAllSubcategories()
 
@@ -60,7 +60,7 @@ export class SubcategoryController {
     }
 
     // GET /:id
-    static async readSubcategoryById(req: Request, res: Response) {
+    async readSubcategoryById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subcategory ID in path')
@@ -75,7 +75,7 @@ export class SubcategoryController {
     }
 
     // GET /
-    static async readSubcategories(req: Request, res: Response) {
+    async readSubcategories(req: Request, res: Response) {
         try {
             const filters = req.query as unknown as SubcategoryFilters
             const skip = Number(req.query.skip) || 0

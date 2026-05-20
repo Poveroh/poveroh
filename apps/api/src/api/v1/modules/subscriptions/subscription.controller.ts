@@ -5,10 +5,10 @@ import { SubscriptionService } from './subscription.service'
 import { parseRequestBody, ResponseHelper, getParamString, BadRequestError, NotFoundError } from '@/utils'
 
 export class SubscriptionController {
-    private static readonly subscriptionService = new SubscriptionService()
+    private readonly subscriptionService = new SubscriptionService()
 
     // POST /
-    static async createSubscription(req: Request, res: Response) {
+    async createSubscription(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateSubscriptionRequestSchema, req.body)
             const subscription = await this.subscriptionService.createSubscription(payload, req.file)
@@ -20,7 +20,7 @@ export class SubscriptionController {
     }
 
     // PATCH /:id
-    static async updateSubscription(req: Request, res: Response) {
+    async updateSubscription(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
@@ -35,7 +35,7 @@ export class SubscriptionController {
     }
 
     // DELETE /:id
-    static async deleteSubscription(req: Request, res: Response) {
+    async deleteSubscription(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
@@ -49,7 +49,7 @@ export class SubscriptionController {
     }
 
     // DELETE /
-    static async deleteAllSubscriptions(req: Request, res: Response) {
+    async deleteAllSubscriptions(req: Request, res: Response) {
         try {
             await this.subscriptionService.deleteAllSubscriptions()
 
@@ -60,7 +60,7 @@ export class SubscriptionController {
     }
 
     // GET /:id
-    static async readSubscriptionById(req: Request, res: Response) {
+    async readSubscriptionById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing subscription ID')
@@ -75,7 +75,7 @@ export class SubscriptionController {
     }
 
     // GET /
-    static async readSubscriptions(req: Request, res: Response) {
+    async readSubscriptions(req: Request, res: Response) {
         try {
             const filters = (req.query.filter || {}) as SubscriptionFilters
             const options = (req.query.options || {}) as FilterOptions

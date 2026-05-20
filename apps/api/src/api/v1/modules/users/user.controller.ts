@@ -5,10 +5,10 @@ import { UpdateUserSchemaRequest } from '@poveroh/schemas'
 import { UserService } from './user.service'
 
 export class UserController {
-    private static readonly userService = new UserService()
+    private readonly userService = new UserService()
 
     // GET /me
-    static async getAuthenticatedUser(req: Request, res: Response) {
+    async getAuthenticatedUser(req: Request, res: Response) {
         try {
             const user = await this.userService.getUser(req.user.id)
             if (!user) throw new NotFoundError('User not found')
@@ -20,7 +20,7 @@ export class UserController {
     }
 
     // PATCH /me
-    static async updateUser(req: Request, res: Response) {
+    async updateUser(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(UpdateUserSchemaRequest, req.body) as unknown as UpdateUserRequest
             await this.userService.updateUser(req.user.id, payload)

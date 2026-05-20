@@ -5,10 +5,10 @@ import { DashboardService } from '@/v1/modules/dashboard/dashboard.service'
 import { UpdateDashboardLayoutRequestSchema } from '@poveroh/schemas'
 
 export class DashboardController {
-    private static readonly dashboardService = new DashboardService()
+    private readonly dashboardService = new DashboardService()
 
     // GET /
-    static async getDashboard(req: Request, res: Response) {
+    async getDashboard(req: Request, res: Response) {
         try {
             const dashboardLayout = await this.dashboardService.getDashboardLayout()
             return ResponseHelper.success<GetDashboardLayout>(res, dashboardLayout)
@@ -18,7 +18,7 @@ export class DashboardController {
     }
 
     // PUT /
-    static async updateDashboard(req: Request, res: Response) {
+    async updateDashboard(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(UpdateDashboardLayoutRequestSchema, req.body)
 

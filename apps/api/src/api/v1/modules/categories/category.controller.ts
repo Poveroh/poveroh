@@ -5,10 +5,10 @@ import { CategoryService } from './category.service'
 import type { Request, Response } from 'express'
 
 export class CategoryController {
-    private static readonly categoryService = new CategoryService()
+    private readonly categoryService = new CategoryService()
 
     // POST /
-    static async createCategory(req: Request, res: Response) {
+    async createCategory(req: Request, res: Response) {
         try {
             const payload = parseRequestBody(CreateCategoryRequestSchema, req.body)
 
@@ -21,7 +21,7 @@ export class CategoryController {
     }
 
     // PATCH /:id
-    static async updateCategory(req: Request, res: Response) {
+    async updateCategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing category ID in path')
@@ -36,7 +36,7 @@ export class CategoryController {
     }
 
     // DELETE /:id
-    static async deleteCategory(req: Request, res: Response) {
+    async deleteCategory(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing category ID in path')
@@ -50,7 +50,7 @@ export class CategoryController {
     }
 
     // DELETE /
-    static async deleteAllCategories(req: Request, res: Response) {
+    async deleteAllCategories(req: Request, res: Response) {
         try {
             await this.categoryService.deleteAllCategories()
 
@@ -61,7 +61,7 @@ export class CategoryController {
     }
 
     // GET /:id
-    static async readCategoryById(req: Request, res: Response) {
+    async readCategoryById(req: Request, res: Response) {
         try {
             const id = getParamString(req.params, 'id')
             if (!id) throw new BadRequestError('Missing category ID in path')
@@ -76,7 +76,7 @@ export class CategoryController {
     }
 
     // GET /
-    static async readCategories(req: Request, res: Response) {
+    async readCategories(req: Request, res: Response) {
         try {
             const filters = req.query as CategoryFilters
             const skip = Number(req.query.skip) || 0
