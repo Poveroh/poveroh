@@ -1,0 +1,20 @@
+{
+    "name": "@poveroh/redis",
+    "version": "0.0.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "private": true,
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint . --max-warnings 0"
+    },
+    "dependencies": {
+        "@poveroh/types": "*",
+        "redis": "^5.0.1"
+    },
+    "devDependencies": {
+        "@poveroh/tsconfig": "*",
+        "typescript": "^5.7.3"
+    }
+}

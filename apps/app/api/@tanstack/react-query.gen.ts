@@ -212,10 +212,8 @@ import type {
     GetRootStatusResponse,
     GetSession2Data,
     GetSession2Error,
-    GetSession2Response,
     GetSessionData,
     GetSessionError,
-    GetSessionResponse,
     GetStatusData,
     GetStatusError,
     GetStatusResponse,
@@ -1603,7 +1601,7 @@ export const getSessionQueryKey = (options?: Options<GetSessionData>) => createQ
  * Get the current session
  */
 export const getSessionOptions = (options?: Options<GetSessionData>) =>
-    queryOptions<GetSessionResponse, GetSessionError, GetSessionResponse, ReturnType<typeof getSessionQueryKey>>({
+    queryOptions<unknown, GetSessionError, unknown, ReturnType<typeof getSessionQueryKey>>({
         queryFn: async ({ queryKey, signal }) => {
             const { data } = await getSession({
                 ...options,
@@ -1621,8 +1619,8 @@ export const getSessionOptions = (options?: Options<GetSessionData>) =>
  */
 export const getSession2Mutation = (
     options?: Partial<Options<GetSession2Data>>
-): UseMutationOptions<GetSession2Response, GetSession2Error, Options<GetSession2Data>> => {
-    const mutationOptions: UseMutationOptions<GetSession2Response, GetSession2Error, Options<GetSession2Data>> = {
+): UseMutationOptions<unknown, GetSession2Error, Options<GetSession2Data>> => {
+    const mutationOptions: UseMutationOptions<unknown, GetSession2Error, Options<GetSession2Data>> = {
         mutationFn: async fnOptions => {
             const { data } = await getSession2({
                 ...options,

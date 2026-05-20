@@ -1,4 +1,4 @@
-import { ApiConfig } from '@/types/config'
+import { ApiConfig } from '@/src/types/config'
 import { LogLevel } from '@poveroh/types'
 
 const config: ApiConfig = {
