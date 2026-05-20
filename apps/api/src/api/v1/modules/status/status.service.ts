@@ -9,6 +9,8 @@ export class StatusService {
      * @returns The status response payload
      */
     getStatus(): StatusResponse {
+        throw new Error('Simulated error for testing telemetry')
+
         return {
             status: 'ok',
             uptime: process.uptime(),

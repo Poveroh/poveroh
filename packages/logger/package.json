@@ -10,6 +10,7 @@
         "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
+        "@opentelemetry/winston-transport": "^0.13.0",
         "@poveroh/types": "*",
         "winston": "^3.17.0"
     },
