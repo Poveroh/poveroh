@@ -114,7 +114,7 @@ services:
     # ───────────────────────── Signoz observability stack ─────────────────────────
     # Opt-in: activate with `COMPOSE_PROFILES=signoz` (driven by SIGNOZ_ENABLED in .env).
     signoz-init-clickhouse:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz-init-clickhouse
         image: clickhouse/clickhouse-server:25.5.6
         restart: on-failure
@@ -135,7 +135,7 @@ services:
             - poveroh_network
 
     signoz-zookeeper:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz-zookeeper-1
         image: signoz/zookeeper:3.7.1
         user: root
@@ -147,7 +147,11 @@ services:
             - ZOO_ENABLE_PROMETHEUS_METRICS=yes
             - ZOO_PROMETHEUS_METRICS_PORT_NUMBER=9141
         healthcheck:
-            test: ['CMD-SHELL', 'curl -s -m 2 http://localhost:8080/commands/ruok | grep error | grep null']
+            test:
+                [
+                    "CMD-SHELL",
+                    "curl -s -m 2 http://localhost:8080/commands/ruok | grep error | grep null",
+                ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -161,7 +165,7 @@ services:
                     - zookeeper-1
 
     clickhouse:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz-clickhouse
         image: clickhouse/clickhouse-server:25.5.6
         tty: true
@@ -179,7 +183,7 @@ services:
             signoz-zookeeper:
                 condition: service_healthy
         healthcheck:
-            test: ['CMD', 'wget', '--spider', '-q', '0.0.0.0:8123/ping']
+            test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -194,9 +198,9 @@ services:
             - poveroh_network
 
     signoz:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz
-        image: signoz/signoz:${SIGNOZ_VERSION:-v0.125.1}
+        image: signoz/signoz:v0.125.1
         restart: unless-stopped
         ports:
             - 8080:8080
@@ -204,12 +208,19 @@ services:
             - SIGNOZ_ALERTMANAGER_PROVIDER=signoz
             - SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://clickhouse:9000
             - SIGNOZ_SQLSTORE_SQLITE_PATH=/var/lib/signoz/signoz.db
-            - SIGNOZ_TOKENIZER_JWT_SECRET=${SIGNOZ_JWT_SECRET:-secret}
+            - SIGNOZ_TOKENIZER_JWT_SECRET=${JWT_KEY:-secret}
         depends_on:
             clickhouse:
                 condition: service_healthy
         healthcheck:
-            test: ['CMD', 'wget', '--spider', '-q', 'localhost:8080/api/v1/health']
+            test:
+                [
+                    "CMD",
+                    "wget",
+                    "--spider",
+                    "-q",
+                    "localhost:8080/api/v1/health",
+                ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -219,11 +230,11 @@ services:
             - poveroh_network
 
     signoz-otel-collector:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz-otel-collector
-        image: signoz/signoz-otel-collector:${SIGNOZ_OTELCOL_TAG:-v0.144.4}
+        image: signoz/signoz-otel-collector:v0.144.4
         restart: unless-stopped
-        entrypoint: ['/bin/sh']
+        entrypoint: ["/bin/sh"]
         command:
             - -c
             - |
@@ -249,16 +260,16 @@ services:
             - poveroh_network
 
     signoz-migrator:
-        profiles: ['signoz']
+        profiles: ["signoz"]
         container_name: signoz-telemetrystore-migrator
-        image: signoz/signoz-otel-collector:${SIGNOZ_OTELCOL_TAG:-v0.144.4}
+        image: signoz/signoz-otel-collector:v0.144.4
         restart: on-failure
         environment:
             - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN=tcp://clickhouse:9000
             - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER=cluster
             - SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION=true
             - SIGNOZ_OTEL_COLLECTOR_TIMEOUT=10m
-        entrypoint: ['/bin/sh']
+        entrypoint: ["/bin/sh"]
         command:
             - -c
             - |

@@ -37,6 +37,6 @@ if (!isProduction) {
 // Bridge Winston records to the OpenTelemetry logs SDK. When the API process has booted
 // telemetry.ts, the global LoggerProvider is configured with an OTLP exporter pointing at
 // Signoz; otherwise this transport becomes a no-op writer.
-if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+if (process.env.SIGNOZ_ENDPOINT) {
     logger.add(new OpenTelemetryTransportV3({ level }))
 }
