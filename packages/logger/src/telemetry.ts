@@ -7,9 +7,10 @@ import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { Resource } from '@opentelemetry/resources'
 
-const endpoint = process.env.SIGNOZ_ENDPOINT
+const enabled = process.env.SIGNOZ_ENABLED === 'true' || process.env.SIGNOZ_ENABLED === '1'
 
-if (endpoint) {
+if (enabled) {
+    const endpoint = process.env.SIGNOZ_ENDPOINT || 'http://localhost:4318'
     const serviceName = 'poveroh-api'
     const serviceNamespace = 'poveroh'
     const environment = process.env.NODE_ENV || 'development'

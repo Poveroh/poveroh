@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 // Telemetry must load before any instrumented module (express, http, pg, ioredis, ...).
-import './utils/telemetry'
+import '@poveroh/logger/telemetry'
 
 import express from 'express'
 import cookieParser from 'cookie-parser'
