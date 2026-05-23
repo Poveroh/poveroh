@@ -1,0 +1,21 @@
+{
+    "name": "@poveroh/queue",
+    "version": "0.0.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "private": true,
+    "scripts": {
+        "build": "tsc",
+        "lint": "eslint . --max-warnings 0"
+    },
+    "dependencies": {
+        "@poveroh/redis": "*",
+        "@poveroh/types": "*",
+        "bullmq": "^5.61.2"
+    },
+    "devDependencies": {
+        "@poveroh/tsconfig": "*",
+        "typescript": "^5.7.3"
+    }
+}

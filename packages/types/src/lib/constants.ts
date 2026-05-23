@@ -12,3 +12,7 @@ export const DEFAULT_MARKET_DATA_PROVIDER = {
     id: 'yahoo-finance',
     label: 'Yahoo Finance'
 }
+
+export const DEFAULT_TTL_SECONDS = 3600
+
+export const DEFAULT_QUEUE_NAME = 'poveroh.jobs'

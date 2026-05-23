@@ -48,7 +48,7 @@ function installMkcertWindows() {
                 // Refresh PATH for current process
                 try {
                     const newPath = execSync(
-                        'powershell -NoProfile -Command "[System.Environment]::GetEnvironmentVariable(\'PATH\',\'Machine\') + \';\' + [System.Environment]::GetEnvironmentVariable(\'PATH\',\'User\')"',
+                        "powershell -NoProfile -Command \"[System.Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('PATH','User')\"",
                         { encoding: 'utf8' }
                     ).trim()
                     if (newPath) process.env.PATH = newPath
@@ -88,7 +88,7 @@ function installMkcertMac() {
     if (!tryExec('brew --version')) {
         throw new Error(
             'Homebrew is not installed. Install it from https://brew.sh or install mkcert manually:\n' +
-            '  https://github.com/FiloSottile/mkcert'
+                '  https://github.com/FiloSottile/mkcert'
         )
     }
     console.log('📦 Installing mkcert via Homebrew...')
@@ -142,8 +142,7 @@ function ensureMkcert() {
 
     if (!isMkcertAvailable()) {
         throw new Error(
-            'mkcert installation failed. Please install it manually:\n' +
-            '  https://github.com/FiloSottile/mkcert'
+            'mkcert installation failed. Please install it manually:\n' + '  https://github.com/FiloSottile/mkcert'
         )
     }
     console.log('✅ mkcert installed successfully.')
@@ -184,13 +183,15 @@ function ensureHostsEntries(force = true) {
             '127.0.0.1 db.poveroh.local',
             '127.0.0.1 redis.poveroh.local',
             '127.0.0.1 cdn.poveroh.local',
+            '127.0.0.1 signoz.poveroh.local',
             '127.0.0.1 poveroh.local',
             '::1 app.poveroh.local',
             '::1 api.poveroh.local',
             '::1 studio.poveroh.local',
             '::1 db.poveroh.local',
             '::1 cdn.poveroh.local',
-            '::1 redis.poveroh.local'
+            '::1 redis.poveroh.local',
+            '::1 signoz.poveroh.local'
         ].join('\n') + '\n'
     const hostsPath = process.platform === 'win32' ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 
@@ -208,6 +209,7 @@ function ensureHostsEntries(force = true) {
         'db.poveroh.local',
         'redis.poveroh.local',
         'cdn.poveroh.local',
+        'signoz.poveroh.local',
         'poveroh.local'
     ]
 

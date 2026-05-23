@@ -70,354 +70,279 @@ Lock files, auto-generated files, and documentation are excluded from the count.
 
 ## Commands
 
+# Poveroh Agent Profiles
+
+This file defines specialized agent profiles for working on the Poveroh codebase. Each profile has a specific scope, set of rules, and verification steps. All agents must follow the base rules in [CLAUDE.md](CLAUDE.md) in addition to the profile-specific rules below.
+
+---
+
+## Backend Agent
+
+**Role**: Express.js API development — services, controllers, routes, middleware, database queries.
+
+**Scope**: `apps/api/`, `packages/prisma/`, `packages/schemas/`, `packages/types/`, `packages/queue/`
+
+### Rules
+
+- API features live in `apps/api/src/api/v1/modules/<feature>/` with colocated `*.controller.ts`, `*.service.ts`, and, when Prisma access is non-trivial, `*.repository.ts`
+- Business logic belongs in module services, never in controllers
+- Controllers are thin: extract params/body/query/files, validate with Zod via `parseRequestBody`, instantiate services without passing `userId`, delegate, return response
+- Always extend `BaseService` for new services and call `super('entity-location')`; read the authenticated user through `this.context.currentUser`
+- Use `this.saveFile(entityId, file)` or `this.media` for uploads so files are stored under the current context user and service location
+- Use `HttpError` subclasses for errors (`BadRequestError`, `NotFoundError`, `ConflictError`, `ValidationError`, etc.)
+- Always wrap controller bodies in `try/catch` with `ResponseHelper.handleError(res, error)` in the catch
+- Use `ResponseHelper.success<T>(res, data)` for 200, `ResponseHelper.created<T>(res, data)` for 201
+- Keep Prisma calls in services only for workflow-heavy logic; otherwise use module repositories for CRUD, filtering, soft deletes, and DTO mapping
+- Repository reads use named `select` objects with `satisfies Prisma.*Select`, `Prisma.*GetPayload`, and `toData()` mappers when database types differ from API DTOs (`Decimal`, `Date`, nullable fields)
+- Use `select` in Prisma queries when you don't need all fields, and always scope user-owned data by `userId`
+- Use `buildWhere()` for list filters instead of building ad hoc Prisma filter objects in controllers
+- Prefer soft deletes with `deletedAt` for user data that must preserve history, and exclude `deletedAt` rows from normal reads
+- Import Prisma client from `@poveroh/prisma`, never instantiate `PrismaClient` directly
+- Add comments before every service and helper function explaining the business logic
+- Keep request context centralized in `apps/api/src/api/v1/modules/base/context.service.ts`; do not add facade files or wrapper functions that duplicate `ContextService` methods
+- Use the shared `AppContext` and `User` types from `@poveroh/types` for application context; do not create parallel context/user types such as `RequestContext` or `RequestUser`
+- API service and helper comments use JSDoc blocks with `@param` and `@returns` where applicable, and must stay consistent with surrounding project style
+- Use `eventBus.emit()` for decoupled side effects after committed service workflows; event handlers must be best-effort and must not break the main workflow
+- Queue job payload types live in `@poveroh/types` (`JobMap`, `JobHandlers`, `JobDispatcher`); runtime queue factories come from `@poveroh/queue`
+- Worker jobs run outside HTTP requests, so wrap service calls in `contextService.runWithContext({ user }, callback)` with a full shared `User`/`AppContext`
+- Route files live in `apps/api/src/api/v1/routes/`, apply `AuthMiddleware.isAuthenticated` to protected endpoints, apply `upload.single()`/`upload.array()` at the route boundary, and register routes in `apps/api/src/api/v1/index.ts`
+- New shared types must be defined as Zod schemas in `packages/schemas/`, then generated with `npm run openapi:generate`
+
+### Verification
+
 ```bash
-# Development
-npm run dev              # Start API (3001) + App (3000) dev servers
-npm run dev:api          # Start only API
-npm run dev:app          # Start only frontend
-npm run dev:storybook    # Start Storybook (6006)
-
-# Build
-npm run build            # Build all packages then all apps
-npm run build:packages   # Build shared packages only (order: contracts → types → prisma → utils → schemas)
-npm run build:api        # Build API only
-npm run build:app        # Build frontend only
-
-# Code quality
-npm run lint             # Lint all workspaces via Turbo
-npm run format           # Prettier format all files
-
-# Setup (requires Docker running)
-npm run setup            # Full setup: proxy, DB, Redis
-npm run setup:db         # Docker DB + Prisma generate + migrate
-npm run setup:redis      # Docker Redis
-npm run setup:env        # Generate .env files from .env.example
-npm run setup:data --user=<id>  # Seed database with fake data
-
-# Prisma
-npm run prisma:generate  # Regenerate Prisma client after schema changes
-npm run prisma:migrate   # Create and apply dev migration
-npm run prisma:deploy    # Apply migrations (production)
-npm run prisma:studio    # Open Prisma Studio GUI
-
-# OpenAPI codegen
-npm run openapi:generate         # Full pipeline: API spec → client SDK → format → build packages
-npm run openapi:generate-api     # Generate API server routes from spec
-npm run openapi:generate-client  # Generate frontend API client SDK
-
-# Docker
-npm run docker-dev       # All services locally (db, api, app, redis, proxy)
-npm run docker           # Production deployment
-
-# Cleanup
-npm run clean            # Remove node_modules + build artifacts
-npm run clean:build      # Remove only build artifacts (.next, dist, .turbo)
-npm run clean:data       # Clean seeded database data
+npm run build:packages        # Packages compile
+npm run build:api             # API compiles
+npm run dev:api               # Server starts without errors
+npm run openapi:generate      # OpenAPI spec regenerates cleanly (if contracts changed)
 ```
 
-## Build Order
+### Example: Adding a new CRUD endpoint
 
-Packages must build before apps. The required sequence:
+1. Add Zod schema in `packages/schemas/src/`
+2. Export types from `packages/types/src/`
+3. Create service in `apps/api/src/api/v1/services/`
+4. Create controller in `apps/api/src/api/v1/controllers/`
+5. Create route in `apps/api/src/api/v1/routes/`
+6. Register route in `apps/api/src/api/v1/index.ts`
+7. Run `npm run openapi:generate` to regenerate client SDK
+8. Run `npm run build` to verify
 
-1. `contracts` → 2. `types` → 3. `prisma` → 4. `utils` → 5. `schemas` → then apps (api, app, storybook)
+---
 
-`npm run build:packages` handles steps 1-5. `npm run build` runs everything including apps via Turbo.
+## Frontend Agent
 
-## Pre-commit Hook
+**Role**: Next.js frontend development — pages, components, hooks, forms, state management.
 
-Husky runs `npm run build` and `npm run format` on every commit. If the build fails, the commit is blocked. Fix the build before retrying.
+**Scope**: `apps/app/`, `packages/ui/`, `packages/types/`
 
-## Boundaries
+### Rules
 
-### Always do
+- Use Next.js App Router conventions: `page.tsx` for routes, `layout.tsx` for layouts, `loading.tsx` for suspense
+- Reusable UI primitives go in `packages/ui/`, app-specific components in `apps/app/components/`
+- Every data-fetching operation goes through a custom hook in `apps/app/hooks/` wrapping TanStack Query
+- Form logic goes in `apps/app/hooks/form/` — one hook per form, using React Hook Form + Zod resolver
+- Client state (modals, drawers, selections) uses Zustand stores in `apps/app/store/`
+- All user-facing strings go through next-intl — never hardcode text
+- Use the auto-generated API client from `@/lib/api-client.ts` — never call axios/fetch directly
+- Do not edit auto-generated files in `apps/app/api/` (`client.gen.ts`, `sdk.gen.ts`, `types.gen.ts`)
+- Import shared types from `@poveroh/types`, never from `@poveroh/contracts` directly
+- Where possible and needed, add comments before functions explaining the purpose
 
-- Run `npm run build` before committing (the hook enforces this anyway)
-- Run `npm run format` to fix code style
-- Regenerate OpenAPI client after API contract changes: `npm run openapi:generate`
-- Regenerate Prisma client after schema changes: `npm run prisma:migrate`
-- Follow conventional commits for commit messages
+### Verification
 
-### Ask first
-
-- Adding new npm dependencies
-- Schema changes to `packages/prisma/schema.prisma`
-- Changes affecting multiple packages simultaneously
-- Deleting files or removing features
-- Docker/infrastructure changes
-
-### Never do
-
-- Commit secrets, API keys, or `.env` files
-- Use `as any` type casting
-- Force push or rebase shared branches
-- Modify generated files (`packages/contracts/dist/`, `apps/app/api/*.gen.ts`)
-- Skip hooks with `--no-verify`
-
-## Project Structure
-
-```
-apps/
-├── api/                         # Express.js REST API (port 3001)
-│   └── src/
-│       ├── index.ts             # Express setup, middleware, route mounting
-│       ├── middleware/
-│       │   ├── auth.middleware.ts    # Better-Auth session + JWT fallback → req.user
-│       │   └── upload.middleware.ts  # Multer file uploads
-│       ├── utils/
-│       │   ├── errors.ts        # HttpError classes (BadRequest, NotFound, etc.)
-│       │   ├── response.ts      # ResponseHelper (success, created, handleError, etc.)
-│       │   ├── logger.ts        # Winston logger
-│       │   ├── redis.ts         # Redis client
-│       │   └── storage.ts       # File storage abstraction (local/AWS/GCS/Azure/DO)
-│       ├── lib/
-│       │   └── auth.ts          # Better-Auth instance
-│       └── api/v1/
-│           ├── controllers/     # Thin route handlers → delegate to services
-│           ├── services/        # Business logic with userId context
-│           │   └── base.service.ts  # Base class: new Service(userId, location)
-│           ├── routes/          # Express route definitions
-│           ├── helpers/         # Query filtering, import parsing
-│           └── content/template/    # Default data templates
-│
-├── app/                         # Next.js 16 frontend (App Router, port 3000)
-│   ├── app/
-│   │   ├── (admin)/             # Authenticated routes
-│   │   │   ├── dashboard/
-│   │   │   ├── transactions/
-│   │   │   ├── subscriptions/
-│   │   │   └── (settings)/      # accounts, categories, imports, settings
-│   │   ├── (auth)/              # sign-in, sign-up, onboarding, change-password
-│   │   └── logout/
-│   ├── components/              # App-specific components
-│   │   ├── fields/              # Form field components (24 types)
-│   │   ├── form/                # Form wrappers
-│   │   ├── dashboard/           # Dashboard-specific
-│   │   ├── dialog/, drawer/, modal/  # Overlays
-│   │   ├── table/               # Data tables (@tanstack/react-table)
-│   │   └── skeleton/            # Loading states
-│   ├── hooks/                   # 30+ custom hooks
-│   │   ├── form/                # Form-specific hooks (16+)
-│   │   ├── dashboard/           # Dashboard hooks
-│   │   └── use-*.ts             # Entity hooks (auth, transaction, category, etc.)
-│   ├── store/                   # Zustand stores (account, auth, drawer, modal, etc.)
-│   ├── providers/               # React context (auth, theme, zod-locale)
-│   ├── lib/
-│   │   ├── api-client.ts        # Axios-based API client wrapping auto-generated SDK
-│   │   └── auth-token.ts        # JWT token management
-│   └── config/                  # App config, navigation, sidebar
-│
-└── storybook/                   # Storybook 10 for @poveroh/ui components
-
-packages/
-├── contracts/                   # Auto-generated TypeScript types from OpenAPI spec — DO NOT EDIT
-├── types/                       # Shared TypeScript types and interfaces
-├── schemas/                     # Zod validation schemas (shared API + frontend)
-├── prisma/                      # Prisma ORM, schema.prisma, migrations
-├── ui/                          # Shared React component library (shadcn/ui + Radix UI)
-├── utils/                       # Shared utility functions
-├── openapi/                     # OpenAPI spec generation from Zod schemas
-├── eslint-config/               # Shared ESLint configuration
-└── tsconfig/                    # Shared TypeScript configurations
-
-docker/                          # Docker Compose files (local + production)
-infra/                           # Dockerfiles for db, redis, proxy (nginx)
-scripts/                         # Setup, data seeding, deployment scripts
-docs/                            # ENV_SETUP.md, CONTRIBUTING.md, API_AUTH.md
+```bash
+npm run build:app             # Frontend compiles
+npm run dev:app               # App starts, test in browser
+npm run lint                  # No lint errors
 ```
 
-### Key files
+### Example: Adding a new page with a form
 
-- Database schema: `packages/prisma/schema.prisma`
-- API routes: `apps/api/src/api/v1/routes/`
-- API services: `apps/api/src/api/v1/services/`
-- Error classes: `apps/api/src/utils/errors.ts`
-- Response helpers: `apps/api/src/utils/response.ts`
-- Frontend API client: `apps/app/lib/api-client.ts`
-- Auto-generated SDK: `apps/app/api/client.gen.ts`, `apps/app/api/sdk.gen.ts`, `apps/app/api/types.gen.ts`
-- Shared types: `packages/types/src/`
-- Validation schemas: `packages/schemas/src/`
-- Environment template: `.env.example`
-- Docker (dev): `docker/docker-compose.local.yml`
-- Docker (prod): `docker/docker-compose.prod.yml`
+1. Create page in `apps/app/app/(admin)/feature-name/page.tsx`
+2. Create form component in `apps/app/components/form/`
+3. Create form hook in `apps/app/hooks/form/` with Zod schema validation
+4. Create data hook in `apps/app/hooks/use-feature.ts` wrapping TanStack Query
+5. Add translations to i18n files
+6. Test in browser: golden path + edge cases
 
-## Tech Stack
+---
 
-| Layer                | Technology                                                         |
-| -------------------- | ------------------------------------------------------------------ |
-| **Frontend**         | Next.js 16 (App Router), React 19, TypeScript                      |
-| **Styling**          | Tailwind CSS, shadcn/ui (Radix UI), Recharts                       |
-| **State**            | Zustand (client), TanStack React Query (server)                    |
-| **Forms**            | React Hook Form + Zod validation                                   |
-| **Backend**          | Express.js 4, TypeScript, Node.js >= 22                            |
-| **Auth**             | Better-Auth (sessions) + JWT fallback                              |
-| **Database**         | PostgreSQL via Prisma ORM 7                                        |
-| **Cache**            | Redis 5                                                            |
-| **File storage**     | Beycloud SDK (local, AWS S3, GCS, Azure Blob, DigitalOcean Spaces) |
-| **API contracts**    | OpenAPI spec → auto-generated client SDK (Hey API)                 |
-| **i18n**             | next-intl                                                          |
-| **Monorepo**         | Turbo 2.7, npm workspaces                                          |
-| **Containerization** | Docker, Docker Compose, NGINX proxy                                |
-| **Component docs**   | Storybook 10 + Chromatic                                           |
-| **Code quality**     | ESLint, Prettier, Husky pre-commit hooks                           |
-| **Drag & drop**      | @dnd-kit                                                           |
-| **Tables**           | @tanstack/react-table                                              |
+## Full-Stack Agent
 
-## Naming Conventions
+**Role**: End-to-end feature implementation spanning API and frontend.
 
-- Variables/functions: camelCase
-- Constants: SCREAMING_SNAKE_CASE
-- Types/Classes: PascalCase (suffix component props with Props, e.g. ButtonProps)
-- Files/directories: kebab-case with descriptive suffixes, hook included (.component.tsx, .- service.ts, .entity.ts, .dto.ts, .module.ts). Example `use-category.ts`
-- TypeScript generics: descriptive names
-- When creating a new Zod schema, use the prefixes **Create**, **Get**, **Update**, or **Delete** when appropriate.
+**Scope**: All of `apps/`, `packages/`
 
-## Comments
+### Rules
 
-- Use short-form comments (//), not JSDoc blocks
-- Explain WHY (business logic), not WHAT
-- Do not comment obvious code
-- Multi-line comments use multiple // lines, not /\*\* \*/
+- Follow both Backend Agent and Frontend Agent rules
+- Always start from the data layer and work up: schema → types → API → frontend
+- Split work into reviewable chunks following PR Size Guidelines (< 500 lines, < 10 files)
+- After API changes, always run `npm run openapi:generate` before starting frontend work
+- Verify the full pipeline compiles: `npm run build`
 
-## Code Examples
+### Workflow for a new feature
 
-### Good API controller pattern
+1. **Schema**: Add/modify Prisma schema in `packages/prisma/schema.prisma`
+2. **Migration**: `npm run prisma:migrate`
+3. **Validation**: Add Zod schemas in `packages/schemas/src/`
+4. **Types**: Export types from `packages/types/src/`
+5. **Service**: Implement business logic in `apps/api/src/api/v1/services/`
+6. **Controller**: Wire thin handler in `apps/api/src/api/v1/controllers/`
+7. **Route**: Register endpoint in `apps/api/src/api/v1/routes/`
+8. **Codegen**: `npm run openapi:generate`
+9. **Hook**: Create data hook in `apps/app/hooks/`
+10. **UI**: Build page and components in `apps/app/`
+11. **Verify**: `npm run build` + manual browser testing
 
-```typescript
-// Controller: thin, delegates to service, uses typed errors
-static async readCategoryById(req: Request, res: Response) {
-    try {
-        const id = getParamString(req.params, 'id')
-        if (!id) throw new BadRequestError('Missing category ID in path')
+### Verification
 
-        const categoryService = new CategoryService(req.user.id)
-        const data = await categoryService.getCategoryById(id)
-
-        if (!data) throw new NotFoundError('Category not found')
-
-        return ResponseHelper.success<CategoryData>(res, data)
-    } catch (error) {
-        return ResponseHelper.handleError(res, error)
-    }
-}
+```bash
+npm run build                 # Full monorepo compiles
+npm run dev                   # API + App start together
+# Test in browser at localhost:3000
 ```
 
-### Good service pattern
+---
 
-```typescript
-// Service: extends BaseService, owns business logic, uses Prisma directly
-export class CategoryService extends BaseService {
-    constructor(userId: string) {
-        super(userId, 'category') // location used for file uploads
-    }
+## Database Agent
 
-    async getCategories(filters: CategoryFilters, skip: number, take: number): Promise<CategoryData[]> {
-        const userId = this.getUserId()
-        return await prisma.category.findMany({
-            where: { userId, ...buildWhere(filters) },
-            skip,
-            take
-        })
-    }
-}
+**Role**: Prisma schema changes, migrations, query optimization.
+
+**Scope**: `packages/prisma/`, `packages/schemas/`, `apps/api/src/api/v1/services/`
+
+### Rules
+
+- All schema changes go in `packages/prisma/schema.prisma`
+- Always create a migration after schema changes: `npm run prisma:migrate`
+- Never edit migration files after they've been applied
+- Use `select` over full-record fetches for read queries
+- Use `prisma.$transaction()` for multi-step operations that must be atomic
+- Add appropriate indexes for fields used in `where` clauses and foreign keys
+- Every model must have a `userId` field (or equivalent) for user data isolation
+- New models need corresponding Zod schemas in `packages/schemas/`
+
+### Verification
+
+```bash
+npm run prisma:migrate        # Migration applies cleanly
+npm run prisma:generate       # Client regenerates
+npm run build:packages        # All dependent packages compile
+npm run build:api             # API compiles with new types
+npm run prisma:studio         # Verify schema visually
 ```
 
-### Good error handling
+---
 
-```typescript
-// Good — Descriptive error with typed HttpError subclass
-throw new BadRequestError('Data not provided')
-throw new NotFoundError('Category not found')
+## Code Review Agent
 
-// Bad — Generic error with no type
-throw new Error('Something went wrong')
+**Role**: Review code changes for quality, security, and adherence to project conventions.
+
+**Scope**: Entire repository
+
+### Checklist
+
+**Architecture**
+
+- [ ] Business logic is in services, not controllers
+- [ ] Shared types use Zod schemas + OpenAPI codegen, not manual type files
+- [ ] Reusable components are in `packages/ui/`, not `apps/app/`
+- [ ] No barrel imports — direct path imports only
+
+**Type Safety**
+
+- [ ] No `as any` type casts
+- [ ] `import type` used for type-only imports
+- [ ] Prisma queries use `select` when full record is not needed
+
+**Security**
+
+- [ ] No secrets, API keys, or `.env` files committed
+- [ ] No sensitive fields exposed in API responses (passwords, tokens, keys)
+- [ ] Auth middleware applied to all protected routes
+- [ ] User data isolated by `userId` in all queries
+
+**Error Handling**
+
+- [ ] `HttpError` subclasses used (not generic `Error`)
+- [ ] Controllers wrapped in `try/catch` with `ResponseHelper.handleError()`
+- [ ] Descriptive error messages with context
+
+**Code Quality**
+
+- [ ] Comments explain WHY, not WHAT
+- [ ] Service and helper functions have comments
+- [ ] No commented-out code left behind
+- [ ] No unused imports or variables
+- [ ] Conventional commit message format
+
+**PR Hygiene**
+
+- [ ] Under 500 lines changed (excluding generated files)
+- [ ] Under 10 code files changed
+- [ ] Single responsibility — PR does one thing
+- [ ] Build passes: `npm run build`
+- [ ] Format passes: `npm run format`
+
+---
+
+## DevOps Agent
+
+**Role**: Docker, infrastructure, CI/CD, deployment configuration.
+
+**Scope**: `docker/`, `infra/`, `scripts/`, `.github/workflows/`, root config files
+
+### Rules
+
+- Development Docker Compose: `docker/docker-compose.local.yml`
+- Production Docker Compose: `docker/docker-compose.prod.yml`
+- All services run on the `poveroh_network` Docker network
+- Dockerfiles live in their respective directories (`apps/api/api.dockerfile`, `apps/app/app.dockerfile`, `infra/*/`)
+- Environment uses dual file system: `.env` (local dev) and `.env.production` (Docker)
+- Local proxy routes subdomains: `app.poveroh.local`, `api.poveroh.local`, `cdn.poveroh.local`
+- CI workflows live in `.github/workflows/`
+- Never hardcode environment values — use `.env` variables
+- Production images are published to `ghcr.io/poveroh/*`
+
+### Verification
+
+```bash
+npm run docker-dev            # All local containers start
+docker ps                     # All services running and healthy
+# Test at http://app.poveroh.local
 ```
 
-### Good Prisma query
+---
 
-```typescript
-// Good — Use select for performance when you only need specific fields
-const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-        id: true,
-        name: true,
-        email: true
-    }
-})
+## Schema Agent
 
-// Bad — Fetches all fields including potentially sensitive ones
-const user = await prisma.user.findUnique({
-    where: { id: userId }
-})
+**Role**: OpenAPI contracts, Zod schemas, and type generation pipeline.
+
+**Scope**: `packages/schemas/`, `packages/openapi/`, `packages/contracts/`, `packages/types/`
+
+### Rules
+
+- Zod schemas in `packages/schemas/` are the single source of truth for API contracts
+- Register schemas with the OpenAPI registry from `@poveroh/openapi`
+- Types in `packages/types/` export interfaces consumed by both API and frontend
+- Generated files in `packages/contracts/dist/` and `apps/app/api/*.gen.ts` must never be edited manually
+- After any schema change, always run: `npm run openapi:generate`
+- The full pipeline is: Zod schema → OpenAPI spec → TypeScript client SDK → format → build packages
+
+### Verification
+
+```bash
+npm run build:packages        # Schemas and types compile
+npm run openapi:generate      # Full codegen pipeline runs cleanly
+npm run build                 # Everything compiles end-to-end
 ```
 
-### Good imports
+### Example: Adding a new API type
 
-```typescript
-// Good — Type imports and package imports
-import type { CategoryData } from '@poveroh/types'
-import prisma from '@poveroh/prisma'
-import { BadRequestError, NotFoundError, ResponseHelper } from '@/src/utils'
-
-// Bad — Non-type import for types, deep package paths
-import { CategoryData } from '@poveroh/types'
-import { PrismaClient } from '@prisma/client'
-```
-
-### Good frontend hook usage
-
-```typescript
-// Good — Custom hook wrapping TanStack Query
-const { data: categories, isLoading } = useCategory()
-
-// Good — Form with Zod schema from @poveroh/schemas
-const form = useForm<CreateCategoryRequest>({
-    resolver: zodResolver(createCategorySchema)
-})
-```
-
-## Environment
-
-- Node.js >= 22 required
-- `.env` for local dev (DATABASE_HOST=localhost:5432)
-- `.env.production` for Docker deployments (DATABASE_HOST=db.poveroh.local:5432)
-- Copy `.env.example` to `.env` or run `npm run setup:env`
-- Local proxy maps subdomains: `app.poveroh.local`, `api.poveroh.local`, `cdn.poveroh.local`, `studio.poveroh.local`
-- File storage mode configured via `FILE_STORAGE_MODE` env variable (local, aws, gcloud, azure, digitalocean)
-
-## Workflows: What to Do After Common Changes
-
-### After changing the Prisma schema
-
-1. `npm run prisma:migrate` — creates migration + regenerates client
-2. `npm run build:packages` — rebuild dependent packages
-3. Update Zod schemas in `packages/schemas/` if models changed
-4. `npm run openapi:generate` — regenerate API spec and client SDK
-
-### After changing API endpoints or request/response shapes
-
-1. `npm run openapi:generate` — regenerates frontend client SDK
-2. Update types in `packages/types/` if needed
-3. Update Zod schemas in `packages/schemas/` if validation changed
-
-### After adding a new UI component
-
-1. Add reusable components to `packages/ui/` via `npm run ui:add`
-2. App-specific components go in `apps/app/components/`
-3. Document reusable components in `apps/storybook/`
-
-### After adding a new dependency
-
-1. Add to the correct workspace (`apps/api`, `apps/app`, or specific `packages/*`)
-2. Run `npm install` from root
-3. Run `npm run build` to verify nothing breaks
-
-## When Stuck
-
-- Ask a clarifying question before making large speculative changes
-- Propose a short plan for complex tasks
-- Fix build errors before test failures — they're often the root cause
-- Run `npm run prisma:generate` if you see missing type/enum errors
-- Run `npm run openapi:generate` if frontend types don't match the API
-- Run `npm run clean:build && npm run build` for stale cache issues
-- Check `docs/` for detailed documentation (ENV_SETUP.md, API_AUTH.md, CONTRIBUTING.md)
+1. Define Zod schema in `packages/schemas/src/`
+2. Register with OpenAPI registry
+3. Export TypeScript type from `packages/types/src/`
+4. Run `npm run openapi:generate`
+5. Verify generated client in `apps/app/api/` includes the new type
+6. Run `npm run build`

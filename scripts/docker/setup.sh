@@ -3,8 +3,38 @@
 # Global variables
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$PROJECT_ROOT/docker-compose.prod.yml"
+SIGNOZ_DIR="$PROJECT_ROOT/signoz"
 ENV_FILE="$PROJECT_ROOT/poveroh.env"
 GITHUB_REPO_URL="https://raw.githubusercontent.com/Poveroh/poveroh/main"
+
+# Signoz config files vendored from infra/signoz/ — fetched on install when SIGNOZ_ENABLED=true.
+# The compose file references them via `./signoz/...` relative to its directory.
+SIGNOZ_FILES=(
+    "infra/signoz/otel-collector-config.yaml:$SIGNOZ_DIR/otel-collector-config.yaml"
+    "infra/signoz/otel-collector-opamp-config.yaml:$SIGNOZ_DIR/otel-collector-opamp-config.yaml"
+    "infra/signoz/clickhouse/config.xml:$SIGNOZ_DIR/clickhouse/config.xml"
+    "infra/signoz/clickhouse/users.xml:$SIGNOZ_DIR/clickhouse/users.xml"
+    "infra/signoz/clickhouse/cluster.xml:$SIGNOZ_DIR/clickhouse/cluster.xml"
+    "infra/signoz/clickhouse/custom-function.xml:$SIGNOZ_DIR/clickhouse/custom-function.xml"
+    "infra/signoz/clickhouse/storage.xml:$SIGNOZ_DIR/clickhouse/storage.xml"
+)
+
+# Returns 0 if SIGNOZ_ENABLED is truthy in the env file, 1 otherwise.
+is_signoz_enabled() {
+    local value
+    value=$(grep -E '^SIGNOZ_ENABLED=' "$ENV_FILE" 2>/dev/null | cut -d '=' -f 2 | tr -d '[:space:]')
+    [[ "$value" == "true" || "$value" == "1" ]]
+}
+
+# Sets COMPOSE_PROFILES=signoz when opt-in is on, so `docker compose` picks up the
+# Signoz services defined with `profiles: [signoz]`.
+export_compose_profiles() {
+    if is_signoz_enabled; then
+        export COMPOSE_PROFILES=signoz
+    else
+        unset COMPOSE_PROFILES
+    fi
+}
 
 # Function to download a file from GitHub
 fetch_file_from_github() {
@@ -71,12 +101,26 @@ download_files() {
         echo "$ENV_FILE already exists. Skipping download."
     fi
 
+    if is_signoz_enabled; then
+        echo "SIGNOZ_ENABLED=true — fetching Signoz docker assets..."
+        for entry in "${SIGNOZ_FILES[@]}"; do
+            local remote="${entry%%:*}"
+            local local_path="${entry#*:}"
+            if [[ ! -f "$local_path" ]]; then
+                fetch_file_from_github "$remote" "$local_path"
+            else
+                echo "$local_path already exists. Skipping download."
+            fi
+        done
+    fi
+
     echo "All necessary files are downloaded."
 }
 
 # Function to download Docker images
 download_images() {
     echo "Starting Docker image download process for $IMAGE_ARCH..."
+    export_compose_profiles
     docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" pull
     if [[ $? -eq 0 ]]; then
         echo "Docker images downloaded successfully."
@@ -177,10 +221,14 @@ start_images() {
         is_local_db="true"
     fi
 
+    export_compose_profiles
     docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d
     if [[ $? -eq 0 ]]; then
         echo "✅ Docker containers started successfully."
         echo "🚀 App is running at http://app.poveroh.local"
+        if is_signoz_enabled; then
+            echo "🟣 Signoz UI is running at http://localhost:8080"
+        fi
     else
         echo "Error: Failed to start Docker containers."
         exit 1
@@ -199,6 +247,8 @@ stop_images() {
 
         read -rp "Enter your choice [1-2]: " stop_choice
     fi
+
+    export_compose_profiles
 
     case "$stop_choice" in
         1)
@@ -245,6 +295,7 @@ ensure_hosts_entries() {
         "127.0.0.1 db.poveroh.local"
         "127.0.0.1 redis.poveroh.local"
         "127.0.0.1 cdn.poveroh.local"
+        "127.0.0.1 signoz.poveroh.local"
         "127.0.0.1 poveroh.local"
         "::1 app.poveroh.local"
         "::1 api.poveroh.local"
@@ -252,6 +303,7 @@ ensure_hosts_entries() {
         "::1 db.poveroh.local"
         "::1 cdn.poveroh.local"
         "::1 redis.poveroh.local"
+        "::1 signoz.poveroh.local"
     )
 
     if grep -q "app.poveroh.local" "$hosts_path"; then

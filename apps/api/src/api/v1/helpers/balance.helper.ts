@@ -1,5 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
-import { RedisHelper } from './redis.helper'
+import { RedisHelper } from '@poveroh/redis'
 import { Amount } from '@poveroh/types'
 
 const Decimal = Prisma.Decimal

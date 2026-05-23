@@ -1,28 +1,67 @@
-import { Router } from 'express'
+import { AssetController } from '../modules/asset/asset/asset.controller'
+import { AssetTransactionController } from '../modules/asset/transaction/asset-transaction.controller'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
-import { AssetController } from '../controllers/asset.controller'
-import { MarketableAssetController } from '../controllers/marketable-asset.controller'
-import { AssetTransactionController } from '../controllers/asset-transaction.controller'
+import { MarketableAssetController } from '../modules/asset/marketable-asset/marketable-asset.controller'
+import { Router } from 'express'
 
 const router: Router = Router()
+const assetController = new AssetController()
+const assetTransactionController = new AssetTransactionController()
+const marketableAssetController = new MarketableAssetController()
 
 // Asset routes
-router.get('/', AuthMiddleware.isAuthenticated, AssetController.readAssets)
-router.get('/summary/portfolio', AuthMiddleware.isAuthenticated, AssetController.readPortfolioSummary)
-router.get('/:id', AuthMiddleware.isAuthenticated, AssetController.readAssetById)
-router.delete('/:id', AuthMiddleware.isAuthenticated, AssetController.deleteAsset)
-router.delete('/', AuthMiddleware.isAuthenticated, AssetController.deleteAllAssets)
+router.get('/', AuthMiddleware.isAuthenticated, assetController.readAssets.bind(assetController))
+router.get(
+    '/summary/portfolio',
+    AuthMiddleware.isAuthenticated,
+    assetController.readPortfolioSummary.bind(assetController)
+)
+router.get('/:id', AuthMiddleware.isAuthenticated, assetController.readAssetById.bind(assetController))
+router.delete('/:id', AuthMiddleware.isAuthenticated, assetController.deleteAsset.bind(assetController))
+router.delete('/', AuthMiddleware.isAuthenticated, assetController.deleteAllAssets.bind(assetController))
 
 // Transaction
-router.get('/transactions', AuthMiddleware.isAuthenticated, AssetTransactionController.readAssetTransactions)
-router.get('/transactions/:id', AuthMiddleware.isAuthenticated, AssetTransactionController.readAssetTransactionById)
-router.post('/transactions', AuthMiddleware.isAuthenticated, AssetTransactionController.createAssetTransaction)
-router.patch('/transactions/:id', AuthMiddleware.isAuthenticated, AssetTransactionController.updateAssetTransaction)
-router.delete('/transactions/:id', AuthMiddleware.isAuthenticated, AssetTransactionController.deleteAssetTransaction)
-router.delete('/transactions', AuthMiddleware.isAuthenticated, AssetTransactionController.deleteAllAssetTransactions)
+router.get(
+    '/transactions',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.readAssetTransactions.bind(assetTransactionController)
+)
+router.get(
+    '/transactions/:id',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.readAssetTransactionById.bind(assetTransactionController)
+)
+router.post(
+    '/transactions',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.createAssetTransaction.bind(assetTransactionController)
+)
+router.patch(
+    '/transactions/:id',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.updateAssetTransaction.bind(assetTransactionController)
+)
+router.delete(
+    '/transactions/:id',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.deleteAssetTransaction.bind(assetTransactionController)
+)
+router.delete(
+    '/transactions',
+    AuthMiddleware.isAuthenticated,
+    assetTransactionController.deleteAllAssetTransactions.bind(assetTransactionController)
+)
 
 // Marketable asset routes
-router.post('/marketable', AuthMiddleware.isAuthenticated, MarketableAssetController.createMarketableAsset)
-router.patch('/:id/marketable', AuthMiddleware.isAuthenticated, MarketableAssetController.updateMarketableAsset)
+router.post(
+    '/marketable',
+    AuthMiddleware.isAuthenticated,
+    marketableAssetController.createMarketableAsset.bind(marketableAssetController)
+)
+router.patch(
+    '/:id/marketable',
+    AuthMiddleware.isAuthenticated,
+    marketableAssetController.updateMarketableAsset.bind(marketableAssetController)
+)
 
 export default router

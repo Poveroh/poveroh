@@ -12598,12 +12598,12 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success - Returns either session details or redirect URL",
+                        "description": "Success - Returns session details (idToken branch) or an authorize URL (redirect branch)",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "description": "Session response when idToken is provided",
+                                    "description": "Returns session details when idToken is provided, or an authorize URL otherwise",
                                     "properties": {
                                         "token": {
                                             "type": "string"
@@ -12616,16 +12616,11 @@
                                             "type": "string"
                                         },
                                         "redirect": {
-                                            "type": "boolean",
-                                            "enum": [
-                                                false
-                                            ]
+                                            "type": "boolean"
                                         }
                                     },
                                     "required": [
-                                        "redirect",
-                                        "token",
-                                        "user"
+                                        "redirect"
                                     ]
                                 }
                             }
@@ -12979,8 +12974,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "nullable": true,
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
                                     "properties": {
                                         "session": {
                                             "$ref": "#/components/schemas/Session"
@@ -13123,8 +13120,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "nullable": true,
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
                                     "properties": {
                                         "session": {
                                             "$ref": "#/components/schemas/Session"
