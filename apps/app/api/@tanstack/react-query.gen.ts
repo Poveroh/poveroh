@@ -44,6 +44,7 @@ import {
     getAuthCallbackById,
     getAuthDeleteUserCallback,
     getAuthenticatedUser,
+    getAuthenticatedUserPreferences,
     getAuthError,
     getAuthOk,
     getAuthVerifyEmail,
@@ -92,6 +93,7 @@ import {
     socialSignIn,
     updateAssetTransaction,
     updateAuthenticatedUser,
+    updateAuthenticatedUserPreferences,
     updateCategory,
     updateDashboardLayout,
     updateFinancialAccount,
@@ -223,6 +225,9 @@ import type {
     GetAuthDeleteUserCallbackResponse,
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
+    GetAuthenticatedUserPreferencesData,
+    GetAuthenticatedUserPreferencesError,
+    GetAuthenticatedUserPreferencesResponse,
     GetAuthenticatedUserResponse,
     GetAuthErrorData,
     GetAuthErrorError,
@@ -361,6 +366,9 @@ import type {
     UpdateAssetTransactionResponse2,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserError,
+    UpdateAuthenticatedUserPreferencesData,
+    UpdateAuthenticatedUserPreferencesError,
+    UpdateAuthenticatedUserPreferencesResponse,
     UpdateAuthenticatedUserResponse,
     UpdateCategoryData,
     UpdateCategoryError,
@@ -525,6 +533,62 @@ export const updateAuthenticatedUserMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateAuthenticatedUser({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getAuthenticatedUserPreferencesQueryKey = (options?: Options<GetAuthenticatedUserPreferencesData>) =>
+    createQueryKey('getAuthenticatedUserPreferences', options)
+
+/**
+ * Get authenticated user preferences
+ *
+ * Get the preferences for the authenticated user. Creates defaults if none exist.
+ */
+export const getAuthenticatedUserPreferencesOptions = (options?: Options<GetAuthenticatedUserPreferencesData>) =>
+    queryOptions<
+        GetAuthenticatedUserPreferencesResponse,
+        GetAuthenticatedUserPreferencesError,
+        GetAuthenticatedUserPreferencesResponse,
+        ReturnType<typeof getAuthenticatedUserPreferencesQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthenticatedUserPreferences({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthenticatedUserPreferencesQueryKey(options)
+    })
+
+/**
+ * Update authenticated user preferences
+ *
+ * Updates the authenticated user's preferences. Creates defaults if none exist.
+ */
+export const updateAuthenticatedUserPreferencesMutation = (
+    options?: Partial<Options<UpdateAuthenticatedUserPreferencesData>>
+): UseMutationOptions<
+    UpdateAuthenticatedUserPreferencesResponse,
+    UpdateAuthenticatedUserPreferencesError,
+    Options<UpdateAuthenticatedUserPreferencesData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateAuthenticatedUserPreferencesResponse,
+        UpdateAuthenticatedUserPreferencesError,
+        Options<UpdateAuthenticatedUserPreferencesData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateAuthenticatedUserPreferences({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

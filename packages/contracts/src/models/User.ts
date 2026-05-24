@@ -2,13 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CountriesEnum } from './CountriesEnum'
-import type { CurrencyEnum } from './CurrencyEnum'
-import type { DateFormatEnum } from './DateFormatEnum'
-import type { LanguageEnum } from './LanguageEnum'
 import type { OnBoardingStepEnum } from './OnBoardingStepEnum'
-import type { SnapshotFrequencyEnum } from './SnapshotFrequencyEnum'
-import type { TimezoneEnum } from './TimezoneEnum'
+import type { UserPreferences } from './UserPreferences'
 export type User = {
     id: string
     name: string
@@ -20,11 +15,5 @@ export type User = {
     image: string | null
     createdAt: string
     updatedAt: string
-    snapshotFrequency: SnapshotFrequencyEnum
-    preferredCurrency: CurrencyEnum
-    preferredLanguage: LanguageEnum
-    dateFormat: DateFormatEnum
-    country: CountriesEnum
-    timezone: TimezoneEnum
-    preferredMarketDataProviderId: string | null
+    preferences: UserPreferences
 }

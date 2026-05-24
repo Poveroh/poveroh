@@ -8,12 +8,6 @@
         "onBoardingStep": 4,
         "onBoardingAt": "2025-11-08T23:13:59.709Z",
         "image": null,
-        "snapshotFrequency": "MONTHLY",
-        "preferredCurrency": "EUR",
-        "preferredLanguage": "EN",
-        "dateFormat": "DD_MM_YYYY",
-        "country": "italy",
-        "timezone": "UTC",
         "createdAt": "2025-11-08T23:00:59.709Z",
         "updatedAt": "2025-11-08T23:13:59.709Z"
     }

@@ -15,13 +15,7 @@ export type User = {
     image: string | null
     createdAt: string
     updatedAt: string
-    snapshotFrequency: SnapshotFrequencyEnum
-    preferredCurrency: CurrencyEnum
-    preferredLanguage: LanguageEnum
-    dateFormat: DateFormatEnum
-    country: CountriesEnum
-    timezone: TimezoneEnum
-    preferredMarketDataProviderId: string | null
+    preferences: UserPreferences
 }
 
 export type Session = {
@@ -2645,23 +2639,12 @@ export type GetUserResponse = {
 }
 
 export type UpdateUserRequest = {
-    id?: string
     name?: string
     surname?: string
     email?: string
-    emailVerified?: boolean
     onBoardingStep?: OnBoardingStepEnum
     onBoardingAt?: string | null
     image?: string | null
-    createdAt?: string
-    updatedAt?: string
-    snapshotFrequency?: SnapshotFrequencyEnum
-    preferredCurrency?: CurrencyEnum
-    preferredLanguage?: LanguageEnum
-    dateFormat?: DateFormatEnum
-    country?: CountriesEnum
-    timezone?: TimezoneEnum
-    preferredMarketDataProviderId?: string | null
 }
 
 export type UpdateUserResponse = {
@@ -2674,6 +2657,40 @@ export type UpdateUserResponse = {
      */
     message: string
     data: User & unknown
+}
+
+export type UpdateUserPreferencesRequest = {
+    snapshotFrequency?: SnapshotFrequencyEnum
+    preferredCurrency?: CurrencyEnum
+    preferredLanguage?: LanguageEnum
+    dateFormat?: DateFormatEnum
+    country?: CountriesEnum
+    timezone?: TimezoneEnum
+    preferredMarketDataProviderId?: string | null
+}
+
+export type GetUserPreferencesResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: UserPreferences & unknown
+}
+
+export type UpdateUserPreferencesResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: UserPreferences & unknown
 }
 
 export type UserSession = {
@@ -2920,6 +2937,80 @@ export type UpdateAuthenticatedUserResponses = {
 }
 
 export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
+
+export type GetAuthenticatedUserPreferencesData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/user/me/preferences'
+}
+
+export type GetAuthenticatedUserPreferencesErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAuthenticatedUserPreferencesError =
+    GetAuthenticatedUserPreferencesErrors[keyof GetAuthenticatedUserPreferencesErrors]
+
+export type GetAuthenticatedUserPreferencesResponses = {
+    /**
+     * User preferences found
+     */
+    200: GetUserPreferencesResponse
+}
+
+export type GetAuthenticatedUserPreferencesResponse =
+    GetAuthenticatedUserPreferencesResponses[keyof GetAuthenticatedUserPreferencesResponses]
+
+export type UpdateAuthenticatedUserPreferencesData = {
+    body?: UpdateUserPreferencesRequest
+    path?: never
+    query?: never
+    url: '/user/me/preferences'
+}
+
+export type UpdateAuthenticatedUserPreferencesErrors = {
+    /**
+     * Invalid request body
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Authenticated user not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateAuthenticatedUserPreferencesError =
+    UpdateAuthenticatedUserPreferencesErrors[keyof UpdateAuthenticatedUserPreferencesErrors]
+
+export type UpdateAuthenticatedUserPreferencesResponses = {
+    /**
+     * User preferences updated
+     */
+    200: UpdateUserPreferencesResponse
+}
+
+export type UpdateAuthenticatedUserPreferencesResponse =
+    UpdateAuthenticatedUserPreferencesResponses[keyof UpdateAuthenticatedUserPreferencesResponses]
 
 export type DeleteAssetsData = {
     body?: never

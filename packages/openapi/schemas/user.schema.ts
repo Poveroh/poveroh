@@ -38,11 +38,10 @@ export const UserSchema = z
         onBoardingStep: OnBoardingStepEnum,
         onBoardingAt: z.string().nullable(),
         image: z.string().url().nullable(),
-
         createdAt: z.string(),
-        updatedAt: z.string()
+        updatedAt: z.string(),
+        preferences: UserPreferencesSchema
     })
-    .extend(UserPreferencesSchema.shape)
     .openapi('User')
 
 /**
@@ -53,14 +52,43 @@ export const GetUserResponseSchema = SuccessResponseSchema(UserSchema).openapi('
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
- * Request schema for updating user information and preferences
+ * Request schema for updating user identity fields (excludes preferences, which have a dedicated endpoint)
  */
-export const UpdateUserSchemaRequest = UserSchema.partial().openapi('UpdateUserRequest')
+export const UpdateUserSchemaRequest = UserSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    emailVerified: true,
+    preferences: true
+})
+    .partial()
+    .openapi('UpdateUserRequest')
 
 /**
  * Response schema for updating authenticated user
  */
 export const UpdateUserResponseSchema = SuccessResponseSchema(UserSchema).openapi('UpdateUserResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Request schema for updating authenticated user preferences
+ */
+export const UpdateUserPreferencesSchemaRequest =
+    UserPreferencesSchema.partial().openapi('UpdateUserPreferencesRequest')
+
+/**
+ * Response schema for getting authenticated user preferences
+ */
+export const GetUserPreferencesResponseSchema =
+    SuccessResponseSchema(UserPreferencesSchema).openapi('GetUserPreferencesResponse')
+
+/**
+ * Response schema for updating authenticated user preferences
+ */
+export const UpdateUserPreferencesResponseSchema = SuccessResponseSchema(UserPreferencesSchema).openapi(
+    'UpdateUserPreferencesResponse'
+)
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -108,21 +136,25 @@ export const UserFormPreferencesFormSchema = UserPreferencesSchema.pick({
 /**
  * User form generalities schema representing the basic information required for user onboarding generalities step
  */
-export const UserFormGeneralitiesFormSchema = UserSchema.pick({
-    name: true,
-    surname: true,
-    country: true
-}).openapi('UserFormGeneralitiesForm')
+export const UserFormGeneralitiesFormSchema = z
+    .object({
+        name: UserSchema.shape.name,
+        surname: UserSchema.shape.surname,
+        country: UserPreferencesSchema.shape.country
+    })
+    .openapi('UserFormGeneralitiesForm')
 
 /**
  * User profile form schema representing the fields required for updating user information in profile settings
  */
-export const UserProfileFormSchema = UserSchema.pick({
-    name: true,
-    surname: true,
-    email: true,
-    country: true
-}).openapi('UserProfileForm')
+export const UserProfileFormSchema = z
+    .object({
+        name: UserSchema.shape.name,
+        surname: UserSchema.shape.surname,
+        email: UserSchema.shape.email,
+        country: UserPreferencesSchema.shape.country
+    })
+    .openapi('UserProfileForm')
 
 /**
  * User profile security form schema representing the fields required for updating user password in profile settings

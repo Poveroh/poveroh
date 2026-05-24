@@ -213,7 +213,7 @@ export class TransactionService extends BaseService {
      * @returns The UTC ISO date string of the supplied local date in the user's timezone.
      */
     private resolveUtcDate(date: string): string {
-        const { timezone } = this.context.currentUser
+        const { timezone } = this.context.currentUser.preferences
         return moment.tz(date, timezone).utc().toISOString()
     }
 

@@ -8,12 +8,14 @@ import { useTranslations } from 'next-intl'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserProfileFormSchema } from '@poveroh/schemas'
-import { UserProfileForm } from '@poveroh/types'
+import { DEFAULT_USER_PREFERENCES, UserProfileForm } from '@poveroh/types'
 
 export const useProfileForm = () => {
     const t = useTranslations()
 
-    const { user, updateUser } = useUser()
+    const { user, updateUser, updatePreferences } = useUser()
+
+    const preferences = user?.preferences ?? DEFAULT_USER_PREFERENCES
 
     const form = useForm({
         resolver: zodResolver(UserProfileFormSchema),
@@ -21,7 +23,7 @@ export const useProfileForm = () => {
             name: user?.name ?? '',
             surname: user?.surname ?? '',
             email: user?.email ?? '',
-            country: user?.country ?? ''
+            country: preferences.country
         }
     })
 
@@ -31,21 +33,30 @@ export const useProfileForm = () => {
                 name: user?.name ?? '',
                 surname: user?.surname ?? '',
                 email: user?.email ?? '',
-                country: user?.country ?? ''
+                country: preferences.country
             })
-            console.log('Form reset with user data')
         }
-    }, [user, form])
+    }, [user, form, preferences])
 
     const handleSubmit = async (values: UserProfileForm) => {
-        if (updateUser.isPending) return
+        if (updateUser.isPending || updatePreferences.isPending) return
 
         try {
-            const res = await updateUser.mutateAsync({
-                body: values
+            const userRes = await updateUser.mutateAsync({
+                body: {
+                    name: values.name,
+                    surname: values.surname,
+                    email: values.email
+                }
             })
 
-            if (res) {
+            const prefsRes = await updatePreferences.mutateAsync({
+                body: {
+                    country: values.country
+                }
+            })
+
+            if (userRes && prefsRes) {
                 toast.success(t('form.messages.userSavedSuccess'))
             }
         } catch (error) {
@@ -56,7 +67,7 @@ export const useProfileForm = () => {
     return {
         form,
         user,
-        loading: updateUser.isPending,
+        loading: updateUser.isPending || updatePreferences.isPending,
         handleSubmit
     }
 }

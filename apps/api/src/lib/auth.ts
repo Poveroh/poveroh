@@ -5,6 +5,7 @@ import prisma from '@poveroh/prisma'
 import { DEFAULT_USER } from '@poveroh/types'
 import config from '../utils/environment'
 import { UserService } from '../api/v1/modules/users/user.service'
+import { UserPreferencesService } from '../api/v1/modules/users/preferences/user-preferences.service'
 import { DashboardService } from '../api/v1/modules/dashboard/dashboard.service'
 import { contextService } from '@/v1/modules/base/context.service'
 import { DashboardTemplate } from '@/v1/content'
@@ -92,9 +93,10 @@ export const auth = betterAuth({
                 },
                 after: async (user, ctx) => {
                     // Hook runs outside any HTTP request context; supply one for the service.
-                    await contextService.runWithContext({ user: { ...DEFAULT_USER, id: user.id } }, () =>
-                        new DashboardService().saveDashboardLayout(DashboardTemplate)
-                    )
+                    await contextService.runWithContext({ user: { ...DEFAULT_USER, id: user.id } }, async () => {
+                        await new UserPreferencesService().getPreferences()
+                        await new DashboardService().saveDashboardLayout(DashboardTemplate)
+                    })
                 }
             },
             update: {

@@ -1,6 +1,5 @@
+import { DEFAULT_USER, DEFAULT_USER_PREFERENCES, OnBoardingStepEnum, User, UserPreferences } from '@poveroh/types'
 import { storage } from '@/lib/storage'
-import { DEFAULT_USER } from '@poveroh/types'
-import { OnBoardingStepEnum, User } from '@poveroh/types'
 import { create } from 'zustand'
 
 type UserStore = {
@@ -8,6 +7,7 @@ type UserStore = {
     logged: boolean
     setOnBoardingStep: (newStep: OnBoardingStepEnum) => void
     updateUser: (newUserData: Partial<User>) => void
+    updatePreferences: (newPreferences: Partial<UserPreferences>) => void
     setUser: (newUser: User) => void
     setLogged: (newLoggedState: boolean) => void
     resetAll: () => void
@@ -24,6 +24,14 @@ export const useUserStore = create<UserStore>(set => ({
     updateUser: (newUserData: Partial<User>) => {
         set(state => ({
             user: { ...state.user, ...newUserData }
+        }))
+    },
+    updatePreferences: (newPreferences: Partial<UserPreferences>) => {
+        set(state => ({
+            user: {
+                ...state.user,
+                preferences: { ...(state.user.preferences ?? DEFAULT_USER_PREFERENCES), ...newPreferences }
+            }
         }))
     },
     setUser: (newUser: User) => {

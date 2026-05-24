@@ -5,31 +5,33 @@ import { useUserStore } from '@/store/auth.store'
 import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/navigation'
 import { UserFormGeneralitiesFormSchema, UserFormPreferencesFormSchema } from '@poveroh/schemas'
-import { UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types'
+import { DEFAULT_USER_PREFERENCES, UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types'
 
 export function useOnBoardingForm() {
     const userStore = useUserStore()
-    const { updateUser } = useUser()
+    const { updateUser, updatePreferences } = useUser()
     const router = useRouter()
 
     const [loading, setLoading] = useState(false)
+
+    const preferences = userStore.user.preferences ?? DEFAULT_USER_PREFERENCES
 
     const formGeneralities = useForm({
         resolver: zodResolver(UserFormGeneralitiesFormSchema),
         defaultValues: {
             name: userStore.user.name || '',
             surname: userStore.user.surname || '',
-            country: userStore.user.country || 'italy'
+            country: preferences.country || 'ITALY'
         }
     })
 
     const formPreferences = useForm({
         resolver: zodResolver(UserFormPreferencesFormSchema),
         defaultValues: {
-            preferredCurrency: userStore.user.preferredCurrency || 'EUR',
-            preferredLanguage: userStore.user.preferredLanguage || 'en',
-            dateFormat: userStore.user.dateFormat || 'DD_MM_YYYY',
-            timezone: userStore.user.timezone || 'ETC_UTC'
+            preferredCurrency: preferences.preferredCurrency || 'EUR',
+            preferredLanguage: preferences.preferredLanguage || 'EN',
+            dateFormat: preferences.dateFormat || 'DD_MM_YYYY',
+            timezone: preferences.timezone || 'ETC_UTC'
         }
     })
 
@@ -42,7 +44,12 @@ export function useOnBoardingForm() {
                     name: values.name,
                     surname: values.surname,
                     email: userStore.user.email,
-                    onBoardingStep: 'PREFERENCES',
+                    onBoardingStep: 'PREFERENCES'
+                }
+            })
+
+            await updatePreferences.mutateAsync({
+                body: {
                     country: values.country
                 }
             })
@@ -54,15 +61,21 @@ export function useOnBoardingForm() {
     }
 
     const handlePreferencesSubmit = async (values: UserFormPreferencesForm) => {
-        if (updateUser.isPending) return
+        if (updateUser.isPending || updatePreferences.isPending) return
 
         try {
             await updateUser.mutateAsync({
                 body: {
-                    onBoardingStep: 'COMPLETED',
+                    onBoardingStep: 'COMPLETED'
+                }
+            })
+
+            await updatePreferences.mutateAsync({
+                body: {
                     preferredCurrency: values.preferredCurrency,
                     preferredLanguage: values.preferredLanguage,
-                    dateFormat: values.dateFormat
+                    dateFormat: values.dateFormat,
+                    timezone: values.timezone
                 }
             })
 
@@ -75,7 +88,7 @@ export function useOnBoardingForm() {
     return {
         formGeneralities,
         formPreferences,
-        loading: updateUser.isPending,
+        loading: updateUser.isPending || updatePreferences.isPending,
         handleGeneralitiesSubmit,
         handlePreferencesSubmit
     }

@@ -8,40 +8,41 @@ import { useTranslations } from 'next-intl'
 import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserFormPreferencesFormSchema } from '@poveroh/schemas'
-import { UserFormPreferencesForm } from '@poveroh/types'
+import { DEFAULT_USER_PREFERENCES, UserFormPreferencesForm } from '@poveroh/types'
 
 export const usePreferencesForm = () => {
     const t = useTranslations()
 
-    const { user, updateUser } = useUser()
+    const { user, updatePreferences } = useUser()
+
+    const preferences = user?.preferences ?? DEFAULT_USER_PREFERENCES
 
     const form = useForm({
         resolver: zodResolver(UserFormPreferencesFormSchema),
         defaultValues: {
-            preferredCurrency: user?.preferredCurrency || 'EUR',
-            preferredLanguage: user?.preferredLanguage || 'en',
-            dateFormat: user?.dateFormat || 'DD_MM_YYYY',
-            timezone: user?.timezone || 'ETC_UTC'
+            preferredCurrency: preferences.preferredCurrency || 'EUR',
+            preferredLanguage: preferences.preferredLanguage || 'EN',
+            dateFormat: preferences.dateFormat || 'DD_MM_YYYY',
+            timezone: preferences.timezone || 'ETC_UTC'
         }
     })
 
     useEffect(() => {
         if (user && !form.formState.isDirty) {
             form.reset({
-                preferredCurrency: user?.preferredCurrency || 'EUR',
-                preferredLanguage: user?.preferredLanguage || 'en',
-                dateFormat: user?.dateFormat || 'DD_MM_YYYY',
-                timezone: user?.timezone || 'ETC_UTC'
+                preferredCurrency: preferences.preferredCurrency || 'EUR',
+                preferredLanguage: preferences.preferredLanguage || 'EN',
+                dateFormat: preferences.dateFormat || 'DD_MM_YYYY',
+                timezone: preferences.timezone || 'ETC_UTC'
             })
-            console.log('Form reset with user data')
         }
-    }, [user, form])
+    }, [user, form, preferences])
 
     const handleSubmit = async (values: UserFormPreferencesForm) => {
-        if (updateUser.isPending) return
+        if (updatePreferences.isPending) return
 
         try {
-            const res = await updateUser.mutateAsync({
+            const res = await updatePreferences.mutateAsync({
                 body: values
             })
 
@@ -49,14 +50,14 @@ export const usePreferencesForm = () => {
                 toast.success(t('form.messages.userSavedSuccess'))
             }
         } catch (error) {
-            console.error('Error updating profile:', error)
+            console.error('Error updating preferences:', error)
         }
     }
 
     return {
         form,
         user,
-        loading: updateUser.isPending,
+        loading: updatePreferences.isPending,
         handleSubmit
     }
 }

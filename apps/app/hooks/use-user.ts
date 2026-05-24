@@ -5,7 +5,10 @@ import { encryptString } from '@poveroh/utils'
 import { useError } from './use-error'
 import { authClient, getSession } from '@/lib/auth'
 import { User } from '@poveroh/types'
-import { updateAuthenticatedUserMutation } from '@/api/@tanstack/react-query.gen'
+import {
+    updateAuthenticatedUserMutation,
+    updateAuthenticatedUserPreferencesMutation
+} from '@/api/@tanstack/react-query.gen'
 import { useMutation } from '@tanstack/react-query'
 import router from 'next/router'
 
@@ -33,6 +36,18 @@ export const useUser = () => {
         },
         onError: error => {
             handleError(error, 'Error saving user data')
+        }
+    })
+
+    const updatePreferences = useMutation({
+        ...updateAuthenticatedUserPreferencesMutation(),
+        onSuccess: async (_data, variables) => {
+            if (!variables.body) return
+
+            await userStore.updatePreferences(variables.body)
+        },
+        onError: error => {
+            handleError(error, 'Error saving user preferences')
         }
     })
 
@@ -86,6 +101,7 @@ export const useUser = () => {
         user: userStore.user,
         getMe,
         updateUser,
+        updatePreferences,
         updatePassword
     }
 }

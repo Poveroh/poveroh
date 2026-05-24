@@ -121,6 +121,9 @@ import type {
     GetAuthDeleteUserCallbackResponses,
     GetAuthenticatedUserData,
     GetAuthenticatedUserErrors,
+    GetAuthenticatedUserPreferencesData,
+    GetAuthenticatedUserPreferencesErrors,
+    GetAuthenticatedUserPreferencesResponses,
     GetAuthenticatedUserResponses,
     GetAuthErrorData,
     GetAuthErrorErrors,
@@ -261,6 +264,9 @@ import type {
     UpdateAssetTransactionResponses,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserErrors,
+    UpdateAuthenticatedUserPreferencesData,
+    UpdateAuthenticatedUserPreferencesErrors,
+    UpdateAuthenticatedUserPreferencesResponses,
     UpdateAuthenticatedUserResponses,
     UpdateCategoryData,
     UpdateCategoryErrors,
@@ -353,6 +359,46 @@ export const updateAuthenticatedUser = <ThrowOnError extends boolean = false>(
     (options?.client ?? client).patch<UpdateAuthenticatedUserResponses, UpdateAuthenticatedUserErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/user/me',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
+    })
+
+/**
+ * Get authenticated user preferences
+ *
+ * Get the preferences for the authenticated user. Creates defaults if none exist.
+ */
+export const getAuthenticatedUserPreferences = <ThrowOnError extends boolean = false>(
+    options?: Options<GetAuthenticatedUserPreferencesData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<
+        GetAuthenticatedUserPreferencesResponses,
+        GetAuthenticatedUserPreferencesErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user/me/preferences',
+        ...options
+    })
+
+/**
+ * Update authenticated user preferences
+ *
+ * Updates the authenticated user's preferences. Creates defaults if none exist.
+ */
+export const updateAuthenticatedUserPreferences = <ThrowOnError extends boolean = false>(
+    options?: Options<UpdateAuthenticatedUserPreferencesData, ThrowOnError>
+) =>
+    (options?.client ?? client).patch<
+        UpdateAuthenticatedUserPreferencesResponses,
+        UpdateAuthenticatedUserPreferencesErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user/me/preferences',
         ...options,
         headers: {
             'Content-Type': 'application/json',

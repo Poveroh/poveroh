@@ -40,28 +40,8 @@ export const UserSchema = {
         updatedAt: {
             type: 'string'
         },
-        snapshotFrequency: {
-            $ref: '#/components/schemas/SnapshotFrequencyEnum'
-        },
-        preferredCurrency: {
-            $ref: '#/components/schemas/CurrencyEnum'
-        },
-        preferredLanguage: {
-            $ref: '#/components/schemas/LanguageEnum'
-        },
-        dateFormat: {
-            $ref: '#/components/schemas/DateFormatEnum'
-        },
-        country: {
-            $ref: '#/components/schemas/CountriesEnum'
-        },
-        timezone: {
-            $ref: '#/components/schemas/TimezoneEnum'
-        },
-        preferredMarketDataProviderId: {
-            type: 'string',
-            nullable: true,
-            minLength: 1
+        preferences: {
+            $ref: '#/components/schemas/UserPreferences'
         }
     },
     required: [
@@ -75,13 +55,7 @@ export const UserSchema = {
         'image',
         'createdAt',
         'updatedAt',
-        'snapshotFrequency',
-        'preferredCurrency',
-        'preferredLanguage',
-        'dateFormat',
-        'country',
-        'timezone',
-        'preferredMarketDataProviderId'
+        'preferences'
     ]
 } as const
 
@@ -6584,10 +6558,6 @@ export const GetUserResponseSchema = {
 export const UpdateUserRequestSchema = {
     type: 'object',
     properties: {
-        id: {
-            type: 'string',
-            format: 'uuid'
-        },
         name: {
             type: 'string',
             minLength: 1
@@ -6600,9 +6570,6 @@ export const UpdateUserRequestSchema = {
             type: 'string',
             format: 'email'
         },
-        emailVerified: {
-            type: 'boolean'
-        },
         onBoardingStep: {
             $ref: '#/components/schemas/OnBoardingStepEnum'
         },
@@ -6614,13 +6581,38 @@ export const UpdateUserRequestSchema = {
             type: 'string',
             nullable: true,
             format: 'uri'
+        }
+    }
+} as const
+
+export const UpdateUserResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
         },
-        createdAt: {
-            type: 'string'
+        message: {
+            type: 'string',
+            description: 'Optional success message'
         },
-        updatedAt: {
-            type: 'string'
-        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/User'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateUserPreferencesRequestSchema = {
+    type: 'object',
+    properties: {
         snapshotFrequency: {
             $ref: '#/components/schemas/SnapshotFrequencyEnum'
         },
@@ -6647,7 +6639,7 @@ export const UpdateUserRequestSchema = {
     }
 } as const
 
-export const UpdateUserResponseSchema = {
+export const GetUserPreferencesResponseSchema = {
     type: 'object',
     properties: {
         success: {
@@ -6661,7 +6653,32 @@ export const UpdateUserResponseSchema = {
         data: {
             allOf: [
                 {
-                    $ref: '#/components/schemas/User'
+                    $ref: '#/components/schemas/UserPreferences'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const UpdateUserPreferencesResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/UserPreferences'
                 },
                 {
                     description: 'Response data'

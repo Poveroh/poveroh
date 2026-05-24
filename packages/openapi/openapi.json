@@ -67,28 +67,8 @@
                     "updatedAt": {
                         "type": "string"
                     },
-                    "snapshotFrequency": {
-                        "$ref": "#/components/schemas/SnapshotFrequencyEnum"
-                    },
-                    "preferredCurrency": {
-                        "$ref": "#/components/schemas/CurrencyEnum"
-                    },
-                    "preferredLanguage": {
-                        "$ref": "#/components/schemas/LanguageEnum"
-                    },
-                    "dateFormat": {
-                        "$ref": "#/components/schemas/DateFormatEnum"
-                    },
-                    "country": {
-                        "$ref": "#/components/schemas/CountriesEnum"
-                    },
-                    "timezone": {
-                        "$ref": "#/components/schemas/TimezoneEnum"
-                    },
-                    "preferredMarketDataProviderId": {
-                        "type": "string",
-                        "nullable": true,
-                        "minLength": 1
+                    "preferences": {
+                        "$ref": "#/components/schemas/UserPreferences"
                     }
                 },
                 "required": [
@@ -102,13 +82,7 @@
                     "image",
                     "createdAt",
                     "updatedAt",
-                    "snapshotFrequency",
-                    "preferredCurrency",
-                    "preferredLanguage",
-                    "dateFormat",
-                    "country",
-                    "timezone",
-                    "preferredMarketDataProviderId"
+                    "preferences"
                 ]
             },
             "Session": {
@@ -6404,10 +6378,6 @@
             "UpdateUserRequest": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
                     "name": {
                         "type": "string",
                         "minLength": 1
@@ -6420,9 +6390,6 @@
                         "type": "string",
                         "format": "email"
                     },
-                    "emailVerified": {
-                        "type": "boolean"
-                    },
                     "onBoardingStep": {
                         "$ref": "#/components/schemas/OnBoardingStepEnum"
                     },
@@ -6434,13 +6401,36 @@
                         "type": "string",
                         "nullable": true,
                         "format": "uri"
+                    }
+                }
+            },
+            "UpdateUserResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
                     },
-                    "createdAt": {
-                        "type": "string"
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
                     },
-                    "updatedAt": {
-                        "type": "string"
-                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "UpdateUserPreferencesRequest": {
+                "type": "object",
+                "properties": {
                     "snapshotFrequency": {
                         "$ref": "#/components/schemas/SnapshotFrequencyEnum"
                     },
@@ -6466,7 +6456,7 @@
                     }
                 }
             },
-            "UpdateUserResponse": {
+            "GetUserPreferencesResponse": {
                 "type": "object",
                 "properties": {
                     "success": {
@@ -6480,7 +6470,31 @@
                     "data": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/User"
+                                "$ref": "#/components/schemas/UserPreferences"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "UpdateUserPreferencesResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UserPreferences"
                             },
                             {
                                 "description": "Response data"
@@ -7049,6 +7063,133 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UpdateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Authenticated user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/me/preferences": {
+            "get": {
+                "tags": ["User"],
+                "operationId": "getAuthenticatedUserPreferences",
+                "summary": "Get authenticated user preferences",
+                "description": "Get the preferences for the authenticated user. Creates defaults if none exist.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User preferences found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUserPreferencesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Authenticated user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["User"],
+                "operationId": "updateAuthenticatedUserPreferences",
+                "summary": "Update authenticated user preferences",
+                "description": "Updates the authenticated user's preferences. Creates defaults if none exist.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserPreferencesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User preferences updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateUserPreferencesResponse"
                                 }
                             }
                         }

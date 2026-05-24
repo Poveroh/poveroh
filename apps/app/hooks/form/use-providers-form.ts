@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from '@poveroh/ui/components/sonner'
 
 import { useUser } from '@/hooks/use-user'
-import { DEFAULT_MARKET_DATA_PROVIDER } from '@poveroh/types'
+import { DEFAULT_MARKET_DATA_PROVIDER, DEFAULT_USER_PREFERENCES } from '@poveroh/types'
 
 type ProvidersForm = {
     selectedProviderId: string
@@ -15,11 +15,13 @@ type ProvidersForm = {
 // Keeps provider selection form state aligned with the currently configured provider list.
 export const useProvidersForm = (configuredProviderIds: string[]) => {
     const t = useTranslations()
-    const { user, updateUser } = useUser()
+    const { user, updatePreferences } = useUser()
+
+    const preferences = user?.preferences ?? DEFAULT_USER_PREFERENCES
 
     const form = useForm<ProvidersForm>({
         defaultValues: {
-            selectedProviderId: user?.preferredMarketDataProviderId || DEFAULT_MARKET_DATA_PROVIDER.id
+            selectedProviderId: preferences.preferredMarketDataProviderId || DEFAULT_MARKET_DATA_PROVIDER.id
         }
     })
     const selectedProviderId = useWatch({
@@ -36,7 +38,7 @@ export const useProvidersForm = (configuredProviderIds: string[]) => {
 
     const handleSubmit = useCallback(
         async (values: ProvidersForm) => {
-            if (!user?.id || updateUser.isPending) return
+            if (!user?.id || updatePreferences.isPending) return
 
             const nextProviderId = isValidProviderId(values.selectedProviderId)
                 ? values.selectedProviderId
@@ -47,9 +49,9 @@ export const useProvidersForm = (configuredProviderIds: string[]) => {
                 return
             }
 
-            if (user.preferredMarketDataProviderId === nextProviderId) return
+            if (preferences.preferredMarketDataProviderId === nextProviderId) return
 
-            const res = await updateUser.mutateAsync({
+            const res = await updatePreferences.mutateAsync({
                 body: {
                     preferredMarketDataProviderId: nextProviderId
                 }
@@ -59,19 +61,19 @@ export const useProvidersForm = (configuredProviderIds: string[]) => {
                 toast.success(t('form.messages.userSavedSuccess'))
             }
         },
-        [form, isValidProviderId, t, updateUser, user?.id, user?.preferredMarketDataProviderId]
+        [form, isValidProviderId, t, updatePreferences, user?.id, preferences.preferredMarketDataProviderId]
     )
 
     const canSave =
         !!user?.id &&
         !!selectedProviderId &&
-        !updateUser.isPending &&
-        selectedProviderId !== user.preferredMarketDataProviderId
+        !updatePreferences.isPending &&
+        selectedProviderId !== preferences.preferredMarketDataProviderId
 
     return {
         form,
         canSave,
-        isSaving: updateUser.isPending,
+        isSaving: updatePreferences.isPending,
         handleSubmit
     }
 }

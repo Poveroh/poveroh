@@ -17,17 +17,20 @@ import { SelectField } from '@/components/fields'
 import { useProvidersForm } from '@/hooks/form/use-providers-form'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
-import { DEFAULT_MARKET_DATA_PROVIDER } from '@poveroh/types'
+import { DEFAULT_MARKET_DATA_PROVIDER, DEFAULT_USER_PREFERENCES } from '@poveroh/types'
 
 export default function ProvidersView() {
     const t = useTranslations()
     const { user } = useUser()
     const { providersQuery, providers } = useMarketDataProvider()
 
+    const preferredMarketDataProviderId =
+        user.preferences?.preferredMarketDataProviderId ?? DEFAULT_USER_PREFERENCES.preferredMarketDataProviderId
+
     // Yahoo Finance is always available; configured API providers are appended as explicit alternatives.
     const configuredProviders = useMemo(() => providers.filter(provider => provider.configured), [providers])
     const providerOptions = useMemo(() => {
-        const preferredProvider = providers.find(provider => provider.id === user.preferredMarketDataProviderId)
+        const preferredProvider = providers.find(provider => provider.id === preferredMarketDataProviderId)
         const options = [DEFAULT_MARKET_DATA_PROVIDER, ...configuredProviders]
 
         if (preferredProvider && !options.some(provider => provider.id === preferredProvider.id)) {
@@ -35,7 +38,7 @@ export default function ProvidersView() {
         }
 
         return options
-    }, [configuredProviders, providers, user.preferredMarketDataProviderId])
+    }, [configuredProviders, providers, preferredMarketDataProviderId])
     const providerOptionIds = useMemo(() => providerOptions.map(provider => provider.id), [providerOptions])
 
     const { form, canSave, isSaving, handleSubmit } = useProvidersForm(providerOptionIds)
