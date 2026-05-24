@@ -10,7 +10,6 @@ import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
 import { AccountDialog } from '@/components/dialog/account-dialog'
-import { AccountBalanceSnapshotDialog } from '@/components/dialog/account-balance-snapshot-dialog'
 import { AccountItem } from '@/components/item/account-item'
 import { FilterButton } from '@/components/filter/filter-button'
 import { Header } from '@/components/other/header-page'
@@ -171,7 +170,6 @@ export default function AccountView() {
             </PageWrapper>
 
             <AccountDialog />
-            <AccountBalanceSnapshotDialog />
         </>
     )
 }
