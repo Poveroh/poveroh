@@ -64,7 +64,9 @@ export function Sidebar({ content, footer }: SidebarProps) {
             <SidebarContent className='gap-2 px-2 py-4'>
                 {content.map((section, index) => (
                     <SidebarGroup key={index} className='gap-2'>
-                        <SidebarGroupLabel className='sub px-3'>{t(section.title)}</SidebarGroupLabel>
+                        {section.title && (
+                            <SidebarGroupLabel className='sub px-3'>{t(section.title)}</SidebarGroupLabel>
+                        )}
                         <SidebarGroupContent>
                             <SidebarMenu className='gap-1'>
                                 {section.items.map(item => {

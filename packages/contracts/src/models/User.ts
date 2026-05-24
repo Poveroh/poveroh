@@ -26,4 +26,5 @@ export type User = {
     dateFormat: DateFormatEnum
     country: CountriesEnum
     timezone: TimezoneEnum
+    preferredMarketDataProviderId: string | null
 }

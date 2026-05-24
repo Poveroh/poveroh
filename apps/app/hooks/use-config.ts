@@ -2,8 +2,6 @@
 
 import { useUserStore } from '@/store/auth.store'
 import moment from 'moment-timezone'
-import 'moment/locale/it'
-import 'moment/locale/en-gb'
 import { DateFormatEnum, LanguageEnum, TimezoneEnum } from '@poveroh/types'
 
 // Convert Timezone enum to IANA timezone identifier

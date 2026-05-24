@@ -1,5 +1,5 @@
 import type { JobHandlers } from '@poveroh/types'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 
 export const importJobHandlers: JobHandlers = {
     'import.parse-csv': async payload => {

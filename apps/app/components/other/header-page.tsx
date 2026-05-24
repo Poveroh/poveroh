@@ -47,7 +47,9 @@ export function Header(props: HeaderProps) {
 
     return (
         <>
-            <header className={cn('flex flex-row items-end', showHeaderActions ? 'justify-between' : 'justify-start')}>
+            <header
+                className={cn('flex flex-row items-center', showHeaderActions ? 'justify-between' : 'justify-start')}
+            >
                 <div className='flex flex-col space-y-3'>
                     <div className='flex flex-col space-y-1'>
                         {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}

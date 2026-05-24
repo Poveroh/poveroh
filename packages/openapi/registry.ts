@@ -1,10 +1,14 @@
 import { OpenAPIRegistry, zodToOpenAPIRegistry } from '@asteasolutions/zod-to-openapi'
 import * as schemas from './schemas'
 import {
+    registerAssetTransactionPath,
+    registerAssetPath,
     registerCategoryPath,
     registerDashboardPath,
     registerFinancialAccountPath,
     registerImportPath,
+    registerMarketDataPath,
+    registerMarketableAssetPath,
     registerReportPath,
     registerSnapshotPath,
     registerStatusPath,
@@ -36,12 +40,16 @@ const registerAllSchemas = (registry: OpenAPIRegistry) => {
 export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerStatusPath(registry)
     registerUserPath(registry)
+    registerAssetPath(registry)
+    registerMarketableAssetPath(registry)
+    registerAssetTransactionPath(registry)
     registerCategoryPath(registry)
     registerSubcategoryPath(registry)
     registerTransactionPath(registry)
     registerSubscriptionPath(registry)
     registerFinancialAccountPath(registry)
     registerImportPath(registry)
+    registerMarketDataPath(registry)
     registerDashboardPath(registry)
     registerSnapshotPath(registry)
     registerReportPath(registry)

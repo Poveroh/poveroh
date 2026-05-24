@@ -24,6 +24,7 @@ export const DEFAULT_USER: User = {
     dateFormat: 'DD_MM_YYYY' as DateFormatEnum,
     country: 'ITALY' as CountriesEnum,
     timezone: 'EUROPE_ROME' as TimezoneEnum,
+    preferredMarketDataProviderId: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
 }

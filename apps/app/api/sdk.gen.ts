@@ -15,6 +15,9 @@ import type {
     CompleteImportData,
     CompleteImportErrors,
     CompleteImportResponses,
+    CreateAssetTransactionData,
+    CreateAssetTransactionErrors,
+    CreateAssetTransactionResponses,
     CreateCategoryData,
     CreateCategoryErrors,
     CreateCategoryResponses,
@@ -27,6 +30,9 @@ import type {
     CreateImportTemplateData,
     CreateImportTemplateErrors,
     CreateImportTemplateResponses,
+    CreateMarketableAssetData,
+    CreateMarketableAssetErrors,
+    CreateMarketableAssetResponses,
     CreateSnapshotAccountBalanceData,
     CreateSnapshotAccountBalanceErrors,
     CreateSnapshotAccountBalanceResponses,
@@ -39,6 +45,18 @@ import type {
     CreateTransactionData,
     CreateTransactionErrors,
     CreateTransactionResponses,
+    DeleteAssetData,
+    DeleteAssetErrors,
+    DeleteAssetResponses,
+    DeleteAssetsData,
+    DeleteAssetsErrors,
+    DeleteAssetsResponses,
+    DeleteAssetTransactionData,
+    DeleteAssetTransactionErrors,
+    DeleteAssetTransactionResponses,
+    DeleteAssetTransactionsData,
+    DeleteAssetTransactionsErrors,
+    DeleteAssetTransactionsResponses,
     DeleteCategoriesData,
     DeleteCategoriesErrors,
     DeleteCategoriesResponses,
@@ -57,6 +75,9 @@ import type {
     DeleteImportsData,
     DeleteImportsErrors,
     DeleteImportsResponses,
+    DeleteMarketDataProviderCredentialData,
+    DeleteMarketDataProviderCredentialErrors,
+    DeleteMarketDataProviderCredentialResponses,
     DeleteSubcategoriesData,
     DeleteSubcategoriesErrors,
     DeleteSubcategoriesResponses,
@@ -78,6 +99,18 @@ import type {
     DeleteUserData,
     DeleteUserErrors,
     DeleteUserResponses,
+    GetAssetByIdData,
+    GetAssetByIdErrors,
+    GetAssetByIdResponses,
+    GetAssetsData,
+    GetAssetsErrors,
+    GetAssetsResponses,
+    GetAssetTransactionByIdData,
+    GetAssetTransactionByIdErrors,
+    GetAssetTransactionByIdResponses,
+    GetAssetTransactionsData,
+    GetAssetTransactionsErrors,
+    GetAssetTransactionsResponses,
     GetAuthAccountInfoData,
     GetAuthAccountInfoErrors,
     GetAuthAccountInfoResponses,
@@ -122,6 +155,12 @@ import type {
     GetImportTransactionsByIdData,
     GetImportTransactionsByIdErrors,
     GetImportTransactionsByIdResponses,
+    GetMarketDataProvidersData,
+    GetMarketDataProvidersErrors,
+    GetMarketDataProvidersResponses,
+    GetMarketQuotesData,
+    GetMarketQuotesErrors,
+    GetMarketQuotesResponses,
     GetRootStatusData,
     GetRootStatusErrors,
     GetRootStatusResponses,
@@ -196,6 +235,12 @@ import type {
     RollbackImportData,
     RollbackImportErrors,
     RollbackImportResponses,
+    SaveMarketDataProviderCredentialData,
+    SaveMarketDataProviderCredentialErrors,
+    SaveMarketDataProviderCredentialResponses,
+    SearchMarketInstrumentsData,
+    SearchMarketInstrumentsErrors,
+    SearchMarketInstrumentsResponses,
     SendVerificationEmailData,
     SendVerificationEmailErrors,
     SendVerificationEmailResponses,
@@ -211,6 +256,9 @@ import type {
     SocialSignInData,
     SocialSignInErrors,
     SocialSignInResponses,
+    UpdateAssetTransactionData,
+    UpdateAssetTransactionErrors,
+    UpdateAssetTransactionResponses,
     UpdateAuthenticatedUserData,
     UpdateAuthenticatedUserErrors,
     UpdateAuthenticatedUserResponses,
@@ -226,6 +274,9 @@ import type {
     UpdateImportData,
     UpdateImportErrors,
     UpdateImportResponses,
+    UpdateMarketableAssetData,
+    UpdateMarketableAssetErrors,
+    UpdateMarketableAssetResponses,
     UpdateSessionData,
     UpdateSessionErrors,
     UpdateSessionResponses,
@@ -306,6 +357,182 @@ export const updateAuthenticatedUser = <ThrowOnError extends boolean = false>(
         headers: {
             'Content-Type': 'application/json',
             ...options?.headers
+        }
+    })
+
+/**
+ * Delete all assets
+ *
+ * Soft delete all assets for the authenticated user
+ */
+export const deleteAssets = <ThrowOnError extends boolean = false>(options?: Options<DeleteAssetsData, ThrowOnError>) =>
+    (options?.client ?? client).delete<DeleteAssetsResponses, DeleteAssetsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets',
+        ...options
+    })
+
+/**
+ * Get all assets
+ *
+ * Retrieve the investment assets associated with the authenticated user
+ */
+export const getAssets = <ThrowOnError extends boolean = false>(options?: Options<GetAssetsData, ThrowOnError>) =>
+    (options?.client ?? client).get<GetAssetsResponses, GetAssetsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets',
+        ...options
+    })
+
+/**
+ * Delete asset
+ *
+ * Soft delete an asset
+ */
+export const deleteAsset = <ThrowOnError extends boolean = false>(options: Options<DeleteAssetData, ThrowOnError>) =>
+    (options.client ?? client).delete<DeleteAssetResponses, DeleteAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}',
+        ...options
+    })
+
+/**
+ * Get asset by ID
+ *
+ * Retrieve a single asset and its normalized subtype data
+ */
+export const getAssetById = <ThrowOnError extends boolean = false>(options: Options<GetAssetByIdData, ThrowOnError>) =>
+    (options.client ?? client).get<GetAssetByIdResponses, GetAssetByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}',
+        ...options
+    })
+
+/**
+ * Create marketable asset
+ *
+ * Create a marketable asset with its opening transaction
+ */
+export const createMarketableAsset = <ThrowOnError extends boolean = false>(
+    options: Options<CreateMarketableAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateMarketableAssetResponses, CreateMarketableAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/marketable',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Update marketable asset
+ *
+ * Update marketable asset metadata without creating transactions
+ */
+export const updateMarketableAsset = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateMarketableAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateMarketableAssetResponses, UpdateMarketableAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}/marketable',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete all asset transactions
+ *
+ * Soft delete all asset transactions for the authenticated user
+ */
+export const deleteAssetTransactions = <ThrowOnError extends boolean = false>(
+    options?: Options<DeleteAssetTransactionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).delete<DeleteAssetTransactionsResponses, DeleteAssetTransactionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions',
+        ...options
+    })
+
+/**
+ * Get asset transactions
+ *
+ * Retrieve the asset transactions associated with the authenticated user
+ */
+export const getAssetTransactions = <ThrowOnError extends boolean = false>(
+    options?: Options<GetAssetTransactionsData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetAssetTransactionsResponses, GetAssetTransactionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions',
+        ...options
+    })
+
+/**
+ * Create asset transaction
+ *
+ * Create a new transaction for an asset
+ */
+export const createAssetTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<CreateAssetTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateAssetTransactionResponses, CreateAssetTransactionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Delete asset transaction
+ *
+ * Soft delete an asset transaction
+ */
+export const deleteAssetTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteAssetTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<DeleteAssetTransactionResponses, DeleteAssetTransactionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions/{id}',
+        ...options
+    })
+
+/**
+ * Get asset transaction by ID
+ *
+ * Retrieve a single asset transaction
+ */
+export const getAssetTransactionById = <ThrowOnError extends boolean = false>(
+    options: Options<GetAssetTransactionByIdData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetAssetTransactionByIdResponses, GetAssetTransactionByIdErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions/{id}',
+        ...options
+    })
+
+/**
+ * Update asset transaction
+ *
+ * Update an existing transaction for an asset
+ */
+export const updateAssetTransaction = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateAssetTransactionData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateAssetTransactionResponses, UpdateAssetTransactionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/transactions/{id}',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
         }
     })
 
@@ -875,6 +1102,26 @@ export const getImportTransactionsById = <ThrowOnError extends boolean = false>(
     })
 
 /**
+ * Approve or reject import transactions
+ *
+ * Bulk approve or reject transactions for a specific import
+ */
+export const approveImportTransactions = <ThrowOnError extends boolean = false>(
+    options: Options<ApproveImportTransactionsData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<ApproveImportTransactionsResponses, ApproveImportTransactionsErrors, ThrowOnError>(
+        {
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/imports/{id}/transactions/approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        }
+    )
+
+/**
  * Create import template
  *
  * Create a new import template with the provided data
@@ -903,6 +1150,102 @@ export const completeImport = <ThrowOnError extends boolean = false>(
     })
 
 /**
+ * Rollback import
+ *
+ * Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes
+ */
+export const rollbackImport = <ThrowOnError extends boolean = false>(
+    options: Options<RollbackImportData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<RollbackImportResponses, RollbackImportErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/imports/rollback/{id}',
+        ...options
+    })
+
+/**
+ * Get market data providers
+ *
+ * List the enabled raw market data providers and their capabilities
+ */
+export const getMarketDataProviders = <ThrowOnError extends boolean = false>(
+    options?: Options<GetMarketDataProvidersData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<GetMarketDataProvidersResponses, GetMarketDataProvidersErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/providers',
+        ...options
+    })
+
+/**
+ * Delete market data provider credential
+ *
+ * Delete the authenticated users encrypted provider API key
+ */
+export const deleteMarketDataProviderCredential = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteMarketDataProviderCredentialData, ThrowOnError>
+) =>
+    (options.client ?? client).delete<
+        DeleteMarketDataProviderCredentialResponses,
+        DeleteMarketDataProviderCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/providers/{providerId}/credential',
+        ...options
+    })
+
+/**
+ * Save market data provider credential
+ *
+ * Encrypt and store the authenticated users provider API key server-side
+ */
+export const saveMarketDataProviderCredential = <ThrowOnError extends boolean = false>(
+    options: Options<SaveMarketDataProviderCredentialData, ThrowOnError>
+) =>
+    (options.client ?? client).put<
+        SaveMarketDataProviderCredentialResponses,
+        SaveMarketDataProviderCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/providers/{providerId}/credential',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Search instruments
+ *
+ * Search provider instruments and return a normalized instrument list
+ */
+export const searchMarketInstruments = <ThrowOnError extends boolean = false>(
+    options: Options<SearchMarketInstrumentsData, ThrowOnError>
+) =>
+    (options.client ?? client).get<SearchMarketInstrumentsResponses, SearchMarketInstrumentsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/instruments',
+        ...options
+    })
+
+/**
+ * Get quotes
+ *
+ * Fetch normalized live quotes using the selected provider
+ */
+export const getMarketQuotes = <ThrowOnError extends boolean = false>(
+    options: Options<GetMarketQuotesData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetMarketQuotesResponses, GetMarketQuotesErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/market-data/quotes',
+        ...options
+    })
+
+/**
  * Get dashboard layout
  *
  * Retrieve a specific dashboard layout
@@ -927,6 +1270,28 @@ export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
     (options.client ?? client).put<UpdateDashboardLayoutResponses, UpdateDashboardLayoutErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/dashboard',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Create snapshot account balance
+ *
+ * Create a new snapshot account balance with the provided data
+ */
+export const createSnapshotAccountBalance = <ThrowOnError extends boolean = false>(
+    options: Options<CreateSnapshotAccountBalanceData, ThrowOnError>
+) =>
+    (options.client ?? client).post<
+        CreateSnapshotAccountBalanceResponses,
+        CreateSnapshotAccountBalanceErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/snapshots/account-balance',
         ...options,
         headers: {
             'Content-Type': 'application/json',
@@ -1396,61 +1761,5 @@ export const getAuthError = <ThrowOnError extends boolean = false>(options?: Opt
     (options?.client ?? client).get<GetAuthErrorResponses, GetAuthErrorErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/auth/error',
-        ...options
-    })
-
-/**
- * Approve or reject import transactions
- *
- * Bulk approve or reject transactions for a specific import
- */
-export const approveImportTransactions = <ThrowOnError extends boolean = false>(
-    options: Options<ApproveImportTransactionsData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<ApproveImportTransactionsResponses, ApproveImportTransactionsErrors, ThrowOnError>(
-        {
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/imports/{id}/transactions/approve',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        }
-    )
-
-/**
- * Create snapshot account balance
- *
- * Create a new snapshot account balance with the provided data
- */
-export const createSnapshotAccountBalance = <ThrowOnError extends boolean = false>(
-    options: Options<CreateSnapshotAccountBalanceData, ThrowOnError>
-) =>
-    (options.client ?? client).post<
-        CreateSnapshotAccountBalanceResponses,
-        CreateSnapshotAccountBalanceErrors,
-        ThrowOnError
-    >({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/snapshots/account-balance',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Rollback import
- *
- * Rollback a completed import: moves the import and its approved transactions back to pending and reverts balance changes
- */
-export const rollbackImport = <ThrowOnError extends boolean = false>(
-    options: Options<RollbackImportData, ThrowOnError>
-) =>
-    (options.client ?? client).patch<RollbackImportResponses, RollbackImportErrors, ThrowOnError>({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/imports/rollback/{id}',
         ...options
     })

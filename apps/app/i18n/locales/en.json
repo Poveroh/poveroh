@@ -92,6 +92,7 @@
         "loadMore": "Load more",
         "refresh": "Refresh",
         "rollback": "Rollback",
+        "back": "Back",
         "analyzeAndParse": "Analyze and parse",
         "addFromTemplates": "Add from templates",
         "add": {
@@ -374,6 +375,9 @@
                 "title": "Global preferences",
                 "subtitle": "Set appearance, time zones, and currency."
             }
+        },
+        "finance": {
+            "title": "Finance"
         }
     },
     "transactions": {
@@ -475,7 +479,96 @@
         }
     },
     "investments": {
-        "title": "Investments"
+        "title": "Investments",
+        "empty": {
+            "title": "Add your first asset",
+            "subtitle": "Click the + Add button to create a new investment asset"
+        },
+        "search": {
+            "placeholder": "Search for this item"
+        },
+        "filters": {
+            "other": "Other filters"
+        },
+        "summary": {
+            "balance": "Total investment balance",
+            "live": "Live"
+        },
+        "assets": {
+            "title": "Assets",
+            "modal": {
+                "newTitle": "New asset",
+                "newSubtitle": "Select the type of asset you want to add",
+                "editTitle": "Edit {a}",
+                "deleteDescription": "This action cannot be undone. This will permanently delete the asset."
+            },
+            "table": {
+                "name": "Name",
+                "year": "Year",
+                "buyDate": "Buy date",
+                "quantity": "Quantity",
+                "price": "Price",
+                "weight": "Weight",
+                "total": "Total"
+            },
+            "form": {
+                "transactionType": {
+                    "buy": "Buy",
+                    "sell": "Sell"
+                },
+                "symbol": {
+                    "label": "Ticket symbol"
+                },
+                "quantity": {
+                    "label": "Quantity"
+                },
+                "unitPrice": {
+                    "label": "Price per share"
+                },
+                "fees": {
+                    "label": "Fee"
+                },
+                "summary": {
+                    "unitPrice": "Price per share",
+                    "quantity": "Quantity",
+                    "fees": "Transaction fee",
+                    "total": "Total transaction"
+                }
+            },
+            "groups": {
+                "stock": "Stock",
+                "bond": "Bond",
+                "etf": "ETF",
+                "crypto": "Crypto",
+                "property": "Property",
+                "vehicle": "Vehicle",
+                "valuables": "Valuables"
+            },
+            "ticket-symbol": {
+                "title": "Ticket symbol",
+                "subtitle": "Stock, ETF, bond etc"
+            },
+            "crypto": {
+                "title": "Crypto",
+                "subtitle": "Bitcoin, Ethereum, etc"
+            },
+            "property": {
+                "title": "Property",
+                "subtitle": "Real estate, car, etc"
+            },
+            "vehicle": {
+                "title": "Vehicle",
+                "subtitle": "Car, motorcycle, etc"
+            },
+            "valuable": {
+                "title": "Valuable",
+                "subtitle": "Jewelry, art, etc"
+            },
+            "other": {
+                "title": "Other assets",
+                "subtitle": "Other types of assets"
+            }
+        }
     },
     "reports": {
         "title": "Reports"
@@ -511,6 +604,43 @@
             "IMPORT_PENDING": "Import pending",
             "IMPORT_REJECTED": "Import rejected",
             "IMPORT_APPROVED": "Import approved"
+        }
+    },
+    "providers": {
+        "title": "Stock provider",
+        "breadcrumb": {
+            "advanced": "Advanced"
+        },
+        "select": {
+            "title": "Select provider",
+            "subtitle": "Select the source to fetch stock market data from. Each provider may differ in coverage, update frequency, and usage limits.",
+            "placeholder": "Select a value"
+        },
+        "list": {
+            "title": "Providers",
+            "finnhub": {
+                "setup": "Setup instructions:\n1. Visit the Finnhub dashboard to get your API credentials\n2. Your API key is required to enable stock market sync\n3. The free tier supports limited symbols and request volume"
+            },
+            "massive": {
+                "setup": "Setup instructions:\n1. Visit the Massive dashboard to get your API credentials\n2. Your API key is required to enable stock market sync\n3. For production use, set environment to 'production', for testing use 'sandbox'"
+            }
+        },
+        "status": {
+            "configured": "Configured and ready to use",
+            "notConfigured": "Not configured"
+        },
+        "fields": {
+            "apiKey": "Api key",
+            "apiKeyPlaceholder": "Paste your provider api key"
+        },
+        "actions": {
+            "connect": "Connect",
+            "update": "Update",
+            "disconnect": "Disconnect"
+        },
+        "toast": {
+            "saved": "{a} api key saved",
+            "deleted": "{a} api key removed"
         }
     }
 }

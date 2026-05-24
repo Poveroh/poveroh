@@ -13,6 +13,9 @@ export type DomainEventName =
     | 'financial-account.deleted'
     | 'transaction.created'
     | 'asset.updated'
+    | 'asset-transaction.created'
+    | 'asset-transaction.updated'
+    | 'asset-transaction.deleted'
     | 'snapshot.generated'
 
 export type DomainEventPayloads = {
@@ -30,6 +33,9 @@ export type DomainEventPayloads = {
     'financial-account.deleted': { financialAccountId: string; userId: string }
     'transaction.created': { transactionId: string; userId: string }
     'asset.updated': { assetId: string; userId: string }
+    'asset-transaction.created': { assetTransactionId: string; assetId: string; userId: string }
+    'asset-transaction.updated': { assetTransactionId: string; assetId: string; userId: string }
+    'asset-transaction.deleted': { assetTransactionId: string; assetId: string; userId: string }
     'snapshot.generated': { snapshotId: string; userId: string }
 }
 

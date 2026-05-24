@@ -1,5 +1,5 @@
 import type { JobHandlers } from '@poveroh/types'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 import { DEFAULT_USER } from '@poveroh/types'
 import { SnapshotService } from '../../modules/snapshots/snapshot.service'
 import { contextService } from '../../modules/base/context.service'

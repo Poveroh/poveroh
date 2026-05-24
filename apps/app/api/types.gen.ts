@@ -21,6 +21,7 @@ export type User = {
     dateFormat: DateFormatEnum
     country: CountriesEnum
     timezone: TimezoneEnum
+    preferredMarketDataProviderId: string | null
 }
 
 export type Session = {
@@ -57,6 +58,447 @@ export type Verification = {
     expiresAt: string
     createdAt: string
     updatedAt: string
+}
+
+export type AssetTransaction = {
+    id: string
+    assetId: string
+    type: AssetTransactionTypeEnum
+    date: string
+    settlementDate: string | null
+    quantityChange: number | null
+    unitPrice: number | null
+    totalAmount: number | null
+    currency: CurrencyEnum
+    fxRate: number | null
+    fees: number | null
+    taxAmount: number | null
+    financialAccountId: string | null
+    note: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type AssetTransactionTypeEnum =
+    | 'BUY'
+    | 'SELL'
+    | 'DIVIDEND'
+    | 'INTEREST'
+    | 'FEE'
+    | 'DEPOSIT'
+    | 'WITHDRAWAL'
+    | 'VALUATION_ADJUSTMENT'
+    | 'CAPITAL_CALL'
+    | 'DISTRIBUTION'
+
+export type CurrencyEnum =
+    | 'USD'
+    | 'EUR'
+    | 'GBP'
+    | 'JPY'
+    | 'CNY'
+    | 'INR'
+    | 'AUD'
+    | 'CAD'
+    | 'CHF'
+    | 'SEK'
+    | 'NZD'
+    | 'MXN'
+    | 'SGD'
+    | 'HKD'
+    | 'NOK'
+    | 'KRW'
+    | 'TRY'
+    | 'UNKNOWN'
+
+export type AssetTransactionData = {
+    id: string
+    assetId: string
+    type: AssetTransactionTypeEnum
+    date: string
+    settlementDate: string | null
+    quantityChange: number | null
+    unitPrice: number | null
+    totalAmount: number | null
+    currency: CurrencyEnum
+    fxRate: number | null
+    fees: number | null
+    taxAmount: number | null
+    financialAccountId: string | null
+    note: string | null
+    createdAt: string
+    updatedAt: string
+}
+
+export type GetAssetTransactionListResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<AssetTransactionData>
+}
+
+export type GetAssetTransactionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AssetTransactionData & unknown
+}
+
+export type AssetTransactionForm = {
+    assetId: string
+    type: AssetTransactionTypeEnum
+    date: string
+    settlementDate: string | null
+    quantityChange: number | null
+    unitPrice: number | null
+    totalAmount: number | null
+    currency: CurrencyEnum
+    fxRate: number | null
+    fees: number | null
+    taxAmount: number | null
+    financialAccountId: string | null
+    note: string | null
+}
+
+export type CreateAssetTransactionRequest = {
+    assetId: string
+    type: AssetTransactionTypeEnum
+    date: string
+    settlementDate: string | null
+    quantityChange: number | null
+    unitPrice: number | null
+    totalAmount: number | null
+    currency: CurrencyEnum
+    fxRate: number | null
+    fees: number | null
+    taxAmount: number | null
+    financialAccountId: string | null
+    note: string | null
+}
+
+export type UpdateAssetTransactionRequest = {
+    assetId?: string
+    type?: AssetTransactionTypeEnum
+    date?: string
+    settlementDate?: string | null
+    quantityChange?: number | null
+    unitPrice?: number | null
+    totalAmount?: number | null
+    currency?: CurrencyEnum
+    fxRate?: number | null
+    fees?: number | null
+    taxAmount?: number | null
+    financialAccountId?: string | null
+    note?: string | null
+}
+
+export type CreateAssetTransactionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AssetTransactionData & unknown
+}
+
+export type UpdateAssetTransactionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type DeleteAssetTransactionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type AssetTransactionParamsId = {
+    id: string
+}
+
+export type AssetTransactionFilters = {
+    id?: AssetTransactionParamsId
+    assetId?: string
+    type?: AssetTransactionTypeEnum
+    date?: DateFilter
+    financialAccountId?: string
+    note?: StringFilter
+}
+
+export type DateFilter = {
+    gte?: string
+    lte?: string
+}
+
+export type StringFilter = {
+    equals?: string
+    contains?: string
+}
+
+export type QueryAssetTransactionFilters = {
+    filter?: AssetTransactionFilters
+    options?: FilterOptions
+}
+
+export type FilterOptions = {
+    skip?: number
+    take?: number
+    sortBy?: string
+    sortOrder?: 'asc' | 'desc'
+}
+
+export type CreateUpdateAssetTransactionRequest = CreateAssetTransactionRequest | UpdateAssetTransactionRequest
+
+export type Asset = {
+    id: string
+    userId: string
+    title: string
+    type: AssetTypeEnum
+    currency: CurrencyEnum
+    currentValue: number
+    currentValueAsOf: string
+    quantity: number
+    totalInvested: number
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+    marketable?: MarketableAsset
+    realEstate?: RealEstateAsset
+    collectible?: CollectibleAsset
+    privateDeal?: PrivateDealAsset
+    vehicle?: VehicleAsset
+    insurance?: InsuranceAsset
+    transactions: Array<AssetTransactionData>
+}
+
+export type AssetTypeEnum =
+    | 'STOCK'
+    | 'BOND'
+    | 'ETF'
+    | 'MUTUAL_FUND'
+    | 'CRYPTOCURRENCY'
+    | 'REAL_ESTATE'
+    | 'COLLECTIBLE'
+    | 'VEHICLE'
+    | 'PRIVATE_EQUITY'
+    | 'VENTURE_CAPITAL'
+    | 'PRIVATE_DEBT'
+    | 'P2P_LENDING'
+    | 'INSURANCE_POLICY'
+    | 'OTHER'
+
+export type MarketableAsset = {
+    id: string
+    assetId: string
+    symbol: string
+    isin: string | null
+    exchange: string | null
+    assetClass: MarketableAssetClassEnum
+    sector: string | null
+    region: string | null
+    lastPriceSync: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
+
+export type RealEstateAsset = {
+    id: string
+    assetId: string
+    address: string
+    type: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type RealEstateTypeEnum = 'PRIMARY_HOUSE' | 'SECONDARY_HOUSE' | 'RENTAL_PROPERTY'
+
+export type CollectibleAsset = {
+    id: string
+    assetId: string
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type PrivateDealAsset = {
+    id: string
+    assetId: string
+    committedAmount: number | null
+    calledAmount: number | null
+    latestNav: number | null
+    navDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type VehicleAsset = {
+    id: string
+    assetId: string
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number
+    purchasePrice: number
+    purchaseDate: string | null
+    plateNumber: string
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type VehicleTypeEnum = 'CAR' | 'BOAT' | 'MOTORCYCLE' | 'SNOWMOBILE' | 'BIKE' | 'OTHER'
+
+export type AssetConditionEnum = 'NEW' | 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' | null
+
+export type InsuranceAsset = {
+    id: string
+    assetId: string
+    insurer: string
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string
+    startDate: string | null
+    endDate: string | null
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 'PURE_RISK'
+
+export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
+
+export type AssetData = {
+    id: string
+    title: string
+    type: AssetTypeEnum
+    currency: CurrencyEnum
+    currentValue: number
+    currentValueAsOf: string
+    quantity: number
+    totalInvested: number
+    createdAt: string
+    updatedAt: string
+    marketable?: MarketableAsset
+    realEstate?: RealEstateAsset
+    collectible?: CollectibleAsset
+    privateDeal?: PrivateDealAsset
+    vehicle?: VehicleAsset
+    insurance?: InsuranceAsset
+    transactions: Array<AssetTransactionData>
+}
+
+export type GetAssetListResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<AssetData>
+}
+
+export type GetAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AssetData & unknown
+}
+
+export type DeleteAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data?: unknown
+}
+
+export type AssetParamsId = {
+    id: string
+}
+
+export type AssetFilters = {
+    id?: AssetParamsId
+    title?: StringFilter
+    type?: AssetTypeEnum
+    symbol?: StringFilter
+    currency?: CurrencyEnum
+    currentValueAsOf?: DateFilter
+}
+
+export type QueryAssetFilters = {
+    filter?: AssetFilters
+    options?: FilterOptions
 }
 
 export type Category = {
@@ -199,21 +641,9 @@ export type CategoryFilters = {
     for?: TransactionActionEnum
 }
 
-export type StringFilter = {
-    equals?: string
-    contains?: string
-}
-
 export type QueryCategoryFilters = {
     filter?: CategoryFilters
     options?: FilterOptions
-}
-
-export type FilterOptions = {
-    skip?: number
-    take?: number
-    sortBy?: string
-    sortOrder?: 'asc' | 'desc'
 }
 
 export type CategoryForm = {
@@ -224,6 +654,58 @@ export type CategoryForm = {
 }
 
 export type CreateUpdateCategoryRequest = CreateCategoryRequest | UpdateCategoryRequest
+
+export type CollectibleAssetData = {
+    acquisitionCost: number | null
+    acquisitionDate: string | null
+    appraisalValue: number | null
+    appraisalDate: string | null
+}
+
+export type CreateCollectibleAssetRequest = {
+    acquisitionCost: number
+    acquisitionDate: string
+    appraisalValue: number
+    appraisalDate: string
+}
+
+export type CreateCollectibleAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CollectibleAssetData & unknown
+}
+
+export type UpdateCollectibleAssetRequest = {
+    acquisitionCost?: number
+    acquisitionDate?: string
+    appraisalValue?: number
+    appraisalDate?: string
+}
+
+export type UpdateCollectibleAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: CollectibleAssetData & unknown
+}
+
+export type CollectibleAssetForm = {
+    acquisitionCost: number
+    acquisitionDate: string
+    appraisalValue: number
+    appraisalDate: string
+}
 
 export type DashboardLayoutItem = {
     id: DashboardWidgetEnum
@@ -444,21 +926,13 @@ export type TimezoneEnum =
 
 export type SnapshotFrequencyEnum = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'SEMIANNUAL' | 'ANNUAL'
 
-export type AssetTypeEnum =
-    | 'STOCK'
-    | 'BOND'
-    | 'ETF'
-    | 'MUTUAL_FUND'
-    | 'CRYPTOCURRENCY'
-    | 'REAL_ESTATE'
-    | 'COLLECTIBLE'
-    | 'PRIVATE_EQUITY'
-    | 'VENTURE_CAPITAL'
-    | 'PRIVATE_DEBT'
-    | 'P2P_LENDING'
-    | 'INSURANCE_POLICY'
-    | 'AGRICULTURAL_LAND'
-    | 'OTHER'
+export type AssetMarketDataTypeEnum = 'BUY' | 'SELL'
+
+export type ValueSourceEnum = 'MANUAL' | 'MARKET' | 'APPRAISAL' | 'DEPRECIATION' | 'IMPORT' | 'CALCULATED'
+
+export type MarketDataTransportEnum = 'HTTP' | 'WS' | 'HYBRID'
+
+export type MarketStateEnum = 'OPEN' | 'CLOSED' | 'PRE_MARKET' | 'POST_MARKET' | 'UNKNOWN'
 
 export type FinancialAccountTypeEnum =
     | 'ONLINE_BANK'
@@ -475,26 +949,6 @@ export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' |
 
 export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
 
-export type CurrencyEnum =
-    | 'USD'
-    | 'EUR'
-    | 'GBP'
-    | 'JPY'
-    | 'CNY'
-    | 'INR'
-    | 'AUD'
-    | 'CAD'
-    | 'CHF'
-    | 'SEK'
-    | 'NZD'
-    | 'MXN'
-    | 'SGD'
-    | 'HKD'
-    | 'NOK'
-    | 'KRW'
-    | 'TRY'
-    | 'UNKNOWN'
-
 export type RememberPeriodEnum =
     | 'SAME_DAY'
     | 'THREE_DAYS'
@@ -502,8 +956,6 @@ export type RememberPeriodEnum =
     | 'FOURTEEN_DAYS'
     | 'THIRTY_DAYS'
     | 'NINETY_DAYS'
-
-export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
 export type AppearanceModeEnum = 'LOGO' | 'ICON'
 
@@ -807,11 +1259,6 @@ export type ErrorResponse = {
      * Optional additional error details or context
      */
     error?: unknown
-}
-
-export type DateFilter = {
-    gte?: string
-    lte?: string
 }
 
 export type FinancialAccount = {
@@ -1209,6 +1656,357 @@ export type CreateImportTemplateResponse = {
      * Response data
      */
     data: Array<CategoryData>
+}
+
+export type InsuranceAssetData = {
+    insurer: string
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string
+    startDate: string | null
+    endDate: string | null
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
+}
+
+export type CreateInsuranceAssetRequest = {
+    insurer: string
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
+}
+
+export type CreateInsuranceAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: InsuranceAssetData & unknown
+}
+
+export type UpdateInsuranceAssetRequest = {
+    insurer?: string
+    policyType?: InsurancePolicyTypeEnum
+    policyNumber?: string
+    startDate?: string
+    endDate?: string
+    beneficiary?: string
+    premiumPaid?: number
+    premiumFrequency?: CyclePeriodEnum
+    surrenderValue?: number
+}
+
+export type UpdateInsuranceAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: InsuranceAssetData & unknown
+}
+
+export type InsuranceAssetForm = {
+    insurer: string
+    policyType: InsurancePolicyTypeEnum
+    policyNumber: string
+    startDate: string
+    endDate: string
+    beneficiary: string
+    premiumPaid: number
+    premiumFrequency: CyclePeriodEnum
+    surrenderValue: number
+}
+
+export type MarketDataProvider = {
+    id: string
+    label: string
+    logoUrl: string
+    transport: MarketDataTransportEnum
+    enabled: boolean
+    configured: boolean
+    requiresCredentials: boolean
+    supportsSearch: boolean
+    supportsQuotes: boolean
+    supportsStreaming: boolean
+    supportedAssetTypes: Array<AssetTypeEnum>
+}
+
+export type MarketInstrument = {
+    providerId: string
+    providerInstrumentId: string
+    symbol: string
+    displayName: string
+    assetType: AssetTypeEnum
+    currency: CurrencyEnum
+    exchange: string | null
+    market: string | null
+    metadata?: {
+        [key: string]: string
+    }
+}
+
+export type MarketQuote = {
+    providerId: string
+    symbol: string
+    assetType: AssetTypeEnum
+    currency: CurrencyEnum
+    price: number
+    changePercent: number | null
+    marketState: MarketStateEnum
+    asOf: string
+    valueSource: ValueSourceEnum
+    displayName: string | null
+    exchange: string | null
+    market: string | null
+}
+
+export type GetMarketDataProvidersResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<MarketDataProvider>
+}
+
+export type SearchMarketInstrumentsResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<MarketInstrument>
+}
+
+export type GetMarketQuotesResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<MarketQuote>
+}
+
+export type UpdateMarketDataProviderPathParams = {
+    providerId: string
+}
+
+export type UpdateMarketDataProviderCredentialRequest = {
+    apiKey: string
+}
+
+export type UpdateMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type DeleteMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type MarketDataProviderQuery = {
+    providerId?: string
+    assetType?: AssetTypeEnum
+}
+
+export type SearchMarketInstrumentsQuery = MarketDataProviderQuery & {
+    q: string
+    limit?: number
+}
+
+export type GetMarketQuotesQuery = MarketDataProviderQuery & {
+    symbols: string | Array<string>
+}
+
+export type MarketableAssetData = {
+    symbol: string
+    isin: string | null
+    exchange: string | null
+    assetClass: MarketableAssetClassEnum
+    sector: string | null
+    region: string | null
+    lastPriceSync: string | null
+}
+
+export type MarketableAssetForm = {
+    transactionType: AssetMarketDataTypeEnum
+    assetClass?: MarketableAssetClassEnum
+    symbol: string
+    date: string
+    quantity: number
+    unitPrice: number
+    fees: number
+    currency: CurrencyEnum
+}
+
+export type CreateMarketableAssetRequest = {
+    transactionType: AssetMarketDataTypeEnum
+    assetClass?: MarketableAssetClassEnum
+    symbol: string
+    date: string
+    quantity: number
+    unitPrice: number
+    fees: number
+    currency: CurrencyEnum
+}
+
+export type UpdateMarketableAssetRequest = {
+    transactionType?: AssetMarketDataTypeEnum
+    assetClass?: MarketableAssetClassEnum
+    symbol?: string
+    date?: string
+    quantity?: number
+    unitPrice?: number
+    fees?: number
+    currency?: CurrencyEnum
+}
+
+export type PrivateDealAssetData = {
+    committedAmount: number | null
+    calledAmount: number | null
+    latestNav: number | null
+    navDate: string | null
+}
+
+export type CreatePrivateDealAssetRequest = {
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
+}
+
+export type CreatePrivateDealAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: PrivateDealAssetData & unknown
+}
+
+export type UpdatePrivateDealAssetRequest = {
+    committedAmount?: number
+    calledAmount?: number
+    latestNav?: number
+    navDate?: string
+}
+
+export type UpdatePrivateDealAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: PrivateDealAssetData & unknown
+}
+
+export type PrivateDealAssetForm = {
+    committedAmount: number
+    calledAmount: number
+    latestNav: number
+    navDate: string
+}
+
+export type RealEstateAssetData = {
+    address: string
+    type: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string | null
+}
+
+export type CreateRealEstateAssetRequest = {
+    address: string
+    type: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string
+}
+
+export type CreateRealEstateAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: RealEstateAssetData & unknown
+}
+
+export type UpdateRealEstateAssetRequest = {
+    address?: string
+    type?: RealEstateTypeEnum
+    purchasePrice?: number
+    purchaseDate?: string
+}
+
+export type UpdateRealEstateAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: RealEstateAssetData & unknown
+}
+
+export type RealEstateAssetForm = {
+    address: string
+    type: RealEstateTypeEnum
+    purchasePrice: number
+    purchaseDate: string
 }
 
 export type NetWorthEvolution = {
@@ -1831,6 +2629,7 @@ export type UserPreferences = {
     dateFormat: DateFormatEnum
     country: CountriesEnum
     timezone: TimezoneEnum
+    preferredMarketDataProviderId: string | null
 }
 
 export type GetUserResponse = {
@@ -1862,6 +2661,7 @@ export type UpdateUserRequest = {
     dateFormat?: DateFormatEnum
     country?: CountriesEnum
     timezone?: TimezoneEnum
+    preferredMarketDataProviderId?: string | null
 }
 
 export type UpdateUserResponse = {
@@ -1919,6 +2719,82 @@ export type UserProfileSecurityForm = {
     oldPassword: string
     newPassword: string
     confirmPassword: string
+}
+
+export type VehicleAssetData = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number
+    purchasePrice: number
+    purchaseDate: string | null
+    plateNumber: string
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
+}
+
+export type CreateVehicleAssetRequest = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
+}
+
+export type CreateVehicleAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: VehicleAssetData & unknown
+}
+
+export type UpdateVehicleAssetRequest = {
+    brand?: string
+    model?: string
+    type?: VehicleTypeEnum
+    year?: number
+    purchasePrice?: number
+    purchaseDate?: string
+    plateNumber?: string
+    vin?: string | null
+    mileage?: number | null
+    condition?: AssetConditionEnum
+}
+
+export type UpdateVehicleAssetResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: VehicleAssetData & unknown
+}
+
+export type VehicleAssetForm = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    year: number
+    purchasePrice: number
+    purchaseDate: string
+    plateNumber: string
+    vin: string | null
+    mileage: number | null
+    condition: AssetConditionEnum
 }
 
 export type GetRootStatusData = {
@@ -2044,6 +2920,436 @@ export type UpdateAuthenticatedUserResponses = {
 }
 
 export type UpdateAuthenticatedUserResponse = UpdateAuthenticatedUserResponses[keyof UpdateAuthenticatedUserResponses]
+
+export type DeleteAssetsData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/assets'
+}
+
+export type DeleteAssetsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteAssetsError = DeleteAssetsErrors[keyof DeleteAssetsErrors]
+
+export type DeleteAssetsResponses = {
+    /**
+     * Assets deleted
+     */
+    200: DeleteAssetResponse
+}
+
+export type DeleteAssetsResponse = DeleteAssetsResponses[keyof DeleteAssetsResponses]
+
+export type GetAssetsData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: AssetFilters
+        options?: FilterOptions
+    }
+    url: '/assets'
+}
+
+export type GetAssetsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAssetsError = GetAssetsErrors[keyof GetAssetsErrors]
+
+export type GetAssetsResponses = {
+    /**
+     * Asset list
+     */
+    200: GetAssetListResponse
+}
+
+export type GetAssetsResponse = GetAssetsResponses[keyof GetAssetsResponses]
+
+export type DeleteAssetData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}'
+}
+
+export type DeleteAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteAssetError = DeleteAssetErrors[keyof DeleteAssetErrors]
+
+export type DeleteAssetResponses = {
+    /**
+     * Asset deleted
+     */
+    200: DeleteAssetResponse
+}
+
+export type DeleteAssetResponse2 = DeleteAssetResponses[keyof DeleteAssetResponses]
+
+export type GetAssetByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}'
+}
+
+export type GetAssetByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAssetByIdError = GetAssetByIdErrors[keyof GetAssetByIdErrors]
+
+export type GetAssetByIdResponses = {
+    /**
+     * Asset found
+     */
+    200: GetAssetResponse
+}
+
+export type GetAssetByIdResponse = GetAssetByIdResponses[keyof GetAssetByIdResponses]
+
+export type CreateMarketableAssetData = {
+    body: CreateMarketableAssetRequest
+    path?: never
+    query?: never
+    url: '/assets/marketable'
+}
+
+export type CreateMarketableAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateMarketableAssetError = CreateMarketableAssetErrors[keyof CreateMarketableAssetErrors]
+
+export type CreateMarketableAssetResponses = {
+    /**
+     * Marketable asset created
+     */
+    200: GetAssetResponse
+}
+
+export type CreateMarketableAssetResponse = CreateMarketableAssetResponses[keyof CreateMarketableAssetResponses]
+
+export type UpdateMarketableAssetData = {
+    body: UpdateMarketableAssetRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}/marketable'
+}
+
+export type UpdateMarketableAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Marketable asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateMarketableAssetError = UpdateMarketableAssetErrors[keyof UpdateMarketableAssetErrors]
+
+export type UpdateMarketableAssetResponses = {
+    /**
+     * Marketable asset updated
+     */
+    200: GetAssetResponse
+}
+
+export type UpdateMarketableAssetResponse = UpdateMarketableAssetResponses[keyof UpdateMarketableAssetResponses]
+
+export type DeleteAssetTransactionsData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/assets/transactions'
+}
+
+export type DeleteAssetTransactionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteAssetTransactionsError = DeleteAssetTransactionsErrors[keyof DeleteAssetTransactionsErrors]
+
+export type DeleteAssetTransactionsResponses = {
+    /**
+     * Asset transactions deleted
+     */
+    200: DeleteAssetTransactionResponse
+}
+
+export type DeleteAssetTransactionsResponse = DeleteAssetTransactionsResponses[keyof DeleteAssetTransactionsResponses]
+
+export type GetAssetTransactionsData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: AssetTransactionFilters
+        options?: FilterOptions
+    }
+    url: '/assets/transactions'
+}
+
+export type GetAssetTransactionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAssetTransactionsError = GetAssetTransactionsErrors[keyof GetAssetTransactionsErrors]
+
+export type GetAssetTransactionsResponses = {
+    /**
+     * Asset transaction list
+     */
+    200: GetAssetTransactionListResponse
+}
+
+export type GetAssetTransactionsResponse = GetAssetTransactionsResponses[keyof GetAssetTransactionsResponses]
+
+export type CreateAssetTransactionData = {
+    body: CreateAssetTransactionRequest
+    path?: never
+    query?: never
+    url: '/assets/transactions'
+}
+
+export type CreateAssetTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateAssetTransactionError = CreateAssetTransactionErrors[keyof CreateAssetTransactionErrors]
+
+export type CreateAssetTransactionResponses = {
+    /**
+     * Asset transaction created
+     */
+    200: CreateAssetTransactionResponse
+}
+
+export type CreateAssetTransactionResponse2 = CreateAssetTransactionResponses[keyof CreateAssetTransactionResponses]
+
+export type DeleteAssetTransactionData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/transactions/{id}'
+}
+
+export type DeleteAssetTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Asset transaction not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteAssetTransactionError = DeleteAssetTransactionErrors[keyof DeleteAssetTransactionErrors]
+
+export type DeleteAssetTransactionResponses = {
+    /**
+     * Asset transaction deleted
+     */
+    200: DeleteAssetTransactionResponse
+}
+
+export type DeleteAssetTransactionResponse2 = DeleteAssetTransactionResponses[keyof DeleteAssetTransactionResponses]
+
+export type GetAssetTransactionByIdData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/transactions/{id}'
+}
+
+export type GetAssetTransactionByIdErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Asset transaction not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAssetTransactionByIdError = GetAssetTransactionByIdErrors[keyof GetAssetTransactionByIdErrors]
+
+export type GetAssetTransactionByIdResponses = {
+    /**
+     * Asset transaction found
+     */
+    200: GetAssetTransactionResponse
+}
+
+export type GetAssetTransactionByIdResponse = GetAssetTransactionByIdResponses[keyof GetAssetTransactionByIdResponses]
+
+export type UpdateAssetTransactionData = {
+    body: UpdateAssetTransactionRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/transactions/{id}'
+}
+
+export type UpdateAssetTransactionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Asset transaction not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateAssetTransactionError = UpdateAssetTransactionErrors[keyof UpdateAssetTransactionErrors]
+
+export type UpdateAssetTransactionResponses = {
+    /**
+     * Asset transaction updated
+     */
+    200: UpdateAssetTransactionResponse
+}
+
+export type UpdateAssetTransactionResponse2 = UpdateAssetTransactionResponses[keyof UpdateAssetTransactionResponses]
 
 export type DeleteCategoriesData = {
     body?: never
@@ -3459,6 +4765,49 @@ export type GetImportTransactionsByIdResponses = {
 export type GetImportTransactionsByIdResponse =
     GetImportTransactionsByIdResponses[keyof GetImportTransactionsByIdResponses]
 
+export type ApproveImportTransactionsData = {
+    /**
+     * List of transactions with their new statuses
+     */
+    body: ApproveImportTransactionsRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/{id}/transactions/approve'
+}
+
+export type ApproveImportTransactionsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type ApproveImportTransactionsError = ApproveImportTransactionsErrors[keyof ApproveImportTransactionsErrors]
+
+export type ApproveImportTransactionsResponses = {
+    /**
+     * Transactions updated
+     */
+    200: ApproveImportTransactionsResponse
+}
+
+export type ApproveImportTransactionsResponse2 =
+    ApproveImportTransactionsResponses[keyof ApproveImportTransactionsResponses]
+
 export type CreateImportTemplateData = {
     body?: never
     path: {
@@ -3532,6 +4881,223 @@ export type CompleteImportResponses = {
 }
 
 export type CompleteImportResponse = CompleteImportResponses[keyof CompleteImportResponses]
+
+export type RollbackImportData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/imports/rollback/{id}'
+}
+
+export type RollbackImportErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Import not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type RollbackImportError = RollbackImportErrors[keyof RollbackImportErrors]
+
+export type RollbackImportResponses = {
+    /**
+     * Import rolled back
+     */
+    200: UpdateImportResponse
+}
+
+export type RollbackImportResponse = RollbackImportResponses[keyof RollbackImportResponses]
+
+export type GetMarketDataProvidersData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/market-data/providers'
+}
+
+export type GetMarketDataProvidersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetMarketDataProvidersError = GetMarketDataProvidersErrors[keyof GetMarketDataProvidersErrors]
+
+export type GetMarketDataProvidersResponses = {
+    /**
+     * Provider list
+     */
+    200: GetMarketDataProvidersResponse
+}
+
+export type GetMarketDataProvidersResponse2 = GetMarketDataProvidersResponses[keyof GetMarketDataProvidersResponses]
+
+export type DeleteMarketDataProviderCredentialData = {
+    body?: never
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/market-data/providers/{providerId}/credential'
+}
+
+export type DeleteMarketDataProviderCredentialErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteMarketDataProviderCredentialError =
+    DeleteMarketDataProviderCredentialErrors[keyof DeleteMarketDataProviderCredentialErrors]
+
+export type DeleteMarketDataProviderCredentialResponses = {
+    /**
+     * Credential deleted
+     */
+    200: DeleteMarketDataProviderCredentialResponse
+}
+
+export type DeleteMarketDataProviderCredentialResponse2 =
+    DeleteMarketDataProviderCredentialResponses[keyof DeleteMarketDataProviderCredentialResponses]
+
+export type SaveMarketDataProviderCredentialData = {
+    body?: UpdateMarketDataProviderCredentialRequest
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/market-data/providers/{providerId}/credential'
+}
+
+export type SaveMarketDataProviderCredentialErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type SaveMarketDataProviderCredentialError =
+    SaveMarketDataProviderCredentialErrors[keyof SaveMarketDataProviderCredentialErrors]
+
+export type SaveMarketDataProviderCredentialResponses = {
+    /**
+     * Credential saved
+     */
+    200: UpdateMarketDataProviderCredentialResponse
+}
+
+export type SaveMarketDataProviderCredentialResponse =
+    SaveMarketDataProviderCredentialResponses[keyof SaveMarketDataProviderCredentialResponses]
+
+export type SearchMarketInstrumentsData = {
+    body?: never
+    path?: never
+    query: {
+        providerId?: string
+        assetType?: AssetTypeEnum
+        q: string
+        limit?: number
+    }
+    url: '/market-data/instruments'
+}
+
+export type SearchMarketInstrumentsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type SearchMarketInstrumentsError = SearchMarketInstrumentsErrors[keyof SearchMarketInstrumentsErrors]
+
+export type SearchMarketInstrumentsResponses = {
+    /**
+     * Instrument list
+     */
+    200: SearchMarketInstrumentsResponse
+}
+
+export type SearchMarketInstrumentsResponse2 = SearchMarketInstrumentsResponses[keyof SearchMarketInstrumentsResponses]
+
+export type GetMarketQuotesData = {
+    body?: never
+    path?: never
+    query: {
+        providerId?: string
+        assetType?: AssetTypeEnum
+        symbols: string | Array<string>
+    }
+    url: '/market-data/quotes'
+}
+
+export type GetMarketQuotesErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetMarketQuotesError = GetMarketQuotesErrors[keyof GetMarketQuotesErrors]
+
+export type GetMarketQuotesResponses = {
+    /**
+     * Quote list
+     */
+    200: GetMarketQuotesResponse
+}
+
+export type GetMarketQuotesResponse2 = GetMarketQuotesResponses[keyof GetMarketQuotesResponses]
 
 export type GetDashboardLayoutData = {
     body?: never
@@ -3609,6 +5175,44 @@ export type UpdateDashboardLayoutResponses = {
 }
 
 export type UpdateDashboardLayoutResponse2 = UpdateDashboardLayoutResponses[keyof UpdateDashboardLayoutResponses]
+
+export type CreateSnapshotAccountBalanceData = {
+    /**
+     * Snapshot account balance data to create
+     */
+    body: CreateSnapshotAccountBalanceRequest
+    path?: never
+    query?: never
+    url: '/snapshots/account-balance'
+}
+
+export type CreateSnapshotAccountBalanceErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateSnapshotAccountBalanceError =
+    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
+
+export type CreateSnapshotAccountBalanceResponses = {
+    /**
+     * Snapshot account balance created
+     */
+    200: CreateSnapshotAccountBalanceResponse
+}
+
+export type CreateSnapshotAccountBalanceResponse2 =
+    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
 
 export type GetTrendReportData = {
     body?: never
@@ -5902,123 +7506,3 @@ export type GetAuthErrorResponses = {
 }
 
 export type GetAuthErrorResponse = GetAuthErrorResponses[keyof GetAuthErrorResponses]
-
-export type ApproveImportTransactionsData = {
-    /**
-     * List of transactions with their new statuses
-     */
-    body: ApproveImportTransactionsRequest
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/imports/{id}/transactions/approve'
-}
-
-export type ApproveImportTransactionsErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Import not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type ApproveImportTransactionsError = ApproveImportTransactionsErrors[keyof ApproveImportTransactionsErrors]
-
-export type ApproveImportTransactionsResponses = {
-    /**
-     * Transactions updated
-     */
-    200: ApproveImportTransactionsResponse
-}
-
-export type ApproveImportTransactionsResponse2 =
-    ApproveImportTransactionsResponses[keyof ApproveImportTransactionsResponses]
-
-export type CreateSnapshotAccountBalanceData = {
-    /**
-     * Snapshot account balance data to create
-     */
-    body: CreateSnapshotAccountBalanceRequest
-    path?: never
-    query?: never
-    url: '/snapshots/account-balance'
-}
-
-export type CreateSnapshotAccountBalanceErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSnapshotAccountBalanceError =
-    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
-
-export type CreateSnapshotAccountBalanceResponses = {
-    /**
-     * Snapshot account balance created
-     */
-    200: CreateSnapshotAccountBalanceResponse
-}
-
-export type CreateSnapshotAccountBalanceResponse2 =
-    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
-
-export type RollbackImportData = {
-    body?: never
-    path: {
-        id: string
-    }
-    query?: never
-    url: '/imports/rollback/{id}'
-}
-
-export type RollbackImportErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Import not found
-     */
-    404: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type RollbackImportError = RollbackImportErrors[keyof RollbackImportErrors]
-
-export type RollbackImportResponses = {
-    /**
-     * Import rolled back
-     */
-    200: UpdateImportResponse
-}
-
-export type RollbackImportResponse = RollbackImportResponses[keyof RollbackImportResponses]

@@ -9,7 +9,7 @@ import { CreateSnapshotAccountBalanceRequest, SnapshotAccountBalance } from '@po
 
 const formSchema = z.object({
     accountId: z.string().uuid(),
-    snapshotDate: z.string().date(),
+    snapshotDate: z.string().string(),
     balance: z.number()
 })
 

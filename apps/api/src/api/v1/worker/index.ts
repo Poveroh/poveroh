@@ -1,5 +1,5 @@
 import { createJobDispatcher, createJobWorker } from '@poveroh/queue'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 import { getRedisConnectionConfig } from '../../../utils/redis'
 import { importJobHandlers } from './jobs/import.handlers'
 import { snapshotJobHandlers } from './jobs/snapshot.handlers'

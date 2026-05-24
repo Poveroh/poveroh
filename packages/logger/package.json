@@ -10,10 +10,25 @@
             "import": "./dist/index.js",
             "require": "./dist/index.js"
         },
+        "./server": {
+            "types": "./dist/server/server.d.ts",
+            "import": "./dist/server/server.js",
+            "require": "./dist/server/server.js"
+        },
+        "./browser": {
+            "types": "./dist/client/browser.d.ts",
+            "import": "./dist/client/browser.js",
+            "require": "./dist/client/browser.js"
+        },
         "./telemetry": {
-            "types": "./dist/telemetry.d.ts",
-            "import": "./dist/telemetry.js",
-            "require": "./dist/telemetry.js"
+            "types": "./dist/server/telemetry.d.ts",
+            "import": "./dist/server/telemetry.js",
+            "require": "./dist/server/telemetry.js"
+        },
+        "./telemetry-next": {
+            "types": "./dist/client/telemetry.d.ts",
+            "import": "./dist/client/telemetry.js",
+            "require": "./dist/client/telemetry.js"
         }
     },
     "private": true,
@@ -33,6 +48,14 @@
         "@opentelemetry/winston-transport": "^0.13.0",
         "@poveroh/types": "*",
         "winston": "^3.17.0"
+    },
+    "peerDependencies": {
+        "@vercel/otel": "^1.13.0"
+    },
+    "peerDependenciesMeta": {
+        "@vercel/otel": {
+            "optional": true
+        }
     },
     "devDependencies": {
         "@poveroh/tsconfig": "*",

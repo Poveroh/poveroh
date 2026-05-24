@@ -19,9 +19,19 @@ try {
         return match ? match[1] : null
     }
 
+    const setEnvValue = (key, value) => {
+        const nextLine = `${key}=${value}`
+        if (envContent.match(new RegExp(`^${key}=.*$`, 'm'))) {
+            envContent = envContent.replace(new RegExp(`^${key}=.*$`, 'm'), nextLine)
+            return
+        }
+
+        envContent = `${envContent.trimEnd()}\n${nextLine}\n`
+    }
+
     if (!getEnvValue('JWT_KEY')) {
         const jwtKey = crypto.randomBytes(32).toString('hex')
-        envContent = envContent.replace(/^JWT_KEY=.*$/m, `JWT_KEY=${jwtKey}`)
+        setEnvValue('JWT_KEY', jwtKey)
         console.log('Generated new JWT_KEY and added to .env')
         isEdited = true
     }

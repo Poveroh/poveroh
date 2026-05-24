@@ -5,6 +5,6 @@ export type SidebarItem = {
 }
 
 export type SidebarSection = {
-    title: string
+    title?: string
     items: SidebarItem[]
 }

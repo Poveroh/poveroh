@@ -1,5 +1,5 @@
 import type { DomainEventHandler, DomainEventName, DomainEventPayloads } from '@/types'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 
 class EventBus {
     private readonly handlers = new Map<DomainEventName, DomainEventHandler<DomainEventName>[]>()
