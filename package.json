@@ -87,5 +87,11 @@
     "dependencies": {
         "csv-parser": "^3.2.0",
         "zod": "^4.3.6"
+    },
+    "overrides": {
+        "fast-xml-parser": "^5.7.0",
+        "uuid": "^11.1.1",
+        "@hono/node-server": "^1.19.13",
+        "postcss": "^8.5.10"
     }
 }

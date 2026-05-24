@@ -5,7 +5,7 @@ import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http'
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics'
 import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
-import { Resource } from '@opentelemetry/resources'
+import { resourceFromAttributes } from '@opentelemetry/resources'
 
 const isSignozEnabled = process.env.SIGNOZ_ENABLED === 'true' || process.env.SIGNOZ_ENABLED === '1'
 
@@ -17,7 +17,7 @@ if (isSignozEnabled) {
     const serviceNamespace = 'poveroh'
     const environment = process.env.NODE_ENV || 'development'
 
-    const resource = new Resource({
+    const resource = resourceFromAttributes({
         'service.name': serviceName,
         'service.namespace': serviceNamespace,
         'service.version': process.env.npm_package_version || '0.0.0',
