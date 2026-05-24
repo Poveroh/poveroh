@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { fromNodeHeaders } from 'better-auth/node'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 import { type User } from '@poveroh/types'
 import { auth } from '@/lib'
 import { contextService } from '@/v1/modules/base/context.service'

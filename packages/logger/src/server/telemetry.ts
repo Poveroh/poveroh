@@ -7,10 +7,12 @@ import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs'
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'
 import { Resource } from '@opentelemetry/resources'
 
-const enabled = process.env.SIGNOZ_ENABLED === 'true' || process.env.SIGNOZ_ENABLED === '1'
+const isSignozEnabled = process.env.SIGNOZ_ENABLED === 'true' || process.env.SIGNOZ_ENABLED === '1'
 
-if (enabled) {
+if (isSignozEnabled) {
     const endpoint = process.env.SIGNOZ_ENDPOINT || 'http://localhost:4318'
+    // `OTEL_SERVICE_NAME` is the standard OpenTelemetry env knob; we honour it so different
+    // Node services (api, worker, ...) sharing this entrypoint can report distinct names.
     const serviceName = 'poveroh-api'
     const serviceNamespace = 'poveroh'
     const environment = process.env.NODE_ENV || 'development'

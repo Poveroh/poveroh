@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import { HttpError } from './errors'
 import { ApiResponseOptions } from '@/src/types/response'
-import { logger } from '@poveroh/logger'
+import { logger } from '@poveroh/logger/server'
 
 export class ResponseHelper {
     /**

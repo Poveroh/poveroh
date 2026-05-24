@@ -11,7 +11,7 @@ import {
     UpdateMarketableAssetRequestSchema
 } from '@poveroh/schemas'
 import type { MarketableAssetForm, CreateMarketableAssetRequest, UpdateMarketableAssetRequest } from '@poveroh/types'
-import logger from '@/lib/logger'
+import { logger } from '@poveroh/logger/browser'
 import { MarketableAssetFormProps } from '@/types'
 
 export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {

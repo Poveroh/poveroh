@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 
-import logger from '@/lib/logger'
+import { logger } from '@poveroh/logger/browser'
 import { ImportForm } from '@poveroh/types'
 import { ImportFormSchema } from '@poveroh/schemas'
 import { ImportFormProps } from '@/types'

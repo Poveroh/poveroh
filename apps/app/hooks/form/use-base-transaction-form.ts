@@ -3,7 +3,7 @@ import { useForm, FieldValues, Path, DefaultValues } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useError } from '@/hooks/use-error'
-import logger from '@/lib/logger'
+import { logger } from '@poveroh/logger/browser'
 import { CreateUpdateTransactionRequest } from '@poveroh/types'
 /**
  * Custom hook for managing base transaction form state and operations.
