@@ -13,8 +13,11 @@
         "@poveroh/contracts": "*"
     },
     "peerDependencies": {
+        "lucide-react": "^0.456.0",
         "react": "^19.0.0",
-        "react-hook-form": "^7.54.2",
-        "lucide-react": "^0.456.0"
+        "react-hook-form": "^7.54.2"
+    },
+    "devDependencies": {
+        "@types/node": "^22.19.19"
     }
 }

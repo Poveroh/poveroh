@@ -1,14 +1,10 @@
 import { BadRequestError } from '@/utils'
-import {
-    CREDENTIAL_PAYLOAD_ALGO_V1,
-    decryptPayloadWithApplicationSecret,
-    encryptPayloadWithApplicationSecret,
-    toPrismaBytes
-} from '@/utils'
+import { decryptPayloadWithApplicationSecret, encryptPayloadWithApplicationSecret, toPrismaBytes } from '@/utils'
 import config from '@/utils/environment'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { isKnownProvider } from '@/v1/content/template/market-data-providers'
 import { MarketDataRepository } from '../data/market-data.repository'
+import { CREDENTIAL_PAYLOAD_ALGO_V1 } from '@poveroh/types'
 
 type CredentialPayload = Record<string, string>
 

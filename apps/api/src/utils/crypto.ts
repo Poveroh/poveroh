@@ -1,31 +1,15 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import { InternalServerError, UnauthorizedError } from './errors'
-
-// Algorithm identifiers persisted with each ciphertext so the scheme can evolve later
-// without losing the ability to decrypt records produced by older versions.
-export const KEY_ENVELOPE_ALGO_V1 = 'scrypt-aes256gcm-v1'
-export const PAYLOAD_ALGO_V1 = 'aes256gcm-v1'
-export const CREDENTIAL_PAYLOAD_ALGO_V1 = 'app-secret-aes256gcm-v1'
-
-const SCRYPT_PARAMS = { N: 16384, r: 8, p: 1 } as const
-const KEY_BYTES = 32
-const SALT_BYTES = 16
-const IV_BYTES = 12
-const AUTH_TAG_BYTES = 16
-
-export type EncryptedRecord = {
-    ciphertext: Buffer
-    iv: Buffer
-    authTag: Buffer
-}
-
-export type EncryptionEnvelope = {
-    salt: Buffer
-    wrappedKey: Buffer
-    wrapIv: Buffer
-    wrapTag: Buffer
-    algo: string
-}
+import {
+    KEY_BYTES,
+    SCRYPT_PARAMS,
+    EncryptedRecord,
+    IV_BYTES,
+    AUTH_TAG_BYTES,
+    EncryptionEnvelope,
+    SALT_BYTES,
+    KEY_ENVELOPE_ALGO_V1
+} from '@poveroh/types'
 
 // Derives a 32 byte symmetric key from a password-equivalent secret using scrypt.
 // The input is expected to already be a hashed password (the frontend sends sha256(plaintext)),
