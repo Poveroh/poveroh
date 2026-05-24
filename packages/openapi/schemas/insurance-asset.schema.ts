@@ -57,9 +57,8 @@ export const CreateInsuranceAssetRequestSchema = z
 /**
  * Response schema for creating a new insurance asset
  */
-export const CreateInsuranceAssetResponseSchema = SuccessResponseSchema(InsuranceAssetDataSchema).openapi(
-    'CreateInsuranceAssetResponse'
-)
+export const CreateInsuranceAssetResponseSchema =
+    SuccessResponseSchema(InsuranceAssetDataSchema).openapi('CreateInsuranceAssetResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -84,9 +83,8 @@ export const UpdateInsuranceAssetRequestSchema = z
 /**
  * Response schema for updating insurance asset details
  */
-export const UpdateInsuranceAssetResponseSchema = SuccessResponseSchema(InsuranceAssetDataSchema).openapi(
-    'UpdateInsuranceAssetResponse'
-)
+export const UpdateInsuranceAssetResponseSchema =
+    SuccessResponseSchema(InsuranceAssetDataSchema).openapi('UpdateInsuranceAssetResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

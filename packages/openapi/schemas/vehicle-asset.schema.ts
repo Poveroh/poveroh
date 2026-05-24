@@ -59,9 +59,8 @@ export const CreateVehicleAssetRequestSchema = z
 /**
  * Response schema for creating a new vehicle asset
  */
-export const CreateVehicleAssetResponseSchema = SuccessResponseSchema(VehicleAssetDataSchema).openapi(
-    'CreateVehicleAssetResponse'
-)
+export const CreateVehicleAssetResponseSchema =
+    SuccessResponseSchema(VehicleAssetDataSchema).openapi('CreateVehicleAssetResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -87,9 +86,8 @@ export const UpdateVehicleAssetRequestSchema = z
 /**
  * Response schema for updating vehicle asset details
  */
-export const UpdateVehicleAssetResponseSchema = SuccessResponseSchema(VehicleAssetDataSchema).openapi(
-    'UpdateVehicleAssetResponse'
-)
+export const UpdateVehicleAssetResponseSchema =
+    SuccessResponseSchema(VehicleAssetDataSchema).openapi('UpdateVehicleAssetResponse')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
