@@ -75,58 +75,6 @@ In addition to individual transactions and bank account aggregation, the goal is
 
 - <a href="https://www.postgresql.org/">PostgreSQL</a>
 
-## 🧱 Backend Architecture
-
-Poveroh uses a modular monolith backend: the API remains simple to self-host and operate, while the code is organized around finance domains instead of broad technical layers.
-
-Backend modules live under `apps/api/src/api/v1/modules/`. A module owns its HTTP controller, service workflow, repository queries, Zod schema exports, response mapper, and local types. Existing route paths stay REST-compatible, but new backend work should grow inside modules such as `financial-accounts`, `categories`, `subscriptions`, `transactions`, `imports`, `snapshots`, `dashboard`, and `reports`.
-
-The layer boundaries are intentionally explicit:
-
-- Controllers handle HTTP concerns only: parsing request data, validating with Zod schemas, extracting the authenticated user, calling services, and returning `ResponseHelper` envelopes.
-- Services contain business workflows, ownership decisions, file handling orchestration, calculations, and lightweight domain event emission.
-- Repositories are the only layer that talks to Prisma. They centralize `select`/`include` shapes, filtering, pagination, ownership scoping, soft-delete filters, and transactions.
-- Mappers convert database records into API DTOs so raw Prisma entities are not exposed directly.
-
-Prisma access is isolated behind repositories. Repository methods must scope financial data by `userId` and automatically exclude records with `deletedAt` unless a workflow explicitly needs historical records. Financial history is soft-deleted by default so transactions, subscriptions, accounts, assets, and snapshots remain auditable.
-
-Reusable contracts and validation live in `packages/schemas` and are shared by OpenAPI generation, API validation, and frontend forms. API responses use the standard envelope:
-
-```ts
-{
-    success: boolean
-    message?: string
-    data: T
-    meta?: {
-        pagination?: PaginationMeta
-    }
-}
-```
-
-The backend also includes lightweight internal domain events in `apps/api/src/api/v1/shared/events`. Events such as `transaction.created`, `financial-account.updated`, and `snapshot.generated` carry minimal IDs and user scope so side effects like cache invalidation, dashboard refreshes, analytics, or background jobs can evolve without coupling them directly to write services.
-
-Dashboard and report features follow a CQRS-light approach: CRUD services handle write workflows, while dashboard/report modules should own read models and financial aggregations. Snapshots represent historical wealth state and should be treated as immutable financial records once generated.
-
-## ⚙️ Background Jobs Architecture
-
-Poveroh uses BullMQ for background jobs, with the implementation isolated behind `@poveroh/queue`. Application and domain code depend on a small `JobDispatcher` interface instead of importing BullMQ directly, so a future RabbitMQ adapter can replace the BullMQ adapter without changing services, controllers, or job payload contracts.
-
-The queue package is organized around explicit contracts:
-
-- `packages/queue/src/interfaces/` defines the provider-agnostic dispatcher API.
-- `packages/queue/src/jobs/` defines the typed job registry and payloads.
-- `packages/queue/src/adapters/bullmq/` contains all BullMQ-specific code.
-- `apps/worker/` consumes jobs and calls application services to execute workflows.
-
-Redis configuration is reused from the existing API Redis infrastructure in `apps/api/src/utils/redis.ts`. The API exposes the same Redis URL/password configuration used by the cache client, and the BullMQ adapter receives that configuration through the queue abstraction. New queue code should not read Redis env values independently or introduce a parallel Redis configuration system.
-
-Domain events and background jobs are intentionally separate:
-
-- `EventEmitter` is for lightweight local reactions such as cache invalidation, websocket updates, and synchronous side effects.
-- BullMQ jobs are for heavier or delayed workflows such as imports, snapshot generation, market sync, notifications, cleanup, and scheduled processing.
-
-Workers should orchestrate workflows and call services; they must not access Prisma directly or duplicate business logic. Scheduler code lives under `apps/worker/src/scheduler/` so cron-like behavior does not leak into domain services.
-
 <!-- Color Reference -->
 
 ## :art: Color Reference
