@@ -29,6 +29,7 @@ next-env.d.ts
 out/
 build
 dist
+*.swp
 
 # OpenAPI generated cache
 packages/openapi/better-auth-openapi.json

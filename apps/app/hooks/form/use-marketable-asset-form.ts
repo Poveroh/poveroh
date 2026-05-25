@@ -25,7 +25,7 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
         () => ({
             transactionType: 'BUY',
             symbol: initialData ? initialData.marketable?.symbol || initialData.title : defaultSymbol,
-            date: initialData?.currentValueAsOf?.split('T')[0] ?? '',
+            date: initialData?.currentValueAsOf?.split('T')[0] ?? new Date().toISOString(),
             quantity: 0,
             unitPrice: 0,
             fees: 0,

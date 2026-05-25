@@ -1,9 +1,9 @@
 import { MODAL_IDS } from '@/types/constant'
-import { MarketableDialog } from './marketable-asset-dialog'
+import { BaseMarketableDialog } from './base-marketable-asset-dialog'
 
 export function CryptoDialog() {
     return (
-        <MarketableDialog
+        <BaseMarketableDialog
             modalId={MODAL_IDS.CRYPTO_DIALOG}
             title='Add crypto'
             assetType='CRYPTOCURRENCY'

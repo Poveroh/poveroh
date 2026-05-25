@@ -18,14 +18,14 @@ import type {
     UpdateMarketableAssetRequest
 } from '@poveroh/types'
 
-type MarketableDialogProps = {
+type BaseMarketableDialogProps = {
     modalId: string
     title: string
     assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
     defaultSymbol: string
 }
 
-export function MarketableDialog({ modalId, title, assetType, defaultSymbol }: MarketableDialogProps) {
+export function BaseMarketableDialog({ modalId, title, assetType, defaultSymbol }: BaseMarketableDialogProps) {
     const t = useTranslations()
     const { createMarketableMutation, updateMarketableMutation } = useAsset()
     const { handleError } = useError()
