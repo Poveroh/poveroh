@@ -15,6 +15,7 @@ import {
     registerSubcategoryPath,
     registerSubscriptionPath,
     registerTransactionPath,
+    registerUserActivityPath,
     registerUserPath
 } from './paths'
 
@@ -40,6 +41,7 @@ const registerAllSchemas = (registry: OpenAPIRegistry) => {
 export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerStatusPath(registry)
     registerUserPath(registry)
+    registerUserActivityPath(registry)
     registerAssetPath(registry)
     registerMarketableAssetPath(registry)
     registerAssetTransactionPath(registry)

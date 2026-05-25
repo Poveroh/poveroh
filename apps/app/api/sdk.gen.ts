@@ -119,6 +119,9 @@ import type {
     GetAuthDeleteUserCallbackData,
     GetAuthDeleteUserCallbackErrors,
     GetAuthDeleteUserCallbackResponses,
+    GetAuthenticatedUserActivitiesData,
+    GetAuthenticatedUserActivitiesErrors,
+    GetAuthenticatedUserActivitiesResponses,
     GetAuthenticatedUserData,
     GetAuthenticatedUserErrors,
     GetAuthenticatedUserPreferencesData,
@@ -404,6 +407,24 @@ export const updateAuthenticatedUserPreferences = <ThrowOnError extends boolean 
             'Content-Type': 'application/json',
             ...options?.headers
         }
+    })
+
+/**
+ * Get authenticated user activities
+ *
+ * Returns the audit-log activities recorded for the authenticated user, ordered by most recent.
+ */
+export const getAuthenticatedUserActivities = <ThrowOnError extends boolean = false>(
+    options?: Options<GetAuthenticatedUserActivitiesData, ThrowOnError>
+) =>
+    (options?.client ?? client).get<
+        GetAuthenticatedUserActivitiesResponses,
+        GetAuthenticatedUserActivitiesErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/user/me/activities',
+        ...options
     })
 
 /**

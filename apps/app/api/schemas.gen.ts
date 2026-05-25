@@ -2489,6 +2489,54 @@ export const OnBoardingStepEnumSchema = {
     enum: ['EMAIL', 'GENERALITES', 'PREFERENCES', 'COMPLETED']
 } as const
 
+export const UserActivityTypeEnumSchema = {
+    type: 'string',
+    enum: [
+        'USER_SIGNED_UP',
+        'USER_SIGNED_IN',
+        'USER_SIGNED_OUT',
+        'USER_UPDATED',
+        'USER_PREFERENCES_UPDATED',
+        'USER_PASSWORD_CHANGED',
+        'USER_EMAIL_VERIFIED',
+        'USER_ONBOARDING_COMPLETED',
+        'CATEGORY_CREATED',
+        'CATEGORY_UPDATED',
+        'CATEGORY_DELETED',
+        'SUBCATEGORY_CREATED',
+        'SUBCATEGORY_UPDATED',
+        'SUBCATEGORY_DELETED',
+        'TRANSACTION_CREATED',
+        'TRANSACTION_UPDATED',
+        'TRANSACTION_DELETED',
+        'TRANSFER_CREATED',
+        'TRANSFER_UPDATED',
+        'TRANSFER_DELETED',
+        'SUBSCRIPTION_CREATED',
+        'SUBSCRIPTION_UPDATED',
+        'SUBSCRIPTION_DELETED',
+        'FINANCIAL_ACCOUNT_CREATED',
+        'FINANCIAL_ACCOUNT_UPDATED',
+        'FINANCIAL_ACCOUNT_DELETED',
+        'ASSET_CREATED',
+        'ASSET_UPDATED',
+        'ASSET_DELETED',
+        'ASSET_TRANSACTION_CREATED',
+        'ASSET_TRANSACTION_UPDATED',
+        'ASSET_TRANSACTION_DELETED',
+        'LIABILITY_CREATED',
+        'LIABILITY_UPDATED',
+        'LIABILITY_DELETED',
+        'IMPORT_CREATED',
+        'IMPORT_UPDATED',
+        'IMPORT_DELETED',
+        'SNAPSHOT_GENERATED',
+        'DASHBOARD_LAYOUT_UPDATED',
+        'MARKET_DATA_CREDENTIAL_UPDATED',
+        'OTHER'
+    ]
+} as const
+
 export const CountriesEnumSchema = {
     type: 'string',
     enum: [
@@ -6485,6 +6533,163 @@ export const QueryTransactionFiltersSchema = {
     properties: {
         filter: {
             $ref: '#/components/schemas/TransactionFilters'
+        },
+        options: {
+            $ref: '#/components/schemas/FilterOptions'
+        }
+    }
+} as const
+
+export const UserActivitySchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        userId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/UserActivityTypeEnum'
+        },
+        entityType: {
+            type: 'string',
+            nullable: true
+        },
+        entityId: {
+            type: 'string',
+            nullable: true
+        },
+        metadata: {
+            type: 'object',
+            nullable: true,
+            additionalProperties: {
+                nullable: true
+            }
+        },
+        userAgent: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string'
+        }
+    },
+    required: ['id', 'userId', 'type', 'entityType', 'entityId', 'metadata', 'userAgent', 'createdAt']
+} as const
+
+export const UserActivityDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        type: {
+            $ref: '#/components/schemas/UserActivityTypeEnum'
+        },
+        entityType: {
+            type: 'string',
+            nullable: true
+        },
+        entityId: {
+            type: 'string',
+            nullable: true
+        },
+        metadata: {
+            type: 'object',
+            nullable: true,
+            additionalProperties: {
+                nullable: true
+            }
+        },
+        userAgent: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string'
+        }
+    },
+    required: ['id', 'type', 'entityType', 'entityId', 'metadata', 'userAgent', 'createdAt']
+} as const
+
+export const GetUserActivityListResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/UserActivityData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CreateUserActivityRequestSchema = {
+    type: 'object',
+    properties: {
+        type: {
+            $ref: '#/components/schemas/UserActivityTypeEnum'
+        },
+        entityType: {
+            type: 'string',
+            nullable: true
+        },
+        entityId: {
+            type: 'string',
+            nullable: true
+        },
+        metadata: {
+            type: 'object',
+            nullable: true,
+            additionalProperties: {
+                nullable: true
+            }
+        },
+        userAgent: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['type']
+} as const
+
+export const UserActivityFiltersSchema = {
+    type: 'object',
+    properties: {
+        type: {
+            $ref: '#/components/schemas/UserActivityTypeEnum'
+        },
+        entityType: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        entityId: {
+            $ref: '#/components/schemas/StringFilter'
+        },
+        createdAt: {
+            $ref: '#/components/schemas/DateFilter'
+        }
+    }
+} as const
+
+export const QueryUserActivityFiltersSchema = {
+    type: 'object',
+    properties: {
+        filter: {
+            $ref: '#/components/schemas/UserActivityFilters'
         },
         options: {
             $ref: '#/components/schemas/FilterOptions'
