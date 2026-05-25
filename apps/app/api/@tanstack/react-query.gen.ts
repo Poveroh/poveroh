@@ -44,6 +44,7 @@ import {
     getAuthCallbackById,
     getAuthDeleteUserCallback,
     getAuthenticatedUser,
+    getAuthenticatedUserActivities,
     getAuthenticatedUserPreferences,
     getAuthError,
     getAuthOk,
@@ -223,6 +224,9 @@ import type {
     GetAuthDeleteUserCallbackData,
     GetAuthDeleteUserCallbackError,
     GetAuthDeleteUserCallbackResponse,
+    GetAuthenticatedUserActivitiesData,
+    GetAuthenticatedUserActivitiesError,
+    GetAuthenticatedUserActivitiesResponse,
     GetAuthenticatedUserData,
     GetAuthenticatedUserError,
     GetAuthenticatedUserPreferencesData,
@@ -598,6 +602,33 @@ export const updateAuthenticatedUserPreferencesMutation = (
     }
     return mutationOptions
 }
+
+export const getAuthenticatedUserActivitiesQueryKey = (options?: Options<GetAuthenticatedUserActivitiesData>) =>
+    createQueryKey('getAuthenticatedUserActivities', options)
+
+/**
+ * Get authenticated user activities
+ *
+ * Returns the audit-log activities recorded for the authenticated user, ordered by most recent.
+ */
+export const getAuthenticatedUserActivitiesOptions = (options?: Options<GetAuthenticatedUserActivitiesData>) =>
+    queryOptions<
+        GetAuthenticatedUserActivitiesResponse,
+        GetAuthenticatedUserActivitiesError,
+        GetAuthenticatedUserActivitiesResponse,
+        ReturnType<typeof getAuthenticatedUserActivitiesQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getAuthenticatedUserActivities({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getAuthenticatedUserActivitiesQueryKey(options)
+    })
 
 /**
  * Delete all assets

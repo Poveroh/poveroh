@@ -1,5 +1,6 @@
 import { contextService, type ContextService } from './context.service'
 import { MediaService } from './media.service'
+import { UserActivityService } from '../users/activities/user-activity.service'
 
 /**
  * BaseService provides common functionality for all services, such as user context and file handling.
@@ -22,5 +23,14 @@ export class BaseService {
      */
     protected get media(): MediaService {
         return new MediaService(this.context.currentUser.id, this.location)
+    }
+
+    /**
+     * Provides access to the user-activity service so child services can record audit-log entries
+     * (e.g. `await this.activities.record({ type: 'CATEGORY_CREATED', entityId })`).
+     * @returns A fresh UserActivityService instance bound to the current request context.
+     */
+    protected get activities(): UserActivityService {
+        return new UserActivityService()
     }
 }

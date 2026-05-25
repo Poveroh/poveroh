@@ -1043,6 +1043,50 @@ export type DateFormatEnum =
 
 export type OnBoardingStepEnum = 'EMAIL' | 'GENERALITES' | 'PREFERENCES' | 'COMPLETED'
 
+export type UserActivityTypeEnum =
+    | 'USER_SIGNED_UP'
+    | 'USER_SIGNED_IN'
+    | 'USER_SIGNED_OUT'
+    | 'USER_UPDATED'
+    | 'USER_PREFERENCES_UPDATED'
+    | 'USER_PASSWORD_CHANGED'
+    | 'USER_EMAIL_VERIFIED'
+    | 'USER_ONBOARDING_COMPLETED'
+    | 'CATEGORY_CREATED'
+    | 'CATEGORY_UPDATED'
+    | 'CATEGORY_DELETED'
+    | 'SUBCATEGORY_CREATED'
+    | 'SUBCATEGORY_UPDATED'
+    | 'SUBCATEGORY_DELETED'
+    | 'TRANSACTION_CREATED'
+    | 'TRANSACTION_UPDATED'
+    | 'TRANSACTION_DELETED'
+    | 'TRANSFER_CREATED'
+    | 'TRANSFER_UPDATED'
+    | 'TRANSFER_DELETED'
+    | 'SUBSCRIPTION_CREATED'
+    | 'SUBSCRIPTION_UPDATED'
+    | 'SUBSCRIPTION_DELETED'
+    | 'FINANCIAL_ACCOUNT_CREATED'
+    | 'FINANCIAL_ACCOUNT_UPDATED'
+    | 'FINANCIAL_ACCOUNT_DELETED'
+    | 'ASSET_CREATED'
+    | 'ASSET_UPDATED'
+    | 'ASSET_DELETED'
+    | 'ASSET_TRANSACTION_CREATED'
+    | 'ASSET_TRANSACTION_UPDATED'
+    | 'ASSET_TRANSACTION_DELETED'
+    | 'LIABILITY_CREATED'
+    | 'LIABILITY_UPDATED'
+    | 'LIABILITY_DELETED'
+    | 'IMPORT_CREATED'
+    | 'IMPORT_UPDATED'
+    | 'IMPORT_DELETED'
+    | 'SNAPSHOT_GENERATED'
+    | 'DASHBOARD_LAYOUT_UPDATED'
+    | 'MARKET_DATA_CREDENTIAL_UPDATED'
+    | 'OTHER'
+
 export type CountriesEnum =
     | 'AFGHANISTAN'
     | 'ALBANIA'
@@ -2616,6 +2660,68 @@ export type QueryTransactionFilters = {
     options?: FilterOptions
 }
 
+export type UserActivity = {
+    id: string
+    userId: string
+    type: UserActivityTypeEnum
+    entityType: string | null
+    entityId: string | null
+    metadata: {
+        [key: string]: unknown
+    } | null
+    userAgent: string | null
+    createdAt: string
+}
+
+export type UserActivityData = {
+    id: string
+    type: UserActivityTypeEnum
+    entityType: string | null
+    entityId: string | null
+    metadata: {
+        [key: string]: unknown
+    } | null
+    userAgent: string | null
+    createdAt: string
+}
+
+export type GetUserActivityListResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<UserActivityData>
+}
+
+export type CreateUserActivityRequest = {
+    type: UserActivityTypeEnum
+    entityType?: string | null
+    entityId?: string | null
+    metadata?: {
+        [key: string]: unknown
+    } | null
+    userAgent?: string | null
+}
+
+export type UserActivityFilters = {
+    type?: UserActivityTypeEnum
+    entityType?: StringFilter
+    entityId?: StringFilter
+    createdAt?: DateFilter
+}
+
+export type QueryUserActivityFilters = {
+    filter?: UserActivityFilters
+    options?: FilterOptions
+}
+
 export type UserPreferences = {
     snapshotFrequency: SnapshotFrequencyEnum
     preferredCurrency: CurrencyEnum
@@ -3011,6 +3117,44 @@ export type UpdateAuthenticatedUserPreferencesResponses = {
 
 export type UpdateAuthenticatedUserPreferencesResponse =
     UpdateAuthenticatedUserPreferencesResponses[keyof UpdateAuthenticatedUserPreferencesResponses]
+
+export type GetAuthenticatedUserActivitiesData = {
+    body?: never
+    path?: never
+    query?: {
+        filter?: UserActivityFilters
+        options?: FilterOptions
+    }
+    url: '/user/me/activities'
+}
+
+export type GetAuthenticatedUserActivitiesErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetAuthenticatedUserActivitiesError =
+    GetAuthenticatedUserActivitiesErrors[keyof GetAuthenticatedUserActivitiesErrors]
+
+export type GetAuthenticatedUserActivitiesResponses = {
+    /**
+     * User activities found
+     */
+    200: GetUserActivityListResponse
+}
+
+export type GetAuthenticatedUserActivitiesResponse =
+    GetAuthenticatedUserActivitiesResponses[keyof GetAuthenticatedUserActivitiesResponses]
 
 export type DeleteAssetsData = {
     body?: never
