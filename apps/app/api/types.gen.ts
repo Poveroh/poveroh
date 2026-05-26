@@ -1043,48 +1043,36 @@ export type DateFormatEnum =
 
 export type OnBoardingStepEnum = 'EMAIL' | 'GENERALITES' | 'PREFERENCES' | 'COMPLETED'
 
-export type UserActivityTypeEnum =
-    | 'USER_SIGNED_UP'
-    | 'USER_SIGNED_IN'
-    | 'USER_SIGNED_OUT'
-    | 'USER_UPDATED'
-    | 'USER_PREFERENCES_UPDATED'
-    | 'USER_PASSWORD_CHANGED'
-    | 'USER_EMAIL_VERIFIED'
-    | 'USER_ONBOARDING_COMPLETED'
-    | 'CATEGORY_CREATED'
-    | 'CATEGORY_UPDATED'
-    | 'CATEGORY_DELETED'
-    | 'SUBCATEGORY_CREATED'
-    | 'SUBCATEGORY_UPDATED'
-    | 'SUBCATEGORY_DELETED'
-    | 'TRANSACTION_CREATED'
-    | 'TRANSACTION_UPDATED'
-    | 'TRANSACTION_DELETED'
-    | 'TRANSFER_CREATED'
-    | 'TRANSFER_UPDATED'
-    | 'TRANSFER_DELETED'
-    | 'SUBSCRIPTION_CREATED'
-    | 'SUBSCRIPTION_UPDATED'
-    | 'SUBSCRIPTION_DELETED'
-    | 'FINANCIAL_ACCOUNT_CREATED'
-    | 'FINANCIAL_ACCOUNT_UPDATED'
-    | 'FINANCIAL_ACCOUNT_DELETED'
-    | 'ASSET_CREATED'
-    | 'ASSET_UPDATED'
-    | 'ASSET_DELETED'
-    | 'ASSET_TRANSACTION_CREATED'
-    | 'ASSET_TRANSACTION_UPDATED'
-    | 'ASSET_TRANSACTION_DELETED'
-    | 'LIABILITY_CREATED'
-    | 'LIABILITY_UPDATED'
-    | 'LIABILITY_DELETED'
-    | 'IMPORT_CREATED'
-    | 'IMPORT_UPDATED'
-    | 'IMPORT_DELETED'
-    | 'SNAPSHOT_GENERATED'
-    | 'DASHBOARD_LAYOUT_UPDATED'
-    | 'MARKET_DATA_CREDENTIAL_UPDATED'
+export type UserActivityEntityEnum =
+    | 'USER'
+    | 'USER_PREFERENCES'
+    | 'CATEGORY'
+    | 'SUBCATEGORY'
+    | 'TRANSACTION'
+    | 'TRANSFER'
+    | 'SUBSCRIPTION'
+    | 'FINANCIAL_ACCOUNT'
+    | 'ASSET'
+    | 'ASSET_TRANSACTION'
+    | 'LIABILITY'
+    | 'IMPORT'
+    | 'SNAPSHOT'
+    | 'DASHBOARD_LAYOUT'
+    | 'MARKET_DATA_CREDENTIAL'
+    | 'OTHER'
+
+export type UserActivityActionEnum =
+    | 'CREATED'
+    | 'UPDATED'
+    | 'DELETED'
+    | 'GENERATED'
+    | 'SIGNED_UP'
+    | 'SIGNED_IN'
+    | 'SIGNED_OUT'
+    | 'PASSWORD_CHANGED'
+    | 'EMAIL_VERIFIED'
+    | 'ONBOARDING_COMPLETED'
+    | 'SYNCED'
     | 'OTHER'
 
 export type CountriesEnum =
@@ -2663,8 +2651,8 @@ export type QueryTransactionFilters = {
 export type UserActivity = {
     id: string
     userId: string
-    type: UserActivityTypeEnum
-    entityType: string | null
+    entityType: UserActivityEntityEnum
+    action: UserActivityActionEnum
     entityId: string | null
     metadata: {
         [key: string]: unknown
@@ -2675,8 +2663,8 @@ export type UserActivity = {
 
 export type UserActivityData = {
     id: string
-    type: UserActivityTypeEnum
-    entityType: string | null
+    entityType: UserActivityEntityEnum
+    action: UserActivityActionEnum
     entityId: string | null
     metadata: {
         [key: string]: unknown
@@ -2701,8 +2689,8 @@ export type GetUserActivityListResponse = {
 }
 
 export type CreateUserActivityRequest = {
-    type: UserActivityTypeEnum
-    entityType?: string | null
+    entityType: UserActivityEntityEnum
+    action: UserActivityActionEnum
     entityId?: string | null
     metadata?: {
         [key: string]: unknown
@@ -2711,9 +2699,9 @@ export type CreateUserActivityRequest = {
 }
 
 export type UserActivityFilters = {
-    type?: UserActivityTypeEnum
-    entityType?: StringFilter
-    entityId?: StringFilter
+    entityType?: UserActivityEntityEnum
+    action?: UserActivityActionEnum
+    entityId?: string
     createdAt?: DateFilter
 }
 

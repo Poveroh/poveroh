@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { DateFilter } from './DateFilter'
-import type { StringFilter } from './StringFilter'
-import type { UserActivityTypeEnum } from './UserActivityTypeEnum'
+import type { UserActivityActionEnum } from './UserActivityActionEnum'
+import type { UserActivityEntityEnum } from './UserActivityEntityEnum'
 export type UserActivityFilters = {
-    type?: UserActivityTypeEnum
-    entityType?: StringFilter
-    entityId?: StringFilter
+    entityType?: UserActivityEntityEnum
+    action?: UserActivityActionEnum
+    entityId?: string
     createdAt?: DateFilter
 }

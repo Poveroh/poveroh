@@ -16,10 +16,12 @@ export class AssetService extends BaseService {
      */
     async deleteAsset(id: string): Promise<void> {
         const userId = this.context.currentUser.id
+
+        const data = await this.assetRepository.findById(userId, id)
         const deleted = await this.assetRepository.softDelete(userId, id, new Date())
         if (!deleted) return
 
-        await eventBus.emit('asset.updated', { assetId: id, userId })
+        if (data) await eventBus.emit('asset.deleted', { userId, data })
     }
 
     /**

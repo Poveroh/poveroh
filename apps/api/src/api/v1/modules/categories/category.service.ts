@@ -27,7 +27,7 @@ export class CategoryService extends BaseService {
         }
 
         const category = await this.categoryRepository.create(userId, generatedId, payloadWithIcon)
-        await eventBus.emit('category.created', { categoryId: category.id, userId })
+        await eventBus.emit('category.created', { userId, data: category })
 
         return category
     }
@@ -54,7 +54,9 @@ export class CategoryService extends BaseService {
         const userId = this.context.currentUser.id
 
         await this.categoryRepository.update(userId, id, payload)
-        await eventBus.emit('category.updated', { categoryId: id, userId })
+
+        const data = await this.categoryRepository.findById(userId, id)
+        if (data) await eventBus.emit('category.updated', { userId, data })
     }
 
     /**
@@ -63,8 +65,11 @@ export class CategoryService extends BaseService {
      */
     async deleteCategory(id: string): Promise<void> {
         const userId = this.context.currentUser.id
+
+        const data = await this.categoryRepository.findById(userId, id)
         await this.categoryRepository.softDelete(userId, id, new Date())
-        await eventBus.emit('category.deleted', { categoryId: id, userId })
+
+        if (data) await eventBus.emit('category.deleted', { userId, data })
     }
 
     /**

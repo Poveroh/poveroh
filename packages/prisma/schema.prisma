@@ -1,1461 +1,1451 @@
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 // ===========================================================================
 // USER & AUTHENTICATION
 // ===========================================================================
 model User {
-    id                    String                         @id @default(uuid())
-    name                  String
-    surname               String
-    email                 String                         @unique
-    emailVerified         Boolean                        @default(false)
-    onBoardingStep        OnBoardingStep                 @default(GENERALITES)
-    onBoardingAt          DateTime?
-    image                 String?
-    createdAt             DateTime                       @default(now())
-    updatedAt             DateTime                       @updatedAt
-    deletedAt             DateTime?                      @db.Timestamptz
-    transactions          Transaction[]
-    transfers             Transfer[]
-    subscriptions         Subscription[]
-    categories            Category[]
-    financialAccounts     FinancialAccount[]
-    imports               Import[]
-    sessions              Session[]
-    accounts              Account[]
-    verifications         Verification[]
-    assets                Asset[]
-    liabilities           Liability[]
-    snapshots             Snapshot[]
-    dashboardLayout       DashboardLayout?
-    marketDataCredentials MarketDataProviderCredential[]
-    preferences           UserPreferences?
-    activities            UserActivity[]
+  id                    String                         @id @default(uuid())
+  name                  String
+  surname               String
+  email                 String                         @unique
+  emailVerified         Boolean                        @default(false)
+  onBoardingStep        OnBoardingStep                 @default(GENERALITES)
+  onBoardingAt          DateTime?
+  image                 String?
+  createdAt             DateTime                       @default(now())
+  updatedAt             DateTime                       @updatedAt
+  deletedAt             DateTime?                      @db.Timestamptz
+  transactions          Transaction[]
+  transfers             Transfer[]
+  subscriptions         Subscription[]
+  categories            Category[]
+  financialAccounts     FinancialAccount[]
+  imports               Import[]
+  sessions              Session[]
+  accounts              Account[]
+  verifications         Verification[]
+  assets                Asset[]
+  liabilities           Liability[]
+  snapshots             Snapshot[]
+  dashboardLayout       DashboardLayout?
+  marketDataCredentials MarketDataProviderCredential[]
+  preferences           UserPreferences?
+  activities            UserActivity[]
 
-    @@index([surname])
-    @@index([createdAt])
-    @@index([email])
+  @@index([surname])
+  @@index([createdAt])
+  @@index([email])
 }
 
 model UserActivity {
-    id         String           @id @default(uuid())
-    userId     String
-    type       UserActivityType
-    entityType String?
-    entityId   String?
-    metadata   Json?
-    userAgent  String?
-    createdAt  DateTime         @default(now())
+  id         String             @id @default(uuid())
+  userId     String
+  entityType UserActivityEntity
+  action     UserActivityAction
+  entityId   String?
+  metadata   Json?
+  userAgent  String?
+  createdAt  DateTime           @default(now())
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId, createdAt(sort: Desc)])
-    @@index([userId, type])
-    @@index([userId, entityType, entityId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, entityType])
+  @@index([userId, action])
+  @@index([userId, entityType, entityId])
 }
 
 model UserPreferences {
-    id                            String            @id @default(uuid())
-    userId                        String            @unique
-    snapshotFrequency             SnapshotFrequency @default(MONTHLY)
-    preferredCurrency             Currency          @default(EUR)
-    preferredLanguage             Language          @default(EN)
-    dateFormat                    DateFormat        @default(DD_MM_YYYY)
-    country                       Countries         @default(ITALY)
-    timezone                      Timezone          @default(ETC_UTC)
-    preferredMarketDataProviderId String?           @default("yahoo-finance")
-    createdAt                     DateTime          @default(now())
-    updatedAt                     DateTime          @updatedAt
+  id                            String            @id @default(uuid())
+  userId                        String            @unique
+  snapshotFrequency             SnapshotFrequency @default(MONTHLY)
+  preferredCurrency             Currency          @default(EUR)
+  preferredLanguage             Language          @default(EN)
+  dateFormat                    DateFormat        @default(DD_MM_YYYY)
+  country                       Countries         @default(ITALY)
+  timezone                      Timezone          @default(ETC_UTC)
+  preferredMarketDataProviderId String?           @default("yahoo-finance")
+  createdAt                     DateTime          @default(now())
+  updatedAt                     DateTime          @updatedAt
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model DashboardLayout {
-    id        String   @id @default(uuid())
-    userId    String   @unique
-    version   Int      @default(1)
-    layout    Json
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  version   Int      @default(1)
+  layout    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model Session {
-    id        String   @id @default(uuid())
-    token     String   @unique
-    userId    String
-    expiresAt DateTime
-    ipAddress String?
-    userAgent String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@index([token])
+  @@index([userId])
+  @@index([token])
 }
 
 model Account {
-    id                    String    @id @default(uuid())
-    accountId             String    @unique
-    providerId            String
-    userId                String
-    accessToken           String?
-    refreshToken          String?
-    idToken               String?
-    accessTokenExpiresAt  DateTime?
-    refreshTokenExpiresAt DateTime?
-    scope                 String?
-    password              String?
-    createdAt             DateTime  @default(now())
-    updatedAt             DateTime  @updatedAt
+  id                    String    @id @default(uuid())
+  accountId             String    @unique
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model Verification {
-    id         String   @id @default(uuid())
-    identifier String
-    value      String
-    expiresAt  DateTime
-    userId     String?
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([identifier, value])
-    @@index([identifier])
-    @@index([expiresAt])
-    @@index([userId])
+  @@unique([identifier, value])
+  @@index([identifier])
+  @@index([expiresAt])
+  @@index([userId])
 }
 
 // ===========================================================================
 // FINANCIAL ACCOUNTS
 // ===========================================================================
 model FinancialAccount {
-    id                    String                   @id @default(uuid())
-    userId                String
-    title                 String
-    balance               Decimal                  @default(0) @db.Decimal(20, 2)
-    type                  FinancialAccountType     @default(BANK_ACCOUNT)
-    logoIcon              String?
-    createdAt             DateTime                 @default(now())
-    updatedAt             DateTime                 @updatedAt
-    deletedAt             DateTime?                @db.Timestamptz
-    subscriptions         Subscription[]
-    amounts               Amount[]
-    imports               Import[]
-    snapshotBalances      SnapshotAccountBalance[]
-    assetTransactions     AssetTransaction[]
-    liabilities           Liability[]
-    liabilityTransactions LiabilityTransaction[]
+  id                    String                   @id @default(uuid())
+  userId                String
+  title                 String
+  balance               Decimal                  @default(0) @db.Decimal(20, 2)
+  type                  FinancialAccountType     @default(BANK_ACCOUNT)
+  logoIcon              String?
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  deletedAt             DateTime?                @db.Timestamptz
+  subscriptions         Subscription[]
+  amounts               Amount[]
+  imports               Import[]
+  snapshotBalances      SnapshotAccountBalance[]
+  assetTransactions     AssetTransaction[]
+  liabilities           Liability[]
+  liabilityTransactions LiabilityTransaction[]
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@map("FinancialAccounts")
+  @@index([userId])
+  @@map("FinancialAccounts")
 }
 
 // ===========================================================================
 // ASSET SYSTEM
 // ===========================================================================
 model Asset {
-    id               String               @id @default(uuid())
-    userId           String
-    title            String
-    type             AssetType
-    currency         Currency             @default(EUR)
-    currentValue     Decimal              @db.Decimal(20, 2)
-    currentValueAsOf DateTime
-    quantity         Decimal              @db.Decimal(20, 10)
-    totalInvested    Decimal              @db.Decimal(20, 2)
-    createdAt        DateTime             @default(now())
-    updatedAt        DateTime             @updatedAt
-    deletedAt        DateTime?            @db.Timestamptz
-    marketable       MarketableAsset?
-    realEstate       RealEstateAsset?
-    collectible      CollectibleAsset?
-    privateDeal      PrivateDealAsset?
-    vehicle          VehicleAsset?
-    insurance        InsuranceAsset?
-    transactions     AssetTransaction[]
-    snapshotValues   SnapshotAssetValue[]
+  id               String               @id @default(uuid())
+  userId           String
+  title            String
+  type             AssetType
+  currency         Currency             @default(EUR)
+  currentValue     Decimal              @db.Decimal(20, 2)
+  currentValueAsOf DateTime
+  quantity         Decimal              @db.Decimal(20, 10)
+  totalInvested    Decimal              @db.Decimal(20, 2)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  deletedAt        DateTime?            @db.Timestamptz
+  marketable       MarketableAsset?
+  realEstate       RealEstateAsset?
+  collectible      CollectibleAsset?
+  privateDeal      PrivateDealAsset?
+  vehicle          VehicleAsset?
+  insurance        InsuranceAsset?
+  transactions     AssetTransaction[]
+  snapshotValues   SnapshotAssetValue[]
 
-    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-    autoDepreciations AutoDepreciation[]
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  autoDepreciations AutoDepreciation[]
 
-    @@index([userId, type])
-    @@index([userId, deletedAt])
+  @@index([userId, type])
+  @@index([userId, deletedAt])
 }
 
 model MarketableAsset {
-    id            String                @id @default(uuid())
-    assetId       String                @unique
-    symbol        String
-    isin          String?
-    exchange      String?
-    assetClass    MarketableAssetClass?
-    sector        String?
-    region        String?
-    lastPriceSync DateTime?
-    createdAt     DateTime              @default(now())
-    updatedAt     DateTime              @updatedAt
-    deletedAt     DateTime?             @db.Timestamptz
+  id            String                @id @default(uuid())
+  assetId       String                @unique
+  symbol        String
+  isin          String?
+  exchange      String?
+  assetClass    MarketableAssetClass?
+  sector        String?
+  region        String?
+  lastPriceSync DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  deletedAt     DateTime?             @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
-    @@index([symbol])
-    @@index([isin])
+  @@index([symbol])
+  @@index([isin])
 }
 
 model RealEstateAsset {
-    id            String         @id @default(uuid())
-    assetId       String         @unique
-    address       String
-    type          RealEstateType
-    purchasePrice Decimal        @db.Decimal(20, 2)
-    purchaseDate  DateTime?
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
-    deletedAt     DateTime?      @db.Timestamptz
+  id            String         @id @default(uuid())
+  assetId       String         @unique
+  address       String
+  type          RealEstateType
+  purchasePrice Decimal        @db.Decimal(20, 2)
+  purchaseDate  DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?      @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model CollectibleAsset {
-    id              String    @id @default(uuid())
-    assetId         String    @unique
-    acquisitionCost Decimal?  @db.Decimal(20, 2)
-    acquisitionDate DateTime?
-    appraisalValue  Decimal?  @db.Decimal(20, 2)
-    appraisalDate   DateTime?
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
-    deletedAt       DateTime? @db.Timestamptz
+  id              String    @id @default(uuid())
+  assetId         String    @unique
+  acquisitionCost Decimal?  @db.Decimal(20, 2)
+  acquisitionDate DateTime?
+  appraisalValue  Decimal?  @db.Decimal(20, 2)
+  appraisalDate   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model PrivateDealAsset {
-    id              String    @id @default(uuid())
-    assetId         String    @unique
-    committedAmount Decimal?  @db.Decimal(20, 2)
-    calledAmount    Decimal?  @db.Decimal(20, 2)
-    latestNav       Decimal?  @db.Decimal(20, 2)
-    navDate         DateTime?
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
-    deletedAt       DateTime? @db.Timestamptz
+  id              String    @id @default(uuid())
+  assetId         String    @unique
+  committedAmount Decimal?  @db.Decimal(20, 2)
+  calledAmount    Decimal?  @db.Decimal(20, 2)
+  latestNav       Decimal?  @db.Decimal(20, 2)
+  navDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model VehicleAsset {
-    id            String          @id @default(uuid())
-    assetId       String          @unique
-    brand         String
-    model         String
-    type          VehicleType
-    year          Int
-    purchasePrice Decimal         @db.Decimal(20, 2)
-    purchaseDate  DateTime?
-    plateNumber   String
-    vin           String?
-    mileage       Int?
-    condition     AssetCondition?
-    createdAt     DateTime        @default(now())
-    updatedAt     DateTime        @updatedAt
-    deletedAt     DateTime?       @db.Timestamptz
+  id            String          @id @default(uuid())
+  assetId       String          @unique
+  brand         String
+  model         String
+  type          VehicleType
+  year          Int
+  purchasePrice Decimal         @db.Decimal(20, 2)
+  purchaseDate  DateTime?
+  plateNumber   String
+  vin           String?
+  mileage       Int?
+  condition     AssetCondition?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?       @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model InsuranceAsset {
-    id               String              @id @default(uuid())
-    assetId          String              @unique
-    insurer          String
-    policyType       InsurancePolicyType
-    policyNumber     String
-    startDate        DateTime?
-    endDate          DateTime?
-    beneficiary      String
-    premiumPaid      Decimal             @db.Decimal(20, 2)
-    premiumFrequency CyclePeriod
-    surrenderValue   Decimal             @db.Decimal(20, 2)
-    createdAt        DateTime            @default(now())
-    updatedAt        DateTime            @updatedAt
-    deletedAt        DateTime?           @db.Timestamptz
+  id               String              @id @default(uuid())
+  assetId          String              @unique
+  insurer          String
+  policyType       InsurancePolicyType
+  policyNumber     String
+  startDate        DateTime?
+  endDate          DateTime?
+  beneficiary      String
+  premiumPaid      Decimal             @db.Decimal(20, 2)
+  premiumFrequency CyclePeriod
+  surrenderValue   Decimal             @db.Decimal(20, 2)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  deletedAt        DateTime?           @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }
 
 model AssetTransaction {
-    id                 String               @id @default(uuid())
-    assetId            String
-    type               AssetTransactionType
-    date               DateTime
-    settlementDate     DateTime?
-    quantityChange     Decimal?             @db.Decimal(20, 10)
-    unitPrice          Decimal?             @db.Decimal(20, 8)
-    totalAmount        Decimal?             @db.Decimal(20, 2)
-    currency           Currency             @default(EUR)
-    fxRate             Decimal?             @db.Decimal(20, 10)
-    fees               Decimal?             @db.Decimal(10, 2)
-    taxAmount          Decimal?             @db.Decimal(20, 2)
-    financialAccountId String?
-    note               String?
-    createdAt          DateTime             @default(now())
-    updatedAt          DateTime             @updatedAt
-    deletedAt          DateTime?            @db.Timestamptz
+  id                 String               @id @default(uuid())
+  assetId            String
+  type               AssetTransactionType
+  date               DateTime
+  settlementDate     DateTime?
+  quantityChange     Decimal?             @db.Decimal(20, 10)
+  unitPrice          Decimal?             @db.Decimal(20, 8)
+  totalAmount        Decimal?             @db.Decimal(20, 2)
+  currency           Currency             @default(EUR)
+  fxRate             Decimal?             @db.Decimal(20, 10)
+  fees               Decimal?             @db.Decimal(10, 2)
+  taxAmount          Decimal?             @db.Decimal(20, 2)
+  financialAccountId String?
+  note               String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  deletedAt          DateTime?            @db.Timestamptz
 
-    asset            Asset             @relation(fields: [assetId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
+  asset            Asset             @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([assetId, type])
-    @@index([assetId, date(sort: Desc)])
-    @@index([financialAccountId])
+  @@index([assetId, type])
+  @@index([assetId, date(sort: Desc)])
+  @@index([financialAccountId])
 }
 
 model AutoDepreciation {
-    id                String                @id @default(uuid())
-    assetId           String
-    startDate         DateTime
-    endDate           DateTime?
-    depreciationBase  DepreciationBase      @default(CURRENT_VALUE)
-    depreciationType  DepreciationValueType @default(AMOUNT)
-    depreciationValue Decimal               @db.Decimal(20, 4)
-    cyclePeriod       CyclePeriod           @default(YEAR)
-    cycleNumber       Int                   @default(1)
-    createdAt         DateTime              @default(now())
-    updatedAt         DateTime              @updatedAt
-    deletedAt         DateTime?             @db.Timestamptz
+  id                String                @id @default(uuid())
+  assetId           String
+  startDate         DateTime
+  endDate           DateTime?
+  depreciationBase  DepreciationBase      @default(CURRENT_VALUE)
+  depreciationType  DepreciationValueType @default(AMOUNT)
+  depreciationValue Decimal               @db.Decimal(20, 4)
+  cyclePeriod       CyclePeriod           @default(YEAR)
+  cycleNumber       Int                   @default(1)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  deletedAt         DateTime?             @db.Timestamptz
 
-    asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
-    @@index([assetId, startDate, endDate])
+  @@index([assetId, startDate, endDate])
 }
 
 // ===========================================================================
 // LIABILITY SYSTEM (debts: mortgages, loans, credit lines)
 // ===========================================================================
 model Liability {
-    id                 String            @id @default(uuid())
-    userId             String
-    title              String
-    type               LiabilityType
-    currency           Currency          @default(EUR)
-    principalAmount    Decimal           @db.Decimal(20, 2)
-    currentBalance     Decimal           @db.Decimal(20, 2)
-    interestRate       Decimal?          @db.Decimal(8, 5)
-    interestRateType   InterestRateType?
-    startDate          DateTime
-    endDate            DateTime?
-    durationMonths     Int?
-    monthlyPayment     Decimal?          @db.Decimal(20, 2)
-    financialAccountId String?
-    createdAt          DateTime          @default(now())
-    updatedAt          DateTime          @updatedAt
-    deletedAt          DateTime?         @db.Timestamptz
+  id                 String            @id @default(uuid())
+  userId             String
+  title              String
+  type               LiabilityType
+  currency           Currency          @default(EUR)
+  principalAmount    Decimal           @db.Decimal(20, 2)
+  currentBalance     Decimal           @db.Decimal(20, 2)
+  interestRate       Decimal?          @db.Decimal(8, 5)
+  interestRateType   InterestRateType?
+  startDate          DateTime
+  endDate            DateTime?
+  durationMonths     Int?
+  monthlyPayment     Decimal?          @db.Decimal(20, 2)
+  financialAccountId String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?         @db.Timestamptz
 
-    mortgage         MortgageLiability?
-    loan             LoanLiability?
-    transactions     LiabilityTransaction[]
-    snapshotBalances SnapshotLiabilityBalance[]
+  mortgage         MortgageLiability?
+  loan             LoanLiability?
+  transactions     LiabilityTransaction[]
+  snapshotBalances SnapshotLiabilityBalance[]
 
-    user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([userId, type])
-    @@index([userId, deletedAt])
-    @@index([financialAccountId])
+  @@index([userId, type])
+  @@index([userId, deletedAt])
+  @@index([financialAccountId])
 }
 
 model MortgageLiability {
-    id                String       @id @default(uuid())
-    liabilityId       String       @unique
-    mortgageType      MortgageType
-    lender            String?
-    propertyAddress   String?
-    ltv               Decimal?     @db.Decimal(5, 2)
-    fixedPeriodMonths Int?
-    indexedTo         String?
-    spread            Decimal?     @db.Decimal(8, 5)
-    createdAt         DateTime     @default(now())
-    updatedAt         DateTime     @updatedAt
-    deletedAt         DateTime?    @db.Timestamptz
+  id                String       @id @default(uuid())
+  liabilityId       String       @unique
+  mortgageType      MortgageType
+  lender            String?
+  propertyAddress   String?
+  ltv               Decimal?     @db.Decimal(5, 2)
+  fixedPeriodMonths Int?
+  indexedTo         String?
+  spread            Decimal?     @db.Decimal(8, 5)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  deletedAt         DateTime?    @db.Timestamptz
 
-    liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
+  liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
 }
 
 model LoanLiability {
-    id          String    @id @default(uuid())
-    liabilityId String    @unique
-    loanType    LoanType
-    lender      String?
-    purpose     String?
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    deletedAt   DateTime? @db.Timestamptz
+  id          String    @id @default(uuid())
+  liabilityId String    @unique
+  loanType    LoanType
+  lender      String?
+  purpose     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime? @db.Timestamptz
 
-    liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
+  liability Liability @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
 }
 
 model LiabilityTransaction {
-    id                 String                   @id @default(uuid())
-    liabilityId        String
-    type               LiabilityTransactionType
-    date               DateTime
-    amount             Decimal                  @db.Decimal(20, 2)
-    principalPart      Decimal?                 @db.Decimal(20, 2)
-    interestPart       Decimal?                 @db.Decimal(20, 2)
-    feesPart           Decimal?                 @db.Decimal(20, 2)
-    currency           Currency                 @default(EUR)
-    fxRate             Decimal?                 @db.Decimal(20, 10)
-    financialAccountId String?
-    note               String?
-    createdAt          DateTime                 @default(now())
-    updatedAt          DateTime                 @updatedAt
-    deletedAt          DateTime?                @db.Timestamptz
+  id                 String                   @id @default(uuid())
+  liabilityId        String
+  type               LiabilityTransactionType
+  date               DateTime
+  amount             Decimal                  @db.Decimal(20, 2)
+  principalPart      Decimal?                 @db.Decimal(20, 2)
+  interestPart       Decimal?                 @db.Decimal(20, 2)
+  feesPart           Decimal?                 @db.Decimal(20, 2)
+  currency           Currency                 @default(EUR)
+  fxRate             Decimal?                 @db.Decimal(20, 10)
+  financialAccountId String?
+  note               String?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  deletedAt          DateTime?                @db.Timestamptz
 
-    liability        Liability         @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
+  liability        Liability         @relation(fields: [liabilityId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount? @relation(fields: [financialAccountId], references: [id], onDelete: SetNull)
 
-    @@index([liabilityId, type])
-    @@index([liabilityId, date(sort: Desc)])
-    @@index([financialAccountId])
+  @@index([liabilityId, type])
+  @@index([liabilityId, date(sort: Desc)])
+  @@index([financialAccountId])
 }
 
 // ===========================================================================
 // SNAPSHOT (historical wealth)
 // ===========================================================================
 model Snapshot {
-    id                String                     @id @default(uuid())
-    userId            String
-    snapshotDate      DateTime                   @db.Date
-    note              String?
-    totalCash         Decimal                    @default(0) @db.Decimal(20, 2)
-    totalInvestments  Decimal                    @default(0) @db.Decimal(20, 2)
-    totalLiabilities  Decimal                    @default(0) @db.Decimal(20, 2)
-    totalNetWorth     Decimal                    @default(0) @db.Decimal(20, 2)
-    accountBalances   SnapshotAccountBalance[]
-    assetValues       SnapshotAssetValue[]
-    liabilityBalances SnapshotLiabilityBalance[]
-    createdAt         DateTime                   @default(now())
-    updatedAt         DateTime                   @updatedAt
-    deletedAt         DateTime?                  @db.Timestamptz
+  id                String                     @id @default(uuid())
+  userId            String
+  snapshotDate      DateTime                   @db.Date
+  note              String?
+  totalCash         Decimal                    @default(0) @db.Decimal(20, 2)
+  totalInvestments  Decimal                    @default(0) @db.Decimal(20, 2)
+  totalLiabilities  Decimal                    @default(0) @db.Decimal(20, 2)
+  totalNetWorth     Decimal                    @default(0) @db.Decimal(20, 2)
+  accountBalances   SnapshotAccountBalance[]
+  assetValues       SnapshotAssetValue[]
+  liabilityBalances SnapshotLiabilityBalance[]
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+  deletedAt         DateTime?                  @db.Timestamptz
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, snapshotDate])
-    @@index([userId, snapshotDate(sort: Desc)])
+  @@unique([userId, snapshotDate])
+  @@index([userId, snapshotDate(sort: Desc)])
 }
 
 model SnapshotAccountBalance {
-    id               String    @id @default(uuid())
-    snapshotId       String
-    accountId        String?
-    balance          Decimal   @db.Decimal(20, 2)
-    originalCurrency Currency?
-    originalValue    Decimal?  @db.Decimal(20, 2)
-    fxRate           Decimal?  @db.Decimal(20, 10)
-    createdAt        DateTime  @default(now())
-    updatedAt        DateTime  @updatedAt
-    deletedAt        DateTime? @db.Timestamptz
+  id               String    @id @default(uuid())
+  snapshotId       String
+  accountId        String?
+  balance          Decimal   @db.Decimal(20, 2)
+  originalCurrency Currency?
+  originalValue    Decimal?  @db.Decimal(20, 2)
+  fxRate           Decimal?  @db.Decimal(20, 10)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime? @db.Timestamptz
 
-    snapshot Snapshot          @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    account  FinancialAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  snapshot Snapshot          @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  account  FinancialAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
 
-    @@unique([snapshotId, accountId])
+  @@unique([snapshotId, accountId])
 }
 
 model SnapshotAssetValue {
-    id               String      @id @default(uuid())
-    snapshotId       String
-    assetId          String?
-    quantity         Decimal?    @db.Decimal(20, 10)
-    unitPrice        Decimal?    @db.Decimal(20, 8)
-    totalValue       Decimal     @db.Decimal(20, 2)
-    originalCurrency Currency?
-    originalValue    Decimal?    @db.Decimal(20, 2)
-    fxRate           Decimal?    @db.Decimal(20, 10)
-    source           ValueSource @default(MANUAL)
-    createdAt        DateTime    @default(now())
-    updatedAt        DateTime    @updatedAt
-    deletedAt        DateTime?   @db.Timestamptz
+  id               String      @id @default(uuid())
+  snapshotId       String
+  assetId          String?
+  quantity         Decimal?    @db.Decimal(20, 10)
+  unitPrice        Decimal?    @db.Decimal(20, 8)
+  totalValue       Decimal     @db.Decimal(20, 2)
+  originalCurrency Currency?
+  originalValue    Decimal?    @db.Decimal(20, 2)
+  fxRate           Decimal?    @db.Decimal(20, 10)
+  source           ValueSource @default(MANUAL)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deletedAt        DateTime?   @db.Timestamptz
 
-    snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    asset    Asset?   @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  snapshot Snapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  asset    Asset?   @relation(fields: [assetId], references: [id], onDelete: SetNull)
 
-    @@unique([snapshotId, assetId])
+  @@unique([snapshotId, assetId])
 }
 
 model SnapshotLiabilityBalance {
-    id               String    @id @default(uuid())
-    snapshotId       String
-    liabilityId      String?
-    balance          Decimal   @db.Decimal(20, 2)
-    originalCurrency Currency?
-    originalValue    Decimal?  @db.Decimal(20, 2)
-    fxRate           Decimal?  @db.Decimal(20, 10)
-    createdAt        DateTime  @default(now())
-    updatedAt        DateTime  @updatedAt
-    deletedAt        DateTime? @db.Timestamptz
+  id               String    @id @default(uuid())
+  snapshotId       String
+  liabilityId      String?
+  balance          Decimal   @db.Decimal(20, 2)
+  originalCurrency Currency?
+  originalValue    Decimal?  @db.Decimal(20, 2)
+  fxRate           Decimal?  @db.Decimal(20, 10)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime? @db.Timestamptz
 
-    snapshot  Snapshot   @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
-    liability Liability? @relation(fields: [liabilityId], references: [id], onDelete: SetNull)
+  snapshot  Snapshot   @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  liability Liability? @relation(fields: [liabilityId], references: [id], onDelete: SetNull)
 
-    @@unique([snapshotId, liabilityId])
+  @@unique([snapshotId, liabilityId])
 }
 
 model FxRate {
-    id           String    @id @default(uuid())
-    fromCurrency Currency
-    toCurrency   Currency
-    rate         Decimal   @db.Decimal(20, 10)
-    date         DateTime  @db.Date
-    source       String?
-    createdAt    DateTime  @default(now())
-    updatedAt    DateTime  @updatedAt
-    deletedAt    DateTime? @db.Timestamptz
+  id           String    @id @default(uuid())
+  fromCurrency Currency
+  toCurrency   Currency
+  rate         Decimal   @db.Decimal(20, 10)
+  date         DateTime  @db.Date
+  source       String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? @db.Timestamptz
 
-    @@unique([fromCurrency, toCurrency, date])
-    @@index([date])
-    @@index([fromCurrency, toCurrency])
+  @@unique([fromCurrency, toCurrency, date])
+  @@index([date])
+  @@index([fromCurrency, toCurrency])
 }
 
 // ===========================================================================
 // IMPORT & TRANSACTIONS
 // ===========================================================================
 model Import {
-    id                 String            @id @default(uuid())
-    userId             String
-    title              String
-    financialAccountId String
-    status             TransactionStatus @default(IMPORT_PENDING)
-    transactions       Transaction[]
-    files              ImportFile[]
-    createdAt          DateTime          @default(now())
-    updatedAt          DateTime          @updatedAt
-    deletedAt          DateTime?         @db.Timestamptz
+  id                 String            @id @default(uuid())
+  userId             String
+  title              String
+  financialAccountId String
+  status             TransactionStatus @default(IMPORT_PENDING)
+  transactions       Transaction[]
+  files              ImportFile[]
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?         @db.Timestamptz
 
-    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@index([status])
+  @@index([userId])
+  @@index([status])
 }
 
 model ImportFile {
-    id        String    @id @default(uuid())
-    importId  String
-    filename  String
-    filetype  FileType
-    path      String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    deletedAt DateTime? @db.Timestamptz
+  id        String    @id @default(uuid())
+  importId  String
+  filename  String
+  filetype  FileType
+  path      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? @db.Timestamptz
 
-    import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
+  import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
 
-    @@index([importId])
+  @@index([importId])
 }
 
 model Transaction {
-    id            String             @id @default(uuid())
-    userId        String
-    date          DateTime
-    title         String
-    note          String?
-    icon          String?
-    categoryId    String?
-    subcategoryId String?
-    importId      String?
-    action        TransactionAction  @default(EXPENSES)
-    status        TransactionStatus  @default(APPROVED)
-    ignore        Boolean            @default(false)
-    createdAt     DateTime           @default(now())
-    updatedAt     DateTime           @updatedAt
-    deletedAt     DateTime?          @db.Timestamptz
-    media         TransactionMedia[]
-    amounts       Amount[]
+  id            String             @id @default(uuid())
+  userId        String
+  date          DateTime
+  title         String
+  note          String?
+  icon          String?
+  categoryId    String?
+  subcategoryId String?
+  importId      String?
+  action        TransactionAction  @default(EXPENSES)
+  status        TransactionStatus  @default(APPROVED)
+  ignore        Boolean            @default(false)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?          @db.Timestamptz
+  media         TransactionMedia[]
+  amounts       Amount[]
 
-    transferId String?
+  transferId String?
 
-    user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-    subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
-    import       Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
-    transfer     Transfer?    @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
-    fromTransfer Transfer?    @relation("FromLeg")
-    toTransfer   Transfer?    @relation("ToLeg")
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+  import       Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
+  transfer     Transfer?    @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
+  fromTransfer Transfer?    @relation("FromLeg")
+  toTransfer   Transfer?    @relation("ToLeg")
 
-    @@index([userId, date])
-    @@index([transferId])
-    @@index([importId])
-    @@index([categoryId])
-    @@index([subcategoryId])
+  @@index([userId, date])
+  @@index([transferId])
+  @@index([importId])
+  @@index([categoryId])
+  @@index([subcategoryId])
 }
 
 model Transfer {
-    id                String    @id @default(uuid())
-    userId            String
-    transferDate      DateTime
-    note              String?
-    fromTransactionId String?   @unique
-    toTransactionId   String?   @unique
-    createdAt         DateTime  @default(now())
-    updatedAt         DateTime  @updatedAt
-    deletedAt         DateTime? @db.Timestamptz
+  id                String    @id @default(uuid())
+  userId            String
+  transferDate      DateTime
+  note              String?
+  fromTransactionId String?   @unique
+  toTransactionId   String?   @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime? @db.Timestamptz
 
-    user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    fromTransaction Transaction?  @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
-    toTransaction   Transaction?  @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
-    transactions    Transaction[] @relation("TransferTransactions")
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromTransaction Transaction?  @relation("FromLeg", fields: [fromTransactionId], references: [id], onDelete: SetNull)
+  toTransaction   Transaction?  @relation("ToLeg", fields: [toTransactionId], references: [id], onDelete: SetNull)
+  transactions    Transaction[] @relation("TransferTransactions")
 
-    @@index([transferDate])
-    @@index([fromTransactionId])
-    @@index([toTransactionId])
-    @@index([userId, transferDate])
+  @@index([transferDate])
+  @@index([fromTransactionId])
+  @@index([toTransactionId])
+  @@index([userId, transferDate])
 }
 
 model TransactionMedia {
-    id            String    @id @default(uuid())
-    transactionId String
-    filename      String
-    filetype      String
-    path          String
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    deletedAt     DateTime? @db.Timestamptz
+  id            String    @id @default(uuid())
+  transactionId String
+  filename      String
+  filetype      String
+  path          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime? @db.Timestamptz
 
-    transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
-    @@index([transactionId])
+  @@index([transactionId])
 }
 
 model Amount {
-    id                 String            @id @default(uuid())
-    transactionId      String
-    amount             Decimal           @db.Decimal(20, 2)
-    currency           Currency
-    action             TransactionAction @default(EXPENSES)
-    financialAccountId String
-    importReference    String?
-    createdAt          DateTime          @default(now())
-    updatedAt          DateTime          @updatedAt
-    deletedAt          DateTime?         @db.Timestamptz
+  id                 String            @id @default(uuid())
+  transactionId      String
+  amount             Decimal           @db.Decimal(20, 2)
+  currency           Currency
+  action             TransactionAction @default(EXPENSES)
+  financialAccountId String
+  importReference    String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?         @db.Timestamptz
 
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
-    transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
-    @@index([transactionId])
-    @@index([financialAccountId])
-    @@index([action])
+  @@index([transactionId])
+  @@index([financialAccountId])
+  @@index([action])
 }
 
 // ===========================================================================
 // SUBSCRIPTIONS
 // ===========================================================================
 model Subscription {
-    id                  String         @id @default(uuid())
-    userId              String
-    title               String
-    description         String?
-    amount              Decimal        @db.Decimal(20, 2)
-    currency            Currency
-    appearanceMode      AppearanceMode
-    appearanceLogoIcon  String
-    appearanceIconColor String         @default("#818a66")
-    firstPayment        DateTime
-    cycleNumber         Int            @default(1)
-    cyclePeriod         CyclePeriod
-    rememberPeriod      RememberPeriod
-    financialAccountId  String
-    isEnabled           Boolean
-    createdAt           DateTime       @default(now())
-    updatedAt           DateTime       @updatedAt
-    deletedAt           DateTime?      @db.Timestamptz
+  id                  String         @id @default(uuid())
+  userId              String
+  title               String
+  description         String?
+  amount              Decimal        @db.Decimal(20, 2)
+  currency            Currency
+  appearanceMode      AppearanceMode
+  appearanceLogoIcon  String
+  appearanceIconColor String         @default("#818a66")
+  firstPayment        DateTime
+  cycleNumber         Int            @default(1)
+  cyclePeriod         CyclePeriod
+  rememberPeriod      RememberPeriod
+  financialAccountId  String
+  isEnabled           Boolean
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  deletedAt           DateTime?      @db.Timestamptz
 
-    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-    financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@index([financialAccountId])
-    @@index([isEnabled])
+  @@index([userId])
+  @@index([financialAccountId])
+  @@index([isEnabled])
 }
 
 // ===========================================================================
 // CATEGORIES & SUBCATEGORIES
 // ===========================================================================
 model Category {
-    id            String            @id @default(uuid())
-    userId        String
-    title         String
-    for           TransactionAction
-    icon          String
-    color         String            @default("#8B5CF6")
-    createdAt     DateTime          @default(now())
-    updatedAt     DateTime          @updatedAt
-    deletedAt     DateTime?         @db.Timestamptz
-    transactions  Transaction[]
-    subcategories Subcategory[]
+  id            String            @id @default(uuid())
+  userId        String
+  title         String
+  for           TransactionAction
+  icon          String
+  color         String            @default("#8B5CF6")
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  deletedAt     DateTime?         @db.Timestamptz
+  transactions  Transaction[]
+  subcategories Subcategory[]
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@index([for])
+  @@index([userId])
+  @@index([for])
 }
 
 model Subcategory {
-    id           String        @id @default(uuid())
-    categoryId   String
-    title        String
-    icon         String
-    createdAt    DateTime      @default(now())
-    updatedAt    DateTime      @updatedAt
-    deletedAt    DateTime?     @db.Timestamptz
-    transactions Transaction[]
+  id           String        @id @default(uuid())
+  categoryId   String
+  title        String
+  icon         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?     @db.Timestamptz
+  transactions Transaction[]
 
-    category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-    @@index([categoryId])
+  @@index([categoryId])
 }
 
 // ===========================================================================
 // MARKET DATA PROVIDERS
 // ===========================================================================
 model MarketDataProviderCredential {
-    id         String   @id @default(uuid())
-    userId     String
-    providerId String
-    ciphertext Bytes
-    iv         Bytes
-    authTag    Bytes
-    algo       String   @default("aes256gcm-v1")
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+  id         String   @id @default(uuid())
+  userId     String
+  providerId String
+  ciphertext Bytes
+  iv         Bytes
+  authTag    Bytes
+  algo       String   @default("aes256gcm-v1")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, providerId])
-    @@index([userId])
+  @@unique([userId, providerId])
+  @@index([userId])
 }
 
 // ===========================================================================
 // ENUMS
 // ===========================================================================
 enum Timezone {
-    AFRICA_ALGIERS
-    AFRICA_CAIRO
-    AFRICA_CASABLANCA
-    AFRICA_HARARE
-    AFRICA_JOHANNESBURG
-    AFRICA_MONROVIA
-    AFRICA_NAIROBI
-    AFRICA_WEST_CENTRAL
-    AMERICA_ARGENTINA_BUENOS_AIRES
-    AMERICA_BOGOTA
-    AMERICA_CARACAS
-    AMERICA_CHICAGO
-    AMERICA_CHIHUAHUA
-    AMERICA_DENVER
-    AMERICA_GUATEMALA
-    AMERICA_GUYANA
-    AMERICA_HALIFAX
-    AMERICA_INDIANA_INDIANAPOLIS
-    AMERICA_JUNEAU
-    AMERICA_LA_PAZ
-    AMERICA_LIMA
-    AMERICA_QUITO
-    AMERICA_LOS_ANGELES
-    AMERICA_MAZATLAN
-    AMERICA_MEXICO_CITY
-    AMERICA_GUADALAJARA
-    AMERICA_MONTERREY
-    AMERICA_MONTEVIDEO
-    AMERICA_NEW_YORK
-    AMERICA_PHOENIX
-    AMERICA_PUERTO_RICO
-    AMERICA_REGINA
-    AMERICA_SANTIAGO
-    AMERICA_SAO_PAULO
-    AMERICA_ST_JOHNS
-    AMERICA_TIJUANA
-    ASIA_ALMATY
-    ASIA_ASTANA
-    ASIA_BAGHDAD
-    ASIA_BAKU
-    ASIA_BANGKOK
-    ASIA_CHENNAI
-    ASIA_HANOI
-    ASIA_CHONGQING
-    ASIA_COLOMBO
-    ASIA_DHAKA
-    ASIA_HONG_KONG
-    ASIA_IRKUTSK
-    ASIA_JAKARTA
-    ASIA_JERUSALEM
-    ASIA_KABUL
-    ASIA_KAMCHATKA
-    ASIA_KARACHI
-    ASIA_ISLAMABAD
-    ASIA_KATHMANDU
-    ASIA_KOLKATA
-    ASIA_MUMBAI
-    ASIA_NEW_DELHI
-    ASIA_KRASNOYARSK
-    ASIA_KUALA_LUMPUR
-    ASIA_KUWAIT
-    ASIA_MAGADAN
-    ASIA_MUSCAT
-    ASIA_ABU_DHABI
-    ASIA_NOVOSIBIRSK
-    ASIA_RIYADH
-    ASIA_SEOUL
-    ASIA_SHANGHAI
-    ASIA_SINGAPORE
-    ASIA_SREDNEKOLYMSK
-    ASIA_TAIPEI
-    ASIA_TASHKENT
-    ASIA_TBILISI
-    ASIA_TEHRAN
-    ASIA_TOKYO
-    ASIA_OSAKA
-    ASIA_SAPPORO
-    ASIA_ULAANBAATAR
-    ASIA_URUMQI
-    ASIA_VLADIVOSTOK
-    ASIA_YAKUTSK
-    ASIA_YEKATERINBURG
-    ASIA_YEREVAN
-    ATLANTIC_AZORES
-    ATLANTIC_CAPE_VERDE
-    ATLANTIC_SOUTH_GEORGIA
-    AUSTRALIA_ADELAIDE
-    AUSTRALIA_BRISBANE
-    AUSTRALIA_CANBERRA
-    AUSTRALIA_DARWIN
-    AUSTRALIA_HOBART
-    AUSTRALIA_MELBOURNE
-    AUSTRALIA_PERTH
-    AUSTRALIA_SYDNEY
-    ETC_GMT_PLUS_12
-    ETC_UTC
-    EUROPE_AMSTERDAM
-    EUROPE_ATHENS
-    EUROPE_BELGRADE
-    EUROPE_BERN
-    EUROPE_BERLIN
-    EUROPE_BRATISLAVA
-    EUROPE_BRUSSELS
-    EUROPE_BUCHAREST
-    EUROPE_BUDAPEST
-    EUROPE_COPENHAGEN
-    EUROPE_DUBLIN
-    EUROPE_HELSINKI
-    EUROPE_ISTANBUL
-    EUROPE_KALININGRAD
-    EUROPE_LISBON
-    EUROPE_LJUBLJANA
-    EUROPE_LONDON
-    EUROPE_EDINBURGH
-    EUROPE_MADRID
-    EUROPE_MINSK
-    EUROPE_MOSCOW
-    EUROPE_ST_PETERSBURG
-    EUROPE_PARIS
-    EUROPE_PRAGUE
-    EUROPE_RIGA
-    EUROPE_ROME
-    EUROPE_SAMARA
-    EUROPE_SARAJEVO
-    EUROPE_SKOPJE
-    EUROPE_SOFIA
-    EUROPE_STOCKHOLM
-    EUROPE_TALLINN
-    EUROPE_VIENNA
-    EUROPE_VILNIUS
-    EUROPE_VOLGOGRAD
-    EUROPE_WARSAW
-    EUROPE_ZAGREB
-    EUROPE_ZURICH
-    PACIFIC_APIA
-    PACIFIC_AUCKLAND
-    PACIFIC_WELLINGTON
-    PACIFIC_CHATHAM
-    PACIFIC_FAKAOFO
-    PACIFIC_FIJI
-    PACIFIC_GUADALCANAL
-    PACIFIC_GUAM
-    PACIFIC_HONOLULU
-    PACIFIC_MAJURO
-    PACIFIC_MIDWAY
-    PACIFIC_NOUMEA
-    PACIFIC_PAGO_PAGO
-    PACIFIC_PORT_MORESBY
-    PACIFIC_TONGATAPU
+  AFRICA_ALGIERS
+  AFRICA_CAIRO
+  AFRICA_CASABLANCA
+  AFRICA_HARARE
+  AFRICA_JOHANNESBURG
+  AFRICA_MONROVIA
+  AFRICA_NAIROBI
+  AFRICA_WEST_CENTRAL
+  AMERICA_ARGENTINA_BUENOS_AIRES
+  AMERICA_BOGOTA
+  AMERICA_CARACAS
+  AMERICA_CHICAGO
+  AMERICA_CHIHUAHUA
+  AMERICA_DENVER
+  AMERICA_GUATEMALA
+  AMERICA_GUYANA
+  AMERICA_HALIFAX
+  AMERICA_INDIANA_INDIANAPOLIS
+  AMERICA_JUNEAU
+  AMERICA_LA_PAZ
+  AMERICA_LIMA
+  AMERICA_QUITO
+  AMERICA_LOS_ANGELES
+  AMERICA_MAZATLAN
+  AMERICA_MEXICO_CITY
+  AMERICA_GUADALAJARA
+  AMERICA_MONTERREY
+  AMERICA_MONTEVIDEO
+  AMERICA_NEW_YORK
+  AMERICA_PHOENIX
+  AMERICA_PUERTO_RICO
+  AMERICA_REGINA
+  AMERICA_SANTIAGO
+  AMERICA_SAO_PAULO
+  AMERICA_ST_JOHNS
+  AMERICA_TIJUANA
+  ASIA_ALMATY
+  ASIA_ASTANA
+  ASIA_BAGHDAD
+  ASIA_BAKU
+  ASIA_BANGKOK
+  ASIA_CHENNAI
+  ASIA_HANOI
+  ASIA_CHONGQING
+  ASIA_COLOMBO
+  ASIA_DHAKA
+  ASIA_HONG_KONG
+  ASIA_IRKUTSK
+  ASIA_JAKARTA
+  ASIA_JERUSALEM
+  ASIA_KABUL
+  ASIA_KAMCHATKA
+  ASIA_KARACHI
+  ASIA_ISLAMABAD
+  ASIA_KATHMANDU
+  ASIA_KOLKATA
+  ASIA_MUMBAI
+  ASIA_NEW_DELHI
+  ASIA_KRASNOYARSK
+  ASIA_KUALA_LUMPUR
+  ASIA_KUWAIT
+  ASIA_MAGADAN
+  ASIA_MUSCAT
+  ASIA_ABU_DHABI
+  ASIA_NOVOSIBIRSK
+  ASIA_RIYADH
+  ASIA_SEOUL
+  ASIA_SHANGHAI
+  ASIA_SINGAPORE
+  ASIA_SREDNEKOLYMSK
+  ASIA_TAIPEI
+  ASIA_TASHKENT
+  ASIA_TBILISI
+  ASIA_TEHRAN
+  ASIA_TOKYO
+  ASIA_OSAKA
+  ASIA_SAPPORO
+  ASIA_ULAANBAATAR
+  ASIA_URUMQI
+  ASIA_VLADIVOSTOK
+  ASIA_YAKUTSK
+  ASIA_YEKATERINBURG
+  ASIA_YEREVAN
+  ATLANTIC_AZORES
+  ATLANTIC_CAPE_VERDE
+  ATLANTIC_SOUTH_GEORGIA
+  AUSTRALIA_ADELAIDE
+  AUSTRALIA_BRISBANE
+  AUSTRALIA_CANBERRA
+  AUSTRALIA_DARWIN
+  AUSTRALIA_HOBART
+  AUSTRALIA_MELBOURNE
+  AUSTRALIA_PERTH
+  AUSTRALIA_SYDNEY
+  ETC_GMT_PLUS_12
+  ETC_UTC
+  EUROPE_AMSTERDAM
+  EUROPE_ATHENS
+  EUROPE_BELGRADE
+  EUROPE_BERN
+  EUROPE_BERLIN
+  EUROPE_BRATISLAVA
+  EUROPE_BRUSSELS
+  EUROPE_BUCHAREST
+  EUROPE_BUDAPEST
+  EUROPE_COPENHAGEN
+  EUROPE_DUBLIN
+  EUROPE_HELSINKI
+  EUROPE_ISTANBUL
+  EUROPE_KALININGRAD
+  EUROPE_LISBON
+  EUROPE_LJUBLJANA
+  EUROPE_LONDON
+  EUROPE_EDINBURGH
+  EUROPE_MADRID
+  EUROPE_MINSK
+  EUROPE_MOSCOW
+  EUROPE_ST_PETERSBURG
+  EUROPE_PARIS
+  EUROPE_PRAGUE
+  EUROPE_RIGA
+  EUROPE_ROME
+  EUROPE_SAMARA
+  EUROPE_SARAJEVO
+  EUROPE_SKOPJE
+  EUROPE_SOFIA
+  EUROPE_STOCKHOLM
+  EUROPE_TALLINN
+  EUROPE_VIENNA
+  EUROPE_VILNIUS
+  EUROPE_VOLGOGRAD
+  EUROPE_WARSAW
+  EUROPE_ZAGREB
+  EUROPE_ZURICH
+  PACIFIC_APIA
+  PACIFIC_AUCKLAND
+  PACIFIC_WELLINGTON
+  PACIFIC_CHATHAM
+  PACIFIC_FAKAOFO
+  PACIFIC_FIJI
+  PACIFIC_GUADALCANAL
+  PACIFIC_GUAM
+  PACIFIC_HONOLULU
+  PACIFIC_MAJURO
+  PACIFIC_MIDWAY
+  PACIFIC_NOUMEA
+  PACIFIC_PAGO_PAGO
+  PACIFIC_PORT_MORESBY
+  PACIFIC_TONGATAPU
 }
 
 enum SnapshotFrequency {
-    NONE
-    DAILY
-    WEEKLY
-    MONTHLY
-    QUARTERLY
-    SEMIANNUAL
-    ANNUAL
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  SEMIANNUAL
+  ANNUAL
 }
 
 enum AssetType {
-    STOCK
-    BOND
-    ETF
-    MUTUAL_FUND
-    CRYPTOCURRENCY
-    REAL_ESTATE
-    COLLECTIBLE
-    VEHICLE
-    PRIVATE_EQUITY
-    VENTURE_CAPITAL
-    PRIVATE_DEBT
-    P2P_LENDING
-    INSURANCE_POLICY
-    OTHER
+  STOCK
+  BOND
+  ETF
+  MUTUAL_FUND
+  CRYPTOCURRENCY
+  REAL_ESTATE
+  COLLECTIBLE
+  VEHICLE
+  PRIVATE_EQUITY
+  VENTURE_CAPITAL
+  PRIVATE_DEBT
+  P2P_LENDING
+  INSURANCE_POLICY
+  OTHER
 }
 
 enum MarketableAssetClass {
-    EQUITY
-    BOND
-    ETF
-    CRYPTO
-    COMMODITY
-    REIT
-    MIXED
+  EQUITY
+  BOND
+  ETF
+  CRYPTO
+  COMMODITY
+  REIT
+  MIXED
 }
 
 enum InsurancePolicyType {
-    LIFE
-    UNIT_LINKED
-    INDEX_LINKED
-    PURE_RISK
+  LIFE
+  UNIT_LINKED
+  INDEX_LINKED
+  PURE_RISK
 }
 
 enum LiabilityType {
-    MORTGAGE
-    LOAN
-    CREDIT_LINE
-    OTHER
+  MORTGAGE
+  LOAN
+  CREDIT_LINE
+  OTHER
 }
 
 enum MortgageType {
-    FIRST_HOME
-    SECOND_HOME
-    INVESTMENT
-    REFINANCE
+  FIRST_HOME
+  SECOND_HOME
+  INVESTMENT
+  REFINANCE
 }
 
 enum LoanType {
-    PERSONAL
-    CAR
-    STUDENT
-    CONSUMER
-    BUSINESS
-    OTHER
+  PERSONAL
+  CAR
+  STUDENT
+  CONSUMER
+  BUSINESS
+  OTHER
 }
 
 enum InterestRateType {
-    FIXED
-    VARIABLE
-    MIXED
+  FIXED
+  VARIABLE
+  MIXED
 }
 
 enum LiabilityTransactionType {
-    PAYMENT
-    EXTRA_PAYMENT
-    INTEREST_CHARGE
-    FEE
-    RATE_CHANGE
-    DISBURSEMENT
+  PAYMENT
+  EXTRA_PAYMENT
+  INTEREST_CHARGE
+  FEE
+  RATE_CHANGE
+  DISBURSEMENT
 }
 
 enum DepreciationValueType {
-    AMOUNT
-    PERCENTAGE
+  AMOUNT
+  PERCENTAGE
 }
 
 enum DepreciationBase {
-    PURCHASE_PRICE
-    CURRENT_VALUE
-    LAST_SNAPSHOT
+  PURCHASE_PRICE
+  CURRENT_VALUE
+  LAST_SNAPSHOT
 }
 
 enum AssetTransactionType {
-    BUY
-    SELL
-    DIVIDEND
-    INTEREST
-    FEE
-    DEPOSIT
-    WITHDRAWAL
-    VALUATION_ADJUSTMENT
-    CAPITAL_CALL
-    DISTRIBUTION
+  BUY
+  SELL
+  DIVIDEND
+  INTEREST
+  FEE
+  DEPOSIT
+  WITHDRAWAL
+  VALUATION_ADJUSTMENT
+  CAPITAL_CALL
+  DISTRIBUTION
 }
 
 enum ValueSource {
-    MANUAL
-    MARKET
-    APPRAISAL
-    DEPRECIATION
-    IMPORT
-    CALCULATED
+  MANUAL
+  MARKET
+  APPRAISAL
+  DEPRECIATION
+  IMPORT
+  CALCULATED
 }
 
 enum AssetCondition {
-    NEW
-    EXCELLENT
-    GOOD
-    FAIR
-    POOR
+  NEW
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
 }
 
 enum VehicleType {
-    CAR
-    BOAT
-    MOTORCYCLE
-    SNOWMOBILE
-    BIKE
-    OTHER
+  CAR
+  BOAT
+  MOTORCYCLE
+  SNOWMOBILE
+  BIKE
+  OTHER
 }
 
 enum RealEstateType {
-    PRIMARY_HOUSE
-    SECONDARY_HOUSE
-    RENTAL_PROPERTY
+  PRIMARY_HOUSE
+  SECONDARY_HOUSE
+  RENTAL_PROPERTY
 }
 
 enum FinancialAccountType {
-    ONLINE_BANK
-    BANK_ACCOUNT
-    CIRCUIT
-    DEPOSIT_BANK
-    BROKER
-    WALLET
-    CASH
-    CREDIT_CARD
-    OTHER
+  ONLINE_BANK
+  BANK_ACCOUNT
+  CIRCUIT
+  DEPOSIT_BANK
+  BROKER
+  WALLET
+  CASH
+  CREDIT_CARD
+  OTHER
 }
 
 enum TransactionAction {
-    EXPENSES
-    INCOME
-    TRANSFER
+  EXPENSES
+  INCOME
+  TRANSFER
 }
 
 enum TransactionStatus {
-    APPROVED
-    REJECTED
-    IMPORT_PENDING
-    IMPORT_REJECTED
-    IMPORT_APPROVED
+  APPROVED
+  REJECTED
+  IMPORT_PENDING
+  IMPORT_REJECTED
+  IMPORT_APPROVED
 }
 
 enum Currency {
-    USD
-    EUR
-    GBP
-    JPY
-    CNY
-    INR
-    AUD
-    CAD
-    CHF
-    SEK
-    NZD
-    MXN
-    SGD
-    HKD
-    NOK
-    KRW
-    TRY
-    UNKNOWN
+  USD
+  EUR
+  GBP
+  JPY
+  CNY
+  INR
+  AUD
+  CAD
+  CHF
+  SEK
+  NZD
+  MXN
+  SGD
+  HKD
+  NOK
+  KRW
+  TRY
+  UNKNOWN
 }
 
 enum RememberPeriod {
-    SAME_DAY
-    THREE_DAYS
-    SEVEN_DAYS
-    FOURTEEN_DAYS
-    THIRTY_DAYS
-    NINETY_DAYS
+  SAME_DAY
+  THREE_DAYS
+  SEVEN_DAYS
+  FOURTEEN_DAYS
+  THIRTY_DAYS
+  NINETY_DAYS
 }
 
 enum CyclePeriod {
-    DAY
-    WEEK
-    MONTH
-    YEAR
+  DAY
+  WEEK
+  MONTH
+  YEAR
 }
 
 enum AppearanceMode {
-    LOGO
-    ICON
+  LOGO
+  ICON
 }
 
 enum FileType {
-    CSV
-    PDF
+  CSV
+  PDF
 }
 
 enum Language {
-    EN
-    ES
-    FR
-    DE
-    IT
-    PT
-    NL
-    RU
-    ZH
-    JA
-    KO
-    AR
-    HI
-    TH
-    VI
-    TR
-    PL
-    CS
-    HU
-    RO
-    BG
-    HR
-    SK
-    SL
-    ET
-    LV
-    LT
-    MT
-    FI
-    SV
-    DA
-    NO
-    IS
-    EL
-    HE
-    FA
-    UR
-    BN
-    TA
-    TE
-    ML
-    KN
-    GU
-    MR
-    PA
-    OR
-    AS
-    NE
-    SI
-    MY
-    KH
-    LO
-    KA
-    AM
-    TI
-    SW
-    ZU
-    AF
-    XH
-    ST
-    TN
-    SS
-    VE
-    TS
-    NR
-    IG
-    YO
-    HA
-    FF
-    WO
-    BM
-    DY
-    SN
+  EN
+  ES
+  FR
+  DE
+  IT
+  PT
+  NL
+  RU
+  ZH
+  JA
+  KO
+  AR
+  HI
+  TH
+  VI
+  TR
+  PL
+  CS
+  HU
+  RO
+  BG
+  HR
+  SK
+  SL
+  ET
+  LV
+  LT
+  MT
+  FI
+  SV
+  DA
+  NO
+  IS
+  EL
+  HE
+  FA
+  UR
+  BN
+  TA
+  TE
+  ML
+  KN
+  GU
+  MR
+  PA
+  OR
+  AS
+  NE
+  SI
+  MY
+  KH
+  LO
+  KA
+  AM
+  TI
+  SW
+  ZU
+  AF
+  XH
+  ST
+  TN
+  SS
+  VE
+  TS
+  NR
+  IG
+  YO
+  HA
+  FF
+  WO
+  BM
+  DY
+  SN
 }
 
 enum DateFormat {
-    DD_MM_YYYY
-    MM_DD_YYYY
-    YYYY_MM_DD
-    DD_MM_YY
-    MM_DD_YY
-    YY_MM_DD
-    DD_MMMM_YYYY
-    MMMM_DD_YYYY
-    YYYY_MMMM_DD
+  DD_MM_YYYY
+  MM_DD_YYYY
+  YYYY_MM_DD
+  DD_MM_YY
+  MM_DD_YY
+  YY_MM_DD
+  DD_MMMM_YYYY
+  MMMM_DD_YYYY
+  YYYY_MMMM_DD
 }
 
 enum OnBoardingStep {
-    EMAIL
-    GENERALITES
-    PREFERENCES
-    COMPLETED
+  EMAIL
+  GENERALITES
+  PREFERENCES
+  COMPLETED
 }
 
-enum UserActivityType {
-    USER_SIGNED_UP
-    USER_SIGNED_IN
-    USER_SIGNED_OUT
-    USER_UPDATED
-    USER_PREFERENCES_UPDATED
-    USER_PASSWORD_CHANGED
-    USER_EMAIL_VERIFIED
-    USER_ONBOARDING_COMPLETED
-    CATEGORY_CREATED
-    CATEGORY_UPDATED
-    CATEGORY_DELETED
-    SUBCATEGORY_CREATED
-    SUBCATEGORY_UPDATED
-    SUBCATEGORY_DELETED
-    TRANSACTION_CREATED
-    TRANSACTION_UPDATED
-    TRANSACTION_DELETED
-    TRANSFER_CREATED
-    TRANSFER_UPDATED
-    TRANSFER_DELETED
-    SUBSCRIPTION_CREATED
-    SUBSCRIPTION_UPDATED
-    SUBSCRIPTION_DELETED
-    FINANCIAL_ACCOUNT_CREATED
-    FINANCIAL_ACCOUNT_UPDATED
-    FINANCIAL_ACCOUNT_DELETED
-    ASSET_CREATED
-    ASSET_UPDATED
-    ASSET_DELETED
-    ASSET_TRANSACTION_CREATED
-    ASSET_TRANSACTION_UPDATED
-    ASSET_TRANSACTION_DELETED
-    LIABILITY_CREATED
-    LIABILITY_UPDATED
-    LIABILITY_DELETED
-    IMPORT_CREATED
-    IMPORT_UPDATED
-    IMPORT_DELETED
-    SNAPSHOT_GENERATED
-    DASHBOARD_LAYOUT_UPDATED
-    MARKET_DATA_CREDENTIAL_UPDATED
-    OTHER
+enum UserActivityEntity {
+  USER
+  USER_PREFERENCES
+  CATEGORY
+  SUBCATEGORY
+  TRANSACTION
+  TRANSFER
+  SUBSCRIPTION
+  FINANCIAL_ACCOUNT
+  ASSET
+  ASSET_TRANSACTION
+  LIABILITY
+  IMPORT
+  SNAPSHOT
+  DASHBOARD_LAYOUT
+  MARKET_DATA_CREDENTIAL
+  OTHER
+}
+
+enum UserActivityAction {
+  CREATED
+  UPDATED
+  DELETED
+  GENERATED
+  SIGNED_UP
+  SIGNED_IN
+  SIGNED_OUT
+  PASSWORD_CHANGED
+  EMAIL_VERIFIED
+  ONBOARDING_COMPLETED
+  SYNCED
+  OTHER
 }
 
 enum Countries {
-    AFGHANISTAN
-    ALBANIA
-    ALGERIA
-    ANDORRA
-    ANGOLA
-    ANTIGUA_AND_BARBUDA
-    ARGENTINA
-    ARMENIA
-    AUSTRALIA
-    AUSTRIA
-    AZERBAIJAN
-    BAHAMAS
-    BAHRAIN
-    BANGLADESH
-    BARBADOS
-    BELARUS
-    BELGIUM
-    BELIZE
-    BENIN
-    BHUTAN
-    BOLIVIA
-    BOSNIA_AND_HERZEGOVINA
-    BOTSWANA
-    BRAZIL
-    BRUNEI
-    BULGARIA
-    BURKINA_FASO
-    BURUNDI
-    CABO_VERDE
-    CAMBODIA
-    CAMEROON
-    CANADA
-    CENTRAL_AFRICAN_REPUBLIC
-    CHAD
-    CHILE
-    CHINA
-    COLOMBIA
-    COMOROS
-    CONGO_DEMOCRATIC_REPUBLIC
-    CONGO_REPUBLIC
-    COSTA_RICA
-    CROATIA
-    CUBA
-    CYPRUS
-    CZECH_REPUBLIC
-    DENMARK
-    DJIBOUTI
-    DOMINICA
-    DOMINICAN_REPUBLIC
-    ECUADOR
-    EGYPT
-    EL_SALVADOR
-    EQUATORIAL_GUINEA
-    ERITREA
-    ESTONIA
-    ESWATINI
-    ETHIOPIA
-    FIJI
-    FINLAND
-    FRANCE
-    GABON
-    GAMBIA
-    GEORGIA
-    GERMANY
-    GHANA
-    GREECE
-    GRENADA
-    GUATEMALA
-    GUINEA
-    GUINEA_BISSAU
-    GUYANA
-    HAITI
-    HONDURAS
-    HUNGARY
-    ICELAND
-    INDIA
-    INDONESIA
-    IRAN
-    IRAQ
-    IRELAND
-    ISRAEL
-    ITALY
-    JAMAICA
-    JAPAN
-    JORDAN
-    KAZAKHSTAN
-    KENYA
-    KIRIBATI
-    KOREA_NORTH
-    KOREA_SOUTH
-    KUWAIT
-    KYRGYZSTAN
-    LAOS
-    LATVIA
-    LEBANON
-    LESOTHO
-    LIBERIA
-    LIBYA
-    LIECHTENSTEIN
-    LITHUANIA
-    LUXEMBOURG
-    MADAGASCAR
-    MALAWI
-    MALAYSIA
-    MALDIVES
-    MALI
-    MALTA
-    MARSHALL_ISLANDS
-    MAURITANIA
-    MAURITIUS
-    MEXICO
-    MICRONESIA
-    MOLDOVA
-    MONACO
-    MONGOLIA
-    MONTENEGRO
-    MOROCCO
-    MOZAMBIQUE
-    MYANMAR
-    NAMIBIA
-    NAURU
-    NEPAL
-    NETHERLANDS
-    NEW_ZEALAND
-    NICARAGUA
-    NIGER
-    NIGERIA
-    NORTH_MACEDONIA
-    NORWAY
-    OMAN
-    PAKISTAN
-    PALAU
-    PALESTINE
-    PANAMA
-    PAPUA_NEW_GUINEA
-    PARAGUAY
-    PERU
-    PHILIPPINES
-    POLAND
-    PORTUGAL
-    QATAR
-    ROMANIA
-    RUSSIA
-    RWANDA
-    SAINT_KITTS_AND_NEVIS
-    SAINT_LUCIA
-    SAINT_VINCENT_AND_GRENADINES
-    SAMOA
-    SAN_MARINO
-    SAO_TOME_AND_PRINCIPE
-    SAUDI_ARABIA
-    SENEGAL
-    SERBIA
-    SEYCHELLES
-    SIERRA_LEONE
-    SINGAPORE
-    SLOVAKIA
-    SLOVENIA
-    SOLOMON_ISLANDS
-    SOMALIA
-    SOUTH_AFRICA
-    SOUTH_SUDAN
-    SPAIN
-    SRI_LANKA
-    SUDAN
-    SURINAME
-    SWEDEN
-    SWITZERLAND
-    SYRIA
-    TAIWAN
-    TAJIKISTAN
-    TANZANIA
-    THAILAND
-    TIMOR_LESTE
-    TOGO
-    TONGA
-    TRINIDAD_AND_TOBAGO
-    TUNISIA
-    TURKEY
-    TURKMENISTAN
-    TUVALU
-    UGANDA
-    UKRAINE
-    UNITED_ARAB_EMIRATES
-    UNITED_KINGDOM
-    UNITED_STATES
-    URUGUAY
-    UZBEKISTAN
-    VANUATU
-    VATICAN_CITY
-    VENEZUELA
-    VIETNAM
-    YEMEN
-    ZAMBIA
-    ZIMBABWE
+  AFGHANISTAN
+  ALBANIA
+  ALGERIA
+  ANDORRA
+  ANGOLA
+  ANTIGUA_AND_BARBUDA
+  ARGENTINA
+  ARMENIA
+  AUSTRALIA
+  AUSTRIA
+  AZERBAIJAN
+  BAHAMAS
+  BAHRAIN
+  BANGLADESH
+  BARBADOS
+  BELARUS
+  BELGIUM
+  BELIZE
+  BENIN
+  BHUTAN
+  BOLIVIA
+  BOSNIA_AND_HERZEGOVINA
+  BOTSWANA
+  BRAZIL
+  BRUNEI
+  BULGARIA
+  BURKINA_FASO
+  BURUNDI
+  CABO_VERDE
+  CAMBODIA
+  CAMEROON
+  CANADA
+  CENTRAL_AFRICAN_REPUBLIC
+  CHAD
+  CHILE
+  CHINA
+  COLOMBIA
+  COMOROS
+  CONGO_DEMOCRATIC_REPUBLIC
+  CONGO_REPUBLIC
+  COSTA_RICA
+  CROATIA
+  CUBA
+  CYPRUS
+  CZECH_REPUBLIC
+  DENMARK
+  DJIBOUTI
+  DOMINICA
+  DOMINICAN_REPUBLIC
+  ECUADOR
+  EGYPT
+  EL_SALVADOR
+  EQUATORIAL_GUINEA
+  ERITREA
+  ESTONIA
+  ESWATINI
+  ETHIOPIA
+  FIJI
+  FINLAND
+  FRANCE
+  GABON
+  GAMBIA
+  GEORGIA
+  GERMANY
+  GHANA
+  GREECE
+  GRENADA
+  GUATEMALA
+  GUINEA
+  GUINEA_BISSAU
+  GUYANA
+  HAITI
+  HONDURAS
+  HUNGARY
+  ICELAND
+  INDIA
+  INDONESIA
+  IRAN
+  IRAQ
+  IRELAND
+  ISRAEL
+  ITALY
+  JAMAICA
+  JAPAN
+  JORDAN
+  KAZAKHSTAN
+  KENYA
+  KIRIBATI
+  KOREA_NORTH
+  KOREA_SOUTH
+  KUWAIT
+  KYRGYZSTAN
+  LAOS
+  LATVIA
+  LEBANON
+  LESOTHO
+  LIBERIA
+  LIBYA
+  LIECHTENSTEIN
+  LITHUANIA
+  LUXEMBOURG
+  MADAGASCAR
+  MALAWI
+  MALAYSIA
+  MALDIVES
+  MALI
+  MALTA
+  MARSHALL_ISLANDS
+  MAURITANIA
+  MAURITIUS
+  MEXICO
+  MICRONESIA
+  MOLDOVA
+  MONACO
+  MONGOLIA
+  MONTENEGRO
+  MOROCCO
+  MOZAMBIQUE
+  MYANMAR
+  NAMIBIA
+  NAURU
+  NEPAL
+  NETHERLANDS
+  NEW_ZEALAND
+  NICARAGUA
+  NIGER
+  NIGERIA
+  NORTH_MACEDONIA
+  NORWAY
+  OMAN
+  PAKISTAN
+  PALAU
+  PALESTINE
+  PANAMA
+  PAPUA_NEW_GUINEA
+  PARAGUAY
+  PERU
+  PHILIPPINES
+  POLAND
+  PORTUGAL
+  QATAR
+  ROMANIA
+  RUSSIA
+  RWANDA
+  SAINT_KITTS_AND_NEVIS
+  SAINT_LUCIA
+  SAINT_VINCENT_AND_GRENADINES
+  SAMOA
+  SAN_MARINO
+  SAO_TOME_AND_PRINCIPE
+  SAUDI_ARABIA
+  SENEGAL
+  SERBIA
+  SEYCHELLES
+  SIERRA_LEONE
+  SINGAPORE
+  SLOVAKIA
+  SLOVENIA
+  SOLOMON_ISLANDS
+  SOMALIA
+  SOUTH_AFRICA
+  SOUTH_SUDAN
+  SPAIN
+  SRI_LANKA
+  SUDAN
+  SURINAME
+  SWEDEN
+  SWITZERLAND
+  SYRIA
+  TAIWAN
+  TAJIKISTAN
+  TANZANIA
+  THAILAND
+  TIMOR_LESTE
+  TOGO
+  TONGA
+  TRINIDAD_AND_TOBAGO
+  TUNISIA
+  TURKEY
+  TURKMENISTAN
+  TUVALU
+  UGANDA
+  UKRAINE
+  UNITED_ARAB_EMIRATES
+  UNITED_KINGDOM
+  UNITED_STATES
+  URUGUAY
+  UZBEKISTAN
+  VANUATU
+  VATICAN_CITY
+  VENEZUELA
+  VIETNAM
+  YEMEN
+  ZAMBIA
+  ZIMBABWE
 }

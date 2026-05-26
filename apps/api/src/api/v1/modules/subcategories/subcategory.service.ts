@@ -37,7 +37,7 @@ export class SubcategoryService extends BaseService {
         if (!category) throw new NotFoundError('Category not found for the provided categoryId')
 
         const subcategory = await this.subcategoryRepository.create(generatedId, payloadWithIcon)
-        await eventBus.emit('subcategory.created', { subcategoryId: subcategory.id, userId })
+        await eventBus.emit('subcategory.created', { userId, data: subcategory })
 
         return subcategory
     }
@@ -58,7 +58,9 @@ export class SubcategoryService extends BaseService {
         }
 
         await this.subcategoryRepository.update(userId, id, payloadWithIcon)
-        await eventBus.emit('subcategory.updated', { subcategoryId: id, userId })
+
+        const data = await this.subcategoryRepository.findById(userId, id)
+        if (data) await eventBus.emit('subcategory.updated', { userId, data })
     }
 
     /**
@@ -68,8 +70,11 @@ export class SubcategoryService extends BaseService {
      */
     async deleteSubcategory(id: string): Promise<void> {
         const userId = this.context.currentUser.id
+
+        const data = await this.subcategoryRepository.findById(userId, id)
         await this.subcategoryRepository.softDelete(userId, id, new Date())
-        await eventBus.emit('subcategory.deleted', { subcategoryId: id, userId })
+
+        if (data) await eventBus.emit('subcategory.deleted', { userId, data })
     }
 
     /**

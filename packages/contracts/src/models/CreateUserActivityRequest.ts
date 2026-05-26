@@ -2,10 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UserActivityTypeEnum } from './UserActivityTypeEnum'
+import type { UserActivityActionEnum } from './UserActivityActionEnum'
+import type { UserActivityEntityEnum } from './UserActivityEntityEnum'
 export type CreateUserActivityRequest = {
-    type: UserActivityTypeEnum
-    entityType?: string | null
+    entityType: UserActivityEntityEnum
+    action: UserActivityActionEnum
     entityId?: string | null
     metadata?: Record<string, any> | null
     userAgent?: string | null

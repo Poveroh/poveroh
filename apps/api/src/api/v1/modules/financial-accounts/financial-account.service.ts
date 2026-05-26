@@ -35,7 +35,7 @@ export class FinancialAccountService extends BaseService {
         }
 
         const account = await this.financialAccountRepository.create(userId, generatedId, payloadWithIcon)
-        await eventBus.emit('financial-account.created', { financialAccountId: account.id, userId })
+        await eventBus.emit('financial-account.created', { userId, data: account })
 
         return account
     }
@@ -60,7 +60,9 @@ export class FinancialAccountService extends BaseService {
         }
 
         await this.financialAccountRepository.update(userId, id, payloadWithIcon)
-        await eventBus.emit('financial-account.updated', { financialAccountId: id, userId })
+
+        const data = await this.financialAccountRepository.findById(userId, id)
+        if (data) await eventBus.emit('financial-account.updated', { userId, data })
     }
 
     /**
@@ -69,8 +71,11 @@ export class FinancialAccountService extends BaseService {
      */
     async deleteFinancialAccount(id: string): Promise<void> {
         const userId = this.context.currentUser.id
+
+        const data = await this.financialAccountRepository.findById(userId, id)
         await this.financialAccountRepository.softDelete(userId, id, new Date())
-        await eventBus.emit('financial-account.deleted', { financialAccountId: id, userId })
+
+        if (data) await eventBus.emit('financial-account.deleted', { userId, data })
     }
 
     /**

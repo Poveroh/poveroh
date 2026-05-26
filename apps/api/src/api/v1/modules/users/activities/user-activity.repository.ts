@@ -4,8 +4,8 @@ import { buildWhere } from '@/helpers'
 
 const userActivitySelect = {
     id: true,
-    type: true,
     entityType: true,
+    action: true,
     entityId: true,
     metadata: true,
     userAgent: true,
@@ -23,8 +23,8 @@ export class UserActivityRepository {
         return (await prisma.userActivity.create({
             data: {
                 userId,
-                type: payload.type,
-                entityType: payload.entityType ?? null,
+                entityType: payload.entityType,
+                action: payload.action,
                 entityId: payload.entityId ?? null,
                 metadata: (payload.metadata as Prisma.InputJsonValue | undefined) ?? Prisma.JsonNull,
                 userAgent: payload.userAgent ?? null
@@ -36,7 +36,7 @@ export class UserActivityRepository {
     /**
      * Finds the activities belonging to the specified user, applying the supplied filters and pagination window.
      * @param userId The unique identifier of the user whose activities should be returned.
-     * @param filters Optional filters narrowing the result set (type, entity, date range).
+     * @param filters Optional filters narrowing the result set (entityType, action, entity, date range).
      * @param skip The number of rows to skip for pagination.
      * @param take The maximum number of rows to return.
      * @returns A promise that resolves to the list of user activities, ordered by most recent first.

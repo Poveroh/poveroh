@@ -34,7 +34,7 @@ export class SubscriptionService extends BaseService {
         }
 
         const subscription = await this.subscriptionRepository.create(userId, generatedId, payloadWithLogo)
-        await eventBus.emit('subscription.created', { subscriptionId: subscription.id, userId })
+        await eventBus.emit('subscription.created', { userId, data: subscription })
 
         return subscription
     }
@@ -59,7 +59,9 @@ export class SubscriptionService extends BaseService {
         }
 
         await this.subscriptionRepository.update(userId, id, payloadWithLogo)
-        await eventBus.emit('subscription.updated', { subscriptionId: id, userId })
+
+        const data = await this.subscriptionRepository.findById(userId, id)
+        if (data) await eventBus.emit('subscription.updated', { userId, data })
     }
 
     /**
@@ -69,8 +71,11 @@ export class SubscriptionService extends BaseService {
      */
     async deleteSubscription(id: string): Promise<void> {
         const userId = this.context.currentUser.id
+
+        const data = await this.subscriptionRepository.findById(userId, id)
         await this.subscriptionRepository.softDelete(userId, id, new Date())
-        await eventBus.emit('subscription.deleted', { subscriptionId: id, userId })
+
+        if (data) await eventBus.emit('subscription.deleted', { userId, data })
     }
 
     /**

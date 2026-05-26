@@ -34,7 +34,7 @@ export class MarketableAssetService extends BaseService {
             throw new NotFoundError('Asset not found after creation')
         }
 
-        await eventBus.emit('asset.updated', { assetId, userId })
+        await eventBus.emit('asset.created', { userId, data: asset })
 
         return asset
     }
@@ -53,7 +53,9 @@ export class MarketableAssetService extends BaseService {
         }
 
         await this.marketableAssetRepository.update(userId, assetId, payload)
-        await eventBus.emit('asset.updated', { assetId, userId })
+
+        const data = await this.assetRepository.findById(userId, assetId)
+        if (data) await eventBus.emit('asset.updated', { userId, data })
     }
 
     /**
@@ -79,6 +81,7 @@ export class MarketableAssetService extends BaseService {
             throw new NotFoundError('Marketable asset not found')
         }
 
-        await eventBus.emit('asset.updated', { assetId, userId })
+        const data = await this.assetRepository.findById(userId, assetId)
+        if (data) await eventBus.emit('asset.updated', { userId, data })
     }
 }

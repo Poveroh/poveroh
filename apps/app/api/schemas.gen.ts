@@ -2489,50 +2489,42 @@ export const OnBoardingStepEnumSchema = {
     enum: ['EMAIL', 'GENERALITES', 'PREFERENCES', 'COMPLETED']
 } as const
 
-export const UserActivityTypeEnumSchema = {
+export const UserActivityEntityEnumSchema = {
     type: 'string',
     enum: [
-        'USER_SIGNED_UP',
-        'USER_SIGNED_IN',
-        'USER_SIGNED_OUT',
-        'USER_UPDATED',
-        'USER_PREFERENCES_UPDATED',
-        'USER_PASSWORD_CHANGED',
-        'USER_EMAIL_VERIFIED',
-        'USER_ONBOARDING_COMPLETED',
-        'CATEGORY_CREATED',
-        'CATEGORY_UPDATED',
-        'CATEGORY_DELETED',
-        'SUBCATEGORY_CREATED',
-        'SUBCATEGORY_UPDATED',
-        'SUBCATEGORY_DELETED',
-        'TRANSACTION_CREATED',
-        'TRANSACTION_UPDATED',
-        'TRANSACTION_DELETED',
-        'TRANSFER_CREATED',
-        'TRANSFER_UPDATED',
-        'TRANSFER_DELETED',
-        'SUBSCRIPTION_CREATED',
-        'SUBSCRIPTION_UPDATED',
-        'SUBSCRIPTION_DELETED',
-        'FINANCIAL_ACCOUNT_CREATED',
-        'FINANCIAL_ACCOUNT_UPDATED',
-        'FINANCIAL_ACCOUNT_DELETED',
-        'ASSET_CREATED',
-        'ASSET_UPDATED',
-        'ASSET_DELETED',
-        'ASSET_TRANSACTION_CREATED',
-        'ASSET_TRANSACTION_UPDATED',
-        'ASSET_TRANSACTION_DELETED',
-        'LIABILITY_CREATED',
-        'LIABILITY_UPDATED',
-        'LIABILITY_DELETED',
-        'IMPORT_CREATED',
-        'IMPORT_UPDATED',
-        'IMPORT_DELETED',
-        'SNAPSHOT_GENERATED',
-        'DASHBOARD_LAYOUT_UPDATED',
-        'MARKET_DATA_CREDENTIAL_UPDATED',
+        'USER',
+        'USER_PREFERENCES',
+        'CATEGORY',
+        'SUBCATEGORY',
+        'TRANSACTION',
+        'TRANSFER',
+        'SUBSCRIPTION',
+        'FINANCIAL_ACCOUNT',
+        'ASSET',
+        'ASSET_TRANSACTION',
+        'LIABILITY',
+        'IMPORT',
+        'SNAPSHOT',
+        'DASHBOARD_LAYOUT',
+        'MARKET_DATA_CREDENTIAL',
+        'OTHER'
+    ]
+} as const
+
+export const UserActivityActionEnumSchema = {
+    type: 'string',
+    enum: [
+        'CREATED',
+        'UPDATED',
+        'DELETED',
+        'GENERATED',
+        'SIGNED_UP',
+        'SIGNED_IN',
+        'SIGNED_OUT',
+        'PASSWORD_CHANGED',
+        'EMAIL_VERIFIED',
+        'ONBOARDING_COMPLETED',
+        'SYNCED',
         'OTHER'
     ]
 } as const
@@ -6551,12 +6543,11 @@ export const UserActivitySchema = {
             type: 'string',
             format: 'uuid'
         },
-        type: {
-            $ref: '#/components/schemas/UserActivityTypeEnum'
-        },
         entityType: {
-            type: 'string',
-            nullable: true
+            $ref: '#/components/schemas/UserActivityEntityEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/UserActivityActionEnum'
         },
         entityId: {
             type: 'string',
@@ -6577,7 +6568,7 @@ export const UserActivitySchema = {
             type: 'string'
         }
     },
-    required: ['id', 'userId', 'type', 'entityType', 'entityId', 'metadata', 'userAgent', 'createdAt']
+    required: ['id', 'userId', 'entityType', 'action', 'entityId', 'metadata', 'userAgent', 'createdAt']
 } as const
 
 export const UserActivityDataSchema = {
@@ -6587,12 +6578,11 @@ export const UserActivityDataSchema = {
             type: 'string',
             format: 'uuid'
         },
-        type: {
-            $ref: '#/components/schemas/UserActivityTypeEnum'
-        },
         entityType: {
-            type: 'string',
-            nullable: true
+            $ref: '#/components/schemas/UserActivityEntityEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/UserActivityActionEnum'
         },
         entityId: {
             type: 'string',
@@ -6613,7 +6603,7 @@ export const UserActivityDataSchema = {
             type: 'string'
         }
     },
-    required: ['id', 'type', 'entityType', 'entityId', 'metadata', 'userAgent', 'createdAt']
+    required: ['id', 'entityType', 'action', 'entityId', 'metadata', 'userAgent', 'createdAt']
 } as const
 
 export const GetUserActivityListResponseSchema = {
@@ -6641,12 +6631,11 @@ export const GetUserActivityListResponseSchema = {
 export const CreateUserActivityRequestSchema = {
     type: 'object',
     properties: {
-        type: {
-            $ref: '#/components/schemas/UserActivityTypeEnum'
-        },
         entityType: {
-            type: 'string',
-            nullable: true
+            $ref: '#/components/schemas/UserActivityEntityEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/UserActivityActionEnum'
         },
         entityId: {
             type: 'string',
@@ -6664,20 +6653,20 @@ export const CreateUserActivityRequestSchema = {
             nullable: true
         }
     },
-    required: ['type']
+    required: ['entityType', 'action']
 } as const
 
 export const UserActivityFiltersSchema = {
     type: 'object',
     properties: {
-        type: {
-            $ref: '#/components/schemas/UserActivityTypeEnum'
-        },
         entityType: {
-            $ref: '#/components/schemas/StringFilter'
+            $ref: '#/components/schemas/UserActivityEntityEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/UserActivityActionEnum'
         },
         entityId: {
-            $ref: '#/components/schemas/StringFilter'
+            type: 'string'
         },
         createdAt: {
             $ref: '#/components/schemas/DateFilter'

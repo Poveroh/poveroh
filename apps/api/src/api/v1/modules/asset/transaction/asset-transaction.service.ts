@@ -30,11 +30,7 @@ export class AssetTransactionService extends BaseService {
         const generatedId = crypto.randomUUID()
         const transaction = await this.assetTransactionRepository.create(generatedId, payload)
 
-        await eventBus.emit('asset-transaction.created', {
-            assetTransactionId: transaction.id,
-            assetId: transaction.assetId,
-            userId
-        })
+        await eventBus.emit('asset-transaction.created', { userId, data: transaction })
 
         return transaction
     }
@@ -57,11 +53,9 @@ export class AssetTransactionService extends BaseService {
         await this.ensureFinancialAccountOwnership(userId, payload.financialAccountId ?? undefined)
 
         await this.assetTransactionRepository.update(userId, id, payload)
-        await eventBus.emit('asset-transaction.updated', {
-            assetTransactionId: id,
-            assetId: targetAssetId,
-            userId
-        })
+
+        const data = await this.assetTransactionRepository.findById(userId, id)
+        if (data) await eventBus.emit('asset-transaction.updated', { userId, data })
     }
 
     /**
@@ -71,17 +65,13 @@ export class AssetTransactionService extends BaseService {
     async deleteAssetTransaction(id: string): Promise<void> {
         const userId = this.context.currentUser.id
 
-        const existingAssetId = await this.assetTransactionRepository.findAssetIdById(userId, id)
-        if (!existingAssetId) {
+        const data = await this.assetTransactionRepository.findById(userId, id)
+        if (!data) {
             throw new NotFoundError('Asset transaction not found')
         }
 
         await this.assetTransactionRepository.softDelete(userId, id, new Date())
-        await eventBus.emit('asset-transaction.deleted', {
-            assetTransactionId: id,
-            assetId: existingAssetId,
-            userId
-        })
+        await eventBus.emit('asset-transaction.deleted', { userId, data })
     }
 
     /**

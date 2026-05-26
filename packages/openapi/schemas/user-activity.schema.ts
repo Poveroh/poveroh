@@ -1,17 +1,18 @@
 import { z } from '../zod'
-import { UserActivityTypeEnum } from './enum.schema'
-import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.schema'
+import { UserActivityActionEnum, UserActivityEntityEnum } from './enum.schema'
+import { DateFilterSchema, ReadQuerySchema } from './filter.schema'
 import { SuccessResponseSchema } from './response.schema'
 
 /**
- * User activity schema representing a single audit-log entry for a user account
+ * User activity schema representing a single audit-log entry for a user account.
+ * The subject is split into `entityType` (what the activity is about) and `action` (what happened to it).
  */
 export const UserActivitySchema = z
     .object({
         id: z.string().uuid(),
         userId: z.string().uuid(),
-        type: UserActivityTypeEnum,
-        entityType: z.string().nullable(),
+        entityType: UserActivityEntityEnum,
+        action: UserActivityActionEnum,
         entityId: z.string().nullable(),
         metadata: z.record(z.string(), z.unknown()).nullable(),
         userAgent: z.string().nullable(),
@@ -39,8 +40,8 @@ export const GetUserActivityListResponseSchema = SuccessResponseSchema(UserActiv
  */
 export const CreateUserActivityRequestSchema = z
     .object({
-        type: UserActivityTypeEnum,
-        entityType: z.string().nullable().optional(),
+        entityType: UserActivityEntityEnum,
+        action: UserActivityActionEnum,
         entityId: z.string().nullable().optional(),
         metadata: z.record(z.string(), z.unknown()).nullable().optional(),
         userAgent: z.string().nullable().optional()
@@ -54,9 +55,9 @@ export const CreateUserActivityRequestSchema = z
  */
 export const UserActivityFiltersSchema = z
     .object({
-        type: UserActivityTypeEnum,
-        entityType: StringFilterSchema,
-        entityId: StringFilterSchema,
+        entityType: UserActivityEntityEnum,
+        action: UserActivityActionEnum,
+        entityId: z.string(),
         createdAt: DateFilterSchema
     })
     .partial()
