@@ -2,6 +2,7 @@ import type { UpdateUserRequest, User } from '@poveroh/types'
 import { BadRequestError } from '@/utils'
 import { BaseService } from '../base/base.service'
 import { UserRepository } from './user.repository'
+import { eventBus } from '../../events/event-bus'
 
 /**
  * Service class for managing users, including retrieving and updating user data.
@@ -44,5 +45,8 @@ export class UserService extends BaseService {
         }
 
         await this.userRepository.update(id, payload)
+
+        const data = await this.userRepository.findById(id)
+        if (data) await eventBus.emit('user.updated', { userId: id, data })
     }
 }

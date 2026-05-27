@@ -5,6 +5,7 @@ import { BaseService } from '@/v1/modules/base/base.service'
 import { isKnownProvider } from '@/v1/content/template/market-data-providers'
 import { MarketDataRepository } from '../data/market-data.repository'
 import { CREDENTIAL_PAYLOAD_ALGO_V1 } from '@poveroh/types'
+import { eventBus } from '@/v1/events/event-bus'
 
 type CredentialPayload = Record<string, string>
 
@@ -39,6 +40,8 @@ export class MarketDataCredentialService extends BaseService {
             authTag: toPrismaBytes(encrypted.authTag),
             algo: CREDENTIAL_PAYLOAD_ALGO_V1
         })
+
+        await eventBus.emit('market-data-credential.updated', { userId, providerId })
     }
 
     /**
@@ -52,6 +55,8 @@ export class MarketDataCredentialService extends BaseService {
 
         const userId = this.context.currentUser.id
         await this.marketDataRepository.deleteCredential(userId, providerId)
+
+        await eventBus.emit('market-data-credential.deleted', { userId, providerId })
     }
 
     /**

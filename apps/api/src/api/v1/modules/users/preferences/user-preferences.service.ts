@@ -2,6 +2,7 @@ import type { UpdateUserPreferencesRequest, UserPreferences } from '@poveroh/typ
 import { BadRequestError } from '@/utils'
 import { BaseService } from '../../base/base.service'
 import { UserPreferencesRepository } from './user-preferences.repository'
+import { eventBus } from '../../../events/event-bus'
 
 /**
  * Service responsible for managing user preferences (currency, language, date format, timezone, etc.).
@@ -41,6 +42,9 @@ export class UserPreferencesService extends BaseService {
 
         const userId = this.context.currentUser.id
 
-        return this.preferencesRepository.upsert(userId, payload)
+        const data = await this.preferencesRepository.upsert(userId, payload)
+        await eventBus.emit('user-preferences.updated', { userId, data })
+
+        return data
     }
 }

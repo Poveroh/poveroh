@@ -15,6 +15,7 @@ import { BadRequestError, NotFoundError } from '@/utils'
 import { BalanceHelper } from '../../helpers/balance.helper'
 import { BaseService } from '../base/base.service'
 import { CategoryService } from '../categories/category.service'
+import { eventBus } from '../../events/event-bus'
 import { ImportHelper } from '../../helpers/import.helper'
 import { ImportRepository } from './import.repository'
 import HowIParsedYourDataAlgorithm from '../../helpers/parser.helper'
@@ -38,7 +39,7 @@ export class ImportService extends BaseService {
     async completeImport(id: string): Promise<ImportData> {
         const userId = this.context.currentUser.id
 
-        return prisma.$transaction(async tx => {
+        const data = await prisma.$transaction(async tx => {
             const approvedTransactions = await this.importRepository.findTransactionsByStatusWithAmounts(
                 tx,
                 userId,
@@ -56,6 +57,9 @@ export class ImportService extends BaseService {
 
             return this.importRepository.updateStatus(tx, userId, id, 'APPROVED')
         })
+
+        await eventBus.emit('import.updated', { userId, data })
+        return data
     }
 
     /**
@@ -66,7 +70,7 @@ export class ImportService extends BaseService {
     async rollbackImport(id: string): Promise<ImportData> {
         const userId = this.context.currentUser.id
 
-        return prisma.$transaction(async tx => {
+        const data = await prisma.$transaction(async tx => {
             const existing = await tx.import.findFirst({ where: { id, userId } })
             if (!existing) throw new NotFoundError('Import not found')
             if (existing.status !== 'APPROVED') {
@@ -95,6 +99,9 @@ export class ImportService extends BaseService {
 
             return this.importRepository.updateStatus(tx, userId, id, 'IMPORT_PENDING')
         })
+
+        await eventBus.emit('import.updated', { userId, data })
+        return data
     }
 
     /**
@@ -126,6 +133,9 @@ export class ImportService extends BaseService {
             }
         })
 
+        const data = await this.getImportById(importId)
+        if (data) await eventBus.emit('import.updated', { userId, data })
+
         return this.getImportTransactions(importId)
     }
 
@@ -137,6 +147,7 @@ export class ImportService extends BaseService {
     async deleteImport(id: string): Promise<void> {
         const userId = this.context.currentUser.id
 
+        const data = await this.getImportById(id)
         const transactionIds = await this.importRepository.findImportTransactionIds(userId, id)
 
         await prisma.$transaction(async tx => {
@@ -145,6 +156,8 @@ export class ImportService extends BaseService {
             await this.importRepository.deleteImportFiles(tx, id)
             await this.importRepository.deleteImport(tx, userId, id)
         })
+
+        if (data) await eventBus.emit('import.deleted', { userId, data })
     }
 
     /**
@@ -176,7 +189,12 @@ export class ImportService extends BaseService {
      * @returns A promise that resolves to the updated import data.
      */
     async updateImport(id: string, payload: UpdateImportRequest): Promise<ImportData> {
-        return this.importRepository.update(this.context.currentUser.id, id, payload)
+        const userId = this.context.currentUser.id
+
+        const data = await this.importRepository.update(userId, id, payload)
+        await eventBus.emit('import.updated', { userId, data })
+
+        return data
     }
 
     /**
@@ -253,7 +271,10 @@ export class ImportService extends BaseService {
             await this.importRepository.createAmounts(tx, amountsToCreate)
         })
 
-        return this.importRepository.findByIdOrThrow(userId, importId)
+        const data = await this.importRepository.findByIdOrThrow(userId, importId)
+        await eventBus.emit('import.created', { userId, data })
+
+        return data
     }
 
     /**

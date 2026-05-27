@@ -4,6 +4,7 @@ import { RedisHelper } from '@poveroh/redis'
 import { recalculateSubsequentSnapshots } from '../../helpers/snapshot.helper'
 import { BaseService } from '../base/base.service'
 import { SnapshotRepository } from './snapshot.repository'
+import { eventBus } from '../../events/event-bus'
 
 export class SnapshotService extends BaseService {
     private readonly snapshotRepository = new SnapshotRepository()
@@ -41,6 +42,8 @@ export class SnapshotService extends BaseService {
             await this.snapshotRepository.updateAccountBalance(accountId, parsedBalance)
             await RedisHelper.delete(`balance:${accountId}`)
         }
+
+        await eventBus.emit('snapshot.generated', { userId, snapshotId: snapshot.id })
 
         return this.snapshotRepository.findSnapshotWithDetails(snapshot.id)
     }

@@ -18,6 +18,7 @@ import { BalanceHelper } from '../../helpers/balance.helper'
 import { BaseService } from '../base/base.service'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
 import { TransactionRepository } from './transaction.repository'
+import { eventBus } from '@/v1/events/event-bus'
 
 /**
  * Service for managing transactions (create, update, delete, read).
@@ -47,19 +48,27 @@ export class TransactionService extends BaseService {
 
         if (transactionId) {
             const parsed = UpdateTransactionRequestSchema.parse(payload) as UpdateTransactionRequest
-            return this.updateTransaction(transactionId, parsed, userId, files)
+            const updated = await this.updateTransaction(transactionId, parsed, userId, files)
+            await eventBus.emit('transaction.updated', { userId, data: updated as unknown as TransactionData })
+            return updated
         }
 
         const parsed = CreateTransactionRequestSchema.parse(payload) as CreateTransactionRequest
+        let created
         switch (parsed.action) {
             case 'TRANSFER':
-                return this.createTransfer(parsed, userId, files)
+                created = await this.createTransfer(parsed, userId, files)
+                break
             case 'INCOME':
             case 'EXPENSES':
-                return this.createStandard(parsed, userId, files)
+                created = await this.createStandard(parsed, userId, files)
+                break
             default:
                 throw new BadRequestError(`Invalid transaction action: ${parsed.action}`)
         }
+
+        await eventBus.emit('transaction.created', { userId, data: created as unknown as TransactionData })
+        return created
     }
 
     /**
@@ -418,7 +427,12 @@ export class TransactionService extends BaseService {
      * @returns A promise that resolves when the transaction has been deleted.
      */
     async deleteTransaction(id: string): Promise<void> {
-        await this.transactionRepository.delete(this.context.currentUser.id, id)
+        const userId = this.context.currentUser.id
+
+        const data = await this.transactionRepository.findById(userId, id)
+        await this.transactionRepository.delete(userId, id)
+
+        if (data) await eventBus.emit('transaction.deleted', { userId, data })
     }
 
     /**
