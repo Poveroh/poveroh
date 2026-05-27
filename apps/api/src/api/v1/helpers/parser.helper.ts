@@ -1,3 +1,4 @@
+import { logger } from '@poveroh/logger/server'
 import { FieldMapping, ReadedTransaction, ValueReturned, CurrencyEnum } from '@poveroh/types'
 import Papa from 'papaparse'
 
@@ -581,7 +582,7 @@ class HowIParsedYourDataAlgorithm {
             }
         }
 
-        console.warn(`Unable to parse date: ${value}, using current date`)
+        logger.warn(`Unable to parse date: ${value}, using current date`, { value })
         return new Date()
     }
 

@@ -9,6 +9,7 @@ import { UserPreferencesService } from '../api/v1/modules/users/preferences/user
 import { DashboardService } from '../api/v1/modules/dashboard/dashboard.service'
 import { contextService } from '@/v1/modules/base/context.service'
 import { DashboardTemplate } from '@/v1/content'
+import { logger } from '@poveroh/logger/server'
 
 const isProduction = config.NODE_ENV === 'production'
 const allowedOrigins = config.ALLOWED_ORIGINS
@@ -20,7 +21,7 @@ const getSharedDomain = (): string | undefined => {
     try {
         const url = new URL(config.APP_URL || allowedOrigins[0] || 'http://localhost')
 
-        console.log('Shared domain extraction from URL:', url)
+        logger.debug('Shared domain extraction from URL:', url)
 
         const hostname = url.hostname
 
@@ -31,7 +32,7 @@ const getSharedDomain = (): string | undefined => {
         }
         return '.localhost'
     } catch (e) {
-        console.warn('Could not extract shared domain from allowed origins:', e)
+        logger.warn('Could not extract shared domain from allowed origins:', e)
     }
 
     return undefined

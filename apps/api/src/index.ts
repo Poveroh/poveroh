@@ -13,6 +13,7 @@ import cors from 'cors'
 import qs from 'qs'
 import { initRedisClient } from './utils/redis'
 import { registerActivitySubscribers } from './api/v1/events/activity.subscriber'
+import { logger } from '@poveroh/logger/server'
 
 // Wire audit-log subscribers onto the in-process event bus before handling any request.
 registerActivitySubscribers()
@@ -58,13 +59,13 @@ const startServer = async () => {
     try {
         // Initialize Redis connection
         await initRedisClient()
-        console.log('✅ Redis connected')
+        logger.info('✅ Redis connected', { event: 'redis_connected' })
 
         app.listen(config.PORT, () => {
-            console.log(`⚡️[server]: Server is running at http://localhost:${config.PORT}`)
+            logger.info(`⚡️[server]: Server is running at http://localhost:${config.PORT}`, { event: 'server_started' })
         })
     } catch (error) {
-        console.error('Failed to start server:', error)
+        logger.error('Failed to start server:', error)
         process.exit(1)
     }
 }
