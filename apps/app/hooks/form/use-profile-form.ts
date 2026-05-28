@@ -9,6 +9,7 @@ import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserProfileFormSchema } from '@poveroh/schemas'
 import { DEFAULT_USER_PREFERENCES, UserProfileForm } from '@poveroh/types'
+import { logger } from '@poveroh/logger/browser'
 
 export const useProfileForm = () => {
     const t = useTranslations()
@@ -60,7 +61,7 @@ export const useProfileForm = () => {
                 toast.success(t('form.messages.userSavedSuccess'))
             }
         } catch (error) {
-            console.error('Error updating profile:', error)
+            logger.error('Error updating profile:', error)
         }
     }
 

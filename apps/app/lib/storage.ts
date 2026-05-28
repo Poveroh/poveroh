@@ -1,4 +1,5 @@
 import { isEmpty } from '@poveroh/utils'
+import { logger } from '@poveroh/logger/browser'
 import Cookies from 'js-cookie'
 
 export const storage = {
@@ -67,7 +68,7 @@ export const cookie = {
             const value = this.get(key)
             return value ? (JSON.parse(value) as T) : null
         } catch (error) {
-            console.error(`Error parsing cookie "${key}":`, error)
+            logger.error(`Error parsing cookie "${key}":`, error)
             return null
         }
     },

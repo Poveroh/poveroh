@@ -5,6 +5,7 @@ import { CardHorizontal } from '../card/card-horizontal'
 import { groupBrandByCategory } from '@/utils/brands'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { Input } from '@poveroh/ui/components/input'
+import { logger } from '@poveroh/logger/browser'
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 
@@ -48,7 +49,7 @@ export const SubscriptionsSelector = ({ dataCallback }: FormProps) => {
                 const data: Brand[] = await res.json()
                 setBrands(data)
             } catch (error) {
-                console.error('Failed to load brands:', error)
+                logger.error('Failed to load brands:', error)
             }
         }
 

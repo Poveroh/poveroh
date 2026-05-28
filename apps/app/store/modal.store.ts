@@ -1,4 +1,5 @@
 import { ModalMode, ModalState } from '@/types/modal'
+import { logger } from '@poveroh/logger/browser'
 import { create } from 'zustand'
 
 type RemoveFirstArg<F> = F extends (arg1: any, ...rest: infer R) => infer Ret ? (...args: R) => Ret : never
@@ -133,6 +134,6 @@ export const useModalStore = create<ModalStoreState>(set => ({
             modals: { ...state.modals, [modalId]: { ...getModalState(state, modalId), showSaveButton: show } }
         })),
     showStuff: () => {
-        console.log('stuff')
+        logger.debug('stuff')
     }
 }))

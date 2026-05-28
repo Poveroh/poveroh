@@ -8,6 +8,7 @@ import { iconList } from '@/components/icon'
 import { useError } from '@/hooks/use-error'
 import { CategoryData, CategoryForm, CreateUpdateCategoryRequest } from '@poveroh/types'
 import { CategoryFormSchema } from '@poveroh/schemas'
+import { logger } from '@poveroh/logger/browser'
 
 export const useCategoryForm = (initialData: CategoryData | null) => {
     const { handleError } = useError()
@@ -36,7 +37,7 @@ export const useCategoryForm = (initialData: CategoryData | null) => {
 
     useEffect(() => {
         if (Object.keys(form.formState.errors).length > 0) {
-            console.debug('Form errors:', form.formState.errors)
+            logger.debug('Form errors:', form.formState.errors)
         }
     }, [form.formState.errors])
 

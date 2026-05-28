@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import appConfig from '@/config'
 import { CompanyInfoBar } from '@/components/navbar/company-info-bar'
 import { RouteGuard } from '@/components/other/route-guard'
+import { logger } from '@poveroh/logger/browser'
 
 type DefaultAuthLayout = Readonly<{
     children: React.ReactNode
@@ -19,7 +20,7 @@ export default function AuthLayout({ children }: DefaultAuthLayout) {
     const location = usePathname()
 
     useEffect(() => {
-        console.log(appConfig.name, ' - ', appConfig.version, ' | api alive: ', appConfig.apiUrl)
+        logger.info(appConfig.name, ' - ', appConfig.version, ' | api alive: ', appConfig.apiUrl)
     }, [])
 
     const isSignUpPage = location === '/sign-up'

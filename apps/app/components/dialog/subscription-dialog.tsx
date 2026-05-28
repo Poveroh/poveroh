@@ -19,6 +19,7 @@ import {
     DEFAULT_SUBSCRIPTION
 } from '@poveroh/types'
 import { MODAL_IDS } from '@/types/constant'
+import { logger } from '@poveroh/logger/browser'
 
 export function SubscriptionDialog() {
     const t = useTranslations()
@@ -172,7 +173,7 @@ export function SubscriptionDialog() {
                 }}
                 onClick={() => formRef.current?.submit()}
                 onOpenChange={x => {
-                    console.log(x)
+                    logger.debug(x)
                 }}
                 onDeleteClick={() => {
                     deleteModalManager.openModal(modalManager.item)

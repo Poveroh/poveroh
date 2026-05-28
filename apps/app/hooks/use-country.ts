@@ -1,4 +1,5 @@
 import { Country } from '@poveroh/types'
+import { logger } from '@poveroh/logger/browser'
 import { useEffect, useState, useMemo } from 'react'
 
 // Cache countries globally to avoid re-fetching
@@ -31,7 +32,7 @@ export function useCountry() {
                     setLoading(false)
                 })
                 .catch(error => {
-                    console.error('Failed to fetch countries:', error)
+                    logger.error('Failed to fetch countries:', error)
                     setLoading(false)
                 })
         }

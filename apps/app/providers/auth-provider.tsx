@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useUser } from '@/hooks/use-user'
 import { authClient } from '@/lib/auth'
 import { SESSION_CHECK_INTERVAL } from '@poveroh/types'
+import { logger } from '@poveroh/logger/browser'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 type AuthContextType = {
@@ -25,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 await getMe()
             } catch (error) {
-                console.error('Failed to initialize auth:', error)
+                logger.error('Failed to initialize auth:', error)
             } finally {
                 setIsInitialized(true)
             }
@@ -56,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     await logoutRef.current()
                 }
             } catch (error) {
-                console.error('Session validation failed:', error)
+                logger.error('Session validation failed:', error)
                 if (!isLoggingOut) {
                     isLoggingOut = true
                     await logoutRef.current()

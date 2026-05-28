@@ -7,6 +7,7 @@ import { UserLoginSchema } from '@poveroh/schemas'
 import { useAuth } from '@/hooks/use-auth'
 import { UserLogin } from '@poveroh/types'
 import { useOnBoardingStepOrder } from '@/hooks/use-onboarding-step-order'
+import { logger } from '@poveroh/logger/browser'
 
 export function useSignInForm() {
     const router = useRouter()
@@ -38,7 +39,7 @@ export function useSignInForm() {
                     }
                 }
             } catch (error) {
-                console.error('Sign in error:', error)
+                logger.error('Sign in error:', error)
             } finally {
                 setLoading(false)
             }

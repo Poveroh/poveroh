@@ -9,6 +9,7 @@ import { useUser } from '@/hooks/use-user'
 import { toast } from '@poveroh/ui/components/sonner'
 import { UserFormPreferencesFormSchema } from '@poveroh/schemas'
 import { DEFAULT_USER_PREFERENCES, UserFormPreferencesForm } from '@poveroh/types'
+import { logger } from '@poveroh/logger/browser'
 
 export const usePreferencesForm = () => {
     const t = useTranslations()
@@ -50,7 +51,7 @@ export const usePreferencesForm = () => {
                 toast.success(t('form.messages.userSavedSuccess'))
             }
         } catch (error) {
-            console.error('Error updating preferences:', error)
+            logger.error('Error updating preferences:', error)
         }
     }
 

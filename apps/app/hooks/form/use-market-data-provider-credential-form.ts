@@ -11,6 +11,7 @@ import type { MarketDataProvider, UpdateMarketDataProviderCredentialRequest } fr
 
 import { useError } from '@/hooks/use-error'
 import { useMarketDataProvider } from '@/hooks/use-market-data-provider'
+import { logger } from '@poveroh/logger/browser'
 
 // Manages provider API key validation and credential mutations.
 export const useMarketDataProviderCredentialForm = (provider: MarketDataProvider) => {
@@ -27,7 +28,7 @@ export const useMarketDataProviderCredentialForm = (provider: MarketDataProvider
 
     useEffect(() => {
         if (Object.keys(form.formState.errors).length > 0) {
-            console.debug('Form errors:', form.formState.errors)
+            logger.debug('Form errors:', form.formState.errors)
         }
     }, [form.formState.errors])
 

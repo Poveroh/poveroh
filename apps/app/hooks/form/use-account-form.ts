@@ -8,6 +8,7 @@ import { CreateUpdateFinancialAccountRequest, FinancialAccountData, FinancialAcc
 
 import { useError } from '@/hooks/use-error'
 import { FinancialAccountFormSchema } from '@poveroh/schemas'
+import { logger } from '@poveroh/logger/browser'
 
 export const useFinancialAccountForm = (initialData: FinancialAccountData | null) => {
     const { handleError } = useError()
@@ -28,7 +29,7 @@ export const useFinancialAccountForm = (initialData: FinancialAccountData | null
 
     useEffect(() => {
         if (Object.keys(form.formState.errors).length > 0) {
-            console.debug('Form errors:', form.formState.errors)
+            logger.debug('Form errors:', form.formState.errors)
         }
     }, [form.formState.errors])
 

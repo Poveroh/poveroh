@@ -15,6 +15,7 @@ import {
     CreateUpdateSubscriptionRequest
 } from '@poveroh/types'
 import { SubscriptionFormSchema } from '@poveroh/schemas'
+import { logger } from '@poveroh/logger/browser'
 
 export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
     const t = useTranslations()
@@ -44,8 +45,8 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
 
     useEffect(() => {
         if (Object.keys(form.formState.errors).length > 0) {
-            console.debug('Form errors:', form.formState.errors)
-            console.debug('Form values:', form.getValues())
+            logger.debug('Form errors:', form.formState.errors)
+            logger.debug('Form values:', form.getValues())
         }
     }, [form.formState.errors])
 
@@ -65,7 +66,7 @@ export const useSubscriptionForm = (initialData: SubscriptionData | null) => {
         try {
             setLoading(true)
 
-            console.log('[subscription submit]', values)
+            logger.debug('[subscription submit]', values)
 
             values.firstPayment = new Date(values.firstPayment).toISOString()
 

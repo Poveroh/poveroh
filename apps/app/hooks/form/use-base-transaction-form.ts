@@ -66,7 +66,7 @@ export function useBaseTransactionForm<T extends FieldValues>(
     // Enhanced form reset with proper validation
     const resetFormWithData = useCallback(
         (data: Partial<T>) => {
-            console.log('Resetting form with data:', data)
+            logger.debug('Resetting form with data:', data)
             form.reset(data as T)
 
             setTimeout(() => {

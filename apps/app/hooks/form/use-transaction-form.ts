@@ -4,6 +4,7 @@ import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
 import { useConfig } from '../use-config'
 import { CurrencyEnum, TransactionActionEnum, TransactionData, TransactionForm } from '@poveroh/types'
 import { TransactionFormSchema } from '@poveroh/schemas'
+import { logger } from '@poveroh/logger/browser'
 
 function getSchema(type: TransactionActionEnum) {
     switch (type) {
@@ -165,7 +166,7 @@ export function useTransactionForm(type: TransactionActionEnum, props: Transacti
                       await baseForm.handleSubmit(synced, props.dataCallback)
                   },
                   errors => {
-                      console.error('Form validation errors on submit:', errors)
+                      logger.error('Form validation errors on submit:', errors)
                   }
               )
             : baseForm.onSubmit
