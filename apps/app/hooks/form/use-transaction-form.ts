@@ -166,7 +166,7 @@ export function useTransactionForm(type: TransactionActionEnum, props: Transacti
                       await baseForm.handleSubmit(synced, props.dataCallback)
                   },
                   errors => {
-                      logger.error('Form validation errors on submit:', errors)
+                      logger.debug('Form validation errors on submit:', errors)
                   }
               )
             : baseForm.onSubmit
