@@ -12,9 +12,9 @@ type RegisterOptions = {
  */
 export async function registerNextTelemetry(options: RegisterOptions = {}): Promise<void> {
     if (process.env.NEXT_RUNTIME !== 'nodejs') return
-    if (process.env.SIGNOZ_ENABLED !== 'true' && process.env.SIGNOZ_ENABLED !== '1') return
+    if (process.env.NEXT_PUBLIC_SIGNOZ_ENABLED !== 'true' && process.env.NEXT_PUBLIC_SIGNOZ_ENABLED !== '1') return
 
-    const endpoint = process.env.SIGNOZ_ENDPOINT || 'http://localhost:4318'
+    const endpoint = process.env.NEXT_PUBLIC_SIGNOZ_ENDPOINT || 'http://localhost:4318'
     const serviceName = options.serviceName || 'poveroh-app'
     const serviceNamespace = options.serviceNamespace || 'poveroh'
 
