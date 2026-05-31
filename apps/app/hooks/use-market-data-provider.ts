@@ -11,8 +11,6 @@ import {
 
 import { useError } from './use-error'
 
-// Hook centralizing the queries and mutations needed by the market data providers
-// settings page: list providers (with per-user `configured` flag), save and delete credentials.
 export const useMarketDataProvider = () => {
     const queryClient = useQueryClient()
     const { handleError } = useError()
