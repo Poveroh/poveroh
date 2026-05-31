@@ -14,7 +14,7 @@ export class MarketDataCredentialController {
             if (!providerId) throw new BadRequestError('Missing provider ID in path')
 
             const payload = parseRequestBody(UpdateMarketDataProviderCredentialRequestSchema, req.body)
-            await this.credentialService.saveCredential(providerId, { apiKey: payload.apiKey })
+            await this.credentialService.saveCredential(providerId, payload)
 
             return ResponseHelper.success(res, { success: true })
         } catch (error) {

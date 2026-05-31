@@ -4,10 +4,8 @@ import config from '@/utils/environment'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { isKnownProvider } from '@/v1/content/template/market-data-providers'
 import { MarketDataRepository } from '../data/market-data.repository'
-import { CREDENTIAL_PAYLOAD_ALGO_V1 } from '@poveroh/types'
+import { CREDENTIAL_PAYLOAD_ALGO_V1, UpdateMarketDataProviderCredentialRequest } from '@poveroh/types'
 import { eventBus } from '@/v1/events/event-bus'
-
-type CredentialPayload = Record<string, string>
 
 /**
  * Service that owns encrypted provider credential records.
@@ -26,13 +24,13 @@ export class MarketDataCredentialService extends BaseService {
      * @param providerId The provider for which the credential is being saved.
      * @param payload The plaintext credential payload to encrypt and persist.
      */
-    async saveCredential(providerId: string, payload: CredentialPayload): Promise<void> {
+    async saveCredential(providerId: string, payload: UpdateMarketDataProviderCredentialRequest): Promise<void> {
         if (!isKnownProvider(providerId)) {
             throw new BadRequestError(`Unknown market data provider: ${providerId}`)
         }
 
         const userId = this.context.currentUser.id
-        const encrypted = encryptPayloadWithApplicationSecret(config.JWT_SECRET, JSON.stringify(payload))
+        const encrypted = encryptPayloadWithApplicationSecret(config.JWT_SECRET, payload.apiKey)
 
         await this.marketDataRepository.upsertCredential(userId, providerId, {
             ciphertext: toPrismaBytes(encrypted.ciphertext),
@@ -65,7 +63,7 @@ export class MarketDataCredentialService extends BaseService {
      * @param providerId The provider whose credential is being decrypted.
      * @returns A promise that resolves to the decrypted credential payload, or null if not configured.
      */
-    async getDecryptedCredential(providerId: string): Promise<CredentialPayload | null> {
+    async getDecryptedCredential(providerId: string): Promise<string | null> {
         if (!isKnownProvider(providerId)) {
             throw new BadRequestError(`Unknown market data provider: ${providerId}`)
         }
@@ -84,6 +82,6 @@ export class MarketDataCredentialService extends BaseService {
             authTag: Buffer.from(record.authTag)
         })
 
-        return JSON.parse(plaintext) as CredentialPayload
+        return plaintext
     }
 }

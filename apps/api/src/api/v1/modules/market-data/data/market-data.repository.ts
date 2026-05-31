@@ -1,4 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
+import { UpdateCredentialRecordRequest } from '@poveroh/types'
 
 const credentialSelect = {
     id: true,
@@ -10,13 +11,6 @@ const credentialSelect = {
 } satisfies Prisma.MarketDataProviderCredentialSelect
 
 type CredentialRecord = Prisma.MarketDataProviderCredentialGetPayload<{ select: typeof credentialSelect }>
-
-export type SaveCredentialRecordInput = {
-    ciphertext: Uint8Array<ArrayBuffer>
-    iv: Uint8Array<ArrayBuffer>
-    authTag: Uint8Array<ArrayBuffer>
-    algo: string
-}
 
 export class MarketDataRepository {
     /**
@@ -52,7 +46,7 @@ export class MarketDataRepository {
      * @param providerId The provider for which the credential is being saved.
      * @param payload The encrypted credential payload to persist.
      */
-    async upsertCredential(userId: string, providerId: string, payload: SaveCredentialRecordInput): Promise<void> {
+    async upsertCredential(userId: string, providerId: string, payload: UpdateCredentialRecordRequest): Promise<void> {
         await prisma.marketDataProviderCredential.upsert({
             where: { userId_providerId: { userId, providerId } },
             create: {

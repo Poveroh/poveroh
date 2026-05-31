@@ -13,3 +13,10 @@ export type EncryptionEnvelope = {
     wrapTag: Buffer
     algo: string
 }
+
+export type UpdateCredentialRecordRequest = {
+    ciphertext: Uint8Array<ArrayBuffer>
+    iv: Uint8Array<ArrayBuffer>
+    authTag: Uint8Array<ArrayBuffer>
+    algo: string
+}
