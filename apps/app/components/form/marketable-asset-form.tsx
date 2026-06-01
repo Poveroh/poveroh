@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { useAsset } from '@/hooks/use-asset'
 import { SummaryRow } from '../investments/summary-row'
 import Box from '../box/box-wrapper'
+import { StockField } from '../fields/stock-field'
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
@@ -83,14 +84,12 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                             <FormItem>
                                 <FormLabel mandatory>{t('investments.assets.form.symbol.label')}</FormLabel>
                                 <FormControl>
-                                    <Input
+                                    <StockField
                                         {...field}
-                                        variant='contained'
+                                        control={form.control}
+                                        name='symbol'
                                         placeholder={props.defaultSymbol}
-                                        onChange={event => {
-                                            const symbol = event.target.value.toUpperCase()
-                                            field.onChange(symbol)
-                                        }}
+                                        assetType={props.assetType}
                                     />
                                 </FormControl>
                                 <FormMessage />
