@@ -88,25 +88,42 @@ async function tableExists(tableName) {
 
 const columnCache = {}
 
-async function columnExists(tableName, columnName) {
-    const cacheKey = `${tableName}.${columnName}`
-    if (columnCache[cacheKey] !== undefined) return columnCache[cacheKey]
+/**
+ * Returns the set of column names that actually exist for a table, cached per table.
+ * @param tableName The database table to introspect.
+ * @returns A Set of column names present in the table.
+ */
+async function getTableColumns(tableName) {
+    if (columnCache[tableName] !== undefined) return columnCache[tableName]
 
     const result = await prisma.$queryRaw`
-        SELECT EXISTS (
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_name = ${tableName}
-            AND column_name = ${columnName}
-        )
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = ${tableName}
     `
-    columnCache[cacheKey] = result[0].exists
-    return result[0].exists
+    const columns = new Set(result.map(r => r.column_name))
+    columnCache[tableName] = columns
+    return columns
 }
 
+/**
+ * Normalizes a raw JSON record for insertion: converts dates, drops keys that no
+ * longer map to a table column (e.g. fields removed from the schema), and assigns userId.
+ * @param tableName The target table name.
+ * @param item The raw record from the data file.
+ * @param userId The user ID to associate the record with, when the table is user-scoped.
+ * @returns The cleaned record ready for createMany.
+ */
 async function prepareRecord(tableName, item, userId) {
     const dateFields = ['createdAt', 'updatedAt', 'deletedAt', 'date']
-    const processedItem = { ...item }
+    const columns = await getTableColumns(tableName)
+
+    const processedItem = {}
+    for (const [key, value] of Object.entries(item)) {
+        if (columns.has(key)) {
+            processedItem[key] = value
+        }
+    }
 
     for (const field of dateFields) {
         if (processedItem[field]) {
@@ -114,7 +131,7 @@ async function prepareRecord(tableName, item, userId) {
         }
     }
 
-    if (userId && (await columnExists(tableName, 'userId'))) {
+    if (userId && columns.has('userId')) {
         processedItem.userId = userId
     }
 

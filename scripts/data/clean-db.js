@@ -8,8 +8,16 @@
  */
 
 const { PrismaClient } = require('@prisma/client')
+const { PrismaPg } = require('@prisma/adapter-pg')
+const path = require('path')
+const dotenv = require('dotenv')
+const dotenvExpand = require('dotenv-expand')
 const readline = require('readline')
-const prisma = new PrismaClient()
+
+dotenvExpand.expand(dotenv.config({ path: path.resolve(__dirname, '../../.env') }))
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const prisma = new PrismaClient({ adapter })
 
 const rl = readline.createInterface({
     input: process.stdin,
