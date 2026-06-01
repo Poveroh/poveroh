@@ -62,9 +62,13 @@ export class MarketDataService extends BaseService {
         const providerId = await this.resolveProviderId(params.providerId)
         const client = await this.buildClient(providerId)
 
-        return this.runProviderCall(providerId, () =>
+        const instruments = await this.runProviderCall(providerId, () =>
             client.searchInstruments({ query: params.q, assetType: params.assetType, limit: params.limit })
         )
+
+        if (!params.assetType) return instruments
+
+        return instruments.filter(instrument => instrument.assetType === params.assetType)
     }
 
     /**

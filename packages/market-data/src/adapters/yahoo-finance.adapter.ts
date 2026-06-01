@@ -1,49 +1,57 @@
-import type { GetQuotesParams, MarketInstrument, MarketQuote, SearchInstrumentsParams } from '@poveroh/types'
-import { MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT, YAHOO_FINANCE_REQUEST_HEADERS } from '@poveroh/types'
-import { BaseHttpAdapter } from './base.adapter'
+import type {
+    GetQuotesParams,
+    MarketDataAdapter,
+    MarketInstrument,
+    MarketQuote,
+    SearchInstrumentsParams
+} from '@poveroh/types'
+import { MarketDataError, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
+import YahooFinance from 'yahoo-finance2'
 import { mapAssetType, mapCurrency, mapMarketState } from '../utils/mapping'
-import type { YahooSearchQuote, YahooSearchResponse, YahooChartResponse } from '../types/yahoo-finance.types'
-
-const SEARCH_URL = MARKET_DATA_ENDPOINTS.yahooFinance.search
-const CHART_URL = MARKET_DATA_ENDPOINTS.yahooFinance.chart
+import type { YahooSearchQuoteLike } from '../types/yahoo-finance.types'
 
 /**
- * Yahoo Finance adapter. Requires no credentials, so it is the default provider
- * and works out of the box for instrument search and chart-based quotes.
+ * Yahoo Finance adapter backed by the `yahoo-finance2` client, which handles the
+ * cookie/crumb auth handshake and response validation that raw HTTP would miss.
+ * Requires no credentials, so it is the default provider and works out of the box.
  */
-export class YahooFinanceAdapter extends BaseHttpAdapter {
+export class YahooFinanceAdapter implements MarketDataAdapter {
     readonly providerId = 'yahoo-finance'
+    private readonly client = new YahooFinance()
 
     /**
-     * Searches Yahoo's autocomplete endpoint and normalizes the equity-like quotes.
+     * Searches Yahoo's autocomplete endpoint and normalizes the symbol-bearing quotes.
      * @param params The free-text query and optional result limit.
      * @returns The normalized list of instruments.
      */
     async searchInstruments(params: SearchInstrumentsParams): Promise<MarketInstrument[]> {
-        const url = new URL(SEARCH_URL)
-        url.searchParams.set('q', params.query)
-        url.searchParams.set('quotesCount', String(params.limit ?? MARKET_DATA_SEARCH_DEFAULT_LIMIT))
-        url.searchParams.set('newsCount', '0')
+        try {
+            const result = await this.client.search(params.query, {
+                quotesCount: params.limit ?? MARKET_DATA_SEARCH_DEFAULT_LIMIT,
+                newsCount: 0
+            })
 
-        const data = await this.fetchJson<YahooSearchResponse>(url.toString(), YAHOO_FINANCE_REQUEST_HEADERS)
-
-        return (data.quotes ?? [])
-            .filter((quote): quote is YahooSearchQuote & { symbol: string } => Boolean(quote.symbol))
-            .map(quote => ({
-                providerId: this.providerId,
-                providerInstrumentId: quote.symbol,
-                symbol: quote.symbol,
-                displayName: quote.longname || quote.shortname || quote.symbol,
-                assetType: mapAssetType(quote.quoteType),
-                currency: mapCurrency(quote.currency),
-                exchange: quote.exchDisp || quote.exchange || null,
-                market: quote.exchange || null,
-                metadata: {}
-            }))
+            // Search results mix Yahoo instruments with editorial entries; keep only the symbol-bearing ones.
+            return (result.quotes as YahooSearchQuoteLike[])
+                .filter((quote): quote is YahooSearchQuoteLike & { symbol: string } => Boolean(quote.symbol))
+                .map(quote => ({
+                    providerId: this.providerId,
+                    providerInstrumentId: quote.symbol,
+                    symbol: quote.symbol,
+                    displayName: quote.longname || quote.shortname || quote.symbol,
+                    assetType: mapAssetType(quote.quoteType),
+                    currency: mapCurrency(undefined),
+                    exchange: quote.exchDisp || quote.exchange || null,
+                    market: quote.exchange || null,
+                    metadata: {}
+                }))
+        } catch (error) {
+            throw this.toMarketDataError(error)
+        }
     }
 
     /**
-     * Resolves quotes by reading the chart endpoint `meta` block for each symbol.
+     * Resolves quotes through the client's quote endpoint, one request per symbol.
      * @param params The symbols to resolve.
      * @returns The normalized list of quotes.
      */
@@ -58,33 +66,39 @@ export class YahooFinanceAdapter extends BaseHttpAdapter {
      * @returns The normalized quote or null if unavailable.
      */
     private async getQuote(symbol: string): Promise<MarketQuote | null> {
-        const url = new URL(`${CHART_URL}/${encodeURIComponent(symbol)}`)
-        url.searchParams.set('range', '1d')
-        url.searchParams.set('interval', '1d')
+        try {
+            const quote = await this.client.quote(symbol)
+            if (!quote || typeof quote.regularMarketPrice !== 'number') return null
 
-        const data = await this.fetchJson<YahooChartResponse>(url.toString(), YAHOO_FINANCE_REQUEST_HEADERS)
-        const meta = data.chart?.result?.[0]?.meta
-        if (!meta || typeof meta.regularMarketPrice !== 'number') return null
-
-        const previousClose = meta.previousClose ?? meta.chartPreviousClose
-        const changePercent =
-            typeof previousClose === 'number' && previousClose !== 0
-                ? ((meta.regularMarketPrice - previousClose) / previousClose) * 100
-                : null
-
-        return {
-            providerId: this.providerId,
-            symbol: meta.symbol || symbol,
-            assetType: 'STOCK',
-            currency: mapCurrency(meta.currency),
-            price: meta.regularMarketPrice,
-            changePercent,
-            marketState: mapMarketState(meta.marketState),
-            asOf: new Date().toISOString(),
-            valueSource: 'MARKET',
-            displayName: null,
-            exchange: meta.fullExchangeName || meta.exchangeName || null,
-            market: meta.exchangeName || null
+            return {
+                providerId: this.providerId,
+                symbol: quote.symbol || symbol,
+                assetType: mapAssetType(quote.quoteType),
+                currency: mapCurrency(quote.currency),
+                price: quote.regularMarketPrice,
+                changePercent:
+                    typeof quote.regularMarketChangePercent === 'number' ? quote.regularMarketChangePercent : null,
+                marketState: mapMarketState(quote.marketState),
+                asOf: new Date().toISOString(),
+                valueSource: 'MARKET',
+                displayName: quote.longName || quote.shortName || null,
+                exchange: quote.fullExchangeName || quote.exchange || null,
+                market: quote.exchange || null
+            }
+        } catch (error) {
+            throw this.toMarketDataError(error)
         }
+    }
+
+    /**
+     * Normalizes any client failure into a MarketDataError tagged with this provider.
+     * @param error The error thrown by the Yahoo client.
+     * @returns The normalized MarketDataError.
+     */
+    private toMarketDataError(error: unknown): MarketDataError {
+        if (error instanceof MarketDataError) return error
+
+        const message = error instanceof Error ? error.message : 'Unknown provider error'
+        return new MarketDataError(this.providerId, message)
     }
 }
