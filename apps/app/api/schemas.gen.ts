@@ -4036,6 +4036,58 @@ export const InsuranceAssetFormSchema = {
     ]
 } as const
 
+export const UpdateMarketDataProviderPathParamsSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['providerId']
+} as const
+
+export const UpdateMarketDataProviderCredentialRequestSchema = {
+    type: 'object',
+    properties: {
+        apiKey: {
+            type: 'string',
+            minLength: 1
+        }
+    },
+    required: ['apiKey']
+} as const
+
+export const UpdateMarketDataProviderCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const DeleteMarketDataProviderCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
 export const MarketDataProviderSchema = {
     type: 'object',
     properties: {
@@ -4276,58 +4328,6 @@ export const GetMarketQuotesResponseSchema = {
     required: ['success', 'message', 'data']
 } as const
 
-export const UpdateMarketDataProviderPathParamsSchema = {
-    type: 'object',
-    properties: {
-        providerId: {
-            type: 'string',
-            format: 'uuid'
-        }
-    },
-    required: ['providerId']
-} as const
-
-export const UpdateMarketDataProviderCredentialRequestSchema = {
-    type: 'object',
-    properties: {
-        apiKey: {
-            type: 'string',
-            minLength: 1
-        }
-    },
-    required: ['apiKey']
-} as const
-
-export const UpdateMarketDataProviderCredentialResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
-export const DeleteMarketDataProviderCredentialResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        }
-    },
-    required: ['success', 'message']
-} as const
-
 export const MarketDataProviderQuerySchema = {
     type: 'object',
     properties: {
@@ -4374,20 +4374,12 @@ export const GetMarketQuotesQuerySchema = {
             type: 'object',
             properties: {
                 symbols: {
-                    anyOf: [
-                        {
-                            type: 'string',
-                            minLength: 1
-                        },
-                        {
-                            type: 'array',
-                            items: {
-                                type: 'string',
-                                minLength: 1
-                            },
-                            minItems: 1
-                        }
-                    ]
+                    type: 'array',
+                    items: {
+                        type: 'string',
+                        minLength: 1
+                    },
+                    minItems: 1
                 }
             },
             required: ['symbols']

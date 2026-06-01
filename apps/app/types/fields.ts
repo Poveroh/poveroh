@@ -1,5 +1,5 @@
 import type { ArrayPath, Control, FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import type { InputVariantStyle } from '@poveroh/types'
+import type { AssetTypeEnum, InputVariantStyle, MarketInstrument } from '@poveroh/types'
 import type { ReactNode } from 'react'
 import { FinancialAccountData, SubcategoryData } from '@poveroh/types'
 
@@ -104,6 +104,18 @@ export type CategoryFieldProps<T extends FieldValues = FieldValues> = StandardFi
  */
 export type AccountFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
     excludeIds?: string[]
+}
+
+/**
+ * Props for the stock search field: the user types a free-text query (ISIN, ticker,
+ * name, crypto, ...), results come from the market data provider, and selecting one
+ * sets the form value to the instrument symbol.
+ * @template T - Form values type extending FieldValues
+ */
+export type StockFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
+    providerId?: string
+    assetType?: AssetTypeEnum
+    onInstrumentSelect?: (instrument: MarketInstrument) => void
 }
 
 /**

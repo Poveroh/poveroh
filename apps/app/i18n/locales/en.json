@@ -642,5 +642,12 @@
             "saved": "{a} api key saved",
             "deleted": "{a} api key removed"
         }
+    },
+    "stockField": {
+        "placeholder": "Search by ISIN, ticker, or name",
+        "searching": "Searching…",
+        "minChars": "Type at least {count} characters to search",
+        "noResults": "No instruments found",
+        "error": "Could not load instruments. Try again."
     }
 }

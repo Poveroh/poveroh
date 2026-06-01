@@ -4,5 +4,5 @@
 /* eslint-disable */
 import type { MarketDataProviderQuery } from './MarketDataProviderQuery'
 export type GetMarketQuotesQuery = MarketDataProviderQuery & {
-    symbols: string | Array<string>
+    symbols: Array<string>
 }

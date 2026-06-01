@@ -1756,6 +1756,36 @@ export type InsuranceAssetForm = {
     surrenderValue: number
 }
 
+export type UpdateMarketDataProviderPathParams = {
+    providerId: string
+}
+
+export type UpdateMarketDataProviderCredentialRequest = {
+    apiKey: string
+}
+
+export type UpdateMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type DeleteMarketDataProviderCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
 export type MarketDataProvider = {
     id: string
     label: string
@@ -1844,36 +1874,6 @@ export type GetMarketQuotesResponse = {
     data: Array<MarketQuote>
 }
 
-export type UpdateMarketDataProviderPathParams = {
-    providerId: string
-}
-
-export type UpdateMarketDataProviderCredentialRequest = {
-    apiKey: string
-}
-
-export type UpdateMarketDataProviderCredentialResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-}
-
-export type DeleteMarketDataProviderCredentialResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-}
-
 export type MarketDataProviderQuery = {
     providerId?: string
     assetType?: AssetTypeEnum
@@ -1885,7 +1885,7 @@ export type SearchMarketInstrumentsQuery = MarketDataProviderQuery & {
 }
 
 export type GetMarketQuotesQuery = MarketDataProviderQuery & {
-    symbols: string | Array<string>
+    symbols: Array<string>
 }
 
 export type MarketableAssetData = {
@@ -5291,7 +5291,7 @@ export type GetMarketQuotesData = {
     query: {
         providerId?: string
         assetType?: AssetTypeEnum
-        symbols: string | Array<string>
+        symbols: Array<string>
     }
     url: '/market-data/quotes'
 }

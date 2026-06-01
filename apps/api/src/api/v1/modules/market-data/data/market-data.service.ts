@@ -1,22 +1,20 @@
-import type { AssetTypeEnum, MarketDataProvider, MarketInstrument, MarketQuote } from '@poveroh/types'
+import type {
+    AssetTypeEnum,
+    GetMarketQuotesQuery,
+    MarketDataProvider,
+    MarketInstrument,
+    MarketQuote,
+    SearchMarketInstrumentsQuery
+} from '@poveroh/types'
+import { DEFAULT_MARKET_DATA_PROVIDER, MarketDataError } from '@poveroh/types'
+import { createMarketDataClient } from '@poveroh/market-data'
 
-import { BadRequestError } from '@/utils'
+import { BadRequestError, InternalServerError } from '@/utils'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { MARKET_DATA_PROVIDER_REGISTRY, getProviderDefinition } from '@/v1/content/template/market-data-providers'
 import { MarketDataRepository } from './market-data.repository'
-
-type SearchMarketInstrumentsParams = {
-    providerId?: string
-    assetType?: AssetTypeEnum
-    q: string
-    limit?: number
-}
-
-type GetMarketQuotesParams = {
-    providerId?: string
-    assetType?: AssetTypeEnum
-    symbols: string[]
-}
+import { MarketDataCredentialService } from '../credentials/market-data-credential.service'
+import { UserPreferencesService } from '@/v1/modules/users/preferences/user-preferences.service'
 
 /**
  * Service that exposes provider metadata and (future) market data fetching.
@@ -25,6 +23,8 @@ type GetMarketQuotesParams = {
  */
 export class MarketDataService extends BaseService {
     private readonly marketDataRepository = new MarketDataRepository()
+    private readonly credentialService = new MarketDataCredentialService()
+    private readonly preferencesService = new UserPreferencesService()
 
     constructor() {
         super('market-data')
@@ -54,25 +54,96 @@ export class MarketDataService extends BaseService {
     }
 
     /**
-     * Searches provider instruments. Currently a stub until provider clients are implemented.
+     * Searches provider instruments through the resolved provider's adapter.
      * @param params Search parameters including provider, asset type, and query.
+     * @returns A promise that resolves to the normalized list of matching instruments.
      */
-    async searchInstruments(params: SearchMarketInstrumentsParams): Promise<MarketInstrument[]> {
-        this.assertProviderRegistered(params.providerId)
-        throw new BadRequestError('Market data fetching is not implemented yet for the configured providers')
+    async searchInstruments(params: SearchMarketInstrumentsQuery): Promise<MarketInstrument[]> {
+        const providerId = await this.resolveProviderId(params.providerId)
+        const client = await this.buildClient(providerId)
+
+        return this.runProviderCall(providerId, () =>
+            client.searchInstruments({ query: params.q, assetType: params.assetType, limit: params.limit })
+        )
     }
 
     /**
-     * Fetches normalized quotes. Currently a stub until provider clients are implemented.
+     * Fetches normalized quotes through the resolved provider's adapter.
      * @param params Quote parameters including provider, asset type, and the requested symbols.
+     * @returns A promise that resolves to the normalized list of quotes.
      */
-    async getQuotes(params: GetMarketQuotesParams): Promise<MarketQuote[]> {
+    async getQuotes(params: GetMarketQuotesQuery): Promise<MarketQuote[]> {
         if (params.symbols.length === 0) {
             throw new BadRequestError('At least one symbol is required')
         }
 
-        this.assertProviderRegistered(params.providerId)
-        throw new BadRequestError('Market data fetching is not implemented yet for the configured providers')
+        const providerId = await this.resolveProviderId(params.providerId)
+        const client = await this.buildClient(providerId)
+
+        return this.runProviderCall(providerId, () =>
+            client.getQuotes({ symbols: params.symbols, assetType: params.assetType })
+        )
+    }
+
+    /**
+     * Resolves the provider to use for a request: an explicit id wins, then the
+     * user's preferred provider, falling back to the no-credential default.
+     * @param explicitProviderId An optional provider id supplied by the caller.
+     * @returns A promise that resolves to a registered provider id.
+     */
+    private async resolveProviderId(explicitProviderId?: string): Promise<string> {
+        if (explicitProviderId) {
+            this.assertProviderRegistered(explicitProviderId)
+            return explicitProviderId
+        }
+
+        const preferences = await this.preferencesService.getPreferences()
+        const providerId = preferences.preferredMarketDataProviderId || DEFAULT_MARKET_DATA_PROVIDER.id
+        this.assertProviderRegistered(providerId)
+
+        return providerId
+    }
+
+    /**
+     * Builds a provider adapter, loading and decrypting the stored API key for
+     * providers that require credentials.
+     * @param providerId The registered provider id to build a client for.
+     * @returns A promise that resolves to a ready-to-use market data adapter.
+     */
+    private async buildClient(providerId: string) {
+        const definition = getProviderDefinition(providerId)
+        if (!definition) {
+            throw new BadRequestError(`Unknown market data provider: ${providerId}`)
+        }
+
+        if (!definition.requiresCredentials) {
+            return createMarketDataClient(providerId)
+        }
+
+        const apiKey = await this.credentialService.getDecryptedCredential(providerId)
+        if (!apiKey) {
+            throw new BadRequestError(`Provider "${providerId}" is not configured. Add an API key in settings.`)
+        }
+
+        return createMarketDataClient(providerId, { apiKey })
+    }
+
+    /**
+     * Executes a provider adapter call, translating provider-side failures into
+     * the appropriate HttpError so they surface cleanly to the client.
+     * @param providerId The provider id used for error context.
+     * @param call The adapter invocation to run.
+     * @returns A promise that resolves to the adapter result.
+     */
+    private async runProviderCall<T>(providerId: string, call: () => Promise<T>): Promise<T> {
+        try {
+            return await call()
+        } catch (error) {
+            if (error instanceof MarketDataError) {
+                throw new InternalServerError(`Market data request to "${providerId}" failed: ${error.message}`)
+            }
+            throw error
+        }
     }
 
     /**

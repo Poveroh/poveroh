@@ -32,12 +32,20 @@ The platform is designed for a single user (or household) who self-hosts the ins
 - Instantiate services with userId: `new CategoryService(req.user.id)`
 - Use Zod schemas from `@poveroh/schemas` for both API input validation and frontend form validation
 - Use Zod schemas to add new types, then generate it using `npm run openapi:generate`
+- Define every type and constant in `@poveroh/types` (or generate it from Zod schemas via `npm run openapi:generate`). The only exception is function/component Props, which stay beside their function. Never declare shared types or constants in feature, service, or implementation files
 - Keep each component in its own file by default; move constants to `constants.ts`, configuration to `config/`, and shared functions to `utils/`
 - Keep route files in `apps/app/app/**` focused on page composition, data wiring, and routing only
 - Put app-specific UI components in `apps/app/components/<feature-or-category>/`, not inside route-local `_components` folders
 - Put investment page components in `apps/app/components/investments/` and investment dialogs in `apps/app/components/dialog/investment/`
-- Always add comments before function in API function like services function, helpers function
-- Where possible and needed, add comments before function in frontend APP function
+- Document every function (API and frontend: services, helpers, hooks, adapters, methods) with a JSDoc block: a one-line description of what it does, one `@param` per parameter, and `@returns` when it returns a value. Use exactly this format:
+
+```ts
+/**
+ * Fetches and normalizes a single symbol quote, returning null when unavailable.
+ * @param symbol The symbol to fetch.
+ * @returns The normalized quote or null if unavailable.
+ */
+```
 
 ## Don't
 
@@ -50,8 +58,8 @@ The platform is designed for a single user (or household) who self-hosts the ins
 - Never create route-local component folders like `apps/app/app/**/_components`; use `apps/app/components/` grouped by feature/category
 - Never import from `packages/contracts` directly in the frontend — use `@poveroh/types` instead
 - Never add comments that simply restate what the code does
-- Never create types that are shared between API and APP in specific file. Use Zod schemas and generate it `npm run openapi:generate`
-- Never create type in a specific file, unless is a props. If is shared, put in Zod schemas and generate; otherwise create or use relative files in `types` folder
+- Never declare a type or constant in a feature/service/implementation file. The two exceptions that stay local: (1) function/component Props, beside their function; (2) private (non-exported across the package boundary) DTOs that model a third-party/external response, used only for parsing. Everything else lives in `@poveroh/types` (API contracts as Zod schemas generated with `npm run openapi:generate`; non-contract shared types/constants as plain modules in `packages/types/src/lib/`)
+- Never keep a runtime library (e.g. `@poveroh/market-data`) holding its own shared types or constants: it exports only implementation (functions/classes) and imports its contract types and constants from `@poveroh/types`. Its private external-response DTOs go in a local `src/types/` folder, one file per provider/topic (e.g. `types/finnhub.types.ts`), imported directly — no barrel
 
 ## PR Size Guidelines
 

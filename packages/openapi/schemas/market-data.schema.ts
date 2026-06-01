@@ -103,5 +103,5 @@ export const SearchMarketInstrumentsQuerySchema = MarketDataProviderQuerySchema.
  * Query schema for requesting one or more market quotes
  */
 export const GetMarketQuotesQuerySchema = MarketDataProviderQuerySchema.extend({
-    symbols: z.union([z.string().nonempty(), z.array(z.string().nonempty()).nonempty()])
+    symbols: z.array(z.string().nonempty()).nonempty()
 }).openapi('GetMarketQuotesQuery')

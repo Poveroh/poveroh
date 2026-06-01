@@ -27,8 +27,8 @@ export default function ProvidersView() {
     const preferredMarketDataProviderId =
         user.preferences?.preferredMarketDataProviderId ?? DEFAULT_USER_PREFERENCES.preferredMarketDataProviderId
 
-    // Yahoo Finance is always available; configured API providers are appended as explicit alternatives.
     const configuredProviders = useMemo(() => providers.filter(provider => provider.configured), [providers])
+    const credentialProviders = useMemo(() => providers.filter(provider => provider.requiresCredentials), [providers])
     const providerOptions = useMemo(() => {
         const preferredProvider = providers.find(provider => provider.id === preferredMarketDataProviderId)
         const options = [DEFAULT_MARKET_DATA_PROVIDER, ...configuredProviders]
@@ -95,7 +95,7 @@ export default function ProvidersView() {
             </Box>
 
             <Box title={t('providers.list.title')}>
-                {providers.map(provider => (
+                {credentialProviders.map(provider => (
                     <ProviderCredentialCard key={provider.id} provider={provider} />
                 ))}
             </Box>
