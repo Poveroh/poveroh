@@ -4,13 +4,13 @@ import { forwardRef, useImperativeHandle, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
-import { Input } from '@poveroh/ui/components/input'
 
 import { AmountField, CurrencyField, DateField } from '@/components/fields'
 import { useMarketableAssetForm } from '@/hooks/form/use-marketable-asset-form'
 import type { FormRef, MarketableAssetFormProps, MarketableAssetFormValues } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { useAsset } from '@/hooks/use-asset'
+import { useMarketQuote } from '@/hooks/use-market-quote'
 import { SummaryRow } from '../investments/summary-row'
 import Box from '../box/box-wrapper'
 import { StockField } from '../fields/stock-field'
@@ -19,8 +19,16 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
     (props: MarketableAssetFormProps, ref) => {
         const t = useTranslations()
         const { ASSET_TYPE_CATALOG } = useAsset()
+        const { fetchQuote } = useMarketQuote()
         const { form, currency, quantity, unitPrice, fees, total, defaultValues, onSubmit } =
             useMarketableAssetForm(props)
+
+        const handleInstrumentSelect = async (symbol: string, providerId: string) => {
+            const quote = await fetchQuote(symbol, providerId)
+            if (!quote) return
+
+            form.setValue('unitPrice', quote.price, { shouldValidate: true, shouldDirty: true })
+        }
 
         useImperativeHandle(ref, () => ({
             submit: onSubmit,
@@ -90,6 +98,9 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                                         name='symbol'
                                         placeholder={props.defaultSymbol}
                                         assetType={props.assetType}
+                                        onInstrumentSelect={instrument =>
+                                            handleInstrumentSelect(instrument.symbol, instrument.providerId)
+                                        }
                                     />
                                 </FormControl>
                                 <FormMessage />
