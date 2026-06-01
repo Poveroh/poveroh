@@ -7,7 +7,7 @@ export function MarketableDialog() {
             modalId={MODAL_IDS.TICKET_SYMBOL}
             title='Add marketable asset'
             assetType='STOCK'
-            defaultSymbol='AAPL'
+            defaultSymbol=''
         />
     )
 }
