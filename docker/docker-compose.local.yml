@@ -12,6 +12,7 @@ networks:
 services:
     redis:
         container_name: redis
+        image: ghcr.io/poveroh/poveroh-redis:latest
         build:
             context: ..
             dockerfile: ./infra/redis/redis.dockerfile
@@ -26,6 +27,7 @@ services:
 
     db:
         container_name: db
+        image: ghcr.io/poveroh/poveroh-db:latest
         build:
             context: ..
             dockerfile: ./infra/db/db.dockerfile
@@ -56,6 +58,7 @@ services:
 
     api:
         container_name: api
+        image: ghcr.io/poveroh/poveroh-api:latest
         build:
             context: ..
             dockerfile: ./apps/api/api.dockerfile
@@ -79,6 +82,7 @@ services:
 
     app:
         container_name: app
+        image: ghcr.io/poveroh/poveroh-app:latest
         build:
             context: ..
             dockerfile: ./apps/app/app.dockerfile
@@ -98,6 +102,7 @@ services:
 
     proxy:
         container_name: proxy
+        image: ghcr.io/poveroh/poveroh-proxy:latest
         build:
             context: ..
             dockerfile: ./infra/proxy/proxy.dockerfile
