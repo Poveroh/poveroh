@@ -7,12 +7,15 @@ import type {
     CreateMarketableAssetRequest,
     CreateRealEstateAssetRequest,
     CreateUpdateTransactionRequest,
+    CreateVehicleAssetRequest,
     CurrencyEnum,
     ImportData,
     InputVariantStyle,
     RealEstateTypeEnum,
     UpdateMarketableAssetRequest,
-    UpdateRealEstateAssetRequest
+    UpdateRealEstateAssetRequest,
+    UpdateVehicleAssetRequest,
+    VehicleTypeEnum
 } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
@@ -92,3 +95,21 @@ export type RealEstateAssetFormValues = {
 export type CreateUpdateRealEstateAssetRequest = CreateRealEstateAssetRequest | UpdateRealEstateAssetRequest
 
 export type RealEstateAssetFormProps = FormProps<AssetData, CreateUpdateRealEstateAssetRequest>
+
+export type VehicleAssetFormValues = {
+    brand: string
+    model: string
+    type: VehicleTypeEnum
+    value: number
+    purchaseDate?: string
+    year?: number
+    plateNumber?: string
+    logoIcon?: string
+    enableDepreciation: boolean
+    depreciationCycle?: string
+    depreciationPercentage?: number
+}
+
+export type CreateUpdateVehicleAssetRequest = CreateVehicleAssetRequest | UpdateVehicleAssetRequest
+
+export type VehicleAssetFormProps = FormProps<AssetData, CreateUpdateVehicleAssetRequest>

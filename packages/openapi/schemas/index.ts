@@ -1,5 +1,6 @@
 export * from './asset-transaction.schema'
 export * from './asset.schema'
+export * from './auto-depreciation.schema'
 export * from './category.schema'
 export * from './collectible-asset.schema'
 export * from './dashboard.schema'

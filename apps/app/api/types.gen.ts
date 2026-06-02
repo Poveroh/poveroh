@@ -299,6 +299,7 @@ export type Asset = {
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
     transactions: Array<AssetTransactionData>
+    autoDepreciations: Array<AutoDepreciationData>
 }
 
 export type AssetTypeEnum =
@@ -385,6 +386,7 @@ export type VehicleAsset = {
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
+    logoIcon: string | null
     createdAt: string
     updatedAt: string
     deletedAt: string | null
@@ -415,6 +417,20 @@ export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 
 
 export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
+export type AutoDepreciationData = {
+    startDate: string
+    endDate: string | null
+    depreciationBase: DepreciationBaseEnum
+    depreciationType: DepreciationValueTypeEnum
+    depreciationValue: number
+    cyclePeriod: CyclePeriodEnum
+    cycleNumber: number
+}
+
+export type DepreciationBaseEnum = 'PURCHASE_PRICE' | 'CURRENT_VALUE' | 'LAST_SNAPSHOT'
+
+export type DepreciationValueTypeEnum = 'AMOUNT' | 'PERCENTAGE'
+
 export type AssetData = {
     id: string
     title: string
@@ -433,6 +449,7 @@ export type AssetData = {
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
     transactions: Array<AssetTransactionData>
+    autoDepreciations: Array<AutoDepreciationData>
 }
 
 export type GetAssetListResponse = {
@@ -493,6 +510,27 @@ export type AssetFilters = {
 export type QueryAssetFilters = {
     filter?: AssetFilters
     options?: FilterOptions
+}
+
+export type AutoDepreciation = {
+    id: string
+    assetId: string
+    startDate: string
+    endDate: string | null
+    depreciationBase: DepreciationBaseEnum
+    depreciationType: DepreciationValueTypeEnum
+    depreciationValue: number
+    cyclePeriod: CyclePeriodEnum
+    cycleNumber: number
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
+export type AutoDepreciationInput = {
+    percentage: number
+    cyclePeriod: CyclePeriodEnum
+    cycleNumber: number
 }
 
 export type Category = {
@@ -1990,14 +2028,6 @@ export type RealEstateAssetData = {
     purchaseDate: string | null
 }
 
-export type RealEstateAssetForm = {
-    title: string
-    type: RealEstateTypeEnum
-    value: number
-    purchaseDate?: string
-    address?: string
-}
-
 export type CreateRealEstateAssetRequest = {
     title: string
     type: RealEstateTypeEnum
@@ -2010,6 +2040,14 @@ export type UpdateRealEstateAssetRequest = {
     title?: string
     type?: RealEstateTypeEnum
     value?: number
+    purchaseDate?: string
+    address?: string
+}
+
+export type RealEstateAssetForm = {
+    title: string
+    type: RealEstateTypeEnum
+    value: number
     purchaseDate?: string
     address?: string
 }
@@ -2822,69 +2860,53 @@ export type VehicleAssetData = {
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
+    logoIcon: string | null
 }
 
 export type CreateVehicleAssetRequest = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number
-    purchasePrice: number
-    purchaseDate: string
-    plateNumber: string
-    vin: string | null
-    mileage: number | null
-    condition: AssetConditionEnum
+    value: number
+    purchaseDate?: string
+    year?: number
+    plateNumber?: string
+    logoIcon?: string
+    autoDepreciation?: AutoDepreciationInput
 }
 
-export type CreateVehicleAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: VehicleAssetData & unknown
+export type CreateVehicleAssetMultipartRequest = {
+    data?: CreateVehicleAssetRequest
+    file: Array<Blob | File>
 }
 
 export type UpdateVehicleAssetRequest = {
     brand?: string
     model?: string
     type?: VehicleTypeEnum
-    year?: number
-    purchasePrice?: number
+    value?: number
     purchaseDate?: string
+    year?: number
     plateNumber?: string
-    vin?: string | null
-    mileage?: number | null
-    condition?: AssetConditionEnum
+    logoIcon?: string
+    autoDepreciation?: AutoDepreciationInput
 }
 
-export type UpdateVehicleAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: VehicleAssetData & unknown
+export type UpdateVehicleAssetMultipartRequest = {
+    data?: UpdateVehicleAssetRequest
+    file: Array<Blob | File>
 }
 
 export type VehicleAssetForm = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number
-    purchasePrice: number
-    purchaseDate: string
-    plateNumber: string
-    vin: string | null
-    mileage: number | null
-    condition: AssetConditionEnum
+    value: number
+    purchaseDate?: string
+    year?: number
+    plateNumber?: string
+    logoIcon?: string
+    autoDepreciation?: AutoDepreciationInput
 }
 
 export type GetRootStatusData = {
@@ -3409,6 +3431,78 @@ export type UpdateRealEstateAssetResponses = {
 }
 
 export type UpdateRealEstateAssetResponse = UpdateRealEstateAssetResponses[keyof UpdateRealEstateAssetResponses]
+
+export type CreateVehicleAssetData = {
+    body: CreateVehicleAssetMultipartRequest
+    path?: never
+    query?: never
+    url: '/assets/vehicle'
+}
+
+export type CreateVehicleAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateVehicleAssetError = CreateVehicleAssetErrors[keyof CreateVehicleAssetErrors]
+
+export type CreateVehicleAssetResponses = {
+    /**
+     * Vehicle asset created
+     */
+    200: GetAssetResponse
+}
+
+export type CreateVehicleAssetResponse = CreateVehicleAssetResponses[keyof CreateVehicleAssetResponses]
+
+export type UpdateVehicleAssetData = {
+    body: UpdateVehicleAssetMultipartRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}/vehicle'
+}
+
+export type UpdateVehicleAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Vehicle asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateVehicleAssetError = UpdateVehicleAssetErrors[keyof UpdateVehicleAssetErrors]
+
+export type UpdateVehicleAssetResponses = {
+    /**
+     * Vehicle asset updated
+     */
+    200: GetAssetResponse
+}
+
+export type UpdateVehicleAssetResponse = UpdateVehicleAssetResponses[keyof UpdateVehicleAssetResponses]
 
 export type DeleteAssetTransactionsData = {
     body?: never

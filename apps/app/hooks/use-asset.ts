@@ -6,12 +6,14 @@ import {
     createAssetTransactionMutation,
     createMarketableAssetMutation,
     createRealEstateAssetMutation,
+    createVehicleAssetMutation,
     deleteAssetMutation,
     deleteAssetsMutation,
     getAssetsOptions,
     getAssetsQueryKey,
     updateMarketableAssetMutation,
-    updateRealEstateAssetMutation
+    updateRealEstateAssetMutation,
+    updateVehicleAssetMutation
 } from '@/api/@tanstack/react-query.gen'
 import { useError } from './use-error'
 import { useFilters } from './use-filters'
@@ -74,6 +76,22 @@ export const useAsset = () => {
         }
     })
 
+    const createVehicleMutation = useMutation({
+        ...createVehicleAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error creating vehicle asset')
+        }
+    })
+
+    const updateVehicleMutation = useMutation({
+        ...updateVehicleAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error updating vehicle asset')
+        }
+    })
+
     const deleteMutation = useMutation({
         ...deleteAssetMutation(),
         onSuccess: invalidateAssets,
@@ -105,6 +123,8 @@ export const useAsset = () => {
         updateMarketableMutation,
         createRealEstateMutation,
         updateRealEstateMutation,
+        createVehicleMutation,
+        updateVehicleMutation,
         deleteMutation,
         deleteAllMutation,
         createTransactionMutation,

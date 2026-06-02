@@ -48,6 +48,9 @@ import type {
     CreateTransactionData,
     CreateTransactionErrors,
     CreateTransactionResponses,
+    CreateVehicleAssetData,
+    CreateVehicleAssetErrors,
+    CreateVehicleAssetResponses,
     DeleteAssetData,
     DeleteAssetErrors,
     DeleteAssetResponses,
@@ -307,6 +310,9 @@ import type {
     UpdateUserData,
     UpdateUserErrors,
     UpdateUserResponses,
+    UpdateVehicleAssetData,
+    UpdateVehicleAssetErrors,
+    UpdateVehicleAssetResponses,
     VerifyPasswordData,
     VerifyPasswordErrors,
     VerifyPasswordResponses
@@ -549,6 +555,44 @@ export const updateRealEstateAsset = <ThrowOnError extends boolean = false>(
         ...options,
         headers: {
             'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Create vehicle asset
+ *
+ * Create a vehicle asset together with its parent asset record and an optional brand logo
+ */
+export const createVehicleAsset = <ThrowOnError extends boolean = false>(
+    options: Options<CreateVehicleAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateVehicleAssetResponses, CreateVehicleAssetErrors, ThrowOnError>({
+        ...formDataBodySerializer,
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/vehicle',
+        ...options,
+        headers: {
+            'Content-Type': null,
+            ...options.headers
+        }
+    })
+
+/**
+ * Update vehicle asset
+ *
+ * Update vehicle asset details, its parent asset value and an optional brand logo
+ */
+export const updateVehicleAsset = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateVehicleAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateVehicleAssetResponses, UpdateVehicleAssetErrors, ThrowOnError>({
+        ...formDataBodySerializer,
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}/vehicle',
+        ...options,
+        headers: {
+            'Content-Type': null,
             ...options.headers
         }
     })

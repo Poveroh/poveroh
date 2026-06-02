@@ -19,6 +19,7 @@ import {
     createSubcategory,
     createSubscription,
     createTransaction,
+    createVehicleAsset,
     deleteAsset,
     deleteAssets,
     deleteAssetTransaction,
@@ -107,6 +108,7 @@ import {
     updateSubscription,
     updateTransaction,
     updateUser,
+    updateVehicleAsset,
     verifyPassword
 } from '../sdk.gen'
 import type {
@@ -155,6 +157,9 @@ import type {
     CreateTransactionData,
     CreateTransactionError,
     CreateTransactionResponse2,
+    CreateVehicleAssetData,
+    CreateVehicleAssetError,
+    CreateVehicleAssetResponse,
     DeleteAssetData,
     DeleteAssetError,
     DeleteAssetResponse2,
@@ -412,6 +417,9 @@ import type {
     UpdateUserData,
     UpdateUserError,
     UpdateUserResponse2,
+    UpdateVehicleAssetData,
+    UpdateVehicleAssetError,
+    UpdateVehicleAssetResponse,
     VerifyPasswordData,
     VerifyPasswordError,
     VerifyPasswordResponse
@@ -833,6 +841,56 @@ export const updateRealEstateAssetMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateRealEstateAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Create vehicle asset
+ *
+ * Create a vehicle asset together with its parent asset record and an optional brand logo
+ */
+export const createVehicleAssetMutation = (
+    options?: Partial<Options<CreateVehicleAssetData>>
+): UseMutationOptions<CreateVehicleAssetResponse, CreateVehicleAssetError, Options<CreateVehicleAssetData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateVehicleAssetResponse,
+        CreateVehicleAssetError,
+        Options<CreateVehicleAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createVehicleAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update vehicle asset
+ *
+ * Update vehicle asset details, its parent asset value and an optional brand logo
+ */
+export const updateVehicleAssetMutation = (
+    options?: Partial<Options<UpdateVehicleAssetData>>
+): UseMutationOptions<UpdateVehicleAssetResponse, UpdateVehicleAssetError, Options<UpdateVehicleAssetData>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateVehicleAssetResponse,
+        UpdateVehicleAssetError,
+        Options<UpdateVehicleAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateVehicleAsset({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

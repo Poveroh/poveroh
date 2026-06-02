@@ -876,6 +876,12 @@ export const AssetSchema = {
             items: {
                 $ref: '#/components/schemas/AssetTransactionData'
             }
+        },
+        autoDepreciations: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AutoDepreciationData'
+            }
         }
     },
     required: [
@@ -891,7 +897,8 @@ export const AssetSchema = {
         'createdAt',
         'updatedAt',
         'deletedAt',
-        'transactions'
+        'transactions',
+        'autoDepreciations'
     ]
 } as const
 
@@ -1184,6 +1191,10 @@ export const VehicleAssetSchema = {
         condition: {
             $ref: '#/components/schemas/AssetConditionEnum'
         },
+        logoIcon: {
+            type: 'string',
+            nullable: true
+        },
         createdAt: {
             type: 'string'
         },
@@ -1208,6 +1219,7 @@ export const VehicleAssetSchema = {
         'vin',
         'mileage',
         'condition',
+        'logoIcon',
         'createdAt',
         'updatedAt',
         'deletedAt'
@@ -1304,6 +1316,53 @@ export const CyclePeriodEnumSchema = {
     enum: ['DAY', 'WEEK', 'MONTH', 'YEAR']
 } as const
 
+export const AutoDepreciationDataSchema = {
+    type: 'object',
+    properties: {
+        startDate: {
+            type: 'string'
+        },
+        endDate: {
+            type: 'string',
+            nullable: true
+        },
+        depreciationBase: {
+            $ref: '#/components/schemas/DepreciationBaseEnum'
+        },
+        depreciationType: {
+            $ref: '#/components/schemas/DepreciationValueTypeEnum'
+        },
+        depreciationValue: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        cycleNumber: {
+            type: 'integer'
+        }
+    },
+    required: [
+        'startDate',
+        'endDate',
+        'depreciationBase',
+        'depreciationType',
+        'depreciationValue',
+        'cyclePeriod',
+        'cycleNumber'
+    ]
+} as const
+
+export const DepreciationBaseEnumSchema = {
+    type: 'string',
+    enum: ['PURCHASE_PRICE', 'CURRENT_VALUE', 'LAST_SNAPSHOT']
+} as const
+
+export const DepreciationValueTypeEnumSchema = {
+    type: 'string',
+    enum: ['AMOUNT', 'PERCENTAGE']
+} as const
+
 export const AssetDataSchema = {
     type: 'object',
     properties: {
@@ -1364,6 +1423,12 @@ export const AssetDataSchema = {
             items: {
                 $ref: '#/components/schemas/AssetTransactionData'
             }
+        },
+        autoDepreciations: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AutoDepreciationData'
+            }
         }
     },
     required: [
@@ -1377,7 +1442,8 @@ export const AssetDataSchema = {
         'totalInvested',
         'createdAt',
         'updatedAt',
-        'transactions'
+        'transactions',
+        'autoDepreciations'
     ]
 } as const
 
@@ -1492,6 +1558,86 @@ export const QueryAssetFiltersSchema = {
             $ref: '#/components/schemas/FilterOptions'
         }
     }
+} as const
+
+export const AutoDepreciationSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        startDate: {
+            type: 'string'
+        },
+        endDate: {
+            type: 'string',
+            nullable: true
+        },
+        depreciationBase: {
+            $ref: '#/components/schemas/DepreciationBaseEnum'
+        },
+        depreciationType: {
+            $ref: '#/components/schemas/DepreciationValueTypeEnum'
+        },
+        depreciationValue: {
+            type: 'number'
+        },
+        cyclePeriod: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        cycleNumber: {
+            type: 'integer'
+        },
+        createdAt: {
+            type: 'string'
+        },
+        updatedAt: {
+            type: 'string'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'assetId',
+        'startDate',
+        'endDate',
+        'depreciationBase',
+        'depreciationType',
+        'depreciationValue',
+        'cyclePeriod',
+        'cycleNumber',
+        'createdAt',
+        'updatedAt',
+        'deletedAt'
+    ]
+} as const
+
+export const AutoDepreciationInputSchema = {
+    type: 'object',
+    properties: {
+        percentage: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        cyclePeriod: {
+            $ref: '#/components/schemas/CyclePeriodEnum'
+        },
+        cycleNumber: {
+            type: 'integer',
+            minimum: 0,
+            exclusiveMinimum: true
+        }
+    },
+    required: ['percentage', 'cyclePeriod', 'cycleNumber']
 } as const
 
 export const CategorySchema = {
@@ -4691,31 +4837,6 @@ export const RealEstateAssetDataSchema = {
     required: ['address', 'type', 'purchasePrice', 'purchaseDate']
 } as const
 
-export const RealEstateAssetFormSchema = {
-    type: 'object',
-    properties: {
-        title: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/RealEstateTypeEnum'
-        },
-        value: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        purchaseDate: {
-            type: 'string'
-        },
-        address: {
-            type: 'string'
-        }
-    },
-    required: ['title', 'type', 'value']
-} as const
-
 export const CreateRealEstateAssetRequestSchema = {
     type: 'object',
     properties: {
@@ -4763,6 +4884,31 @@ export const UpdateRealEstateAssetRequestSchema = {
             type: 'string'
         }
     }
+} as const
+
+export const RealEstateAssetFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        value: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        address: {
+            type: 'string'
+        }
+    },
+    required: ['title', 'type', 'value']
 } as const
 
 export const NetWorthEvolutionSchema = {
@@ -7007,6 +7153,10 @@ export const VehicleAssetDataSchema = {
         },
         condition: {
             $ref: '#/components/schemas/AssetConditionEnum'
+        },
+        logoIcon: {
+            type: 'string',
+            nullable: true
         }
     },
     required: [
@@ -7019,7 +7169,8 @@ export const VehicleAssetDataSchema = {
         'plateNumber',
         'vin',
         'mileage',
-        'condition'
+        'condition',
+        'logoIcon'
     ]
 } as const
 
@@ -7037,10 +7188,7 @@ export const CreateVehicleAssetRequestSchema = {
         type: {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
-        year: {
-            type: 'integer'
-        },
-        purchasePrice: {
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -7048,60 +7196,40 @@ export const CreateVehicleAssetRequestSchema = {
         purchaseDate: {
             type: 'string'
         },
-        plateNumber: {
-            type: 'string',
-            minLength: 1
-        },
-        vin: {
-            type: 'string',
-            nullable: true,
-            minLength: 1
-        },
-        mileage: {
+        year: {
             type: 'integer',
-            nullable: true
+            minimum: 0,
+            exclusiveMinimum: true
         },
-        condition: {
-            $ref: '#/components/schemas/AssetConditionEnum'
+        plateNumber: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string'
+        },
+        autoDepreciation: {
+            $ref: '#/components/schemas/AutoDepreciationInput'
         }
     },
-    required: [
-        'brand',
-        'model',
-        'type',
-        'year',
-        'purchasePrice',
-        'purchaseDate',
-        'plateNumber',
-        'vin',
-        'mileage',
-        'condition'
-    ]
+    required: ['brand', 'model', 'type', 'value']
 } as const
 
-export const CreateVehicleAssetResponseSchema = {
+export const CreateVehicleAssetMultipartRequestSchema = {
     type: 'object',
     properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
         data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/VehicleAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
+            $ref: '#/components/schemas/CreateVehicleAssetRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
         }
     },
-    required: ['success', 'message', 'data']
+    required: ['file']
 } as const
 
 export const UpdateVehicleAssetRequestSchema = {
@@ -7118,10 +7246,7 @@ export const UpdateVehicleAssetRequestSchema = {
         type: {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
-        year: {
-            type: 'integer'
-        },
-        purchasePrice: {
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -7129,48 +7254,39 @@ export const UpdateVehicleAssetRequestSchema = {
         purchaseDate: {
             type: 'string'
         },
-        plateNumber: {
-            type: 'string',
-            minLength: 1
-        },
-        vin: {
-            type: 'string',
-            nullable: true,
-            minLength: 1
-        },
-        mileage: {
+        year: {
             type: 'integer',
-            nullable: true
+            minimum: 0,
+            exclusiveMinimum: true
         },
-        condition: {
-            $ref: '#/components/schemas/AssetConditionEnum'
+        plateNumber: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string'
+        },
+        autoDepreciation: {
+            $ref: '#/components/schemas/AutoDepreciationInput'
         }
     }
 } as const
 
-export const UpdateVehicleAssetResponseSchema = {
+export const UpdateVehicleAssetMultipartRequestSchema = {
     type: 'object',
     properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
         data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/VehicleAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
+            $ref: '#/components/schemas/UpdateVehicleAssetRequest'
+        },
+        file: {
+            type: 'array',
+            items: {
+                type: 'string',
+                format: 'binary',
+                description: 'Optional file upload'
+            }
         }
     },
-    required: ['success', 'message', 'data']
+    required: ['file']
 } as const
 
 export const VehicleAssetFormSchema = {
@@ -7187,10 +7303,7 @@ export const VehicleAssetFormSchema = {
         type: {
             $ref: '#/components/schemas/VehicleTypeEnum'
         },
-        year: {
-            type: 'integer'
-        },
-        purchasePrice: {
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -7198,33 +7311,20 @@ export const VehicleAssetFormSchema = {
         purchaseDate: {
             type: 'string'
         },
-        plateNumber: {
-            type: 'string',
-            minLength: 1
-        },
-        vin: {
-            type: 'string',
-            nullable: true,
-            minLength: 1
-        },
-        mileage: {
+        year: {
             type: 'integer',
-            nullable: true
+            minimum: 0,
+            exclusiveMinimum: true
         },
-        condition: {
-            $ref: '#/components/schemas/AssetConditionEnum'
+        plateNumber: {
+            type: 'string'
+        },
+        logoIcon: {
+            type: 'string'
+        },
+        autoDepreciation: {
+            $ref: '#/components/schemas/AutoDepreciationInput'
         }
     },
-    required: [
-        'brand',
-        'model',
-        'type',
-        'year',
-        'purchasePrice',
-        'purchaseDate',
-        'plateNumber',
-        'vin',
-        'mileage',
-        'condition'
-    ]
+    required: ['brand', 'model', 'type', 'value']
 } as const

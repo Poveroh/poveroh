@@ -2,17 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AssetConditionEnum } from './AssetConditionEnum'
+import type { AutoDepreciationInput } from './AutoDepreciationInput'
 import type { VehicleTypeEnum } from './VehicleTypeEnum'
 export type CreateVehicleAssetRequest = {
     brand: string
     model: string
     type: VehicleTypeEnum
-    year: number
-    purchasePrice: number
-    purchaseDate: string
-    plateNumber: string
-    vin: string | null
-    mileage: number | null
-    condition: AssetConditionEnum
+    value: number
+    purchaseDate?: string
+    year?: number
+    plateNumber?: string
+    logoIcon?: string
+    autoDepreciation?: AutoDepreciationInput
 }

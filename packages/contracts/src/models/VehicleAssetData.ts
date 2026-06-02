@@ -15,4 +15,5 @@ export type VehicleAssetData = {
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
+    logoIcon: string | null
 }

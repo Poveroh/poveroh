@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AssetTransactionData } from './AssetTransactionData'
 import type { AssetTypeEnum } from './AssetTypeEnum'
+import type { AutoDepreciationData } from './AutoDepreciationData'
 import type { CollectibleAsset } from './CollectibleAsset'
 import type { CurrencyEnum } from './CurrencyEnum'
 import type { InsuranceAsset } from './InsuranceAsset'
@@ -29,4 +30,5 @@ export type AssetData = {
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
     transactions: Array<AssetTransactionData>
+    autoDepreciations: Array<AutoDepreciationData>
 }

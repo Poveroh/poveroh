@@ -547,6 +547,47 @@
                     "secondaryHouse": "Secondary house",
                     "rentalProperty": "Rental house"
                 },
+                "brand": {
+                    "label": "Brand"
+                },
+                "model": {
+                    "label": "Model"
+                },
+                "plate": {
+                    "label": "Plate"
+                },
+                "vehicleYear": {
+                    "label": "Vehicle year",
+                    "placeholder": "2021"
+                },
+                "vehicleType": {
+                    "label": "Type",
+                    "placeholder": "Select type",
+                    "car": "Car",
+                    "boat": "Boat",
+                    "motorcycle": "Motorcycle",
+                    "snowmobile": "Snowmobile",
+                    "bike": "Bike",
+                    "other": "Other"
+                },
+                "depreciation": {
+                    "toggle": "Setup auto depreciation?",
+                    "description": "The system will automatically depreciate this vehicle",
+                    "percentage": {
+                        "label": "Percentage"
+                    },
+                    "every": {
+                        "label": "Every",
+                        "placeholder": "Select a value"
+                    },
+                    "cycle": {
+                        "month": "Month",
+                        "sixMonths": "6 months",
+                        "year": "Year",
+                        "twoYears": "2 year",
+                        "fiveYears": "5 year"
+                    }
+                },
                 "summary": {
                     "unitPrice": "Price per share",
                     "quantity": "Quantity",

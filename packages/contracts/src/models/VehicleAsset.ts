@@ -17,6 +17,7 @@ export type VehicleAsset = {
     vin: string | null
     mileage: number | null
     condition: AssetConditionEnum
+    logoIcon: string | null
     createdAt: string
     updatedAt: string
     deletedAt: string | null

@@ -12,6 +12,7 @@ import type {
     RealEstateAsset,
     VehicleAsset
 } from '@poveroh/types'
+import { autoDepreciationSelect, toAutoDepreciationData } from '../auto-depreciation/auto-depreciation.repository'
 import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
 
 export type PortfolioSummary = {
@@ -65,6 +66,11 @@ const assetSelect = {
         where: { deletedAt: null },
         orderBy: { date: 'desc' as const },
         select: assetTransactionSelect
+    },
+    autoDepreciations: {
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' as const },
+        select: autoDepreciationSelect
     }
 } satisfies Prisma.AssetSelect
 
@@ -165,6 +171,7 @@ function toVehicle(row: NonNullable<AssetRow['vehicle']>): VehicleAsset {
         vin: row.vin,
         mileage: row.mileage,
         condition: row.condition,
+        logoIcon: row.logoIcon,
         createdAt: toIsoString(row.createdAt) as string,
         updatedAt: toIsoString(row.updatedAt) as string,
         deletedAt: toIsoString(row.deletedAt)
@@ -213,7 +220,8 @@ function toData(row: AssetRow): AssetData {
         privateDeal: row.privateDeal ? toPrivateDeal(row.privateDeal) : undefined,
         vehicle: row.vehicle ? toVehicle(row.vehicle) : undefined,
         insurance: row.insurance ? toInsurance(row.insurance) : undefined,
-        transactions: row.transactions.map(toAssetTransactionData)
+        transactions: row.transactions.map(toAssetTransactionData),
+        autoDepreciations: row.autoDepreciations.map(toAutoDepreciationData)
     }
 }
 

@@ -1,5 +1,6 @@
 import { z } from '../zod'
 import { AssetTransactionDataSchema } from './asset-transaction.schema'
+import { AutoDepreciationDataSchema } from './auto-depreciation.schema'
 import { CollectibleAssetSchema } from './collectible-asset.schema'
 import { AssetTypeEnum, CurrencyEnum } from './enum.schema'
 import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.schema'
@@ -33,7 +34,8 @@ export const AssetSchema = z
         privateDeal: PrivateDealAssetSchema.optional(),
         vehicle: VehicleAssetSchema.optional(),
         insurance: InsuranceAssetSchema.optional(),
-        transactions: AssetTransactionDataSchema.array()
+        transactions: AssetTransactionDataSchema.array(),
+        autoDepreciations: AutoDepreciationDataSchema.array()
     })
     .openapi('Asset')
 

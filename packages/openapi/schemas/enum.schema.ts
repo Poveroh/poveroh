@@ -343,6 +343,18 @@ export const RememberPeriodEnum = z
 export const CyclePeriodEnum = z.enum(['DAY', 'WEEK', 'MONTH', 'YEAR']).openapi('CyclePeriodEnum')
 
 /**
+ * Depreciation value type enum representing whether a depreciation step is an absolute amount or a percentage
+ */
+export const DepreciationValueTypeEnum = z.enum(['AMOUNT', 'PERCENTAGE']).openapi('DepreciationValueTypeEnum')
+
+/**
+ * Depreciation base enum representing the value a depreciation step is applied to
+ */
+export const DepreciationBaseEnum = z
+    .enum(['PURCHASE_PRICE', 'CURRENT_VALUE', 'LAST_SNAPSHOT'])
+    .openapi('DepreciationBaseEnum')
+
+/**
  * Appearance mode enum representing the available branding display modes
  */
 export const AppearanceModeEnum = z.enum(['LOGO', 'ICON']).openapi('AppearanceModeEnum')

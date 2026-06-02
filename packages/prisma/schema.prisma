@@ -279,6 +279,7 @@ model VehicleAsset {
   vin           String?
   mileage       Int?
   condition     AssetCondition?
+  logoIcon      String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   deletedAt     DateTime?       @db.Timestamptz

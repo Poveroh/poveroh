@@ -880,6 +880,12 @@
                         "items": {
                             "$ref": "#/components/schemas/AssetTransactionData"
                         }
+                    },
+                    "autoDepreciations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutoDepreciationData"
+                        }
                     }
                 },
                 "required": [
@@ -895,7 +901,8 @@
                     "createdAt",
                     "updatedAt",
                     "deletedAt",
-                    "transactions"
+                    "transactions",
+                    "autoDepreciations"
                 ]
             },
             "AssetTypeEnum": {
@@ -1180,6 +1187,10 @@
                     "condition": {
                         "$ref": "#/components/schemas/AssetConditionEnum"
                     },
+                    "logoIcon": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "createdAt": {
                         "type": "string"
                     },
@@ -1204,6 +1215,7 @@
                     "vin",
                     "mileage",
                     "condition",
+                    "logoIcon",
                     "createdAt",
                     "updatedAt",
                     "deletedAt"
@@ -1294,6 +1306,50 @@
                 "type": "string",
                 "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
             },
+            "AutoDepreciationData": {
+                "type": "object",
+                "properties": {
+                    "startDate": {
+                        "type": "string"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "depreciationBase": {
+                        "$ref": "#/components/schemas/DepreciationBaseEnum"
+                    },
+                    "depreciationType": {
+                        "$ref": "#/components/schemas/DepreciationValueTypeEnum"
+                    },
+                    "depreciationValue": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "cycleNumber": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "startDate",
+                    "endDate",
+                    "depreciationBase",
+                    "depreciationType",
+                    "depreciationValue",
+                    "cyclePeriod",
+                    "cycleNumber"
+                ]
+            },
+            "DepreciationBaseEnum": {
+                "type": "string",
+                "enum": ["PURCHASE_PRICE", "CURRENT_VALUE", "LAST_SNAPSHOT"]
+            },
+            "DepreciationValueTypeEnum": {
+                "type": "string",
+                "enum": ["AMOUNT", "PERCENTAGE"]
+            },
             "AssetData": {
                 "type": "object",
                 "properties": {
@@ -1354,6 +1410,12 @@
                         "items": {
                             "$ref": "#/components/schemas/AssetTransactionData"
                         }
+                    },
+                    "autoDepreciations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutoDepreciationData"
+                        }
                     }
                 },
                 "required": [
@@ -1367,7 +1429,8 @@
                     "totalInvested",
                     "createdAt",
                     "updatedAt",
-                    "transactions"
+                    "transactions",
+                    "autoDepreciations"
                 ]
             },
             "GetAssetListResponse": {
@@ -1476,6 +1539,84 @@
                         "$ref": "#/components/schemas/FilterOptions"
                     }
                 }
+            },
+            "AutoDepreciation": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "assetId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "startDate": {
+                        "type": "string"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "depreciationBase": {
+                        "$ref": "#/components/schemas/DepreciationBaseEnum"
+                    },
+                    "depreciationType": {
+                        "$ref": "#/components/schemas/DepreciationValueTypeEnum"
+                    },
+                    "depreciationValue": {
+                        "type": "number"
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "cycleNumber": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "assetId",
+                    "startDate",
+                    "endDate",
+                    "depreciationBase",
+                    "depreciationType",
+                    "depreciationValue",
+                    "cyclePeriod",
+                    "cycleNumber",
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
+                ]
+            },
+            "AutoDepreciationInput": {
+                "type": "object",
+                "properties": {
+                    "percentage": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "cyclePeriod": {
+                        "$ref": "#/components/schemas/CyclePeriodEnum"
+                    },
+                    "cycleNumber": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    }
+                },
+                "required": ["percentage", "cyclePeriod", "cycleNumber"]
             },
             "Category": {
                 "type": "object",
@@ -4561,30 +4702,6 @@
                 },
                 "required": ["address", "type", "purchasePrice", "purchaseDate"]
             },
-            "RealEstateAssetForm": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/RealEstateTypeEnum"
-                    },
-                    "value": {
-                        "type": "number",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "purchaseDate": {
-                        "type": "string"
-                    },
-                    "address": {
-                        "type": "string"
-                    }
-                },
-                "required": ["title", "type", "value"]
-            },
             "CreateRealEstateAssetRequest": {
                 "type": "object",
                 "properties": {
@@ -4631,6 +4748,30 @@
                         "type": "string"
                     }
                 }
+            },
+            "RealEstateAssetForm": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RealEstateTypeEnum"
+                    },
+                    "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                },
+                "required": ["title", "type", "value"]
             },
             "NetWorthEvolution": {
                 "type": "object",
@@ -6819,6 +6960,10 @@
                     },
                     "condition": {
                         "$ref": "#/components/schemas/AssetConditionEnum"
+                    },
+                    "logoIcon": {
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -6831,7 +6976,8 @@
                     "plateNumber",
                     "vin",
                     "mileage",
-                    "condition"
+                    "condition",
+                    "logoIcon"
                 ]
             },
             "CreateVehicleAssetRequest": {
@@ -6848,10 +6994,7 @@
                     "type": {
                         "$ref": "#/components/schemas/VehicleTypeEnum"
                     },
-                    "year": {
-                        "type": "integer"
-                    },
-                    "purchasePrice": {
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -6859,59 +7002,39 @@
                     "purchaseDate": {
                         "type": "string"
                     },
-                    "plateNumber": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "vin": {
-                        "type": "string",
-                        "nullable": true,
-                        "minLength": 1
-                    },
-                    "mileage": {
+                    "year": {
                         "type": "integer",
-                        "nullable": true
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
-                    "condition": {
-                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    "plateNumber": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "autoDepreciation": {
+                        "$ref": "#/components/schemas/AutoDepreciationInput"
                     }
                 },
-                "required": [
-                    "brand",
-                    "model",
-                    "type",
-                    "year",
-                    "purchasePrice",
-                    "purchaseDate",
-                    "plateNumber",
-                    "vin",
-                    "mileage",
-                    "condition"
-                ]
+                "required": ["brand", "model", "type", "value"]
             },
-            "CreateVehicleAssetResponse": {
+            "CreateVehicleAssetMultipartRequest": {
                 "type": "object",
                 "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
                     "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/VehicleAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/CreateVehicleAssetRequest"
+                    },
+                    "file": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Optional file upload"
+                        }
                     }
                 },
-                "required": ["success", "message", "data"]
+                "required": ["file"]
             },
             "UpdateVehicleAssetRequest": {
                 "type": "object",
@@ -6927,10 +7050,7 @@
                     "type": {
                         "$ref": "#/components/schemas/VehicleTypeEnum"
                     },
-                    "year": {
-                        "type": "integer"
-                    },
-                    "purchasePrice": {
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -6938,47 +7058,38 @@
                     "purchaseDate": {
                         "type": "string"
                     },
-                    "plateNumber": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "vin": {
-                        "type": "string",
-                        "nullable": true,
-                        "minLength": 1
-                    },
-                    "mileage": {
+                    "year": {
                         "type": "integer",
-                        "nullable": true
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
-                    "condition": {
-                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    "plateNumber": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "autoDepreciation": {
+                        "$ref": "#/components/schemas/AutoDepreciationInput"
                     }
                 }
             },
-            "UpdateVehicleAssetResponse": {
+            "UpdateVehicleAssetMultipartRequest": {
                 "type": "object",
                 "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
                     "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/VehicleAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/UpdateVehicleAssetRequest"
+                    },
+                    "file": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Optional file upload"
+                        }
                     }
                 },
-                "required": ["success", "message", "data"]
+                "required": ["file"]
             },
             "VehicleAssetForm": {
                 "type": "object",
@@ -6994,10 +7105,7 @@
                     "type": {
                         "$ref": "#/components/schemas/VehicleTypeEnum"
                     },
-                    "year": {
-                        "type": "integer"
-                    },
-                    "purchasePrice": {
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -7005,35 +7113,22 @@
                     "purchaseDate": {
                         "type": "string"
                     },
-                    "plateNumber": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "vin": {
-                        "type": "string",
-                        "nullable": true,
-                        "minLength": 1
-                    },
-                    "mileage": {
+                    "year": {
                         "type": "integer",
-                        "nullable": true
+                        "minimum": 0,
+                        "exclusiveMinimum": true
                     },
-                    "condition": {
-                        "$ref": "#/components/schemas/AssetConditionEnum"
+                    "plateNumber": {
+                        "type": "string"
+                    },
+                    "logoIcon": {
+                        "type": "string"
+                    },
+                    "autoDepreciation": {
+                        "$ref": "#/components/schemas/AutoDepreciationInput"
                     }
                 },
-                "required": [
-                    "brand",
-                    "model",
-                    "type",
-                    "year",
-                    "purchasePrice",
-                    "purchaseDate",
-                    "plateNumber",
-                    "vin",
-                    "mileage",
-                    "condition"
-                ]
+                "required": ["brand", "model", "type", "value"]
             }
         },
         "parameters": {},
@@ -7996,6 +8091,167 @@
                     },
                     "404": {
                         "description": "Real estate asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/vehicle": {
+            "post": {
+                "tags": ["Vehicle Asset"],
+                "operationId": "createVehicleAsset",
+                "summary": "Create vehicle asset",
+                "description": "Create a vehicle asset together with its parent asset record and an optional brand logo",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVehicleAssetMultipartRequest"
+                            },
+                            "encoding": {
+                                "data": {
+                                    "contentType": "application/json"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vehicle asset created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/vehicle": {
+            "patch": {
+                "tags": ["Vehicle Asset"],
+                "operationId": "updateVehicleAsset",
+                "summary": "Update vehicle asset",
+                "description": "Update vehicle asset details, its parent asset value and an optional brand logo",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehicleAssetMultipartRequest"
+                            },
+                            "encoding": {
+                                "data": {
+                                    "contentType": "application/json"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vehicle asset updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Vehicle asset not found",
                         "content": {
                             "application/json": {
                                 "schema": {

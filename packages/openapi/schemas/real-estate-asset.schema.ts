@@ -32,11 +32,11 @@ export const RealEstateAssetDataSchema = RealEstateAssetSchema.omit({
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
- * Form schema for creating a real estate asset together with its parent asset record.
+ * Request schema for creating a real estate asset together with its parent asset record.
  * `value` feeds both the parent asset current value and the property purchase price,
  * while `address` and `purchaseDate` are optional details shown without a mandatory marker.
  */
-export const RealEstateAssetFormSchema = z
+export const CreateRealEstateAssetRequestSchema = z
     .object({
         title: z.string().trim().min(1),
         type: RealEstateTypeEnum,
@@ -44,12 +44,7 @@ export const RealEstateAssetFormSchema = z
         purchaseDate: z.string().optional(),
         address: z.string().trim().optional()
     })
-    .openapi('RealEstateAssetForm')
-
-/**
- * Request schema for creating a real estate asset and its parent asset record
- */
-export const CreateRealEstateAssetRequestSchema = RealEstateAssetFormSchema.openapi('CreateRealEstateAssetRequest')
+    .openapi('CreateRealEstateAssetRequest')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
@@ -57,4 +52,9 @@ export const CreateRealEstateAssetRequestSchema = RealEstateAssetFormSchema.open
  * Request schema for updating real estate asset details
  */
 export const UpdateRealEstateAssetRequestSchema =
-    RealEstateAssetFormSchema.partial().openapi('UpdateRealEstateAssetRequest')
+    CreateRealEstateAssetRequestSchema.partial().openapi('UpdateRealEstateAssetRequest')
+
+/**
+ * Form schema for the real estate asset dialog, aliasing the create request shape
+ */
+export const RealEstateAssetFormSchema = CreateRealEstateAssetRequestSchema.openapi('RealEstateAssetForm')
