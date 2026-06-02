@@ -528,6 +528,25 @@
                 "fees": {
                     "label": "Fee"
                 },
+                "name": {
+                    "label": "Name"
+                },
+                "value": {
+                    "label": "Value"
+                },
+                "purchaseDate": {
+                    "label": "Purchase date"
+                },
+                "address": {
+                    "label": "Address"
+                },
+                "realEstateType": {
+                    "label": "Property type",
+                    "placeholder": "Select type",
+                    "primaryHouse": "Primary house",
+                    "secondaryHouse": "Secondary house",
+                    "rentalProperty": "Rental house"
+                },
                 "summary": {
                     "unitPrice": "Price per share",
                     "quantity": "Quantity",

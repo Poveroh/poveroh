@@ -2,12 +2,14 @@ import { AssetController } from '../modules/asset/asset/asset.controller'
 import { AssetTransactionController } from '../modules/asset/transaction/asset-transaction.controller'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
 import { MarketableAssetController } from '../modules/asset/marketable-asset/marketable-asset.controller'
+import { RealEstateAssetController } from '../modules/asset/real-estate-asset/real-estate-asset.controller'
 import { Router } from 'express'
 
 const router: Router = Router()
 const assetController = new AssetController()
 const assetTransactionController = new AssetTransactionController()
 const marketableAssetController = new MarketableAssetController()
+const realEstateAssetController = new RealEstateAssetController()
 
 // Asset routes
 router.get('/', AuthMiddleware.isAuthenticated, assetController.readAssets.bind(assetController))
@@ -62,6 +64,18 @@ router.patch(
     '/:id/marketable',
     AuthMiddleware.isAuthenticated,
     marketableAssetController.updateMarketableAsset.bind(marketableAssetController)
+)
+
+// Real estate asset routes
+router.post(
+    '/real-estate',
+    AuthMiddleware.isAuthenticated,
+    realEstateAssetController.createRealEstateAsset.bind(realEstateAssetController)
+)
+router.patch(
+    '/:id/real-estate',
+    AuthMiddleware.isAuthenticated,
+    realEstateAssetController.updateRealEstateAsset.bind(realEstateAssetController)
 )
 
 export default router

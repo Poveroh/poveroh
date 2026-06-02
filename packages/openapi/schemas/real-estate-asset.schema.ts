@@ -1,6 +1,5 @@
 import { z } from '../zod'
 import { RealEstateTypeEnum } from './enum.schema'
-import { SuccessResponseSchema } from './response.schema'
 
 /**
  * Real estate asset schema representing property-specific details
@@ -33,49 +32,29 @@ export const RealEstateAssetDataSchema = RealEstateAssetSchema.omit({
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
- * Request schema for real estate asset details
+ * Form schema for creating a real estate asset together with its parent asset record.
+ * `value` feeds both the parent asset current value and the property purchase price,
+ * while `address` and `purchaseDate` are optional details shown without a mandatory marker.
  */
-export const CreateRealEstateAssetRequestSchema = z
+export const RealEstateAssetFormSchema = z
     .object({
-        address: z.string().trim().min(1),
+        title: z.string().trim().min(1),
         type: RealEstateTypeEnum,
-        purchasePrice: z.number().positive(),
-        purchaseDate: z.string()
+        value: z.number().positive(),
+        purchaseDate: z.string().optional(),
+        address: z.string().trim().optional()
     })
-    .openapi('CreateRealEstateAssetRequest')
+    .openapi('RealEstateAssetForm')
 
 /**
- * Response schema for creating a new real estate asset
+ * Request schema for creating a real estate asset and its parent asset record
  */
-export const CreateRealEstateAssetResponseSchema = SuccessResponseSchema(RealEstateAssetDataSchema).openapi(
-    'CreateRealEstateAssetResponse'
-)
+export const CreateRealEstateAssetRequestSchema = RealEstateAssetFormSchema.openapi('CreateRealEstateAssetRequest')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
  * Request schema for updating real estate asset details
  */
-export const UpdateRealEstateAssetRequestSchema = z
-    .object({
-        address: z.string().trim().min(1),
-        type: RealEstateTypeEnum,
-        purchasePrice: z.number().positive(),
-        purchaseDate: z.string()
-    })
-    .partial()
-    .openapi('UpdateRealEstateAssetRequest')
-
-/**
- * Response schema for updating real estate asset details
- */
-export const UpdateRealEstateAssetResponseSchema = SuccessResponseSchema(RealEstateAssetDataSchema).openapi(
-    'UpdateRealEstateAssetResponse'
-)
-
-// ------------------------------------------------------------------------------------------------------------------------------ //
-
-/**
- * Form schema for real estate asset
- */
-export const RealEstateAssetFormSchema = CreateRealEstateAssetRequestSchema.openapi('RealEstateAssetForm')
+export const UpdateRealEstateAssetRequestSchema =
+    RealEstateAssetFormSchema.partial().openapi('UpdateRealEstateAssetRequest')

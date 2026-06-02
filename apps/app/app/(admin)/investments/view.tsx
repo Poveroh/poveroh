@@ -13,6 +13,7 @@ import { MODAL_IDS } from '@/types/constant'
 import type { AssetData } from '@poveroh/types'
 import { CryptoDialog } from '@/components/dialog/investment/crypto-symbol-dialog'
 import { MarketableDialog } from '@/components/dialog/investment/marketable-dialog'
+import { PropertyDialog } from '@/components/dialog/investment/property-dialog'
 
 export default function InvestmentsView() {
     const t = useTranslations()
@@ -46,6 +47,7 @@ export default function InvestmentsView() {
             <InvestmentAssetDialog />
             <MarketableDialog />
             <CryptoDialog />
+            <PropertyDialog />
         </>
     )
 }

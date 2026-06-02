@@ -14,6 +14,7 @@ import {
     createImport,
     createImportTemplate,
     createMarketableAsset,
+    createRealEstateAsset,
     createSnapshotAccountBalance,
     createSubcategory,
     createSubscription,
@@ -100,6 +101,7 @@ import {
     updateFinancialAccount,
     updateImport,
     updateMarketableAsset,
+    updateRealEstateAsset,
     updateSession,
     updateSubcategory,
     updateSubscription,
@@ -138,6 +140,9 @@ import type {
     CreateMarketableAssetData,
     CreateMarketableAssetError,
     CreateMarketableAssetResponse,
+    CreateRealEstateAssetData,
+    CreateRealEstateAssetError,
+    CreateRealEstateAssetResponse,
     CreateSnapshotAccountBalanceData,
     CreateSnapshotAccountBalanceError,
     CreateSnapshotAccountBalanceResponse2,
@@ -389,6 +394,9 @@ import type {
     UpdateMarketableAssetData,
     UpdateMarketableAssetError,
     UpdateMarketableAssetResponse,
+    UpdateRealEstateAssetData,
+    UpdateRealEstateAssetError,
+    UpdateRealEstateAssetResponse,
     UpdateSessionData,
     UpdateSessionError,
     UpdateSessionResponse,
@@ -767,6 +775,64 @@ export const updateMarketableAssetMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateMarketableAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Create real estate asset
+ *
+ * Create a real estate asset together with its parent asset record
+ */
+export const createRealEstateAssetMutation = (
+    options?: Partial<Options<CreateRealEstateAssetData>>
+): UseMutationOptions<
+    CreateRealEstateAssetResponse,
+    CreateRealEstateAssetError,
+    Options<CreateRealEstateAssetData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateRealEstateAssetResponse,
+        CreateRealEstateAssetError,
+        Options<CreateRealEstateAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createRealEstateAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update real estate asset
+ *
+ * Update real estate asset details and its parent asset value
+ */
+export const updateRealEstateAssetMutation = (
+    options?: Partial<Options<UpdateRealEstateAssetData>>
+): UseMutationOptions<
+    UpdateRealEstateAssetResponse,
+    UpdateRealEstateAssetError,
+    Options<UpdateRealEstateAssetData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateRealEstateAssetResponse,
+        UpdateRealEstateAssetError,
+        Options<UpdateRealEstateAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateRealEstateAsset({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

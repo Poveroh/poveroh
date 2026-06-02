@@ -9,6 +9,7 @@ import {
     registerImportPath,
     registerMarketDataPath,
     registerMarketableAssetPath,
+    registerRealEstateAssetPath,
     registerReportPath,
     registerSnapshotPath,
     registerStatusPath,
@@ -44,6 +45,7 @@ export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerUserActivityPath(registry)
     registerAssetPath(registry)
     registerMarketableAssetPath(registry)
+    registerRealEstateAssetPath(registry)
     registerAssetTransactionPath(registry)
     registerCategoryPath(registry)
     registerSubcategoryPath(registry)

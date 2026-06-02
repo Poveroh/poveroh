@@ -4691,119 +4691,78 @@ export const RealEstateAssetDataSchema = {
     required: ['address', 'type', 'purchasePrice', 'purchaseDate']
 } as const
 
-export const CreateRealEstateAssetRequestSchema = {
+export const RealEstateAssetFormSchema = {
     type: 'object',
     properties: {
-        address: {
+        title: {
             type: 'string',
             minLength: 1
         },
         type: {
             $ref: '#/components/schemas/RealEstateTypeEnum'
         },
-        purchasePrice: {
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
         },
         purchaseDate: {
             type: 'string'
+        },
+        address: {
+            type: 'string'
         }
     },
-    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
+    required: ['title', 'type', 'value']
 } as const
 
-export const CreateRealEstateAssetResponseSchema = {
+export const CreateRealEstateAssetRequestSchema = {
     type: 'object',
     properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
+        title: {
             type: 'string',
-            description: 'Optional success message'
+            minLength: 1
         },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/RealEstateAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
+        type: {
+            $ref: '#/components/schemas/RealEstateTypeEnum'
+        },
+        value: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        address: {
+            type: 'string'
         }
     },
-    required: ['success', 'message', 'data']
+    required: ['title', 'type', 'value']
 } as const
 
 export const UpdateRealEstateAssetRequestSchema = {
     type: 'object',
     properties: {
-        address: {
+        title: {
             type: 'string',
             minLength: 1
         },
         type: {
             $ref: '#/components/schemas/RealEstateTypeEnum'
         },
-        purchasePrice: {
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
         },
         purchaseDate: {
+            type: 'string'
+        },
+        address: {
             type: 'string'
         }
     }
-} as const
-
-export const UpdateRealEstateAssetResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/RealEstateAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
-export const RealEstateAssetFormSchema = {
-    type: 'object',
-    properties: {
-        address: {
-            type: 'string',
-            minLength: 1
-        },
-        type: {
-            $ref: '#/components/schemas/RealEstateTypeEnum'
-        },
-        purchasePrice: {
-            type: 'number',
-            minimum: 0,
-            exclusiveMinimum: true
-        },
-        purchaseDate: {
-            type: 'string'
-        }
-    },
-    required: ['address', 'type', 'purchasePrice', 'purchaseDate']
 } as const
 
 export const NetWorthEvolutionSchema = {

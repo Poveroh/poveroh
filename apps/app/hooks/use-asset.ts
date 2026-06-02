@@ -5,11 +5,13 @@ import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import {
     createAssetTransactionMutation,
     createMarketableAssetMutation,
+    createRealEstateAssetMutation,
     deleteAssetMutation,
     deleteAssetsMutation,
     getAssetsOptions,
     getAssetsQueryKey,
-    updateMarketableAssetMutation
+    updateMarketableAssetMutation,
+    updateRealEstateAssetMutation
 } from '@/api/@tanstack/react-query.gen'
 import { useError } from './use-error'
 import { useFilters } from './use-filters'
@@ -56,6 +58,22 @@ export const useAsset = () => {
         }
     })
 
+    const createRealEstateMutation = useMutation({
+        ...createRealEstateAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error creating real estate asset')
+        }
+    })
+
+    const updateRealEstateMutation = useMutation({
+        ...updateRealEstateAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error updating real estate asset')
+        }
+    })
+
     const deleteMutation = useMutation({
         ...deleteAssetMutation(),
         onSuccess: invalidateAssets,
@@ -85,6 +103,8 @@ export const useAsset = () => {
         assetQuery,
         createMarketableMutation,
         updateMarketableMutation,
+        createRealEstateMutation,
+        updateRealEstateMutation,
         deleteMutation,
         deleteAllMutation,
         createTransactionMutation,

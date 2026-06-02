@@ -1990,49 +1990,28 @@ export type RealEstateAssetData = {
     purchaseDate: string | null
 }
 
-export type CreateRealEstateAssetRequest = {
-    address: string
+export type RealEstateAssetForm = {
+    title: string
     type: RealEstateTypeEnum
-    purchasePrice: number
-    purchaseDate: string
+    value: number
+    purchaseDate?: string
+    address?: string
 }
 
-export type CreateRealEstateAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: RealEstateAssetData & unknown
+export type CreateRealEstateAssetRequest = {
+    title: string
+    type: RealEstateTypeEnum
+    value: number
+    purchaseDate?: string
+    address?: string
 }
 
 export type UpdateRealEstateAssetRequest = {
-    address?: string
+    title?: string
     type?: RealEstateTypeEnum
-    purchasePrice?: number
+    value?: number
     purchaseDate?: string
-}
-
-export type UpdateRealEstateAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: RealEstateAssetData & unknown
-}
-
-export type RealEstateAssetForm = {
-    address: string
-    type: RealEstateTypeEnum
-    purchasePrice: number
-    purchaseDate: string
+    address?: string
 }
 
 export type NetWorthEvolution = {
@@ -3358,6 +3337,78 @@ export type UpdateMarketableAssetResponses = {
 }
 
 export type UpdateMarketableAssetResponse = UpdateMarketableAssetResponses[keyof UpdateMarketableAssetResponses]
+
+export type CreateRealEstateAssetData = {
+    body: CreateRealEstateAssetRequest
+    path?: never
+    query?: never
+    url: '/assets/real-estate'
+}
+
+export type CreateRealEstateAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateRealEstateAssetError = CreateRealEstateAssetErrors[keyof CreateRealEstateAssetErrors]
+
+export type CreateRealEstateAssetResponses = {
+    /**
+     * Real estate asset created
+     */
+    200: GetAssetResponse
+}
+
+export type CreateRealEstateAssetResponse = CreateRealEstateAssetResponses[keyof CreateRealEstateAssetResponses]
+
+export type UpdateRealEstateAssetData = {
+    body: UpdateRealEstateAssetRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}/real-estate'
+}
+
+export type UpdateRealEstateAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Real estate asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateRealEstateAssetError = UpdateRealEstateAssetErrors[keyof UpdateRealEstateAssetErrors]
+
+export type UpdateRealEstateAssetResponses = {
+    /**
+     * Real estate asset updated
+     */
+    200: GetAssetResponse
+}
+
+export type UpdateRealEstateAssetResponse = UpdateRealEstateAssetResponses[keyof UpdateRealEstateAssetResponses]
 
 export type DeleteAssetTransactionsData = {
     body?: never

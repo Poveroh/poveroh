@@ -33,6 +33,9 @@ import type {
     CreateMarketableAssetData,
     CreateMarketableAssetErrors,
     CreateMarketableAssetResponses,
+    CreateRealEstateAssetData,
+    CreateRealEstateAssetErrors,
+    CreateRealEstateAssetResponses,
     CreateSnapshotAccountBalanceData,
     CreateSnapshotAccountBalanceErrors,
     CreateSnapshotAccountBalanceResponses,
@@ -286,6 +289,9 @@ import type {
     UpdateMarketableAssetData,
     UpdateMarketableAssetErrors,
     UpdateMarketableAssetResponses,
+    UpdateRealEstateAssetData,
+    UpdateRealEstateAssetErrors,
+    UpdateRealEstateAssetResponses,
     UpdateSessionData,
     UpdateSessionErrors,
     UpdateSessionResponses,
@@ -504,6 +510,42 @@ export const updateMarketableAsset = <ThrowOnError extends boolean = false>(
     (options.client ?? client).patch<UpdateMarketableAssetResponses, UpdateMarketableAssetErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/assets/{id}/marketable',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Create real estate asset
+ *
+ * Create a real estate asset together with its parent asset record
+ */
+export const createRealEstateAsset = <ThrowOnError extends boolean = false>(
+    options: Options<CreateRealEstateAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateRealEstateAssetResponses, CreateRealEstateAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/real-estate',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Update real estate asset
+ *
+ * Update real estate asset details and its parent asset value
+ */
+export const updateRealEstateAsset = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateRealEstateAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateRealEstateAssetResponses, UpdateRealEstateAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}/real-estate',
         ...options,
         headers: {
             'Content-Type': 'application/json',

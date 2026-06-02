@@ -4561,115 +4561,76 @@
                 },
                 "required": ["address", "type", "purchasePrice", "purchaseDate"]
             },
-            "CreateRealEstateAssetRequest": {
+            "RealEstateAssetForm": {
                 "type": "object",
                 "properties": {
-                    "address": {
+                    "title": {
                         "type": "string",
                         "minLength": 1
                     },
                     "type": {
                         "$ref": "#/components/schemas/RealEstateTypeEnum"
                     },
-                    "purchasePrice": {
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
                     },
                     "purchaseDate": {
                         "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
                     }
                 },
-                "required": ["address", "type", "purchasePrice", "purchaseDate"]
+                "required": ["title", "type", "value"]
             },
-            "CreateRealEstateAssetResponse": {
+            "CreateRealEstateAssetRequest": {
                 "type": "object",
                 "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
+                    "title": {
                         "type": "string",
-                        "description": "Optional success message"
+                        "minLength": 1
                     },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/RealEstateAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
+                    "type": {
+                        "$ref": "#/components/schemas/RealEstateTypeEnum"
+                    },
+                    "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
                     }
                 },
-                "required": ["success", "message", "data"]
+                "required": ["title", "type", "value"]
             },
             "UpdateRealEstateAssetRequest": {
                 "type": "object",
                 "properties": {
-                    "address": {
+                    "title": {
                         "type": "string",
                         "minLength": 1
                     },
                     "type": {
                         "$ref": "#/components/schemas/RealEstateTypeEnum"
                     },
-                    "purchasePrice": {
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
                     },
                     "purchaseDate": {
+                        "type": "string"
+                    },
+                    "address": {
                         "type": "string"
                     }
                 }
-            },
-            "UpdateRealEstateAssetResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/RealEstateAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
-                    }
-                },
-                "required": ["success", "message", "data"]
-            },
-            "RealEstateAssetForm": {
-                "type": "object",
-                "properties": {
-                    "address": {
-                        "type": "string",
-                        "minLength": 1
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/RealEstateTypeEnum"
-                    },
-                    "purchasePrice": {
-                        "type": "number",
-                        "minimum": 0,
-                        "exclusiveMinimum": true
-                    },
-                    "purchaseDate": {
-                        "type": "string"
-                    }
-                },
-                "required": ["address", "type", "purchasePrice", "purchaseDate"]
             },
             "NetWorthEvolution": {
                 "type": "object",
@@ -7884,6 +7845,157 @@
                     },
                     "404": {
                         "description": "Marketable asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/real-estate": {
+            "post": {
+                "tags": ["Real Estate Asset"],
+                "operationId": "createRealEstateAsset",
+                "summary": "Create real estate asset",
+                "description": "Create a real estate asset together with its parent asset record",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRealEstateAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Real estate asset created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/real-estate": {
+            "patch": {
+                "tags": ["Real Estate Asset"],
+                "operationId": "updateRealEstateAsset",
+                "summary": "Update real estate asset",
+                "description": "Update real estate asset details and its parent asset value",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRealEstateAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Real estate asset updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Real estate asset not found",
                         "content": {
                             "application/json": {
                                 "schema": {

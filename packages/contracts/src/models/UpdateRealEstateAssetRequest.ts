@@ -4,8 +4,9 @@
 /* eslint-disable */
 import type { RealEstateTypeEnum } from './RealEstateTypeEnum'
 export type UpdateRealEstateAssetRequest = {
-    address?: string
+    title?: string
     type?: RealEstateTypeEnum
-    purchasePrice?: number
+    value?: number
     purchaseDate?: string
+    address?: string
 }

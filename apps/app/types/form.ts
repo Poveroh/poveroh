@@ -5,11 +5,14 @@ import type {
     AssetTypeEnum,
     CreateImportRequest,
     CreateMarketableAssetRequest,
+    CreateRealEstateAssetRequest,
     CreateUpdateTransactionRequest,
     CurrencyEnum,
     ImportData,
     InputVariantStyle,
-    UpdateMarketableAssetRequest
+    RealEstateTypeEnum,
+    UpdateMarketableAssetRequest,
+    UpdateRealEstateAssetRequest
 } from '@poveroh/types'
 import { LucideIcon } from 'lucide-react'
 import { InputHTMLAttributes } from 'react'
@@ -77,3 +80,15 @@ export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateMarketab
     assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
     defaultSymbol: string
 }
+
+export type RealEstateAssetFormValues = {
+    title: string
+    type: RealEstateTypeEnum
+    value: number
+    purchaseDate?: string
+    address?: string
+}
+
+export type CreateUpdateRealEstateAssetRequest = CreateRealEstateAssetRequest | UpdateRealEstateAssetRequest
+
+export type RealEstateAssetFormProps = FormProps<AssetData, CreateUpdateRealEstateAssetRequest>
