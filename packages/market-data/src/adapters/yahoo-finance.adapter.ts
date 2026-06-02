@@ -5,9 +5,10 @@ import type {
     MarketQuote,
     SearchInstrumentsParams
 } from '@poveroh/types'
-import { MarketDataError, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
+import { MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
 import YahooFinance from 'yahoo-finance2'
 import { mapAssetType, mapCurrency, mapMarketState } from '../utils/mapping'
+import { toMarketDataError } from '../utils/errors'
 import type { YahooSearchQuoteLike } from '../types/yahoo-finance.types'
 
 /**
@@ -46,7 +47,7 @@ export class YahooFinanceAdapter implements MarketDataAdapter {
                     metadata: {}
                 }))
         } catch (error) {
-            throw this.toMarketDataError(error)
+            throw toMarketDataError(this.providerId, error)
         }
     }
 
@@ -86,19 +87,7 @@ export class YahooFinanceAdapter implements MarketDataAdapter {
                 market: quote.exchange || null
             }
         } catch (error) {
-            throw this.toMarketDataError(error)
+            throw toMarketDataError(this.providerId, error)
         }
-    }
-
-    /**
-     * Normalizes any client failure into a MarketDataError tagged with this provider.
-     * @param error The error thrown by the Yahoo client.
-     * @returns The normalized MarketDataError.
-     */
-    private toMarketDataError(error: unknown): MarketDataError {
-        if (error instanceof MarketDataError) return error
-
-        const message = error instanceof Error ? error.message : 'Unknown provider error'
-        return new MarketDataError(this.providerId, message)
     }
 }

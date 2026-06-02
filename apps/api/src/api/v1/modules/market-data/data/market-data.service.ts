@@ -144,6 +144,13 @@ export class MarketDataService extends BaseService {
             return await call()
         } catch (error) {
             if (error instanceof MarketDataError) {
+                // A 4xx from the provider is a client/config problem (bad or unentitled API key),
+                // not a server fault, so surface it as a BadRequest with the upstream status.
+                if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) {
+                    throw new BadRequestError(
+                        `Market data provider "${providerId}" rejected the request (HTTP ${error.statusCode}). Check that the API key is valid and that your plan includes this endpoint.`
+                    )
+                }
                 throw new InternalServerError(`Market data request to "${providerId}" failed: ${error.message}`)
             }
             throw error

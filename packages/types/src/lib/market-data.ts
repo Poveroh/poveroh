@@ -56,20 +56,13 @@ export const MARKET_DATA_SEARCH_MIN_QUERY_LENGTH = 2
 export const MARKET_DATA_SEARCH_DEFAULT_LIMIT = 20
 export const MARKET_DATA_REQUEST_TIMEOUT_MS = 8000
 
+// Yahoo and Massive talk through their official SDKs; only Finnhub uses raw HTTP, plus
+// the Massive REST base passed to its client.
 export const MARKET_DATA_ENDPOINTS = {
-    yahooFinance: {
-        search: 'https://query1.finance.yahoo.com/v1/finance/search',
-        chart: 'https://query1.finance.yahoo.com/v8/finance/chart'
-    },
     finnhub: {
         base: 'https://finnhub.io/api/v1'
     },
     massive: {
-        base: 'https://massive.com'
+        base: 'https://api.massive.com'
     }
 } as const
-
-// Yahoo rejects requests without a browser-like User-Agent, so adapters always send one.
-export const YAHOO_FINANCE_REQUEST_HEADERS: Record<string, string> = {
-    'User-Agent': 'Mozilla/5.0 (compatible; Poveroh/1.0; +https://poveroh.local)'
-}

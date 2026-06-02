@@ -1,29 +1,38 @@
-import type { GetQuotesParams, MarketInstrument, MarketQuote, SearchInstrumentsParams } from '@poveroh/types'
-import { MarketDataError, MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
-import { BaseHttpAdapter } from './base.adapter'
+import type {
+    GetQuotesParams,
+    MarketDataAdapter,
+    MarketInstrument,
+    MarketQuote,
+    SearchInstrumentsParams
+} from '@poveroh/types'
+import { MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
+import type { DefaultApi } from '@massive.com/client-js'
 import { mapAssetType, mapCurrency } from '../utils/mapping'
-import type { MassiveTicker, MassiveTickersResponse, MassiveLastTradeResponse } from '../types/massive.types'
-
-const BASE_URL = MARKET_DATA_ENDPOINTS.massive.base
+import { toMarketDataError } from '../utils/errors'
 
 /**
- * Massive adapter (Polygon.io-compatible REST API). Requires an API key, passed
- * as the `apiKey` query parameter — the convention Massive inherits from Polygon.
- * If a deployment uses bearer auth instead, only `authParams()` needs to change.
+ * Massive adapter backed by the official `@massive.com/client-js` REST client.
+ * Requires an API key and uses the reference-tickers endpoint for search and the
+ * last-trade endpoint for quotes.
  */
-export class MassiveAdapter extends BaseHttpAdapter {
+export class MassiveAdapter implements MarketDataAdapter {
     readonly providerId = 'massive'
+    private clientPromise?: Promise<DefaultApi>
 
-    constructor(private readonly apiKey: string) {
-        super()
-    }
+    constructor(private readonly apiKey: string) {}
 
     /**
-     * Attaches the API key to the request URL.
-     * @param url The URL to modify.
+     * Lazily imports the Massive client and initializes it with the API key and base URL.
+     * @returns A promise that resolves to the initialized Massive REST client.
      */
-    private authParams(url: URL): void {
-        url.searchParams.set('apiKey', this.apiKey)
+    private getClient(): Promise<DefaultApi> {
+        if (!this.clientPromise) {
+            this.clientPromise = import('@massive.com/client-js').then(({ restClient }) =>
+                restClient(this.apiKey, MARKET_DATA_ENDPOINTS.massive.base)
+            )
+        }
+
+        return this.clientPromise
     }
 
     /**
@@ -32,18 +41,15 @@ export class MassiveAdapter extends BaseHttpAdapter {
      * @returns The normalized list of instruments.
      */
     async searchInstruments(params: SearchInstrumentsParams): Promise<MarketInstrument[]> {
-        if (!this.apiKey) throw new MarketDataError(this.providerId, 'Missing Massive API key')
+        try {
+            const client = await this.getClient()
+            const response = await client.listTickers({
+                search: params.query,
+                limit: params.limit ?? MARKET_DATA_SEARCH_DEFAULT_LIMIT,
+                active: true
+            })
 
-        const url = new URL(`${BASE_URL}/v3/reference/tickers`)
-        url.searchParams.set('search', params.query)
-        url.searchParams.set('limit', String(params.limit ?? MARKET_DATA_SEARCH_DEFAULT_LIMIT))
-        this.authParams(url)
-
-        const data = await this.fetchJson<MassiveTickersResponse>(url.toString())
-
-        return (data.results ?? [])
-            .filter((ticker): ticker is MassiveTicker & { ticker: string } => Boolean(ticker.ticker))
-            .map(ticker => {
+            return (response.results ?? []).map(ticker => {
                 const metadata: Record<string, string> = {}
                 if (ticker.type) metadata.type = ticker.type
 
@@ -59,10 +65,13 @@ export class MassiveAdapter extends BaseHttpAdapter {
                     metadata
                 }
             })
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
+        }
     }
 
     /**
-     * Resolves quotes via Massive's last-trade endpoint, one request per symbol.
+     * Resolves quotes via Massive's previous-day aggregate endpoint, one request per symbol.
      * @param params The symbols to resolve.
      * @returns The normalized list of quotes.
      */
@@ -77,28 +86,34 @@ export class MassiveAdapter extends BaseHttpAdapter {
      * @returns The normalized quote or null if unavailable.
      */
     private async getQuote(symbol: string): Promise<MarketQuote | null> {
-        if (!this.apiKey) throw new MarketDataError(this.providerId, 'Missing Massive API key')
+        try {
+            const client = await this.getClient()
+            // The last-trade endpoint requires a paid plan (returns 403 on free tiers), so use the
+            // previous-day aggregate whose close price is available on the base plan and is enough for valuations.
+            const response = await client.getPreviousStocksAggregates({ stocksTicker: symbol })
+            const aggregate = response.results?.[0]
+            const price = aggregate?.c
+            if (typeof price !== 'number') return null
 
-        const url = new URL(`${BASE_URL}/v2/last/trade/${encodeURIComponent(symbol)}`)
-        this.authParams(url)
+            const timestamp = aggregate?.t
 
-        const data = await this.fetchJson<MassiveLastTradeResponse>(url.toString())
-        const price = data.results?.p
-        if (typeof price !== 'number') return null
-
-        return {
-            providerId: this.providerId,
-            symbol,
-            assetType: 'STOCK',
-            currency: 'USD',
-            price,
-            changePercent: null,
-            marketState: 'UNKNOWN',
-            asOf: data.results?.t ? new Date(data.results.t / 1_000_000).toISOString() : new Date().toISOString(),
-            valueSource: 'MARKET',
-            displayName: null,
-            exchange: null,
-            market: null
+            return {
+                providerId: this.providerId,
+                symbol,
+                assetType: 'STOCK',
+                currency: 'USD',
+                price,
+                changePercent: null,
+                marketState: 'UNKNOWN',
+                // Aggregate timestamps are already in milliseconds, unlike the nanosecond last-trade timestamps.
+                asOf: typeof timestamp === 'number' ? new Date(timestamp).toISOString() : new Date().toISOString(),
+                valueSource: 'MARKET',
+                displayName: null,
+                exchange: null,
+                market: null
+            }
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
         }
     }
 }

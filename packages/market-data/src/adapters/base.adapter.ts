@@ -5,8 +5,9 @@ import type {
     MarketQuote,
     SearchInstrumentsParams
 } from '@poveroh/types'
-import { MarketDataError, MARKET_DATA_REQUEST_TIMEOUT_MS } from '@poveroh/types'
+import { MARKET_DATA_REQUEST_TIMEOUT_MS } from '@poveroh/types'
 import axios from 'axios'
+import { toMarketDataError } from '../utils/errors'
 
 /**
  * Shared behaviour for HTTP-based provider adapters: a JSON GET helper with a
@@ -34,14 +35,7 @@ export abstract class BaseHttpAdapter implements MarketDataAdapter {
 
             return response.data
         } catch (error) {
-            if (error instanceof MarketDataError) throw error
-
-            if (axios.isAxiosError(error)) {
-                throw new MarketDataError(this.providerId, error.message, error.response?.status)
-            }
-
-            const message = error instanceof Error ? error.message : 'Unknown provider error'
-            throw new MarketDataError(this.providerId, message)
+            throw toMarketDataError(this.providerId, error)
         }
     }
 }
