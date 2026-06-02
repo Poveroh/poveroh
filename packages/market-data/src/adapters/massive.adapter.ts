@@ -88,8 +88,7 @@ export class MassiveAdapter implements MarketDataAdapter {
     private async getQuote(symbol: string): Promise<MarketQuote | null> {
         try {
             const client = await this.getClient()
-            // The last-trade endpoint requires a paid plan (returns 403 on free tiers), so use the
-            // previous-day aggregate whose close price is available on the base plan and is enough for valuations.
+
             const response = await client.getPreviousStocksAggregates({ stocksTicker: symbol })
             const aggregate = response.results?.[0]
             const price = aggregate?.c
@@ -105,7 +104,6 @@ export class MassiveAdapter implements MarketDataAdapter {
                 price,
                 changePercent: null,
                 marketState: 'UNKNOWN',
-                // Aggregate timestamps are already in milliseconds, unlike the nanosecond last-trade timestamps.
                 asOf: typeof timestamp === 'number' ? new Date(timestamp).toISOString() : new Date().toISOString(),
                 valueSource: 'MARKET',
                 displayName: null,
