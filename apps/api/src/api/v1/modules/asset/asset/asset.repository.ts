@@ -8,6 +8,7 @@ import type {
     InsuranceAsset,
     MarketableAsset,
     MarketableAssetClassEnum,
+    OtherAsset,
     PrivateDealAsset,
     RealEstateAsset,
     VehicleAsset
@@ -62,6 +63,7 @@ const assetSelect = {
     privateDeal: true,
     vehicle: true,
     insurance: true,
+    other: true,
     transactions: {
         where: { deletedAt: null },
         orderBy: { date: 'desc' as const },
@@ -178,6 +180,19 @@ function toVehicle(row: NonNullable<AssetRow['vehicle']>): VehicleAsset {
     }
 }
 
+function toOther(row: NonNullable<AssetRow['other']>): OtherAsset {
+    return {
+        id: row.id,
+        assetId: row.assetId,
+        description: row.description,
+        purchasePrice: toNumber(row.purchasePrice),
+        purchaseDate: toIsoString(row.purchaseDate),
+        createdAt: toIsoString(row.createdAt) as string,
+        updatedAt: toIsoString(row.updatedAt) as string,
+        deletedAt: toIsoString(row.deletedAt)
+    }
+}
+
 function toInsurance(row: NonNullable<AssetRow['insurance']>): InsuranceAsset {
     return {
         id: row.id,
@@ -220,6 +235,7 @@ function toData(row: AssetRow): AssetData {
         privateDeal: row.privateDeal ? toPrivateDeal(row.privateDeal) : undefined,
         vehicle: row.vehicle ? toVehicle(row.vehicle) : undefined,
         insurance: row.insurance ? toInsurance(row.insurance) : undefined,
+        other: row.other ? toOther(row.other) : undefined,
         transactions: row.transactions.map(toAssetTransactionData),
         autoDepreciations: row.autoDepreciations.map(toAutoDepreciationData)
     }
@@ -409,6 +425,7 @@ async function softDeleteSubtypes(tx: Prisma.TransactionClient, assetId: string,
         tx.collectibleAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),
         tx.privateDealAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),
         tx.vehicleAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),
-        tx.insuranceAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } })
+        tx.insuranceAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),
+        tx.otherAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } })
     ])
 }

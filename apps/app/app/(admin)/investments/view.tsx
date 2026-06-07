@@ -16,10 +16,12 @@ import { CryptoDialog } from '@/components/dialog/investment/crypto-symbol-dialo
 import { MarketableDialog } from '@/components/dialog/investment/marketable-dialog'
 import { PropertyDialog } from '@/components/dialog/investment/property-dialog'
 import { VehicleDialog } from '@/components/dialog/investment/vehicle-dialog'
+import { ValuableDialog } from '@/components/dialog/investment/valuable-dialog'
+import { OtherAssetsDialog } from '@/components/dialog/investment/other-assets-dialog'
 
 export default function InvestmentsView() {
     const t = useTranslations()
-    const { assetQuery, deleteAllMutation } = useAsset()
+    const { assetQuery, deleteAllMutation, onSearch } = useAsset()
     const { openModal } = useModal<AssetData>(MODAL_IDS.INVESTMENT_ASSET)
 
     const assets = useMemo(() => (assetQuery.data?.data ?? []) as AssetData[], [assetQuery.data])
@@ -45,7 +47,7 @@ export default function InvestmentsView() {
                     }}
                 />
 
-                <AssetSummary assets={assets} />
+                <AssetSummary assets={assets} onSearch={onSearch} />
             </PageWrapper>
 
             <InvestmentAssetDialog />
@@ -53,6 +55,8 @@ export default function InvestmentsView() {
             <CryptoDialog />
             <PropertyDialog />
             <VehicleDialog />
+            <ValuableDialog />
+            <OtherAssetsDialog />
         </>
     )
 }

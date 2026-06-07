@@ -3,8 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CollectibleAssetForm = {
-    acquisitionCost: number
-    acquisitionDate: string
-    appraisalValue: number
-    appraisalDate: string
+    title: string
+    value: number
+    acquisitionDate?: string
+    appraisalValue?: number
+    appraisalDate?: string
 }

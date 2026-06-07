@@ -6,6 +6,7 @@ import { AssetTypeEnum, CurrencyEnum } from './enum.schema'
 import { DateFilterSchema, ReadQuerySchema, StringFilterSchema } from './filter.schema'
 import { InsuranceAssetSchema } from './insurance-asset.schema'
 import { MarketableAssetSchema } from './marketable-asset.schema'
+import { OtherAssetSchema } from './other-asset.schema'
 import { PrivateDealAssetSchema } from './private-deal-asset.schema'
 import { RealEstateAssetSchema } from './real-estate-asset.schema'
 import { VehicleAssetSchema } from './vehicle-asset.schema'
@@ -34,6 +35,7 @@ export const AssetSchema = z
         privateDeal: PrivateDealAssetSchema.optional(),
         vehicle: VehicleAssetSchema.optional(),
         insurance: InsuranceAssetSchema.optional(),
+        other: OtherAssetSchema.optional(),
         transactions: AssetTransactionDataSchema.array(),
         autoDepreciations: AutoDepreciationDataSchema.array()
     })

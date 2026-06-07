@@ -21,6 +21,9 @@ import type {
     CreateCategoryData,
     CreateCategoryErrors,
     CreateCategoryResponses,
+    CreateCollectibleAssetData,
+    CreateCollectibleAssetErrors,
+    CreateCollectibleAssetResponses,
     CreateFinancialAccountData,
     CreateFinancialAccountErrors,
     CreateFinancialAccountResponses,
@@ -33,6 +36,9 @@ import type {
     CreateMarketableAssetData,
     CreateMarketableAssetErrors,
     CreateMarketableAssetResponses,
+    CreateOtherAssetData,
+    CreateOtherAssetErrors,
+    CreateOtherAssetResponses,
     CreateRealEstateAssetData,
     CreateRealEstateAssetErrors,
     CreateRealEstateAssetResponses,
@@ -280,6 +286,9 @@ import type {
     UpdateCategoryData,
     UpdateCategoryErrors,
     UpdateCategoryResponses,
+    UpdateCollectibleAssetData,
+    UpdateCollectibleAssetErrors,
+    UpdateCollectibleAssetResponses,
     UpdateDashboardLayoutData,
     UpdateDashboardLayoutErrors,
     UpdateDashboardLayoutResponses,
@@ -292,6 +301,9 @@ import type {
     UpdateMarketableAssetData,
     UpdateMarketableAssetErrors,
     UpdateMarketableAssetResponses,
+    UpdateOtherAssetData,
+    UpdateOtherAssetErrors,
+    UpdateOtherAssetResponses,
     UpdateRealEstateAssetData,
     UpdateRealEstateAssetErrors,
     UpdateRealEstateAssetResponses,
@@ -593,6 +605,78 @@ export const updateVehicleAsset = <ThrowOnError extends boolean = false>(
         ...options,
         headers: {
             'Content-Type': null,
+            ...options.headers
+        }
+    })
+
+/**
+ * Create collectible asset
+ *
+ * Create a collectible asset together with its parent asset record
+ */
+export const createCollectibleAsset = <ThrowOnError extends boolean = false>(
+    options: Options<CreateCollectibleAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateCollectibleAssetResponses, CreateCollectibleAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/collectible',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Update collectible asset
+ *
+ * Update collectible asset details and its parent asset value
+ */
+export const updateCollectibleAsset = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateCollectibleAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateCollectibleAssetResponses, UpdateCollectibleAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}/collectible',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Create other asset
+ *
+ * Create an other asset together with its parent asset record
+ */
+export const createOtherAsset = <ThrowOnError extends boolean = false>(
+    options: Options<CreateOtherAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).post<CreateOtherAssetResponses, CreateOtherAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/other',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Update other asset
+ *
+ * Update other asset details and its parent asset value
+ */
+export const updateOtherAsset = <ThrowOnError extends boolean = false>(
+    options: Options<UpdateOtherAssetData, ThrowOnError>
+) =>
+    (options.client ?? client).patch<UpdateOtherAssetResponses, UpdateOtherAssetErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/assets/{id}/other',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
             ...options.headers
         }
     })

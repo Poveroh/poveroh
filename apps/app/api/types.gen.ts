@@ -298,6 +298,7 @@ export type Asset = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
+    other?: OtherAsset
     transactions: Array<AssetTransactionData>
     autoDepreciations: Array<AutoDepreciationData>
 }
@@ -417,6 +418,17 @@ export type InsurancePolicyTypeEnum = 'LIFE' | 'UNIT_LINKED' | 'INDEX_LINKED' | 
 
 export type CyclePeriodEnum = 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
 
+export type OtherAsset = {
+    id: string
+    assetId: string
+    description: string | null
+    purchasePrice: number | null
+    purchaseDate: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
+}
+
 export type AutoDepreciationData = {
     startDate: string
     endDate: string | null
@@ -448,6 +460,7 @@ export type AssetData = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
+    other?: OtherAsset
     transactions: Array<AssetTransactionData>
     autoDepreciations: Array<AutoDepreciationData>
 }
@@ -695,48 +708,27 @@ export type CollectibleAssetData = {
 }
 
 export type CreateCollectibleAssetRequest = {
-    acquisitionCost: number
-    acquisitionDate: string
-    appraisalValue: number
-    appraisalDate: string
-}
-
-export type CreateCollectibleAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: CollectibleAssetData & unknown
-}
-
-export type UpdateCollectibleAssetRequest = {
-    acquisitionCost?: number
+    title: string
+    value: number
     acquisitionDate?: string
     appraisalValue?: number
     appraisalDate?: string
 }
 
-export type UpdateCollectibleAssetResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: CollectibleAssetData & unknown
+export type UpdateCollectibleAssetRequest = {
+    title?: string
+    value?: number
+    acquisitionDate?: string
+    appraisalValue?: number
+    appraisalDate?: string
 }
 
 export type CollectibleAssetForm = {
-    acquisitionCost: number
-    acquisitionDate: string
-    appraisalValue: number
-    appraisalDate: string
+    title: string
+    value: number
+    acquisitionDate?: string
+    appraisalValue?: number
+    appraisalDate?: string
 }
 
 export type DashboardLayoutItem = {
@@ -1967,6 +1959,33 @@ export type UpdateMarketableAssetRequest = {
     unitPrice?: number
     fees?: number
     currency?: CurrencyEnum
+}
+
+export type OtherAssetData = {
+    description: string | null
+    purchasePrice: number | null
+    purchaseDate: string | null
+}
+
+export type CreateOtherAssetRequest = {
+    title: string
+    value: number
+    purchaseDate?: string
+    description?: string
+}
+
+export type UpdateOtherAssetRequest = {
+    title?: string
+    value?: number
+    purchaseDate?: string
+    description?: string
+}
+
+export type OtherAssetForm = {
+    title: string
+    value: number
+    purchaseDate?: string
+    description?: string
 }
 
 export type PrivateDealAssetData = {
@@ -3503,6 +3522,150 @@ export type UpdateVehicleAssetResponses = {
 }
 
 export type UpdateVehicleAssetResponse = UpdateVehicleAssetResponses[keyof UpdateVehicleAssetResponses]
+
+export type CreateCollectibleAssetData = {
+    body: CreateCollectibleAssetRequest
+    path?: never
+    query?: never
+    url: '/assets/collectible'
+}
+
+export type CreateCollectibleAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateCollectibleAssetError = CreateCollectibleAssetErrors[keyof CreateCollectibleAssetErrors]
+
+export type CreateCollectibleAssetResponses = {
+    /**
+     * Collectible asset created
+     */
+    200: GetAssetResponse
+}
+
+export type CreateCollectibleAssetResponse = CreateCollectibleAssetResponses[keyof CreateCollectibleAssetResponses]
+
+export type UpdateCollectibleAssetData = {
+    body: UpdateCollectibleAssetRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}/collectible'
+}
+
+export type UpdateCollectibleAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Collectible asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateCollectibleAssetError = UpdateCollectibleAssetErrors[keyof UpdateCollectibleAssetErrors]
+
+export type UpdateCollectibleAssetResponses = {
+    /**
+     * Collectible asset updated
+     */
+    200: GetAssetResponse
+}
+
+export type UpdateCollectibleAssetResponse = UpdateCollectibleAssetResponses[keyof UpdateCollectibleAssetResponses]
+
+export type CreateOtherAssetData = {
+    body: CreateOtherAssetRequest
+    path?: never
+    query?: never
+    url: '/assets/other'
+}
+
+export type CreateOtherAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateOtherAssetError = CreateOtherAssetErrors[keyof CreateOtherAssetErrors]
+
+export type CreateOtherAssetResponses = {
+    /**
+     * Other asset created
+     */
+    200: GetAssetResponse
+}
+
+export type CreateOtherAssetResponse = CreateOtherAssetResponses[keyof CreateOtherAssetResponses]
+
+export type UpdateOtherAssetData = {
+    body: UpdateOtherAssetRequest
+    path: {
+        id: string
+    }
+    query?: never
+    url: '/assets/{id}/other'
+}
+
+export type UpdateOtherAssetErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Other asset not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type UpdateOtherAssetError = UpdateOtherAssetErrors[keyof UpdateOtherAssetErrors]
+
+export type UpdateOtherAssetResponses = {
+    /**
+     * Other asset updated
+     */
+    200: GetAssetResponse
+}
+
+export type UpdateOtherAssetResponse = UpdateOtherAssetResponses[keyof UpdateOtherAssetResponses]
 
 export type DeleteAssetTransactionsData = {
     body?: never

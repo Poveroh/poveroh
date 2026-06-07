@@ -51,6 +51,8 @@ export const useAssetColumns = ({
                 return ''
             }
 
+            const groupKeyFor = (asset: AssetData): string | undefined => asset.marketable?.symbol ?? undefined
+
             const priceFor = (asset: AssetData): number => {
                 const quantity = asset.quantity || 0
                 const total = asset.currentValue || 0
@@ -78,14 +80,25 @@ export const useAssetColumns = ({
                         <ArrowUpDown />
                     </Button>
                 ),
-                cell: ({ row }) => {
+                cell: ({ row, table }) => {
                     const asset = row.original
                     const subtitle = subtitleFor(asset)
                     const account = resolveAccount(asset.transactions?.[0]?.financialAccountId)
 
+                    const rows = table.getRowModel().rows
+                    const position = rows.findIndex(current => current.id === row.id)
+                    const previous = position > 0 ? rows[position - 1]?.original : undefined
+                    const groupKey = groupKeyFor(asset)
+                    const isContinuation =
+                        groupKey !== undefined && previous !== undefined && groupKeyFor(previous) === groupKey
+
                     return (
                         <div className='flex flex-row items-center space-x-3'>
-                            <AssetAvatar logo={asset.vehicle?.logoIcon} name={asset.title} />
+                            {isContinuation ? (
+                                <div className='w-9 h-9 shrink-0' />
+                            ) : (
+                                <AssetAvatar logo={asset.vehicle?.logoIcon} name={asset.title} />
+                            )}
                             <div className='flex flex-col'>
                                 <span className='font-medium'>{asset.title}</span>
                                 {subtitle && <span className='sub text-xs'>{subtitle}</span>}
@@ -205,7 +218,7 @@ export const useAssetColumns = ({
                 cell: ({ row }) => {
                     const asset = row.original
                     return (
-                        <div onClick={e => e.stopPropagation()} className='w-fit'>
+                        <div onClick={e => e.stopPropagation()} className='flex justify-end'>
                             <OptionsPopover<AssetData>
                                 data={asset}
                                 buttons={[

@@ -4,14 +4,18 @@ import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 
 import {
     createAssetTransactionMutation,
+    createCollectibleAssetMutation,
     createMarketableAssetMutation,
+    createOtherAssetMutation,
     createRealEstateAssetMutation,
     createVehicleAssetMutation,
     deleteAssetMutation,
     deleteAssetsMutation,
     getAssetsOptions,
     getAssetsQueryKey,
+    updateCollectibleAssetMutation,
     updateMarketableAssetMutation,
+    updateOtherAssetMutation,
     updateRealEstateAssetMutation,
     updateVehicleAssetMutation
 } from '@/api/@tanstack/react-query.gen'
@@ -92,6 +96,38 @@ export const useAsset = () => {
         }
     })
 
+    const createCollectibleMutation = useMutation({
+        ...createCollectibleAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error creating collectible asset')
+        }
+    })
+
+    const updateCollectibleMutation = useMutation({
+        ...updateCollectibleAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error updating collectible asset')
+        }
+    })
+
+    const createOtherMutation = useMutation({
+        ...createOtherAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error creating other asset')
+        }
+    })
+
+    const updateOtherMutation = useMutation({
+        ...updateOtherAssetMutation(),
+        onSuccess: invalidateAssets,
+        onError: error => {
+            handleError(error, 'Error updating other asset')
+        }
+    })
+
     const deleteMutation = useMutation({
         ...deleteAssetMutation(),
         onSuccess: invalidateAssets,
@@ -125,6 +161,10 @@ export const useAsset = () => {
         updateRealEstateMutation,
         createVehicleMutation,
         updateVehicleMutation,
+        createCollectibleMutation,
+        updateCollectibleMutation,
+        createOtherMutation,
+        updateOtherMutation,
         deleteMutation,
         deleteAllMutation,
         createTransactionMutation,

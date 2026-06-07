@@ -35,7 +35,8 @@ export const ASSET_GROUP_CATALOG: AssetGroup[] = [
     { type: 'CRYPTOCURRENCY', label: 'investments.assets.groups.crypto', layout: 'marketable' },
     { type: 'REAL_ESTATE', label: 'investments.assets.groups.property', layout: 'physical' },
     { type: 'VEHICLE', label: 'investments.assets.groups.vehicle', layout: 'physical' },
-    { type: 'COLLECTIBLE', label: 'investments.assets.groups.valuables', layout: 'physical' }
+    { type: 'COLLECTIBLE', label: 'investments.assets.groups.valuables', layout: 'physical' },
+    { type: 'OTHER', label: 'investments.assets.groups.other', layout: 'physical' }
 ]
 
 /**

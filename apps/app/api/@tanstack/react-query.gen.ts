@@ -10,10 +10,12 @@ import {
     completeImport,
     createAssetTransaction,
     createCategory,
+    createCollectibleAsset,
     createFinancialAccount,
     createImport,
     createImportTemplate,
     createMarketableAsset,
+    createOtherAsset,
     createRealEstateAsset,
     createSnapshotAccountBalance,
     createSubcategory,
@@ -98,10 +100,12 @@ import {
     updateAuthenticatedUser,
     updateAuthenticatedUserPreferences,
     updateCategory,
+    updateCollectibleAsset,
     updateDashboardLayout,
     updateFinancialAccount,
     updateImport,
     updateMarketableAsset,
+    updateOtherAsset,
     updateRealEstateAsset,
     updateSession,
     updateSubcategory,
@@ -130,6 +134,9 @@ import type {
     CreateCategoryData,
     CreateCategoryError,
     CreateCategoryResponse2,
+    CreateCollectibleAssetData,
+    CreateCollectibleAssetError,
+    CreateCollectibleAssetResponse,
     CreateFinancialAccountData,
     CreateFinancialAccountError,
     CreateFinancialAccountResponse2,
@@ -142,6 +149,9 @@ import type {
     CreateMarketableAssetData,
     CreateMarketableAssetError,
     CreateMarketableAssetResponse,
+    CreateOtherAssetData,
+    CreateOtherAssetError,
+    CreateOtherAssetResponse,
     CreateRealEstateAssetData,
     CreateRealEstateAssetError,
     CreateRealEstateAssetResponse,
@@ -387,6 +397,9 @@ import type {
     UpdateCategoryData,
     UpdateCategoryError,
     UpdateCategoryResponse2,
+    UpdateCollectibleAssetData,
+    UpdateCollectibleAssetError,
+    UpdateCollectibleAssetResponse,
     UpdateDashboardLayoutData,
     UpdateDashboardLayoutError,
     UpdateDashboardLayoutResponse2,
@@ -399,6 +412,9 @@ import type {
     UpdateMarketableAssetData,
     UpdateMarketableAssetError,
     UpdateMarketableAssetResponse,
+    UpdateOtherAssetData,
+    UpdateOtherAssetError,
+    UpdateOtherAssetResponse,
     UpdateRealEstateAssetData,
     UpdateRealEstateAssetError,
     UpdateRealEstateAssetResponse,
@@ -891,6 +907,114 @@ export const updateVehicleAssetMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateVehicleAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Create collectible asset
+ *
+ * Create a collectible asset together with its parent asset record
+ */
+export const createCollectibleAssetMutation = (
+    options?: Partial<Options<CreateCollectibleAssetData>>
+): UseMutationOptions<
+    CreateCollectibleAssetResponse,
+    CreateCollectibleAssetError,
+    Options<CreateCollectibleAssetData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateCollectibleAssetResponse,
+        CreateCollectibleAssetError,
+        Options<CreateCollectibleAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createCollectibleAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update collectible asset
+ *
+ * Update collectible asset details and its parent asset value
+ */
+export const updateCollectibleAssetMutation = (
+    options?: Partial<Options<UpdateCollectibleAssetData>>
+): UseMutationOptions<
+    UpdateCollectibleAssetResponse,
+    UpdateCollectibleAssetError,
+    Options<UpdateCollectibleAssetData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateCollectibleAssetResponse,
+        UpdateCollectibleAssetError,
+        Options<UpdateCollectibleAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateCollectibleAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Create other asset
+ *
+ * Create an other asset together with its parent asset record
+ */
+export const createOtherAssetMutation = (
+    options?: Partial<Options<CreateOtherAssetData>>
+): UseMutationOptions<CreateOtherAssetResponse, CreateOtherAssetError, Options<CreateOtherAssetData>> => {
+    const mutationOptions: UseMutationOptions<
+        CreateOtherAssetResponse,
+        CreateOtherAssetError,
+        Options<CreateOtherAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createOtherAsset({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Update other asset
+ *
+ * Update other asset details and its parent asset value
+ */
+export const updateOtherAssetMutation = (
+    options?: Partial<Options<UpdateOtherAssetData>>
+): UseMutationOptions<UpdateOtherAssetResponse, UpdateOtherAssetError, Options<UpdateOtherAssetData>> => {
+    const mutationOptions: UseMutationOptions<
+        UpdateOtherAssetResponse,
+        UpdateOtherAssetError,
+        Options<UpdateOtherAssetData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await updateOtherAsset({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

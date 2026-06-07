@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateCollectibleAssetRequest = {
+export type CreateOtherAssetRequest = {
     title: string
     value: number
-    acquisitionDate?: string
-    appraisalValue?: number
-    appraisalDate?: string
+    purchaseDate?: string
+    description?: string
 }

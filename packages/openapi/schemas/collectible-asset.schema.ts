@@ -1,5 +1,4 @@
 import { z } from '../zod'
-import { SuccessResponseSchema } from './response.schema'
 
 /**
  * Collectible asset schema representing valuables and collectibles
@@ -32,49 +31,30 @@ export const CollectibleAssetDataSchema = CollectibleAssetSchema.omit({
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
- * Request schema for collectible asset details
+ * Request schema for creating a collectible asset together with its parent asset record.
+ * `value` feeds both the parent asset current value and the collectible acquisition cost,
+ * while the appraisal fields are optional details shown without a mandatory marker.
  */
 export const CreateCollectibleAssetRequestSchema = z
     .object({
-        acquisitionCost: z.number().positive(),
-        acquisitionDate: z.string(),
-        appraisalValue: z.number().positive(),
-        appraisalDate: z.string()
+        title: z.string().trim().min(1),
+        value: z.number().positive(),
+        acquisitionDate: z.string().optional(),
+        appraisalValue: z.number().positive().optional(),
+        appraisalDate: z.string().optional()
     })
     .openapi('CreateCollectibleAssetRequest')
-
-/**
- * Response schema for creating a new collectible asset
- */
-export const CreateCollectibleAssetResponseSchema = SuccessResponseSchema(CollectibleAssetDataSchema).openapi(
-    'CreateCollectibleAssetResponse'
-)
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 
 /**
  * Request schema for updating collectible asset details
  */
-export const UpdateCollectibleAssetRequestSchema = z
-    .object({
-        acquisitionCost: z.number().positive(),
-        acquisitionDate: z.string(),
-        appraisalValue: z.number().positive(),
-        appraisalDate: z.string()
-    })
-    .partial()
-    .openapi('UpdateCollectibleAssetRequest')
-
-/**
- * Response schema for updating collectible asset details
- */
-export const UpdateCollectibleAssetResponseSchema = SuccessResponseSchema(CollectibleAssetDataSchema).openapi(
-    'UpdateCollectibleAssetResponse'
+export const UpdateCollectibleAssetRequestSchema = CreateCollectibleAssetRequestSchema.partial().openapi(
+    'UpdateCollectibleAssetRequest'
 )
 
-// ------------------------------------------------------------------------------------------------------------------------------ //
-
 /**
- * Form schema for collectible asset
+ * Form schema for the collectible asset dialog, aliasing the create request shape
  */
 export const CollectibleAssetFormSchema = CreateCollectibleAssetRequestSchema.openapi('CollectibleAssetForm')

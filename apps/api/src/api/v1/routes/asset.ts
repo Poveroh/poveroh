@@ -1,7 +1,9 @@
 import { AssetController } from '../modules/asset/asset/asset.controller'
 import { AssetTransactionController } from '../modules/asset/transaction/asset-transaction.controller'
 import { AuthMiddleware } from '../../../middleware/auth.middleware'
+import { CollectibleAssetController } from '../modules/asset/collectible-asset/collectible-asset.controller'
 import { MarketableAssetController } from '../modules/asset/marketable-asset/marketable-asset.controller'
+import { OtherAssetController } from '../modules/asset/other-asset/other-asset.controller'
 import { RealEstateAssetController } from '../modules/asset/real-estate-asset/real-estate-asset.controller'
 import { VehicleAssetController } from '../modules/asset/vehicle-asset/vehicle-asset.controller'
 import { Router } from 'express'
@@ -13,6 +15,8 @@ const assetTransactionController = new AssetTransactionController()
 const marketableAssetController = new MarketableAssetController()
 const realEstateAssetController = new RealEstateAssetController()
 const vehicleAssetController = new VehicleAssetController()
+const collectibleAssetController = new CollectibleAssetController()
+const otherAssetController = new OtherAssetController()
 
 // Asset routes
 router.get('/', AuthMiddleware.isAuthenticated, assetController.readAssets.bind(assetController))
@@ -93,6 +97,26 @@ router.patch(
     AuthMiddleware.isAuthenticated,
     upload.single('file'),
     vehicleAssetController.updateVehicleAsset.bind(vehicleAssetController)
+)
+
+// Collectible asset routes
+router.post(
+    '/collectible',
+    AuthMiddleware.isAuthenticated,
+    collectibleAssetController.createCollectibleAsset.bind(collectibleAssetController)
+)
+router.patch(
+    '/:id/collectible',
+    AuthMiddleware.isAuthenticated,
+    collectibleAssetController.updateCollectibleAsset.bind(collectibleAssetController)
+)
+
+// Other asset routes
+router.post('/other', AuthMiddleware.isAuthenticated, otherAssetController.createOtherAsset.bind(otherAssetController))
+router.patch(
+    '/:id/other',
+    AuthMiddleware.isAuthenticated,
+    otherAssetController.updateOtherAsset.bind(otherAssetController)
 )
 
 export default router

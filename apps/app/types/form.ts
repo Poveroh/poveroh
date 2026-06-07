@@ -3,8 +3,10 @@ import type {
     AssetData,
     AssetTransactionTypeEnum,
     AssetTypeEnum,
+    CreateCollectibleAssetRequest,
     CreateImportRequest,
     CreateMarketableAssetRequest,
+    CreateOtherAssetRequest,
     CreateRealEstateAssetRequest,
     CreateUpdateTransactionRequest,
     CreateVehicleAssetRequest,
@@ -12,7 +14,9 @@ import type {
     ImportData,
     InputVariantStyle,
     RealEstateTypeEnum,
+    UpdateCollectibleAssetRequest,
     UpdateMarketableAssetRequest,
+    UpdateOtherAssetRequest,
     UpdateRealEstateAssetRequest,
     UpdateVehicleAssetRequest,
     VehicleTypeEnum
@@ -95,6 +99,29 @@ export type RealEstateAssetFormValues = {
 export type CreateUpdateRealEstateAssetRequest = CreateRealEstateAssetRequest | UpdateRealEstateAssetRequest
 
 export type RealEstateAssetFormProps = FormProps<AssetData, CreateUpdateRealEstateAssetRequest>
+
+export type CollectibleAssetFormValues = {
+    title: string
+    value: number
+    acquisitionDate?: string
+    appraisalValue?: number
+    appraisalDate?: string
+}
+
+export type CreateUpdateCollectibleAssetRequest = CreateCollectibleAssetRequest | UpdateCollectibleAssetRequest
+
+export type CollectibleAssetFormProps = FormProps<AssetData, CreateUpdateCollectibleAssetRequest>
+
+export type OtherAssetFormValues = {
+    title: string
+    value: number
+    purchaseDate?: string
+    description?: string
+}
+
+export type CreateUpdateOtherAssetRequest = CreateOtherAssetRequest | UpdateOtherAssetRequest
+
+export type OtherAssetFormProps = FormProps<AssetData, CreateUpdateOtherAssetRequest>
 
 export type VehicleAssetFormValues = {
     brand: string

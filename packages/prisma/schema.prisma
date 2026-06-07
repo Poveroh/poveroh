@@ -194,6 +194,7 @@ model Asset {
   privateDeal      PrivateDealAsset?
   vehicle          VehicleAsset?
   insurance        InsuranceAsset?
+  other            OtherAsset?
   transactions     AssetTransaction[]
   snapshotValues   SnapshotAssetValue[]
 
@@ -248,6 +249,19 @@ model CollectibleAsset {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime? @db.Timestamptz
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
+
+model OtherAsset {
+  id            String    @id @default(uuid())
+  assetId       String    @unique
+  description   String?
+  purchasePrice Decimal?  @db.Decimal(20, 2)
+  purchaseDate  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime? @db.Timestamptz
 
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 }

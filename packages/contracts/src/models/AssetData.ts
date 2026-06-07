@@ -9,6 +9,7 @@ import type { CollectibleAsset } from './CollectibleAsset'
 import type { CurrencyEnum } from './CurrencyEnum'
 import type { InsuranceAsset } from './InsuranceAsset'
 import type { MarketableAsset } from './MarketableAsset'
+import type { OtherAsset } from './OtherAsset'
 import type { PrivateDealAsset } from './PrivateDealAsset'
 import type { RealEstateAsset } from './RealEstateAsset'
 import type { VehicleAsset } from './VehicleAsset'
@@ -29,6 +30,7 @@ export type AssetData = {
     privateDeal?: PrivateDealAsset
     vehicle?: VehicleAsset
     insurance?: InsuranceAsset
+    other?: OtherAsset
     transactions: Array<AssetTransactionData>
     autoDepreciations: Array<AutoDepreciationData>
 }

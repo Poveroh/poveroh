@@ -875,6 +875,9 @@
                     "insurance": {
                         "$ref": "#/components/schemas/InsuranceAsset"
                     },
+                    "other": {
+                        "$ref": "#/components/schemas/OtherAsset"
+                    },
                     "transactions": {
                         "type": "array",
                         "items": {
@@ -1306,6 +1309,51 @@
                 "type": "string",
                 "enum": ["DAY", "WEEK", "MONTH", "YEAR"]
             },
+            "OtherAsset": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "assetId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "assetId",
+                    "description",
+                    "purchasePrice",
+                    "purchaseDate",
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
+                ]
+            },
             "AutoDepreciationData": {
                 "type": "object",
                 "properties": {
@@ -1404,6 +1452,9 @@
                     },
                     "insurance": {
                         "$ref": "#/components/schemas/InsuranceAsset"
+                    },
+                    "other": {
+                        "$ref": "#/components/schemas/OtherAsset"
                     },
                     "transactions": {
                         "type": "array",
@@ -2023,7 +2074,11 @@
             "CreateCollectibleAssetRequest": {
                 "type": "object",
                 "properties": {
-                    "acquisitionCost": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -2040,36 +2095,16 @@
                         "type": "string"
                     }
                 },
-                "required": ["acquisitionCost", "acquisitionDate", "appraisalValue", "appraisalDate"]
-            },
-            "CreateCollectibleAssetResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/CollectibleAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
-                    }
-                },
-                "required": ["success", "message", "data"]
+                "required": ["title", "value"]
             },
             "UpdateCollectibleAssetRequest": {
                 "type": "object",
                 "properties": {
-                    "acquisitionCost": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -2087,34 +2122,14 @@
                     }
                 }
             },
-            "UpdateCollectibleAssetResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean",
-                        "description": "Indicates if the request was successful"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "Optional success message"
-                    },
-                    "data": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/CollectibleAssetData"
-                            },
-                            {
-                                "description": "Response data"
-                            }
-                        ]
-                    }
-                },
-                "required": ["success", "message", "data"]
-            },
             "CollectibleAssetForm": {
                 "type": "object",
                 "properties": {
-                    "acquisitionCost": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
                         "type": "number",
                         "minimum": 0,
                         "exclusiveMinimum": true
@@ -2131,7 +2146,7 @@
                         "type": "string"
                     }
                 },
-                "required": ["acquisitionCost", "acquisitionDate", "appraisalValue", "appraisalDate"]
+                "required": ["title", "value"]
             },
             "DashboardLayoutItem": {
                 "type": "object",
@@ -4547,6 +4562,86 @@
                         "$ref": "#/components/schemas/CurrencyEnum"
                     }
                 }
+            },
+            "OtherAssetData": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "purchasePrice": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "purchaseDate": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": ["description", "purchasePrice", "purchaseDate"]
+            },
+            "CreateOtherAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": ["title", "value"]
+            },
+            "UpdateOtherAssetRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "OtherAssetForm": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "value": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    },
+                    "purchaseDate": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": ["title", "value"]
             },
             "PrivateDealAssetData": {
                 "type": "object",
@@ -8252,6 +8347,308 @@
                     },
                     "404": {
                         "description": "Vehicle asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/collectible": {
+            "post": {
+                "tags": ["Collectible Asset"],
+                "operationId": "createCollectibleAsset",
+                "summary": "Create collectible asset",
+                "description": "Create a collectible asset together with its parent asset record",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCollectibleAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Collectible asset created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/collectible": {
+            "patch": {
+                "tags": ["Collectible Asset"],
+                "operationId": "updateCollectibleAsset",
+                "summary": "Update collectible asset",
+                "description": "Update collectible asset details and its parent asset value",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCollectibleAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Collectible asset updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collectible asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/other": {
+            "post": {
+                "tags": ["Other Asset"],
+                "operationId": "createOtherAsset",
+                "summary": "Create other asset",
+                "description": "Create an other asset together with its parent asset record",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOtherAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Other asset created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{id}/other": {
+            "patch": {
+                "tags": ["Other Asset"],
+                "operationId": "updateOtherAsset",
+                "summary": "Update other asset",
+                "description": "Update other asset details and its parent asset value",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateOtherAssetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Other asset updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAssetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Other asset not found",
                         "content": {
                             "application/json": {
                                 "schema": {

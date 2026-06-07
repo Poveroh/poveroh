@@ -871,6 +871,9 @@ export const AssetSchema = {
         insurance: {
             $ref: '#/components/schemas/InsuranceAsset'
         },
+        other: {
+            $ref: '#/components/schemas/OtherAsset'
+        },
         transactions: {
             type: 'array',
             items: {
@@ -1316,6 +1319,43 @@ export const CyclePeriodEnumSchema = {
     enum: ['DAY', 'WEEK', 'MONTH', 'YEAR']
 } as const
 
+export const OtherAssetSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        assetId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        description: {
+            type: 'string',
+            nullable: true
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string'
+        },
+        updatedAt: {
+            type: 'string'
+        },
+        deletedAt: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['id', 'assetId', 'description', 'purchasePrice', 'purchaseDate', 'createdAt', 'updatedAt', 'deletedAt']
+} as const
+
 export const AutoDepreciationDataSchema = {
     type: 'object',
     properties: {
@@ -1417,6 +1457,9 @@ export const AssetDataSchema = {
         },
         insurance: {
             $ref: '#/components/schemas/InsuranceAsset'
+        },
+        other: {
+            $ref: '#/components/schemas/OtherAsset'
         },
         transactions: {
             type: 'array',
@@ -2063,7 +2106,11 @@ export const CollectibleAssetDataSchema = {
 export const CreateCollectibleAssetRequestSchema = {
     type: 'object',
     properties: {
-        acquisitionCost: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -2080,38 +2127,17 @@ export const CreateCollectibleAssetRequestSchema = {
             type: 'string'
         }
     },
-    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
-} as const
-
-export const CreateCollectibleAssetResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/CollectibleAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
+    required: ['title', 'value']
 } as const
 
 export const UpdateCollectibleAssetRequestSchema = {
     type: 'object',
     properties: {
-        acquisitionCost: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -2130,35 +2156,14 @@ export const UpdateCollectibleAssetRequestSchema = {
     }
 } as const
 
-export const UpdateCollectibleAssetResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/CollectibleAssetData'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
-} as const
-
 export const CollectibleAssetFormSchema = {
     type: 'object',
     properties: {
-        acquisitionCost: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
             type: 'number',
             minimum: 0,
             exclusiveMinimum: true
@@ -2175,7 +2180,7 @@ export const CollectibleAssetFormSchema = {
             type: 'string'
         }
     },
-    required: ['acquisitionCost', 'acquisitionDate', 'appraisalValue', 'appraisalDate']
+    required: ['title', 'value']
 } as const
 
 export const DashboardLayoutItemSchema = {
@@ -4674,6 +4679,90 @@ export const UpdateMarketableAssetRequestSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         }
     }
+} as const
+
+export const OtherAssetDataSchema = {
+    type: 'object',
+    properties: {
+        description: {
+            type: 'string',
+            nullable: true
+        },
+        purchasePrice: {
+            type: 'number',
+            nullable: true
+        },
+        purchaseDate: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['description', 'purchasePrice', 'purchaseDate']
+} as const
+
+export const CreateOtherAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        }
+    },
+    required: ['title', 'value']
+} as const
+
+export const UpdateOtherAssetRequestSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        }
+    }
+} as const
+
+export const OtherAssetFormSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        value: {
+            type: 'number',
+            minimum: 0,
+            exclusiveMinimum: true
+        },
+        purchaseDate: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        }
+    },
+    required: ['title', 'value']
 } as const
 
 export const PrivateDealAssetDataSchema = {

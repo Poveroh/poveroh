@@ -540,6 +540,18 @@
                 "purchaseDate": {
                     "label": "Purchase date"
                 },
+                "acquisitionDate": {
+                    "label": "Acquisition date"
+                },
+                "appraisalValue": {
+                    "label": "Appraisal value"
+                },
+                "appraisalDate": {
+                    "label": "Appraisal date"
+                },
+                "description": {
+                    "label": "Description"
+                },
                 "address": {
                     "label": "Address"
                 },
@@ -605,7 +617,8 @@
                 "crypto": "Crypto",
                 "property": "Property",
                 "vehicle": "Vehicle",
-                "valuables": "Valuables"
+                "valuables": "Valuables",
+                "other": "Other"
             },
             "ticket-symbol": {
                 "title": "Ticket symbol",

@@ -34,6 +34,7 @@ type TableProps<T> = {
     dateColumns?: string[]
     showFooter?: boolean
     containerClassName?: string
+    mergeRowsBy?: (row: T) => string | number | undefined
 }
 
 export function DataTable<T>({
@@ -47,7 +48,8 @@ export function DataTable<T>({
     isLoading = false,
     dateColumns = ['createdAt', 'updatedAt', 'date'],
     showFooter = true,
-    containerClassName = 'overflow-hidden rounded-md border border-border relative'
+    containerClassName = 'overflow-hidden rounded-md border border-border relative',
+    mergeRowsBy
 }: TableProps<T>) {
     const t = useTranslations()
     const { renderDate } = useConfig()
@@ -139,28 +141,39 @@ export function DataTable<T>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map(row => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                    {row.getVisibleCells().map(cell => {
-                                        const cellValue = cell.getValue()
-                                        const isDateColumn = dateColumns.includes(cell.column.id)
-                                        const isDateValue =
-                                            cellValue instanceof Date ||
-                                            (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue)))
+                            table.getRowModel().rows.map((row, index, rows) => {
+                                const nextRow = rows[index + 1]
+                                const groupId = mergeRowsBy?.(row.original)
+                                const nextGroupId = nextRow ? mergeRowsBy?.(nextRow.original) : undefined
+                                const mergeWithNext = groupId !== undefined && groupId === nextGroupId
 
-                                        return (
-                                            <TableCell
-                                                key={cell.id}
-                                                className={cn(cell.column.id == 'select' && 'pl-6 pr-2')}
-                                            >
-                                                {isDateColumn && isDateValue
-                                                    ? renderDate(cellValue as string | Date)
-                                                    : flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        )
-                                    })}
-                                </TableRow>
-                            ))
+                                return (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && 'selected'}
+                                        className={cn(mergeWithNext && 'border-b-0')}
+                                    >
+                                        {row.getVisibleCells().map(cell => {
+                                            const cellValue = cell.getValue()
+                                            const isDateColumn = dateColumns.includes(cell.column.id)
+                                            const isDateValue =
+                                                cellValue instanceof Date ||
+                                                (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue)))
+
+                                            return (
+                                                <TableCell
+                                                    key={cell.id}
+                                                    className={cn(cell.column.id == 'select' && 'pl-6 pr-2')}
+                                                >
+                                                    {isDateColumn && isDateValue
+                                                        ? renderDate(cellValue as string | Date)
+                                                        : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </TableCell>
+                                            )
+                                        })}
+                                    </TableRow>
+                                )
+                            })
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className='h-24 text-center'>
