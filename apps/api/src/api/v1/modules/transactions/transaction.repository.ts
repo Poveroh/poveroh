@@ -1,5 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
-import type { TransactionData } from '@poveroh/types'
+import type { TransactionData, TransactionFilters, TransactionStatusEnum } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
 
 type Db = Prisma.TransactionClient | typeof prisma
@@ -203,15 +203,18 @@ export class TransactionRepository {
      * @param payload The filter payload supplied by the caller, optionally including a financial account filter.
      * @returns The composed Prisma where clause.
      */
-    buildListWhere(payload: Record<string, unknown> & { financialAccountId?: string }): Prisma.TransactionWhereInput {
+    buildListWhere(
+        payload: TransactionFilters & { userId: string; status: TransactionStatusEnum }
+    ): Prisma.TransactionWhereInput {
         const { financialAccountId, ...rest } = payload
-        const wherePayload: Record<string, unknown> = { ...rest }
 
-        if (financialAccountId) {
-            wherePayload.amounts = { some: { financialAccountId } }
-        }
-
-        return buildWhere(wherePayload, []) as Prisma.TransactionWhereInput
+        return buildWhere(
+            {
+                ...rest,
+                ...(financialAccountId ? { amounts: { some: { financialAccountId } } } : {})
+            },
+            []
+        )
     }
 
     /**

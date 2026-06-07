@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import { Header } from '@/components/other/header-page'
 import { PageWrapper } from '@/components/box/page-wrapper'
+import { AssetSummary } from '@/components/investments/asset-summary'
 import { InvestmentAssetDialog } from '@/components/dialog/investment-asset-dialog'
 
 import { useAsset } from '@/hooks/use-asset'
@@ -43,6 +44,8 @@ export default function InvestmentsView() {
                         disabled: assets.length === 0
                     }}
                 />
+
+                <AssetSummary assets={assets} />
             </PageWrapper>
 
             <InvestmentAssetDialog />

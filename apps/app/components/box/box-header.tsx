@@ -1,12 +1,6 @@
-import { ReactElement } from 'react'
+import { BoxHeaderProps } from '@/types/box'
 
-type BoxProps = {
-    title: string
-    description?: string
-    sideChildren: ReactElement | ReactElement[]
-}
-
-export default function BoxHeader({ title, description, sideChildren }: BoxProps) {
+export default function BoxHeader({ title, description, sideChildren }: BoxHeaderProps) {
     return (
         <div className='w-full flex items-center justify-between'>
             <div className='flex flex-col gap-1'>

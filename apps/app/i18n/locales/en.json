@@ -496,6 +496,9 @@
         },
         "assets": {
             "title": "Assets",
+            "summary": {
+                "otherFilters": "Other filters"
+            },
             "modal": {
                 "newTitle": "New asset",
                 "newSubtitle": "Select the type of asset you want to add",

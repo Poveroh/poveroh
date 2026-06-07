@@ -32,6 +32,8 @@ type TableProps<T> = {
     onSortingChange?: (sorting: SortingState) => void
     isLoading?: boolean
     dateColumns?: string[]
+    showFooter?: boolean
+    containerClassName?: string
 }
 
 export function DataTable<T>({
@@ -43,7 +45,9 @@ export function DataTable<T>({
     manualSorting = false,
     onSortingChange: onSortingChangeCallback,
     isLoading = false,
-    dateColumns = ['createdAt', 'updatedAt', 'date']
+    dateColumns = ['createdAt', 'updatedAt', 'date'],
+    showFooter = true,
+    containerClassName = 'overflow-hidden rounded-md border border-border relative'
 }: TableProps<T>) {
     const t = useTranslations()
     const { renderDate } = useConfig()
@@ -88,7 +92,7 @@ export function DataTable<T>({
         onSortingChange: handleSortingChange,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        getPaginationRowModel: showFooter ? getPaginationRowModel() : undefined,
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
@@ -105,7 +109,7 @@ export function DataTable<T>({
 
     return (
         <div className='w-full'>
-            <div className='overflow-hidden rounded-md border border-border relative'>
+            <div className={containerClassName}>
                 {isLoading && (
                     <div className='absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center'>
                         <div className='flex items-center space-x-3 bg-card px-4 py-3 rounded-lg border border-border shadow-lg'>
@@ -120,7 +124,10 @@ export function DataTable<T>({
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map(header => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className={cn(header.column.id === 'select' && 'pl-6')}
+                                        >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(header.column.columnDef.header, header.getContext())}
@@ -144,7 +151,7 @@ export function DataTable<T>({
                                         return (
                                             <TableCell
                                                 key={cell.id}
-                                                className={cn(cell.column.id == 'select' && 'px-2')}
+                                                className={cn(cell.column.id == 'select' && 'pl-6 pr-2')}
                                             >
                                                 {isDateColumn && isDateValue
                                                     ? renderDate(cellValue as string | Date)
@@ -164,73 +171,75 @@ export function DataTable<T>({
                     </TableBody>
                 </Table>
             </div>
-            <div className='flex items-center justify-between space-x-2 py-4'>
-                <p className='sub'>
-                    {t('layout.table.selectedRows', {
-                        a: table.getFilteredSelectedRowModel().rows.length,
-                        b: table.getFilteredRowModel().rows.length
-                    })}
-                </p>
-                <div className='flex flex-row items-center space-x-10 w-fit'>
-                    <div className='flex flex-row items-center space-x-2'>
-                        <p className='text-nowrap'>{t('layout.table.rowsPerPage')}</p>
-                        <Select
-                            value={table.getState().pagination.pageSize.toString()}
-                            onValueChange={value => {
-                                table.setPageSize(Number(value))
-                            }}
-                            disabled={isLoading}
-                        >
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {[10, 20, 30, 40, 50].map(pageSize => (
-                                    <SelectItem key={pageSize} value={pageSize.toString()}>
-                                        {pageSize}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <p>
-                        {t('layout.table.pageOf', {
-                            a: table.getState().pagination.pageIndex + 1,
-                            b: table.getPageCount().toLocaleString()
+            {showFooter && (
+                <div className='flex items-center justify-between space-x-2 py-4'>
+                    <p className='sub'>
+                        {t('layout.table.selectedRows', {
+                            a: table.getFilteredSelectedRowModel().rows.length,
+                            b: table.getFilteredRowModel().rows.length
                         })}
                     </p>
-                    <div className='flex flex-row space-x-1'>
-                        <Button
-                            variant='secondary'
-                            onClick={() => table.firstPage()}
-                            disabled={!table.getCanPreviousPage() || isLoading}
-                        >
-                            <ChevronsLeft />
-                        </Button>
-                        <Button
-                            variant='secondary'
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage() || isLoading}
-                        >
-                            <ChevronLeft />
-                        </Button>
-                        <Button
-                            variant='secondary'
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage() || isLoading}
-                        >
-                            <ChevronRight />
-                        </Button>
-                        <Button
-                            variant='secondary'
-                            onClick={() => table.lastPage()}
-                            disabled={!table.getCanNextPage() || isLoading}
-                        >
-                            <ChevronsRight />
-                        </Button>
+                    <div className='flex flex-row items-center space-x-10 w-fit'>
+                        <div className='flex flex-row items-center space-x-2'>
+                            <p className='text-nowrap'>{t('layout.table.rowsPerPage')}</p>
+                            <Select
+                                value={table.getState().pagination.pageSize.toString()}
+                                onValueChange={value => {
+                                    table.setPageSize(Number(value))
+                                }}
+                                disabled={isLoading}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {[10, 20, 30, 40, 50].map(pageSize => (
+                                        <SelectItem key={pageSize} value={pageSize.toString()}>
+                                            {pageSize}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <p>
+                            {t('layout.table.pageOf', {
+                                a: table.getState().pagination.pageIndex + 1,
+                                b: table.getPageCount().toLocaleString()
+                            })}
+                        </p>
+                        <div className='flex flex-row space-x-1'>
+                            <Button
+                                variant='secondary'
+                                onClick={() => table.firstPage()}
+                                disabled={!table.getCanPreviousPage() || isLoading}
+                            >
+                                <ChevronsLeft />
+                            </Button>
+                            <Button
+                                variant='secondary'
+                                onClick={() => table.previousPage()}
+                                disabled={!table.getCanPreviousPage() || isLoading}
+                            >
+                                <ChevronLeft />
+                            </Button>
+                            <Button
+                                variant='secondary'
+                                onClick={() => table.nextPage()}
+                                disabled={!table.getCanNextPage() || isLoading}
+                            >
+                                <ChevronRight />
+                            </Button>
+                            <Button
+                                variant='secondary'
+                                onClick={() => table.lastPage()}
+                                disabled={!table.getCanNextPage() || isLoading}
+                            >
+                                <ChevronsRight />
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }

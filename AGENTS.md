@@ -50,6 +50,7 @@ The platform is designed for a single user (or household) who self-hosts the ins
 ## Don't
 
 - Never use `as any` — use proper type-safe solutions instead
+- Never use `Record<string, unknown>` (or `Record<string, any>`) — model the real shape with a precise type (existing `@poveroh/types` types, intersections, or a dedicated type) instead of a loose record
 - Never commit secrets, API keys, or `.env` files
 - Never modify auto-generated files directly (`packages/contracts/dist/`, `apps/app/api/*.gen.ts`)
 - Never put business logic in controllers — that belongs in services

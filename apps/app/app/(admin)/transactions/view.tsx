@@ -134,16 +134,18 @@ export default function TransactionsView() {
         if (transactions.length > 0) {
             if (viewMode === 'table') {
                 return (
-                    <DataTable
-                        data={transactions}
-                        columns={columns}
-                        manualPagination
-                        pageCount={Math.ceil(totalCount / pageSize)}
-                        onPaginationChange={handleTablePaginationChange}
-                        manualSorting
-                        onSortingChange={handleTableSortingChange}
-                        isLoading={isLoading}
-                    />
+                    <Box>
+                        <DataTable
+                            data={transactions}
+                            columns={columns}
+                            manualPagination
+                            pageCount={Math.ceil(totalCount / pageSize)}
+                            onPaginationChange={handleTablePaginationChange}
+                            manualSorting
+                            onSortingChange={handleTableSortingChange}
+                            isLoading={isLoading}
+                        />
+                    </Box>
                 )
             }
 

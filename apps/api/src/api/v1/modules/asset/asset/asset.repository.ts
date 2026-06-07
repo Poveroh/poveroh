@@ -250,7 +250,25 @@ export class AssetRepository {
      * @returns A promise that resolves to the matching assets.
      */
     async findMany(userId: string, filters: AssetFilters, skip: number, take: number): Promise<AssetData[]> {
-        const where: Prisma.AssetWhereInput = {
+        const rows = await prisma.asset.findMany({
+            where: this.buildListWhere(userId, filters),
+            select: assetSelect,
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take
+        })
+
+        return rows.map(toData)
+    }
+
+    /**
+     * Builds the Prisma where clause for listing assets, combining ownership and soft-delete constraints with the supplied filters.
+     * @param userId The ID of the user who owns the assets.
+     * @param filters The filters to apply when retrieving assets.
+     * @returns The composed Prisma where clause.
+     */
+    buildListWhere(userId: string, filters: AssetFilters): Prisma.AssetWhereInput {
+        return {
             userId,
             deletedAt: null,
             ...(filters.id?.id && { id: filters.id.id }),
@@ -279,16 +297,6 @@ export class AssetRepository {
                 }
             })
         }
-
-        const rows = await prisma.asset.findMany({
-            where,
-            select: assetSelect,
-            orderBy: { createdAt: 'desc' },
-            skip,
-            take
-        })
-
-        return rows.map(toData)
     }
 
     /**

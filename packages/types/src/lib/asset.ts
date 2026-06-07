@@ -1,4 +1,10 @@
-import { AssetTransactionTypeEnum, CyclePeriodEnum, RealEstateTypeEnum, VehicleTypeEnum } from './contracts.js'
+import {
+    AssetTransactionTypeEnum,
+    AssetTypeEnum,
+    CyclePeriodEnum,
+    RealEstateTypeEnum,
+    VehicleTypeEnum
+} from './contracts.js'
 import { Item } from './item.js'
 
 export type AssetConfig = {
@@ -7,6 +13,30 @@ export type AssetConfig = {
     modalId: string
     icons: string
 }
+
+/**
+ * The table layout used to render a group of assets: quoted holdings (quantity/price/weight) or physical goods (year/buy date).
+ */
+export type AssetGroupLayout = 'marketable' | 'physical'
+
+/**
+ * A summary group on the investments page: an asset type, its translated heading and the table layout it should use.
+ */
+export type AssetGroup = {
+    type: AssetTypeEnum
+    label: string
+    layout: AssetGroupLayout
+}
+
+export const ASSET_GROUP_CATALOG: AssetGroup[] = [
+    { type: 'STOCK', label: 'investments.assets.groups.stock', layout: 'marketable' },
+    { type: 'BOND', label: 'investments.assets.groups.bond', layout: 'marketable' },
+    { type: 'ETF', label: 'investments.assets.groups.etf', layout: 'marketable' },
+    { type: 'CRYPTOCURRENCY', label: 'investments.assets.groups.crypto', layout: 'marketable' },
+    { type: 'REAL_ESTATE', label: 'investments.assets.groups.property', layout: 'physical' },
+    { type: 'VEHICLE', label: 'investments.assets.groups.vehicle', layout: 'physical' },
+    { type: 'COLLECTIBLE', label: 'investments.assets.groups.valuables', layout: 'physical' }
+]
 
 /**
  * A selectable depreciation cadence that maps a single "Every" option to the underlying cyclePeriod + cycleNumber pair.

@@ -11,6 +11,7 @@ import type {
     TransactionAmount,
     TransactionData,
     TransactionFilters,
+    TransactionListData,
     UpdateTransactionRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/utils'
@@ -461,7 +462,7 @@ export class TransactionService extends BaseService {
      * @param query The query payload including filters and pagination options.
      * @returns A promise that resolves to an object containing the list of transactions and the total count for pagination.
      */
-    async getTransactions(query: QueryTransactionFilters): Promise<{ data: TransactionData[]; total: number }> {
+    async getTransactions(query: QueryTransactionFilters): Promise<TransactionListData> {
         const userId = this.context.currentUser.id
 
         const filter = (query.filter ?? {}) as TransactionFilters
