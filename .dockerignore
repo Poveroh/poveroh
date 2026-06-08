@@ -1,0 +1,33 @@
+# Dependencies (reinstalled inside the image)
+**/node_modules
+
+# Build artifacts (rebuilt inside the image)
+**/dist
+**/.next
+**/.turbo
+**/out
+**/storybook-static
+
+# Version control & CI
+.git
+.github
+
+# Local env & secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs & local runtime data
+**/*.log
+logs
+infra/db/data
+infra/redis/data
+
+# Editor / OS noise
+.vscode
+.idea
+.DS_Store
+
+# Docs & misc not needed in build context
+*.md
+!README.md

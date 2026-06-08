@@ -30,6 +30,10 @@ RUN npx prisma generate
 WORKDIR /app
 RUN npx turbo build
 
+# Drop devDependencies (typescript, eslint, tsx, build tooling) so the runtime
+# image only ships production dependencies.
+RUN npm prune --omit=dev
+
 FROM base AS runner
 WORKDIR /app
 
