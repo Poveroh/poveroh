@@ -19,6 +19,7 @@
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^8.5.0",
         "@poveroh/logger": "*",
+        "@sentry/node": "^8.0.0",
         "@poveroh/market-data": "*",
         "@poveroh/prisma": "*",
         "@poveroh/queue": "*",

@@ -1,9 +1,12 @@
+// Sentry and telemetry must load before any instrumented module (express, http, pg, ioredis, ...).
+import './instrument.js'
+
 import dotenv from 'dotenv'
 dotenv.config()
 
-// Telemetry must load before any instrumented module (express, http, pg, ioredis, ...).
 import '@poveroh/logger/telemetry'
 
+import * as Sentry from '@sentry/node'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
@@ -54,6 +57,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/v1', v1Route)
+
+if (process.env.SENTRY_DSN) {
+    app.use(Sentry.expressErrorHandler())
+}
 
 const startServer = async () => {
     try {

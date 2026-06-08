@@ -5,16 +5,16 @@ type RegisterOptions = {
 
 /**
  * Registers OpenTelemetry instrumentation for Next.js applications, configured to export traces,
- * metrics, and host metrics (CPU, memory, network, process) to a Signoz collector if enabled via
- * environment variables.
+ * metrics, and host metrics (CPU, memory, network, process) to any OTLP-compatible collector
+ * when NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT is set.
  * @param options Optional configuration for the telemetry registration, allowing override of service name and namespace.
  * @returns A promise that resolves when telemetry registration is complete.
  */
 export async function registerNextTelemetry(options: RegisterOptions = {}): Promise<void> {
     if (process.env.NEXT_RUNTIME !== 'nodejs') return
-    if (process.env.NEXT_PUBLIC_SIGNOZ_ENABLED !== 'true' && process.env.NEXT_PUBLIC_SIGNOZ_ENABLED !== '1') return
+    const endpoint = process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT
+    if (!endpoint) return
 
-    const endpoint = process.env.NEXT_PUBLIC_SIGNOZ_ENDPOINT || 'http://localhost:4318'
     const serviceName = options.serviceName || 'poveroh-app'
     const serviceNamespace = options.serviceNamespace || 'poveroh'
 
