@@ -4,7 +4,7 @@
     "main": "dist/apps/api/src/index.js",
     "scripts": {
         "dev": "nodemon",
-        "build": "npx tsc",
+        "build": "npx tsc && npx tsc-alias",
         "start": "node dist/apps/api/src/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
@@ -19,7 +19,6 @@
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^8.5.0",
         "@poveroh/logger": "*",
-        "@sentry/node": "^8.0.0",
         "@poveroh/market-data": "*",
         "@poveroh/prisma": "*",
         "@poveroh/queue": "*",
@@ -28,6 +27,7 @@
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^7.6.0",
+        "@sentry/node": "^8.0.0",
         "bcryptjs": "^3.0.2",
         "better-auth": "^1.6.11",
         "beycloud": "^1.1.2",
@@ -65,6 +65,7 @@
         "nodemon": "^3.1.9",
         "openapi-typescript": "^7.13.0",
         "ts-node": "^10.9.2",
+        "tsc-alias": "^1.8.17",
         "tsx": "^4.21.0",
         "typescript": "^5.7.3"
     }

@@ -45,8 +45,11 @@ RUN apk add --no-cache postgresql-client
 COPY --from=installer /app/apps/api/dist /app/apps/api/dist
 COPY --from=installer /app/apps/api/package.json /app/apps/api/
 COPY --from=installer /app/node_modules /app/node_modules
-COPY --from=installer /app/packages/prisma /app/packages/prisma
-COPY --from=installer /app/packages/types /app/packages/types
+# Copy all workspace packages: the @poveroh/* entries in node_modules are
+# symlinks into /app/packages, so every runtime workspace dependency
+# (logger, queue, redis, schemas, utils, market-data, prisma, types) must be
+# present here or the symlinks dangle and require() fails at startup.
+COPY --from=installer /app/packages /app/packages
 
 # Copy the entrypoint script
 COPY ./scripts/docker-api-start.sh /app/
