@@ -1,11 +1,11 @@
 {
     "name": "api",
     "version": "1.0.0",
-    "main": "dist/index.js",
+    "main": "dist/apps/api/src/index.js",
     "scripts": {
         "dev": "nodemon",
         "build": "npx tsc",
-        "start": "node dist/index.js",
+        "start": "node dist/apps/api/src/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
         "openapi:generate-spec": "npm run openapi:generate-better-auth && npm run openapi:generate-main",

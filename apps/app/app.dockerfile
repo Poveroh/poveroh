@@ -44,9 +44,12 @@ RUN chmod +x /app/docker-app-setup.sh
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Ensure runtime user has access to app directories
-RUN mkdir -p /app/apps/app/public && \
-    chown -R nextjs:nodejs /app/apps/app/.next /app/apps/app/public || true
+# Ensure runtime user has access to app directories, including the logs
+# directory the winston DailyRotateFile transport writes to. The standalone
+# server.js does process.chdir(__dirname), so the CWD is /app/apps/app and the
+# relative "logs/" path resolves there.
+RUN mkdir -p /app/apps/app/public /app/apps/app/logs && \
+    chown -R nextjs:nodejs /app/apps/app/.next /app/apps/app/public /app/apps/app/logs || true
 
 USER nextjs
 
