@@ -71,6 +71,11 @@ services:
         ports:
             - "80:80"
             - "443:443"
+        volumes:
+            # Certificates are generated on the host by setup.sh (mkcert) and mounted
+            # here, overriding any baked into the image. nginx.conf expects the files
+            # named poveroh.local.crt / poveroh.local.key in this directory.
+            - ./ssl:/etc/nginx/ssl:ro
         networks:
             - poveroh_network
 

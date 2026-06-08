@@ -274,6 +274,72 @@ ensure_hosts_entries() {
     fi
 }
 
+# Function to generate locally-trusted TLS certificates for *.poveroh.local
+# The proxy mounts $PROJECT_ROOT/ssl into /etc/nginx/ssl, and nginx.conf reads
+# poveroh.local.crt / poveroh.local.key from there. Certificates are generated
+# on this machine with mkcert so the local CA is trusted by this host's browser.
+ensure_ssl() {
+    local ssl_dir="$PROJECT_ROOT/ssl"
+    local crt="$ssl_dir/poveroh.local.crt"
+    local key="$ssl_dir/poveroh.local.key"
+
+    if [[ -f "$crt" && -f "$key" ]]; then
+        echo "ℹ️  SSL certificates already exist at $ssl_dir. Skipping generation."
+        return
+    fi
+
+    mkdir -p "$ssl_dir"
+
+    if ! command -v mkcert >/dev/null 2>&1; then
+        echo "🔍 mkcert not found — attempting to install it..."
+        case "$(uname -s)" in
+            Darwin)
+                if command -v brew >/dev/null 2>&1; then
+                    brew install mkcert nss
+                else
+                    echo "❌ Homebrew not found. Install mkcert manually: https://github.com/FiloSottile/mkcert"
+                    exit 1
+                fi
+                ;;
+            Linux)
+                if command -v apt-get >/dev/null 2>&1; then
+                    sudo apt-get update && sudo apt-get install -y libnss3-tools mkcert || true
+                fi
+                if ! command -v mkcert >/dev/null 2>&1; then
+                    echo "📦 Downloading mkcert binary from GitHub..."
+                    local arch
+                    arch=$(uname -m)
+                    case "$arch" in
+                        x86_64) arch="amd64" ;;
+                        aarch64 | arm64) arch="arm64" ;;
+                    esac
+                    local latest
+                    latest=$(curl -fsSL https://api.github.com/repos/FiloSottile/mkcert/releases/latest | grep -o '"tag_name": *"[^"]*"' | head -1 | cut -d '"' -f4)
+                    sudo curl -fsSL "https://github.com/FiloSottile/mkcert/releases/download/$latest/mkcert-$latest-linux-$arch" -o /usr/local/bin/mkcert
+                    sudo chmod +x /usr/local/bin/mkcert
+                fi
+                ;;
+            *)
+                echo "❌ Unsupported OS for automatic mkcert install. Install manually: https://github.com/FiloSottile/mkcert"
+                exit 1
+                ;;
+        esac
+    fi
+
+    if ! command -v mkcert >/dev/null 2>&1; then
+        echo "❌ mkcert installation failed. Install it manually: https://github.com/FiloSottile/mkcert"
+        exit 1
+    fi
+
+    echo "🔐 Installing mkcert local CA (may prompt for elevated permissions)..."
+    mkcert -install
+
+    echo "📜 Generating SSL certificates for *.poveroh.local..."
+    mkcert -cert-file "$crt" -key-file "$key" "*.poveroh.local" poveroh.local
+
+    echo "✅ SSL certificates generated at $ssl_dir."
+}
+
 # Function to display the main menu
 main_menu() {
     echo "What do you want to do?"
@@ -289,6 +355,7 @@ main_menu() {
     case "$choice" in
     1)
         ensure_hosts_entries
+        ensure_ssl
         download_files
         configure_env_file
         inject_platform_into_compose
@@ -297,6 +364,7 @@ main_menu() {
         ;;
     2)
         copy_env_file
+        ensure_ssl
         start_images
         exit 0
         ;;
@@ -306,6 +374,7 @@ main_menu() {
         ;;
     4)
         stop_images 1
+        ensure_ssl
         download_images
         start_images
         exit 0
