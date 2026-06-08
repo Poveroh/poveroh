@@ -6,7 +6,7 @@
     "typings": "./dist/index.d.ts",
     "private": true,
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && tsc-alias --resolve-full-paths",
         "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@poveroh/tsconfig": "*",
+        "tsc-alias": "^1.8.10",
         "typescript": "^5.7.3"
     }
 }
