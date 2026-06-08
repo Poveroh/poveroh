@@ -37,6 +37,8 @@
         "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
+        "@logtail/node": "^0.5.0",
+        "@logtail/winston": "^0.5.0",
         "@opentelemetry/auto-instrumentations-node": "^0.76.0",
         "@opentelemetry/exporter-logs-otlp-http": "^0.218.0",
         "@opentelemetry/exporter-metrics-otlp-http": "^0.218.0",
@@ -48,12 +50,18 @@
         "@opentelemetry/sdk-node": "^0.218.0",
         "@opentelemetry/winston-transport": "^0.28.0",
         "@poveroh/types": "*",
-        "winston": "^3.17.0"
+        "winston": "^3.17.0",
+        "winston-daily-rotate-file": "^5.0.0",
+        "winston-transport": "^4.9.0"
     },
     "peerDependencies": {
+        "@logtail/browser": "^0.5.0",
         "@vercel/otel": "^1.13.0"
     },
     "peerDependenciesMeta": {
+        "@logtail/browser": {
+            "optional": true
+        },
         "@vercel/otel": {
             "optional": true
         }

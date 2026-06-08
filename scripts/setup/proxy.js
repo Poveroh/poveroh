@@ -183,15 +183,13 @@ function ensureHostsEntries(force = true) {
             '127.0.0.1 db.poveroh.local',
             '127.0.0.1 redis.poveroh.local',
             '127.0.0.1 cdn.poveroh.local',
-            '127.0.0.1 signoz.poveroh.local',
             '127.0.0.1 poveroh.local',
             '::1 app.poveroh.local',
             '::1 api.poveroh.local',
             '::1 studio.poveroh.local',
             '::1 db.poveroh.local',
             '::1 cdn.poveroh.local',
-            '::1 redis.poveroh.local',
-            '::1 signoz.poveroh.local'
+            '::1 redis.poveroh.local'
         ].join('\n') + '\n'
     const hostsPath = process.platform === 'win32' ? 'C:\\Windows\\System32\\drivers\\etc\\hosts' : '/etc/hosts'
 
@@ -209,7 +207,6 @@ function ensureHostsEntries(force = true) {
         'db.poveroh.local',
         'redis.poveroh.local',
         'cdn.poveroh.local',
-        'signoz.poveroh.local',
         'poveroh.local'
     ]
 

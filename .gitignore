@@ -45,6 +45,7 @@ yarn-error.log*
 
 # Log
 *.log
+**/logs/*.json
 
 # Ide
 .idea

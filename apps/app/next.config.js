@@ -2,6 +2,7 @@
 import nextIntlPlugin from 'next-intl/plugin'
 import nextEnv from '@next/env'
 import path from 'node:path'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const withNextIntl = nextIntlPlugin('./i18n/request.ts')
 
@@ -18,4 +19,15 @@ const nextConfig = {
     output: 'standalone'
 }
 
-export default withNextIntl(nextConfig)
+const hasSentry = !!(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN)
+
+export default hasSentry
+    ? withSentryConfig(withNextIntl(nextConfig), {
+          silent: true,
+          org: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          disableServerWebpackPlugin: !process.env.SENTRY_DSN,
+          disableClientWebpackPlugin: !process.env.NEXT_PUBLIC_SENTRY_DSN
+      })
+    : withNextIntl(nextConfig)

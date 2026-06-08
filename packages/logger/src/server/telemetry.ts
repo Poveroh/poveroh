@@ -9,12 +9,9 @@ import { resourceFromAttributes } from '@opentelemetry/resources'
 import { HostMetrics } from '@opentelemetry/host-metrics'
 import { metrics } from '@opentelemetry/api'
 
-const isSignozEnabled = process.env.SIGNOZ_ENABLED === 'true' || process.env.SIGNOZ_ENABLED === '1'
+const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT
 
-if (isSignozEnabled) {
-    const endpoint = process.env.SIGNOZ_ENDPOINT || 'http://localhost:4318'
-    // `OTEL_SERVICE_NAME` is the standard OpenTelemetry env knob; we honour it so different
-    // Node services (api, worker, ...) sharing this entrypoint can report distinct names.
+if (endpoint) {
     const serviceName = 'poveroh-api'
     const serviceNamespace = 'poveroh'
     const environment = process.env.NODE_ENV || 'development'
@@ -39,15 +36,12 @@ if (isSignozEnabled) {
 
     sdk.start()
 
-    // Collect host-level metrics (CPU, memory, network, process). These feed into the
-    // meter provider registered globally by `sdk.start()`, so they must be started after it.
     const hostMetrics = new HostMetrics({
         meterProvider: metrics.getMeterProvider(),
         name: `${serviceName}-host-metrics`
     })
     hostMetrics.start()
 
-    // Flush spans/metrics/logs on shutdown so the last batch reaches the collector.
     const shutdown = async () => {
         try {
             await sdk.shutdown()
