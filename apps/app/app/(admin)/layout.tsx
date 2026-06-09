@@ -12,9 +12,6 @@ type AppLayoutProps = {
 }
 
 const SETTINGS_PATHS = [
-    '/accounts',
-    '/categories',
-    '/imports',
     '/settings/providers',
     '/settings/profile',
     '/settings/security',

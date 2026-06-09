@@ -38,6 +38,11 @@ export const MAIN_SIDEBAR: SidebarSection[] = [
                 title: 'subscriptions.title',
                 href: '/subscriptions',
                 icon: 'repeat'
+            },
+            {
+                title: 'imports.title',
+                href: '/imports',
+                icon: 'folder-up'
             }
         ]
     }
@@ -65,31 +70,6 @@ export const SETTINGS_SIDEBAR: SidebarSection[] = [
                 title: 'settings.account.security.title',
                 href: '/settings/security',
                 icon: 'shield'
-            }
-        ]
-    },
-    {
-        title: 'settings.finance.title',
-        items: [
-            {
-                title: 'settings.manage.account.title',
-                href: '/accounts',
-                icon: 'landmark'
-            },
-            {
-                title: 'settings.manage.category.title',
-                href: '/categories',
-                icon: 'shapes'
-            },
-            {
-                title: 'settings.manage.subscriptions.title',
-                href: '/subscriptions',
-                icon: 'wallet-cards'
-            },
-            {
-                title: 'imports.title',
-                href: '/imports',
-                icon: 'folder-up'
             }
         ]
     },
