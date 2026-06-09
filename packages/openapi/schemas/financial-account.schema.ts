@@ -53,6 +53,7 @@ export const CreateFinancialAccountRequestSchema = FinancialAccountSchema.omit({
     id: true,
     userId: true,
     balance: true,
+    logoIcon: true,
     createdAt: true,
     updatedAt: true,
     deletedAt: true
@@ -82,6 +83,7 @@ export const UpdateFinancialAccountRequestSchema = FinancialAccountSchema.partia
         id: true,
         userId: true,
         balance: true,
+        logoIcon: true,
         createdAt: true,
         updatedAt: true,
         deletedAt: true

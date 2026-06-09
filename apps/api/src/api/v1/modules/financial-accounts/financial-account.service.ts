@@ -28,7 +28,7 @@ export class FinancialAccountService extends BaseService {
         const userId = this.context.currentUser.id
 
         const generatedId = crypto.randomUUID()
-        const payloadWithIcon = { ...payload }
+        const payloadWithIcon = { ...payload, logoIcon: '' }
 
         if (file) {
             payloadWithIcon.logoIcon = await this.media.saveFile(generatedId, file)

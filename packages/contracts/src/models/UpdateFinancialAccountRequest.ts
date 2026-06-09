@@ -6,5 +6,4 @@ import type { FinancialAccountTypeEnum } from './FinancialAccountTypeEnum'
 export type UpdateFinancialAccountRequest = {
     title?: string
     type?: FinancialAccountTypeEnum
-    logoIcon?: string
 }
