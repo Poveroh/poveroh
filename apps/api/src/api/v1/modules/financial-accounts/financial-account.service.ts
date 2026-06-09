@@ -53,7 +53,7 @@ export class FinancialAccountService extends BaseService {
         file?: Express.Multer.File
     ): Promise<void> {
         const userId = this.context.currentUser.id
-        const payloadWithIcon = { ...payload }
+        const payloadWithIcon = { ...payload, logoIcon: '' }
 
         if (file) {
             payloadWithIcon.logoIcon = await this.media.saveFile(id, file)
