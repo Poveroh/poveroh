@@ -3031,13 +3031,9 @@ export const CreateFinancialAccountRequestSchema = {
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
         }
     },
-    required: ['title', 'type', 'logoIcon']
+    required: ['title', 'type']
 } as const
 
 export const CreateFinancialAccountMultipartRequestSchema = {
@@ -3092,10 +3088,6 @@ export const UpdateFinancialAccountRequestSchema = {
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
         }
     }
 } as const
@@ -3203,13 +3195,9 @@ export const FinancialAccountFormSchema = {
         },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
-        },
-        logoIcon: {
-            type: 'string',
-            minLength: 1
         }
     },
-    required: ['title', 'type', 'logoIcon']
+    required: ['title', 'type']
 } as const
 
 export const CreateUpdateFinancialAccountRequestSchema = {

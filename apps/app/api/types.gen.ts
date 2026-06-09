@@ -1369,7 +1369,6 @@ export type GetFinancialAccountResponse = {
 export type CreateFinancialAccountRequest = {
     title: string
     type: FinancialAccountTypeEnum
-    logoIcon: string
 }
 
 export type CreateFinancialAccountMultipartRequest = {
@@ -1392,7 +1391,6 @@ export type CreateFinancialAccountResponse = {
 export type UpdateFinancialAccountRequest = {
     title?: string
     type?: FinancialAccountTypeEnum
-    logoIcon?: string
 }
 
 export type UpdateFinancialAccountMultipartRequest = {
@@ -1448,7 +1446,6 @@ export type QueryFinancialAccountFilters = {
 export type FinancialAccountForm = {
     title: string
     type: FinancialAccountTypeEnum
-    logoIcon: string
 }
 
 export type CreateUpdateFinancialAccountRequest = CreateFinancialAccountRequest | UpdateFinancialAccountRequest
