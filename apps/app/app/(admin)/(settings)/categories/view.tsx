@@ -77,32 +77,30 @@ export default function CategoryView() {
                     {['expenses', 'income'].map(tab => (
                         <TabsContent key={tab} value={tab} className='m-0'>
                             <Box>
-                                <>
-                                    {categoryData
-                                        .filter(x => x.for === (tab === 'expenses' ? 'EXPENSES' : 'INCOME'))
-                                        .map(category => (
-                                            <CategoryItem
-                                                key={category.id}
-                                                category={category}
-                                                openEdit={(
-                                                    mode: CategoryModelMode,
-                                                    item: CategoryData | SubcategoryData
-                                                ) => {
-                                                    if (mode === 'category') {
-                                                        categoryModal.openModal('edit', item as CategoryData)
-                                                    } else {
-                                                        subcategoryModal.openModal('edit', item as SubcategoryData)
-                                                    }
-                                                }}
-                                                openDelete={(
-                                                    _mode: CategoryModelMode,
-                                                    item: CategoryData | SubcategoryData
-                                                ) => {
-                                                    deleteModal.openModal(item)
-                                                }}
-                                            />
-                                        ))}
-                                </>
+                                {categoryData
+                                    .filter(x => x.for === (tab === 'expenses' ? 'EXPENSES' : 'INCOME'))
+                                    .map(category => (
+                                        <CategoryItem
+                                            key={category.id}
+                                            category={category}
+                                            openEdit={(
+                                                mode: CategoryModelMode,
+                                                item: CategoryData | SubcategoryData
+                                            ) => {
+                                                if (mode === 'category') {
+                                                    categoryModal.openModal('edit', item as CategoryData)
+                                                } else {
+                                                    subcategoryModal.openModal('edit', item as SubcategoryData)
+                                                }
+                                            }}
+                                            openDelete={(
+                                                _mode: CategoryModelMode,
+                                                item: CategoryData | SubcategoryData
+                                            ) => {
+                                                deleteModal.openModal(item)
+                                            }}
+                                        />
+                                    ))}
                             </Box>
                         </TabsContent>
                     ))}
