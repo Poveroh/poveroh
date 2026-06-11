@@ -172,32 +172,45 @@ export class TransactionService extends BaseService {
         const hasAmounts = Array.isArray(payload.amounts) && payload.amounts.length > 0
         const currency = (payload.currency ?? existing.amounts[0]?.currency) as CurrencyEnum
 
+        const amountsData = hasAmounts
+            ? effectiveAction === 'TRANSFER'
+                ? (() => {
+                      const { fromAmount, toAmount } = this.splitTransferAmounts(payload.amounts!)
+                      return this.buildTransferAmounts(transactionId, transactionId, fromAmount, toAmount, currency)
+                  })()
+                : this.buildAmounts(transactionId, payload.amounts!, currency)
+            : undefined
+
         await prisma.$transaction(
             async tx => {
                 if (Object.keys(updateData).length > 0) {
                     await this.transactionRepository.update(tx, userId, transactionId, updateData)
                 }
 
-                if (!hasAmounts) return
-
-                const amountsData =
-                    effectiveAction === 'TRANSFER'
-                        ? (() => {
-                              const { fromAmount, toAmount } = this.splitTransferAmounts(payload.amounts!)
-                              return this.buildTransferAmounts(
-                                  transactionId,
-                                  transactionId,
-                                  fromAmount,
-                                  toAmount,
-                                  currency
-                              )
-                          })()
-                        : this.buildAmounts(transactionId, payload.amounts!, currency)
+                if (!amountsData) return
 
                 await this.persistAmounts(tx, transactionId, amountsData, existing.amounts as unknown as Amount[])
             },
             { timeout: 30000 }
         )
+
+        // A retroactive change to amounts, type, account or date invalidates the materialized balance series and
+        // the snapshots from the earliest affected day forward, for every account on either the old or new side.
+        const newDate = payload.date ? new Date(payload.date) : existing.date
+        const dateChanged = payload.date !== undefined && newDate.getTime() !== existing.date.getTime()
+        if (hasAmounts || dateChanged) {
+            const affectedAccountIds = new Set<string>([
+                ...existing.amounts.map(a => a.financialAccountId),
+                ...(amountsData?.map(a => a.financialAccountId) ?? [])
+            ])
+            const fromDate = newDate.getTime() < existing.date.getTime() ? newDate : existing.date
+
+            await Promise.all(
+                Array.from(affectedAccountIds).map(accountId =>
+                    this.accountBalanceService.recomputeFromTransactionChange(accountId, userId, fromDate)
+                )
+            )
+        }
 
         await this.saveTransactionMedia(transactionId, files)
 

@@ -65,6 +65,27 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
+     * Recomputes the materialized balance series and live balance of an account from a date forward and refreshes the snapshots affected, so a retroactive transaction change (amount, type, account or date) flows into the historical series and net-worth snapshots.
+     * @param financialAccountId The financial account whose series is recomputed.
+     * @param userId The owning user, used to scope transactions and snapshots.
+     * @param fromDate The earliest date impacted by the change.
+     * @returns A promise that resolves when the series, live balance and snapshots have been refreshed.
+     */
+    async recomputeFromTransactionChange(financialAccountId: string, userId: string, fromDate: Date): Promise<void> {
+        const day = startOfUtcDay(fromDate)
+
+        // Anchor on the last known-good point before the changed day (unaffected by a change dated on/after it),
+        // then re-walk the series forward. Skip when the account has no materialized point yet: the live balance
+        // is already kept correct incrementally by applyAmounts.
+        const anchor = await this.accountBalanceRepository.findRecomputeAnchor(financialAccountId, day)
+        if (anchor) {
+            await this.recomputeForwardBalances(financialAccountId, anchor.date, anchor.balance, userId)
+        }
+
+        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, day)
+    }
+
+    /**
      * Reads the balance time-series of a financial account owned by the current user within an optional date range.
      * @param financialAccountId The financial account whose series is requested.
      * @param from An optional inclusive lower bound date (ISO string).

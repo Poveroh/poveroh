@@ -203,6 +203,30 @@ export class AccountBalanceRepository {
     }
 
     /**
+     * Finds the anchor to start a forward recompute from after a retroactive change: the latest balance point strictly before the changed day, falling back to the earliest point when the change predates the series.
+     * @param financialAccountId The financial account whose anchor is read.
+     * @param day The changed day; the anchor must be unaffected by a change dated on or after it.
+     * @returns A promise resolving to the anchor date and balance, or null when the account has no balance point.
+     */
+    async findRecomputeAnchor(financialAccountId: string, day: Date): Promise<{ date: Date; balance: number } | null> {
+        const before = await prisma.financialAccountBalance.findFirst({
+            where: { financialAccountId, deletedAt: null, date: { lt: day } },
+            orderBy: { date: 'desc' },
+            select: { date: true, balance: true }
+        })
+        if (before) {
+            return { date: before.date, balance: before.balance.toNumber() }
+        }
+
+        const earliest = await prisma.financialAccountBalance.findFirst({
+            where: { financialAccountId, deletedAt: null },
+            orderBy: { date: 'asc' },
+            select: { date: true, balance: true }
+        })
+        return earliest ? { date: earliest.date, balance: earliest.balance.toNumber() } : null
+    }
+
+    /**
      * Reads the balance point of a financial account at an exact date, used to avoid overwriting manual anchors during materialization.
      * @param financialAccountId The financial account the point belongs to.
      * @param date The exact date of the point.
