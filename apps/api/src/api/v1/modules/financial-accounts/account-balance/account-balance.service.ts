@@ -143,51 +143,50 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
-     * Applies transaction amount deltas to the live running balance of each affected account, optionally reverting previous amounts first when editing.
-     * @param amounts The transaction amounts to apply, each scoped to a financial account.
-     * @param originalAmounts An optional map of transactionId to the previous amount value, reverted before applying the new amount when editing.
+     * Returns the signed balance effect of an amount: positive for income, negative for expenses, zero otherwise.
+     * @param amount The amount whose signed balance effect is computed.
+     * @returns The signed value as a Decimal.
+     */
+    private signedAmount(amount: Pick<Amount, 'amount' | 'action'>): Prisma.Decimal {
+        const value = new Prisma.Decimal(amount.amount)
+        if (amount.action === 'INCOME') {
+            return value
+        }
+        if (amount.action === 'EXPENSES') {
+            return value.negated()
+        }
+        return new Prisma.Decimal(0)
+    }
+
+    /**
+     * Applies transaction amount deltas to the live running balance of each affected account, reverting the original amounts on their own account and action first when editing.
+     * @param amounts The new transaction amounts to apply, each scoped to a financial account.
+     * @param originalAmounts The previous amounts reverted before applying the new ones when editing; each carries its original account and action so type and account changes net out correctly.
      * @param tx An optional Prisma transaction client to run within an existing transaction.
      * @returns A promise that resolves when every affected account balance has been updated.
      */
-    async applyAmounts(
-        amounts: Amount[],
-        originalAmounts?: Map<string, number>,
-        tx?: Prisma.TransactionClient
-    ): Promise<void> {
+    async applyAmounts(amounts: Amount[], originalAmounts?: Amount[], tx?: Prisma.TransactionClient): Promise<void> {
         const db = tx ?? prisma
-        const amountsArray = Array.isArray(amounts) ? amounts : [amounts]
 
-        const amountsByAccount = amountsArray.reduce(
-            (acc, amount) => {
-                if (!acc[amount.financialAccountId]) {
-                    acc[amount.financialAccountId] = []
-                }
-                acc[amount.financialAccountId].push(amount)
-                return acc
-            },
-            {} as Record<string, Amount[]>
-        )
+        // Accumulate a net signed delta per account: reverting an original amount backs out its original
+        // signed effect on its original account, applying a new amount adds its signed effect on its new
+        // account. Keeping the two phases separate makes type changes (INCOME↔EXPENSES) and account changes
+        // net out correctly instead of being computed against the new amount's action.
+        const deltaByAccount = new Map<string, Prisma.Decimal>()
+        const addDelta = (accountId: string, value: Prisma.Decimal) => {
+            deltaByAccount.set(accountId, (deltaByAccount.get(accountId) ?? new Prisma.Decimal(0)).add(value))
+        }
 
-        const updatePromises = Object.entries(amountsByAccount).map(async ([accountId, accountAmounts]) => {
+        for (const original of originalAmounts ?? []) {
+            addDelta(original.financialAccountId, this.signedAmount(original).negated())
+        }
+        for (const amount of amounts) {
+            addDelta(amount.financialAccountId, this.signedAmount(amount))
+        }
+
+        const updatePromises = Array.from(deltaByAccount.entries()).map(async ([accountId, delta]) => {
             const currentBalance = await this.getAccountBalance(accountId, tx)
-            let newBalance = new Prisma.Decimal(currentBalance)
-
-            for (const amount of accountAmounts) {
-                const originalAmount = originalAmounts?.get(amount.transactionId)
-                if (originalAmount !== undefined) {
-                    if (amount.action === 'INCOME') {
-                        newBalance = newBalance.sub(new Prisma.Decimal(originalAmount))
-                    } else if (amount.action === 'EXPENSES') {
-                        newBalance = newBalance.add(new Prisma.Decimal(originalAmount))
-                    }
-                }
-
-                if (amount.action === 'INCOME') {
-                    newBalance = newBalance.add(new Prisma.Decimal(amount.amount))
-                } else if (amount.action === 'EXPENSES') {
-                    newBalance = newBalance.sub(new Prisma.Decimal(amount.amount))
-                }
-            }
+            const newBalance = new Prisma.Decimal(currentBalance).add(delta)
 
             await db.financialAccount.update({
                 where: { id: accountId },

@@ -194,7 +194,7 @@ export class TransactionService extends BaseService {
                           })()
                         : this.buildAmounts(transactionId, payload.amounts!, currency)
 
-                await this.persistAmounts(tx, transactionId, amountsData, existing.amounts)
+                await this.persistAmounts(tx, transactionId, amountsData, existing.amounts as unknown as Amount[])
             },
             { timeout: 30000 }
         )
@@ -320,25 +320,21 @@ export class TransactionService extends BaseService {
      * @param tx The Prisma client used to run the persistence inside an active transaction.
      * @param transactionId The unique identifier of the transaction whose amounts must be replaced.
      * @param amountsData The list of new amount rows to be persisted.
-     * @param originalAmounts The original amount rows used to compute the balance reversal when updating.
+     * @param originalAmounts The original amount rows used to compute the balance reversal when updating, carrying their account and action.
      * @returns A promise that resolves when the amounts have been replaced and the balances updated.
      */
     private async persistAmounts(
         tx: Prisma.TransactionClient,
         transactionId: string,
         amountsData: Prisma.AmountCreateManyInput[],
-        originalAmounts?: { transactionId: string; amount: unknown }[]
+        originalAmounts?: Amount[]
     ): Promise<void> {
         if (originalAmounts) {
             await this.transactionRepository.deleteAmountsByTransactionId(tx, transactionId)
         }
         await this.transactionRepository.createAmounts(tx, amountsData)
 
-        const originalMap = originalAmounts
-            ? new Map(originalAmounts.map(a => [a.transactionId, Number(a.amount)]))
-            : undefined
-
-        await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], originalMap, tx)
+        await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], originalAmounts, tx)
     }
 
     /**
