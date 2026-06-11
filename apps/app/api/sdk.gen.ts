@@ -167,6 +167,9 @@ import type {
     GetFinancialAccountsData,
     GetFinancialAccountsErrors,
     GetFinancialAccountsResponses,
+    GetFinancialAccountSummaryData,
+    GetFinancialAccountSummaryErrors,
+    GetFinancialAccountSummaryResponses,
     GetImportByIdData,
     GetImportByIdErrors,
     GetImportByIdResponses,
@@ -1281,6 +1284,22 @@ export const getFinancialAccountBalanceSeries = <ThrowOnError extends boolean = 
         url: '/financial-accounts/{id}/balance-series',
         ...options
     })
+
+/**
+ * Get a financial account period summary
+ *
+ * Retrieve the aggregated income, expenses and transaction count of a financial account within an optional date range
+ */
+export const getFinancialAccountSummary = <ThrowOnError extends boolean = false>(
+    options: Options<GetFinancialAccountSummaryData, ThrowOnError>
+) =>
+    (options.client ?? client).get<GetFinancialAccountSummaryResponses, GetFinancialAccountSummaryErrors, ThrowOnError>(
+        {
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/financial-accounts/{id}/summary',
+            ...options
+        }
+    )
 
 /**
  * Delete all imports

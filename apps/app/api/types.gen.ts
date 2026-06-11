@@ -1513,6 +1513,31 @@ export type GetFinancialAccountBalanceSeriesResponse = {
     data: Array<FinancialAccountBalanceData>
 }
 
+export type AccountSummaryRangeQuery = {
+    from?: string
+    to?: string
+}
+
+export type AccountSummaryData = {
+    totalIncome: number
+    totalExpenses: number
+    transactionCount: number
+    from: string | null
+    to: string | null
+}
+
+export type GetAccountSummaryResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: AccountSummaryData & unknown
+}
+
 export type ImportFile = {
     id: string
     importId: string
@@ -5154,6 +5179,49 @@ export type GetFinancialAccountBalanceSeriesResponses = {
 
 export type GetFinancialAccountBalanceSeriesResponse2 =
     GetFinancialAccountBalanceSeriesResponses[keyof GetFinancialAccountBalanceSeriesResponses]
+
+export type GetFinancialAccountSummaryData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: {
+        from?: string
+        to?: string
+    }
+    url: '/financial-accounts/{id}/summary'
+}
+
+export type GetFinancialAccountSummaryErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetFinancialAccountSummaryError = GetFinancialAccountSummaryErrors[keyof GetFinancialAccountSummaryErrors]
+
+export type GetFinancialAccountSummaryResponses = {
+    /**
+     * Financial account period summary
+     */
+    200: GetAccountSummaryResponse
+}
+
+export type GetFinancialAccountSummaryResponse =
+    GetFinancialAccountSummaryResponses[keyof GetFinancialAccountSummaryResponses]
 
 export type DeleteImportsData = {
     body?: never

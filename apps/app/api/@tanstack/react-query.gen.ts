@@ -59,6 +59,7 @@ import {
     getFinancialAccountBalanceSeries,
     getFinancialAccountById,
     getFinancialAccounts,
+    getFinancialAccountSummary,
     getImportById,
     getImports,
     getImportTransactionsById,
@@ -281,6 +282,9 @@ import type {
     GetFinancialAccountsData,
     GetFinancialAccountsError,
     GetFinancialAccountsResponse,
+    GetFinancialAccountSummaryData,
+    GetFinancialAccountSummaryError,
+    GetFinancialAccountSummaryResponse,
     GetImportByIdData,
     GetImportByIdError,
     GetImportByIdResponse,
@@ -2038,6 +2042,33 @@ export const getFinancialAccountBalanceSeriesOptions = (options: Options<GetFina
             return data
         },
         queryKey: getFinancialAccountBalanceSeriesQueryKey(options)
+    })
+
+export const getFinancialAccountSummaryQueryKey = (options: Options<GetFinancialAccountSummaryData>) =>
+    createQueryKey('getFinancialAccountSummary', options)
+
+/**
+ * Get a financial account period summary
+ *
+ * Retrieve the aggregated income, expenses and transaction count of a financial account within an optional date range
+ */
+export const getFinancialAccountSummaryOptions = (options: Options<GetFinancialAccountSummaryData>) =>
+    queryOptions<
+        GetFinancialAccountSummaryResponse,
+        GetFinancialAccountSummaryError,
+        GetFinancialAccountSummaryResponse,
+        ReturnType<typeof getFinancialAccountSummaryQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getFinancialAccountSummary({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getFinancialAccountSummaryQueryKey(options)
     })
 
 /**

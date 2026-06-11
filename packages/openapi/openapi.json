@@ -3296,6 +3296,66 @@
                 },
                 "required": ["success", "message", "data"]
             },
+            "AccountSummaryRangeQuery": {
+                "type": "object",
+                "properties": {
+                    "from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "to": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            },
+            "AccountSummaryData": {
+                "type": "object",
+                "properties": {
+                    "totalIncome": {
+                        "type": "number"
+                    },
+                    "totalExpenses": {
+                        "type": "number"
+                    },
+                    "transactionCount": {
+                        "type": "number"
+                    },
+                    "from": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "to": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": ["totalIncome", "totalExpenses", "transactionCount", "from", "to"]
+            },
+            "GetAccountSummaryResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/AccountSummaryData"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
             "ImportFile": {
                 "type": "object",
                 "properties": {
@@ -11521,6 +11581,100 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/GetFinancialAccountBalanceSeriesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Financial account not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/financial-accounts/{id}/summary": {
+            "get": {
+                "tags": ["Financial Account"],
+                "operationId": "getFinancialAccountSummary",
+                "summary": "Get a financial account period summary",
+                "description": "Retrieve the aggregated income, expenses and transaction count of a financial account within an optional date range",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": false,
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": false,
+                        "name": "to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Financial account period summary",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetAccountSummaryResponse"
                                 }
                             }
                         }

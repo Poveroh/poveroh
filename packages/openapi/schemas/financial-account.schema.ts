@@ -226,3 +226,36 @@ export const FinancialAccountBalanceRangeQuerySchema = z
 export const GetFinancialAccountBalanceSeriesResponseSchema = SuccessResponseSchema(
     FinancialAccountBalanceDataSchema.array()
 ).openapi('GetFinancialAccountBalanceSeriesResponse')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+// ACCOUNT SUMMARY (per-account income/expense/count aggregates over a period, used by the detail page KPIs)
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Query schema for fetching a financial account summary within an optional date range
+ */
+export const AccountSummaryRangeQuerySchema = z
+    .object({
+        from: z.iso.date().optional(),
+        to: z.iso.date().optional()
+    })
+    .openapi('AccountSummaryRangeQuery')
+
+/**
+ * Response schema for the per-account period summary, aggregating income, expenses and transaction count over the selected range
+ */
+export const AccountSummaryDataSchema = z
+    .object({
+        totalIncome: z.number(),
+        totalExpenses: z.number(),
+        transactionCount: z.number(),
+        from: z.string().nullable(),
+        to: z.string().nullable()
+    })
+    .openapi('AccountSummaryData')
+
+/**
+ * Response schema for fetching a financial account period summary
+ */
+export const GetAccountSummaryResponseSchema =
+    SuccessResponseSchema(AccountSummaryDataSchema).openapi('GetAccountSummaryResponse')

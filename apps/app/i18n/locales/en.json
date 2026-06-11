@@ -429,6 +429,29 @@
         "actions": {
             "addAccount": "Add account"
         },
+        "detail": {
+            "balance": {
+                "label": "Total balance",
+                "live": "Live"
+            },
+            "chart": {
+                "empty": "No balance history for this period."
+            },
+            "tabs": {
+                "overview": "Overview",
+                "portfolio": "Portfolio"
+            },
+            "transactions": {
+                "empty": "No transactions for this account yet."
+            },
+            "portfolio": {
+                "empty": "Portfolio view is coming soon."
+            },
+            "notFound": {
+                "title": "Account not found",
+                "subtitle": "This account may have been deleted or does not exist."
+            }
+        },
         "snapshot": {
             "button": "Add balance",
             "success": "Balance saved successfully",
