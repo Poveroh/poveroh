@@ -157,6 +157,38 @@ npm run openapi:generate      # OpenAPI spec regenerates cleanly (if contracts c
 - Do not edit auto-generated files in `apps/app/api/` (`client.gen.ts`, `sdk.gen.ts`, `types.gen.ts`)
 - Import shared types from `@poveroh/types`, never from `@poveroh/contracts` directly
 - Where possible and needed, add comments before functions explaining the purpose
+- **Never declare a `type` or `const` inside a `.tsx` file.** The only exception is a component/function `Props` type beside its component. Every shared type or constant lives in `@poveroh/types` (`packages/types/src/lib/` for non-contract types/constants, or a Zod-generated contract type) — see the `ACCOUNT_RANGES` constant and `AccountVariation` type in `packages/types/src/lib/report.ts`
+- **Reuse existing components and building blocks; do not create a new one when a fitting one already exists.** Before writing a component, search `packages/ui` and `apps/app/components` for an equivalent (header, chart, list item, dialog, tabs, card, etc.) and compose from it. New files are for genuinely new composition, not re-implementations of what already ships. If you want to create a new one, ask before.
+- Keep route/`view.tsx` files free of data-fetching and mutations: move `useQuery`/`useMutation` calls into hooks (read hooks in `apps/app/hooks/`, mutations in the feature hook). Do not over-extract — pure UI-derived state and event handlers can stay in the view
+
+### Common Patterns
+
+These are the established, recurring patterns in `apps/app`. Follow them instead of inventing new shapes.
+
+- **Route → view split**: `page.tsx` is a thin server component that exports `metadata` and delegates to a colocated `view.tsx` (`'use client'`). Dynamic routes await params: `async function Page({ params }: { params: Promise<{ id: string }> })` then `const { id } = await params`. The `view.tsx` is composition only — it calls hooks and renders; it must not contain `useQuery`/`useMutation` or business logic.
+
+- **Data hooks (read)**: wrap the generated `getXOptions` from `@/api/@tanstack/react-query.gen` with `useQuery`, gate with `enabled: Boolean(id)`, and unwrap the response envelope with `select`:
+
+    ```ts
+    export const useThing = (id: string) =>
+        useQuery({
+            ...getThingByIdOptions({ path: { id } }),
+            enabled: Boolean(id),
+            select: response => (response?.data ?? null) as ThingData | null
+        })
+    ```
+
+    Mutations live in the feature hook (e.g. `useFinancialAccount` exposes `createMutation`/`updateMutation`/`deleteMutation` and invalidates the relevant query keys in `onSuccess`). A page-specific hook (e.g. `useAccountDetail`) stays thin: the page's own `useQuery` plus the mutations it needs — derived state and handlers stay in the view.
+
+- **Locale & currency formatting**: never hardcode a locale or currency. Read `preferedLanguage` and `preferedCurrency` from `useConfig()` and format with `value.toLocaleString(preferedLanguage, { style: 'currency', currency: preferedCurrency })`.
+
+- **Charts**: build on `ChartContainer` + `ChartTooltip` from `@poveroh/ui/components/chart` (recharts). For time series, map points to a numeric `timestamp` and use `<XAxis type='number' scale='time' />` (see `components/dashboard/charts/*` and `components/accounts/account-balance-card.tsx`).
+
+- **Page header**: reuse the shared `Header` (`components/other/header-page.tsx`) with `title`, `breadcrumbs`, and the `fetchAction`/`addAction`/`onDeleteAll` actions. Pass `addAction` as an array to render a multi-action "+ Add" popover.
+
+- **Modals & drawers**: open via the context hooks — `useModal<T>(MODAL_IDS.X).openModal('create' | 'edit', item)`, `useDeleteModal<T>().openModal(item)`, `useDrawer<T>().openDrawer('create' | 'edit', item)` — and mount the matching component once in the view that opens it (`<AccountDialog />`, `<ImportDrawer />`, `<TransactionDialog />`). The dialog/drawer reads its state from the same context.
+
+- **Page-local vs shared client state**: a persisted Zustand store (e.g. the `chartRange` store behind `useChartRange`) is shared across the app — do not reuse it for state that should be local to one page, or you mutate it everywhere. Use a local-state variant (e.g. `useLocalChartRange`) and keep pure helpers (date math, options) in a `lib/` module so both share one source of truth.
 
 ### Verification
 
