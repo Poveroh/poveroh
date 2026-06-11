@@ -3371,6 +3371,69 @@ export const GetFinancialAccountBalanceSeriesResponseSchema = {
     required: ['success', 'message', 'data']
 } as const
 
+export const AccountSummaryRangeQuerySchema = {
+    type: 'object',
+    properties: {
+        from: {
+            type: 'string',
+            format: 'date'
+        },
+        to: {
+            type: 'string',
+            format: 'date'
+        }
+    }
+} as const
+
+export const AccountSummaryDataSchema = {
+    type: 'object',
+    properties: {
+        totalIncome: {
+            type: 'number'
+        },
+        totalExpenses: {
+            type: 'number'
+        },
+        transactionCount: {
+            type: 'number'
+        },
+        from: {
+            type: 'string',
+            nullable: true
+        },
+        to: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['totalIncome', 'totalExpenses', 'transactionCount', 'from', 'to']
+} as const
+
+export const GetAccountSummaryResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/AccountSummaryData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
 export const ImportFileSchema = {
     type: 'object',
     properties: {
