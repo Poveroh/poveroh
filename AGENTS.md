@@ -14,7 +14,7 @@ Poveroh is an open-source, self-hostable web platform for tracking personal fina
 - **Generate reports** — analyze spending patterns, net worth evolution, and asset allocation over time
 - **Dashboard** — customizable overview with charts and key financial metrics
 
-The platform is designed for a single user (or household) who self-hosts the instance. All data stays on the user's own infrastructure.
+The platform is self-hostable, and data stays on the host's own infrastructure. **Poveroh must always be designed as multi-user**: even on a single-user, self-hosted instance, every feature, query, and background job must treat data as belonging to a specific user. Always scope user-owned data by `userId`, never assume a single account exists, and never rely on a global "there is only one user" shortcut. A self-hosted instance is just a multi-user deployment that happens to have few users.
 
 ## Do
 

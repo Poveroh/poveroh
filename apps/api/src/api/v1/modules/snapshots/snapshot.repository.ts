@@ -1,28 +1,30 @@
-import prisma, { Prisma } from '@poveroh/prisma'
-
-const snapshotWithDetailsInclude = {
-    accountBalances: true,
-    assetValues: true
-} satisfies Prisma.SnapshotInclude
-
-type SnapshotWithDetails = Prisma.SnapshotGetPayload<{ include: typeof snapshotWithDetailsInclude }>
+import prisma from '@poveroh/prisma'
 
 export class SnapshotRepository {
     /**
-     * Finds an active financial account by id and owning user, returning the account id when it exists.
-     * @param userId The ID of the user who owns the financial account.
-     * @param accountId The unique identifier of the financial account to retrieve.
-     * @returns A promise that resolves to an object containing the account id, or null if no account is found.
+     * Lists the ids of every active financial account owned by a user, used to link the per-account balances of a snapshot.
+     * @param userId The ID of the user who owns the financial accounts.
+     * @returns A promise that resolves to the active account ids.
      */
-    async findAccountById(userId: string, accountId: string): Promise<{ id: string } | null> {
-        return prisma.financialAccount.findFirst({
-            where: { id: accountId, userId },
+    async findActiveAccountIds(userId: string): Promise<{ id: string }[]> {
+        return prisma.financialAccount.findMany({
+            where: { userId, deletedAt: null },
             select: { id: true }
         })
     }
 
     /**
-     * Upserts a snapshot row identified by user and snapshot date, creating an empty snapshot when none exists.
+     * Lists every user's snapshot frequency preference, used by the daily scheduler to decide whose snapshot is due.
+     * @returns A promise resolving to the userId and configured snapshot frequency of each user.
+     */
+    async findUserSnapshotFrequencies() {
+        return prisma.userPreferences.findMany({
+            select: { userId: true, snapshotFrequency: true }
+        })
+    }
+
+    /**
+     * Upserts a snapshot row identified by user and snapshot date, creating an empty marker when none exists.
      * @param userId The ID of the user who owns the snapshot.
      * @param snapshotDate The snapshot date used as part of the unique constraint to upsert.
      * @returns A promise that resolves to the upserted snapshot row.
@@ -38,50 +40,37 @@ export class SnapshotRepository {
             update: {},
             create: {
                 userId,
-                snapshotDate,
-                totalCash: 0,
-                totalInvestments: 0,
-                totalNetWorth: 0
+                snapshotDate
             }
         })
     }
 
     /**
-     * Upserts the balance row for the specified snapshot and financial account, applying the provided balance value.
-     * @param snapshotId The unique identifier of the snapshot the balance belongs to.
-     * @param accountId The unique identifier of the financial account the balance refers to.
-     * @param balance The balance value to be persisted for the snapshot account.
-     * @returns A promise that resolves when the snapshot account balance has been upserted.
+     * Lists the snapshots of a user on or after a date, used to refresh the cached totals affected by a retroactive balance change.
+     * @param userId The ID of the user who owns the snapshots.
+     * @param fromDate The inclusive lower bound date.
+     * @returns A promise resolving to the affected snapshots' id and date, ordered ascending.
      */
-    async upsertAccountBalance(snapshotId: string, accountId: string, balance: number): Promise<void> {
-        await prisma.snapshotAccountBalance.upsert({
-            where: {
-                snapshotId_accountId: {
-                    snapshotId,
-                    accountId
-                }
-            },
-            update: { balance },
-            create: {
-                snapshotId,
-                accountId,
-                balance
-            }
+    async findSnapshotsFromDate(userId: string, fromDate: Date): Promise<{ id: string; snapshotDate: Date }[]> {
+        return prisma.snapshot.findMany({
+            where: { userId, deletedAt: null, snapshotDate: { gte: fromDate } },
+            select: { id: true, snapshotDate: true },
+            orderBy: { snapshotDate: 'asc' }
         })
     }
 
     /**
-     * Recomputes the snapshot totals by aggregating its account balances and persists the new totals on the snapshot row.
-     * @param snapshotId The unique identifier of the snapshot whose totals must be refreshed.
-     * @returns A promise that resolves when the snapshot totals have been updated.
+     * Recomputes and stores a snapshot's cached net-worth totals by summing the balances linked to it.
+     * @param snapshotId The unique identifier of the snapshot whose cached totals are refreshed.
+     * @returns A promise that resolves when the cached totals have been updated.
      */
-    async refreshSnapshotTotals(snapshotId: string): Promise<void> {
-        const aggregate = await prisma.snapshotAccountBalance.aggregate({
-            where: { snapshotId },
-            _sum: { balance: true }
+    async refreshTotalsFromLinks(snapshotId: string): Promise<void> {
+        const links = await prisma.snapshotAccountBalance.findMany({
+            where: { snapshotId, deletedAt: null },
+            select: { financialAccountBalance: { select: { balance: true } } }
         })
 
-        const totalCash = aggregate._sum.balance ?? 0
+        const totalCash = links.reduce((sum, link) => sum + Number(link.financialAccountBalance?.balance ?? 0), 0)
 
         await prisma.snapshot.update({
             where: { id: snapshotId },
@@ -94,40 +83,30 @@ export class SnapshotRepository {
     }
 
     /**
-     * Finds the most recent snapshot account balance row for the specified financial account ordered by snapshot date in descending order.
-     * @param accountId The unique identifier of the financial account whose latest snapshot is being retrieved.
-     * @returns A promise that resolves to the latest snapshot account balance enriched with the snapshot date, or null if none exists.
+     * Links a snapshot to the balance point of a financial account for that snapshot, referencing the FinancialAccountBalance row instead of copying its value.
+     * @param snapshotId The unique identifier of the snapshot the link belongs to.
+     * @param accountId The unique identifier of the financial account being linked.
+     * @param financialAccountBalanceId The id of the FinancialAccountBalance row effective at the snapshot date, or null when the account has no balance point yet.
+     * @returns A promise that resolves when the link has been upserted.
      */
-    async findLatestSnapshotForAccount(accountId: string) {
-        return prisma.snapshotAccountBalance.findFirst({
-            where: { accountId },
-            include: { snapshot: { select: { snapshotDate: true } } },
-            orderBy: { snapshot: { snapshotDate: 'desc' } }
-        })
-    }
-
-    /**
-     * Updates the cached balance of a financial account so it reflects the latest reconciled snapshot value.
-     * @param accountId The unique identifier of the financial account being updated.
-     * @param balance The balance value to persist on the financial account.
-     * @returns A promise that resolves when the financial account balance has been updated.
-     */
-    async updateAccountBalance(accountId: string, balance: number): Promise<void> {
-        await prisma.financialAccount.update({
-            where: { id: accountId },
-            data: { balance }
-        })
-    }
-
-    /**
-     * Retrieves a snapshot including its account balances and asset values, throwing when no record matches the supplied id.
-     * @param snapshotId The unique identifier of the snapshot to retrieve.
-     * @returns A promise that resolves to the snapshot enriched with account balances and asset values.
-     */
-    async findSnapshotWithDetails(snapshotId: string): Promise<SnapshotWithDetails> {
-        return prisma.snapshot.findUniqueOrThrow({
-            where: { id: snapshotId },
-            include: snapshotWithDetailsInclude
+    async upsertAccountBalanceLink(
+        snapshotId: string,
+        accountId: string,
+        financialAccountBalanceId: string | null
+    ): Promise<void> {
+        await prisma.snapshotAccountBalance.upsert({
+            where: {
+                snapshotId_accountId: {
+                    snapshotId,
+                    accountId
+                }
+            },
+            update: { financialAccountBalanceId },
+            create: {
+                snapshotId,
+                accountId,
+                financialAccountBalanceId
+            }
         })
     }
 }

@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateSnapshotAccountBalanceRequest = {
-    accountId: string
+export type CreateFinancialAccountBalanceRequest = {
+    financialAccountId: string
     balance: number
-    snapshotDate: string
+    date: string
+    note?: string | null
 }

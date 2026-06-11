@@ -3,11 +3,11 @@ export interface JobMap {
         userId: string
         snapshotDate: string
     }
-    'snapshot.account-balance.add': {
-        userId: string
-        accountId: string
-        balance: number
-        snapshotDate: string
+    'snapshot.generate-due': {
+        date?: string
+    }
+    'account-balance.materialize-daily': {
+        date?: string
     }
     'import.parse-csv': {
         userId: string
@@ -47,5 +47,11 @@ export interface JobDispatcher {
         jobName: TJobName,
         payload: JobMap[TJobName],
         options?: DispatchOptions
+    ): Promise<void>
+    schedule<TJobName extends JobName>(
+        jobName: TJobName,
+        payload: JobMap[TJobName],
+        cronPattern: string,
+        schedulerId?: string
     ): Promise<void>
 }

@@ -177,6 +177,10 @@
             "label": "Amount",
             "placeholder": "0,00"
         },
+        "balance": {
+            "label": "Balance",
+            "placeholder": "0,00"
+        },
         "account": {
             "label": "Account",
             "placeholder": "Select an account"
@@ -426,10 +430,10 @@
             "addAccount": "Add account"
         },
         "snapshot": {
-            "button": "Add balance snapshot",
-            "success": "Snapshot saved successfully",
+            "button": "Add balance",
+            "success": "Balance saved successfully",
             "modal": {
-                "title": "New balance snapshot",
+                "title": "New balance",
                 "description": "Set the account balance for a specific date."
             }
         },

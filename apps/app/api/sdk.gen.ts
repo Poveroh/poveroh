@@ -24,6 +24,9 @@ import type {
     CreateCollectibleAssetData,
     CreateCollectibleAssetErrors,
     CreateCollectibleAssetResponses,
+    CreateFinancialAccountBalanceData,
+    CreateFinancialAccountBalanceErrors,
+    CreateFinancialAccountBalanceResponses,
     CreateFinancialAccountData,
     CreateFinancialAccountErrors,
     CreateFinancialAccountResponses,
@@ -42,9 +45,6 @@ import type {
     CreateRealEstateAssetData,
     CreateRealEstateAssetErrors,
     CreateRealEstateAssetResponses,
-    CreateSnapshotAccountBalanceData,
-    CreateSnapshotAccountBalanceErrors,
-    CreateSnapshotAccountBalanceResponses,
     CreateSubcategoryData,
     CreateSubcategoryErrors,
     CreateSubcategoryResponses,
@@ -158,6 +158,9 @@ import type {
     GetDashboardLayoutData,
     GetDashboardLayoutErrors,
     GetDashboardLayoutResponses,
+    GetFinancialAccountBalanceSeriesData,
+    GetFinancialAccountBalanceSeriesErrors,
+    GetFinancialAccountBalanceSeriesResponses,
     GetFinancialAccountByIdData,
     GetFinancialAccountByIdErrors,
     GetFinancialAccountByIdResponses,
@@ -1240,6 +1243,46 @@ export const updateFinancialAccount = <ThrowOnError extends boolean = false>(
     })
 
 /**
+ * Create a manual financial account balance entry
+ *
+ * Records a manual balance anchor for a financial account at a given date and recomputes the subsequent balance time-series
+ */
+export const createFinancialAccountBalance = <ThrowOnError extends boolean = false>(
+    options: Options<CreateFinancialAccountBalanceData, ThrowOnError>
+) =>
+    (options.client ?? client).post<
+        CreateFinancialAccountBalanceResponses,
+        CreateFinancialAccountBalanceErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/financial-accounts/balance',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Get a financial account balance time-series
+ *
+ * Retrieve the daily balance time-series of a financial account within an optional date range
+ */
+export const getFinancialAccountBalanceSeries = <ThrowOnError extends boolean = false>(
+    options: Options<GetFinancialAccountBalanceSeriesData, ThrowOnError>
+) =>
+    (options.client ?? client).get<
+        GetFinancialAccountBalanceSeriesResponses,
+        GetFinancialAccountBalanceSeriesErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/financial-accounts/{id}/balance-series',
+        ...options
+    })
+
+/**
  * Delete all imports
  *
  * Delete all imports associated with the user
@@ -1507,28 +1550,6 @@ export const updateDashboardLayout = <ThrowOnError extends boolean = false>(
     (options.client ?? client).put<UpdateDashboardLayoutResponses, UpdateDashboardLayoutErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/dashboard',
-        ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    })
-
-/**
- * Create snapshot account balance
- *
- * Create a new snapshot account balance with the provided data
- */
-export const createSnapshotAccountBalance = <ThrowOnError extends boolean = false>(
-    options: Options<CreateSnapshotAccountBalanceData, ThrowOnError>
-) =>
-    (options.client ?? client).post<
-        CreateSnapshotAccountBalanceResponses,
-        CreateSnapshotAccountBalanceErrors,
-        ThrowOnError
-    >({
-        security: [{ scheme: 'bearer', type: 'http' }],
-        url: '/snapshots/account-balance',
         ...options,
         headers: {
             'Content-Type': 'application/json',

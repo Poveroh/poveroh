@@ -5,6 +5,6 @@
 export type SnapshotAccountBalance = {
     id: string
     snapshotId: string
-    accountId: string
-    balance: number
+    accountId: string | null
+    financialAccountBalanceId: string | null
 }

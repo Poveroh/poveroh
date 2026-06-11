@@ -1450,6 +1450,69 @@ export type FinancialAccountForm = {
 
 export type CreateUpdateFinancialAccountRequest = CreateFinancialAccountRequest | UpdateFinancialAccountRequest
 
+export type FinancialAccountBalance = {
+    id: string
+    financialAccountId: string
+    date: string
+    balance: number
+    note: string | null
+    isManual: boolean
+}
+
+export type FinancialAccountBalanceData = {
+    financialAccountId: string
+    date: string
+    balance: number
+    isManual: boolean
+    note: string | null
+}
+
+export type FinancialAccountBalanceForm = {
+    financialAccountId: string
+    balance: number
+    date: string
+    note?: string | null
+}
+
+export type CreateFinancialAccountBalanceRequest = {
+    financialAccountId: string
+    balance: number
+    date: string
+    note?: string | null
+}
+
+export type CreateFinancialAccountBalanceResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: FinancialAccountData & unknown
+}
+
+export type FinancialAccountBalanceRangeQuery = {
+    from?: string
+    to?: string
+}
+
+export type GetFinancialAccountBalanceSeriesResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<FinancialAccountBalanceData>
+}
+
 export type ImportFile = {
     id: string
     importId: string
@@ -2114,8 +2177,8 @@ export type SimpleSuccessResponse = {
 export type SnapshotAccountBalance = {
     id: string
     snapshotId: string
-    accountId: string
-    balance: number
+    accountId: string | null
+    financialAccountBalanceId: string | null
 }
 
 export type SnapshotAssetValue = {
@@ -2153,24 +2216,6 @@ export type SnapshotData = {
     assetValues: Array<SnapshotAssetValue>
     createdAt: string
     updatedAt: string
-}
-
-export type CreateSnapshotAccountBalanceRequest = {
-    accountId: string
-    balance: number
-    snapshotDate: string
-}
-
-export type CreateSnapshotAccountBalanceResponse = {
-    /**
-     * Indicates if the request was successful
-     */
-    success: boolean
-    /**
-     * Optional success message
-     */
-    message: string
-    data: Snapshot & unknown
 }
 
 export type StatusResponse = {
@@ -5024,6 +5069,92 @@ export type UpdateFinancialAccountResponses = {
 
 export type UpdateFinancialAccountResponse2 = UpdateFinancialAccountResponses[keyof UpdateFinancialAccountResponses]
 
+export type CreateFinancialAccountBalanceData = {
+    /**
+     * Manual financial account balance data to create
+     */
+    body: CreateFinancialAccountBalanceRequest
+    path?: never
+    query?: never
+    url: '/financial-accounts/balance'
+}
+
+export type CreateFinancialAccountBalanceErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateFinancialAccountBalanceError =
+    CreateFinancialAccountBalanceErrors[keyof CreateFinancialAccountBalanceErrors]
+
+export type CreateFinancialAccountBalanceResponses = {
+    /**
+     * Financial account balance created
+     */
+    200: CreateFinancialAccountBalanceResponse
+}
+
+export type CreateFinancialAccountBalanceResponse2 =
+    CreateFinancialAccountBalanceResponses[keyof CreateFinancialAccountBalanceResponses]
+
+export type GetFinancialAccountBalanceSeriesData = {
+    body?: never
+    path: {
+        id: string
+    }
+    query?: {
+        from?: string
+        to?: string
+    }
+    url: '/financial-accounts/{id}/balance-series'
+}
+
+export type GetFinancialAccountBalanceSeriesErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Financial account not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetFinancialAccountBalanceSeriesError =
+    GetFinancialAccountBalanceSeriesErrors[keyof GetFinancialAccountBalanceSeriesErrors]
+
+export type GetFinancialAccountBalanceSeriesResponses = {
+    /**
+     * Financial account balance series
+     */
+    200: GetFinancialAccountBalanceSeriesResponse
+}
+
+export type GetFinancialAccountBalanceSeriesResponse2 =
+    GetFinancialAccountBalanceSeriesResponses[keyof GetFinancialAccountBalanceSeriesResponses]
+
 export type DeleteImportsData = {
     body?: never
     path?: never
@@ -5703,44 +5834,6 @@ export type UpdateDashboardLayoutResponses = {
 }
 
 export type UpdateDashboardLayoutResponse2 = UpdateDashboardLayoutResponses[keyof UpdateDashboardLayoutResponses]
-
-export type CreateSnapshotAccountBalanceData = {
-    /**
-     * Snapshot account balance data to create
-     */
-    body: CreateSnapshotAccountBalanceRequest
-    path?: never
-    query?: never
-    url: '/snapshots/account-balance'
-}
-
-export type CreateSnapshotAccountBalanceErrors = {
-    /**
-     * Invalid request
-     */
-    400: ErrorResponse
-    /**
-     * Unauthorized
-     */
-    401: ErrorResponse
-    /**
-     * Internal server error
-     */
-    500: ErrorResponse
-}
-
-export type CreateSnapshotAccountBalanceError =
-    CreateSnapshotAccountBalanceErrors[keyof CreateSnapshotAccountBalanceErrors]
-
-export type CreateSnapshotAccountBalanceResponses = {
-    /**
-     * Snapshot account balance created
-     */
-    200: CreateSnapshotAccountBalanceResponse
-}
-
-export type CreateSnapshotAccountBalanceResponse2 =
-    CreateSnapshotAccountBalanceResponses[keyof CreateSnapshotAccountBalanceResponses]
 
 export type GetTrendReportData = {
     body?: never

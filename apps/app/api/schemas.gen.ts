@@ -3211,6 +3211,166 @@ export const CreateUpdateFinancialAccountRequestSchema = {
     ]
 } as const
 
+export const FinancialAccountBalanceSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        balance: {
+            type: 'number'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        isManual: {
+            type: 'boolean'
+        }
+    },
+    required: ['id', 'financialAccountId', 'date', 'balance', 'note', 'isManual']
+} as const
+
+export const FinancialAccountBalanceDataSchema = {
+    type: 'object',
+    properties: {
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        balance: {
+            type: 'number'
+        },
+        isManual: {
+            type: 'boolean'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['financialAccountId', 'date', 'balance', 'isManual', 'note']
+} as const
+
+export const FinancialAccountBalanceFormSchema = {
+    type: 'object',
+    properties: {
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        balance: {
+            type: 'number'
+        },
+        date: {
+            type: 'string',
+            minLength: 1,
+            format: 'date'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['financialAccountId', 'balance', 'date']
+} as const
+
+export const CreateFinancialAccountBalanceRequestSchema = {
+    type: 'object',
+    properties: {
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        balance: {
+            type: 'number'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['financialAccountId', 'balance', 'date']
+} as const
+
+export const CreateFinancialAccountBalanceResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/FinancialAccountData'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const FinancialAccountBalanceRangeQuerySchema = {
+    type: 'object',
+    properties: {
+        from: {
+            type: 'string',
+            format: 'date'
+        },
+        to: {
+            type: 'string',
+            format: 'date'
+        }
+    }
+} as const
+
+export const GetFinancialAccountBalanceSeriesResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/FinancialAccountBalanceData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
 export const ImportFileSchema = {
     type: 'object',
     properties: {
@@ -5102,13 +5262,16 @@ export const SnapshotAccountBalanceSchema = {
         },
         accountId: {
             type: 'string',
+            nullable: true,
             format: 'uuid'
         },
-        balance: {
-            type: 'number'
+        financialAccountBalanceId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
         }
     },
-    required: ['id', 'snapshotId', 'accountId', 'balance']
+    required: ['id', 'snapshotId', 'accountId', 'financialAccountBalanceId']
 } as const
 
 export const SnapshotAssetValueSchema = {
@@ -5264,49 +5427,6 @@ export const SnapshotDataSchema = {
         'createdAt',
         'updatedAt'
     ]
-} as const
-
-export const CreateSnapshotAccountBalanceRequestSchema = {
-    type: 'object',
-    properties: {
-        accountId: {
-            type: 'string',
-            format: 'uuid'
-        },
-        balance: {
-            type: 'number'
-        },
-        snapshotDate: {
-            type: 'string',
-            format: 'date-time'
-        }
-    },
-    required: ['accountId', 'balance', 'snapshotDate']
-} as const
-
-export const CreateSnapshotAccountBalanceResponseSchema = {
-    type: 'object',
-    properties: {
-        success: {
-            type: 'boolean',
-            description: 'Indicates if the request was successful'
-        },
-        message: {
-            type: 'string',
-            description: 'Optional success message'
-        },
-        data: {
-            allOf: [
-                {
-                    $ref: '#/components/schemas/Snapshot'
-                },
-                {
-                    description: 'Response data'
-                }
-            ]
-        }
-    },
-    required: ['success', 'message', 'data']
 } as const
 
 export const StatusResponseSchema = {

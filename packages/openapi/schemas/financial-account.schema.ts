@@ -147,3 +147,82 @@ export const FinancialAccountFormSchema = CreateFinancialAccountRequestSchema.op
 export const CreateUpdateFinancialAccountRequestSchema = z
     .union([CreateFinancialAccountRequestSchema, UpdateFinancialAccountRequestSchema])
     .openapi('CreateUpdateFinancialAccountRequest')
+
+// ------------------------------------------------------------------------------------------------------------------------------ //
+// ACCOUNT BALANCE HISTORY (single source of truth for the per-account daily balance time-series)
+// ------------------------------------------------------------------------------------------------------------------------------ //
+
+/**
+ * Financial account balance schema representing one point of a financial account's balance time-series at a given date
+ */
+export const FinancialAccountBalanceSchema = z
+    .object({
+        id: z.string().uuid(),
+        financialAccountId: z.string().uuid(),
+        date: z.string().datetime(),
+        balance: z.number(),
+        note: z.string().nullable(),
+        isManual: z.boolean()
+    })
+    .openapi('FinancialAccountBalance')
+
+/**
+ * Response schema for a single point of a financial account's balance time-series, used to build the per-account chart
+ */
+export const FinancialAccountBalanceDataSchema = FinancialAccountBalanceSchema.pick({
+    financialAccountId: true,
+    date: true,
+    balance: true,
+    isManual: true,
+    note: true
+}).openapi('FinancialAccountBalanceData')
+
+/**
+ * Financial account balance form schema representing the data structure for the manual balance entry form (date-only input)
+ */
+export const FinancialAccountBalanceFormSchema = FinancialAccountBalanceSchema.pick({
+    financialAccountId: true,
+    balance: true
+})
+    .extend({
+        date: z.iso.date().nonempty(),
+        note: z.string().nullable().optional()
+    })
+    .openapi('FinancialAccountBalanceForm')
+
+/**
+ * Request schema for creating a manual financial account balance entry
+ */
+export const CreateFinancialAccountBalanceRequestSchema = FinancialAccountBalanceSchema.pick({
+    financialAccountId: true,
+    balance: true
+})
+    .extend({
+        date: z.string().datetime(),
+        note: z.string().nullable().optional()
+    })
+    .openapi('CreateFinancialAccountBalanceRequest')
+
+/**
+ * Response schema for creating a manual financial account balance entry, returning the updated account
+ */
+export const CreateFinancialAccountBalanceResponseSchema = SuccessResponseSchema(FinancialAccountDataSchema).openapi(
+    'CreateFinancialAccountBalanceResponse'
+)
+
+/**
+ * Query schema for fetching a financial account balance time-series within an optional date range
+ */
+export const FinancialAccountBalanceRangeQuerySchema = z
+    .object({
+        from: z.iso.date().optional(),
+        to: z.iso.date().optional()
+    })
+    .openapi('FinancialAccountBalanceRangeQuery')
+
+/**
+ * Response schema for fetching a financial account balance time-series
+ */
+export const GetFinancialAccountBalanceSeriesResponseSchema = SuccessResponseSchema(
+    FinancialAccountBalanceDataSchema.array()
+).openapi('GetFinancialAccountBalanceSeriesResponse')

@@ -12,7 +12,7 @@ import type {
     UpdateImportRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/utils'
-import { BalanceHelper } from '../../helpers/balance.helper'
+import { AccountBalanceService } from '../financial-accounts/account-balance/account-balance.service'
 import { BaseService } from '../base/base.service'
 import { CategoryService } from '../categories/category.service'
 import { eventBus } from '../../events/event-bus'
@@ -26,6 +26,7 @@ import HowIParsedYourDataAlgorithm from '../../helpers/parser.helper'
  */
 export class ImportService extends BaseService {
     private readonly importRepository = new ImportRepository()
+    private readonly accountBalanceService = new AccountBalanceService()
 
     constructor() {
         super('import')
@@ -50,7 +51,7 @@ export class ImportService extends BaseService {
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'IMPORT_APPROVED', 'APPROVED')
 
             const approvedAmounts = approvedTransactions.flatMap(t => t.amounts)
-            await BalanceHelper.updateAccountBalances(approvedAmounts, undefined, tx)
+            await this.accountBalanceService.applyAmounts(approvedAmounts, undefined, tx)
 
             await this.importRepository.deletePendingOrRejectedAmounts(tx, userId, id)
             await this.importRepository.deletePendingOrRejectedTransactions(tx, userId, id)
@@ -92,7 +93,7 @@ export class ImportService extends BaseService {
             ) as Amount[]
 
             if (reversalAmounts.length > 0) {
-                await BalanceHelper.updateAccountBalances(reversalAmounts, undefined, tx)
+                await this.accountBalanceService.applyAmounts(reversalAmounts, undefined, tx)
             }
 
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'APPROVED', 'IMPORT_PENDING')

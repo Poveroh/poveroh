@@ -8,10 +8,12 @@ import type {
     CreateMarketableAssetRequest,
     CreateOtherAssetRequest,
     CreateRealEstateAssetRequest,
+    CreateFinancialAccountBalanceRequest,
     CreateUpdateTransactionRequest,
     CreateVehicleAssetRequest,
     CurrencyEnum,
     ImportData,
+    FinancialAccountBalanceData,
     InputVariantStyle,
     RealEstateTypeEnum,
     UpdateCollectibleAssetRequest,
@@ -64,6 +66,10 @@ export type TransactionFormProps = FormProps<TransactionData, CreateUpdateTransa
 }
 
 export type ImportFormProps = FormProps<ImportData, CreateImportRequest>
+
+export type AccountSnapshotFormProps = FormProps<FinancialAccountBalanceData, CreateFinancialAccountBalanceRequest> & {
+    accountId: string
+}
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     startIcon?: LucideIcon

@@ -10,6 +10,7 @@ import { Landmark, Search, X } from 'lucide-react'
 
 import Box from '@/components/box/box-wrapper'
 import { AccountDialog } from '@/components/dialog/account-dialog'
+import { AccountSnapshotDialog } from '@/components/dialog/account-snapshot-dialog'
 import { AccountItem } from '@/components/item/account-item'
 import { FilterButton } from '@/components/filter/filter-button'
 import { Header } from '@/components/other/header-page'
@@ -19,7 +20,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { PageWrapper } from '@/components/box/page-wrapper'
-import { FinancialAccountData, FinancialAccountFilters, SnapshotAccountBalance } from '@poveroh/types'
+import { FinancialAccountData, FinancialAccountFilters, FinancialAccountBalanceData } from '@poveroh/types'
 import { MODAL_IDS } from '@/types/constant'
 
 export default function AccountView() {
@@ -38,7 +39,7 @@ export default function AccountView() {
     } = useFinancialAccount()
 
     const { openModal } = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
-    const { openModal: openSnapshotModal } = useModal<SnapshotAccountBalance>('account-snapshot')
+    const { openModal: openSnapshotModal } = useModal<FinancialAccountBalanceData>(MODAL_IDS.ACCOUNT_SNAPSHOT)
     const { openModal: openDeleteModal } = useDeleteModal<FinancialAccountData>()
 
     const pageContent = useMemo(() => {
@@ -60,7 +61,7 @@ export default function AccountView() {
                             buttons={[
                                 {
                                     onClick: x => {
-                                        openSnapshotModal('create', undefined, { accountId: x.id })
+                                        openSnapshotModal('create', undefined, { financialAccountId: x.id })
                                     },
                                     label: t('accounts.snapshot.button'),
                                     icon: 'calendar-plus'
@@ -170,6 +171,7 @@ export default function AccountView() {
             </PageWrapper>
 
             <AccountDialog />
+            <AccountSnapshotDialog />
         </>
     )
 }

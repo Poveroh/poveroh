@@ -7,6 +7,7 @@ import {
     registerCollectibleAssetPath,
     registerDashboardPath,
     registerFinancialAccountPath,
+    registerFinancialAccountBalancePath,
     registerImportPath,
     registerMarketDataPath,
     registerMarketableAssetPath,
@@ -14,7 +15,6 @@ import {
     registerRealEstateAssetPath,
     registerVehicleAssetPath,
     registerReportPath,
-    registerSnapshotPath,
     registerStatusPath,
     registerSubcategoryPath,
     registerSubscriptionPath,
@@ -58,10 +58,10 @@ export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerTransactionPath(registry)
     registerSubscriptionPath(registry)
     registerFinancialAccountPath(registry)
+    registerFinancialAccountBalancePath(registry)
     registerImportPath(registry)
     registerMarketDataPath(registry)
     registerDashboardPath(registry)
-    registerSnapshotPath(registry)
     registerReportPath(registry)
 }
 

@@ -12,12 +12,12 @@ import {
     createCategory,
     createCollectibleAsset,
     createFinancialAccount,
+    createFinancialAccountBalance,
     createImport,
     createImportTemplate,
     createMarketableAsset,
     createOtherAsset,
     createRealEstateAsset,
-    createSnapshotAccountBalance,
     createSubcategory,
     createSubscription,
     createTransaction,
@@ -56,6 +56,7 @@ import {
     getCategories,
     getCategoryById,
     getDashboardLayout,
+    getFinancialAccountBalanceSeries,
     getFinancialAccountById,
     getFinancialAccounts,
     getImportById,
@@ -137,6 +138,9 @@ import type {
     CreateCollectibleAssetData,
     CreateCollectibleAssetError,
     CreateCollectibleAssetResponse,
+    CreateFinancialAccountBalanceData,
+    CreateFinancialAccountBalanceError,
+    CreateFinancialAccountBalanceResponse2,
     CreateFinancialAccountData,
     CreateFinancialAccountError,
     CreateFinancialAccountResponse2,
@@ -155,9 +159,6 @@ import type {
     CreateRealEstateAssetData,
     CreateRealEstateAssetError,
     CreateRealEstateAssetResponse,
-    CreateSnapshotAccountBalanceData,
-    CreateSnapshotAccountBalanceError,
-    CreateSnapshotAccountBalanceResponse2,
     CreateSubcategoryData,
     CreateSubcategoryError,
     CreateSubcategoryResponse2,
@@ -271,6 +272,9 @@ import type {
     GetDashboardLayoutData,
     GetDashboardLayoutError,
     GetDashboardLayoutResponse2,
+    GetFinancialAccountBalanceSeriesData,
+    GetFinancialAccountBalanceSeriesError,
+    GetFinancialAccountBalanceSeriesResponse2,
     GetFinancialAccountByIdData,
     GetFinancialAccountByIdError,
     GetFinancialAccountByIdResponse,
@@ -1981,6 +1985,62 @@ export const updateFinancialAccountMutation = (
 }
 
 /**
+ * Create a manual financial account balance entry
+ *
+ * Records a manual balance anchor for a financial account at a given date and recomputes the subsequent balance time-series
+ */
+export const createFinancialAccountBalanceMutation = (
+    options?: Partial<Options<CreateFinancialAccountBalanceData>>
+): UseMutationOptions<
+    CreateFinancialAccountBalanceResponse2,
+    CreateFinancialAccountBalanceError,
+    Options<CreateFinancialAccountBalanceData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateFinancialAccountBalanceResponse2,
+        CreateFinancialAccountBalanceError,
+        Options<CreateFinancialAccountBalanceData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createFinancialAccountBalance({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const getFinancialAccountBalanceSeriesQueryKey = (options: Options<GetFinancialAccountBalanceSeriesData>) =>
+    createQueryKey('getFinancialAccountBalanceSeries', options)
+
+/**
+ * Get a financial account balance time-series
+ *
+ * Retrieve the daily balance time-series of a financial account within an optional date range
+ */
+export const getFinancialAccountBalanceSeriesOptions = (options: Options<GetFinancialAccountBalanceSeriesData>) =>
+    queryOptions<
+        GetFinancialAccountBalanceSeriesResponse2,
+        GetFinancialAccountBalanceSeriesError,
+        GetFinancialAccountBalanceSeriesResponse2,
+        ReturnType<typeof getFinancialAccountBalanceSeriesQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getFinancialAccountBalanceSeries({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getFinancialAccountBalanceSeriesQueryKey(options)
+    })
+
+/**
  * Delete all imports
  *
  * Delete all imports associated with the user
@@ -2427,35 +2487,6 @@ export const updateDashboardLayoutMutation = (
     > = {
         mutationFn: async fnOptions => {
             const { data } = await updateDashboardLayout({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            })
-            return data
-        }
-    }
-    return mutationOptions
-}
-
-/**
- * Create snapshot account balance
- *
- * Create a new snapshot account balance with the provided data
- */
-export const createSnapshotAccountBalanceMutation = (
-    options?: Partial<Options<CreateSnapshotAccountBalanceData>>
-): UseMutationOptions<
-    CreateSnapshotAccountBalanceResponse2,
-    CreateSnapshotAccountBalanceError,
-    Options<CreateSnapshotAccountBalanceData>
-> => {
-    const mutationOptions: UseMutationOptions<
-        CreateSnapshotAccountBalanceResponse2,
-        CreateSnapshotAccountBalanceError,
-        Options<CreateSnapshotAccountBalanceData>
-    > = {
-        mutationFn: async fnOptions => {
-            const { data } = await createSnapshotAccountBalance({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

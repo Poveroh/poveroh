@@ -15,7 +15,7 @@ import type {
     UpdateTransactionRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/utils'
-import { BalanceHelper } from '../../helpers/balance.helper'
+import { AccountBalanceService } from '../financial-accounts/account-balance/account-balance.service'
 import { BaseService } from '../base/base.service'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
 import { TransactionRepository } from './transaction.repository'
@@ -28,6 +28,7 @@ import { eventBus } from '@/v1/events/event-bus'
  */
 export class TransactionService extends BaseService {
     private readonly transactionRepository = new TransactionRepository()
+    private readonly accountBalanceService = new AccountBalanceService()
 
     constructor() {
         super('transaction')
@@ -124,7 +125,7 @@ export class TransactionService extends BaseService {
                     payload.currency
                 )
                 await this.transactionRepository.createAmounts(tx, amountsData)
-                await BalanceHelper.updateAccountBalances(amountsData as unknown as Amount[], undefined, tx)
+                await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], undefined, tx)
 
                 const transfer = await this.transactionRepository.createTransfer(tx, {
                     transferDate: utcDate,
@@ -337,7 +338,7 @@ export class TransactionService extends BaseService {
             ? new Map(originalAmounts.map(a => [a.transactionId, Number(a.amount)]))
             : undefined
 
-        await BalanceHelper.updateAccountBalances(amountsData as unknown as Amount[], originalMap, tx)
+        await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], originalMap, tx)
     }
 
     /**

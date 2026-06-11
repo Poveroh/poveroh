@@ -11,12 +11,7 @@ type AppLayoutProps = {
     children: React.ReactNode
 }
 
-const SETTINGS_PATHS = [
-    '/settings/providers',
-    '/settings/profile',
-    '/settings/security',
-    '/settings/preferences'
-]
+const SETTINGS_PATHS = ['/settings/providers', '/settings/profile', '/settings/security', '/settings/preferences']
 
 export default function AppLayout({ children }: AppLayoutProps) {
     const pathname = usePathname()

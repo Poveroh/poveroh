@@ -1,5 +1,6 @@
 export const MODAL_IDS = {
     ACCOUNT: 'account-dialog',
+    ACCOUNT_SNAPSHOT: 'account-snapshot',
     CATEGORY: 'category-dialog',
     SUBCATEGORY: 'subcategory-dialog',
     SUBSCRIPTION: 'subscription-dialog',

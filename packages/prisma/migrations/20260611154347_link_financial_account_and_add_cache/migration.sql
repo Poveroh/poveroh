@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Snapshot" ADD COLUMN     "totalCash" DECIMAL(20,2) NOT NULL DEFAULT 0,
+ADD COLUMN     "totalInvestments" DECIMAL(20,2) NOT NULL DEFAULT 0,
+ADD COLUMN     "totalLiabilities" DECIMAL(20,2) NOT NULL DEFAULT 0,
+ADD COLUMN     "totalNetWorth" DECIMAL(20,2) NOT NULL DEFAULT 0;

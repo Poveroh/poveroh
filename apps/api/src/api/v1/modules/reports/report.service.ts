@@ -23,6 +23,8 @@ export class ReportService extends BaseService {
 
         const snapshots = await this.reportRepository.findSnapshotsForNetWorth(userId, filters)
 
+        // Reads the cached net-worth total: it is refreshed on write whenever a balance changes,
+        // so retroactive corrections are reflected without recomputing on every read.
         const evolution = snapshots.map(snapshot => ({
             date: snapshot.snapshotDate.toISOString(),
             netWorth: Number(snapshot.totalNetWorth)

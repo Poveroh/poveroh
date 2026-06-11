@@ -1,15 +1,14 @@
 import { z } from '../zod'
-import { SuccessResponseSchema } from './response.schema'
 
 /**
- * Snapshot account balance schema representing the balance of a specific financial account at the time of a snapshot
+ * Snapshot account balance schema linking a snapshot to the financial account's balance point of that day (no copied value)
  */
 export const SnapshotAccountBalanceSchema = z
     .object({
         id: z.string().uuid(),
         snapshotId: z.string().uuid(),
-        accountId: z.string().uuid(),
-        balance: z.number()
+        accountId: z.string().uuid().nullable(),
+        financialAccountBalanceId: z.string().uuid().nullable()
     })
     .openapi('SnapshotAccountBalance')
 
@@ -54,24 +53,3 @@ export const SnapshotDataSchema = SnapshotSchema.omit({
     userId: true,
     deletedAt: true
 }).openapi('SnapshotData')
-
-// ------------------------------------------------------------------------------------------------------------------------------ //
-
-/**
- * Request schema for creating a new snapshot account balance
- */
-export const CreateSnapshotAccountBalanceRequestSchema = SnapshotAccountBalanceSchema.pick({
-    accountId: true,
-    balance: true
-})
-    .extend({
-        snapshotDate: z.string().datetime()
-    })
-    .openapi('CreateSnapshotAccountBalanceRequest')
-
-/**
- * Response schema for creating a new snapshot account balance
- */
-export const CreateSnapshotAccountBalanceResponseSchema = SuccessResponseSchema(SnapshotSchema).openapi(
-    'CreateSnapshotAccountBalanceResponse'
-)

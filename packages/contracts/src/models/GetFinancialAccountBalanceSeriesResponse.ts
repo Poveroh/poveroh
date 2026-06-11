@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Snapshot } from './Snapshot'
-export type CreateSnapshotAccountBalanceResponse = {
+import type { FinancialAccountBalanceData } from './FinancialAccountBalanceData'
+export type GetFinancialAccountBalanceSeriesResponse = {
     /**
      * Indicates if the request was successful
      */
@@ -12,5 +12,8 @@ export type CreateSnapshotAccountBalanceResponse = {
      * Optional success message
      */
     message: string
-    data: Snapshot
+    /**
+     * Response data
+     */
+    data: Array<FinancialAccountBalanceData>
 }

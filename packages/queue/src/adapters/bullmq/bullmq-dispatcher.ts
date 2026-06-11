@@ -33,6 +33,26 @@ export class BullMQJobDispatcher implements JobDispatcher {
         })
     }
 
+    async schedule<TJobName extends JobName>(
+        jobName: TJobName,
+        payload: JobMap[TJobName],
+        cronPattern: string,
+        schedulerId: string = jobName
+    ): Promise<void> {
+        await this.queue.upsertJobScheduler(
+            schedulerId,
+            { pattern: cronPattern },
+            {
+                name: jobName,
+                data: payload,
+                opts: {
+                    removeOnComplete: true,
+                    removeOnFail: 100
+                }
+            }
+        )
+    }
+
     async close(): Promise<void> {
         await this.queue.close()
     }
