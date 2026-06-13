@@ -3,13 +3,12 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Pencil, Upload } from 'lucide-react'
+import { Pencil, Plus, Upload } from 'lucide-react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { PageWrapper } from '@/components/box/page-wrapper'
 import SkeletonItem from '@/components/skeleton/skeleton-item'
 import { Header } from '@/components/other/header-page'
-import { BrandIcon } from '@/components/icon/brand-icon'
 import { AccountDialog } from '@/components/dialog/account-dialog'
 import { ImportDrawer } from '@/components/drawer/import-drawer'
 import { TransactionDialog } from '@/components/dialog/transaction-dialog'
@@ -25,7 +24,14 @@ import { useDrawer } from '@/hooks/use-drawer'
 
 import { getRangeBounds } from '@/lib/chart-range'
 import { MODAL_IDS } from '@/types/constant'
-import { ACCOUNT_RANGES, AccountVariation, FinancialAccountData, ImportData } from '@poveroh/types'
+import {
+    ACCOUNT_RANGES,
+    AccountVariation,
+    Amount,
+    FinancialAccountData,
+    ImportData,
+    TransactionData
+} from '@poveroh/types'
 
 type AccountDetailViewProps = {
     id: string
@@ -37,6 +43,7 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
 
     const { account, isLoading, isFetching, refetch, deleteMutation } = useAccountDetail(id)
     const { openModal } = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
+    const { openModal: openModelTransaction } = useModal<Partial<TransactionData>>(MODAL_IDS.TRANSACTION)
     const importDrawer = useDrawer<ImportData>()
 
     const { range, setRange, options } = useLocalChartRange('30D', ACCOUNT_RANGES)
@@ -95,6 +102,15 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
                                     onClick: () => openModal('edit', account),
                                     label: t('buttons.editItem'),
                                     icon: <Pencil className='mr-2' />,
+                                    loading: false
+                                },
+                                {
+                                    onClick: () =>
+                                        openModelTransaction('create', undefined, {
+                                            amounts: [{ financialAccountId: id } as Amount]
+                                        }),
+                                    label: t('buttons.add.transaction'),
+                                    icon: <Plus className='mr-2' />,
                                     loading: false
                                 },
                                 {

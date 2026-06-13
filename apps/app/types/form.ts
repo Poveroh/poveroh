@@ -63,6 +63,7 @@ export type FormRef = {
 
 export type TransactionFormProps = FormProps<TransactionData, CreateUpdateTransactionRequest> & {
     inputStyle?: InputVariantStyle
+    defaultAccountId?: string
 }
 
 export type ImportFormProps = FormProps<ImportData, CreateImportRequest>

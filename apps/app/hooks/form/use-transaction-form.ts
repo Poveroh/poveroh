@@ -29,7 +29,11 @@ function getSchema(type: TransactionActionEnum) {
     }
 }
 
-function getDefaultValues(type: TransactionActionEnum, currency: CurrencyEnum): TransactionForm {
+function getDefaultValues(
+    type: TransactionActionEnum,
+    currency: CurrencyEnum,
+    defaultAccountId?: string
+): TransactionForm {
     const base: Omit<TransactionForm, 'amounts' | 'action'> = {
         title: '',
         date: new Date().toISOString().split('T')[0]!,
@@ -40,25 +44,27 @@ function getDefaultValues(type: TransactionActionEnum, currency: CurrencyEnum): 
         currency
     }
 
+    const accountId = defaultAccountId ?? ''
+
     switch (type) {
         case 'INCOME':
             return {
                 ...base,
                 action: 'INCOME',
-                amounts: [{ amount: 0, action: 'INCOME', financialAccountId: '' }]
+                amounts: [{ amount: 0, action: 'INCOME', financialAccountId: accountId }]
             }
         case 'EXPENSES':
             return {
                 ...base,
                 action: 'EXPENSES',
-                amounts: [{ amount: 0, action: 'EXPENSES', financialAccountId: '' }]
+                amounts: [{ amount: 0, action: 'EXPENSES', financialAccountId: accountId }]
             }
         case 'TRANSFER':
             return {
                 ...base,
                 action: 'TRANSFER',
                 amounts: [
-                    { amount: 0, action: 'EXPENSES', financialAccountId: '' },
+                    { amount: 0, action: 'EXPENSES', financialAccountId: accountId },
                     { amount: 0, action: 'INCOME', financialAccountId: '' }
                 ]
             }
@@ -138,7 +144,7 @@ function transformInitialData(type: TransactionActionEnum, data: TransactionData
 export function useTransactionForm(type: TransactionActionEnum, props: TransactionFormProps) {
     const { preferedCurrency } = useConfig()
 
-    const defaultValues = getDefaultValues(type, preferedCurrency as CurrencyEnum)
+    const defaultValues = getDefaultValues(type, preferedCurrency as CurrencyEnum, props.defaultAccountId)
 
     const config: BaseTransactionFormConfig<TransactionForm> = {
         type,

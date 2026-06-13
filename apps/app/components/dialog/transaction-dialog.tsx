@@ -141,6 +141,7 @@ export function TransactionDialog() {
                     <TransactionForm
                         ref={formRef}
                         initialData={modalManager.item ?? null}
+                        defaultAccountId={modalManager.preConfig?.amounts?.[0]?.financialAccountId}
                         inputStyle='contained'
                         inEditingMode={modalManager.inEditingMode || false}
                         dataCallback={handleFormSubmit}
