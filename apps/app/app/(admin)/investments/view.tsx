@@ -40,10 +40,11 @@ export default function InvestmentsView() {
                         onClick: () => openModal('create'),
                         loading: false
                     }}
-                    onDeleteAll={{
+                    onDelete={{
                         onClick: () => deleteAllMutation.mutate({}),
                         loading: deleteAllMutation.isPending,
-                        disabled: assets.length === 0
+                        disabled: assets.length === 0,
+                        multiple: true
                     }}
                 />
 

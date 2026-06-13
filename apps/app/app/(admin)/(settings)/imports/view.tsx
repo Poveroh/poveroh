@@ -56,9 +56,10 @@ export default function ImportsView() {
                         onClick: () => openDrawer('create'),
                         loading: createImport.isPending
                     }}
-                    onDeleteAll={{
+                    onDelete={{
                         onClick: openDeleteModal,
-                        loading: deleteAllMutation.isPending
+                        loading: deleteAllMutation.isPending,
+                        multiple: true
                     }}
                 />
 

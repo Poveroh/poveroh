@@ -241,7 +241,7 @@ export default function TransactionsView() {
                             onClick: () => openModal('create'),
                             loading: createMutation.isPending
                         }}
-                        onDeleteAll={{
+                        onDelete={{
                             onClick: () => deleteAllMutation.mutate({}),
                             loading: deleteAllMutation.isPending
                         }}

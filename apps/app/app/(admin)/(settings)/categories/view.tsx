@@ -158,10 +158,11 @@ export default function CategoryView() {
                               ]
                             : [])
                     ]}
-                    onDeleteAll={{
+                    onDelete={{
                         onClick: () => deleteAllCategoryMutation.mutateAsync({}),
                         loading: deleteAllCategoryMutation.isPending,
-                        disabled: categoryData.length === 0
+                        disabled: categoryData.length === 0,
+                        multiple: true
                     }}
                 />
 

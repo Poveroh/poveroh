@@ -87,9 +87,10 @@ export default function SubscriptionsView() {
                         onClick: () => openModal('create'),
                         loading: createMutation.isPending
                     }}
-                    onDeleteAll={{
+                    onDelete={{
                         onClick: () => deleteAllMutation.mutate({}),
-                        loading: deleteMutation.isPending
+                        loading: deleteMutation.isPending,
+                        multiple: true
                     }}
                 />
 

@@ -34,19 +34,18 @@ type HeaderProps = {
     fetchAction?: HeaderAction
     uploadAction?: HeaderAction
     downloadAction?: HeaderAction
-    onDeleteAll?: HeaderAction
+    onDelete?: HeaderAction & { item?: string; multiple?: boolean }
     addAction?: HeaderAction | HeaderAction[]
 }
 
 export function Header(props: HeaderProps) {
     const t = useTranslations()
 
-    const { title, subtitle, icon, breadcrumbs, fetchAction, uploadAction, downloadAction, onDeleteAll, addAction } =
-        props
+    const { title, subtitle, icon, breadcrumbs, fetchAction, uploadAction, downloadAction, onDelete, addAction } = props
 
-    const showHeaderActions = fetchAction || uploadAction || downloadAction || onDeleteAll || addAction
+    const showHeaderActions = fetchAction || uploadAction || downloadAction || onDelete || addAction
 
-    const [openDeleteAllDialog, setOpenDeleteAllDialog] = useState(false)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
     return (
         <>
@@ -127,19 +126,23 @@ export function Header(props: HeaderProps) {
                                             <p>{t('messages.availableNextVersion')}</p>
                                         </TooltipContent>
                                     </Tooltip>
-                                    <Button
-                                        variant='ghost'
-                                        className='justify-start w-full'
-                                        disabled={onDeleteAll?.loading || onDeleteAll?.disabled}
-                                        onClick={() => setOpenDeleteAllDialog(true)}
-                                    >
-                                        {onDeleteAll?.loading ? (
-                                            <Loader2 className='animate-spin mr-2' />
-                                        ) : (
-                                            <Trash className='mr-2 danger' />
-                                        )}
-                                        <span className='danger'>{t('buttons.deleteAll')}</span>
-                                    </Button>
+                                    {onDelete && (
+                                        <Button
+                                            variant='ghost'
+                                            className='justify-start w-full'
+                                            disabled={onDelete?.loading || onDelete?.disabled}
+                                            onClick={() => setOpenDeleteDialog(true)}
+                                        >
+                                            {onDelete?.loading ? (
+                                                <Loader2 className='animate-spin mr-2' />
+                                            ) : (
+                                                <Trash className='mr-2 danger' />
+                                            )}
+                                            <span className='danger'>
+                                                {t(onDelete.multiple ? 'buttons.deleteAll' : 'buttons.delete')}
+                                            </span>
+                                        </Button>
+                                    )}
                                 </div>
                             </PopoverContent>
                         </Popover>
@@ -190,16 +193,21 @@ export function Header(props: HeaderProps) {
             </header>
 
             <DeleteModal
-                title={t('modal.confirmationDeleteAll.title')}
-                description={t('modal.confirmationDeleteAll.description')}
-                open={openDeleteAllDialog}
-                closeDialog={() => setOpenDeleteAllDialog(false)}
-                loading={onDeleteAll?.loading ?? false}
+                title={t(
+                    `modal.${onDelete?.multiple ? 'confirmationDeleteAll' : 'confirmationDelete'}.title`,
+                    onDelete?.multiple ? {} : { a: onDelete?.item ?? onDelete?.label ?? '' }
+                )}
+                description={t(
+                    `modal.${onDelete?.multiple ? 'confirmationDeleteAll' : 'confirmationDelete'}.description`
+                )}
+                open={openDeleteDialog}
+                closeDialog={() => setOpenDeleteDialog(false)}
+                loading={onDelete?.loading ?? false}
                 onConfirm={() => {
                     try {
-                        onDeleteAll?.onClick()
+                        onDelete?.onClick()
                     } finally {
-                        setOpenDeleteAllDialog(false)
+                        setOpenDeleteDialog(false)
                     }
                 }}
             ></DeleteModal>

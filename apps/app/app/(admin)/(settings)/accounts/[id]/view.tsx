@@ -123,7 +123,12 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
                                     loading: false
                                 }
                             ]}
-                            onDeleteAll={{ onClick: onDelete, loading: deleteMutation.isPending }}
+                            onDelete={{
+                                onClick: onDelete,
+                                loading: deleteMutation.isPending,
+                                label: account.title,
+                                multiple: false
+                            }}
                         />
 
                         <AccountBalanceCard

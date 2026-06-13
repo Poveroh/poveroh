@@ -117,9 +117,10 @@ export default function AccountView() {
                         },
                         loading: createMutation.isPending
                     }}
-                    onDeleteAll={{
+                    onDelete={{
                         onClick: () => deleteAllMutation.mutate({}),
-                        loading: deleteAllMutation.isPending
+                        loading: deleteAllMutation.isPending,
+                        multiple: true
                     }}
                 />
 
