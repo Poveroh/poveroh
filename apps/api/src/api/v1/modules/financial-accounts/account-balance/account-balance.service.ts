@@ -221,6 +221,40 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
+     * Seeds an initial transaction-derived balance point for accounts that have no series yet, so a brand-new account gets a materialized point the moment it receives its first transaction instead of staying chartless until the daily materialization runs. Idempotent: accounts that already own at least one point are left untouched, and the point is dated on the transaction day with the account's current live balance.
+     * @param financialAccountIds The financial accounts touched by the transaction; duplicates are ignored.
+     * @param date The transaction date the seed point is placed on, normalized to the start of its UTC day.
+     * @param tx An optional Prisma transaction client to run within an existing transaction.
+     * @returns A promise that resolves when the missing seed points have been created.
+     */
+    async seedInitialBalancePoints(
+        financialAccountIds: string[],
+        date: Date,
+        tx?: Prisma.TransactionClient
+    ): Promise<void> {
+        const day = startOfUtcDay(date)
+        const uniqueIds = Array.from(new Set(financialAccountIds))
+
+        await Promise.all(
+            uniqueIds.map(async accountId => {
+                if (await this.accountBalanceRepository.hasAnyBalance(accountId, tx)) {
+                    return
+                }
+
+                const liveBalance = await this.getAccountBalance(accountId, tx)
+                await this.accountBalanceRepository.upsertBalance(
+                    accountId,
+                    day,
+                    liveBalance.toNumber(),
+                    false,
+                    null,
+                    tx
+                )
+            })
+        )
+    }
+
+    /**
      * Recomputes the transaction-derived balance points after a date by walking forward from an anchor, snapping to later manual anchors, and refreshes the account live balance.
      * @param financialAccountId The financial account whose series is recomputed.
      * @param fromDate The anchor date the recompute starts from (its row is assumed already persisted).

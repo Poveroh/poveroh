@@ -90,6 +90,15 @@ export class TransactionService extends BaseService {
 
                 const amountsData = this.buildAmounts(transaction.id, payload.amounts, payload.currency)
                 await this.persistAmounts(tx, transaction.id, amountsData)
+
+                // Seed a materialized balance point for any touched account that has none yet, so a freshly
+                // created account becomes chartable immediately instead of waiting for the daily materialization.
+                await this.accountBalanceService.seedInitialBalancePoints(
+                    amountsData.map(a => a.financialAccountId),
+                    new Date(payload.date),
+                    tx
+                )
+
                 resultId = transaction.id
             },
             { timeout: 30000 }
@@ -126,6 +135,14 @@ export class TransactionService extends BaseService {
                 )
                 await this.transactionRepository.createAmounts(tx, amountsData)
                 await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], undefined, tx)
+
+                // Seed a materialized balance point for either side that has no series yet, so both ends of a
+                // transfer into brand-new accounts become chartable without waiting for the daily materialization.
+                await this.accountBalanceService.seedInitialBalancePoints(
+                    amountsData.map(a => a.financialAccountId),
+                    new Date(payload.date),
+                    tx
+                )
 
                 const transfer = await this.transactionRepository.createTransfer(tx, {
                     transferDate: utcDate,

@@ -227,6 +227,21 @@ export class AccountBalanceRepository {
     }
 
     /**
+     * Reports whether a financial account already has at least one balance point in its series.
+     * @param financialAccountId The financial account to check.
+     * @param tx An optional Prisma transaction client to run within an existing transaction.
+     * @returns A promise resolving to true when at least one non soft-deleted balance point exists.
+     */
+    async hasAnyBalance(financialAccountId: string, tx?: Prisma.TransactionClient): Promise<boolean> {
+        const db = tx ?? prisma
+        const row = await db.financialAccountBalance.findFirst({
+            where: { financialAccountId, deletedAt: null },
+            select: { id: true }
+        })
+        return row !== null
+    }
+
+    /**
      * Reads the balance point of a financial account at an exact date, used to avoid overwriting manual anchors during materialization.
      * @param financialAccountId The financial account the point belongs to.
      * @param date The exact date of the point.
