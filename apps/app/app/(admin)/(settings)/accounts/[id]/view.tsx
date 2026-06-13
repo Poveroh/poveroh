@@ -75,44 +75,40 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
                     </div>
                 ) : (
                     <>
-                        <div className='flex flex-row items-center gap-4 w-full'>
-                            <BrandIcon icon={account.logoIcon} size='xl' circled />
-                            <div className='flex-1'>
-                                <Header
-                                    title={account.title}
-                                    breadcrumbs={[
-                                        { label: t('dashboard.title'), href: '/' },
-                                        { label: t('accounts.title'), href: '/accounts' },
-                                        { label: account.title }
-                                    ]}
-                                    fetchAction={{
-                                        onClick: () => {
-                                            refetch()
-                                            balanceQuery.refetch()
-                                        },
-                                        loading: isFetching
-                                    }}
-                                    addAction={[
-                                        {
-                                            onClick: () => openModal('edit', account),
-                                            label: t('buttons.editItem'),
-                                            icon: <Pencil className='mr-2' />,
-                                            loading: false
-                                        },
-                                        {
-                                            onClick: () =>
-                                                importDrawer.openDrawer('create', {
-                                                    financialAccountId: id
-                                                } as ImportData),
-                                            label: t('imports.title'),
-                                            icon: <Upload className='mr-2' />,
-                                            loading: false
-                                        }
-                                    ]}
-                                    onDeleteAll={{ onClick: onDelete, loading: deleteMutation.isPending }}
-                                />
-                            </div>
-                        </div>
+                        <Header
+                            title={account.title}
+                            breadcrumbs={[
+                                { label: t('dashboard.title'), href: '/' },
+                                { label: t('accounts.title'), href: '/accounts' },
+                                { label: account.title }
+                            ]}
+                            icon={account.logoIcon}
+                            fetchAction={{
+                                onClick: () => {
+                                    refetch()
+                                    balanceQuery.refetch()
+                                },
+                                loading: isFetching
+                            }}
+                            addAction={[
+                                {
+                                    onClick: () => openModal('edit', account),
+                                    label: t('buttons.editItem'),
+                                    icon: <Pencil className='mr-2' />,
+                                    loading: false
+                                },
+                                {
+                                    onClick: () =>
+                                        importDrawer.openDrawer('create', {
+                                            financialAccountId: id
+                                        } as ImportData),
+                                    label: t('imports.title'),
+                                    icon: <Upload className='mr-2' />,
+                                    loading: false
+                                }
+                            ]}
+                            onDeleteAll={{ onClick: onDelete, loading: deleteMutation.isPending }}
+                        />
 
                         <AccountBalanceCard
                             currentBalance={account.balance}

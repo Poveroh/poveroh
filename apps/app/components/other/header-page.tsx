@@ -15,6 +15,7 @@ import React, { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@poveroh/ui/components/tooltip'
 import { DeleteModal } from '../modal/delete-modal'
 import { cn } from '@poveroh/ui/lib/utils'
+import { BrandIcon } from '../icon/brand-icon'
 
 type HeaderAction = {
     onClick: () => void
@@ -28,6 +29,7 @@ type HeaderProps = {
     title: string
     titleSize?: 'default' | 'compact'
     subtitle?: string
+    icon?: string
     breadcrumbs?: IBreadcrumb[]
     fetchAction?: HeaderAction
     uploadAction?: HeaderAction
@@ -39,7 +41,8 @@ type HeaderProps = {
 export function Header(props: HeaderProps) {
     const t = useTranslations()
 
-    const { title, subtitle, breadcrumbs, fetchAction, uploadAction, downloadAction, onDeleteAll, addAction } = props
+    const { title, subtitle, icon, breadcrumbs, fetchAction, uploadAction, downloadAction, onDeleteAll, addAction } =
+        props
 
     const showHeaderActions = fetchAction || uploadAction || downloadAction || onDeleteAll || addAction
 
@@ -50,29 +53,33 @@ export function Header(props: HeaderProps) {
             <header
                 className={cn('flex flex-row items-center', showHeaderActions ? 'justify-between' : 'justify-start')}
             >
-                <div className='flex flex-col space-y-3'>
-                    <div className='flex flex-col space-y-1'>
-                        {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}
-                        {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
+                <div className='flex flex-row space-x-4 items-center'>
+                    {icon && <BrandIcon icon={icon} size='xl' circled />}
+                    <div className='flex flex-col space-y-3'>
+                        <div className='flex flex-col space-y-1'>
+                            {props.titleSize === 'compact' ? <h4 className='bold'>{title}</h4> : <h3>{title}</h3>}
+                            {subtitle && <p className='text-muted-foreground'>{subtitle}</p>}
+                        </div>
+
+                        {breadcrumbs && (
+                            <Breadcrumb>
+                                <BreadcrumbList>
+                                    {breadcrumbs.map((item, index) => (
+                                        <React.Fragment key={index}>
+                                            <BreadcrumbItem>
+                                                {item.href ? (
+                                                    <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                                                ) : (
+                                                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                                )}
+                                            </BreadcrumbItem>
+                                            {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                                        </React.Fragment>
+                                    ))}
+                                </BreadcrumbList>
+                            </Breadcrumb>
+                        )}
                     </div>
-                    {breadcrumbs && (
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                {breadcrumbs.map((item, index) => (
-                                    <React.Fragment key={index}>
-                                        <BreadcrumbItem>
-                                            {item.href ? (
-                                                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
-                                            ) : (
-                                                <BreadcrumbPage>{item.label}</BreadcrumbPage>
-                                            )}
-                                        </BreadcrumbItem>
-                                        {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-                                    </React.Fragment>
-                                ))}
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    )}
                 </div>
                 {showHeaderActions ? (
                     <div className='flex flex-row items-center space-x-4'>
