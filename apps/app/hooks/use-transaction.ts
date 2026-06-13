@@ -8,6 +8,7 @@ import {
     createTransactionMutation,
     deleteTransactionMutation,
     deleteTransactionsMutation,
+    getFinancialAccountBalanceSeriesQueryKey,
     getTransactionByIdOptions,
     getTransactionByIdQueryKey,
     getTransactionsOptions,
@@ -32,10 +33,16 @@ export const useTransaction = () => {
         title: { contains: text }
     }))
 
+    const balanceSeriesQueryId = getFinancialAccountBalanceSeriesQueryKey({ path: { id: '' } })[0]._id
+    const invalidateBalanceSeries = () => {
+        queryClient.invalidateQueries({ queryKey: [{ _id: balanceSeriesQueryId }] })
+    }
+
     const createMutation = useMutation({
         ...createTransactionMutation(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+            invalidateBalanceSeries()
         },
         onError: error => {
             handleError(error, 'Error adding transaction')
@@ -51,6 +58,7 @@ export const useTransaction = () => {
                     path: { id: variables.path.id }
                 })
             })
+            invalidateBalanceSeries()
         },
         onError: error => {
             handleError(error, 'Error updating transaction')
@@ -61,6 +69,7 @@ export const useTransaction = () => {
         ...deleteTransactionMutation(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+            invalidateBalanceSeries()
         },
         onError: error => {
             handleError(error, 'Error deleting transaction')
@@ -71,6 +80,7 @@ export const useTransaction = () => {
         ...deleteTransactionsMutation(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
+            invalidateBalanceSeries()
         },
         onError: error => {
             handleError(error, 'Error deleting all transactions')
