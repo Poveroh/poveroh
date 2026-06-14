@@ -77,9 +77,7 @@ export const logger: Logger = createWinstonLogger({
     ]
 })
 
-if (!isProduction) {
-    logger.add(new transports.Console({ format: format.simple() }))
-}
+logger.add(new transports.Console(isProduction ? {} : { format: format.simple() }))
 
 const betterStackToken = process.env.BETTERSTACK_SOURCE_TOKEN
 if (betterStackToken) {

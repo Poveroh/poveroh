@@ -51,6 +51,14 @@ COPY --from=installer /app/node_modules /app/node_modules
 # present here or the symlinks dangle and require() fails at startup.
 COPY --from=installer /app/packages /app/packages
 
+# Strip TypeScript sources: at runtime each package is loaded through its
+# compiled dist/ (see "main"/"typings" in every package.json), so the src/
+# folders and tsconfigs are dead weight. prisma.config.ts is the one .ts that
+# stays — Prisma 7 reads the datasource URL from it during `migrate deploy`.
+RUN find /app/packages -type d -name src -prune -exec rm -rf {} + \
+ && find /app/packages -type f -name '*.ts' ! -name 'prisma.config.ts' -delete \
+ && find /app/packages -type f -name 'tsconfig*.json' -delete
+
 # Copy the entrypoint scripts (api is the default entrypoint; worker is selected via a compose override)
 COPY ./scripts/docker-api-start.sh /app/
 COPY ./scripts/docker-worker-start.sh /app/
