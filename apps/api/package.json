@@ -4,8 +4,10 @@
     "main": "dist/apps/api/src/index.js",
     "scripts": {
         "dev": "nodemon",
+        "dev:worker": "nodemon --config nodemon.worker.json",
         "build": "npx tsc && npx tsc-alias",
         "start": "node dist/apps/api/src/index.js",
+        "start:worker": "node dist/apps/api/src/api/v1/worker/index.js",
         "lint": "eslint src/**/*.ts",
         "openapi:generate": "npm run openapi:generate-spec && npm run openapi:generate-contracts",
         "openapi:generate-spec": "npm run openapi:generate-better-auth && npm run openapi:generate-main",

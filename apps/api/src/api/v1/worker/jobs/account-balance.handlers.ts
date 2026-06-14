@@ -13,5 +13,20 @@ export const accountBalanceJobHandlers: JobHandlers = {
             date: payload.date ?? null,
             accounts: count
         })
+    },
+    'account-balance.backfill-range': async payload => {
+        // Rebuilds the daily balance series of a single account from a date forward (e.g. after a backdated
+        // transaction) so the historical chart and snapshots fill in the missing daily points.
+        const accountBalanceService = new AccountBalanceService()
+        await accountBalanceService.backfillDailySeries(
+            payload.financialAccountId,
+            payload.userId,
+            new Date(payload.fromDate)
+        )
+
+        logger.info('Account balance series backfilled', {
+            financialAccountId: payload.financialAccountId,
+            fromDate: payload.fromDate
+        })
     }
 }

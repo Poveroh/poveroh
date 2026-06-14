@@ -15,6 +15,7 @@ import type {
     UpdateTransactionRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/utils'
+import { getJobDispatcher } from '@/utils/queue'
 import { AccountBalanceService } from '../financial-accounts/account-balance/account-balance.service'
 import { BaseService } from '../base/base.service'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
@@ -83,6 +84,7 @@ export class TransactionService extends BaseService {
     private async createStandard(payload: CreateTransactionRequest, userId: string, files?: Express.Multer.File[]) {
         const normalized = this.normalize(payload) as Prisma.TransactionCreateManyInput
         let resultId = ''
+        let affectedAccountIds: string[] = []
 
         await prisma.$transaction(
             async tx => {
@@ -91,18 +93,15 @@ export class TransactionService extends BaseService {
                 const amountsData = this.buildAmounts(transaction.id, payload.amounts, payload.currency)
                 await this.persistAmounts(tx, transaction.id, amountsData)
 
-                // Seed a materialized balance point for any touched account that has none yet, so a freshly
-                // created account becomes chartable immediately instead of waiting for the daily materialization.
-                await this.accountBalanceService.seedInitialBalancePoints(
-                    amountsData.map(a => a.financialAccountId),
-                    new Date(payload.date),
-                    tx
-                )
-
                 resultId = transaction.id
+                affectedAccountIds = amountsData.map(a => a.financialAccountId)
             },
             { timeout: 30000 }
         )
+
+        // Rebuild the daily balance series of each touched account from the transaction date forward so a
+        // backdated transaction fills in the missing daily points. Runs after commit to read the persisted amounts.
+        await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
 
         await this.saveTransactionMedia(resultId, files)
         return this.getTransactionById(resultId)
@@ -121,6 +120,7 @@ export class TransactionService extends BaseService {
         const normalized = { ...this.normalize(payload), userId } as Prisma.TransactionCreateManyInput
         let transferId = ''
         let transactionIds: string[] = []
+        let affectedAccountIds: string[] = []
 
         await prisma.$transaction(
             async tx => {
@@ -136,13 +136,7 @@ export class TransactionService extends BaseService {
                 await this.transactionRepository.createAmounts(tx, amountsData)
                 await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], undefined, tx)
 
-                // Seed a materialized balance point for either side that has no series yet, so both ends of a
-                // transfer into brand-new accounts become chartable without waiting for the daily materialization.
-                await this.accountBalanceService.seedInitialBalancePoints(
-                    amountsData.map(a => a.financialAccountId),
-                    new Date(payload.date),
-                    tx
-                )
+                affectedAccountIds = amountsData.map(a => a.financialAccountId)
 
                 const transfer = await this.transactionRepository.createTransfer(tx, {
                     transferDate: utcDate,
@@ -160,8 +154,33 @@ export class TransactionService extends BaseService {
             { timeout: 30000 }
         )
 
+        // Backfill the daily series of both ends of the transfer from the transfer date forward, after commit.
+        await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
+
         await Promise.all(transactionIds.map(id => this.saveTransactionMedia(id, files)))
         return this.fetchTransferTransactionByTransferId(transferId)
+    }
+
+    /**
+     * Enqueues a background job per distinct affected account to rebuild its daily balance series from a date forward, used after a transaction is created so a backdated transaction fills in the missing daily points without blocking the request. The job is idempotent, so a transient failure can be retried safely.
+     * @param financialAccountIds The financial accounts touched by the transaction; duplicates are ignored.
+     * @param userId The ID of the user who owns the affected accounts.
+     * @param fromDate The earliest date impacted by the transaction.
+     * @returns A promise that resolves once the backfill jobs have been enqueued.
+     */
+    private async backfillBalanceSeries(financialAccountIds: string[], userId: string, fromDate: Date): Promise<void> {
+        const fromDateIso = fromDate.toISOString()
+        const dispatcher = getJobDispatcher()
+
+        await Promise.all(
+            Array.from(new Set(financialAccountIds)).map(financialAccountId =>
+                dispatcher.dispatch(
+                    'account-balance.backfill-range',
+                    { userId, financialAccountId, fromDate: fromDateIso },
+                    { attempts: 3, backoff: { type: 'exponential', delay: 1000 } }
+                )
+            )
+        )
     }
 
     /**
