@@ -12,15 +12,7 @@ import { AccountBalanceRepository } from './account-balance.repository'
 import { FinancialAccountRepository } from '../financial-account.repository'
 import { SnapshotService } from '../../snapshots/snapshot.service'
 import { eventBus } from '../../../events/event-bus'
-
-/**
- * Normalizes a date to midnight UTC so each balance point maps to a single calendar day.
- * @param date The date to normalize.
- * @returns A new Date set to 00:00:00.000 UTC of the same calendar day.
- */
-function startOfUtcDay(date: Date): Date {
-    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
-}
+import { addUtcDays, startOfUtcDay } from '@/utils/date'
 
 export class AccountBalanceService extends BaseService {
     private readonly accountBalanceRepository = new AccountBalanceRepository()
@@ -221,37 +213,69 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
-     * Seeds an initial transaction-derived balance point for accounts that have no series yet, so a brand-new account gets a materialized point the moment it receives its first transaction instead of staying chartless until the daily materialization runs. Idempotent: accounts that already own at least one point are left untouched, and the point is dated on the transaction day with the account's current live balance.
-     * @param financialAccountIds The financial accounts touched by the transaction; duplicates are ignored.
-     * @param date The transaction date the seed point is placed on, normalized to the start of its UTC day.
-     * @param tx An optional Prisma transaction client to run within an existing transaction.
-     * @returns A promise that resolves when the missing seed points have been created.
+     * Backfills a continuous daily balance series for an account from a start day up to today, creating one transaction-derived point per day so a backdated transaction yields a full daily history instead of a single point. Manual anchors are preserved and reanchor the running balance, unchanged points are skipped, and the affected snapshots are refreshed. Runs after the transaction commit so it reads the persisted amounts.
+     * @param financialAccountId The financial account whose daily series is backfilled.
+     * @param userId The owning user, used to scope the transactions summed into each day.
+     * @param fromDate The earliest day to materialize, normalized to the start of its UTC day.
+     * @returns A promise that resolves when the daily series has been backfilled and the snapshots refreshed.
      */
-    async seedInitialBalancePoints(
-        financialAccountIds: string[],
-        date: Date,
-        tx?: Prisma.TransactionClient
-    ): Promise<void> {
-        const day = startOfUtcDay(date)
-        const uniqueIds = Array.from(new Set(financialAccountIds))
+    async backfillDailySeries(financialAccountId: string, userId: string, fromDate: Date): Promise<void> {
+        const start = startOfUtcDay(fromDate)
+        const today = startOfUtcDay(new Date())
+        if (start.getTime() > today.getTime()) {
+            return
+        }
 
-        await Promise.all(
-            uniqueIds.map(async accountId => {
-                if (await this.accountBalanceRepository.hasAnyBalance(accountId, tx)) {
-                    return
-                }
+        // The latest point strictly before `start` already holds the balance at the end of its day, so the running
+        // balance starts there (or at 0 when the account has no earlier point).
+        const anchor = await this.accountBalanceRepository.findLatestPointBefore(financialAccountId, start)
+        let running = anchor?.balance ?? 0
 
-                const liveBalance = await this.getAccountBalance(accountId, tx)
-                await this.accountBalanceRepository.upsertBalance(
-                    accountId,
-                    day,
-                    liveBalance.toNumber(),
-                    false,
-                    null,
-                    tx
-                )
-            })
+        // Sum each day's signed amounts once, bucketed by UTC day, instead of querying per day. Fetch from just
+        // after the anchor day (whose balance is already folded into `running`) through the end of today.
+        const fetchAfter = anchor ? addUtcDays(startOfUtcDay(anchor.date), 1) : new Date(0)
+        const dailyAmounts = await this.accountBalanceRepository.findSignedDailyAmounts(
+            financialAccountId,
+            userId,
+            fetchAfter,
+            addUtcDays(today, 1)
         )
+        const deltaByDay = new Map<number, number>()
+        for (const row of dailyAmounts) {
+            const key = startOfUtcDay(row.date).getTime()
+            deltaByDay.set(key, (deltaByDay.get(key) ?? 0) + row.delta)
+        }
+
+        // Fold transactions that fall between the anchor day and `start` into the baseline so the first
+        // materialized day starts from the correct running balance.
+        for (const [time, delta] of deltaByDay) {
+            if (time < start.getTime()) {
+                running += delta
+            }
+        }
+
+        // Preload existing points in range to preserve manual anchors and skip rewriting unchanged values.
+        const existing = await this.accountBalanceRepository.findPointsInRange(financialAccountId, start, today)
+        const pointByDay = new Map(existing.map(point => [startOfUtcDay(point.date).getTime(), point]))
+
+        for (let day = start; day.getTime() <= today.getTime(); day = addUtcDays(day, 1)) {
+            const key = day.getTime()
+            const point = pointByDay.get(key)
+
+            if (point?.isManual) {
+                running = point.balance.toNumber()
+                continue
+            }
+
+            running += deltaByDay.get(key) ?? 0
+
+            if (point && point.balance.toNumber() === running) {
+                continue
+            }
+            await this.accountBalanceRepository.upsertBalance(financialAccountId, day, running, false)
+        }
+
+        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, start)
     }
 
     /**

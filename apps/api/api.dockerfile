@@ -51,11 +51,12 @@ COPY --from=installer /app/node_modules /app/node_modules
 # present here or the symlinks dangle and require() fails at startup.
 COPY --from=installer /app/packages /app/packages
 
-# Copy the entrypoint script
+# Copy the entrypoint scripts (api is the default entrypoint; worker is selected via a compose override)
 COPY ./scripts/docker-api-start.sh /app/
+COPY ./scripts/docker-worker-start.sh /app/
 # Fix for Windows line endings if needed
-RUN sed -i 's/\r$//' /app/docker-api-start.sh
-RUN chmod +x /app/docker-api-start.sh
+RUN sed -i 's/\r$//' /app/docker-api-start.sh /app/docker-worker-start.sh
+RUN chmod +x /app/docker-api-start.sh /app/docker-worker-start.sh
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 userapi

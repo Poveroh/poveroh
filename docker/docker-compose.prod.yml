@@ -48,6 +48,21 @@ services:
         networks:
             - poveroh_network
 
+    worker:
+        image: ghcr.io/poveroh/poveroh-api:latest
+        container_name: worker
+        restart: always
+        env_file: .env
+        environment:
+            - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
+        entrypoint: ['/app/docker-worker-start.sh']
+        networks:
+            - poveroh_network
+        depends_on:
+            - db
+            - redis
+            - api
+
     app:
         image: ghcr.io/poveroh/poveroh-app:latest
         container_name: app

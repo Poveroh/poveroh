@@ -227,18 +227,68 @@ export class AccountBalanceRepository {
     }
 
     /**
-     * Reports whether a financial account already has at least one balance point in its series.
-     * @param financialAccountId The financial account to check.
-     * @param tx An optional Prisma transaction client to run within an existing transaction.
-     * @returns A promise resolving to true when at least one non soft-deleted balance point exists.
+     * Reads the latest balance point strictly before a date, used as the running baseline when backfilling a daily series.
+     * @param financialAccountId The financial account whose baseline point is read.
+     * @param date The exclusive upper bound date.
+     * @returns A promise resolving to the latest point's date and balance, or null when no earlier point exists.
      */
-    async hasAnyBalance(financialAccountId: string, tx?: Prisma.TransactionClient): Promise<boolean> {
-        const db = tx ?? prisma
-        const row = await db.financialAccountBalance.findFirst({
-            where: { financialAccountId, deletedAt: null },
-            select: { id: true }
+    async findLatestPointBefore(
+        financialAccountId: string,
+        date: Date
+    ): Promise<{ date: Date; balance: number } | null> {
+        const row = await prisma.financialAccountBalance.findFirst({
+            where: { financialAccountId, deletedAt: null, date: { lt: date } },
+            orderBy: { date: 'desc' },
+            select: { date: true, balance: true }
         })
-        return row !== null
+        return row ? { date: row.date, balance: row.balance.toNumber() } : null
+    }
+
+    /**
+     * Reads the balance points of a financial account within an inclusive date range, used to preserve manual anchors and skip unchanged points while backfilling.
+     * @param financialAccountId The financial account whose points are read.
+     * @param from The inclusive lower bound date.
+     * @param to The inclusive upper bound date.
+     * @returns A promise resolving to the points in range with the fields required by the backfill walk.
+     */
+    async findPointsInRange(
+        financialAccountId: string,
+        from: Date,
+        to: Date
+    ): Promise<{ date: Date; balance: Prisma.Decimal; isManual: boolean }[]> {
+        return prisma.financialAccountBalance.findMany({
+            where: { financialAccountId, deletedAt: null, date: { gte: from, lte: to } },
+            select: { date: true, balance: true, isManual: true }
+        })
+    }
+
+    /**
+     * Reads the signed balance effect (income positive, expenses negative) of every amount applied to an account by the user's transactions dated in an exclusive-exclusive window, tagged with the transaction date so the caller can bucket them per day.
+     * @param financialAccountId The financial account whose amounts are read.
+     * @param userId The owning user, used to scope the underlying transactions.
+     * @param after The exclusive lower bound date of the transactions.
+     * @param until The exclusive upper bound date of the transactions.
+     * @returns A promise resolving to the per-amount signed deltas with their transaction date.
+     */
+    async findSignedDailyAmounts(
+        financialAccountId: string,
+        userId: string,
+        after: Date,
+        until: Date
+    ): Promise<{ date: Date; delta: number }[]> {
+        const rows = await prisma.amount.findMany({
+            where: {
+                financialAccountId,
+                deletedAt: null,
+                transaction: { userId, deletedAt: null, date: { gt: after, lt: until } }
+            },
+            select: { amount: true, action: true, transaction: { select: { date: true } } }
+        })
+        return rows.map(row => ({
+            date: row.transaction.date,
+            delta:
+                row.action === 'INCOME' ? row.amount.toNumber() : row.action === 'EXPENSES' ? -row.amount.toNumber() : 0
+        }))
     }
 
     /**

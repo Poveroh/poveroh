@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ext": ".ts,.js",
+    "ignore": [],
+    "exec": "dotenv -e ../../.env -- node --inspect=9230 -r tsx/cjs ./src/api/v1/worker/index.ts"
+}

@@ -9,6 +9,11 @@ export interface JobMap {
     'account-balance.materialize-daily': {
         date?: string
     }
+    'account-balance.backfill-range': {
+        userId: string
+        financialAccountId: string
+        fromDate: string
+    }
     'import.parse-csv': {
         userId: string
         importId: string
