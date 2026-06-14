@@ -1,6 +1,6 @@
+import { toNumber, toIsoString } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CollectibleAssetData, CreateCollectibleAssetRequest, UpdateCollectibleAssetRequest } from '@poveroh/types'
-import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
 
 const collectibleSelect = {
     acquisitionCost: true,

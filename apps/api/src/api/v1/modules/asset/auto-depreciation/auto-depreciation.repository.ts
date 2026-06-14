@@ -1,3 +1,4 @@
+import { toIsoString, toNumber } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type {
     AutoDepreciationData,
@@ -7,7 +8,6 @@ import type {
     DepreciationValueTypeEnum
 } from '@poveroh/types'
 import { CyclePeriod, DepreciationBase, DepreciationValueType } from '@prisma/client'
-import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
 
 export const autoDepreciationSelect = {
     startDate: true,

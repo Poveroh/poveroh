@@ -14,7 +14,7 @@ import type {
     VehicleAsset
 } from '@poveroh/types'
 import { autoDepreciationSelect, toAutoDepreciationData } from '../auto-depreciation/auto-depreciation.repository'
-import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
+import { toIsoString, toNumber } from '@/utils'
 
 export type PortfolioSummary = {
     totalAssets: number

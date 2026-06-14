@@ -2,7 +2,7 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateVehicleAssetRequest, UpdateVehicleAssetRequest, VehicleAssetData } from '@poveroh/types'
 import { VehicleType } from '@prisma/client'
 import { AutoDepreciationRepository } from '../auto-depreciation/auto-depreciation.repository'
-import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
+import { toNumber, toIsoString } from '@/utils'
 
 const vehicleSelect = {
     brand: true,

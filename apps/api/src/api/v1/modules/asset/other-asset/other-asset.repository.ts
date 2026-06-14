@@ -1,6 +1,6 @@
+import { toIsoString, toNumber } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateOtherAssetRequest, OtherAssetData, UpdateOtherAssetRequest } from '@poveroh/types'
-import { toIsoString, toNumber } from '@/v1/helpers/asset.helper'
 
 const otherSelect = {
     description: true,

@@ -16,3 +16,13 @@ export function startOfUtcDay(date: Date): Date {
 export function addUtcDays(date: Date, days: number): Date {
     return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days))
 }
+
+/**
+ * Normalizes nullable dates into ISO strings so API responses stay stable.
+ * @param value The date to normalize.
+ * @returns An ISO string or null if the input is null/undefined.
+ */
+export function toIsoString(value: Date | string | null | undefined): string | null {
+    if (!value) return null
+    return value instanceof Date ? value.toISOString() : value
+}
