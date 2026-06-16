@@ -29,7 +29,7 @@
         "@poveroh/types": "*",
         "@poveroh/utils": "*",
         "@prisma/client": "^7.6.0",
-        "@sentry/node": "^8.0.0",
+        "@sentry/node": "^10.58.0",
         "bcryptjs": "^3.0.2",
         "better-auth": "^1.6.11",
         "beycloud": "^1.1.2",
