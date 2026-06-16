@@ -59,7 +59,7 @@ app.get('/', (req, res) => {
 app.use('/v1', v1Route)
 
 if (process.env.SENTRY_DSN) {
-    app.use(Sentry.expressErrorHandler())
+    Sentry.setupExpressErrorHandler(app)
 }
 
 const startServer = async () => {
