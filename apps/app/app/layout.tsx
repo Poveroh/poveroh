@@ -1,7 +1,7 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
 import appConfig from '../config'
-import { PublicEnvProvider } from 'next-runtime-env'
+import { PublicEnvScript } from 'next-runtime-env'
 
 const getFallbackProps = () => ({
     locale: 'en',
@@ -26,10 +26,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
     return (
         <html lang={locale} dir={direction} suppressHydrationWarning>
+            <head>
+                <PublicEnvScript />
+            </head>
             <body className='antialiased'>
-                <PublicEnvProvider>
-                    <Providers>{children}</Providers>
-                </PublicEnvProvider>
+                <Providers>{children}</Providers>
             </body>
         </html>
     )

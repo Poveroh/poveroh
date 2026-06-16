@@ -1,5 +1,6 @@
 import { AppConfig } from '@/types/config'
 import { LogLevel } from '@poveroh/types'
+import { env } from 'next-runtime-env'
 
 const createAppConfig = (): AppConfig => {
     return {
@@ -7,11 +8,10 @@ const createAppConfig = (): AppConfig => {
             return 'Poveroh'
         },
         get version(): string {
-            return process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0'
+            return env('NEXT_PUBLIC_APP_VERSION') || '0.0.0'
         },
         get apiUrl(): string {
-            // Public env values are available on both server and client
-            return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+            return env('NEXT_PUBLIC_API_URL') || 'http://localhost:3001'
         },
         get mode(): 'production' | 'development' | 'test' {
             // For client-side code, we can't access NODE_ENV at runtime,
@@ -25,8 +25,7 @@ const createAppConfig = (): AppConfig => {
             return this.mode === 'production'
         },
         get logLevel(): LogLevel {
-            // Prefer public runtime value if provided, fallback to server env
-            return (process.env.NEXT_PUBLIC_LOG_LEVEL || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
+            return (env('NEXT_PUBLIC_LOG_LEVEL') || process.env.LOG_LEVEL || LogLevel.INFO) as LogLevel
         }
     }
 }
