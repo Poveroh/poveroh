@@ -5,7 +5,7 @@ import { BaseService } from '@/v1/modules/base/base.service'
 import { isKnownProvider } from '@/v1/content/template/market-data-providers'
 import { MarketDataRepository } from '../data/market-data.repository'
 import { CREDENTIAL_PAYLOAD_ALGO_V1, UpdateMarketDataProviderCredentialRequest } from '@poveroh/types'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 
 /**
  * Service that owns encrypted provider credential records.

@@ -11,7 +11,7 @@ import { BaseService } from '../../base/base.service'
 import { AccountBalanceRepository } from './account-balance.repository'
 import { FinancialAccountRepository } from '../financial-account.repository'
 import { SnapshotService } from '../../snapshots/snapshot.service'
-import { eventBus } from '../../../events/event-bus'
+import { eventBus } from '../../../worker/events/event-bus'
 import { addUtcDays, startOfUtcDay } from '@/utils/date'
 
 export class AccountBalanceService extends BaseService {

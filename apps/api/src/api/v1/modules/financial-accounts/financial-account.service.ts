@@ -5,7 +5,7 @@ import type {
     UpdateFinancialAccountRequest
 } from '@poveroh/types'
 import { BaseService } from '@/src/api/v1/modules/base/base.service'
-import { eventBus } from '@/src/api/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 import { FinancialAccountRepository } from './financial-account.repository'
 
 export class FinancialAccountService extends BaseService {

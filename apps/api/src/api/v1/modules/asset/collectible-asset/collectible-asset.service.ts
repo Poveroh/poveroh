@@ -7,7 +7,7 @@ import type {
 import { AssetRepository } from '../asset/asset.repository'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { CollectibleAssetRepository } from './collectible-asset.repository'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 import { NotFoundError } from '@/utils'
 
 export class CollectibleAssetService extends BaseService {

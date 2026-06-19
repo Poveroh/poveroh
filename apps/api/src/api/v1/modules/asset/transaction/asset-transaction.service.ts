@@ -7,7 +7,7 @@ import type {
 import { AssetTransactionRepository } from './asset-transaction.repository'
 import { BadRequestError, NotFoundError } from '@/utils'
 import { BaseService } from '@/v1/modules/base/base.service'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 
 export class AssetTransactionService extends BaseService {
     private readonly assetTransactionRepository = new AssetTransactionRepository()

@@ -1,7 +1,7 @@
 import { BaseService } from '../base/base.service'
 import { SnapshotRepository } from './snapshot.repository'
 import { AccountBalanceRepository } from '../financial-accounts/account-balance/account-balance.repository'
-import { eventBus } from '../../events/event-bus'
+import { eventBus } from '../../worker/events/event-bus'
 
 /**
  * Returns true when the given date is the last calendar day of its month.

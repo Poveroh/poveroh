@@ -20,7 +20,7 @@ import { AccountBalanceService } from '../financial-accounts/account-balance/acc
 import { BaseService } from '../base/base.service'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
 import { TransactionRepository } from './transaction.repository'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 
 /**
  * Service for managing transactions (create, update, delete, read).
@@ -154,8 +154,8 @@ export class TransactionService extends BaseService {
             { timeout: 30000 }
         )
 
-        // Backfill the daily series of both ends of the transfer from the transfer date forward, after commit.
-        await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
+        // // Backfill the daily series of both ends of the transfer from the transfer date forward, after commit.
+        // await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
 
         await Promise.all(transactionIds.map(id => this.saveTransactionMedia(id, files)))
         return this.fetchTransferTransactionByTransferId(transferId)

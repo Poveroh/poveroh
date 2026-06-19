@@ -1,7 +1,7 @@
 import type { DomainEventName, DomainEventPayloads } from '@/types'
 import type { CreateUserActivityRequest, UserActivityActionEnum, UserActivityEntityEnum } from '@poveroh/types'
 import { eventBus } from './event-bus'
-import { UserActivityService } from '../modules/users/activities/user-activity.service'
+import { UserActivityService } from '../../modules/users/activities/user-activity.service'
 
 let registered = false
 

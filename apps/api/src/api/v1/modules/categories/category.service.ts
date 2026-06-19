@@ -1,7 +1,7 @@
 import type { CategoryData, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { CategoryRepository } from './category.repository'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 
 export class CategoryService extends BaseService {
     private readonly categoryRepository = new CategoryRepository()

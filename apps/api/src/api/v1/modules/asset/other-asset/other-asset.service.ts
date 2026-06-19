@@ -1,7 +1,7 @@
 import type { AssetData, CreateOtherAssetRequest, OtherAssetData, UpdateOtherAssetRequest } from '@poveroh/types'
 import { AssetRepository } from '../asset/asset.repository'
 import { BaseService } from '@/v1/modules/base/base.service'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 import { NotFoundError } from '@/utils'
 import { OtherAssetRepository } from './other-asset.repository'
 

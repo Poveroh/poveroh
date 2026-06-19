@@ -2,7 +2,7 @@ import { GetDashboardLayout, UpdateDashboardLayoutRequest } from '@poveroh/types
 import { NotFoundError } from '@/utils'
 import { BaseService } from '../base/base.service'
 import { DashboardRepository } from './dashboard.repository'
-import { eventBus } from '../../events/event-bus'
+import { eventBus } from '../../worker/events/event-bus'
 
 /**
  * Service responsible for handling dashboard-related operations, such as retrieving and saving the dashboard layout for the authenticated user.

@@ -2,7 +2,7 @@ import type { UpdateUserRequest, User } from '@poveroh/types'
 import { BadRequestError } from '@/utils'
 import { BaseService } from '../base/base.service'
 import { UserRepository } from './user.repository'
-import { eventBus } from '../../events/event-bus'
+import { eventBus } from '../../worker/events/event-bus'
 
 /**
  * Service class for managing users, including retrieving and updating user data.

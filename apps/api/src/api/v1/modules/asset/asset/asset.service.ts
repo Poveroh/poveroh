@@ -1,7 +1,7 @@
 import type { AssetData, AssetFilters } from '@poveroh/types'
 import { AssetRepository, type PortfolioSummary } from './asset.repository'
 import { BaseService } from '@/v1/modules/base/base.service'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 
 export class AssetService extends BaseService {
     private readonly assetRepository = new AssetRepository()

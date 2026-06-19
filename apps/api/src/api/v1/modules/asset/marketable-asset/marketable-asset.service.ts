@@ -6,7 +6,7 @@ import type {
 } from '@poveroh/types'
 import { AssetRepository } from '../asset/asset.repository'
 import { BaseService } from '@/v1/modules/base/base.service'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 import { MarketableAssetRepository } from './marketable-asset.repository'
 import { NotFoundError } from '@/utils'
 

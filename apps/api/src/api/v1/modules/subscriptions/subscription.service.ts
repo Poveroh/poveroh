@@ -5,7 +5,7 @@ import type {
     UpdateSubscriptionRequest
 } from '@poveroh/types'
 import { BaseService } from '@/v1/modules/base/base.service'
-import { eventBus } from '@/v1/events/event-bus'
+import { eventBus } from '@/v1/worker/events/event-bus'
 import { SubscriptionRepository } from './subscription.repository'
 
 export class SubscriptionService extends BaseService {

@@ -2,7 +2,7 @@ import type { UpdateUserPreferencesRequest, UserPreferences } from '@poveroh/typ
 import { BadRequestError } from '@/utils'
 import { BaseService } from '../../base/base.service'
 import { UserPreferencesRepository } from './user-preferences.repository'
-import { eventBus } from '../../../events/event-bus'
+import { eventBus } from '../../../worker/events/event-bus'
 
 /**
  * Service responsible for managing user preferences (currency, language, date format, timezone, etc.).
