@@ -1,10 +1,10 @@
-import { useRouter } from 'next/navigation'
 import { BrandIcon } from '../icon/brand-icon'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { OptionsPopover } from '../navbar/options-popover'
 import { useTranslations } from 'next-intl'
 import { ExtraButton } from '@/types/options'
 import { FinancialAccountData } from '@poveroh/types'
+import Link from 'next/link'
 
 type AccountItemProps = {
     account: FinancialAccountData
@@ -15,15 +15,14 @@ type AccountItemProps = {
 
 export function AccountItem({ account, buttons, openDelete, openEdit }: AccountItemProps) {
     const t = useTranslations()
-    const router = useRouter()
     const { ACCOUNT_TYPE_CATALOG } = useFinancialAccount()
 
     const type = ACCOUNT_TYPE_CATALOG.find(tp => tp.value == account.type)
 
     return (
-        <div
+        <Link
+            href={`/accounts/${account.id}`}
             className='flex flex-row justify-between items-center w-full p-5 border-border cursor-pointer'
-            onClick={() => router.push(`/accounts/${account.id}`)}
         >
             <div className='flex flex-row items-center space-x-5'>
                 <BrandIcon icon={account.logoIcon}></BrandIcon>
@@ -49,6 +48,6 @@ export function AccountItem({ account, buttons, openDelete, openEdit }: AccountI
                     }
                 ]}
             ></OptionsPopover>
-        </div>
+        </Link>
     )
 }
