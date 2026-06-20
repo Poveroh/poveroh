@@ -1,5 +1,6 @@
 import { contextService, type ContextService } from './context.service'
 import { MediaService } from './media.service'
+import { RedisHelper } from '@poveroh/redis'
 import { UserActivityService } from '../users/activities/user-activity.service'
 
 /**
@@ -32,5 +33,13 @@ export class BaseService {
      */
     protected get activities(): UserActivityService {
         return new UserActivityService()
+    }
+
+    /**
+     * Provides access to Redis helper methods for caching and data storage.
+     * @returns A new instance of RedisHelper for interacting with Redis.
+     */
+    protected get redis(): RedisHelper {
+        return new RedisHelper()
     }
 }

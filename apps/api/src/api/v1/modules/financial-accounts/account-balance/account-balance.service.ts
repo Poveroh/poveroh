@@ -6,7 +6,6 @@ import type {
     FinancialAccountData
 } from '@poveroh/types'
 import { NotFoundError } from '@/utils'
-import { RedisHelper } from '@poveroh/redis'
 import { BaseService } from '../../base/base.service'
 import { AccountBalanceRepository } from './account-balance.repository'
 import { FinancialAccountRepository } from '../financial-account.repository'
@@ -134,7 +133,7 @@ export class AccountBalanceService extends BaseService {
      * @returns A promise resolving to the live balance as a Decimal.
      */
     async getAccountBalance(financialAccountId: string, tx?: Prisma.TransactionClient): Promise<Prisma.Decimal> {
-        const cachedBalance = await RedisHelper.get(`balance:${financialAccountId}`)
+        const cachedBalance = await this.redis.get(`balance:${financialAccountId}`)
         if (cachedBalance) {
             return new Prisma.Decimal(cachedBalance)
         }
@@ -150,7 +149,7 @@ export class AccountBalanceService extends BaseService {
         }
 
         const decimalBalance = new Prisma.Decimal(balance)
-        await RedisHelper.set(`balance:${financialAccountId}`, decimalBalance.toString(), 300)
+        await this.redis.set(`balance:${financialAccountId}`, decimalBalance.toString(), 300)
 
         return decimalBalance
     }
@@ -206,7 +205,7 @@ export class AccountBalanceService extends BaseService {
                 data: { balance: newBalance }
             })
 
-            await RedisHelper.set(`balance:${accountId}`, newBalance.toString())
+            await this.redis.set(`balance:${accountId}`, newBalance.toString())
         })
 
         await Promise.all(updatePromises)
@@ -324,6 +323,6 @@ export class AccountBalanceService extends BaseService {
             new Date()
         )
         await this.accountBalanceRepository.updateAccountLiveBalance(financialAccountId, current + tailDelta)
-        await RedisHelper.delete(`balance:${financialAccountId}`)
+        await this.redis.delete(`balance:${financialAccountId}`)
     }
 }
