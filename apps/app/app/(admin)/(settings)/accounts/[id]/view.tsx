@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Pencil, Plus, Upload } from 'lucide-react'
+import { CalendarPlus, Pencil, Plus, Upload } from 'lucide-react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { PageWrapper } from '@/components/box/page-wrapper'
@@ -28,10 +28,12 @@ import {
     ACCOUNT_RANGES,
     AccountVariation,
     Amount,
+    FinancialAccountBalanceData,
     FinancialAccountData,
     ImportData,
     TransactionData
 } from '@poveroh/types'
+import { AccountSnapshotDialog } from '@/components/dialog/account-snapshot-dialog'
 
 type AccountDetailViewProps = {
     id: string
@@ -44,6 +46,8 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
     const { account, isLoading, isFetching, refetch, deleteMutation } = useAccountDetail(id)
     const { openModal } = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
     const { openModal: openModelTransaction } = useModal<Partial<TransactionData>>(MODAL_IDS.TRANSACTION)
+    const { openModal: openSnapshotModal } = useModal<FinancialAccountBalanceData>(MODAL_IDS.ACCOUNT_SNAPSHOT)
+
     const importDrawer = useDrawer<ImportData>()
 
     const { range, setRange, options } = useLocalChartRange('30D', ACCOUNT_RANGES)
@@ -99,18 +103,20 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
                             }}
                             addAction={[
                                 {
-                                    onClick: () => openModal('edit', account),
-                                    label: t('buttons.editItem'),
-                                    icon: <Pencil className='mr-2' />,
-                                    loading: false
-                                },
-                                {
                                     onClick: () =>
                                         openModelTransaction('create', undefined, {
                                             amounts: [{ financialAccountId: id } as Amount]
                                         }),
                                     label: t('buttons.add.transaction'),
                                     icon: <Plus className='mr-2' />,
+                                    loading: false
+                                },
+                                {
+                                    onClick: () => {
+                                        openSnapshotModal('create', undefined, { financialAccountId: id })
+                                    },
+                                    label: t('accounts.snapshot.button'),
+                                    icon: <CalendarPlus className='mr-2' />,
                                     loading: false
                                 },
                                 {
@@ -160,6 +166,7 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
 
             <AccountDialog />
             <ImportDrawer />
+            <AccountSnapshotDialog />
             <TransactionDialog />
         </>
     )
