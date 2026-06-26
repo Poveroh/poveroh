@@ -44,11 +44,18 @@ function OptionsContent<T>({ data, buttons }: OptionsPopoverContentProps<T>) {
 export function OptionsPopover<T>(props: OptionsPopoverContentProps<T>) {
     return (
         <Popover>
-            <PopoverTrigger asChild onClick={e => e.stopPropagation()}>
-                <Button size='icon' variant='ghost'>
-                    <Ellipsis />
-                </Button>
-            </PopoverTrigger>
+            <span
+                onClick={e => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}
+            >
+                <PopoverTrigger asChild>
+                    <Button size='icon' variant='ghost'>
+                        <Ellipsis />
+                    </Button>
+                </PopoverTrigger>
+            </span>
             <PopoverContent align='end' className='w-52'>
                 <OptionsContent {...props} />
             </PopoverContent>
