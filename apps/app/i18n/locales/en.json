@@ -5,7 +5,7 @@
             "edit": "Edit"
         },
         "delete": {
-            "title": ""
+            "title": "{a}"
         },
         "continueInsert": {
             "label": "Create more",
