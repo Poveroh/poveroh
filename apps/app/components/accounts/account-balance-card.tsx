@@ -97,10 +97,6 @@ export function AccountBalanceCard({
                     <div className='flex flex-col gap-1'>
                         <div className='flex items-center gap-6'>
                             <p className='sub uppercase'>{t('accounts.detail.balance.label')}</p>
-                            <div className='flex flex-row items-center gap-2'>
-                                <span className='dot bg-success'></span>
-                                <p className='success uppercase'>{t('accounts.detail.balance.live')}</p>
-                            </div>
                         </div>
                         <h2>{formatCurrency(currentBalance)}</h2>
                         {variation && variation.delta !== 0 && (

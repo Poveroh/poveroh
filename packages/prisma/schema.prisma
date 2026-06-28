@@ -3,7 +3,8 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["views"]
 }
 
 // ===========================================================================
@@ -152,7 +153,6 @@ model FinancialAccount {
     id                    String                   @id @default(uuid())
     userId                String
     title                 String
-    balance               Decimal                  @default(0) @db.Decimal(20, 2)
     type                  FinancialAccountType     @default(BANK_ACCOUNT)
     logoIcon              String?
     createdAt             DateTime                 @default(now())
@@ -173,16 +173,29 @@ model FinancialAccount {
     @@map("FinancialAccounts")
 }
 
+view FinancialAccountWithBalance {
+    id        String               @unique
+    userId    String
+    title     String
+    balance   Decimal              @db.Decimal(20, 2)
+    type      FinancialAccountType
+    logoIcon  String?
+    createdAt DateTime
+    updatedAt DateTime
+    deletedAt DateTime?            @db.Timestamptz
+
+    @@map("FinancialAccountWithBalance")
+}
+
 model FinancialAccountBalance {
-    id                 String    @id @default(uuid())
+    id                 String   @id @default(uuid())
     financialAccountId String
-    date               DateTime  @db.Timestamptz
-    balance            Decimal   @db.Decimal(20, 2)
+    date               DateTime @db.Timestamptz
+    balance            Decimal  @db.Decimal(20, 2)
     note               String?
-    isManual           Boolean   @default(true)
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    deletedAt          DateTime? @db.Timestamptz
+    isManual           Boolean  @default(true)
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
 
     financialAccount FinancialAccount         @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
     snapshotLinks    SnapshotAccountBalance[]

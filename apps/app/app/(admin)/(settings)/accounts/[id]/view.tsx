@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { CalendarPlus, Pencil, Plus, Upload } from 'lucide-react'
+import { CalendarPlus, Plus, Upload } from 'lucide-react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { PageWrapper } from '@/components/box/page-wrapper'
@@ -29,7 +29,6 @@ import {
     AccountVariation,
     Amount,
     FinancialAccountBalanceData,
-    FinancialAccountData,
     ImportData,
     TransactionData
 } from '@poveroh/types'
@@ -44,7 +43,6 @@ export default function AccountDetailView({ id }: AccountDetailViewProps) {
     const router = useRouter()
 
     const { account, isLoading, isFetching, refetch, deleteMutation } = useAccountDetail(id)
-    const { openModal } = useModal<FinancialAccountData>(MODAL_IDS.ACCOUNT)
     const { openModal: openModelTransaction } = useModal<Partial<TransactionData>>(MODAL_IDS.TRANSACTION)
     const { openModal: openSnapshotModal } = useModal<FinancialAccountBalanceData>(MODAL_IDS.ACCOUNT_SNAPSHOT)
 

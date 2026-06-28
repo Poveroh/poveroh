@@ -13,7 +13,7 @@ export class AccountBalanceController {
     addManualBalance = async (req: Request, res: Response) => {
         try {
             const payload = parseRequestBody(CreateFinancialAccountBalanceRequestSchema, req.body)
-            const account = await this.accountBalanceService.addManualBalance(payload)
+            const account = await this.accountBalanceService.upsertBalance(payload, true)
 
             return ResponseHelper.success<FinancialAccountData>(res, account)
         } catch (error) {

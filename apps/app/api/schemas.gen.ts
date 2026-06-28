@@ -3029,11 +3029,14 @@ export const CreateFinancialAccountRequestSchema = {
             type: 'string',
             minLength: 1
         },
+        balance: {
+            type: 'number'
+        },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         }
     },
-    required: ['title', 'type']
+    required: ['title', 'balance', 'type']
 } as const
 
 export const CreateFinancialAccountMultipartRequestSchema = {
@@ -3193,11 +3196,14 @@ export const FinancialAccountFormSchema = {
             type: 'string',
             minLength: 1
         },
+        balance: {
+            type: 'number'
+        },
         type: {
             $ref: '#/components/schemas/FinancialAccountTypeEnum'
         }
     },
-    required: ['title', 'type']
+    required: ['title', 'balance', 'type']
 } as const
 
 export const CreateUpdateFinancialAccountRequestSchema = {

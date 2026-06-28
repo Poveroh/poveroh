@@ -9,6 +9,8 @@ import {
     deleteTransactionMutation,
     deleteTransactionsMutation,
     getFinancialAccountBalanceSeriesQueryKey,
+    getFinancialAccountByIdQueryKey,
+    getFinancialAccountsQueryKey,
     getTransactionByIdOptions,
     getTransactionByIdQueryKey,
     getTransactionsOptions,
@@ -34,8 +36,14 @@ export const useTransaction = () => {
     }))
 
     const balanceSeriesQueryId = getFinancialAccountBalanceSeriesQueryKey({ path: { id: '' } })[0]._id
+    const financialAccountByIdQueryId = getFinancialAccountByIdQueryKey({ path: { id: '' } })[0]._id
+
     const invalidateBalanceSeries = () => {
         queryClient.invalidateQueries({ queryKey: [{ _id: balanceSeriesQueryId }] })
+    }
+    const invalidateFinancialAccounts = () => {
+        queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+        queryClient.invalidateQueries({ queryKey: [{ _id: financialAccountByIdQueryId }] })
     }
 
     const createMutation = useMutation({
@@ -43,6 +51,7 @@ export const useTransaction = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
             invalidateBalanceSeries()
+            invalidateFinancialAccounts()
         },
         onError: error => {
             handleError(error, 'Error adding transaction')
@@ -59,6 +68,7 @@ export const useTransaction = () => {
                 })
             })
             invalidateBalanceSeries()
+            invalidateFinancialAccounts()
         },
         onError: error => {
             handleError(error, 'Error updating transaction')
@@ -70,6 +80,7 @@ export const useTransaction = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
             invalidateBalanceSeries()
+            invalidateFinancialAccounts()
         },
         onError: error => {
             handleError(error, 'Error deleting transaction')
@@ -81,6 +92,7 @@ export const useTransaction = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: getTransactionsQueryKey() })
             invalidateBalanceSeries()
+            invalidateFinancialAccounts()
         },
         onError: error => {
             handleError(error, 'Error deleting all transactions')

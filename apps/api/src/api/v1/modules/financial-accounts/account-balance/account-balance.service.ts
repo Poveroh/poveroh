@@ -1,25 +1,28 @@
-import prisma, { Prisma } from '@poveroh/prisma'
 import type {
     Amount,
     CreateFinancialAccountBalanceRequest,
     FinancialAccountBalanceData,
     FinancialAccountData
 } from '@poveroh/types'
-import { NotFoundError } from '@/utils'
+import { NotFoundError, addUtcDays, normalizeDate } from '@/utils'
 import { BaseService } from '../../base/base.service'
 import { AccountBalanceRepository } from './account-balance.repository'
-import { FinancialAccountRepository } from '../financial-account.repository'
 import { SnapshotService } from '../../snapshots/snapshot.service'
-import { eventBus } from '../../../worker/events/event-bus'
-import { addUtcDays, startOfUtcDay } from '@/utils/date'
+import { eventBus } from '@/v1/worker/events/event-bus'
+import { FinancialAccountService } from '../financial-account.service'
+import { Prisma } from '@poveroh/prisma'
 
 export class AccountBalanceService extends BaseService {
     private readonly accountBalanceRepository = new AccountBalanceRepository()
-    private readonly financialAccountRepository = new FinancialAccountRepository()
     private readonly snapshotService = new SnapshotService()
+    private financialAccountServiceInstance?: FinancialAccountService
 
     constructor() {
         super('account-balance')
+    }
+
+    private get financialAccountService(): FinancialAccountService {
+        return (this.financialAccountServiceInstance ??= new FinancialAccountService())
     }
 
     /**
@@ -27,25 +30,19 @@ export class AccountBalanceService extends BaseService {
      * @param payload The manual balance data, including the financial account id, the balance, the date and an optional note.
      * @returns A promise resolving to the updated financial account data.
      */
-    async addManualBalance(payload: CreateFinancialAccountBalanceRequest): Promise<FinancialAccountData> {
+    async upsertBalance(
+        payload: CreateFinancialAccountBalanceRequest,
+        isManual: boolean
+    ): Promise<FinancialAccountData> {
         const userId = this.context.currentUser.id
-        const { financialAccountId, balance, note } = payload
 
-        const account = await this.financialAccountRepository.findById(userId, financialAccountId)
-        if (!account) {
-            throw new NotFoundError('Financial account not found')
-        }
+        await this.financialAccountService.doesAccountExist(payload.financialAccountId, true)
 
-        const parsedBalance = Number(balance)
-        const date = startOfUtcDay(new Date(payload.date))
+        const balanceData = await this.accountBalanceRepository.upsertBalance(payload, isManual)
 
-        await this.accountBalanceRepository.upsertBalance(financialAccountId, date, parsedBalance, true, note ?? null)
-        await this.recomputeForwardBalances(financialAccountId, date, parsedBalance, userId)
+        await this.recomputeBalances(balanceData)
 
-        // Refresh the cached net-worth totals of the snapshots impacted by this retroactive change.
-        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, date)
-
-        const updated = await this.financialAccountRepository.findById(userId, financialAccountId)
+        const updated = await this.financialAccountService.getFinancialAccountById(payload.financialAccountId)
         if (!updated) {
             throw new NotFoundError('Financial account not found')
         }
@@ -56,27 +53,6 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
-     * Recomputes the materialized balance series and live balance of an account from a date forward and refreshes the snapshots affected, so a retroactive transaction change (amount, type, account or date) flows into the historical series and net-worth snapshots.
-     * @param financialAccountId The financial account whose series is recomputed.
-     * @param userId The owning user, used to scope transactions and snapshots.
-     * @param fromDate The earliest date impacted by the change.
-     * @returns A promise that resolves when the series, live balance and snapshots have been refreshed.
-     */
-    async recomputeFromTransactionChange(financialAccountId: string, userId: string, fromDate: Date): Promise<void> {
-        const day = startOfUtcDay(fromDate)
-
-        // Anchor on the last known-good point before the changed day (unaffected by a change dated on/after it),
-        // then re-walk the series forward. Skip when the account has no materialized point yet: the live balance
-        // is already kept correct incrementally by applyAmounts.
-        const anchor = await this.accountBalanceRepository.findRecomputeAnchor(financialAccountId, day)
-        if (anchor) {
-            await this.recomputeForwardBalances(financialAccountId, anchor.date, anchor.balance, userId)
-        }
-
-        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, day)
-    }
-
-    /**
      * Reads the balance time-series of a financial account owned by the current user within an optional date range.
      * @param financialAccountId The financial account whose series is requested.
      * @param from An optional inclusive lower bound date (ISO string).
@@ -84,46 +60,13 @@ export class AccountBalanceService extends BaseService {
      * @returns A promise resolving to the ordered balance points used to build the chart.
      */
     async getSeries(financialAccountId: string, from?: string, to?: string): Promise<FinancialAccountBalanceData[]> {
-        const userId = this.context.currentUser.id
-
-        const account = await this.financialAccountRepository.findById(userId, financialAccountId)
-        if (!account) {
-            throw new NotFoundError('Financial account not found')
-        }
+        await this.financialAccountService.doesAccountExist(financialAccountId, true)
 
         return this.accountBalanceRepository.findSeries(
             financialAccountId,
             from ? new Date(from) : undefined,
             to ? new Date(to) : undefined
         )
-    }
-
-    /**
-     * Materializes one transaction-derived balance point per active account for a given day, iterating per user and snapshotting each account's live balance without overwriting existing manual anchors.
-     * @param date An optional ISO date for the day to materialize; defaults to today.
-     * @returns A promise resolving to the number of accounts materialized.
-     */
-    async materializeDaily(date?: string): Promise<number> {
-        const day = startOfUtcDay(date ? new Date(date) : new Date())
-        const userIds = await this.accountBalanceRepository.findUserIdsWithActiveAccounts()
-
-        let count = 0
-        // Sweep per user so account access stays scoped by ownership, never assuming a single global account pool.
-        for (const userId of userIds) {
-            const accounts = await this.accountBalanceRepository.findActiveAccountsByUser(userId)
-
-            for (const account of accounts) {
-                const existing = await this.accountBalanceRepository.findByDate(account.id, day)
-                if (existing?.isManual) {
-                    continue
-                }
-
-                await this.accountBalanceRepository.upsertBalance(account.id, day, account.balance.toNumber(), false)
-                count++
-            }
-        }
-
-        return count
     }
 
     /**
@@ -138,18 +81,13 @@ export class AccountBalanceService extends BaseService {
             return new Prisma.Decimal(cachedBalance)
         }
 
-        const account = await (tx ?? prisma).financialAccount.findUnique({
-            where: { id: financialAccountId },
-            select: { balance: true }
-        })
-        const balance = account?.balance
+        // if (!balance) {
+        //     throw new Error('Account balance not found')
+        // }
 
-        if (!balance) {
-            throw new Error('Account balance not found')
-        }
-
-        const decimalBalance = new Prisma.Decimal(balance)
-        await this.redis.set(`balance:${financialAccountId}`, decimalBalance.toString(), 300)
+        const decimalBalance = new Prisma.Decimal(0)
+        // const decimalBalance = new Prisma.Decimal(balance)
+        // await this.redis.set(`balance:${financialAccountId}`, decimalBalance.toString(), 300)
 
         return decimalBalance
     }
@@ -178,7 +116,7 @@ export class AccountBalanceService extends BaseService {
      * @returns A promise that resolves when every affected account balance has been updated.
      */
     async applyAmounts(amounts: Amount[], originalAmounts?: Amount[], tx?: Prisma.TransactionClient): Promise<void> {
-        const db = tx ?? prisma
+        // const db = tx ?? prisma
 
         // Accumulate a net signed delta per account: reverting an original amount backs out its original
         // signed effect on its original account, applying a new amount adds its signed effect on its new
@@ -200,10 +138,10 @@ export class AccountBalanceService extends BaseService {
             const currentBalance = await this.getAccountBalance(accountId, tx)
             const newBalance = new Prisma.Decimal(currentBalance).add(delta)
 
-            await db.financialAccount.update({
-                where: { id: accountId },
-                data: { balance: newBalance }
-            })
+            // await db.financialAccount.update({
+            //     where: { id: accountId },
+            //     data: { balance: newBalance }
+            // })
 
             await this.redis.set(`balance:${accountId}`, newBalance.toString())
         })
@@ -212,117 +150,94 @@ export class AccountBalanceService extends BaseService {
     }
 
     /**
-     * Backfills a continuous daily balance series for an account from a start day up to today, creating one transaction-derived point per day so a backdated transaction yields a full daily history instead of a single point. Manual anchors are preserved and reanchor the running balance, unchanged points are skipped, and the affected snapshots are refreshed. Runs after the transaction commit so it reads the persisted amounts.
-     * @param financialAccountId The financial account whose daily series is backfilled.
-     * @param userId The owning user, used to scope the transactions summed into each day.
-     * @param fromDate The earliest day to materialize, normalized to the start of its UTC day.
-     * @returns A promise that resolves when the daily series has been backfilled and the snapshots refreshed.
+     * Rebuilds the dense daily balance series forward from a changed baseline point after a retroactive edit
+     * (a backdated manual anchor or a past transaction). Every calendar day strictly after the baseline up to
+     * the next manual anchor (exclusive) — or up to and including today when no later anchor exists — gets a
+     * point equal to the previous day's balance plus that day's net transaction delta. Manual anchors are
+     * ground truth and are never recomputed, so they bound the walk. Existing points are upserted in place to
+     * preserve their ids and keep snapshot links intact, the live-balance cache is invalidated, and the
+     * snapshots from the baseline day forward are re-linked so cached net worth reflects the rebuilt series.
+     * @param actualBalance The just-upserted baseline point the daily walk carries forward from.
+     * @returns A promise that resolves when the forward daily series and the affected snapshots have been rebuilt.
      */
-    async backfillDailySeries(financialAccountId: string, userId: string, fromDate: Date): Promise<void> {
-        const start = startOfUtcDay(fromDate)
-        const today = startOfUtcDay(new Date())
-        if (start.getTime() > today.getTime()) {
-            return
-        }
+    async recomputeBalances(actualBalance: FinancialAccountBalanceData): Promise<void> {
+        const userId = this.context.currentUser.id
+        const { financialAccountId } = actualBalance
+        const fromDate = normalizeDate(actualBalance.date)
 
-        // The latest point strictly before `start` already holds the balance at the end of its day, so the running
-        // balance starts there (or at 0 when the account has no earlier point).
-        const anchor = await this.accountBalanceRepository.findLatestPointBefore(financialAccountId, start)
-        let running = anchor?.balance ?? 0
-
-        // Sum each day's signed amounts once, bucketed by UTC day, instead of querying per day. Fetch from just
-        // after the anchor day (whose balance is already folded into `running`) through the end of today.
-        const fetchAfter = anchor ? addUtcDays(startOfUtcDay(anchor.date), 1) : new Date(0)
-        const dailyAmounts = await this.accountBalanceRepository.findSignedDailyAmounts(
+        // Stop boundary: the first manual anchor after the baseline (ground truth, never recomputed); when none
+        // exists the series is filled up to and including today, hence the exclusive day-after-today bound.
+        const nextManualAnchor = await this.accountBalanceRepository.findNextManualAnchorAfter(
             financialAccountId,
-            userId,
-            fetchAfter,
-            addUtcDays(today, 1)
+            fromDate
         )
-        const deltaByDay = new Map<number, number>()
-        for (const row of dailyAmounts) {
-            const key = startOfUtcDay(row.date).getTime()
-            deltaByDay.set(key, (deltaByDay.get(key) ?? 0) + row.delta)
-        }
+        const endExclusive = nextManualAnchor
+            ? normalizeDate(nextManualAnchor.date)
+            : addUtcDays(normalizeDate(new Date()), 1)
 
-        // Fold transactions that fall between the anchor day and `start` into the baseline so the first
-        // materialized day starts from the correct running balance.
-        for (const [time, delta] of deltaByDay) {
-            if (time < start.getTime()) {
-                running += delta
-            }
-        }
-
-        // Preload existing points in range to preserve manual anchors and skip rewriting unchanged values.
-        const existing = await this.accountBalanceRepository.findPointsInRange(financialAccountId, start, today)
-        const pointByDay = new Map(existing.map(point => [startOfUtcDay(point.date).getTime(), point]))
-
-        for (let day = start; day.getTime() <= today.getTime(); day = addUtcDays(day, 1)) {
-            const key = day.getTime()
-            const point = pointByDay.get(key)
-
-            if (point?.isManual) {
-                running = point.balance.toNumber()
-                continue
+        if (addUtcDays(fromDate, 1) < endExclusive) {
+            // One read for every transaction strictly between the baseline day and the boundary, bucketed per
+            // calendar day so the daily walk needs no per-day query. Transactions dated on the baseline day fall
+            // outside the walked range and are already reflected in the baseline balance.
+            const dailyAmounts = await this.accountBalanceRepository.findSignedDailyAmounts(
+                financialAccountId,
+                userId,
+                fromDate,
+                endExclusive
+            )
+            const deltaByDay = new Map<string, Prisma.Decimal>()
+            for (const { date, delta } of dailyAmounts) {
+                const key = normalizeDate(date).toISOString()
+                deltaByDay.set(key, (deltaByDay.get(key) ?? new Prisma.Decimal(0)).add(delta))
             }
 
-            running += deltaByDay.get(key) ?? 0
-
-            if (point && point.balance.toNumber() === running) {
-                continue
+            // Carry the baseline forward one day at a time so each day equals the previous day plus its movements.
+            const points: { date: Date; balance: number }[] = []
+            let runningBalance = new Prisma.Decimal(actualBalance.balance)
+            for (let cursor = addUtcDays(fromDate, 1); cursor < endExclusive; cursor = addUtcDays(cursor, 1)) {
+                runningBalance = runningBalance.add(deltaByDay.get(cursor.toISOString()) ?? new Prisma.Decimal(0))
+                points.push({ date: cursor, balance: runningBalance.toNumber() })
             }
-            await this.accountBalanceRepository.upsertBalance(financialAccountId, day, running, false)
+
+            await this.accountBalanceRepository.upsertComputedPoints(financialAccountId, points)
         }
 
-        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, start)
+        await this.redis.delete(`balance:${financialAccountId}`)
+
+        // Re-link the snapshots on or after the baseline day to the rebuilt series so their cached net worth stays
+        // correct after a retroactive change, without recomputing balances on read.
+        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, fromDate)
     }
 
     /**
-     * Recomputes the transaction-derived balance points after a date by walking forward from an anchor, snapping to later manual anchors, and refreshes the account live balance.
-     * @param financialAccountId The financial account whose series is recomputed.
-     * @param fromDate The anchor date the recompute starts from (its row is assumed already persisted).
-     * @param anchorBalance The balance value at the anchor date.
-     * @param userId The owning user, used to scope transactions.
-     * @returns A promise that resolves when the forward series and the live balance have been updated.
+     * Rebuilds the daily balance series of an account after a transaction was created, edited or deleted on a day.
+     * Points strictly before the changed day are unaffected, so the latest earlier point seeds the dense forward
+     * walk; when the account has no earlier point the series is seeded from a zero balance the day before, matching
+     * the zero fallback of the live-balance view. Delegates the forward walk to {@link recomputeBalances}.
+     * @param financialAccountId The financial account whose series is rebuilt.
+     * @param fromDate The earliest day impacted by the transaction change.
+     * @returns A promise that resolves when the series has been rebuilt.
      */
-    private async recomputeForwardBalances(
-        financialAccountId: string,
-        fromDate: Date,
-        anchorBalance: number,
-        userId: string
-    ): Promise<void> {
-        const rows = await this.accountBalanceRepository.findForwardRows(financialAccountId, fromDate)
+    async recomputeFromTransactionChange(financialAccountId: string, fromDate: Date): Promise<void> {
+        const day = normalizeDate(fromDate)
+        const previousPoint = await this.accountBalanceRepository.findLatestPointBefore(financialAccountId, day)
 
-        let current = anchorBalance
-        let lastDate = fromDate
+        const baseline: FinancialAccountBalanceData = previousPoint
+            ? {
+                  financialAccountId,
+                  date: normalizeDate(previousPoint.date).toISOString(),
+                  balance: previousPoint.balance,
+                  isManual: previousPoint.isManual,
+                  note: null
+              }
+            : {
+                  financialAccountId,
+                  date: addUtcDays(day, -1).toISOString(),
+                  balance: 0,
+                  isManual: false,
+                  note: null
+              }
 
-        for (const row of rows) {
-            if (row.isManual) {
-                current = row.balance.toNumber()
-                lastDate = row.date
-                continue
-            }
-
-            const delta = await this.accountBalanceRepository.sumAmountDelta(
-                financialAccountId,
-                userId,
-                lastDate,
-                row.date
-            )
-            current += delta
-            await this.accountBalanceRepository.updateBalance(row.id, current)
-            lastDate = row.date
-        }
-
-        // The materialized series may stop before today, so fold in the transactions that happened
-        // after the last point to keep FinancialAccount.balance (the live running balance) consistent.
-        const tailDelta = await this.accountBalanceRepository.sumAmountDelta(
-            financialAccountId,
-            userId,
-            lastDate,
-            new Date()
-        )
-        await this.accountBalanceRepository.updateAccountLiveBalance(financialAccountId, current + tailDelta)
-        await this.redis.delete(`balance:${financialAccountId}`)
+        await this.recomputeBalances(baseline)
     }
 }

@@ -7,7 +7,7 @@ import { Form } from '@poveroh/ui/components/form'
 
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useFinancialAccountForm } from '@/hooks/form/use-account-form'
-import { TextField } from '../fields'
+import { AmountField, TextField } from '../fields'
 import { SelectField } from '../fields/select-field'
 import { PopoverIconLogo } from '../fields/popover-icon-logo'
 import { FormProps, FormRef } from '@/types'
@@ -62,6 +62,13 @@ export const AccountForm = forwardRef<FormRef, AccountFormProps>((props, ref) =>
                         getOptionLabel={(item: Item) => item.label}
                         getOptionValue={(item: Item) => item.value}
                         mandatory
+                    />
+
+                    <AmountField
+                        control={form.control}
+                        name='balance'
+                        label={t('form.balance.label')}
+                        placeholder={t('form.balance.placeholder')}
                     />
                 </div>
             </form>

@@ -7,9 +7,12 @@ import type {
 import { BaseService } from '@/src/api/v1/modules/base/base.service'
 import { eventBus } from '@/v1/worker/events/event-bus'
 import { FinancialAccountRepository } from './financial-account.repository'
+import { AccountBalanceService } from './account-balance/account-balance.service'
+import { NotFoundError } from '@/utils/errors'
 
 export class FinancialAccountService extends BaseService {
     private readonly financialAccountRepository = new FinancialAccountRepository()
+    private readonly accountBalanceService = new AccountBalanceService()
 
     constructor() {
         super('financial-account')
@@ -35,9 +38,19 @@ export class FinancialAccountService extends BaseService {
         }
 
         const account = await this.financialAccountRepository.create(userId, generatedId, payloadWithIcon)
-        await eventBus.emit('financial-account.created', { userId, data: account })
 
-        return account
+        const created = await this.accountBalanceService.upsertBalance(
+            {
+                financialAccountId: account.id,
+                balance: payload.balance,
+                date: new Date().toISOString()
+            },
+            false
+        )
+
+        await eventBus.emit('financial-account.created', { userId, data: created })
+
+        return created
     }
 
     /**
@@ -110,5 +123,20 @@ export class FinancialAccountService extends BaseService {
     ): Promise<FinancialAccountData[]> {
         const userId = this.context.currentUser.id
         return this.financialAccountRepository.findMany(userId, filters, skip, take)
+    }
+
+    /**
+     * Checks if a financial account exists for the current user based on its unique identifier.
+     * @param id The unique identifier of the financial account to check for existence.
+     * @returns A promise that resolves to true if the financial account exists for the current user, or false if it does not exist.
+     */
+    async doesAccountExist(id: string, throwIfNotFound: boolean = false): Promise<boolean> {
+        const account = await this.financialAccountRepository.findById(this.context.currentUser.id, id)
+        const exists = Boolean(account != null)
+
+        if (throwIfNotFound && !exists) {
+            throw new NotFoundError('Financial account not found')
+        }
+        return exists
     }
 }

@@ -1,11 +1,14 @@
 'use client'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useError } from '@/hooks/use-error'
 import {
     createFinancialAccountBalanceMutation,
-    getFinancialAccountBalanceSeriesOptions
+    getFinancialAccountBalanceSeriesOptions,
+    getFinancialAccountBalanceSeriesQueryKey,
+    getFinancialAccountByIdQueryKey,
+    getFinancialAccountsQueryKey
 } from '@/api/@tanstack/react-query.gen'
 import { CreateFinancialAccountBalanceRequest, FinancialAccountBalanceData, FinancialAccountData } from '@poveroh/types'
 
@@ -14,12 +17,21 @@ import { CreateFinancialAccountBalanceRequest, FinancialAccountBalanceData, Fina
  * @returns The loading flag and the createAccountBalance submit function.
  */
 export const useAccountBalance = () => {
+    const queryClient = useQueryClient()
     const { handleError } = useError()
 
     const [loading, setLoading] = useState(false)
 
+    const balanceSeriesQueryId = getFinancialAccountBalanceSeriesQueryKey({ path: { id: '' } })[0]._id
+    const financialAccountByIdQueryId = getFinancialAccountByIdQueryKey({ path: { id: '' } })[0]._id
+
     const createMutation = useMutation({
         ...createFinancialAccountBalanceMutation(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [{ _id: balanceSeriesQueryId }] })
+            queryClient.invalidateQueries({ queryKey: getFinancialAccountsQueryKey() })
+            queryClient.invalidateQueries({ queryKey: [{ _id: financialAccountByIdQueryId }] })
+        },
         onError: error => {
             handleError(error, 'Error saving balance')
         }

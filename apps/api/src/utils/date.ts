@@ -3,8 +3,19 @@
  * @param date The date to normalize.
  * @returns A new Date set to 00:00:00.000 UTC of the same calendar day.
  */
-export function startOfUtcDay(date: Date): Date {
+export function normalizeDate(payload: Date | string): Date {
+    const date = typeof payload === 'string' ? new Date(payload) : payload
+
     return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+}
+
+/**
+ * Converts a date string to a Date object.
+ * @param date The date string to convert.
+ * @returns A new Date object representing the same point in time.
+ */
+export function toDate(date: string): Date {
+    return new Date(date)
 }
 
 /**

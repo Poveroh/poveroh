@@ -10,26 +10,39 @@ import { buildWhere } from '@/helpers'
 const financialAccountSelect = {
     id: true,
     title: true,
-    balance: true,
     type: true,
     logoIcon: true,
     createdAt: true,
     updatedAt: true
 } satisfies Prisma.FinancialAccountSelect
 
+const financialAccountWithoutBalanceSelect = {
+    id: true,
+    title: true,
+    balance: true,
+    type: true,
+    logoIcon: true,
+    createdAt: true,
+    updatedAt: true
+} satisfies Prisma.FinancialAccountWithBalanceSelect
+
 export class FinancialAccountRepository {
     /**
-     * Creates a new financial account in the database, associating it with the specified user and using the provided payload for the account details.
+     * Creates a new financial account for the user; the initial balance is persisted separately as a balance point by the service, not as an account column.
      * @param userId The ID of the user who owns the financial account.
      * @param id The unique identifier for the financial account.
-     * @param payload The details of the financial account to be created.
-     * @returns A promise that resolves to the created financial account data.
+     * @param payload The details of the financial account to be created, including the resolved logo icon.
+     * @returns A promise that resolves to the created financial account data read back from the view.
      */
-    async create(userId: string, id: string, payload: CreateFinancialAccountRequest): Promise<FinancialAccountData> {
+    async create(
+        userId: string,
+        id: string,
+        payload: CreateFinancialAccountRequest & { logoIcon: string }
+    ): Promise<Omit<FinancialAccountData, 'balance'>> {
         return (await prisma.financialAccount.create({
-            data: { ...payload, userId, id },
+            data: { title: payload.title, type: payload.type, logoIcon: payload.logoIcon, userId, id },
             select: financialAccountSelect
-        })) as unknown as FinancialAccountData
+        })) as unknown as Omit<FinancialAccountData, 'balance'>
     }
 
     /**
@@ -80,9 +93,9 @@ export class FinancialAccountRepository {
      * @returns A promise that resolves to a FinancialAccountData object representing the financial account that was found, or null if no account is found.
      */
     async findById(userId: string, id: string): Promise<FinancialAccountData | null> {
-        return (await prisma.financialAccount.findFirst({
+        return (await prisma.financialAccountWithBalance.findFirst({
             where: { id, userId, deletedAt: null },
-            select: financialAccountSelect
+            select: financialAccountWithoutBalanceSelect
         })) as unknown as FinancialAccountData | null
     }
 
@@ -102,9 +115,9 @@ export class FinancialAccountRepository {
     ): Promise<FinancialAccountData[]> {
         const where = buildWhere({ ...filters, deletedAt: null, userId }, ['title'])
 
-        const rows = await prisma.financialAccount.findMany({
+        const rows = await prisma.financialAccountWithBalance.findMany({
             where,
-            select: financialAccountSelect,
+            select: financialAccountWithoutBalanceSelect,
             orderBy: { createdAt: 'desc' },
             skip,
             take

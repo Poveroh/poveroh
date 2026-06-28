@@ -2973,11 +2973,14 @@
                         "type": "string",
                         "minLength": 1
                     },
+                    "balance": {
+                        "type": "number"
+                    },
                     "type": {
                         "$ref": "#/components/schemas/FinancialAccountTypeEnum"
                     }
                 },
-                "required": ["title", "type"]
+                "required": ["title", "balance", "type"]
             },
             "CreateFinancialAccountMultipartRequest": {
                 "type": "object",
@@ -3127,11 +3130,14 @@
                         "type": "string",
                         "minLength": 1
                     },
+                    "balance": {
+                        "type": "number"
+                    },
                     "type": {
                         "$ref": "#/components/schemas/FinancialAccountTypeEnum"
                     }
                 },
-                "required": ["title", "type"]
+                "required": ["title", "balance", "type"]
             },
             "CreateUpdateFinancialAccountRequest": {
                 "anyOf": [

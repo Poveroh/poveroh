@@ -52,7 +52,6 @@ export const GetFinancialAccountResponseSchema =
 export const CreateFinancialAccountRequestSchema = FinancialAccountSchema.omit({
     id: true,
     userId: true,
-    balance: true,
     logoIcon: true,
     createdAt: true,
     updatedAt: true,

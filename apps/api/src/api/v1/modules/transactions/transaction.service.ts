@@ -15,7 +15,6 @@ import type {
     UpdateTransactionRequest
 } from '@poveroh/types'
 import { BadRequestError, NotFoundError } from '@/utils'
-import { getJobDispatcher } from '@/utils/queue'
 import { AccountBalanceService } from '../financial-accounts/account-balance/account-balance.service'
 import { BaseService } from '../base/base.service'
 import { CreateTransactionRequestSchema, UpdateTransactionRequestSchema } from '@poveroh/schemas'
@@ -101,7 +100,7 @@ export class TransactionService extends BaseService {
 
         // Rebuild the daily balance series of each touched account from the transaction date forward so a
         // backdated transaction fills in the missing daily points. Runs after commit to read the persisted amounts.
-        await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
+        await this.recomputeBalanceSeries(affectedAccountIds, new Date(payload.date))
 
         await this.saveTransactionMedia(resultId, files)
         return this.getTransactionById(resultId)
@@ -154,31 +153,23 @@ export class TransactionService extends BaseService {
             { timeout: 30000 }
         )
 
-        // // Backfill the daily series of both ends of the transfer from the transfer date forward, after commit.
-        // await this.backfillBalanceSeries(affectedAccountIds, userId, new Date(payload.date))
+        // Rebuild the daily series of both ends of the transfer from the transfer date forward, after commit.
+        await this.recomputeBalanceSeries(affectedAccountIds, new Date(payload.date))
 
         await Promise.all(transactionIds.map(id => this.saveTransactionMedia(id, files)))
         return this.fetchTransferTransactionByTransferId(transferId)
     }
 
     /**
-     * Enqueues a background job per distinct affected account to rebuild its daily balance series from a date forward, used after a transaction is created so a backdated transaction fills in the missing daily points without blocking the request. The job is idempotent, so a transient failure can be retried safely.
+     * Rebuilds the daily balance series of each distinct affected account from the earliest impacted day forward after a transaction is created, edited or deleted, so a backdated change propagates through the materialized series and snapshots.
      * @param financialAccountIds The financial accounts touched by the transaction; duplicates are ignored.
-     * @param userId The ID of the user who owns the affected accounts.
      * @param fromDate The earliest date impacted by the transaction.
-     * @returns A promise that resolves once the backfill jobs have been enqueued.
+     * @returns A promise that resolves once every affected account's series has been rebuilt.
      */
-    private async backfillBalanceSeries(financialAccountIds: string[], userId: string, fromDate: Date): Promise<void> {
-        const fromDateIso = fromDate.toISOString()
-        const dispatcher = getJobDispatcher()
-
+    private async recomputeBalanceSeries(financialAccountIds: string[], fromDate: Date): Promise<void> {
         await Promise.all(
             Array.from(new Set(financialAccountIds)).map(financialAccountId =>
-                dispatcher.dispatch(
-                    'account-balance.backfill-range',
-                    { userId, financialAccountId, fromDate: fromDateIso },
-                    { attempts: 3, backoff: { type: 'exponential', delay: 1000 } }
-                )
+                this.accountBalanceService.recomputeFromTransactionChange(financialAccountId, fromDate)
             )
         )
     }
@@ -235,17 +226,13 @@ export class TransactionService extends BaseService {
         const newDate = payload.date ? new Date(payload.date) : existing.date
         const dateChanged = payload.date !== undefined && newDate.getTime() !== existing.date.getTime()
         if (hasAmounts || dateChanged) {
-            const affectedAccountIds = new Set<string>([
+            const affectedAccountIds = [
                 ...existing.amounts.map(a => a.financialAccountId),
                 ...(amountsData?.map(a => a.financialAccountId) ?? [])
-            ])
+            ]
             const fromDate = newDate.getTime() < existing.date.getTime() ? newDate : existing.date
 
-            await Promise.all(
-                Array.from(affectedAccountIds).map(accountId =>
-                    this.accountBalanceService.recomputeFromTransactionChange(accountId, userId, fromDate)
-                )
-            )
+            await this.recomputeBalanceSeries(affectedAccountIds, fromDate)
         }
 
         await this.saveTransactionMedia(transactionId, files)
@@ -479,7 +466,16 @@ export class TransactionService extends BaseService {
         const data = await this.transactionRepository.findById(userId, id)
         await this.transactionRepository.delete(userId, id)
 
-        if (data) await eventBus.emit('transaction.deleted', { userId, data })
+        if (data) {
+            // Removing the transaction drops its amounts, so rebuild the series of each touched account from the
+            // transaction date forward to back out its effect across the materialized daily points and snapshots.
+            await this.recomputeBalanceSeries(
+                data.amounts.map(a => a.financialAccountId),
+                new Date(data.date)
+            )
+
+            await eventBus.emit('transaction.deleted', { userId, data })
+        }
     }
 
     /**
