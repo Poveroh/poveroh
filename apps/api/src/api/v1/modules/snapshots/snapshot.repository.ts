@@ -46,21 +46,7 @@ export class SnapshotRepository {
     }
 
     /**
-     * Lists the snapshots of a user on or after a date, used to refresh the cached totals affected by a retroactive balance change.
-     * @param userId The ID of the user who owns the snapshots.
-     * @param fromDate The inclusive lower bound date.
-     * @returns A promise resolving to the affected snapshots' id and date, ordered ascending.
-     */
-    async findSnapshotsFromDate(userId: string, fromDate: Date): Promise<{ id: string; snapshotDate: Date }[]> {
-        return prisma.snapshot.findMany({
-            where: { userId, deletedAt: null, snapshotDate: { gte: fromDate } },
-            select: { id: true, snapshotDate: true },
-            orderBy: { snapshotDate: 'asc' }
-        })
-    }
-
-    /**
-     * Recomputes and stores a snapshot's cached net-worth totals by summing the balances linked to it.
+     * Recomputes and stores a snapshot's cached net-worth totals by summing the as-of balances linked to it.
      * @param snapshotId The unique identifier of the snapshot whose cached totals are refreshed.
      * @returns A promise that resolves when the cached totals have been updated.
      */
@@ -83,7 +69,7 @@ export class SnapshotRepository {
     }
 
     /**
-     * Links a snapshot to the balance point of a financial account for that snapshot, referencing the FinancialAccountBalance row instead of copying its value.
+     * Links a snapshot to the balance point of a financial account as-of the snapshot date, referencing the FinancialAccountBalance row instead of copying its value.
      * @param snapshotId The unique identifier of the snapshot the link belongs to.
      * @param accountId The unique identifier of the financial account being linked.
      * @param financialAccountBalanceId The id of the FinancialAccountBalance row effective at the snapshot date, or null when the account has no balance point yet.

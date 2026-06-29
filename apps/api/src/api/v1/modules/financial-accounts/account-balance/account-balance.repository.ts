@@ -100,7 +100,7 @@ export class AccountBalanceRepository {
     }
 
     /**
-     * Reads the id of the most recent balance point of a financial account at or before the given date, used to link a snapshot to its source row.
+     * Reads the id of the most recent balance point of a financial account at or before the given date, used to link a snapshot to its as-of source row.
      * @param financialAccountId The financial account whose balance point is read.
      * @param date The upper bound date (inclusive).
      * @returns A promise resolving to the balance point id, or null when none exists up to the date.

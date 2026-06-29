@@ -204,9 +204,9 @@ export class AccountBalanceService extends BaseService {
 
         await this.redis.delete(`balance:${financialAccountId}`)
 
-        // Re-link the snapshots on or after the baseline day to the rebuilt series so their cached net worth stays
-        // correct after a retroactive change, without recomputing balances on read.
-        await this.snapshotService.refreshSnapshotsFrom(userId, financialAccountId, fromDate)
+        // Refresh the snapshots due on or after the baseline day so their cached net worth re-links to the rebuilt
+        // series after a retroactive change, creating any missing past snapshot along the way.
+        await this.snapshotService.refreshSnapshotsFrom(userId, fromDate)
     }
 
     /**

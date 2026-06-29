@@ -2,43 +2,8 @@ import { BaseService } from '../base/base.service'
 import { SnapshotRepository } from './snapshot.repository'
 import { AccountBalanceRepository } from '../financial-accounts/account-balance/account-balance.repository'
 import { eventBus } from '../../worker/events/event-bus'
-
-/**
- * Returns true when the given date is the last calendar day of its month.
- * @param date The date to test.
- * @returns Whether the date is the last day of the month.
- */
-function isLastDayOfMonth(date: Date): boolean {
-    const next = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1))
-    return next.getUTCMonth() !== date.getUTCMonth()
-}
-
-/**
- * Decides whether a snapshot is due on a given date for a configured frequency.
- * @param frequency The user's configured snapshot frequency.
- * @param date The candidate date (defaults to UTC day boundaries).
- * @returns Whether a snapshot should be generated on that date.
- */
-function isSnapshotDay(frequency: string, date: Date): boolean {
-    switch (frequency) {
-        case 'DAILY':
-            return true
-        case 'WEEKLY':
-            // Generate on Mondays.
-            return date.getUTCDay() === 1
-        case 'MONTHLY':
-            return isLastDayOfMonth(date)
-        case 'QUARTERLY':
-            return isLastDayOfMonth(date) && [2, 5, 8, 11].includes(date.getUTCMonth())
-        case 'SEMIANNUAL':
-            return isLastDayOfMonth(date) && [5, 11].includes(date.getUTCMonth())
-        case 'ANNUAL':
-            return isLastDayOfMonth(date) && date.getUTCMonth() === 11
-        case 'NONE':
-        default:
-            return false
-    }
-}
+import { addUtcDays, normalizeDate } from '@/utils'
+import { isSnapshotDay } from '@/utils/snapshot'
 
 export class SnapshotService extends BaseService {
     private readonly snapshotRepository = new SnapshotRepository()
@@ -49,7 +14,7 @@ export class SnapshotService extends BaseService {
     }
 
     /**
-     * Generates or refreshes the net-worth snapshot of a user at a date, linking each account to its balance point as-of that date instead of copying the value, so retroactive corrections flow through automatically.
+     * Generates or refreshes the net-worth snapshot of a user at a date, linking each active account to its balance point as-of that date instead of copying the value, so retroactive corrections to that point flow through automatically.
      * @param userId The ID of the user the snapshot belongs to.
      * @param snapshotDate The snapshot date (ISO string), used both as the unique key and as the as-of date for the account links.
      * @returns A promise that resolves when the snapshot and its account links have been persisted.
@@ -69,19 +34,23 @@ export class SnapshotService extends BaseService {
     }
 
     /**
-     * Refreshes the links and cached totals of the snapshots affected by a retroactive balance change of an account, so the cached net worth stays correct without recomputing on read.
+     * Refreshes the user's net-worth snapshots after a retroactive balance or transaction change, regenerating every snapshot due under the user's frequency from the change date up to today: existing snapshots are re-linked to the rebuilt series and missing past ones are created, so the wealth timeline stays consistent.
      * @param userId The ID of the user whose snapshots are refreshed.
-     * @param accountId The financial account whose balance changed.
-     * @param fromDate The earliest date impacted by the change; only snapshots on or after it are refreshed.
-     * @returns A promise that resolves when the affected snapshots have been refreshed.
+     * @param fromDate The earliest date impacted by the change; snapshots due on or after it are regenerated.
+     * @returns A promise that resolves when the affected snapshots have been regenerated.
      */
-    async refreshSnapshotsFrom(userId: string, accountId: string, fromDate: Date): Promise<void> {
-        const snapshots = await this.snapshotRepository.findSnapshotsFromDate(userId, fromDate)
+    async refreshSnapshotsFrom(userId: string, fromDate: Date): Promise<void> {
+        const frequency = await this.context.currentUser.preferences.snapshotFrequency
+        if (!frequency || frequency === 'NONE') {
+            return
+        }
 
-        for (const snapshot of snapshots) {
-            const balanceId = await this.accountBalanceRepository.findBalanceIdAsOf(accountId, snapshot.snapshotDate)
-            await this.snapshotRepository.upsertAccountBalanceLink(snapshot.id, accountId, balanceId)
-            await this.snapshotRepository.refreshTotalsFromLinks(snapshot.id)
+        const today = normalizeDate(new Date())
+        for (let day = normalizeDate(fromDate); day <= today; day = addUtcDays(day, 1)) {
+            if (!isSnapshotDay(frequency, day)) {
+                continue
+            }
+            await this.generateSnapshot(userId, day.toISOString().split('T')[0]!)
         }
     }
 
