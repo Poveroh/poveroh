@@ -40,7 +40,7 @@ export class SnapshotService extends BaseService {
      * @returns A promise that resolves when the affected snapshots have been regenerated.
      */
     async refreshSnapshotsFrom(userId: string, fromDate: Date): Promise<void> {
-        const frequency = await this.context.currentUser.preferences.snapshotFrequency
+        const frequency = this.context.currentUser.preferences.snapshotFrequency
         if (!frequency || frequency === 'NONE') {
             return
         }

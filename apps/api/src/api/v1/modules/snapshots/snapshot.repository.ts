@@ -1,4 +1,5 @@
 import prisma from '@poveroh/prisma'
+import { normalizeDate } from '@/utils'
 
 export class SnapshotRepository {
     /**
@@ -26,21 +27,23 @@ export class SnapshotRepository {
     /**
      * Upserts a snapshot row identified by user and snapshot date, creating an empty marker when none exists.
      * @param userId The ID of the user who owns the snapshot.
-     * @param snapshotDate The snapshot date used as part of the unique constraint to upsert.
+     * @param snapshotDate The snapshot date as an ISO date string, normalized to midnight UTC before it is used as part of the unique constraint to upsert.
      * @returns A promise that resolves to the upserted snapshot row.
      */
     async upsertSnapshot(userId: string, snapshotDate: string) {
+        const normalizedDate = normalizeDate(snapshotDate)
+
         return prisma.snapshot.upsert({
             where: {
                 userId_snapshotDate: {
                     userId,
-                    snapshotDate
+                    snapshotDate: normalizedDate
                 }
             },
             update: {},
             create: {
                 userId,
-                snapshotDate
+                snapshotDate: normalizedDate
             }
         })
     }
