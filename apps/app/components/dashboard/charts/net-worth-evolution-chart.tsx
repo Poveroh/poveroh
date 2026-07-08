@@ -99,16 +99,14 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
                     tickMargin={4}
                     tickLine={false}
                     axisLine={false}
+                    domain={[
+                        (dataMin: number) => dataMin - Math.max(Math.abs(dataMin) * 0.1, 1),
+                        (dataMax: number) => dataMax + Math.max(Math.abs(dataMax) * 0.1, 1)
+                    ]}
                     tickFormatter={value => `${value / 1000}k`}
                 />
                 <ChartTooltip content={renderTooltip} />
-                <Line
-                    dataKey='totalNetWorth'
-                    type='monotone'
-                    stroke='var(--chart-2-color)'
-                    strokeWidth={2}
-                    dot={false}
-                />
+                <Line dataKey='netWorth' type='monotone' stroke='var(--chart-2-color)' strokeWidth={2} dot={false} />
             </LineChart>
         </ChartContainer>
     )
