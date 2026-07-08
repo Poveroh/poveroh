@@ -5,26 +5,13 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
-import { ColSpanEnum, DashboardLayoutItem, DashboardWidgetEnum } from '@poveroh/types'
+import { DashboardLayoutItem, DashboardWidgetEnum } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
 import { Button } from '@poveroh/ui/components/button'
 import { Widget } from './render-widget'
 import { useDashboardLayout } from '@/hooks/dashboard/use-dashboard-layout'
 import { DashboardGridSkeleton } from '@/components/skeleton/dashboard-grid-skeleton'
-
-const colSpanClass = (span: ColSpanEnum) => {
-    switch (Number(span)) {
-        case 3:
-            return 'col-span-12 md:col-span-3'
-        case 4:
-            return 'col-span-12 md:col-span-4'
-        case 6:
-            return 'col-span-12 md:col-span-6'
-        case 12:
-        default:
-            return 'col-span-12'
-    }
-}
+import { colSpanClass } from '@/utils/grid'
 
 type DashboardGridProps = {
     items?: DashboardLayoutItem[]
