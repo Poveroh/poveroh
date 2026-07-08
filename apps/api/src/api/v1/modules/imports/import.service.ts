@@ -1,7 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import { v4 as uuidv4 } from 'uuid'
 import type {
-    Amount,
     ApproveImportTransactionsRequest,
     CategoryData,
     CreateImportRequest,
@@ -33,12 +32,13 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Completes an import by approving its transactions, applying the resulting balance changes and removing the pending or rejected rows.
+     * Completes an import by approving its transactions and removing the pending or rejected rows, then rebuilds the target account's daily balance series and snapshots from the earliest approved transaction date forward, since those transactions count toward the balance for the first time now that they are approved.
      * @param id The unique identifier of the import to complete.
      * @returns A promise that resolves to the updated import data.
      */
     async completeImport(id: string): Promise<ImportData> {
         const userId = this.context.currentUser.id
+        let approvedDates: Date[] = []
 
         const data = await prisma.$transaction(async tx => {
             const approvedTransactions = await this.importRepository.findTransactionsByStatusWithAmounts(
@@ -47,11 +47,9 @@ export class ImportService extends BaseService {
                 id,
                 'IMPORT_APPROVED'
             )
+            approvedDates = approvedTransactions.map(t => t.date)
 
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'IMPORT_APPROVED', 'APPROVED')
-
-            const approvedAmounts = approvedTransactions.flatMap(t => t.amounts)
-            await this.accountBalanceService.applyAmounts(approvedAmounts, undefined, tx)
 
             await this.importRepository.deletePendingOrRejectedAmounts(tx, userId, id)
             await this.importRepository.deletePendingOrRejectedTransactions(tx, userId, id)
@@ -59,17 +57,24 @@ export class ImportService extends BaseService {
             return this.importRepository.updateStatus(tx, userId, id, 'APPROVED')
         })
 
+        if (approvedDates.length > 0) {
+            const fromDate = new Date(Math.min(...approvedDates.map(date => date.getTime())))
+            await this.accountBalanceService.recomputeAccountsAndSnapshots([data.financialAccountId], fromDate)
+        }
+
         await eventBus.emit('import.updated', { userId, data })
         return data
     }
 
     /**
-     * Rolls back a completed import, reverting its approved transactions to pending and undoing the balance changes that were applied when the import was completed.
+     * Rolls back a completed import, reverting its approved transactions to pending, then rebuilds the target account's daily balance series and snapshots from the earliest affected transaction date forward, since those transactions no longer count toward the balance once reverted.
      * @param id The unique identifier of the import to roll back.
      * @returns A promise that resolves to the updated import data.
      */
     async rollbackImport(id: string): Promise<ImportData> {
         const userId = this.context.currentUser.id
+        let approvedDates: Date[] = []
+        let financialAccountId = ''
 
         const data = await prisma.$transaction(async tx => {
             const existing = await tx.import.findFirst({ where: { id, userId } })
@@ -77,6 +82,7 @@ export class ImportService extends BaseService {
             if (existing.status !== 'APPROVED') {
                 throw new BadRequestError('Only completed imports can be rolled back')
             }
+            financialAccountId = existing.financialAccountId
 
             const approvedTransactions = await this.importRepository.findTransactionsByStatusWithAmounts(
                 tx,
@@ -84,22 +90,17 @@ export class ImportService extends BaseService {
                 id,
                 'APPROVED'
             )
-
-            const reversalAmounts = approvedTransactions.flatMap(t =>
-                t.amounts.map(a => ({
-                    ...a,
-                    action: a.action === 'INCOME' ? 'EXPENSES' : 'INCOME'
-                }))
-            ) as Amount[]
-
-            if (reversalAmounts.length > 0) {
-                await this.accountBalanceService.applyAmounts(reversalAmounts, undefined, tx)
-            }
+            approvedDates = approvedTransactions.map(t => t.date)
 
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'APPROVED', 'IMPORT_PENDING')
 
             return this.importRepository.updateStatus(tx, userId, id, 'IMPORT_PENDING')
         })
+
+        if (approvedDates.length > 0) {
+            const fromDate = new Date(Math.min(...approvedDates.map(date => date.getTime())))
+            await this.accountBalanceService.recomputeAccountsAndSnapshots([financialAccountId], fromDate)
+        }
 
         await eventBus.emit('import.updated', { userId, data })
         return data
@@ -141,7 +142,7 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Deletes an import and every associated transaction, amount and file row for the authenticated user.
+     * Deletes an import and every associated transaction, amount and file row for the authenticated user. When the import was approved, its transactions had counted toward the target account's balance, so the account's daily series and snapshots are rebuilt from the earliest deleted transaction date forward to back out their effect.
      * @param id The unique identifier of the import to delete.
      * @returns A promise that resolves when the import has been deleted.
      */
@@ -151,12 +152,24 @@ export class ImportService extends BaseService {
         const data = await this.getImportById(id)
         const transactionIds = await this.importRepository.findImportTransactionIds(userId, id)
 
+        // Capture the approved transactions' dates before deleting: only an approved import ever affected the
+        // balance, and its rows are gone once the transaction below commits.
+        const approvedTransactions =
+            data?.status === 'APPROVED'
+                ? await this.importRepository.findTransactionsByStatusWithAmounts(prisma, userId, id, 'APPROVED')
+                : []
+
         await prisma.$transaction(async tx => {
             await this.importRepository.deleteAmountsByTransactionIds(tx, transactionIds)
             await this.importRepository.deleteTransactionsByImport(tx, userId, id)
             await this.importRepository.deleteImportFiles(tx, id)
             await this.importRepository.deleteImport(tx, userId, id)
         })
+
+        if (data && approvedTransactions.length > 0) {
+            const fromDate = new Date(Math.min(...approvedTransactions.map(t => t.date.getTime())))
+            await this.accountBalanceService.recomputeAccountsAndSnapshots([data.financialAccountId], fromDate)
+        }
 
         if (data) await eventBus.emit('import.deleted', { userId, data })
     }

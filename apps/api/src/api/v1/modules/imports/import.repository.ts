@@ -138,23 +138,23 @@ export class ImportRepository {
     }
 
     /**
-     * Finds the import transactions in the provided status that belong to the import and user, including their related amounts.
+     * Finds the import transactions in the provided status that belong to the import and user, including their date and related amounts.
      * @param tx The Prisma client used to run the query.
      * @param userId The ID of the user who owns the transactions being retrieved.
      * @param importId The unique identifier of the import the transactions belong to.
      * @param status The status used to filter the import transactions.
-     * @returns A promise that resolves to the list of transactions enriched with their amounts.
+     * @returns A promise that resolves to the list of transactions enriched with their date and amounts.
      */
     async findTransactionsByStatusWithAmounts(
         tx: Db,
         userId: string,
         importId: string,
         status: TransactionStatusEnum
-    ): Promise<Array<{ amounts: Amount[] }>> {
+    ): Promise<Array<{ date: Date; amounts: Amount[] }>> {
         return (await tx.transaction.findMany({
             where: { status, importId, userId },
             include: { amounts: true }
-        })) as unknown as Array<{ amounts: Amount[] }>
+        })) as unknown as Array<{ date: Date; amounts: Amount[] }>
     }
 
     /**

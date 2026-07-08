@@ -67,39 +67,6 @@ export class AccountBalanceRepository {
     }
 
     /**
-     * Sums the signed amount delta (income minus expenses) applied to an account by transactions whose date falls in an exclusive-inclusive window.
-     * @param financialAccountId The financial account whose amounts are aggregated.
-     * @param userId The owning user, used to scope the underlying transactions.
-     * @param after The exclusive lower bound date of the transactions.
-     * @param until The inclusive upper bound date of the transactions.
-     * @returns A promise resolving to the net balance delta for the window.
-     */
-    async sumAmountDelta(financialAccountId: string, userId: string, after: Date, until: Date): Promise<number> {
-        const window = { gt: after, lte: until }
-        const [income, expense] = await Promise.all([
-            prisma.amount.aggregate({
-                where: {
-                    financialAccountId,
-                    action: 'INCOME',
-
-                    transaction: { userId, date: window }
-                },
-                _sum: { amount: true }
-            }),
-            prisma.amount.aggregate({
-                where: {
-                    financialAccountId,
-                    action: 'EXPENSES',
-
-                    transaction: { userId, date: window }
-                },
-                _sum: { amount: true }
-            })
-        ])
-        return (income._sum.amount?.toNumber() ?? 0) - (expense._sum.amount?.toNumber() ?? 0)
-    }
-
-    /**
      * Reads the id of the most recent balance point of a financial account at or before the given date, used to link a snapshot to its as-of source row.
      * @param financialAccountId The financial account whose balance point is read.
      * @param date The upper bound date (inclusive).
@@ -115,7 +82,7 @@ export class AccountBalanceRepository {
     }
 
     /**
-     * Reads the signed balance effect (income positive, expenses negative) of every amount applied to an account by the user's transactions dated in an exclusive-exclusive window, tagged with the transaction date so the caller can bucket them per day.
+     * Reads the signed balance effect (income positive, expenses negative) of every amount applied to an account by the user's approved transactions dated in an exclusive-exclusive window, tagged with the transaction date so the caller can bucket them per day. Pending, rejected or import-staged transactions are excluded since they have no effect on the balance until approved.
      * @param financialAccountId The financial account whose amounts are read.
      * @param userId The owning user, used to scope the underlying transactions.
      * @param after The exclusive lower bound date of the transactions.
@@ -132,7 +99,7 @@ export class AccountBalanceRepository {
             where: {
                 financialAccountId,
 
-                transaction: { userId, date: { gt: after, lt: until } }
+                transaction: { userId, status: 'APPROVED', date: { gt: after, lt: until } }
             },
             select: { amount: true, action: true, transaction: { select: { date: true } } }
         })
@@ -195,36 +162,5 @@ export class AccountBalanceRepository {
                 })
             )
         )
-    }
-
-    /**
-     * Reads the balance points of a financial account within an inclusive date range, used to preserve manual anchors and skip unchanged points while backfilling.
-     * @param financialAccountId The financial account whose points are read.
-     * @param from The inclusive lower bound date.
-     * @param to The inclusive upper bound date.
-     * @returns A promise resolving to the points in range with the fields required by the backfill walk.
-     */
-    async findPointsInRange(
-        financialAccountId: string,
-        from: Date,
-        to: Date
-    ): Promise<{ date: Date; balance: Prisma.Decimal; isManual: boolean }[]> {
-        return prisma.financialAccountBalance.findMany({
-            where: { financialAccountId, date: { gte: from, lte: to } },
-            select: { date: true, balance: true, isManual: true }
-        })
-    }
-
-    /**
-     * Reads the balance point of a financial account at an exact date, used to avoid overwriting manual anchors during materialization.
-     * @param financialAccountId The financial account the point belongs to.
-     * @param date The exact date of the point.
-     * @returns A promise resolving to the point's manual flag, or null when no point exists at that date.
-     */
-    async findByDate(financialAccountId: string, date: Date): Promise<{ isManual: boolean } | null> {
-        return prisma.financialAccountBalance.findUnique({
-            where: { financialAccountId_date: { financialAccountId, date } },
-            select: { isManual: true }
-        })
     }
 }

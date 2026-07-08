@@ -100,7 +100,7 @@ export class TransactionService extends BaseService {
 
         // Rebuild the daily balance series of each touched account from the transaction date forward so a
         // backdated transaction fills in the missing daily points. Runs after commit to read the persisted amounts.
-        await this.recomputeBalanceSeries(affectedAccountIds, new Date(payload.date))
+        await this.accountBalanceService.recomputeAccountsAndSnapshots(affectedAccountIds, new Date(payload.date))
 
         await this.saveTransactionMedia(resultId, files)
         return this.getTransactionById(resultId)
@@ -133,7 +133,6 @@ export class TransactionService extends BaseService {
                     payload.currency
                 )
                 await this.transactionRepository.createAmounts(tx, amountsData)
-                await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], undefined, tx)
 
                 affectedAccountIds = amountsData.map(a => a.financialAccountId)
 
@@ -154,24 +153,10 @@ export class TransactionService extends BaseService {
         )
 
         // Rebuild the daily series of both ends of the transfer from the transfer date forward, after commit.
-        await this.recomputeBalanceSeries(affectedAccountIds, new Date(payload.date))
+        await this.accountBalanceService.recomputeAccountsAndSnapshots(affectedAccountIds, new Date(payload.date))
 
         await Promise.all(transactionIds.map(id => this.saveTransactionMedia(id, files)))
         return this.fetchTransferTransactionByTransferId(transferId)
-    }
-
-    /**
-     * Rebuilds the daily balance series of each distinct affected account from the earliest impacted day forward after a transaction is created, edited or deleted, so a backdated change propagates through the materialized series and snapshots.
-     * @param financialAccountIds The financial accounts touched by the transaction; duplicates are ignored.
-     * @param fromDate The earliest date impacted by the transaction.
-     * @returns A promise that resolves once every affected account's series has been rebuilt.
-     */
-    private async recomputeBalanceSeries(financialAccountIds: string[], fromDate: Date): Promise<void> {
-        await Promise.all(
-            Array.from(new Set(financialAccountIds)).map(financialAccountId =>
-                this.accountBalanceService.recomputeFromTransactionChange(financialAccountId, fromDate)
-            )
-        )
     }
 
     /**
@@ -232,7 +217,7 @@ export class TransactionService extends BaseService {
             ]
             const fromDate = newDate.getTime() < existing.date.getTime() ? newDate : existing.date
 
-            await this.recomputeBalanceSeries(affectedAccountIds, fromDate)
+            await this.accountBalanceService.recomputeAccountsAndSnapshots(affectedAccountIds, fromDate)
         }
 
         await this.saveTransactionMedia(transactionId, files)
@@ -352,12 +337,12 @@ export class TransactionService extends BaseService {
     }
 
     /**
-     * Replaces the amounts of a transaction and updates the affected financial account balances. When originalAmounts is supplied the old values are reverted before the new ones are applied.
+     * Replaces the amounts of a transaction, deleting the original rows first when editing an existing transaction.
      * @param tx The Prisma client used to run the persistence inside an active transaction.
      * @param transactionId The unique identifier of the transaction whose amounts must be replaced.
      * @param amountsData The list of new amount rows to be persisted.
-     * @param originalAmounts The original amount rows used to compute the balance reversal when updating, carrying their account and action.
-     * @returns A promise that resolves when the amounts have been replaced and the balances updated.
+     * @param originalAmounts The original amount rows being replaced; their presence signals an edit rather than a first-time create.
+     * @returns A promise that resolves when the amounts have been replaced.
      */
     private async persistAmounts(
         tx: Prisma.TransactionClient,
@@ -369,8 +354,6 @@ export class TransactionService extends BaseService {
             await this.transactionRepository.deleteAmountsByTransactionId(tx, transactionId)
         }
         await this.transactionRepository.createAmounts(tx, amountsData)
-
-        await this.accountBalanceService.applyAmounts(amountsData as unknown as Amount[], originalAmounts, tx)
     }
 
     /**
@@ -469,7 +452,7 @@ export class TransactionService extends BaseService {
         if (data) {
             // Removing the transaction drops its amounts, so rebuild the series of each touched account from the
             // transaction date forward to back out its effect across the materialized daily points and snapshots.
-            await this.recomputeBalanceSeries(
+            await this.accountBalanceService.recomputeAccountsAndSnapshots(
                 data.amounts.map(a => a.financialAccountId),
                 new Date(data.date)
             )
