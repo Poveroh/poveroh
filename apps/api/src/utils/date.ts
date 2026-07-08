@@ -37,13 +37,3 @@ export function toIsoString(value: Date | string | null | undefined): string | n
     if (!value) return null
     return value instanceof Date ? value.toISOString() : value
 }
-
-/**
- * Returns true when the given date is the last calendar day of its month.
- * @param date The date to test.
- * @returns Whether the date is the last day of the month.
- */
-export function isLastDayOfMonth(date: Date): boolean {
-    const next = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1))
-    return next.getUTCMonth() !== date.getUTCMonth()
-}

@@ -15,13 +15,16 @@ export class SnapshotRepository {
     }
 
     /**
-     * Lists every user's snapshot frequency preference, used by the daily scheduler to decide whose snapshot is due.
-     * @returns A promise resolving to the userId and configured snapshot frequency of each user.
+     * Lists the ids of every user who owns at least one active (non soft-deleted) financial account, used by the daily scheduler to know who needs a snapshot today.
+     * @returns A promise resolving to the distinct owning user ids.
      */
-    async findUserSnapshotFrequencies() {
-        return prisma.userPreferences.findMany({
-            select: { userId: true, snapshotFrequency: true }
+    async findUserIdsWithActiveAccounts(): Promise<string[]> {
+        const rows = await prisma.financialAccount.findMany({
+            where: { deletedAt: null },
+            select: { userId: true },
+            distinct: ['userId']
         })
+        return rows.map(row => row.userId)
     }
 
     /**

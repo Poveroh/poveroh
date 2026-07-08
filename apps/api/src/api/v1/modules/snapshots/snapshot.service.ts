@@ -3,7 +3,6 @@ import { SnapshotRepository } from './snapshot.repository'
 import { AccountBalanceRepository } from '../financial-accounts/account-balance/account-balance.repository'
 import { eventBus } from '../../worker/events/event-bus'
 import { addUtcDays, normalizeDate } from '@/utils'
-import { isSnapshotDay } from '@/utils/snapshot'
 
 export class SnapshotService extends BaseService {
     private readonly snapshotRepository = new SnapshotRepository()
@@ -34,46 +33,31 @@ export class SnapshotService extends BaseService {
     }
 
     /**
-     * Refreshes the user's net-worth snapshots after a retroactive balance or transaction change, regenerating every snapshot due under the user's frequency from the change date up to today: existing snapshots are re-linked to the rebuilt series and missing past ones are created, so the wealth timeline stays consistent.
+     * Regenerates the user's net-worth snapshots for every day from a retroactive balance or transaction change up to today: existing snapshots are re-linked to the rebuilt series and missing past days are created, so the daily wealth timeline stays consistent.
      * @param userId The ID of the user whose snapshots are refreshed.
-     * @param fromDate The earliest date impacted by the change; snapshots due on or after it are regenerated.
+     * @param fromDate The earliest date impacted by the change.
      * @returns A promise that resolves when the affected snapshots have been regenerated.
      */
     async refreshSnapshotsFrom(userId: string, fromDate: Date): Promise<void> {
-        const frequency = this.context.currentUser.preferences.snapshotFrequency
-        if (!frequency || frequency === 'NONE') {
-            return
-        }
-
         const today = normalizeDate(new Date())
         for (let day = normalizeDate(fromDate); day <= today; day = addUtcDays(day, 1)) {
-            if (!isSnapshotDay(frequency, day)) {
-                continue
-            }
             await this.generateSnapshot(userId, day.toISOString().split('T')[0]!)
         }
     }
 
     /**
-     * Generates the snapshot for every user whose configured frequency falls due on the given date, used by the daily scheduled job.
-     * @param date An optional ISO date to evaluate; defaults to today.
+     * Generates today's snapshot for every user who owns at least one active financial account, used by the daily scheduled job.
+     * @param date An optional ISO date to generate for; defaults to today.
      * @returns A promise that resolves to the number of snapshots generated.
      */
-    async generateDueSnapshots(date?: string): Promise<number> {
-        const day = date ? new Date(date) : new Date()
-        const isoDate = day.toISOString().split('T')[0]!
-        const preferences = await this.snapshotRepository.findUserSnapshotFrequencies()
+    async generateDailySnapshots(date?: string): Promise<number> {
+        const isoDate = (date ? new Date(date) : new Date()).toISOString().split('T')[0]!
+        const userIds = await this.snapshotRepository.findUserIdsWithActiveAccounts()
 
-        let count = 0
-        for (const preference of preferences) {
-            if (!isSnapshotDay(preference.snapshotFrequency, day)) {
-                continue
-            }
-
-            await this.generateSnapshot(preference.userId, isoDate)
-            count++
+        for (const userId of userIds) {
+            await this.generateSnapshot(userId, isoDate)
         }
 
-        return count
+        return userIds.length
     }
 }

@@ -14,9 +14,9 @@ export const snapshotJobHandlers: JobHandlers = {
         })
     },
     'snapshot.generate-due': async payload => {
-        // Daily sweep: generates a snapshot for every user whose configured frequency falls due today.
+        // Daily sweep: generates today's snapshot for every user who owns at least one active financial account.
         const snapshotService = new SnapshotService()
-        const count = await snapshotService.generateDueSnapshots(payload.date)
+        const count = await snapshotService.generateDailySnapshots(payload.date)
 
         logger.info('Due snapshots generated', {
             date: payload.date ?? null,
