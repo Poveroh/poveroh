@@ -73,6 +73,10 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
         )
     }
 
+    if (chartData.length === 0) {
+        return <div className='h-[250px] w-full' />
+    }
+
     return (
         <ChartContainer config={chartConfig} className='aspect-auto h-[250px] w-full min-w-0 justify-start'>
             <LineChart accessibilityLayer data={chartData} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
@@ -100,8 +104,10 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
                     tickLine={false}
                     axisLine={false}
                     domain={[
-                        (dataMin: number) => dataMin - Math.max(Math.abs(dataMin) * 0.1, 1),
-                        (dataMax: number) => dataMax + Math.max(Math.abs(dataMax) * 0.1, 1)
+                        (dataMin: number) =>
+                            Number.isFinite(dataMin) ? dataMin - Math.max(Math.abs(dataMin) * 0.1, 1) : 0,
+                        (dataMax: number) =>
+                            Number.isFinite(dataMax) ? dataMax + Math.max(Math.abs(dataMax) * 0.1, 1) : 1
                     ]}
                     tickFormatter={value => `${value / 1000}k`}
                 />
