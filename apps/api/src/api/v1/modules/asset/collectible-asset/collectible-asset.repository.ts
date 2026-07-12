@@ -1,4 +1,3 @@
-import { toNumber, toIsoString } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CollectibleAssetData, CreateCollectibleAssetRequest, UpdateCollectibleAssetRequest } from '@poveroh/types'
 
@@ -8,22 +7,6 @@ const collectibleSelect = {
     appraisalValue: true,
     appraisalDate: true
 } satisfies Prisma.CollectibleAssetSelect
-
-type CollectibleRow = Prisma.CollectibleAssetGetPayload<{ select: typeof collectibleSelect }>
-
-/**
- * Normalizes a Prisma collectible asset row into the API DTO by converting Decimal and Date values into JSON-friendly types.
- * @param row The Prisma collectible asset row to convert.
- * @returns The normalized collectible asset data.
- */
-function toData(row: CollectibleRow): CollectibleAssetData {
-    return {
-        acquisitionCost: toNumber(row.acquisitionCost),
-        acquisitionDate: toIsoString(row.acquisitionDate),
-        appraisalValue: toNumber(row.appraisalValue),
-        appraisalDate: toIsoString(row.appraisalDate)
-    }
-}
 
 export class CollectibleAssetRepository {
     /**
@@ -113,12 +96,10 @@ export class CollectibleAssetRepository {
      * @returns A promise that resolves to the collectible asset metadata, or null when the asset has none.
      */
     async findByAssetId(userId: string, assetId: string): Promise<CollectibleAssetData | null> {
-        const row = await prisma.collectibleAsset.findFirst({
+        return (await prisma.collectibleAsset.findFirst({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             select: collectibleSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as CollectibleAssetData | null
     }
 
     /**

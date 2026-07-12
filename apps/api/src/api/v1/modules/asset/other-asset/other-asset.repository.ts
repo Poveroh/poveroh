@@ -1,4 +1,3 @@
-import { toIsoString, toNumber } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateOtherAssetRequest, OtherAssetData, UpdateOtherAssetRequest } from '@poveroh/types'
 
@@ -7,21 +6,6 @@ const otherSelect = {
     purchasePrice: true,
     purchaseDate: true
 } satisfies Prisma.OtherAssetSelect
-
-type OtherRow = Prisma.OtherAssetGetPayload<{ select: typeof otherSelect }>
-
-/**
- * Normalizes a Prisma other asset row into the API DTO by converting Decimal and Date values into JSON-friendly types.
- * @param row The Prisma other asset row to convert.
- * @returns The normalized other asset data.
- */
-function toData(row: OtherRow): OtherAssetData {
-    return {
-        description: row.description,
-        purchasePrice: toNumber(row.purchasePrice),
-        purchaseDate: toIsoString(row.purchaseDate)
-    }
-}
 
 export class OtherAssetRepository {
     /**
@@ -106,12 +90,10 @@ export class OtherAssetRepository {
      * @returns A promise that resolves to the other asset metadata, or null when the asset has none.
      */
     async findByAssetId(userId: string, assetId: string): Promise<OtherAssetData | null> {
-        const row = await prisma.otherAsset.findFirst({
+        return (await prisma.otherAsset.findFirst({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             select: otherSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as OtherAssetData | null
     }
 
     /**

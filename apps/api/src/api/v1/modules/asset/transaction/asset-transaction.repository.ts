@@ -3,11 +3,9 @@ import type {
     AssetTransactionData,
     AssetTransactionFilters,
     CreateAssetTransactionRequest,
-    CurrencyEnum,
     UpdateAssetTransactionRequest
 } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
-import { toIsoString, toNumber } from '@/utils'
 
 const assetTransactionSelect = {
     id: true,
@@ -28,34 +26,6 @@ const assetTransactionSelect = {
     updatedAt: true
 } satisfies Prisma.AssetTransactionSelect
 
-type AssetTransactionRow = Prisma.AssetTransactionGetPayload<{ select: typeof assetTransactionSelect }>
-
-/**
- * Normalizes a Prisma asset transaction row into the API DTO by converting Decimal and Date values into plain JSON-friendly types.
- * @param row The Prisma asset transaction row to convert.
- * @returns The normalized asset transaction data.
- */
-function toData(row: AssetTransactionRow): AssetTransactionData {
-    return {
-        id: row.id,
-        assetId: row.assetId,
-        type: row.type,
-        date: toIsoString(row.date) as string,
-        settlementDate: toIsoString(row.settlementDate),
-        quantityChange: toNumber(row.quantityChange),
-        unitPrice: toNumber(row.unitPrice),
-        totalAmount: toNumber(row.totalAmount),
-        currency: row.currency as CurrencyEnum,
-        fxRate: toNumber(row.fxRate),
-        fees: toNumber(row.fees),
-        taxAmount: toNumber(row.taxAmount),
-        financialAccountId: row.financialAccountId,
-        note: row.note,
-        createdAt: toIsoString(row.createdAt) as string,
-        updatedAt: toIsoString(row.updatedAt) as string
-    }
-}
-
 export class AssetTransactionRepository {
     /**
      * Creates a new asset transaction in the database, scoping it to the asset identified in the payload.
@@ -64,7 +34,7 @@ export class AssetTransactionRepository {
      * @returns A promise that resolves to the data of the newly created asset transaction.
      */
     async create(id: string, payload: CreateAssetTransactionRequest): Promise<AssetTransactionData> {
-        const row = await prisma.assetTransaction.create({
+        return (await prisma.assetTransaction.create({
             data: {
                 id,
                 assetId: payload.assetId,
@@ -82,9 +52,7 @@ export class AssetTransactionRepository {
                 note: payload.note ?? null
             },
             select: assetTransactionSelect
-        })
-
-        return toData(row)
+        })) as unknown as AssetTransactionData
     }
 
     /**
@@ -148,12 +116,10 @@ export class AssetTransactionRepository {
      * @returns A promise that resolves to the asset transaction data, or null when no matching row is found.
      */
     async findById(userId: string, id: string): Promise<AssetTransactionData | null> {
-        const row = await prisma.assetTransaction.findFirst({
+        return (await prisma.assetTransaction.findFirst({
             where: { id, deletedAt: null, asset: { userId, deletedAt: null } },
             select: assetTransactionSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as AssetTransactionData | null
     }
 
     /**
@@ -196,15 +162,13 @@ export class AssetTransactionRepository {
             ['note']
         ) as Prisma.AssetTransactionWhereInput
 
-        const rows = await prisma.assetTransaction.findMany({
+        return (await prisma.assetTransaction.findMany({
             where,
             select: assetTransactionSelect,
             orderBy: { date: 'desc' },
             skip,
             take
-        })
-
-        return rows.map(toData)
+        })) as unknown as AssetTransactionData[]
     }
 
     /**

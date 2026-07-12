@@ -1,12 +1,5 @@
-import { toIsoString, toNumber } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
-import type {
-    AutoDepreciationData,
-    AutoDepreciationInput,
-    CyclePeriodEnum,
-    DepreciationBaseEnum,
-    DepreciationValueTypeEnum
-} from '@poveroh/types'
+import type { AutoDepreciationData, AutoDepreciationInput } from '@poveroh/types'
 import { CyclePeriod, DepreciationBase, DepreciationValueType } from '@prisma/client'
 
 export const autoDepreciationSelect = {
@@ -18,25 +11,6 @@ export const autoDepreciationSelect = {
     cyclePeriod: true,
     cycleNumber: true
 } satisfies Prisma.AutoDepreciationSelect
-
-type AutoDepreciationRow = Prisma.AutoDepreciationGetPayload<{ select: typeof autoDepreciationSelect }>
-
-/**
- * Normalizes a Prisma auto depreciation row into the API DTO by converting Decimal and Date values into JSON-friendly types.
- * @param row The Prisma auto depreciation row to convert.
- * @returns The normalized auto depreciation data.
- */
-export function toAutoDepreciationData(row: AutoDepreciationRow): AutoDepreciationData {
-    return {
-        startDate: toIsoString(row.startDate) as string,
-        endDate: toIsoString(row.endDate),
-        depreciationBase: row.depreciationBase as DepreciationBaseEnum,
-        depreciationType: row.depreciationType as DepreciationValueTypeEnum,
-        depreciationValue: toNumber(row.depreciationValue) ?? 0,
-        cyclePeriod: row.cyclePeriod as CyclePeriodEnum,
-        cycleNumber: row.cycleNumber
-    }
-}
 
 export class AutoDepreciationRepository {
     /**
@@ -102,12 +76,10 @@ export class AutoDepreciationRepository {
      * @returns A promise that resolves to the active auto depreciation rules, newest first.
      */
     async findByAssetId(userId: string, assetId: string): Promise<AutoDepreciationData[]> {
-        const rows = await prisma.autoDepreciation.findMany({
+        return (await prisma.autoDepreciation.findMany({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             orderBy: { createdAt: 'desc' },
             select: autoDepreciationSelect
-        })
-
-        return rows.map(toAutoDepreciationData)
+        })) as unknown as AutoDepreciationData[]
     }
 }

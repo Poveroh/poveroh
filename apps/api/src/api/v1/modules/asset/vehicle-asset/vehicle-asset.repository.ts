@@ -2,7 +2,6 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateVehicleAssetRequest, UpdateVehicleAssetRequest, VehicleAssetData } from '@poveroh/types'
 import { VehicleType } from '@prisma/client'
 import { AutoDepreciationRepository } from '../auto-depreciation/auto-depreciation.repository'
-import { toNumber, toIsoString } from '@/utils'
 
 const vehicleSelect = {
     brand: true,
@@ -17,29 +16,6 @@ const vehicleSelect = {
     condition: true,
     logoIcon: true
 } satisfies Prisma.VehicleAssetSelect
-
-type VehicleRow = Prisma.VehicleAssetGetPayload<{ select: typeof vehicleSelect }>
-
-/**
- * Normalizes a Prisma vehicle asset row into the API DTO by converting Decimal and Date values into JSON-friendly types.
- * @param row The Prisma vehicle asset row to convert.
- * @returns The normalized vehicle asset data.
- */
-function toData(row: VehicleRow): VehicleAssetData {
-    return {
-        brand: row.brand,
-        model: row.model,
-        type: row.type,
-        year: row.year,
-        purchasePrice: toNumber(row.purchasePrice) ?? 0,
-        purchaseDate: toIsoString(row.purchaseDate),
-        plateNumber: row.plateNumber,
-        vin: row.vin,
-        mileage: row.mileage,
-        condition: row.condition,
-        logoIcon: row.logoIcon
-    }
-}
 
 /**
  * Composes a human-friendly asset title from the vehicle brand and model.
@@ -160,12 +136,10 @@ export class VehicleAssetRepository {
      * @returns A promise that resolves to the vehicle asset metadata, or null when the asset has none.
      */
     async findByAssetId(userId: string, assetId: string): Promise<VehicleAssetData | null> {
-        const row = await prisma.vehicleAsset.findFirst({
+        return (await prisma.vehicleAsset.findFirst({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             select: vehicleSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as VehicleAssetData | null
     }
 
     /**
