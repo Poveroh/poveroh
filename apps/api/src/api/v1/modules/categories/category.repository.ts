@@ -1,34 +1,8 @@
 import type { CategoryData, CategoryFilters, CreateCategoryRequest, UpdateCategoryRequest } from '@poveroh/types'
 import { CATEGORY_TEMPLATE } from '@/v1/content/template/category'
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
 import { buildWhere } from '@/helpers'
-
-const subcategorySelect = {
-    id: true,
-    categoryId: true,
-    title: true,
-    icon: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.SubcategorySelect
-
-const categorySelect = {
-    id: true,
-    title: true,
-    for: true,
-    icon: true,
-    color: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.CategorySelect
-
-const categoryWithSubcategoriesSelect = {
-    ...categorySelect,
-    subcategories: {
-        where: { deletedAt: null },
-        select: subcategorySelect
-    }
-} satisfies Prisma.CategorySelect
+import { categorySelect, categoryWithSubcategoriesSelect } from '@/types/select'
 
 export class CategoryRepository {
     /**

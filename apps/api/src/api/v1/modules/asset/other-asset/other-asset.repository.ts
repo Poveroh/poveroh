@@ -1,11 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateOtherAssetRequest, OtherAssetData, UpdateOtherAssetRequest } from '@poveroh/types'
-
-const otherSelect = {
-    description: true,
-    purchasePrice: true,
-    purchaseDate: true
-} satisfies Prisma.OtherAssetSelect
+import { otherSelect } from '@/types/select'
 
 export class OtherAssetRepository {
     /**

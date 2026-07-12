@@ -1,16 +1,7 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { AutoDepreciationData, AutoDepreciationInput } from '@poveroh/types'
 import { CyclePeriod, DepreciationBase, DepreciationValueType } from '@prisma/client'
-
-export const autoDepreciationSelect = {
-    startDate: true,
-    endDate: true,
-    depreciationBase: true,
-    depreciationType: true,
-    depreciationValue: true,
-    cyclePeriod: true,
-    cycleNumber: true
-} satisfies Prisma.AutoDepreciationSelect
+import { autoDepreciationSelect } from '@/types/select'
 
 export class AutoDepreciationRepository {
     /**

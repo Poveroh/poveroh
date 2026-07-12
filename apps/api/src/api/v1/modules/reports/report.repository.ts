@@ -1,11 +1,7 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { NetWorthEvolutionFilters } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
-
-const snapshotSelect = {
-    snapshotDate: true,
-    totalNetWorth: true
-} satisfies Prisma.SnapshotSelect
+import { snapshotSelect } from '@/types/select'
 
 type SnapshotRow = Prisma.SnapshotGetPayload<{ select: typeof snapshotSelect }>
 

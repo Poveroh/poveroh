@@ -2,13 +2,7 @@ import { toNumber, toIsoString } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateRealEstateAssetRequest, RealEstateAssetData, UpdateRealEstateAssetRequest } from '@poveroh/types'
 import { RealEstateType } from '@prisma/client'
-
-const realEstateSelect = {
-    address: true,
-    type: true,
-    purchasePrice: true,
-    purchaseDate: true
-} satisfies Prisma.RealEstateAssetSelect
+import { realEstateSelect } from '@/types/select'
 
 type RealEstateRow = Prisma.RealEstateAssetGetPayload<{ select: typeof realEstateSelect }>
 

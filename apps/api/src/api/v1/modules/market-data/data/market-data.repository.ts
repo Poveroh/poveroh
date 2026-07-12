@@ -1,14 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import { UpdateCredentialRecordRequest } from '@poveroh/types'
-
-const credentialSelect = {
-    id: true,
-    providerId: true,
-    ciphertext: true,
-    iv: true,
-    authTag: true,
-    algo: true
-} satisfies Prisma.MarketDataProviderCredentialSelect
+import { credentialSelect } from '@/types/select'
 
 type CredentialRecord = Prisma.MarketDataProviderCredentialGetPayload<{ select: typeof credentialSelect }>
 

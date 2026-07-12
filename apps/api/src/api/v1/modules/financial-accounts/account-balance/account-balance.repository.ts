@@ -1,14 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateFinancialAccountBalanceRequest, FinancialAccountBalanceData } from '@poveroh/types'
-
-const accountBalanceSelect = {
-    id: true,
-    financialAccountId: true,
-    date: true,
-    balance: true,
-    note: true,
-    isManual: true
-} satisfies Prisma.FinancialAccountBalanceSelect
+import { accountBalanceSelect } from '@/types/select'
 
 export class AccountBalanceRepository {
     /**

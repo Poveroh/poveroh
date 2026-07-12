@@ -2,20 +2,7 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateVehicleAssetRequest, UpdateVehicleAssetRequest, VehicleAssetData } from '@poveroh/types'
 import { VehicleType } from '@prisma/client'
 import { AutoDepreciationRepository } from '../auto-depreciation/auto-depreciation.repository'
-
-const vehicleSelect = {
-    brand: true,
-    model: true,
-    type: true,
-    year: true,
-    purchasePrice: true,
-    purchaseDate: true,
-    plateNumber: true,
-    vin: true,
-    mileage: true,
-    condition: true,
-    logoIcon: true
-} satisfies Prisma.VehicleAssetSelect
+import { vehicleSelect } from '@/types/select'
 
 /**
  * Composes a human-friendly asset title from the vehicle brand and model.

@@ -1,12 +1,6 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CollectibleAssetData, CreateCollectibleAssetRequest, UpdateCollectibleAssetRequest } from '@poveroh/types'
-
-const collectibleSelect = {
-    acquisitionCost: true,
-    acquisitionDate: true,
-    appraisalValue: true,
-    appraisalDate: true
-} satisfies Prisma.CollectibleAssetSelect
+import { collectibleSelect } from '@/types/select'
 
 export class CollectibleAssetRepository {
     /**

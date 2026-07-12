@@ -1,7 +1,7 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { AssetData, AssetFilters, AssetTypeEnum } from '@poveroh/types'
-import { autoDepreciationSelect } from '../auto-depreciation/auto-depreciation.repository'
 import { toNumber } from '@/utils'
+import { assetSelect } from '@/types/select'
 
 export type PortfolioSummary = {
     totalAssets: number
@@ -13,55 +13,6 @@ export type PortfolioSummary = {
         totalCurrentValue: number
     }>
 }
-
-const assetTransactionSelect = {
-    id: true,
-    assetId: true,
-    type: true,
-    date: true,
-    settlementDate: true,
-    quantityChange: true,
-    unitPrice: true,
-    totalAmount: true,
-    currency: true,
-    fxRate: true,
-    fees: true,
-    taxAmount: true,
-    financialAccountId: true,
-    note: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.AssetTransactionSelect
-
-const assetSelect = {
-    id: true,
-    title: true,
-    type: true,
-    currency: true,
-    currentValue: true,
-    currentValueAsOf: true,
-    quantity: true,
-    totalInvested: true,
-    createdAt: true,
-    updatedAt: true,
-    marketable: true,
-    realEstate: true,
-    collectible: true,
-    privateDeal: true,
-    vehicle: true,
-    insurance: true,
-    other: true,
-    transactions: {
-        where: { deletedAt: null },
-        orderBy: { date: 'desc' as const },
-        select: assetTransactionSelect
-    },
-    autoDepreciations: {
-        where: { deletedAt: null },
-        orderBy: { createdAt: 'desc' as const },
-        select: autoDepreciationSelect
-    }
-} satisfies Prisma.AssetSelect
 
 export class AssetRepository {
     /**

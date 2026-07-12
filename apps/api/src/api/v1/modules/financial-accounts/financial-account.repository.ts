@@ -1,4 +1,4 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
 import type {
     CreateFinancialAccountRequest,
     FinancialAccountData,
@@ -6,25 +6,7 @@ import type {
     UpdateFinancialAccountRequest
 } from '@poveroh/types'
 import { buildWhere } from '@/helpers'
-
-const financialAccountSelect = {
-    id: true,
-    title: true,
-    type: true,
-    logoIcon: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.FinancialAccountSelect
-
-const financialAccountWithoutBalanceSelect = {
-    id: true,
-    title: true,
-    balance: true,
-    type: true,
-    logoIcon: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.FinancialAccountWithBalanceSelect
+import { financialAccountSelect, financialAccountWithoutBalanceSelect } from '@/types/select'
 
 export class FinancialAccountRepository {
     /**

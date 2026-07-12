@@ -1,16 +1,7 @@
 import prisma, { Prisma } from '@poveroh/prisma'
 import type { CreateUserActivityRequest, UserActivityData, UserActivityFilters } from '@poveroh/types'
 import { buildWhere } from '@/helpers'
-
-const userActivitySelect = {
-    id: true,
-    entityType: true,
-    action: true,
-    entityId: true,
-    metadata: true,
-    userAgent: true,
-    createdAt: true
-} satisfies Prisma.UserActivitySelect
+import { userActivitySelect } from '@/types/select'
 
 export class UserActivityRepository {
     /**

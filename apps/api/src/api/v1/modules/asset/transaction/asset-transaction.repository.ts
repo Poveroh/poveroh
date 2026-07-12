@@ -6,25 +6,7 @@ import type {
     UpdateAssetTransactionRequest
 } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
-
-const assetTransactionSelect = {
-    id: true,
-    assetId: true,
-    type: true,
-    date: true,
-    settlementDate: true,
-    quantityChange: true,
-    unitPrice: true,
-    totalAmount: true,
-    currency: true,
-    fxRate: true,
-    fees: true,
-    taxAmount: true,
-    financialAccountId: true,
-    note: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.AssetTransactionSelect
+import { assetTransactionSelect } from '@/types/select'
 
 export class AssetTransactionRepository {
     /**

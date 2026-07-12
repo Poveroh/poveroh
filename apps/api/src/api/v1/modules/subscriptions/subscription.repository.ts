@@ -1,4 +1,4 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
 import type {
     CreateSubscriptionRequest,
     SubscriptionData,
@@ -6,25 +6,7 @@ import type {
     UpdateSubscriptionRequest
 } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
-
-const subscriptionSelect = {
-    id: true,
-    title: true,
-    description: true,
-    amount: true,
-    currency: true,
-    appearanceMode: true,
-    appearanceLogoIcon: true,
-    appearanceIconColor: true,
-    firstPayment: true,
-    cycleNumber: true,
-    cyclePeriod: true,
-    rememberPeriod: true,
-    financialAccountId: true,
-    isEnabled: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.SubscriptionSelect
+import { subscriptionSelect } from '@/types/select'
 
 export class SubscriptionRepository {
     /**

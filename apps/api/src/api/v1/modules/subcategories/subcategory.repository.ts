@@ -1,4 +1,4 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
 import type {
     CreateSubcategoryRequest,
     SubcategoryData,
@@ -6,15 +6,7 @@ import type {
     UpdateSubcategoryRequest
 } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
-
-const subcategorySelect = {
-    id: true,
-    categoryId: true,
-    title: true,
-    icon: true,
-    createdAt: true,
-    updatedAt: true
-} satisfies Prisma.SubcategorySelect
+import { subcategorySelect } from '@/types/select'
 
 export class SubcategoryRepository {
     /** Creates a new subcategory with the provided data and returns the created subcategory data.

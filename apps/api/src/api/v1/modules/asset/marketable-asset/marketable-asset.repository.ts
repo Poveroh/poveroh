@@ -6,16 +6,7 @@ import type {
     UpdateMarketableAssetRequest
 } from '@poveroh/types'
 import { Currency, type MarketableAssetClass } from '@prisma/client'
-
-const marketableSelect = {
-    symbol: true,
-    isin: true,
-    exchange: true,
-    assetClass: true,
-    sector: true,
-    region: true,
-    lastPriceSync: true
-} satisfies Prisma.MarketableAssetSelect
+import { marketableSelect } from '@/types/select'
 
 export class MarketableAssetRepository {
     /**
