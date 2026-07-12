@@ -6,7 +6,7 @@ export function CryptoDialog() {
         <BaseMarketableDialog
             modalId={MODAL_IDS.CRYPTO_DIALOG}
             title='Add crypto'
-            assetType='CRYPTOCURRENCY'
+            assetType='CRYPTO'
             defaultSymbol=''
         />
     )

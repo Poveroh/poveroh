@@ -22,24 +22,6 @@ const marketableSelect = {
 type MarketableRow = Prisma.MarketableAssetGetPayload<{ select: typeof marketableSelect }>
 
 /**
- * Maps the assetClass returned by an opening transaction onto the parent Asset's high-level type so listings can group it correctly.
- * @param assetClass The asset class chosen for the marketable instrument.
- * @returns The high-level asset type that best matches the class.
- */
-function deriveAssetType(assetClass: MarketableAssetClassEnum | null | undefined): AssetTypeEnum {
-    switch (assetClass) {
-        case 'ETF':
-            return 'ETF'
-        case 'BOND':
-            return 'BOND'
-        case 'CRYPTO':
-            return 'CRYPTOCURRENCY'
-        default:
-            return 'STOCK'
-    }
-}
-
-/**
  * Normalizes a Prisma marketable asset row into the API DTO by converting Date values into ISO strings.
  * @param row The Prisma marketable asset row to convert.
  * @returns The normalized marketable asset data.
@@ -66,7 +48,6 @@ export class MarketableAssetRepository {
      */
     async create(userId: string, assetId: string, payload: CreateMarketableAssetRequest): Promise<string> {
         const totalAmount = payload.quantity * payload.unitPrice
-        const type = deriveAssetType(payload.assetClass)
         const date = new Date(payload.date)
 
         await prisma.$transaction(async tx => {
@@ -75,7 +56,7 @@ export class MarketableAssetRepository {
                     id: assetId,
                     userId,
                     title: payload.symbol,
-                    type,
+                    type: payload.assetClass as AssetTypeEnum,
                     currency: payload.currency,
                     currentValue: totalAmount,
                     currentValueAsOf: date,

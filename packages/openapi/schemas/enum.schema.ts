@@ -180,7 +180,7 @@ export const AssetTypeEnum = z
         'BOND',
         'ETF',
         'MUTUAL_FUND',
-        'CRYPTOCURRENCY',
+        'CRYPTO',
         'REAL_ESTATE',
         'COLLECTIBLE',
         'VEHICLE',

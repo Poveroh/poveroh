@@ -91,7 +91,7 @@ export type MarketableAssetFormValues = {
 export type CreateUpdateMarketableAssetRequest = CreateMarketableAssetRequest | UpdateMarketableAssetRequest
 
 export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateMarketableAssetRequest> & {
-    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTOCURRENCY'>
+    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTO'>
     defaultSymbol: string
 }
 

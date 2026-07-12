@@ -19,7 +19,7 @@ export const MARKET_DATA_PROVIDER_REGISTRY: ReadonlyArray<MarketDataProviderDefi
         supportsSearch: true,
         supportsQuotes: true,
         supportsStreaming: false,
-        supportedAssetTypes: ['STOCK', 'ETF', 'CRYPTOCURRENCY', 'MUTUAL_FUND'] satisfies AssetTypeEnum[],
+        supportedAssetTypes: ['STOCK', 'ETF', 'CRYPTO', 'MUTUAL_FUND'] satisfies AssetTypeEnum[],
         credentialFields: []
     },
     {
@@ -33,7 +33,7 @@ export const MARKET_DATA_PROVIDER_REGISTRY: ReadonlyArray<MarketDataProviderDefi
         supportsSearch: true,
         supportsQuotes: true,
         supportsStreaming: false,
-        supportedAssetTypes: ['STOCK', 'ETF', 'CRYPTOCURRENCY'] satisfies AssetTypeEnum[],
+        supportedAssetTypes: ['STOCK', 'ETF', 'CRYPTO'] satisfies AssetTypeEnum[],
         credentialFields: [{ key: 'apiKey', label: 'Api key' }]
     },
     {
@@ -47,7 +47,7 @@ export const MARKET_DATA_PROVIDER_REGISTRY: ReadonlyArray<MarketDataProviderDefi
         supportsSearch: true,
         supportsQuotes: true,
         supportsStreaming: false,
-        supportedAssetTypes: ['STOCK', 'ETF', 'BOND', 'CRYPTOCURRENCY'] satisfies AssetTypeEnum[],
+        supportedAssetTypes: ['STOCK', 'ETF', 'BOND', 'CRYPTO'] satisfies AssetTypeEnum[],
         credentialFields: [{ key: 'apiKey', label: 'Api key' }]
     }
 ] as const

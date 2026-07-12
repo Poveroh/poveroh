@@ -12,7 +12,7 @@ export function mapAssetType(raw?: string | null): AssetTypeEnum {
     const value = (raw ?? '').toLowerCase()
 
     if (value.includes('etf')) return 'ETF'
-    if (value.includes('crypto')) return 'CRYPTOCURRENCY'
+    if (value.includes('crypto')) return 'CRYPTO'
     if (value.includes('bond')) return 'BOND'
     if (value.includes('mutual') || value === 'mf' || value.includes('fund')) return 'MUTUAL_FUND'
 

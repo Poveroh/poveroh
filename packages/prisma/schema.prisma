@@ -239,18 +239,18 @@ model Asset {
 }
 
 model MarketableAsset {
-    id            String                @id @default(uuid())
-    assetId       String                @unique
+    id            String               @id @default(uuid())
+    assetId       String               @unique
     symbol        String
     isin          String?
     exchange      String?
-    assetClass    MarketableAssetClass?
+    assetClass    MarketableAssetClass
     sector        String?
     region        String?
     lastPriceSync DateTime?
-    createdAt     DateTime              @default(now())
-    updatedAt     DateTime              @updatedAt
-    deletedAt     DateTime?             @db.Timestamptz
+    createdAt     DateTime             @default(now())
+    updatedAt     DateTime             @updatedAt
+    deletedAt     DateTime?            @db.Timestamptz
 
     asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
@@ -974,7 +974,7 @@ enum AssetType {
     BOND
     ETF
     MUTUAL_FUND
-    CRYPTOCURRENCY
+    CRYPTO
     REAL_ESTATE
     COLLECTIBLE
     VEHICLE
@@ -990,6 +990,7 @@ enum MarketableAssetClass {
     EQUITY
     BOND
     ETF
+    STOCK
     CRYPTO
     COMMODITY
     REIT
