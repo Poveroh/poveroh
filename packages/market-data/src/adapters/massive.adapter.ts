@@ -1,12 +1,14 @@
 import type {
+    GetHistoricalQuotesParams,
     GetQuotesParams,
+    HistoricalQuote,
     MarketDataAdapter,
     MarketInstrument,
     MarketQuote,
     SearchInstrumentsParams
 } from '@poveroh/types'
 import { MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
-import type { DefaultApi } from '@massive.com/client-js'
+import type { DefaultApi, GetStocksAggregatesTimespanEnum } from '@massive.com/client-js'
 import { mapAssetType, mapCurrency } from '../utils/mapping'
 import { toMarketDataError } from '../utils/errors'
 
@@ -110,6 +112,33 @@ export class MassiveAdapter implements MarketDataAdapter {
                 exchange: null,
                 market: null
             }
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
+        }
+    }
+
+    /**
+     * Fetches a daily historical close-price series via Massive's aggregates endpoint.
+     * @param params The symbol and the from/to date range to fetch.
+     * @returns The normalized list of historical daily quotes.
+     */
+    async getHistoricalQuotes(params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]> {
+        try {
+            const client = await this.getClient()
+            const response = await client.getStocksAggregates({
+                stocksTicker: params.symbol,
+                multiplier: 1,
+                timespan: 'day' as GetStocksAggregatesTimespanEnum,
+                from: params.from,
+                to: params.to
+            })
+
+            return (response.results ?? [])
+                .filter((result): result is typeof result & { c: number; t: number } => typeof result.c === 'number')
+                .map(result => ({
+                    date: new Date(result.t).toISOString().slice(0, 10),
+                    close: result.c
+                }))
         } catch (error) {
             throw toMarketDataError(this.providerId, error)
         }

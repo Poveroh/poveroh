@@ -1,3 +1,4 @@
+import type { CurrencyEnum } from '@poveroh/types'
 import { BaseService } from '../base/base.service'
 import { SnapshotRepository } from './snapshot.repository'
 import { AccountBalanceRepository } from '../financial-accounts/account-balance/account-balance.repository'
@@ -59,5 +60,34 @@ export class SnapshotService extends BaseService {
         }
 
         return userIds.length
+    }
+
+    /**
+     * Backfills an asset's daily valuation into the user's net-worth snapshots, one day at a time, from the first day it was held up to today.
+     * @param userId The ID of the user who owns the asset.
+     * @param assetId The unique identifier of the asset being valued.
+     * @param currency The asset's own currency, stored alongside each day's valuation.
+     * @param dailyHoldings The quantity held and the unit price to value it at, for each day the asset was held.
+     * @returns A promise that resolves when every day's snapshot has been backfilled.
+     */
+    async backfillAssetSnapshots(
+        userId: string,
+        assetId: string,
+        currency: CurrencyEnum,
+        dailyHoldings: { date: string; quantity: number; unitPrice: number }[]
+    ): Promise<void> {
+        for (const holding of dailyHoldings) {
+            const snapshot = await this.snapshotRepository.upsertSnapshot(userId, holding.date)
+
+            await this.snapshotRepository.upsertAssetValueLink(snapshot.id, assetId, {
+                quantity: holding.quantity,
+                unitPrice: holding.unitPrice,
+                totalValue: holding.quantity * holding.unitPrice,
+                currency,
+                source: 'MARKET'
+            })
+
+            await this.snapshotRepository.refreshTotalsFromLinks(snapshot.id)
+        }
     }
 }

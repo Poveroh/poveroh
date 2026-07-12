@@ -1,5 +1,7 @@
 import type {
+    GetHistoricalQuotesParams,
     GetQuotesParams,
+    HistoricalQuote,
     MarketDataAdapter,
     MarketInstrument,
     MarketQuote,
@@ -86,6 +88,35 @@ export class YahooFinanceAdapter implements MarketDataAdapter {
                 exchange: quote.fullExchangeName || quote.exchange || null,
                 market: quote.exchange || null
             }
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
+        }
+    }
+
+    /**
+     * Fetches a daily historical close-price series for a symbol via the chart endpoint.
+     * @param params The symbol and the from/to date range to fetch.
+     * @returns The normalized list of historical daily quotes.
+     */
+    async getHistoricalQuotes(params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]> {
+        try {
+            // Yahoo's chart endpoint rejects a period2 equal to period1 and treats period2 as
+            // exclusive, so the end of the range is always pushed one day past `to`.
+            const period2 = new Date(params.to)
+            period2.setUTCDate(period2.getUTCDate() + 1)
+
+            const result = await this.client.chart(params.symbol, {
+                period1: params.from,
+                period2,
+                interval: '1d'
+            })
+
+            return result.quotes
+                .filter((quote): quote is typeof quote & { close: number } => typeof quote.close === 'number')
+                .map(quote => ({
+                    date: quote.date.toISOString().slice(0, 10),
+                    close: quote.close
+                }))
         } catch (error) {
             throw toMarketDataError(this.providerId, error)
         }

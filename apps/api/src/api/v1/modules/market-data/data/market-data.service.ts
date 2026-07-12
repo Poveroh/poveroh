@@ -1,6 +1,8 @@
 import type {
     AssetTypeEnum,
+    GetHistoricalQuotesParams,
     GetMarketQuotesQuery,
+    HistoricalQuote,
     MarketDataProvider,
     MarketInstrument,
     MarketQuote,
@@ -86,6 +88,20 @@ export class MarketDataService extends BaseService {
 
         return this.runProviderCall(providerId, () =>
             client.getQuotes({ symbols: params.symbols, assetType: params.assetType })
+        )
+    }
+
+    /**
+     * Fetches a daily historical close-price series through the resolved provider's adapter.
+     * @param params The symbol, from/to date range, and optional provider override.
+     * @returns A promise that resolves to the normalized list of historical daily quotes.
+     */
+    async getHistoricalQuotes(params: GetHistoricalQuotesParams & { providerId?: string }): Promise<HistoricalQuote[]> {
+        const providerId = await this.resolveProviderId(params.providerId)
+        const client = await this.buildClient(providerId)
+
+        return this.runProviderCall(providerId, () =>
+            client.getHistoricalQuotes({ symbol: params.symbol, from: params.from, to: params.to })
         )
     }
 

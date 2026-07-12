@@ -1,4 +1,11 @@
-import type { GetQuotesParams, MarketInstrument, MarketQuote, SearchInstrumentsParams } from '@poveroh/types'
+import type {
+    GetHistoricalQuotesParams,
+    GetQuotesParams,
+    HistoricalQuote,
+    MarketInstrument,
+    MarketQuote,
+    SearchInstrumentsParams
+} from '@poveroh/types'
 import { MarketDataError, MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
 import { BaseHttpAdapter } from './base.adapter'
 import { mapAssetType } from '../utils/mapping'
@@ -87,5 +94,14 @@ export class FinnhubAdapter extends BaseHttpAdapter {
             exchange: null,
             market: null
         }
+    }
+
+    /**
+     * Historical daily quotes require Finnhub's `/stock/candle` endpoint, which is gated
+     * behind paid plans on most API keys, so it is not supported by this adapter.
+     * @param _params Unused.
+     */
+    async getHistoricalQuotes(_params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]> {
+        throw new MarketDataError(this.providerId, 'Historical quotes are not supported by the Finnhub provider')
     }
 }

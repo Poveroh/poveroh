@@ -1,6 +1,7 @@
 import { createJobDispatcher, createJobWorker } from '@poveroh/queue'
 import { logger } from '@poveroh/logger/server'
 import { getRedisConnectionConfig } from '../../../utils/redis'
+import { assetJobHandlers } from './jobs/asset.handlers'
 import { importJobHandlers } from './jobs/import.handlers'
 import { snapshotJobHandlers } from './jobs/snapshot.handlers'
 import { scheduleSnapshotGeneration } from './scheduler/snapshot-due.scheduler'
@@ -12,7 +13,8 @@ const worker = createJobWorker(
     redisConfig,
     {
         ...snapshotJobHandlers,
-        ...importJobHandlers
+        ...importJobHandlers,
+        ...assetJobHandlers
     },
     logger
 )

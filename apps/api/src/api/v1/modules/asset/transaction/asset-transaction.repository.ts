@@ -154,6 +154,20 @@ export class AssetTransactionRepository {
     }
 
     /**
+     * Finds every non-deleted transaction of an asset, oldest first, used to walk the asset's holdings day by day when backfilling snapshots.
+     * @param userId The ID of the user who owns the parent asset.
+     * @param assetId The unique identifier of the asset whose transactions are retrieved.
+     * @returns A promise that resolves to the asset's full transaction history, ordered by date ascending.
+     */
+    async findAllByAssetId(userId: string, assetId: string): Promise<AssetTransactionData[]> {
+        return (await prisma.assetTransaction.findMany({
+            where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
+            select: assetTransactionSelect,
+            orderBy: { date: 'asc' }
+        })) as unknown as AssetTransactionData[]
+    }
+
+    /**
      * Verifies that the specified asset exists and is owned by the user, preventing cross-tenant references when creating or updating transactions.
      * @param userId The ID of the user expected to own the asset.
      * @param assetId The ID of the asset to verify.
