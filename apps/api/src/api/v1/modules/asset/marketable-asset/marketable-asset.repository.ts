@@ -21,23 +21,6 @@ const marketableSelect = {
 
 type MarketableRow = Prisma.MarketableAssetGetPayload<{ select: typeof marketableSelect }>
 
-/**
- * Normalizes a Prisma marketable asset row into the API DTO by converting Date values into ISO strings.
- * @param row The Prisma marketable asset row to convert.
- * @returns The normalized marketable asset data.
- */
-function toData(row: MarketableRow): MarketableAssetData {
-    return {
-        symbol: row.symbol,
-        isin: row.isin,
-        exchange: row.exchange,
-        assetClass: (row.assetClass ?? null) as MarketableAssetClassEnum,
-        sector: row.sector,
-        region: row.region,
-        lastPriceSync: toIsoString(row.lastPriceSync)
-    }
-}
-
 export class MarketableAssetRepository {
     /**
      * Creates the parent Asset, its MarketableAsset metadata and the opening AssetTransaction in a single transaction so the position is consistent from the start.
@@ -69,7 +52,7 @@ export class MarketableAssetRepository {
                 data: {
                     assetId,
                     symbol: payload.symbol,
-                    assetClass: (payload.assetClass ?? null) as MarketableAssetClass | null
+                    assetClass: payload.assetClass as MarketableAssetClass
                 }
             })
 
@@ -108,7 +91,7 @@ export class MarketableAssetRepository {
             const marketableData: Prisma.MarketableAssetUpdateInput = {
                 ...(payload.symbol !== undefined && { symbol: payload.symbol }),
                 ...(payload.assetClass !== undefined && {
-                    assetClass: payload.assetClass as MarketableAssetClass | null
+                    assetClass: payload.assetClass as MarketableAssetClass
                 })
             }
 
@@ -128,12 +111,10 @@ export class MarketableAssetRepository {
      * @returns A promise that resolves to the marketable asset metadata, or null when the asset has none.
      */
     async findByAssetId(userId: string, assetId: string): Promise<MarketableAssetData | null> {
-        const row = await prisma.marketableAsset.findFirst({
+        return (await prisma.marketableAsset.findFirst({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             select: marketableSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as MarketableAssetData | null
     }
 
     /**
