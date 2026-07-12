@@ -1,9 +1,7 @@
-import { toIsoString } from '@/utils'
 import prisma, { Prisma } from '@poveroh/prisma'
 import type {
     AssetTypeEnum,
     CreateMarketableAssetRequest,
-    MarketableAssetClassEnum,
     MarketableAssetData,
     UpdateMarketableAssetRequest
 } from '@poveroh/types'
@@ -18,8 +16,6 @@ const marketableSelect = {
     region: true,
     lastPriceSync: true
 } satisfies Prisma.MarketableAssetSelect
-
-type MarketableRow = Prisma.MarketableAssetGetPayload<{ select: typeof marketableSelect }>
 
 export class MarketableAssetRepository {
     /**
