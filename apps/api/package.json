@@ -31,7 +31,7 @@
         "@prisma/client": "^7.6.0",
         "@sentry/node": "^10.58.0",
         "bcryptjs": "^3.0.2",
-        "better-auth": "^1.6.11",
+        "better-auth": "^1.6.13",
         "beycloud": "^1.1.2",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
