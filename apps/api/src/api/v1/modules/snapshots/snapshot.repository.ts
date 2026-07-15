@@ -29,6 +29,41 @@ export class SnapshotRepository {
     }
 
     /**
+     * Lists every active asset owned by a user together with its cached current valuation, used as the fallback value when freezing a snapshot's asset links.
+     * @param userId The ID of the user who owns the assets.
+     * @returns A promise that resolves to each active asset's id, quantity, current value, and currency.
+     */
+    async findActiveAssets(
+        userId: string
+    ): Promise<{ id: string; quantity: number; currentValue: number; currency: CurrencyEnum }[]> {
+        const assets = await prisma.asset.findMany({
+            where: { userId, deletedAt: null },
+            select: { id: true, quantity: true, currentValue: true, currency: true }
+        })
+
+        return assets.map(asset => ({
+            id: asset.id,
+            quantity: asset.quantity.toNumber(),
+            currentValue: asset.currentValue.toNumber(),
+            currency: asset.currency
+        }))
+    }
+
+    /**
+     * Lists the asset ids already linked to a snapshot, used to avoid clobbering a more precise historical valuation (e.g. a market-synced daily price) already frozen for that day.
+     * @param snapshotId The unique identifier of the snapshot whose existing asset links are read.
+     * @returns A promise that resolves to the linked asset ids.
+     */
+    async findLinkedAssetIds(snapshotId: string): Promise<string[]> {
+        const links = await prisma.snapshotAssetValue.findMany({
+            where: { snapshotId, deletedAt: null, assetId: { not: null } },
+            select: { assetId: true }
+        })
+
+        return links.map(link => link.assetId).filter((assetId): assetId is string => assetId !== null)
+    }
+
+    /**
      * Upserts a snapshot row identified by user and snapshot date, creating an empty marker when none exists.
      * @param userId The ID of the user who owns the snapshot.
      * @param snapshotDate The snapshot date as an ISO date string, normalized to midnight UTC before it is used as part of the unique constraint to upsert.

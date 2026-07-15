@@ -7,5 +7,5 @@ import type { JobDispatcher } from '@poveroh/types'
  */
 export async function scheduleSnapshotGeneration(jobDispatcher: JobDispatcher): Promise<void> {
     // Runs daily at 02:00, generating today's snapshot for every user with active financial accounts.
-    await jobDispatcher.schedule('snapshot.generate-due', {}, '0 2 * * *')
+    await jobDispatcher.schedule('snapshot.generate-due', {}, '06 00 * * *')
 }
