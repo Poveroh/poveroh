@@ -12,7 +12,7 @@
     "dependencies": {
         "@massive.com/client-js": "^10.7.0",
         "@poveroh/types": "*",
-        "axios": "^1.15.2",
+        "axios": "^1.18.1",
         "yahoo-finance2": "^3.15.2"
     },
     "devDependencies": {
