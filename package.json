@@ -92,6 +92,8 @@
         "uuid": "^11.1.1",
         "@hono/node-server": "^1.19.13",
         "postcss": "^8.5.10",
-        "valibot": "^1.4.2"
+        "valibot": "^1.4.2",
+        "@types/react": "19.2.2",
+        "@types/react-dom": "19.2.2"
     }
 }
