@@ -3,12 +3,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type FinancialAccountTypeEnum =
-    | 'ONLINE_BANK'
-    | 'BANK_ACCOUNT'
-    | 'CIRCUIT'
-    | 'DEPOSIT_BANK'
-    | 'BROKER'
-    | 'WALLET'
-    | 'CASH'
-    | 'CREDIT_CARD'
-    | 'OTHER'
+    'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER'

@@ -89,7 +89,8 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "expiresAt": {
                         "type": "string",
@@ -100,8 +101,7 @@
                     },
                     "createdAt": {
                         "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
+                        "format": "date-time"
                     },
                     "updatedAt": {
                         "type": "string",
@@ -117,13 +117,14 @@
                         "type": "string"
                     }
                 },
-                "required": ["expiresAt", "token", "createdAt", "updatedAt", "userId"]
+                "required": ["id", "expiresAt", "token", "createdAt", "updatedAt", "userId"]
             },
             "Account": {
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "accountId": {
                         "type": "string"
@@ -159,21 +160,21 @@
                     },
                     "createdAt": {
                         "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
+                        "format": "date-time"
                     },
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time"
                     }
                 },
-                "required": ["accountId", "providerId", "userId", "createdAt", "updatedAt"]
+                "required": ["id", "accountId", "providerId", "userId", "createdAt", "updatedAt"]
             },
             "Verification": {
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "identifier": {
                         "type": "string"
@@ -187,16 +188,14 @@
                     },
                     "createdAt": {
                         "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
+                        "format": "date-time"
                     },
                     "updatedAt": {
                         "type": "string",
-                        "format": "date-time",
-                        "default": "Generated at runtime"
+                        "format": "date-time"
                     }
                 },
-                "required": ["identifier", "value", "expiresAt", "createdAt", "updatedAt"]
+                "required": ["id", "identifier", "value", "expiresAt", "createdAt", "updatedAt"]
             },
             "AssetTransaction": {
                 "type": "object",
@@ -13154,62 +13153,106 @@
                                 "type": "object",
                                 "properties": {
                                     "callbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "Callback URL to redirect to after the user has signed in"
                                     },
                                     "newUserCallbackURL": {
-                                        "type": ["string", "null"]
+                                        "type": "string"
                                     },
                                     "errorCallbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "Callback URL to redirect to if an error happens"
                                     },
                                     "provider": {
-                                        "type": "string"
+                                        "anyOf": [
+                                            {
+                                                "type": "string",
+                                                "enum": [
+                                                    "apple",
+                                                    "atlassian",
+                                                    "cognito",
+                                                    "discord",
+                                                    "facebook",
+                                                    "figma",
+                                                    "github",
+                                                    "microsoft",
+                                                    "google",
+                                                    "huggingface",
+                                                    "slack",
+                                                    "spotify",
+                                                    "twitch",
+                                                    "twitter",
+                                                    "dropbox",
+                                                    "kick",
+                                                    "linear",
+                                                    "linkedin",
+                                                    "gitlab",
+                                                    "tiktok",
+                                                    "reddit",
+                                                    "roblox",
+                                                    "salesforce",
+                                                    "vk",
+                                                    "zoom",
+                                                    "notion",
+                                                    "kakao",
+                                                    "naver",
+                                                    "line",
+                                                    "paybin",
+                                                    "paypal",
+                                                    "polar",
+                                                    "railway",
+                                                    "vercel",
+                                                    "wechat"
+                                                ]
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
                                     },
                                     "disableRedirect": {
-                                        "type": ["boolean", "null"],
+                                        "type": "boolean",
                                         "description": "Disable automatic redirection to the provider. Useful for handling the redirection yourself"
                                     },
                                     "idToken": {
-                                        "type": ["object", "null"],
+                                        "type": "object",
                                         "properties": {
                                             "token": {
                                                 "type": "string",
                                                 "description": "ID token from the provider"
                                             },
                                             "nonce": {
-                                                "type": ["string", "null"],
+                                                "type": "string",
                                                 "description": "Nonce used to generate the token"
                                             },
                                             "accessToken": {
-                                                "type": ["string", "null"],
+                                                "type": "string",
                                                 "description": "Access token from the provider"
                                             },
                                             "refreshToken": {
-                                                "type": ["string", "null"],
+                                                "type": "string",
                                                 "description": "Refresh token from the provider"
                                             },
                                             "expiresAt": {
-                                                "type": ["number", "null"],
+                                                "type": "number",
                                                 "description": "Expiry date of the token"
                                             },
                                             "user": {
-                                                "type": ["object", "null"],
+                                                "type": "object",
                                                 "properties": {
                                                     "name": {
-                                                        "type": ["object", "null"],
+                                                        "type": "object",
                                                         "properties": {
                                                             "firstName": {
-                                                                "type": ["string", "null"]
+                                                                "type": "string"
                                                             },
                                                             "lastName": {
-                                                                "type": ["string", "null"]
+                                                                "type": "string"
                                                             }
                                                         }
                                                     },
                                                     "email": {
-                                                        "type": ["string", "null"]
+                                                        "type": "string"
                                                     }
                                                 },
                                                 "description": "The user object from the provider. Only available for some providers like Apple."
@@ -13218,19 +13261,26 @@
                                         "required": ["token"]
                                     },
                                     "scopes": {
-                                        "type": ["array", "null"],
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
                                         "description": "Array of scopes to request from the provider. This will override the default scopes passed."
                                     },
                                     "requestSignUp": {
-                                        "type": ["boolean", "null"],
+                                        "type": "boolean",
                                         "description": "Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider"
                                     },
                                     "loginHint": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The login hint to use for the authorization code request"
                                     },
                                     "additionalData": {
-                                        "type": ["string", "null"]
+                                        "type": "object",
+                                        "propertyNames": {
+                                            "type": "string"
+                                        },
+                                        "additionalProperties": {}
                                     }
                                 },
                                 "required": ["provider"]
@@ -13369,7 +13419,16 @@
                         "bearerAuth": []
                     }
                 ],
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "400": {
                         "content": {
@@ -13472,13 +13531,42 @@
                         "bearerAuth": []
                     }
                 ],
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
+                    "required": false,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "properties": {}
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "error": {
+                                        "type": "string"
+                                    },
+                                    "device_id": {
+                                        "type": "string"
+                                    },
+                                    "error_description": {
+                                        "type": "string"
+                                    },
+                                    "state": {
+                                        "type": "string"
+                                    },
+                                    "user": {
+                                        "type": "string"
+                                    }
+                                }
                             }
                         }
                     }
@@ -13707,7 +13795,7 @@
             "post": {
                 "tags": ["Default"],
                 "description": "Get the current session",
-                "operationId": "getSession",
+                "operationId": "getSessionPost",
                 "security": [
                     {
                         "bearerAuth": []
@@ -14011,6 +14099,10 @@
                                     "rememberMe": {
                                         "type": "boolean",
                                         "description": "If this is false, the session will not be remembered. Default is `true`."
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "default": ""
                                     }
                                 },
                                 "required": ["name", "email", "password"]
@@ -14220,13 +14312,12 @@
                                         "description": "Password of the user"
                                     },
                                     "callbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "Callback URL to use as a redirect for email verification"
                                     },
                                     "rememberMe": {
-                                        "type": ["boolean", "null"],
-                                        "description": "If this is false, the session will not be remembered. Default is `true`.",
-                                        "default": true
+                                        "type": "boolean",
+                                        "description": "If this is false, the session will not be remembered. Default is `true`."
                                     }
                                 },
                                 "required": ["email", "password"]
@@ -14383,7 +14474,7 @@
                                         "description": "The new password to set"
                                     },
                                     "token": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The token to reset the password"
                                     }
                                 },
@@ -14958,7 +15049,7 @@
                                         "description": "The new email address to set must be a valid email address"
                                     },
                                     "callbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The URL to redirect to after email verification"
                                     }
                                 },
@@ -15117,7 +15208,7 @@
                                         "description": "The current password is required"
                                     },
                                     "revokeOtherSessions": {
-                                        "type": ["boolean", "null"],
+                                        "type": "boolean",
                                         "description": "Must be a boolean value"
                                     }
                                 },
@@ -15298,11 +15389,16 @@
                 ],
                 "parameters": [],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "properties": {}
+                                "propertyNames": {
+                                    "type": "string",
+                                    "description": "Field name must be a string"
+                                },
+                                "additionalProperties": {}
                             }
                         }
                     }
@@ -15444,6 +15540,10 @@
                                         "type": "string",
                                         "description": "The image of the user",
                                         "nullable": true
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "default": ""
                                     }
                                 }
                             }
@@ -15737,7 +15837,7 @@
                                         "description": "The email address of the user to send a password reset email to"
                                     },
                                     "redirectTo": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN"
                                     }
                                 },
@@ -16545,50 +16645,104 @@
                                 "type": "object",
                                 "properties": {
                                     "callbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The URL to redirect to after the user has signed in"
                                     },
                                     "provider": {
-                                        "type": "string"
+                                        "anyOf": [
+                                            {
+                                                "type": "string",
+                                                "enum": [
+                                                    "apple",
+                                                    "atlassian",
+                                                    "cognito",
+                                                    "discord",
+                                                    "facebook",
+                                                    "figma",
+                                                    "github",
+                                                    "microsoft",
+                                                    "google",
+                                                    "huggingface",
+                                                    "slack",
+                                                    "spotify",
+                                                    "twitch",
+                                                    "twitter",
+                                                    "dropbox",
+                                                    "kick",
+                                                    "linear",
+                                                    "linkedin",
+                                                    "gitlab",
+                                                    "tiktok",
+                                                    "reddit",
+                                                    "roblox",
+                                                    "salesforce",
+                                                    "vk",
+                                                    "zoom",
+                                                    "notion",
+                                                    "kakao",
+                                                    "naver",
+                                                    "line",
+                                                    "paybin",
+                                                    "paypal",
+                                                    "polar",
+                                                    "railway",
+                                                    "vercel",
+                                                    "wechat"
+                                                ]
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
                                     },
                                     "idToken": {
-                                        "type": ["object", "null"],
+                                        "type": "object",
                                         "properties": {
                                             "token": {
                                                 "type": "string"
                                             },
                                             "nonce": {
-                                                "type": ["string", "null"]
+                                                "type": "string"
                                             },
                                             "accessToken": {
-                                                "type": ["string", "null"]
+                                                "type": "string"
                                             },
                                             "refreshToken": {
-                                                "type": ["string", "null"]
+                                                "type": "string"
                                             },
                                             "scopes": {
-                                                "type": ["array", "null"]
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
                                             }
                                         },
                                         "required": ["token"]
                                     },
                                     "requestSignUp": {
-                                        "type": ["boolean", "null"]
+                                        "type": "boolean"
                                     },
                                     "scopes": {
-                                        "type": ["array", "null"],
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
                                         "description": "Additional scopes to request from the provider"
                                     },
                                     "errorCallbackURL": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The URL to redirect to if there is an error during the link process"
                                     },
                                     "disableRedirect": {
-                                        "type": ["boolean", "null"],
+                                        "type": "boolean",
                                         "description": "Disable automatic redirection to the provider. Useful for handling the redirection yourself"
                                     },
                                     "additionalData": {
-                                        "type": ["string", "null"]
+                                        "type": "object",
+                                        "propertyNames": {
+                                            "type": "string"
+                                        },
+                                        "additionalProperties": {}
                                     }
                                 },
                                 "required": ["provider"]
@@ -16895,7 +17049,7 @@
                         "name": "callbackURL",
                         "in": "query",
                         "schema": {
-                            "type": ["string", "null"],
+                            "type": "string",
                             "description": "The URL to redirect to after deletion"
                         }
                     }
@@ -17039,7 +17193,7 @@
                                         "type": "string"
                                     },
                                     "accountId": {
-                                        "type": ["string", "null"]
+                                        "type": "string"
                                     }
                                 },
                                 "required": ["providerId"]
@@ -17180,11 +17334,11 @@
                                         "description": "The provider ID for the OAuth provider"
                                     },
                                     "accountId": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The account ID associated with the refresh token"
                                     },
                                     "userId": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The user ID associated with the account"
                                     }
                                 },
@@ -17330,11 +17484,11 @@
                                         "description": "The provider ID for the OAuth provider"
                                     },
                                     "accountId": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The account ID associated with the refresh token"
                                     },
                                     "userId": {
-                                        "type": ["string", "null"],
+                                        "type": "string",
                                         "description": "The user ID associated with the account"
                                     }
                                 },

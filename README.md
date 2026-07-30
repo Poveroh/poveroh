@@ -157,7 +157,7 @@ This project uses:
     - Apply any pending migrations to the database using Prisma.
     - Create and run CDN ngix docker image.
 
-    <br>
+        <br>
 
     > **⚠️ Warning:**  
     > If you encounter any difficulties or something doesn't go as planned, read [this file](scripts/README.md) to execute it manually.

@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Verification = {
-    id?: string
+    readonly id: string
     identifier: string
     value: string
     expiresAt: string
