@@ -19,6 +19,23 @@ export type GetQuotesParams = {
 }
 
 /**
+ * Parameters accepted by an adapter when resolving a historical daily close-price series for a symbol.
+ */
+export type GetHistoricalQuotesParams = {
+    symbol: string
+    from: string
+    to: string
+}
+
+/**
+ * A single day's closing price in a historical quote series.
+ */
+export type HistoricalQuote = {
+    date: string
+    close: number
+}
+
+/**
  * Plaintext credentials handed to an adapter. Optional because some providers
  * (e.g. Yahoo Finance) do not require authentication.
  */
@@ -34,6 +51,7 @@ export interface MarketDataAdapter {
     readonly providerId: string
     searchInstruments(params: SearchInstrumentsParams): Promise<MarketInstrument[]>
     getQuotes(params: GetQuotesParams): Promise<MarketQuote[]>
+    getHistoricalQuotes(params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]>
 }
 
 /**

@@ -1,4 +1,5 @@
 import prisma from '@poveroh/prisma'
+import type { CurrencyEnum, ValueSourceEnum } from '@poveroh/types'
 import { normalizeDate } from '@/utils'
 
 export class SnapshotRepository {
@@ -25,6 +26,41 @@ export class SnapshotRepository {
             distinct: ['userId']
         })
         return rows.map(row => row.userId)
+    }
+
+    /**
+     * Lists every active asset owned by a user together with its cached current valuation, used as the fallback value when freezing a snapshot's asset links.
+     * @param userId The ID of the user who owns the assets.
+     * @returns A promise that resolves to each active asset's id, quantity, current value, and currency.
+     */
+    async findActiveAssets(
+        userId: string
+    ): Promise<{ id: string; quantity: number; currentValue: number; currency: CurrencyEnum }[]> {
+        const assets = await prisma.asset.findMany({
+            where: { userId, deletedAt: null },
+            select: { id: true, quantity: true, currentValue: true, currency: true }
+        })
+
+        return assets.map(asset => ({
+            id: asset.id,
+            quantity: asset.quantity.toNumber(),
+            currentValue: asset.currentValue.toNumber(),
+            currency: asset.currency
+        }))
+    }
+
+    /**
+     * Lists the asset ids already linked to a snapshot, used to avoid clobbering a more precise historical valuation (e.g. a market-synced daily price) already frozen for that day.
+     * @param snapshotId The unique identifier of the snapshot whose existing asset links are read.
+     * @returns A promise that resolves to the linked asset ids.
+     */
+    async findLinkedAssetIds(snapshotId: string): Promise<string[]> {
+        const links = await prisma.snapshotAssetValue.findMany({
+            where: { snapshotId, deletedAt: null, assetId: { not: null } },
+            select: { assetId: true }
+        })
+
+        return links.map(link => link.assetId).filter((assetId): assetId is string => assetId !== null)
     }
 
     /**
@@ -57,19 +93,71 @@ export class SnapshotRepository {
      * @returns A promise that resolves when the cached totals have been updated.
      */
     async refreshTotalsFromLinks(snapshotId: string): Promise<void> {
-        const links = await prisma.snapshotAccountBalance.findMany({
-            where: { snapshotId, deletedAt: null },
-            select: { financialAccountBalance: { select: { balance: true } } }
-        })
+        const [accountLinks, assetLinks] = await Promise.all([
+            prisma.snapshotAccountBalance.findMany({
+                where: { snapshotId, deletedAt: null },
+                select: { financialAccountBalance: { select: { balance: true } } }
+            }),
+            prisma.snapshotAssetValue.findMany({
+                where: { snapshotId, deletedAt: null },
+                select: { totalValue: true }
+            })
+        ])
 
-        const totalCash = links.reduce((sum, link) => sum + Number(link.financialAccountBalance?.balance ?? 0), 0)
+        const totalCash = accountLinks.reduce(
+            (sum, link) => sum + Number(link.financialAccountBalance?.balance ?? 0),
+            0
+        )
+        const totalInvestments = assetLinks.reduce((sum, link) => sum + Number(link.totalValue), 0)
 
         await prisma.snapshot.update({
             where: { id: snapshotId },
             data: {
                 totalCash,
-                totalInvestments: 0,
-                totalNetWorth: totalCash
+                totalInvestments,
+                totalNetWorth: totalCash + totalInvestments
+            }
+        })
+    }
+
+    /**
+     * Links a snapshot to an asset's valuation as-of the snapshot date, storing the quantity, unit price, and total value used to compute it.
+     * @param snapshotId The unique identifier of the snapshot the link belongs to.
+     * @param assetId The unique identifier of the asset being valued.
+     * @param valuation The quantity held, unit price, and resulting total value, in the asset's own currency.
+     * @returns A promise that resolves when the link has been upserted.
+     */
+    async upsertAssetValueLink(
+        snapshotId: string,
+        assetId: string,
+        valuation: {
+            quantity: number
+            unitPrice: number
+            totalValue: number
+            currency: CurrencyEnum
+            source: ValueSourceEnum
+        }
+    ): Promise<void> {
+        const data = {
+            quantity: valuation.quantity,
+            unitPrice: valuation.unitPrice,
+            totalValue: valuation.totalValue,
+            originalCurrency: valuation.currency,
+            source: valuation.source
+        }
+
+        await prisma.snapshotAssetValue.upsert({
+            where: {
+                snapshotId_assetId: {
+                    snapshotId,
+                    assetId
+                }
+            },
+            update: data,
+            create: {
+                snapshotId,
+                assetId,
+                ...data
             }
         })
     }

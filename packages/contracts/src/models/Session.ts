@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Session = {
-    id?: string
+    readonly id: string
     expiresAt: string
     token: string
     createdAt: string

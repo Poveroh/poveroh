@@ -19,7 +19,7 @@ export type User = {
 }
 
 export type Session = {
-    id?: string
+    readonly id: string
     expiresAt: string
     token: string
     createdAt: string
@@ -30,7 +30,7 @@ export type Session = {
 }
 
 export type Account = {
-    id?: string
+    readonly id: string
     accountId: string
     providerId: string
     userId: string
@@ -46,7 +46,7 @@ export type Account = {
 }
 
 export type Verification = {
-    id?: string
+    readonly id: string
     identifier: string
     value: string
     expiresAt: string
@@ -334,7 +334,8 @@ export type MarketableAsset = {
     deletedAt: string | null
 }
 
-export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
+export type MarketableAssetClassEnum =
+    'EQUITY' | 'BOND' | 'ETF' | 'STOCK' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
 
 export type RealEstateAsset = {
     id: string
@@ -959,27 +960,14 @@ export type MarketDataTransportEnum = 'HTTP' | 'WS' | 'HYBRID'
 export type MarketStateEnum = 'OPEN' | 'CLOSED' | 'PRE_MARKET' | 'POST_MARKET' | 'UNKNOWN'
 
 export type FinancialAccountTypeEnum =
-    | 'ONLINE_BANK'
-    | 'BANK_ACCOUNT'
-    | 'CIRCUIT'
-    | 'DEPOSIT_BANK'
-    | 'BROKER'
-    | 'WALLET'
-    | 'CASH'
-    | 'CREDIT_CARD'
-    | 'OTHER'
+    'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER'
 
 export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
 
 export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
 
 export type RememberPeriodEnum =
-    | 'SAME_DAY'
-    | 'THREE_DAYS'
-    | 'SEVEN_DAYS'
-    | 'FOURTEEN_DAYS'
-    | 'THIRTY_DAYS'
-    | 'NINETY_DAYS'
+    'SAME_DAY' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'FOURTEEN_DAYS' | 'THIRTY_DAYS' | 'NINETY_DAYS'
 
 export type AppearanceModeEnum = 'LOGO' | 'ICON'
 
@@ -2995,6 +2983,39 @@ export type VehicleAssetForm = {
     plateNumber?: string
     logoIcon?: string
     autoDepreciation?: AutoDepreciationInput
+}
+
+export type SessionWritable = {
+    expiresAt: string
+    token: string
+    createdAt: string
+    updatedAt: string
+    ipAddress?: string
+    userAgent?: string
+    userId: string
+}
+
+export type AccountWritable = {
+    accountId: string
+    providerId: string
+    userId: string
+    accessToken?: string
+    refreshToken?: string
+    idToken?: string
+    accessTokenExpiresAt?: string
+    refreshTokenExpiresAt?: string
+    scope?: string
+    password?: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type VerificationWritable = {
+    identifier: string
+    value: string
+    expiresAt: string
+    createdAt: string
+    updatedAt: string
 }
 
 export type GetRootStatusData = {
@@ -5950,31 +5971,100 @@ export type SocialSignInData = {
         /**
          * Callback URL to redirect to after the user has signed in
          */
-        callbackURL?: unknown
-        newUserCallbackURL?: unknown
+        callbackURL?: string
+        newUserCallbackURL?: string
         /**
          * Callback URL to redirect to if an error happens
          */
-        errorCallbackURL?: unknown
-        provider: string
+        errorCallbackURL?: string
+        provider:
+            | 'apple'
+            | 'atlassian'
+            | 'cognito'
+            | 'discord'
+            | 'facebook'
+            | 'figma'
+            | 'github'
+            | 'microsoft'
+            | 'google'
+            | 'huggingface'
+            | 'slack'
+            | 'spotify'
+            | 'twitch'
+            | 'twitter'
+            | 'dropbox'
+            | 'kick'
+            | 'linear'
+            | 'linkedin'
+            | 'gitlab'
+            | 'tiktok'
+            | 'reddit'
+            | 'roblox'
+            | 'salesforce'
+            | 'vk'
+            | 'zoom'
+            | 'notion'
+            | 'kakao'
+            | 'naver'
+            | 'line'
+            | 'paybin'
+            | 'paypal'
+            | 'polar'
+            | 'railway'
+            | 'vercel'
+            | 'wechat'
+            | string
         /**
          * Disable automatic redirection to the provider. Useful for handling the redirection yourself
          */
-        disableRedirect?: unknown
-        idToken?: unknown
+        disableRedirect?: boolean
+        idToken?: {
+            /**
+             * ID token from the provider
+             */
+            token: string
+            /**
+             * Nonce used to generate the token
+             */
+            nonce?: string
+            /**
+             * Access token from the provider
+             */
+            accessToken?: string
+            /**
+             * Refresh token from the provider
+             */
+            refreshToken?: string
+            /**
+             * Expiry date of the token
+             */
+            expiresAt?: number
+            /**
+             * The user object from the provider. Only available for some providers like Apple.
+             */
+            user?: {
+                name?: {
+                    firstName?: string
+                    lastName?: string
+                }
+                email?: string
+            }
+        }
         /**
          * Array of scopes to request from the provider. This will override the default scopes passed.
          */
-        scopes?: unknown
+        scopes?: Array<string>
         /**
          * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider
          */
-        requestSignUp?: unknown
+        requestSignUp?: boolean
         /**
          * The login hint to use for the authorization code request
          */
-        loginHint?: unknown
-        additionalData?: unknown
+        loginHint?: string
+        additionalData?: {
+            [key: string]: unknown
+        }
     }
     path?: never
     query?: never
@@ -6038,7 +6128,9 @@ export type SocialSignInResponse = SocialSignInResponses[keyof SocialSignInRespo
 
 export type GetAuthCallbackByIdData = {
     body?: never
-    path?: never
+    path: {
+        id: string
+    }
     query?: never
     url: '/auth/callback/{id}'
 }
@@ -6086,9 +6178,16 @@ export type GetAuthCallbackByIdError = GetAuthCallbackByIdErrors[keyof GetAuthCa
 
 export type PostAuthCallbackByIdData = {
     body?: {
-        [key: string]: unknown
+        code?: string
+        error?: string
+        device_id?: string
+        error_description?: string
+        state?: string
+        user?: string
     }
-    path?: never
+    path: {
+        id: string
+    }
     query?: never
     url: '/auth/callback/{id}'
 }
@@ -6189,7 +6288,7 @@ export type GetSessionResponses = {
     200: unknown
 }
 
-export type GetSession2Data = {
+export type GetSessionPostData = {
     body?: {
         [key: string]: unknown
     }
@@ -6198,7 +6297,7 @@ export type GetSession2Data = {
     url: '/auth/get-session'
 }
 
-export type GetSession2Errors = {
+export type GetSessionPostErrors = {
     /**
      * Bad Request. Usually due to missing parameters, or invalid parameters.
      */
@@ -6237,9 +6336,9 @@ export type GetSession2Errors = {
     }
 }
 
-export type GetSession2Error = GetSession2Errors[keyof GetSession2Errors]
+export type GetSessionPostError = GetSessionPostErrors[keyof GetSessionPostErrors]
 
-export type GetSession2Responses = {
+export type GetSessionPostResponses = {
     /**
      * Success
      */
@@ -6333,6 +6432,7 @@ export type SignUpWithEmailAndPasswordData = {
          * If this is false, the session will not be remembered. Default is `true`.
          */
         rememberMe?: boolean
+        surname?: string
     }
     path?: never
     query?: never
@@ -6444,11 +6544,11 @@ export type SignInEmailData = {
         /**
          * Callback URL to use as a redirect for email verification
          */
-        callbackURL?: unknown
+        callbackURL?: string
         /**
          * If this is false, the session will not be remembered. Default is `true`.
          */
-        rememberMe?: unknown
+        rememberMe?: boolean
     }
     path?: never
     query?: never
@@ -6522,7 +6622,7 @@ export type ResetPasswordData = {
         /**
          * The token to reset the password
          */
-        token?: unknown
+        token?: string
     }
     path?: never
     query?: never
@@ -6800,7 +6900,7 @@ export type ChangeEmailData = {
         /**
          * The URL to redirect to after email verification
          */
-        callbackURL?: unknown
+        callbackURL?: string
     }
     path?: never
     query?: never
@@ -6880,7 +6980,7 @@ export type ChangePasswordData = {
         /**
          * Must be a boolean value
          */
-        revokeOtherSessions?: unknown
+        revokeOtherSessions?: boolean
     }
     path?: never
     query?: never
@@ -6973,7 +7073,7 @@ export type ChangePasswordResponses = {
 export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses]
 
 export type UpdateSessionData = {
-    body?: {
+    body: {
         [key: string]: unknown
     }
     path?: never
@@ -7043,6 +7143,7 @@ export type UpdateUserData = {
          * The image of the user
          */
         image?: string | null
+        surname?: string
     }
     path?: never
     query?: never
@@ -7189,7 +7290,7 @@ export type RequestPasswordResetData = {
         /**
          * The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN
          */
-        redirectTo?: unknown
+        redirectTo?: string
     }
     path?: never
     query?: never
@@ -7577,23 +7678,67 @@ export type LinkSocialAccountData = {
         /**
          * The URL to redirect to after the user has signed in
          */
-        callbackURL?: unknown
-        provider: string
-        idToken?: unknown
-        requestSignUp?: unknown
+        callbackURL?: string
+        provider:
+            | 'apple'
+            | 'atlassian'
+            | 'cognito'
+            | 'discord'
+            | 'facebook'
+            | 'figma'
+            | 'github'
+            | 'microsoft'
+            | 'google'
+            | 'huggingface'
+            | 'slack'
+            | 'spotify'
+            | 'twitch'
+            | 'twitter'
+            | 'dropbox'
+            | 'kick'
+            | 'linear'
+            | 'linkedin'
+            | 'gitlab'
+            | 'tiktok'
+            | 'reddit'
+            | 'roblox'
+            | 'salesforce'
+            | 'vk'
+            | 'zoom'
+            | 'notion'
+            | 'kakao'
+            | 'naver'
+            | 'line'
+            | 'paybin'
+            | 'paypal'
+            | 'polar'
+            | 'railway'
+            | 'vercel'
+            | 'wechat'
+            | string
+        idToken?: {
+            token: string
+            nonce?: string
+            accessToken?: string
+            refreshToken?: string
+            scopes?: Array<string>
+        }
+        requestSignUp?: boolean
         /**
          * Additional scopes to request from the provider
          */
-        scopes?: unknown
+        scopes?: Array<string>
         /**
          * The URL to redirect to if there is an error during the link process
          */
-        errorCallbackURL?: unknown
+        errorCallbackURL?: string
         /**
          * Disable automatic redirection to the provider. Useful for handling the redirection yourself
          */
-        disableRedirect?: unknown
-        additionalData?: unknown
+        disableRedirect?: boolean
+        additionalData?: {
+            [key: string]: unknown
+        }
     }
     path?: never
     query?: never
@@ -7736,7 +7881,7 @@ export type GetAuthDeleteUserCallbackData = {
         /**
          * The URL to redirect to after deletion
          */
-        callbackURL?: unknown
+        callbackURL?: string
     }
     url: '/auth/delete-user/callback'
 }
@@ -7804,7 +7949,7 @@ export type GetAuthDeleteUserCallbackResponse =
 export type PostAuthUnlinkAccountData = {
     body: {
         providerId: string
-        accountId?: unknown
+        accountId?: string
     }
     path?: never
     query?: never
@@ -7872,11 +8017,11 @@ export type PostAuthRefreshTokenData = {
         /**
          * The account ID associated with the refresh token
          */
-        accountId?: unknown
+        accountId?: string
         /**
          * The user ID associated with the account
          */
-        userId?: unknown
+        userId?: string
     }
     path?: never
     query?: never
@@ -7947,11 +8092,11 @@ export type PostAuthGetAccessTokenData = {
         /**
          * The account ID associated with the refresh token
          */
-        accountId?: unknown
+        accountId?: string
         /**
          * The user ID associated with the account
          */
-        userId?: unknown
+        userId?: string
     }
     path?: never
     query?: never

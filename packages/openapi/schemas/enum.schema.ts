@@ -197,7 +197,7 @@ export const AssetTypeEnum = z
  * Marketable asset class enum representing grouped market instrument families
  */
 export const MarketableAssetClassEnum = z
-    .enum(['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED'])
+    .enum(['EQUITY', 'BOND', 'ETF', 'STOCK', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED'])
     .openapi('MarketableAssetClassEnum')
 
 /**

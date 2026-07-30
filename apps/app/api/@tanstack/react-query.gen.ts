@@ -67,7 +67,7 @@ import {
     getMarketQuotes,
     getRootStatus,
     getSession,
-    getSession2,
+    getSessionPost,
     getStatus,
     getSubcategories,
     getSubcategoryById,
@@ -303,10 +303,10 @@ import type {
     GetRootStatusData,
     GetRootStatusError,
     GetRootStatusResponse,
-    GetSession2Data,
-    GetSession2Error,
     GetSessionData,
     GetSessionError,
+    GetSessionPostData,
+    GetSessionPostError,
     GetStatusData,
     GetStatusError,
     GetStatusResponse,
@@ -2574,10 +2574,10 @@ export const socialSignInMutation = (
     return mutationOptions
 }
 
-export const getAuthCallbackByIdQueryKey = (options?: Options<GetAuthCallbackByIdData>) =>
+export const getAuthCallbackByIdQueryKey = (options: Options<GetAuthCallbackByIdData>) =>
     createQueryKey('getAuthCallbackById', options)
 
-export const getAuthCallbackByIdOptions = (options?: Options<GetAuthCallbackByIdData>) =>
+export const getAuthCallbackByIdOptions = (options: Options<GetAuthCallbackByIdData>) =>
     queryOptions<unknown, GetAuthCallbackByIdError, unknown, ReturnType<typeof getAuthCallbackByIdQueryKey>>({
         queryFn: async ({ queryKey, signal }) => {
             const { data } = await getAuthCallbackById({
@@ -2629,12 +2629,12 @@ export const getSessionOptions = (options?: Options<GetSessionData>) =>
 /**
  * Get the current session
  */
-export const getSession2Mutation = (
-    options?: Partial<Options<GetSession2Data>>
-): UseMutationOptions<unknown, GetSession2Error, Options<GetSession2Data>> => {
-    const mutationOptions: UseMutationOptions<unknown, GetSession2Error, Options<GetSession2Data>> = {
+export const getSessionPostMutation = (
+    options?: Partial<Options<GetSessionPostData>>
+): UseMutationOptions<unknown, GetSessionPostError, Options<GetSessionPostData>> => {
+    const mutationOptions: UseMutationOptions<unknown, GetSessionPostError, Options<GetSessionPostData>> = {
         mutationFn: async fnOptions => {
-            const { data } = await getSession2({
+            const { data } = await getSessionPost({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

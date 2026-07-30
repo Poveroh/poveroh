@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type Account = {
-    id?: string
+    readonly id: string
     accountId: string
     providerId: string
     userId: string

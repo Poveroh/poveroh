@@ -63,7 +63,8 @@ export const SessionSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string'
+            type: 'string',
+            readOnly: true
         },
         expiresAt: {
             type: 'string',
@@ -74,8 +75,7 @@ export const SessionSchema = {
         },
         createdAt: {
             type: 'string',
-            format: 'date-time',
-            default: 'Generated at runtime'
+            format: 'date-time'
         },
         updatedAt: {
             type: 'string',
@@ -91,14 +91,15 @@ export const SessionSchema = {
             type: 'string'
         }
     },
-    required: ['expiresAt', 'token', 'createdAt', 'updatedAt', 'userId']
+    required: ['id', 'expiresAt', 'token', 'createdAt', 'updatedAt', 'userId']
 } as const
 
 export const AccountSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string'
+            type: 'string',
+            readOnly: true
         },
         accountId: {
             type: 'string'
@@ -134,22 +135,22 @@ export const AccountSchema = {
         },
         createdAt: {
             type: 'string',
-            format: 'date-time',
-            default: 'Generated at runtime'
+            format: 'date-time'
         },
         updatedAt: {
             type: 'string',
             format: 'date-time'
         }
     },
-    required: ['accountId', 'providerId', 'userId', 'createdAt', 'updatedAt']
+    required: ['id', 'accountId', 'providerId', 'userId', 'createdAt', 'updatedAt']
 } as const
 
 export const VerificationSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string'
+            type: 'string',
+            readOnly: true
         },
         identifier: {
             type: 'string'
@@ -163,16 +164,14 @@ export const VerificationSchema = {
         },
         createdAt: {
             type: 'string',
-            format: 'date-time',
-            default: 'Generated at runtime'
+            format: 'date-time'
         },
         updatedAt: {
             type: 'string',
-            format: 'date-time',
-            default: 'Generated at runtime'
+            format: 'date-time'
         }
     },
-    required: ['identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
+    required: ['id', 'identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
 } as const
 
 export const AssetTransactionSchema = {
@@ -992,7 +991,7 @@ export const MarketableAssetSchema = {
 export const MarketableAssetClassEnumSchema = {
     type: 'string',
     nullable: true,
-    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
+    enum: ['EQUITY', 'BOND', 'ETF', 'STOCK', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
 } as const
 
 export const RealEstateAssetSchema = {
@@ -7593,4 +7592,107 @@ export const VehicleAssetFormSchema = {
         }
     },
     required: ['brand', 'model', 'type', 'value']
+} as const
+
+export const SessionWritableSchema = {
+    type: 'object',
+    properties: {
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        token: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        ipAddress: {
+            type: 'string'
+        },
+        userAgent: {
+            type: 'string'
+        },
+        userId: {
+            type: 'string'
+        }
+    },
+    required: ['expiresAt', 'token', 'createdAt', 'updatedAt', 'userId']
+} as const
+
+export const AccountWritableSchema = {
+    type: 'object',
+    properties: {
+        accountId: {
+            type: 'string'
+        },
+        providerId: {
+            type: 'string'
+        },
+        userId: {
+            type: 'string'
+        },
+        accessToken: {
+            type: 'string'
+        },
+        refreshToken: {
+            type: 'string'
+        },
+        idToken: {
+            type: 'string'
+        },
+        accessTokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        refreshTokenExpiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        scope: {
+            type: 'string'
+        },
+        password: {
+            type: 'string'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['accountId', 'providerId', 'userId', 'createdAt', 'updatedAt']
+} as const
+
+export const VerificationWritableSchema = {
+    type: 'object',
+    properties: {
+        identifier: {
+            type: 'string'
+        },
+        value: {
+            type: 'string'
+        },
+        expiresAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: ['identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
 } as const

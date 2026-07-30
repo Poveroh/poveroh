@@ -35,16 +35,7 @@ const buttonVariants = cva(
 )
 
 type ButtonsVariant =
-    | 'default'
-    | 'link'
-    | 'danger'
-    | 'success'
-    | 'warning'
-    | 'outline'
-    | 'secondary'
-    | 'ghost'
-    | null
-    | undefined
+    'default' | 'link' | 'danger' | 'success' | 'warning' | 'outline' | 'secondary' | 'ghost' | null | undefined
 
 export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
