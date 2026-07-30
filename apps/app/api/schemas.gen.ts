@@ -991,7 +991,7 @@ export const MarketableAssetSchema = {
 export const MarketableAssetClassEnumSchema = {
     type: 'string',
     nullable: true,
-    enum: ['EQUITY', 'BOND', 'ETF', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
+    enum: ['EQUITY', 'BOND', 'ETF', 'STOCK', 'CRYPTO', 'COMMODITY', 'REIT', 'MIXED', null]
 } as const
 
 export const RealEstateAssetSchema = {

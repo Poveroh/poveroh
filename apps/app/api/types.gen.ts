@@ -334,7 +334,8 @@ export type MarketableAsset = {
     deletedAt: string | null
 }
 
-export type MarketableAssetClassEnum = 'EQUITY' | 'BOND' | 'ETF' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
+export type MarketableAssetClassEnum =
+    'EQUITY' | 'BOND' | 'ETF' | 'STOCK' | 'CRYPTO' | 'COMMODITY' | 'REIT' | 'MIXED' | null
 
 export type RealEstateAsset = {
     id: string

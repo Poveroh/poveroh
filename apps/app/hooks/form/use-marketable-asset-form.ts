@@ -71,7 +71,7 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
                 ? UpdateMarketableAssetRequestSchema.parse(basePayload)
                 : CreateMarketableAssetRequestSchema.parse({
                       ...basePayload,
-                      type: assetType,
+                      assetClass: assetType,
                       transactionType: values.transactionType,
                       date: values.date,
                       quantity: values.quantity,
