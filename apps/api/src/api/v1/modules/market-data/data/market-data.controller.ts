@@ -21,13 +21,12 @@ export class MarketDataController {
     // GET /instruments
     async searchInstruments(req: Request, res: Response) {
         try {
-            const query = typeof req.query.q === 'string' ? req.query.q : ''
+            const query = req.query.q as string | undefined
             if (!query) throw new BadRequestError('Missing search query')
 
-            const providerId = typeof req.query.providerId === 'string' ? req.query.providerId : undefined
-            const assetType =
-                typeof req.query.assetType === 'string' ? (req.query.assetType as AssetTypeEnum) : undefined
-            const limit = typeof req.query.limit === 'string' ? Number(req.query.limit) : undefined
+            const providerId = req.query.providerId as string | undefined
+            const assetType = req.query.assetType as AssetTypeEnum[]
+            const limit = Number(req.query.limit)
 
             const instruments = await this.marketDataService.searchInstruments({
                 providerId,
@@ -55,9 +54,8 @@ export class MarketDataController {
 
             if (symbols.length === 0) throw new BadRequestError('Missing symbols query parameter')
 
-            const providerId = typeof req.query.providerId === 'string' ? req.query.providerId : undefined
-            const assetType =
-                typeof req.query.assetType === 'string' ? (req.query.assetType as AssetTypeEnum) : undefined
+            const providerId = req.query.providerId as string | undefined
+            const assetType = req.query.assetType as AssetTypeEnum[]
 
             const quotes = await this.marketDataService.getQuotes({
                 providerId,

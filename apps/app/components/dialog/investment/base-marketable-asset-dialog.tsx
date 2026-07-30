@@ -21,7 +21,7 @@ import type {
 type BaseMarketableDialogProps = {
     modalId: string
     title: string
-    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTO'>
+    assetType: Extract<AssetTypeEnum, 'STOCK' | 'CRYPTO' | 'ETF'>[]
     defaultSymbol: string
 }
 

@@ -6,7 +6,7 @@ export function MarketableDialog() {
         <BaseMarketableDialog
             modalId={MODAL_IDS.TICKET_SYMBOL}
             title='Add marketable asset'
-            assetType='STOCK'
+            assetType={['STOCK', 'ETF']}
             defaultSymbol=''
         />
     )

@@ -4703,7 +4703,10 @@ export const MarketDataProviderQuerySchema = {
             format: 'uuid'
         },
         assetType: {
-            $ref: '#/components/schemas/AssetTypeEnum'
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/AssetTypeEnum'
+            }
         }
     }
 } as const

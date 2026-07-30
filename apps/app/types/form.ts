@@ -91,7 +91,7 @@ export type MarketableAssetFormValues = {
 export type CreateUpdateMarketableAssetRequest = CreateMarketableAssetRequest | UpdateMarketableAssetRequest
 
 export type MarketableAssetFormProps = FormProps<AssetData, CreateUpdateMarketableAssetRequest> & {
-    assetType: AssetTypeEnum
+    assetType: AssetTypeEnum[]
     defaultSymbol: string
 }
 

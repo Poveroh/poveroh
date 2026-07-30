@@ -14,6 +14,7 @@ import { useMarketQuote } from '@/hooks/use-market-quote'
 import { SummaryRow } from '../investments/summary-row'
 import Box from '../box/box-wrapper'
 import { StockField } from '../fields/stock-field'
+import type { MarketableAssetClassEnum, MarketInstrument } from '@poveroh/types'
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
@@ -23,10 +24,18 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
         const { form, currency, quantity, unitPrice, fees, total, defaultValues, onSubmit } =
             useMarketableAssetForm(props)
 
-        const handleInstrumentSelect = async (symbol: string, providerId: string) => {
-            const quote = await fetchQuote(symbol, providerId)
+        const handleInstrumentSelect = async (instrument: MarketInstrument) => {
+            const quote = await fetchQuote(instrument.symbol, instrument.providerId)
             if (!quote) return
 
+            if (!(props.assetType.includes(instrument.assetType) || props.assetType.length === 0)) {
+                return
+            }
+
+            form.setValue('assetClass', instrument.assetType as MarketableAssetClassEnum | undefined, {
+                shouldValidate: true,
+                shouldDirty: true
+            })
             form.setValue('unitPrice', quote.price, { shouldValidate: true, shouldDirty: true })
         }
 
@@ -98,9 +107,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                                         name='symbol'
                                         placeholder={props.defaultSymbol}
                                         assetType={props.assetType}
-                                        onInstrumentSelect={instrument =>
-                                            handleInstrumentSelect(instrument.symbol, instrument.providerId)
-                                        }
+                                        onInstrumentSelect={handleInstrumentSelect}
                                     />
                                 </FormControl>
                                 <FormMessage />

@@ -11,7 +11,7 @@ import { useDebounce } from './use-debounce'
 
 type UseMarketInstrumentSearchProps = {
     providerId?: string
-    assetType?: AssetTypeEnum
+    assetType: AssetTypeEnum[]
     limit?: number
 }
 
@@ -19,7 +19,7 @@ export const useMarketInstrumentSearch = ({
     providerId,
     assetType,
     limit = MARKET_DATA_SEARCH_DEFAULT_LIMIT
-}: UseMarketInstrumentSearchProps = {}) => {
+}: UseMarketInstrumentSearchProps) => {
     const [query, setQuery] = useState('')
     const debouncedQuery = useDebounce(query)
     const trimmedQuery = debouncedQuery.trim()

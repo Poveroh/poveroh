@@ -114,7 +114,7 @@ export type AccountFieldProps<T extends FieldValues = FieldValues> = StandardFie
  */
 export type StockFieldProps<T extends FieldValues = FieldValues> = StandardFieldProps<T> & {
     providerId?: string
-    assetType?: AssetTypeEnum
+    assetType: AssetTypeEnum[]
     onInstrumentSelect?: (instrument: MarketInstrument) => void
 }
 

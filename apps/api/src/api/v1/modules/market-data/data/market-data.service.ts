@@ -70,7 +70,7 @@ export class MarketDataService extends BaseService {
 
         if (!params.assetType) return instruments
 
-        return instruments.filter(instrument => instrument.assetType === params.assetType)
+        return instruments.filter(instrument => params.assetType?.some(type => instrument.assetType.includes(type)))
     }
 
     /**

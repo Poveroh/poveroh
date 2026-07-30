@@ -6,7 +6,7 @@ import type { AssetTypeEnum, MarketInstrument, MarketQuote } from './contracts.j
  */
 export type SearchInstrumentsParams = {
     query: string
-    assetType?: AssetTypeEnum
+    assetType?: AssetTypeEnum[]
     limit?: number
 }
 
@@ -15,7 +15,7 @@ export type SearchInstrumentsParams = {
  */
 export type GetQuotesParams = {
     symbols: string[]
-    assetType?: AssetTypeEnum
+    assetType?: AssetTypeEnum[]
 }
 
 /**

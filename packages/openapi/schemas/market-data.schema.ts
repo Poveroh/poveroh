@@ -87,7 +87,7 @@ export const GetMarketQuotesResponseSchema = SuccessResponseSchema(MarketQuoteSc
 export const MarketDataProviderQuerySchema = z
     .object({
         providerId: z.uuid().optional(),
-        assetType: AssetTypeEnum.optional()
+        assetType: AssetTypeEnum.array().optional()
     })
     .openapi('MarketDataProviderQuery')
 

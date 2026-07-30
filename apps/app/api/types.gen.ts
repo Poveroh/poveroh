@@ -1981,7 +1981,7 @@ export type GetMarketQuotesResponse = {
 
 export type MarketDataProviderQuery = {
     providerId?: string
-    assetType?: AssetTypeEnum
+    assetType?: Array<AssetTypeEnum>
 }
 
 export type SearchMarketInstrumentsQuery = MarketDataProviderQuery & {
@@ -5779,7 +5779,7 @@ export type SearchMarketInstrumentsData = {
     path?: never
     query: {
         providerId?: string
-        assetType?: AssetTypeEnum
+        assetType?: Array<AssetTypeEnum>
         q: string
         limit?: number
     }
@@ -5817,7 +5817,7 @@ export type GetMarketQuotesData = {
     path?: never
     query: {
         providerId?: string
-        assetType?: AssetTypeEnum
+        assetType?: Array<AssetTypeEnum>
         symbols: Array<string>
     }
     url: '/market-data/quotes'

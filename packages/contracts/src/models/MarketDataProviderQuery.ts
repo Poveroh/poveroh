@@ -5,5 +5,5 @@
 import type { AssetTypeEnum } from './AssetTypeEnum'
 export type MarketDataProviderQuery = {
     providerId?: string
-    assetType?: AssetTypeEnum
+    assetType?: Array<AssetTypeEnum>
 }
