@@ -52,7 +52,8 @@ export class MarketableAssetRepository {
                     unitPrice: payload.unitPrice,
                     totalAmount,
                     fees: payload.fees,
-                    currency: payload.currency
+                    currency: payload.currency,
+                    financialAccountId: payload.financialAccountId
                 }
             })
         })
