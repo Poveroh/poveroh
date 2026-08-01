@@ -2006,6 +2006,7 @@ export type MarketableAssetData = {
 export type MarketableAssetForm = {
     transactionType: AssetMarketDataTypeEnum
     assetClass?: MarketableAssetClassEnum
+    financialAccountId: string
     symbol: string
     date: string
     quantity: number
@@ -2017,6 +2018,7 @@ export type MarketableAssetForm = {
 export type CreateMarketableAssetRequest = {
     transactionType: AssetMarketDataTypeEnum
     assetClass?: MarketableAssetClassEnum
+    financialAccountId: string
     symbol: string
     date: string
     quantity: number
@@ -2028,6 +2030,7 @@ export type CreateMarketableAssetRequest = {
 export type UpdateMarketableAssetRequest = {
     transactionType?: AssetMarketDataTypeEnum
     assetClass?: MarketableAssetClassEnum
+    financialAccountId?: string
     symbol?: string
     date?: string
     quantity?: number

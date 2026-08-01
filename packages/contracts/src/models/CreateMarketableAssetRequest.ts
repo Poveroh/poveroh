@@ -8,6 +8,7 @@ import type { MarketableAssetClassEnum } from './MarketableAssetClassEnum'
 export type CreateMarketableAssetRequest = {
     transactionType: AssetMarketDataTypeEnum
     assetClass?: MarketableAssetClassEnum
+    financialAccountId: string
     symbol: string
     date: string
     quantity: number

@@ -42,6 +42,7 @@ export const MarketableAssetFormSchema = z
     .object({
         transactionType: AssetMarketDataTypeEnum,
         assetClass: MarketableAssetClassEnum.nullable().optional(),
+        financialAccountId: z.string(),
         symbol: z.string().trim().min(1),
         date: z.string(),
         quantity: z.number().positive(),

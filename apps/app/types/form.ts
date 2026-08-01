@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import type {
     AssetData,
-    AssetTransactionTypeEnum,
     AssetTypeEnum,
     CreateCollectibleAssetRequest,
     CreateImportRequest,
@@ -11,7 +10,6 @@ import type {
     CreateFinancialAccountBalanceRequest,
     CreateUpdateTransactionRequest,
     CreateVehicleAssetRequest,
-    CurrencyEnum,
     ImportData,
     FinancialAccountBalanceData,
     InputVariantStyle,
@@ -76,16 +74,6 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     startIcon?: LucideIcon
     variant?: InputVariantStyle
     endIcon?: LucideIcon
-}
-
-export type MarketableAssetFormValues = {
-    transactionType: Extract<AssetTransactionTypeEnum, 'BUY' | 'SELL'>
-    symbol: string
-    date: string
-    quantity: number
-    unitPrice: number
-    fees: number
-    currency: CurrencyEnum
 }
 
 export type CreateUpdateMarketableAssetRequest = CreateMarketableAssetRequest | UpdateMarketableAssetRequest

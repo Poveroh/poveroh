@@ -4799,6 +4799,9 @@ export const MarketableAssetFormSchema = {
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
+        financialAccountId: {
+            type: 'string'
+        },
         symbol: {
             type: 'string',
             minLength: 1
@@ -4824,7 +4827,7 @@ export const MarketableAssetFormSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         }
     },
-    required: ['transactionType', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
+    required: ['transactionType', 'financialAccountId', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
 } as const
 
 export const CreateMarketableAssetRequestSchema = {
@@ -4836,6 +4839,9 @@ export const CreateMarketableAssetRequestSchema = {
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
         },
+        financialAccountId: {
+            type: 'string'
+        },
         symbol: {
             type: 'string',
             minLength: 1
@@ -4861,7 +4867,7 @@ export const CreateMarketableAssetRequestSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         }
     },
-    required: ['transactionType', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
+    required: ['transactionType', 'financialAccountId', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
 } as const
 
 export const UpdateMarketableAssetRequestSchema = {
@@ -4872,6 +4878,9 @@ export const UpdateMarketableAssetRequestSchema = {
         },
         assetClass: {
             $ref: '#/components/schemas/MarketableAssetClassEnum'
+        },
+        financialAccountId: {
+            type: 'string'
         },
         symbol: {
             type: 'string',

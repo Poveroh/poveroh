@@ -5,16 +5,20 @@ import { useTranslations } from 'next-intl'
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@poveroh/ui/components/form'
 
-import { AmountField, CurrencyField, DateField } from '@/components/fields'
+import { AccountField, AmountField, CurrencyField, DateField } from '@/components/fields'
 import { useMarketableAssetForm } from '@/hooks/form/use-marketable-asset-form'
-import type { FormRef, MarketableAssetFormProps, MarketableAssetFormValues } from '@/types'
+import type { FormRef, MarketableAssetFormProps } from '@/types'
 import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import { useAsset } from '@/hooks/use-asset'
 import { useMarketQuote } from '@/hooks/use-market-quote'
 import { SummaryRow } from '../investments/summary-row'
 import Box from '../box/box-wrapper'
 import { StockField } from '../fields/stock-field'
-import type { MarketableAssetClassEnum, MarketInstrument } from '@poveroh/types'
+import type {
+    MarketableAssetClassEnum,
+    MarketableAssetForm as MarketableAssetFormValues,
+    MarketInstrument
+} from '@poveroh/types'
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
@@ -120,6 +124,16 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         name='date'
                         label={t('form.date.label')}
                         mandatory
+                    />
+
+                    <AccountField
+                        form={form}
+                        control={form.control}
+                        name='financialAccountId'
+                        label={t('form.account.label')}
+                        placeholder={t('form.account.placeholder')}
+                        mandatory={true}
+                        variant={'contained'}
                     />
 
                     <div className='grid grid-cols-2 gap-3'>

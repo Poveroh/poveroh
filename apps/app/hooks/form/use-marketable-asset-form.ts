@@ -24,6 +24,7 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
     const defaultValues = useMemo<MarketableAssetForm>(
         () => ({
             transactionType: 'BUY',
+            financialAccountId: '',
             symbol: initialData ? initialData.marketable?.symbol || initialData.title : defaultSymbol,
             date: initialData?.currentValueAsOf?.split('T')[0] ?? new Date().toISOString(),
             quantity: 0,
@@ -72,6 +73,7 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
                 : CreateMarketableAssetRequestSchema.parse({
                       ...basePayload,
                       assetClass: values.assetClass,
+                      financialAccountId: values.financialAccountId,
                       transactionType: values.transactionType,
                       date: values.date,
                       quantity: values.quantity,
