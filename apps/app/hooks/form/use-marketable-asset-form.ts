@@ -17,7 +17,7 @@ import { MarketableAssetFormProps } from '@/types'
 export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
     const { handleError } = useError()
 
-    const { initialData, assetType, defaultSymbol } = props
+    const { initialData, defaultSymbol } = props
 
     const [loading, setLoading] = useState(false)
 
