@@ -41,17 +41,8 @@ export class MarketDataService extends BaseService {
         const configuredIds = new Set(await this.marketDataRepository.listConfiguredProviderIds(userId))
 
         return MARKET_DATA_PROVIDER_REGISTRY.map(provider => ({
-            id: provider.id,
-            label: provider.label,
-            logoUrl: provider.logoUrl,
-            transport: provider.transport,
-            enabled: provider.enabled,
-            configured: configuredIds.has(provider.id),
-            requiresCredentials: provider.requiresCredentials,
-            supportsSearch: provider.supportsSearch,
-            supportsQuotes: provider.supportsQuotes,
-            supportsStreaming: provider.supportsStreaming,
-            supportedAssetTypes: [...provider.supportedAssetTypes]
+            ...provider,
+            configured: configuredIds.has(provider.id)
         }))
     }
 
