@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@poveroh/ui/components/table'
 import { useTranslations } from 'next-intl'
 import { cn } from '@poveroh/ui/lib/utils'
-import { useConfig } from '@/hooks/use-config'
+import { useUtils } from '@/hooks/use-utils'
 
 type TableProps<T> = {
     data: T[]
@@ -52,7 +52,7 @@ export function DataTable<T>({
     mergeRowsBy
 }: TableProps<T>) {
     const t = useTranslations()
-    const { renderDate } = useConfig()
+    const { renderDate } = useUtils()
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])

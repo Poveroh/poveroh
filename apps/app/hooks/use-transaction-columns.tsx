@@ -10,9 +10,9 @@ import DynamicIcon from '@/components/icon/dynamic-icon'
 import { OptionsPopover } from '@/components/navbar/options-popover'
 import { useCategory } from './use-category'
 import { useFinancialAccount } from './use-account'
-import { useConfig } from './use-config'
 import { TransactionData } from '@poveroh/types'
 import { cn } from '@poveroh/ui/lib/utils'
+import { useUtils } from './use-utils'
 
 type UseTransactionColumnsProps = {
     openEdit: (item: TransactionData) => void
@@ -26,7 +26,7 @@ export const useTransactionColumns = ({
     const t = useTranslations()
     const { categoryData } = useCategory()
     const { accountQuery } = useFinancialAccount()
-    const { renderDate } = useConfig()
+    const { renderDate } = useUtils()
 
     return [
         {

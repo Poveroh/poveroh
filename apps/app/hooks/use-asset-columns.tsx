@@ -11,8 +11,9 @@ import type { AssetData, AssetGroupLayout } from '@poveroh/types'
 
 import { AssetAvatar } from '@/components/investments/asset-avatar'
 import { OptionsPopover } from '@/components/navbar/options-popover'
-import { useConfig } from '@/hooks/use-config'
+import { useUser } from '@/hooks/use-user'
 import { useFinancialAccount } from './use-account'
+import { useUtils } from './use-utils'
 
 type UseAssetColumnsProps = {
     portfolioTotal: number
@@ -34,15 +35,22 @@ export const useAssetColumns = ({
 }: UseAssetColumnsProps): ((layout: AssetGroupLayout) => ColumnDef<AssetData>[]) => {
     const t = useTranslations()
     const { accountQuery } = useFinancialAccount()
-    const { renderDate, preferedCurrency, preferedLanguage } = useConfig()
+    const { preferences } = useUser()
+    const { renderDate } = useUtils()
 
     return useCallback(
         (layout: AssetGroupLayout): ColumnDef<AssetData>[] => {
             const money = (value: number) =>
-                value.toLocaleString(preferedLanguage, { style: 'currency', currency: preferedCurrency })
+                value.toLocaleString(preferences.preferredLanguage, {
+                    style: 'currency',
+                    currency: preferences.preferredCurrency
+                })
 
             const decimal = (value: number) =>
-                value.toLocaleString(preferedLanguage, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                value.toLocaleString(preferences.preferredLanguage, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
 
             const subtitleFor = (asset: AssetData): string => {
                 if (asset.marketable) return asset.marketable.symbol ?? asset.marketable.isin ?? ''
@@ -168,7 +176,7 @@ export const useAssetColumns = ({
                         </Button>
                     ),
                     cell: ({ row }) =>
-                        `${weightFor(row.original).toLocaleString(preferedLanguage, { maximumFractionDigits: 2 })}%`
+                        `${weightFor(row.original).toLocaleString(preferences.preferredLanguage, { maximumFractionDigits: 2 })}%`
                 }
             ]
 
@@ -263,6 +271,6 @@ export const useAssetColumns = ({
                 actionsColumn
             ]
         },
-        [preferedCurrency, preferedLanguage, portfolioTotal, accountQuery.data]
+        [preferences.preferredCurrency, preferences.preferredLanguage, portfolioTotal, accountQuery.data]
     )
 }

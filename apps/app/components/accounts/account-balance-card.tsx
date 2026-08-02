@@ -7,8 +7,9 @@ import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { AccountVariation, ChartRange, FinancialAccountBalanceData } from '@poveroh/types'
-import { useConfig } from '@/hooks/use-config'
+import { useUser } from '@/hooks/use-user'
 import { ChartRangeOption } from '@/lib/chart-range'
+import { useUtils } from '@/hooks/use-utils'
 
 type AccountBalanceCardProps = {
     currentBalance: number
@@ -28,10 +29,8 @@ export function AccountBalanceCard({
     onRangeChange
 }: AccountBalanceCardProps) {
     const t = useTranslations()
-    const { preferedCurrency, preferedLanguage } = useConfig()
-
-    const formatCurrency = (value: number) =>
-        value.toLocaleString(preferedLanguage, { style: 'currency', currency: preferedCurrency })
+    const { preferences } = useUser()
+    const { renderPriceLabel } = useUtils()
 
     const chartConfig = {
         balance: {
@@ -67,7 +66,7 @@ export function AccountBalanceCard({
         return (
             <div className='rounded-xl bg-background px-3 py-2 text-xs shadow-xl'>
                 <div className='mb-2 text-muted-foreground'>
-                    {new Date(label).toLocaleDateString(preferedLanguage, {
+                    {new Date(label).toLocaleDateString(preferences.preferredLanguage, {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric'
@@ -77,12 +76,12 @@ export function AccountBalanceCard({
                     <span className={isPositive ? 'text-emerald-500' : 'text-red-500'} aria-hidden='true'>
                         {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                     </span>
-                    <span className='text-foreground'>{formatCurrency(point.balance)}</span>
+                    <span className='text-foreground'>{renderPriceLabel(point.balance)}</span>
                     {delta !== 0 && (
                         <span className={isPositive ? 'text-emerald-500' : 'text-red-500'}>
-                            {`${deltaSign}${formatCurrency(Math.abs(delta))} (${deltaSign}${Math.abs(deltaPct).toFixed(
-                                1
-                            )}%)`}
+                            {`${deltaSign}${renderPriceLabel(Math.abs(delta))} (${deltaSign}${Math.abs(
+                                deltaPct
+                            ).toFixed(1)}%)`}
                         </span>
                     )}
                 </div>
@@ -98,7 +97,7 @@ export function AccountBalanceCard({
                         <div className='flex items-center gap-6'>
                             <p className='sub uppercase'>{t('accounts.detail.balance.label')}</p>
                         </div>
-                        <h2>{formatCurrency(currentBalance)}</h2>
+                        <h2>{renderPriceLabel(currentBalance)}</h2>
                         {variation && variation.delta !== 0 && (
                             <div className='flex items-center gap-2 text-sm'>
                                 <span
@@ -107,7 +106,7 @@ export function AccountBalanceCard({
                                     }`}
                                 >
                                     {variation.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                                    {`${variation.isPositive ? '+' : '-'}${formatCurrency(Math.abs(variation.delta))} (${
+                                    {`${variation.isPositive ? '+' : '-'}${renderPriceLabel(Math.abs(variation.delta))} (${
                                         variation.isPositive ? '+' : '-'
                                     }${Math.abs(variation.deltaPct).toFixed(1)}%)`}
                                 </span>
@@ -149,7 +148,10 @@ export function AccountBalanceCard({
                                 minTickGap={32}
                                 tickFormatter={value => {
                                     const date = new Date(value)
-                                    return date.toLocaleDateString(preferedLanguage, { month: 'short', day: 'numeric' })
+                                    return date.toLocaleDateString(preferences.preferredLanguage, {
+                                        month: 'short',
+                                        day: 'numeric'
+                                    })
                                 }}
                             />
                             <YAxis

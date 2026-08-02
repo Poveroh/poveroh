@@ -99,6 +99,7 @@ export const useUser = () => {
 
     return {
         user: userStore.user,
+        preferences: userStore.user.preferences,
         getMe,
         updateUser,
         updatePreferences,

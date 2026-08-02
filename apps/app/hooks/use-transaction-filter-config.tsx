@@ -2,7 +2,7 @@
 
 import { useCategory } from './use-category'
 import { useFinancialAccount } from './use-account'
-import { useConfig } from './use-config'
+import { useUtils } from './use-utils'
 import DynamicIcon from '@/components/icon/dynamic-icon'
 import { FilterField, TransactionFilters } from '@poveroh/types'
 import { isDateFilter } from '@/utils/filter'
@@ -10,7 +10,7 @@ import { isDateFilter } from '@/utils/filter'
 export const useTransactionFilterConfig = () => {
     const { categoryData } = useCategory()
     const { accountQuery } = useFinancialAccount()
-    const { renderDate } = useConfig()
+    const { renderDate } = useUtils()
 
     const filterFields: FilterField[] = [
         {

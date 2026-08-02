@@ -1,7 +1,7 @@
 import { useFieldArray } from 'react-hook-form'
 import { useBaseTransactionForm } from './use-base-transaction-form'
 import { BaseTransactionFormConfig, TransactionFormProps } from '@/types/form'
-import { useConfig } from '../use-config'
+import { useUser } from '../use-user'
 import { CurrencyEnum, TransactionActionEnum, TransactionData, TransactionForm } from '@poveroh/types'
 import { TransactionFormSchema } from '@poveroh/schemas'
 import { logger } from '@poveroh/logger/browser'
@@ -142,9 +142,9 @@ function transformInitialData(type: TransactionActionEnum, data: TransactionData
 }
 
 export function useTransactionForm(type: TransactionActionEnum, props: TransactionFormProps) {
-    const { preferedCurrency } = useConfig()
+    const { preferences } = useUser()
 
-    const defaultValues = getDefaultValues(type, preferedCurrency as CurrencyEnum, props.defaultAccountId)
+    const defaultValues = getDefaultValues(type, preferences.preferredCurrency as CurrencyEnum, props.defaultAccountId)
 
     const config: BaseTransactionFormConfig<TransactionForm> = {
         type,

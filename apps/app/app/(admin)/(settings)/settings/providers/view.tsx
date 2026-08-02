@@ -17,20 +17,17 @@ import { SelectField } from '@/components/fields'
 import { useProvidersForm } from '@/hooks/form/use-providers-form'
 import { Button } from '@poveroh/ui/components/button'
 import { Loader2 } from 'lucide-react'
-import { DEFAULT_MARKET_DATA_PROVIDER, DEFAULT_USER_PREFERENCES } from '@poveroh/types'
+import { DEFAULT_MARKET_DATA_PROVIDER } from '@poveroh/types'
 
 export default function ProvidersView() {
     const t = useTranslations()
-    const { user } = useUser()
+    const { preferences } = useUser()
     const { providersQuery, providers } = useMarketDataProvider()
-
-    const preferredMarketDataProviderId =
-        user.preferences?.preferredMarketDataProviderId ?? DEFAULT_USER_PREFERENCES.preferredMarketDataProviderId
 
     const configuredProviders = useMemo(() => providers.filter(provider => provider.configured), [providers])
     const credentialProviders = useMemo(() => providers.filter(provider => provider.requiresCredentials), [providers])
     const providerOptions = useMemo(() => {
-        const preferredProvider = providers.find(provider => provider.id === preferredMarketDataProviderId)
+        const preferredProvider = providers.find(provider => provider.id === preferences.preferredMarketDataProviderId)
         const options = [DEFAULT_MARKET_DATA_PROVIDER, ...configuredProviders]
 
         if (preferredProvider && !options.some(provider => provider.id === preferredProvider.id)) {
@@ -38,7 +35,7 @@ export default function ProvidersView() {
         }
 
         return options
-    }, [configuredProviders, providers, preferredMarketDataProviderId])
+    }, [configuredProviders, providers, preferences.preferredMarketDataProviderId])
     const providerOptionIds = useMemo(() => providerOptions.map(provider => provider.id), [providerOptions])
 
     const { form, canSave, isSaving, handleSubmit } = useProvidersForm(providerOptionIds)

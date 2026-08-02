@@ -1,26 +1,22 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useUserStore } from '@/store/auth.store'
 import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/navigation'
 import { UserFormGeneralitiesFormSchema, UserFormPreferencesFormSchema } from '@poveroh/schemas'
-import { DEFAULT_USER_PREFERENCES, UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types'
+import { UserFormGeneralitiesForm, UserFormPreferencesForm } from '@poveroh/types'
 
 export function useOnBoardingForm() {
-    const userStore = useUserStore()
-    const { updateUser, updatePreferences } = useUser()
+    const { user, preferences, updateUser, updatePreferences } = useUser()
     const router = useRouter()
 
     const [loading, setLoading] = useState(false)
 
-    const preferences = userStore.user.preferences ?? DEFAULT_USER_PREFERENCES
-
     const formGeneralities = useForm({
         resolver: zodResolver(UserFormGeneralitiesFormSchema),
         defaultValues: {
-            name: userStore.user.name || '',
-            surname: userStore.user.surname || '',
+            name: user.name || '',
+            surname: user.surname || '',
             country: preferences.country || 'ITALY'
         }
     })
@@ -43,7 +39,7 @@ export function useOnBoardingForm() {
                 body: {
                     name: values.name,
                     surname: values.surname,
-                    email: userStore.user.email,
+                    email: user.email,
                     onBoardingStep: 'PREFERENCES'
                 }
             })

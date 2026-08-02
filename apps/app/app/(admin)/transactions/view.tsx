@@ -28,7 +28,7 @@ import { useCategory } from '@/hooks/use-category'
 import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
-import { useConfig } from '@/hooks/use-config'
+import { useUser } from '@/hooks/use-user'
 
 import { MODAL_IDS } from '@/types/constant'
 import { ViewModeType } from '@/types'
@@ -52,7 +52,7 @@ export default function TransactionsView() {
 
     const { categoryData } = useCategory()
     const { accountQuery } = useFinancialAccount()
-    const { preferedLanguage } = useConfig()
+    const { preferences } = useUser()
 
     const { openModal } = useModal<TransactionData>(MODAL_IDS.TRANSACTION)
     const { openModal: openDeleteModal } = useDeleteModal<TransactionData>()
@@ -100,7 +100,7 @@ export default function TransactionsView() {
                 const isCurrentYear = dateMoment.year() === currentYear
                 const dateLabel = (
                     isCurrentYear ? dateMoment.format('D MMMM') : dateMoment.format('D MMMM YYYY')
-                ).toLocaleLowerCase(preferedLanguage)
+                ).toLocaleLowerCase(preferences.preferredLanguage)
 
                 return (
                     <div key={date} className='flex flex-col space-y-2'>
@@ -124,7 +124,7 @@ export default function TransactionsView() {
                     </div>
                 )
             })
-    }, [transactions, preferedLanguage])
+    }, [transactions, preferences.preferredLanguage])
 
     const pageContent = useMemo(() => {
         if (isLoading && transactions.length === 0) {

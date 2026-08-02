@@ -180,7 +180,7 @@ These are the established, recurring patterns in `apps/app`. Follow them instead
 
     Mutations live in the feature hook (e.g. `useFinancialAccount` exposes `createMutation`/`updateMutation`/`deleteMutation` and invalidates the relevant query keys in `onSuccess`). A page-specific hook (e.g. `useAccountDetail`) stays thin: the page's own `useQuery` plus the mutations it needs — derived state and handlers stay in the view.
 
-- **Locale & currency formatting**: never hardcode a locale or currency. Read `preferedLanguage` and `preferedCurrency` from `useConfig()` and format with `value.toLocaleString(preferedLanguage, { style: 'currency', currency: preferedCurrency })`.
+- **Locale & currency formatting**: never hardcode a locale or currency. Read `preferedLanguage` and `preferedCurrency` from `useUser()` and format with `value.toLocaleString(preferedLanguage, { style: 'currency', currency: preferedCurrency })`.
 
 - **Charts**: build on `ChartContainer` + `ChartTooltip` from `@poveroh/ui/components/chart` (recharts). For time series, map points to a numeric `timestamp` and use `<XAxis type='number' scale='time' />` (see `components/dashboard/charts/*` and `components/accounts/account-balance-card.tsx`).
 

@@ -12,7 +12,7 @@ import { useTransaction } from '@/hooks/use-transaction'
 import { useTransactionPagination } from '@/hooks/use-transaction-pagination'
 import { useModal } from '@/hooks/use-modal'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
-import { useConfig } from '@/hooks/use-config'
+import { useUser } from '@/hooks/use-user'
 
 import { MODAL_IDS } from '@/types/constant'
 import { TransactionData } from '@poveroh/types'
@@ -26,7 +26,7 @@ export function AccountTransactionsSection({ accountId }: AccountTransactionsSec
     const sectionRef = useRef<HTMLDivElement | null>(null)
 
     const { groupTransactionsByDate } = useTransaction()
-    const { preferedLanguage } = useConfig()
+    const { preferences } = useUser()
 
     const { openModal } = useModal<TransactionData>(MODAL_IDS.TRANSACTION)
     const { openModal: openDeleteModal } = useDeleteModal<TransactionData>()
@@ -50,7 +50,7 @@ export function AccountTransactionsSection({ accountId }: AccountTransactionsSec
                 const isCurrentYear = dateMoment.year() === currentYear
                 const dateLabel = (
                     isCurrentYear ? dateMoment.format('D MMMM') : dateMoment.format('D MMMM YYYY')
-                ).toLocaleLowerCase(preferedLanguage)
+                ).toLocaleLowerCase(preferences.preferredLanguage)
 
                 return (
                     <div key={date} className='flex flex-col space-y-2'>
@@ -68,7 +68,7 @@ export function AccountTransactionsSection({ accountId }: AccountTransactionsSec
                     </div>
                 )
             })
-    }, [transactions, preferedLanguage])
+    }, [transactions, preferences.preferredLanguage])
 
     return (
         <div ref={sectionRef} className='flex flex-col space-y-4 w-full'>
