@@ -8,14 +8,17 @@ import { NetWorthEvolutionChart } from '../charts/net-worth-evolution-chart'
 import { useChartRange } from '@/hooks/use-chart-range'
 import { ChartRangeSelect } from '../../fields/chart-range-select'
 import { NetWorthEvolutionReport } from '@poveroh/types'
+import { useUtils } from '@/hooks/use-utils'
 
 export const NetWorthEvolutionWidget = () => {
-    const [isLive] = useState(false)
-    const [data, setData] = useState<NetWorthEvolutionReport | null>(null)
     const t = useTranslations('widget.net-worth-evolution')
 
     const { getNetWorthEvolution } = useReport()
     const { range, getRangeFilter } = useChartRange()
+    const { renderPriceLabel } = useUtils()
+
+    const [isLive] = useState(false)
+    const [data, setData] = useState<NetWorthEvolutionReport | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,9 +29,6 @@ export const NetWorthEvolutionWidget = () => {
 
         fetchData()
     }, [range])
-
-    const formatCurrency = (value: number) =>
-        value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
 
     const comparison = useMemo(() => {
         if (!data?.evolution?.length) return null
@@ -66,7 +66,7 @@ export const NetWorthEvolutionWidget = () => {
                         {comparison && (
                             <div className='flex items-center gap-2 text-sm'>
                                 <span className={comparison.isPositive ? 'text-emerald-500' : 'text-red-500'}>
-                                    {`${comparison.isPositive ? '+' : '-'}${formatCurrency(
+                                    {`${comparison.isPositive ? '+' : '-'}${renderPriceLabel(
                                         Math.abs(comparison.delta)
                                     )} (${comparison.isPositive ? '+' : '-'}${Math.abs(comparison.deltaPct).toFixed(1)}%)`}
                                 </span>

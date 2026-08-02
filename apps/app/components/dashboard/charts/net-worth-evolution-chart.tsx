@@ -4,15 +4,15 @@ import { Line, LineChart, CartesianGrid, XAxis, YAxis, TooltipProps } from 'rech
 import { ChartContainer, ChartTooltip } from '@poveroh/ui/components/chart'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { NetWorthEvolution } from '@poveroh/types'
+import { useUtils } from '@/hooks/use-utils'
 
 type NetWorthEvolutionChartProps = {
     dataPoints: NetWorthEvolution[]
 }
 
-const formatCurrency = (value: number) =>
-    value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
-
 export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartProps) => {
+    const { renderPriceLabel } = useUtils()
+
     const chartConfig = {
         date: {
             label: 'Data',
@@ -64,9 +64,9 @@ export const NetWorthEvolutionChart = ({ dataPoints }: NetWorthEvolutionChartPro
                     <span className={isPositive ? 'text-emerald-500' : 'text-red-500'} aria-hidden='true'>
                         {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
                     </span>
-                    <span className='text-foreground'>{formatCurrency(point.netWorth)}</span>
+                    <span className='text-foreground'>{renderPriceLabel(point.netWorth)}</span>
                     <span className={isPositive ? 'text-emerald-500' : 'text-red-500'}>
-                        {`${deltaSign}${formatCurrency(Math.abs(delta))} (${deltaSign}${Math.abs(deltaPct).toFixed(1)}%)`}
+                        {`${deltaSign}${renderPriceLabel(Math.abs(delta))} (${deltaSign}${Math.abs(deltaPct).toFixed(1)}%)`}
                     </span>
                 </div>
             </div>

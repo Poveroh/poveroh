@@ -3,25 +3,25 @@
 import { Card, CardContent } from '@poveroh/ui/components/card'
 import { kpiData } from '../mock-data'
 import { cn } from '@poveroh/ui/lib/utils'
-
-const formatCurrency = (value: number) =>
-    value.toLocaleString('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+import { useUtils } from '@/hooks/use-utils'
 
 export const KpiRow = () => {
+    const { renderPriceLabel } = useUtils()
+
     const items = [
         {
             label: 'Totale liquidità',
-            value: formatCurrency(kpiData.totalLiquidity),
+            value: renderPriceLabel(kpiData.totalLiquidity),
             delta: '+2.4%'
         },
         {
             label: 'Variazione 30 giorni',
-            value: formatCurrency(kpiData.netChange30d),
+            value: renderPriceLabel(kpiData.netChange30d),
             delta: '+8.1%'
         },
         {
             label: 'Cash-flow mese',
-            value: formatCurrency(kpiData.cashFlowMonth),
+            value: renderPriceLabel(kpiData.cashFlowMonth),
             delta: '+4.6%'
         },
         {
