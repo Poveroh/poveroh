@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from '@poveroh/ui/components/tabs'
 import Box from '@/components/box/box-wrapper'
 import { useTranslations } from 'next-intl'
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { AccountVariation, ChartRange, FinancialAccountBalanceData } from '@poveroh/types'
+import { AccountVariation, ChartRange, FinancialAccountBalanceData, LanguageLocaleMap } from '@poveroh/types'
 import { useUser } from '@/hooks/use-user'
 import { ChartRangeOption } from '@/lib/chart-range'
 import { useUtils } from '@/hooks/use-utils'
@@ -66,7 +66,7 @@ export function AccountBalanceCard({
         return (
             <div className='rounded-xl bg-background px-3 py-2 text-xs shadow-xl'>
                 <div className='mb-2 text-muted-foreground'>
-                    {new Date(label).toLocaleDateString(preferences.preferredLanguage, {
+                    {new Date(label).toLocaleDateString(LanguageLocaleMap[preferences.preferredLanguage], {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric'
@@ -148,7 +148,7 @@ export function AccountBalanceCard({
                                 minTickGap={32}
                                 tickFormatter={value => {
                                     const date = new Date(value)
-                                    return date.toLocaleDateString(preferences.preferredLanguage, {
+                                    return date.toLocaleDateString(LanguageLocaleMap[preferences.preferredLanguage], {
                                         month: 'short',
                                         day: 'numeric'
                                     })

@@ -62,7 +62,7 @@ export const NetWorthEvolutionWidget = () => {
                                 </div>
                             )}
                         </div>
-                        <h2>$ {data ? data.currentNetWorth.toFixed(2) : '0.00'}</h2>
+                        <h2>{data ? renderPriceLabel(data.currentNetWorth) : '0.00'}</h2>
                         {comparison && (
                             <div className='flex items-center gap-2 text-sm'>
                                 <span className={comparison.isPositive ? 'text-emerald-500' : 'text-red-500'}>

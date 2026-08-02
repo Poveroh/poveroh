@@ -15,7 +15,7 @@ import { useDeleteModal } from '@/hooks/use-delete-modal'
 import { useUser } from '@/hooks/use-user'
 
 import { MODAL_IDS } from '@/types/constant'
-import { TransactionData } from '@poveroh/types'
+import { LanguageLocaleMap, TransactionData } from '@poveroh/types'
 
 type AccountTransactionsSectionProps = {
     accountId: string
@@ -50,7 +50,7 @@ export function AccountTransactionsSection({ accountId }: AccountTransactionsSec
                 const isCurrentYear = dateMoment.year() === currentYear
                 const dateLabel = (
                     isCurrentYear ? dateMoment.format('D MMMM') : dateMoment.format('D MMMM YYYY')
-                ).toLocaleLowerCase(preferences.preferredLanguage)
+                ).toLocaleLowerCase(LanguageLocaleMap[preferences.preferredLanguage])
 
                 return (
                     <div key={date} className='flex flex-col space-y-2'>

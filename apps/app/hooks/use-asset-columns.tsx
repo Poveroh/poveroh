@@ -7,7 +7,7 @@ import { ArrowUpDown } from 'lucide-react'
 
 import { Badge } from '@poveroh/ui/components/badge'
 import { Button } from '@poveroh/ui/components/button'
-import type { AssetData, AssetGroupLayout } from '@poveroh/types'
+import { LanguageLocaleMap, type AssetData, type AssetGroupLayout } from '@poveroh/types'
 
 import { AssetAvatar } from '@/components/investments/asset-avatar'
 import { OptionsPopover } from '@/components/navbar/options-popover'
@@ -41,13 +41,13 @@ export const useAssetColumns = ({
     return useCallback(
         (layout: AssetGroupLayout): ColumnDef<AssetData>[] => {
             const money = (value: number) =>
-                value.toLocaleString(preferences.preferredLanguage, {
+                value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
                     style: 'currency',
                     currency: preferences.preferredCurrency
                 })
 
             const decimal = (value: number) =>
-                value.toLocaleString(preferences.preferredLanguage, {
+                value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 })
@@ -176,7 +176,7 @@ export const useAssetColumns = ({
                         </Button>
                     ),
                     cell: ({ row }) =>
-                        `${weightFor(row.original).toLocaleString(preferences.preferredLanguage, { maximumFractionDigits: 2 })}%`
+                        `${weightFor(row.original).toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], { maximumFractionDigits: 2 })}%`
                 }
             ]
 
