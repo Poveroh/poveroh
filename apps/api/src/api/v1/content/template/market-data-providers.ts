@@ -1,8 +1,5 @@
 import type { AssetTypeEnum, MarketDataProvider } from '@poveroh/types'
 
-// Static registry of supported market data providers. Adding a new provider means
-// appending an entry here. The actual fetch/streaming logic will plug in when
-// we wire up price retrieval; for now only the configuration metadata is needed.
 type MarketDataProviderDefinition = Omit<MarketDataProvider, 'configured'> & {
     credentialFields: ReadonlyArray<{ key: string; label: string }>
 }
@@ -52,12 +49,20 @@ export const MARKET_DATA_PROVIDER_REGISTRY: ReadonlyArray<MarketDataProviderDefi
     }
 ] as const
 
-// Returns the provider definition for an id, or undefined if the id is unknown.
+/**
+ * Returns the provider definition for the given provider id, or undefined if not found.
+ * @param providerId The provider id to look up.
+ * @returns The provider definition, or undefined if not found.
+ */
 export function getProviderDefinition(providerId: string): MarketDataProviderDefinition | undefined {
     return MARKET_DATA_PROVIDER_REGISTRY.find(provider => provider.id === providerId)
 }
 
-// Returns true when the given id is a registered provider.
+/**
+ * Checks if the given provider id is known (registered) in the system.
+ * @param providerId The provider id to check.
+ * @returns True if the provider is known, false otherwise.
+ */
 export function isKnownProvider(providerId: string): boolean {
     return getProviderDefinition(providerId) !== undefined
 }
