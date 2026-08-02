@@ -44,17 +44,9 @@ export class MarketDataRepository {
             create: {
                 userId,
                 providerId,
-                ciphertext: payload.ciphertext,
-                iv: payload.iv,
-                authTag: payload.authTag,
-                algo: payload.algo
+                ...payload
             },
-            update: {
-                ciphertext: payload.ciphertext,
-                iv: payload.iv,
-                authTag: payload.authTag,
-                algo: payload.algo
-            }
+            update: payload
         })
     }
 

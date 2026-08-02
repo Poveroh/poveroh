@@ -22,7 +22,7 @@ export class FinancialAccountRepository {
         payload: CreateFinancialAccountRequest & { logoIcon: string }
     ): Promise<Omit<FinancialAccountData, 'balance'>> {
         return (await prisma.financialAccount.create({
-            data: { title: payload.title, type: payload.type, logoIcon: payload.logoIcon, userId, id },
+            data: { ...payload, userId, id },
             select: financialAccountSelect
         })) as unknown as Omit<FinancialAccountData, 'balance'>
     }
