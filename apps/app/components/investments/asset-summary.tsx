@@ -14,7 +14,6 @@ import { DeleteModal } from '@/components/modal/delete-modal'
 import { useAsset } from '@/hooks/use-asset'
 import { useAssetColumns } from '@/hooks/use-asset-columns'
 import { useDeleteModal } from '@/hooks/use-delete-modal'
-import { useFinancialAccount } from '@/hooks/use-account'
 import { useModal } from '@/hooks/use-modal'
 import { MODAL_IDS } from '@/types/constant'
 import BoxItem from '../box/box-item'
@@ -61,7 +60,6 @@ const clusterBySymbol = (list: AssetData[]): AssetData[] => {
 export function AssetSummary({ assets, onSearch }: AssetSummaryProps) {
     const t = useTranslations()
     const { deleteMutation } = useAsset()
-    const { accountQuery } = useFinancialAccount()
     const deleteModal = useDeleteModal<AssetData>()
 
     const ticketModal = useModal<AssetData>(MODAL_IDS.TICKET_SYMBOL)
@@ -80,14 +78,6 @@ export function AssetSummary({ assets, onSearch }: AssetSummaryProps) {
         OTHER: otherAssetModal
     }
 
-    const accountsById = useMemo(() => {
-        const map = new Map<string, string>()
-        for (const account of accountQuery.data?.data ?? []) {
-            map.set(account.id, account.title)
-        }
-        return map
-    }, [accountQuery.data])
-
     const portfolioTotal = useMemo(() => assets.reduce((sum, asset) => sum + (asset.currentValue || 0), 0), [assets])
 
     const groups = useMemo(
@@ -98,9 +88,6 @@ export function AssetSummary({ assets, onSearch }: AssetSummaryProps) {
             })).filter(entry => entry.assets.length > 0),
         [assets]
     )
-
-    const resolveAccount = (financialAccountId?: string | null) =>
-        financialAccountId ? accountsById.get(financialAccountId) : undefined
 
     const isEditable = (asset: AssetData) => Boolean(editModalByType[asset.type])
 
@@ -125,7 +112,7 @@ export function AssetSummary({ assets, onSearch }: AssetSummaryProps) {
         }
     }
 
-    const buildColumns = useAssetColumns({ portfolioTotal, resolveAccount, isEditable, openEdit, openDelete })
+    const buildColumns = useAssetColumns({ portfolioTotal, isEditable, openEdit, openDelete })
 
     return (
         <div className='flex flex-col space-y-8'>

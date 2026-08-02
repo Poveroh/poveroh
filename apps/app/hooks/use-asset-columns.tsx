@@ -12,10 +12,10 @@ import type { AssetData, AssetGroupLayout } from '@poveroh/types'
 import { AssetAvatar } from '@/components/investments/asset-avatar'
 import { OptionsPopover } from '@/components/navbar/options-popover'
 import { useConfig } from '@/hooks/use-config'
+import { useFinancialAccount } from './use-account'
 
 type UseAssetColumnsProps = {
     portfolioTotal: number
-    resolveAccount: (financialAccountId?: string | null) => string | undefined
     isEditable: (asset: AssetData) => boolean
     openEdit: (asset: AssetData) => void
     openDelete: (asset: AssetData) => void
@@ -28,12 +28,12 @@ type UseAssetColumnsProps = {
  */
 export const useAssetColumns = ({
     portfolioTotal,
-    resolveAccount,
     isEditable,
     openEdit,
     openDelete
 }: UseAssetColumnsProps): ((layout: AssetGroupLayout) => ColumnDef<AssetData>[]) => {
     const t = useTranslations()
+    const { accountQuery } = useFinancialAccount()
     const { renderDate, preferedCurrency, preferedLanguage } = useConfig()
 
     return useCallback(
@@ -83,7 +83,6 @@ export const useAssetColumns = ({
                 cell: ({ row, table }) => {
                     const asset = row.original
                     const subtitle = subtitleFor(asset)
-                    const account = resolveAccount(asset.transactions?.[0]?.financialAccountId)
 
                     const rows = table.getRowModel().rows
                     const position = rows.findIndex(current => current.id === row.id)
@@ -103,9 +102,24 @@ export const useAssetColumns = ({
                                 <span className='font-medium'>{asset.title}</span>
                                 {subtitle && <span className='sub text-xs'>{subtitle}</span>}
                             </div>
-                            {account && <Badge variant='secondary'>{account}</Badge>}
                         </div>
                     )
+                }
+            }
+
+            const financialAccountColumn: ColumnDef<AssetData> = {
+                id: 'financialAccount',
+                accessorFn: row => row.title,
+                header: () => <></>,
+                cell: ({ row }) => {
+                    const asset = row.original
+                    const financialAccountId = asset.transactions?.[0]?.financialAccountId
+
+                    if (!financialAccountId) return <></>
+
+                    const account = accountQuery.data?.data.find(current => current.id === financialAccountId)
+
+                    return account && <Badge variant='secondary'>{account.title}</Badge>
                 }
             }
 
@@ -243,11 +257,12 @@ export const useAssetColumns = ({
 
             return [
                 nameColumn,
+                financialAccountColumn,
                 ...(layout === 'marketable' ? marketableColumns : physicalColumns),
                 totalColumn,
                 actionsColumn
             ]
         },
-        [preferedCurrency, preferedLanguage, portfolioTotal]
+        [preferedCurrency, preferedLanguage, portfolioTotal, accountQuery.data]
     )
 }
