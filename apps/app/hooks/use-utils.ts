@@ -30,5 +30,12 @@ export const useUtils = () => {
             .format(actualFormat)
     }
 
-    return { renderItemsLabel, renderPriceLabel, renderDate }
+    function renderDecimalLabel(value: number, minimumFractionDigits = 2, maximumFractionDigits = 2) {
+        return value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
+            minimumFractionDigits,
+            maximumFractionDigits
+        })
+    }
+
+    return { renderItemsLabel, renderPriceLabel, renderDate, renderDecimalLabel }
 }

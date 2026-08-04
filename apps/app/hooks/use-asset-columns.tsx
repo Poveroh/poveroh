@@ -36,22 +36,10 @@ export const useAssetColumns = ({
     const t = useTranslations()
     const { accountQuery } = useFinancialAccount()
     const { preferences } = useUser()
-    const { renderDate } = useUtils()
+    const { renderDate, renderPriceLabel, renderDecimalLabel } = useUtils()
 
     return useCallback(
         (layout: AssetGroupLayout): ColumnDef<AssetData>[] => {
-            const money = (value: number) =>
-                value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
-                    style: 'currency',
-                    currency: preferences.preferredCurrency
-                })
-
-            const decimal = (value: number) =>
-                value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                })
-
             const subtitleFor = (asset: AssetData): string => {
                 if (asset.marketable) return asset.marketable.symbol ?? asset.marketable.isin ?? ''
                 if (asset.vehicle) return asset.vehicle.plateNumber
@@ -160,7 +148,7 @@ export const useAssetColumns = ({
                             <ArrowUpDown />
                         </Button>
                     ),
-                    cell: ({ row }) => decimal(priceFor(row.original))
+                    cell: ({ row }) => renderDecimalLabel(priceFor(row.original))
                 },
                 {
                     id: 'weight',
@@ -175,8 +163,7 @@ export const useAssetColumns = ({
                             <ArrowUpDown />
                         </Button>
                     ),
-                    cell: ({ row }) =>
-                        `${weightFor(row.original).toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], { maximumFractionDigits: 2 })}%`
+                    cell: ({ row }) => `${renderDecimalLabel(weightFor(row.original), 0, 2)}%`
                 }
             ]
 
@@ -231,7 +218,9 @@ export const useAssetColumns = ({
                         </Button>
                     </div>
                 ),
-                cell: ({ row }) => <div className='text-right font-medium'>{money(row.original.currentValue || 0)}</div>
+                cell: ({ row }) => (
+                    <div className='text-right font-medium'>{renderPriceLabel(row.original.currentValue || 0)}</div>
+                )
             }
 
             const actionsColumn: ColumnDef<AssetData> = {
