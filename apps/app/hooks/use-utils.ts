@@ -1,4 +1,4 @@
-import { DateFormatEnum, Item } from '@poveroh/types'
+import { DateFormatEnum, Item, LanguageLocaleMap } from '@poveroh/types'
 import { useTranslations } from 'next-intl'
 import { useUser } from './use-user'
 import moment from 'moment'
@@ -14,18 +14,28 @@ export const useUtils = () => {
         }))
     }
 
-    const renderPriceLabel = (price: number) => {
-        return new Intl.NumberFormat(preferences.preferredLanguage || 'it-IT', {
+    const renderPriceLabel = (price: number, overrideCurrency?: string) => {
+        return new Intl.NumberFormat(LanguageLocaleMap[preferences.preferredLanguage], {
             style: 'currency',
-            currency: preferences.preferredCurrency || 'EUR'
+            currency: overrideCurrency || preferences.preferredCurrency
         }).format(price)
     }
 
     function renderDate(date: string | Date, format?: DateFormatEnum) {
         const actualFormat = format || preferences.dateFormat || 'DD/MM/YYYY'
 
-        return moment(date).tz(preferences.timezone).locale(preferences.preferredLanguage).format(actualFormat)
+        return moment(date)
+            .tz(preferences.timezone)
+            .locale(LanguageLocaleMap[preferences.preferredLanguage])
+            .format(actualFormat)
     }
 
-    return { renderItemsLabel, renderPriceLabel, renderDate }
+    function renderDecimalLabel(value: number, minimumFractionDigits = 2, maximumFractionDigits = 2) {
+        return value.toLocaleString(LanguageLocaleMap[preferences.preferredLanguage], {
+            minimumFractionDigits,
+            maximumFractionDigits
+        })
+    }
+
+    return { renderItemsLabel, renderPriceLabel, renderDate, renderDecimalLabel }
 }

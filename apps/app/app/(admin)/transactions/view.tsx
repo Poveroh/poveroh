@@ -32,7 +32,7 @@ import { useUser } from '@/hooks/use-user'
 
 import { MODAL_IDS } from '@/types/constant'
 import { ViewModeType } from '@/types'
-import { TransactionData, TransactionFilters } from '@poveroh/types'
+import { LanguageLocaleMap, TransactionData, TransactionFilters } from '@poveroh/types'
 import moment from 'moment-timezone'
 
 export default function TransactionsView() {
@@ -100,7 +100,7 @@ export default function TransactionsView() {
                 const isCurrentYear = dateMoment.year() === currentYear
                 const dateLabel = (
                     isCurrentYear ? dateMoment.format('D MMMM') : dateMoment.format('D MMMM YYYY')
-                ).toLocaleLowerCase(preferences.preferredLanguage)
+                ).toLocaleLowerCase(LanguageLocaleMap[preferences.preferredLanguage])
 
                 return (
                     <div key={date} className='flex flex-col space-y-2'>
