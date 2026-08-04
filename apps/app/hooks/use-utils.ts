@@ -14,10 +14,10 @@ export const useUtils = () => {
         }))
     }
 
-    const renderPriceLabel = (price: number) => {
+    const renderPriceLabel = (price: number, overrideCurrency?: string) => {
         return new Intl.NumberFormat(LanguageLocaleMap[preferences.preferredLanguage], {
             style: 'currency',
-            currency: preferences.preferredCurrency
+            currency: overrideCurrency || preferences.preferredCurrency
         }).format(price)
     }
 
