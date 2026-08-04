@@ -41,6 +41,11 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                 shouldDirty: true
             })
             form.setValue('unitPrice', quote.price, { shouldValidate: true, shouldDirty: true })
+            form.setValue('providerId', instrument.providerId, { shouldValidate: true, shouldDirty: true })
+            form.setValue('providerInstrumentId', instrument.providerInstrumentId, {
+                shouldValidate: true,
+                shouldDirty: true
+            })
         }
 
         useImperativeHandle(ref, () => ({

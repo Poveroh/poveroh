@@ -74,6 +74,8 @@ export const MARKET_DATA_SEARCH_MIN_QUERY_LENGTH = 2
 export const MARKET_DATA_SEARCH_DEFAULT_LIMIT = 20
 export const MARKET_DATA_REQUEST_TIMEOUT_MS = 8000
 
+export const MARKET_INSTRUMENT_CACHE_TTL_SECONDS = 60 * 60 * 24
+
 // Yahoo and Massive talk through their official SDKs; only Finnhub uses raw HTTP, plus
 // the Massive REST base passed to its client.
 export const MARKET_DATA_ENDPOINTS = {

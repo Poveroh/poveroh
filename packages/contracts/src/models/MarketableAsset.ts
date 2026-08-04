@@ -12,6 +12,8 @@ export type MarketableAsset = {
     assetClass: MarketableAssetClassEnum
     sector: string | null
     region: string | null
+    providerId: string | null
+    providerInstrumentId: string | null
     lastPriceSync: string | null
     createdAt: string
     updatedAt: string

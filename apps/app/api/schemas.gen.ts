@@ -957,6 +957,14 @@ export const MarketableAssetSchema = {
             type: 'string',
             nullable: true
         },
+        providerId: {
+            type: 'string',
+            nullable: true
+        },
+        providerInstrumentId: {
+            type: 'string',
+            nullable: true
+        },
         lastPriceSync: {
             type: 'string',
             nullable: true
@@ -981,6 +989,8 @@ export const MarketableAssetSchema = {
         'assetClass',
         'sector',
         'region',
+        'providerId',
+        'providerInstrumentId',
         'lastPriceSync',
         'createdAt',
         'updatedAt',
@@ -4782,12 +4792,30 @@ export const MarketableAssetDataSchema = {
             type: 'string',
             nullable: true
         },
+        providerId: {
+            type: 'string',
+            nullable: true
+        },
+        providerInstrumentId: {
+            type: 'string',
+            nullable: true
+        },
         lastPriceSync: {
             type: 'string',
             nullable: true
         }
     },
-    required: ['symbol', 'isin', 'exchange', 'assetClass', 'sector', 'region', 'lastPriceSync']
+    required: [
+        'symbol',
+        'isin',
+        'exchange',
+        'assetClass',
+        'sector',
+        'region',
+        'providerId',
+        'providerInstrumentId',
+        'lastPriceSync'
+    ]
 } as const
 
 export const MarketableAssetFormSchema = {
@@ -4803,6 +4831,14 @@ export const MarketableAssetFormSchema = {
             type: 'string'
         },
         symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        providerInstrumentId: {
             type: 'string',
             minLength: 1
         },
@@ -4846,6 +4882,14 @@ export const CreateMarketableAssetRequestSchema = {
             type: 'string',
             minLength: 1
         },
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        providerInstrumentId: {
+            type: 'string',
+            minLength: 1
+        },
         date: {
             type: 'string'
         },
@@ -4867,7 +4911,18 @@ export const CreateMarketableAssetRequestSchema = {
             $ref: '#/components/schemas/CurrencyEnum'
         }
     },
-    required: ['transactionType', 'financialAccountId', 'symbol', 'date', 'quantity', 'unitPrice', 'fees', 'currency']
+    required: [
+        'transactionType',
+        'financialAccountId',
+        'symbol',
+        'providerId',
+        'providerInstrumentId',
+        'date',
+        'quantity',
+        'unitPrice',
+        'fees',
+        'currency'
+    ]
 } as const
 
 export const UpdateMarketableAssetRequestSchema = {
@@ -4883,6 +4938,14 @@ export const UpdateMarketableAssetRequestSchema = {
             type: 'string'
         },
         symbol: {
+            type: 'string',
+            minLength: 1
+        },
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        providerInstrumentId: {
             type: 'string',
             minLength: 1
         },

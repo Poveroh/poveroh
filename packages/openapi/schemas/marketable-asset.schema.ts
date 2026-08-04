@@ -14,6 +14,8 @@ export const MarketableAssetSchema = z
         assetClass: MarketableAssetClassEnum.nullable(),
         sector: z.string().nullable(),
         region: z.string().nullable(),
+        providerId: z.string().nullable(),
+        providerInstrumentId: z.string().nullable(),
         lastPriceSync: z.string().nullable(),
         createdAt: z.string(),
         updatedAt: z.string(),
@@ -44,6 +46,8 @@ export const MarketableAssetFormSchema = z
         assetClass: MarketableAssetClassEnum.nullable().optional(),
         financialAccountId: z.string(),
         symbol: z.string().trim().min(1),
+        providerId: z.string().trim().min(1).optional(),
+        providerInstrumentId: z.string().trim().min(1).optional(),
         date: z.string(),
         quantity: z.number().positive(),
         unitPrice: z.number().positive(),
@@ -53,9 +57,14 @@ export const MarketableAssetFormSchema = z
     .openapi('MarketableAssetForm')
 
 /**
- * Request schema for creating a marketable asset and its opening transaction
+ * Request schema for creating a marketable asset and its opening transaction.
+ * The instrument picked from search results must be identified by its provider so the backend
+ * can resolve display metadata (name, exchange) from cache instead of trusting client-supplied text.
  */
-export const CreateMarketableAssetRequestSchema = MarketableAssetFormSchema.openapi('CreateMarketableAssetRequest')
+export const CreateMarketableAssetRequestSchema = MarketableAssetFormSchema.required({
+    providerId: true,
+    providerInstrumentId: true
+}).openapi('CreateMarketableAssetRequest')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

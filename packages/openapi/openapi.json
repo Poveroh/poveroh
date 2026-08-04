@@ -959,6 +959,14 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "providerId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "providerInstrumentId": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "lastPriceSync": {
                         "type": "string",
                         "nullable": true
@@ -983,6 +991,8 @@
                     "assetClass",
                     "sector",
                     "region",
+                    "providerId",
+                    "providerInstrumentId",
                     "lastPriceSync",
                     "createdAt",
                     "updatedAt",
@@ -4658,12 +4668,30 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "providerId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "providerInstrumentId": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "lastPriceSync": {
                         "type": "string",
                         "nullable": true
                     }
                 },
-                "required": ["symbol", "isin", "exchange", "assetClass", "sector", "region", "lastPriceSync"]
+                "required": [
+                    "symbol",
+                    "isin",
+                    "exchange",
+                    "assetClass",
+                    "sector",
+                    "region",
+                    "providerId",
+                    "providerInstrumentId",
+                    "lastPriceSync"
+                ]
             },
             "MarketableAssetForm": {
                 "type": "object",
@@ -4678,6 +4706,14 @@
                         "type": "string"
                     },
                     "symbol": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "providerInstrumentId": {
                         "type": "string",
                         "minLength": 1
                     },
@@ -4729,6 +4765,14 @@
                         "type": "string",
                         "minLength": 1
                     },
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "providerInstrumentId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
                     "date": {
                         "type": "string"
                     },
@@ -4754,6 +4798,8 @@
                     "transactionType",
                     "financialAccountId",
                     "symbol",
+                    "providerId",
+                    "providerInstrumentId",
                     "date",
                     "quantity",
                     "unitPrice",
@@ -4774,6 +4820,14 @@
                         "type": "string"
                     },
                     "symbol": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "providerInstrumentId": {
                         "type": "string",
                         "minLength": 1
                     },

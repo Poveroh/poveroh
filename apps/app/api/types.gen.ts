@@ -328,6 +328,8 @@ export type MarketableAsset = {
     assetClass: MarketableAssetClassEnum
     sector: string | null
     region: string | null
+    providerId: string | null
+    providerInstrumentId: string | null
     lastPriceSync: string | null
     createdAt: string
     updatedAt: string
@@ -2000,6 +2002,8 @@ export type MarketableAssetData = {
     assetClass: MarketableAssetClassEnum
     sector: string | null
     region: string | null
+    providerId: string | null
+    providerInstrumentId: string | null
     lastPriceSync: string | null
 }
 
@@ -2008,6 +2012,8 @@ export type MarketableAssetForm = {
     assetClass?: MarketableAssetClassEnum
     financialAccountId: string
     symbol: string
+    providerId?: string
+    providerInstrumentId?: string
     date: string
     quantity: number
     unitPrice: number
@@ -2020,6 +2026,8 @@ export type CreateMarketableAssetRequest = {
     assetClass?: MarketableAssetClassEnum
     financialAccountId: string
     symbol: string
+    providerId: string
+    providerInstrumentId: string
     date: string
     quantity: number
     unitPrice: number
@@ -2032,6 +2040,8 @@ export type UpdateMarketableAssetRequest = {
     assetClass?: MarketableAssetClassEnum
     financialAccountId?: string
     symbol?: string
+    providerId?: string
+    providerInstrumentId?: string
     date?: string
     quantity?: number
     unitPrice?: number

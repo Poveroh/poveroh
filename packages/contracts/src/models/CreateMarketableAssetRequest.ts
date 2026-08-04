@@ -10,6 +10,8 @@ export type CreateMarketableAssetRequest = {
     assetClass?: MarketableAssetClassEnum
     financialAccountId: string
     symbol: string
+    providerId: string
+    providerInstrumentId: string
     date: string
     quantity: number
     unitPrice: number

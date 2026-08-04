@@ -8,11 +8,13 @@ import { AssetRepository } from '../asset/asset.repository'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { eventBus } from '@/v1/worker/events/event-bus'
 import { MarketableAssetRepository } from './marketable-asset.repository'
+import { MarketDataService } from '@/v1/modules/market-data/data/market-data.service'
 import { NotFoundError } from '@/utils'
 
 export class MarketableAssetService extends BaseService {
     private readonly marketableAssetRepository = new MarketableAssetRepository()
     private readonly assetRepository = new AssetRepository()
+    private readonly marketDataService = new MarketDataService()
 
     constructor() {
         super('marketable-asset')
@@ -26,8 +28,13 @@ export class MarketableAssetService extends BaseService {
     async createMarketableAsset(payload: CreateMarketableAssetRequest): Promise<AssetData> {
         const userId = this.context.currentUser.id
 
+        const instrument = await this.marketDataService.resolveInstrument(
+            payload.providerId,
+            payload.providerInstrumentId
+        )
+
         const assetId = crypto.randomUUID()
-        await this.marketableAssetRepository.create(userId, assetId, payload)
+        await this.marketableAssetRepository.create(userId, assetId, payload, instrument)
 
         const asset = await this.assetRepository.findById(userId, assetId)
         if (!asset) {

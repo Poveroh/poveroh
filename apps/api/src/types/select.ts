@@ -144,6 +144,8 @@ export const marketableSelect = {
     assetClass: true,
     sector: true,
     region: true,
+    providerId: true,
+    providerInstrumentId: true,
     lastPriceSync: true
 } satisfies Prisma.MarketableAssetSelect
 

@@ -8,7 +8,7 @@ import type {
     MarketQuote,
     SearchMarketInstrumentsQuery
 } from '@poveroh/types'
-import { DEFAULT_MARKET_DATA_PROVIDER, MarketDataError } from '@poveroh/types'
+import { DEFAULT_MARKET_DATA_PROVIDER, MARKET_INSTRUMENT_CACHE_TTL_SECONDS, MarketDataError } from '@poveroh/types'
 import { createMarketDataClient } from '@poveroh/market-data'
 
 import { BadRequestError, InternalServerError } from '@/utils'
@@ -59,9 +59,64 @@ export class MarketDataService extends BaseService {
             client.searchInstruments({ query: params.q, assetType: params.assetType, limit: params.limit })
         )
 
+        await this.cacheInstruments(instruments)
+
         if (!params.assetType) return instruments
 
         return instruments.filter(instrument => params.assetType?.some(type => instrument.assetType.includes(type)))
+    }
+
+    /**
+     * Resolves full instrument metadata (display name, exchange, currency) for a provider + instrument id pair,
+     * reusing the cache populated by a prior search so creating an asset never pays for a redundant provider call.
+     * Falls back to a live, narrowly-scoped provider lookup only on a cache miss (e.g. expired TTL, cold cache).
+     * @param providerId The provider that owns the instrument id.
+     * @param providerInstrumentId The provider-specific instrument identifier to resolve.
+     * @returns A promise that resolves to the matching instrument, or null when it cannot be resolved.
+     */
+    async resolveInstrument(providerId: string, providerInstrumentId: string): Promise<MarketInstrument | null> {
+        const cached = await this.redis.getJson<MarketInstrument>(
+            this.buildInstrumentCacheKey(providerId, providerInstrumentId)
+        )
+        if (cached) return cached
+
+        const client = await this.buildClient(providerId)
+        const instruments = await this.runProviderCall(providerId, () =>
+            client.searchInstruments({ query: providerInstrumentId, limit: 5 })
+        )
+
+        const match = instruments.find(instrument => instrument.providerInstrumentId === providerInstrumentId) ?? null
+        if (match) await this.cacheInstruments([match])
+
+        return match
+    }
+
+    /**
+     * Caches each instrument by provider + instrument id so a later create-asset request (or a
+     * repeated search for the same ticker, possibly by a different user) can be served from Redis
+     * instead of paying for another live provider call.
+     * @param instruments The instruments to cache.
+     */
+    private async cacheInstruments(instruments: MarketInstrument[]): Promise<void> {
+        await Promise.all(
+            instruments.map(instrument =>
+                this.redis.setJson(
+                    this.buildInstrumentCacheKey(instrument.providerId, instrument.providerInstrumentId),
+                    instrument,
+                    MARKET_INSTRUMENT_CACHE_TTL_SECONDS
+                )
+            )
+        )
+    }
+
+    /**
+     * Builds the Redis key under which a single resolved instrument is cached.
+     * @param providerId The provider that owns the instrument id.
+     * @param providerInstrumentId The provider-specific instrument identifier.
+     * @returns The Redis key for this provider + instrument id pair.
+     */
+    private buildInstrumentCacheKey(providerId: string, providerInstrumentId: string): string {
+        return `market-data:instrument:${providerId}:${providerInstrumentId}`
     }
 
     /**

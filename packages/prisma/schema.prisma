@@ -239,23 +239,26 @@ model Asset {
 }
 
 model MarketableAsset {
-  id            String               @id @default(uuid())
-  assetId       String               @unique
-  symbol        String
-  isin          String?
-  exchange      String?
-  assetClass    MarketableAssetClass
-  sector        String?
-  region        String?
-  lastPriceSync DateTime?
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime             @updatedAt
-  deletedAt     DateTime?            @db.Timestamptz
+  id                   String               @id @default(uuid())
+  assetId              String               @unique
+  symbol               String
+  isin                 String?
+  exchange             String?
+  assetClass           MarketableAssetClass
+  sector               String?
+  region               String?
+  providerId           String?
+  providerInstrumentId String?
+  lastPriceSync        DateTime?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  deletedAt            DateTime?            @db.Timestamptz
 
   asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
   @@index([symbol])
   @@index([isin])
+  @@index([providerId, providerInstrumentId])
 }
 
 model RealEstateAsset {

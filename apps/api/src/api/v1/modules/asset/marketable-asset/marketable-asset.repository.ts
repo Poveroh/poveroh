@@ -3,6 +3,7 @@ import type {
     AssetTypeEnum,
     CreateMarketableAssetRequest,
     MarketableAssetData,
+    MarketInstrument,
     UpdateMarketableAssetRequest
 } from '@poveroh/types'
 import { Currency, type MarketableAssetClass } from '@prisma/client'
@@ -14,9 +15,15 @@ export class MarketableAssetRepository {
      * @param userId The ID of the user who owns the new asset.
      * @param assetId The unique identifier for the new parent asset.
      * @param payload The data required to create the marketable asset and its opening transaction.
+     * @param instrument The resolved instrument metadata for the picked symbol, or null when it could not be resolved.
      * @returns A promise that resolves to the parent asset id, used by the service to fetch a hydrated AssetData.
      */
-    async create(userId: string, assetId: string, payload: CreateMarketableAssetRequest): Promise<string> {
+    async create(
+        userId: string,
+        assetId: string,
+        payload: CreateMarketableAssetRequest,
+        instrument: MarketInstrument | null
+    ): Promise<string> {
         const totalAmount = payload.quantity * payload.unitPrice
         const date = new Date(payload.date)
 
@@ -25,7 +32,7 @@ export class MarketableAssetRepository {
                 data: {
                     id: assetId,
                     userId,
-                    title: payload.symbol,
+                    title: instrument?.displayName ?? payload.symbol,
                     type: payload.assetClass as AssetTypeEnum,
                     currency: payload.currency,
                     currentValue: totalAmount,
@@ -39,7 +46,10 @@ export class MarketableAssetRepository {
                 data: {
                     assetId,
                     symbol: payload.symbol,
-                    assetClass: payload.assetClass as MarketableAssetClass
+                    assetClass: payload.assetClass as MarketableAssetClass,
+                    exchange: instrument?.exchange ?? null,
+                    providerId: payload.providerId,
+                    providerInstrumentId: payload.providerInstrumentId
                 }
             })
 
