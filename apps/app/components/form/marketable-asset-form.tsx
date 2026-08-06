@@ -19,10 +19,12 @@ import type {
     MarketableAssetForm as MarketableAssetFormValues,
     MarketInstrument
 } from '@poveroh/types'
+import { useUtils } from '@/hooks/use-utils'
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
         const t = useTranslations()
+        const { renderPriceLabel } = useUtils()
         const { ASSET_TYPE_CATALOG } = useAsset()
         const { fetchQuote } = useMarketQuote()
         const { form, currency, quantity, unitPrice, fees, total, defaultValues, onSubmit } =
@@ -60,16 +62,16 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                 <Box>
                     <SummaryRow
                         label={t('investments.assets.form.summary.unitPrice')}
-                        value={`${currency} ${unitPrice.toFixed(2)}`}
+                        value={`${currency} ${renderPriceLabel(unitPrice)}`}
                     />
                     <SummaryRow label={t('investments.assets.form.summary.quantity')} value={quantity.toString()} />
                     <SummaryRow
                         label={t('investments.assets.form.summary.fees')}
-                        value={`${currency} ${fees.toFixed(2)}`}
+                        value={`${currency} ${renderPriceLabel(fees)}`}
                     />
                     <SummaryRow
                         label={t('investments.assets.form.summary.total')}
-                        value={`${currency} ${total.toFixed(2)}`}
+                        value={`${currency} ${renderPriceLabel(total)}`}
                         strong
                     />
                 </Box>
