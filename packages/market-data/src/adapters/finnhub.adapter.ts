@@ -2,6 +2,7 @@ import type {
     GetHistoricalQuotesParams,
     GetQuotesParams,
     HistoricalQuote,
+    InstrumentProfile,
     MarketInstrument,
     MarketQuote,
     SearchInstrumentsParams
@@ -9,7 +10,12 @@ import type {
 import { MarketDataError, MARKET_DATA_ENDPOINTS, MARKET_DATA_SEARCH_DEFAULT_LIMIT } from '@poveroh/types'
 import { BaseHttpAdapter } from './base.adapter'
 import { mapAssetType } from '../utils/mapping'
-import type { FinnhubSearchResult, FinnhubSearchResponse, FinnhubQuoteResponse } from '../types/finnhub.types'
+import type {
+    FinnhubSearchResult,
+    FinnhubSearchResponse,
+    FinnhubQuoteResponse,
+    FinnhubProfileResponse
+} from '../types/finnhub.types'
 
 const BASE_URL = MARKET_DATA_ENDPOINTS.finnhub.base
 
@@ -93,6 +99,27 @@ export class FinnhubAdapter extends BaseHttpAdapter {
             displayName: null,
             exchange: null,
             market: null
+        }
+    }
+
+    /**
+     * Resolves best-effort company metadata (industry, country) via Finnhub's company-profile endpoint.
+     * Finnhub does not expose an ISIN through this endpoint.
+     * @param symbol The symbol to resolve a profile for.
+     * @returns The normalized profile, or null when Finnhub has no profile for this symbol.
+     */
+    async getInstrumentProfile(symbol: string): Promise<InstrumentProfile | null> {
+        const url = new URL(`${BASE_URL}/stock/profile2`)
+        url.searchParams.set('symbol', symbol)
+        url.searchParams.set('token', this.apiKey)
+
+        const data = await this.fetchJson<FinnhubProfileResponse>(url.toString())
+        if (!data.country && !data.finnhubIndustry) return null
+
+        return {
+            isin: null,
+            sector: data.finnhubIndustry ?? null,
+            region: data.country ?? null
         }
     }
 

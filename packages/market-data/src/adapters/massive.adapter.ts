@@ -2,6 +2,7 @@ import type {
     GetHistoricalQuotesParams,
     GetQuotesParams,
     HistoricalQuote,
+    InstrumentProfile,
     MarketDataAdapter,
     MarketInstrument,
     MarketQuote,
@@ -111,6 +112,30 @@ export class MassiveAdapter implements MarketDataAdapter {
                 displayName: null,
                 exchange: null,
                 market: null
+            }
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
+        }
+    }
+
+    /**
+     * Resolves best-effort company metadata (sector, locale) via Massive's ticker-details endpoint.
+     * Massive does not expose an ISIN through this endpoint (only through separate, differently-tiered
+     * reference-data endpoints), so it is left null here rather than risking an unbudgeted call.
+     * @param symbol The ticker to resolve a profile for.
+     * @returns The normalized profile, or null when Massive has no details for this ticker.
+     */
+    async getInstrumentProfile(symbol: string): Promise<InstrumentProfile | null> {
+        try {
+            const client = await this.getClient()
+            const response = await client.getTicker({ ticker: symbol })
+            const result = response.results
+            if (!result) return null
+
+            return {
+                isin: null,
+                sector: result.sic_description ?? null,
+                region: result.locale ?? null
             }
         } catch (error) {
             throw toMarketDataError(this.providerId, error)

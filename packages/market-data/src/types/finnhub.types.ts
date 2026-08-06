@@ -15,3 +15,8 @@ export type FinnhubQuoteResponse = {
     dp?: number // change percent
     t?: number // unix timestamp (seconds)
 }
+
+export type FinnhubProfileResponse = {
+    country?: string
+    finnhubIndustry?: string
+}

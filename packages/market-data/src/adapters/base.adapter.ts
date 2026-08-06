@@ -2,6 +2,7 @@ import type {
     GetHistoricalQuotesParams,
     GetQuotesParams,
     HistoricalQuote,
+    InstrumentProfile,
     MarketDataAdapter,
     MarketInstrument,
     MarketQuote,
@@ -21,6 +22,7 @@ export abstract class BaseHttpAdapter implements MarketDataAdapter {
     abstract searchInstruments(params: SearchInstrumentsParams): Promise<MarketInstrument[]>
     abstract getQuotes(params: GetQuotesParams): Promise<MarketQuote[]>
     abstract getHistoricalQuotes(params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]>
+    abstract getInstrumentProfile(symbol: string): Promise<InstrumentProfile | null>
 
     /**
      * Performs a GET request and returns the parsed JSON body, wrapping any transport,

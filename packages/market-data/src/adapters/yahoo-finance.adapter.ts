@@ -2,6 +2,7 @@ import type {
     GetHistoricalQuotesParams,
     GetQuotesParams,
     HistoricalQuote,
+    InstrumentProfile,
     MarketDataAdapter,
     MarketInstrument,
     MarketQuote,
@@ -87,6 +88,28 @@ export class YahooFinanceAdapter implements MarketDataAdapter {
                 displayName: quote.longName || quote.shortName || null,
                 exchange: quote.fullExchangeName || quote.exchange || null,
                 market: quote.exchange || null
+            }
+        } catch (error) {
+            throw toMarketDataError(this.providerId, error)
+        }
+    }
+
+    /**
+     * Resolves best-effort company metadata (sector, country) via Yahoo's assetProfile module.
+     * Yahoo does not expose an ISIN through this endpoint.
+     * @param symbol The symbol to resolve a profile for.
+     * @returns The normalized profile, or null when Yahoo has no profile for this symbol.
+     */
+    async getInstrumentProfile(symbol: string): Promise<InstrumentProfile | null> {
+        try {
+            const summary = await this.client.quoteSummary(symbol, { modules: ['assetProfile'] })
+            const profile = summary.assetProfile
+            if (!profile) return null
+
+            return {
+                isin: null,
+                sector: profile.sector ?? null,
+                region: profile.country ?? null
             }
         } catch (error) {
             throw toMarketDataError(this.providerId, error)

@@ -3,6 +3,7 @@ import type {
     GetHistoricalQuotesParams,
     GetMarketQuotesQuery,
     HistoricalQuote,
+    InstrumentProfile,
     MarketDataProvider,
     MarketInstrument,
     MarketQuote,
@@ -10,6 +11,7 @@ import type {
 } from '@poveroh/types'
 import { DEFAULT_MARKET_DATA_PROVIDER, MARKET_INSTRUMENT_CACHE_TTL_SECONDS, MarketDataError } from '@poveroh/types'
 import { createMarketDataClient } from '@poveroh/market-data'
+import { logger } from '@poveroh/logger/server'
 
 import { BadRequestError, InternalServerError } from '@/utils'
 import { BaseService } from '@/v1/modules/base/base.service'
@@ -89,6 +91,23 @@ export class MarketDataService extends BaseService {
         if (match) await this.cacheInstruments([match])
 
         return match
+    }
+
+    /**
+     * Resolves best-effort company metadata (sector, region, ISIN where available) for a symbol.
+     * Swallows provider failures so a metadata-enrichment hiccup never blocks creating the asset.
+     * @param providerId The provider to query.
+     * @param symbol The instrument symbol to resolve a profile for.
+     * @returns A promise that resolves to the profile, or null when unavailable or on failure.
+     */
+    async getInstrumentProfile(providerId: string, symbol: string): Promise<InstrumentProfile | null> {
+        try {
+            const client = await this.buildClient(providerId)
+            return await client.getInstrumentProfile(symbol)
+        } catch (error) {
+            logger.warn('Failed to resolve instrument profile', { providerId, symbol, error })
+            return null
+        }
     }
 
     /**

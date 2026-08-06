@@ -28,13 +28,13 @@ export class MarketableAssetService extends BaseService {
     async createMarketableAsset(payload: CreateMarketableAssetRequest): Promise<AssetData> {
         const userId = this.context.currentUser.id
 
-        const instrument = await this.marketDataService.resolveInstrument(
-            payload.providerId,
-            payload.providerInstrumentId
-        )
+        const [instrument, profile] = await Promise.all([
+            this.marketDataService.resolveInstrument(payload.providerId, payload.providerInstrumentId),
+            this.marketDataService.getInstrumentProfile(payload.providerId, payload.symbol)
+        ])
 
         const assetId = crypto.randomUUID()
-        await this.marketableAssetRepository.create(userId, assetId, payload, instrument)
+        await this.marketableAssetRepository.create(userId, assetId, payload, instrument, profile)
 
         const asset = await this.assetRepository.findById(userId, assetId)
         if (!asset) {

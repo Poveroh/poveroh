@@ -44,6 +44,16 @@ export type MarketDataCredentials = {
 }
 
 /**
+ * Best-effort company/instrument metadata resolved for a symbol beyond what a search result
+ * carries. Not every provider exposes every field; unavailable fields resolve to null.
+ */
+export type InstrumentProfile = {
+    isin: string | null
+    sector: string | null
+    region: string | null
+}
+
+/**
  * Common interface every provider adapter implements. The market-data factory
  * returns one of these, so callers never depend on a concrete provider.
  */
@@ -52,6 +62,7 @@ export interface MarketDataAdapter {
     searchInstruments(params: SearchInstrumentsParams): Promise<MarketInstrument[]>
     getQuotes(params: GetQuotesParams): Promise<MarketQuote[]>
     getHistoricalQuotes(params: GetHistoricalQuotesParams): Promise<HistoricalQuote[]>
+    getInstrumentProfile(symbol: string): Promise<InstrumentProfile | null>
 }
 
 /**

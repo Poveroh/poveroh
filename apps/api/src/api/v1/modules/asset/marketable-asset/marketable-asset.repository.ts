@@ -2,6 +2,7 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type {
     AssetTypeEnum,
     CreateMarketableAssetRequest,
+    InstrumentProfile,
     MarketableAssetData,
     MarketInstrument,
     UpdateMarketableAssetRequest
@@ -16,13 +17,15 @@ export class MarketableAssetRepository {
      * @param assetId The unique identifier for the new parent asset.
      * @param payload The data required to create the marketable asset and its opening transaction.
      * @param instrument The resolved instrument metadata for the picked symbol, or null when it could not be resolved.
+     * @param profile Best-effort company metadata (sector, region, ISIN) for the picked symbol, or null when unavailable.
      * @returns A promise that resolves to the parent asset id, used by the service to fetch a hydrated AssetData.
      */
     async create(
         userId: string,
         assetId: string,
         payload: CreateMarketableAssetRequest,
-        instrument: MarketInstrument | null
+        instrument: MarketInstrument | null,
+        profile: InstrumentProfile | null
     ): Promise<string> {
         const totalAmount = payload.quantity * payload.unitPrice
         const date = new Date(payload.date)
@@ -49,7 +52,10 @@ export class MarketableAssetRepository {
                     assetClass: payload.assetClass as MarketableAssetClass,
                     exchange: instrument?.exchange ?? null,
                     providerId: payload.providerId,
-                    providerInstrumentId: payload.providerInstrumentId
+                    providerInstrumentId: payload.providerInstrumentId,
+                    isin: profile?.isin ?? null,
+                    sector: profile?.sector ?? null,
+                    region: profile?.region ?? null
                 }
             })
 
