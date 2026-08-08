@@ -1,4 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type {
     Amount,
     ImportData,
@@ -10,7 +11,7 @@ import type {
 import { buildWhere } from '@/helpers/filter.helper'
 import { toBoolean } from '@poveroh/utils'
 
-type Db = Prisma.TransactionClient | typeof prisma
+type Db = PrismaTransactionClient | typeof prisma
 
 const importInclude = {
     files: true,

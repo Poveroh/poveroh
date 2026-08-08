@@ -1,8 +1,9 @@
 import prisma, { Prisma } from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type { TransactionData, TransactionFilters, TransactionStatusEnum } from '@poveroh/types'
 import { buildWhere } from '@/helpers/filter.helper'
 
-type Db = Prisma.TransactionClient | typeof prisma
+type Db = PrismaTransactionClient | typeof prisma
 
 const transactionInclude = {
     amounts: true,

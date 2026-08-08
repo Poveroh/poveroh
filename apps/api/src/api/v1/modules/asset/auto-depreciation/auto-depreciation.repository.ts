@@ -1,4 +1,5 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type { AutoDepreciationData, AutoDepreciationInput } from '@poveroh/types'
 import { CyclePeriod, DepreciationBase, DepreciationValueType } from '@prisma/client'
 import { autoDepreciationSelect } from '@/types/select'
@@ -12,7 +13,7 @@ export class AutoDepreciationRepository {
      * @param startDate The date the depreciation schedule starts from.
      */
     async create(
-        client: Prisma.TransactionClient,
+        client: PrismaTransactionClient,
         assetId: string,
         input: AutoDepreciationInput,
         startDate: Date
@@ -36,7 +37,7 @@ export class AutoDepreciationRepository {
      * @param assetId The unique identifier of the asset whose rules are being deleted.
      * @param deletedAt The timestamp indicating when the deletion occurred.
      */
-    async softDeleteActiveForAsset(client: Prisma.TransactionClient, assetId: string, deletedAt: Date): Promise<void> {
+    async softDeleteActiveForAsset(client: PrismaTransactionClient, assetId: string, deletedAt: Date): Promise<void> {
         await client.autoDepreciation.updateMany({
             where: { assetId, deletedAt: null },
             data: { deletedAt }
@@ -51,7 +52,7 @@ export class AutoDepreciationRepository {
      * @param startDate The date the new depreciation schedule starts from.
      */
     async replaceForAsset(
-        client: Prisma.TransactionClient,
+        client: PrismaTransactionClient,
         assetId: string,
         input: AutoDepreciationInput,
         startDate: Date

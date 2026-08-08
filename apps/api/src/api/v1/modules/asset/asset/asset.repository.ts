@@ -1,4 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type { AssetData, AssetFilters, AssetTypeEnum } from '@poveroh/types'
 import { toNumber } from '@/utils'
 import { assetSelect } from '@/types/select'
@@ -186,7 +187,7 @@ export class AssetRepository {
      * @param assetId The unique identifier of the parent asset whose subtypes are being deleted.
      * @param deletedAt The timestamp indicating when the deletions occurred.
      */
-    async softDeleteSubtypes(tx: Prisma.TransactionClient, assetId: string, deletedAt: Date): Promise<void> {
+    async softDeleteSubtypes(tx: PrismaTransactionClient, assetId: string, deletedAt: Date): Promise<void> {
         await Promise.all([
             tx.marketableAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),
             tx.realEstateAsset.updateMany({ where: { assetId, deletedAt: null }, data: { deletedAt } }),

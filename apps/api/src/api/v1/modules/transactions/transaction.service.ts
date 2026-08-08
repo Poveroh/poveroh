@@ -1,4 +1,5 @@
 import prisma, { Prisma } from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import moment from 'moment-timezone'
 import type {
     Amount,
@@ -345,7 +346,7 @@ export class TransactionService extends BaseService {
      * @returns A promise that resolves when the amounts have been replaced.
      */
     private async persistAmounts(
-        tx: Prisma.TransactionClient,
+        tx: PrismaTransactionClient,
         transactionId: string,
         amountsData: Prisma.AmountCreateManyInput[],
         originalAmounts?: Amount[]

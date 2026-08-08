@@ -6,5 +6,7 @@ import { decimalToNumberExtension } from './extensions/decimal-to-number.extensi
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter }).$extends(decimalToNumberExtension)
 
+export type PrismaTransactionClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
+
 export { Prisma }
 export default prisma

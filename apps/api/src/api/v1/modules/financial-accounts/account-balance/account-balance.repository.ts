@@ -1,4 +1,5 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import prisma from '@poveroh/prisma'
+import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type { CreateFinancialAccountBalanceRequest, FinancialAccountBalanceData } from '@poveroh/types'
 import { accountBalanceSelect } from '@/types/select'
 
@@ -13,7 +14,7 @@ export class AccountBalanceRepository {
     async upsertBalance(
         payload: CreateFinancialAccountBalanceRequest,
         isManual: boolean,
-        tx?: Prisma.TransactionClient
+        tx?: PrismaTransactionClient
     ) {
         const db = tx ?? prisma
         return (await db.financialAccountBalance.upsert({
@@ -53,7 +54,7 @@ export class AccountBalanceRepository {
      * @param tx An optional Prisma transaction client to run within an existing transaction.
      * @returns A promise that resolves when the point has been updated.
      */
-    async updateBalance(id: string, balance: number, tx?: Prisma.TransactionClient): Promise<void> {
+    async updateBalance(id: string, balance: number, tx?: PrismaTransactionClient): Promise<void> {
         const db = tx ?? prisma
         await db.financialAccountBalance.update({ where: { id }, data: { balance } })
     }
