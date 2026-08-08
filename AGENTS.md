@@ -102,7 +102,8 @@ This file defines specialized agent profiles for working on the Poveroh codebase
 - Always wrap controller bodies in `try/catch` with `ResponseHelper.handleError(res, error)` in the catch
 - Use `ResponseHelper.success<T>(res, data)` for 200, `ResponseHelper.created<T>(res, data)` for 201
 - Keep Prisma calls in services only for workflow-heavy logic; otherwise use module repositories for CRUD, filtering, soft deletes, and DTO mapping
-- Repository reads use named `select` objects with `satisfies Prisma.*Select`, `Prisma.*GetPayload`, and `toData()` mappers when database types differ from API DTOs (`Decimal`, `Date`, nullable fields)
+- Repository reads use named `select` objects with `satisfies Prisma.*Select` and `Prisma.*GetPayload`
+- Never convert `Decimal` fields by hand: the shared Prisma client from `@poveroh/prisma` applies `decimalToNumberExtension`, which converts every `Decimal` field to a plain `number` on every query result automatically
 - Use `select` in Prisma queries when you don't need all fields, and always scope user-owned data by `userId`
 - Use `buildWhere()` for list filters instead of building ad hoc Prisma filter objects in controllers
 - Prefer soft deletes with `deletedAt` for user data that must preserve history, and exclude `deletedAt` rows from normal reads
