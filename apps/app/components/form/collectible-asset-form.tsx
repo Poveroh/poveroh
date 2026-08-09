@@ -29,17 +29,12 @@ export const CollectibleAssetForm = forwardRef<FormRef, CollectibleAssetFormProp
                         event.preventDefault()
                     }}
                 >
-                    <TextField
-                        control={form.control}
-                        name='title'
-                        label={t('investments.assets.form.name.label')}
-                        mandatory
-                    />
+                    <TextField control={form.control} name='title' label={t('form.name.label')} mandatory />
 
                     <AmountField
                         control={form.control}
                         name='value'
-                        label={t('investments.assets.form.value.label')}
+                        label={t('form.value.label')}
                         placeholder='0.00'
                         mandatory
                     />
@@ -48,21 +43,17 @@ export const CollectibleAssetForm = forwardRef<FormRef, CollectibleAssetFormProp
                         <DateField
                             control={form.control}
                             name='acquisitionDate'
-                            label={t('investments.assets.form.acquisitionDate.label')}
+                            label={t('form.acquisitionDate.label')}
                         />
                         <AmountField
                             control={form.control}
                             name='appraisalValue'
-                            label={t('investments.assets.form.appraisalValue.label')}
+                            label={t('form.appraisalValue.label')}
                             placeholder='0.00'
                         />
                     </div>
 
-                    <DateField
-                        control={form.control}
-                        name='appraisalDate'
-                        label={t('investments.assets.form.appraisalDate.label')}
-                    />
+                    <DateField control={form.control} name='appraisalDate' label={t('form.appraisalDate.label')} />
                 </form>
             </Form>
         )

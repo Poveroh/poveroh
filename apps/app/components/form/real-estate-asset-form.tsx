@@ -30,18 +30,13 @@ export const RealEstateAssetForm = forwardRef<FormRef, RealEstateAssetFormProps>
                         event.preventDefault()
                     }}
                 >
-                    <TextField
-                        control={form.control}
-                        name='title'
-                        label={t('investments.assets.form.name.label')}
-                        mandatory
-                    />
+                    <TextField control={form.control} name='title' label={t('form.name.label')} mandatory />
 
                     <SelectField
                         control={form.control}
                         name='type'
-                        label={t('investments.assets.form.realEstateType.label')}
-                        placeholder={t('investments.assets.form.realEstateType.placeholder')}
+                        label={t('form.realEstateType.label')}
+                        placeholder={t('form.realEstateType.placeholder')}
                         options={REAL_ESTATE_TYPE_CATALOG}
                         getOptionLabel={option => t(option.label)}
                         getOptionValue={option => option.value}
@@ -51,22 +46,14 @@ export const RealEstateAssetForm = forwardRef<FormRef, RealEstateAssetFormProps>
                     <AmountField
                         control={form.control}
                         name='value'
-                        label={t('investments.assets.form.value.label')}
+                        label={t('form.value.label')}
                         placeholder='0.00'
                         mandatory
                     />
 
                     <div className='grid grid-cols-2 gap-3'>
-                        <DateField
-                            control={form.control}
-                            name='purchaseDate'
-                            label={t('investments.assets.form.purchaseDate.label')}
-                        />
-                        <TextField
-                            control={form.control}
-                            name='address'
-                            label={t('investments.assets.form.address.label')}
-                        />
+                        <DateField control={form.control} name='purchaseDate' label={t('form.purchaseDate.label')} />
+                        <TextField control={form.control} name='address' label={t('form.address.label')} />
                     </div>
                 </form>
             </Form>

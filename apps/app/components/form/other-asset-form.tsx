@@ -28,32 +28,19 @@ export const OtherAssetForm = forwardRef<FormRef, OtherAssetFormProps>((props: O
                     event.preventDefault()
                 }}
             >
-                <TextField
-                    control={form.control}
-                    name='title'
-                    label={t('investments.assets.form.name.label')}
-                    mandatory
-                />
+                <TextField control={form.control} name='title' label={t('form.name.label')} mandatory />
 
                 <AmountField
                     control={form.control}
                     name='value'
-                    label={t('investments.assets.form.value.label')}
+                    label={t('form.value.label')}
                     placeholder='0.00'
                     mandatory
                 />
 
                 <div className='grid grid-cols-2 gap-3'>
-                    <DateField
-                        control={form.control}
-                        name='purchaseDate'
-                        label={t('investments.assets.form.purchaseDate.label')}
-                    />
-                    <TextField
-                        control={form.control}
-                        name='description'
-                        label={t('investments.assets.form.description.label')}
-                    />
+                    <DateField control={form.control} name='purchaseDate' label={t('form.purchaseDate.label')} />
+                    <TextField control={form.control} name='description' label={t('form.description.label')} />
                 </div>
             </form>
         </Form>

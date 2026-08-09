@@ -253,6 +253,94 @@
         },
         "expires_date": {
             "label": "Expires date"
+        },
+        "transactionType": {
+            "buy": "Buy",
+            "sell": "Sell"
+        },
+        "symbol": {
+            "label": "Ticket symbol"
+        },
+        "quantity": {
+            "label": "Quantity"
+        },
+        "unitPrice": {
+            "label": "Price per share"
+        },
+        "fees": {
+            "label": "Fee"
+        },
+        "value": {
+            "label": "Value"
+        },
+        "purchaseDate": {
+            "label": "Purchase date"
+        },
+        "acquisitionDate": {
+            "label": "Acquisition date"
+        },
+        "appraisalValue": {
+            "label": "Appraisal value"
+        },
+        "appraisalDate": {
+            "label": "Appraisal date"
+        },
+        "address": {
+            "label": "Address"
+        },
+        "realEstateType": {
+            "label": "Property type",
+            "placeholder": "Select type",
+            "primaryHouse": "Primary house",
+            "secondaryHouse": "Secondary house",
+            "rentalProperty": "Rental house"
+        },
+        "brand": {
+            "label": "Brand"
+        },
+        "model": {
+            "label": "Model"
+        },
+        "plate": {
+            "label": "Plate"
+        },
+        "vehicleYear": {
+            "label": "Vehicle year",
+            "placeholder": "2021"
+        },
+        "vehicleType": {
+            "label": "Type",
+            "placeholder": "Select type",
+            "car": "Car",
+            "boat": "Boat",
+            "motorcycle": "Motorcycle",
+            "snowmobile": "Snowmobile",
+            "bike": "Bike",
+            "other": "Other"
+        },
+        "depreciation": {
+            "toggle": "Setup auto depreciation?",
+            "description": "The system will automatically depreciate this vehicle",
+            "percentage": {
+                "label": "Percentage"
+            },
+            "every": {
+                "label": "Every",
+                "placeholder": "Select a value"
+            },
+            "cycle": {
+                "month": "Month",
+                "sixMonths": "6 months",
+                "year": "Year",
+                "twoYears": "2 year",
+                "fiveYears": "5 year"
+            }
+        },
+        "summary": {
+            "unitPrice": "Price per share",
+            "quantity": "Quantity",
+            "fees": "Transaction fee",
+            "total": "Total transaction"
         }
     },
     "layout": {
@@ -547,102 +635,6 @@
                 "weight": "Weight",
                 "total": "Total"
             },
-            "form": {
-                "transactionType": {
-                    "buy": "Buy",
-                    "sell": "Sell"
-                },
-                "symbol": {
-                    "label": "Ticket symbol"
-                },
-                "quantity": {
-                    "label": "Quantity"
-                },
-                "unitPrice": {
-                    "label": "Price per share"
-                },
-                "fees": {
-                    "label": "Fee"
-                },
-                "name": {
-                    "label": "Name"
-                },
-                "value": {
-                    "label": "Value"
-                },
-                "purchaseDate": {
-                    "label": "Purchase date"
-                },
-                "acquisitionDate": {
-                    "label": "Acquisition date"
-                },
-                "appraisalValue": {
-                    "label": "Appraisal value"
-                },
-                "appraisalDate": {
-                    "label": "Appraisal date"
-                },
-                "description": {
-                    "label": "Description"
-                },
-                "address": {
-                    "label": "Address"
-                },
-                "realEstateType": {
-                    "label": "Property type",
-                    "placeholder": "Select type",
-                    "primaryHouse": "Primary house",
-                    "secondaryHouse": "Secondary house",
-                    "rentalProperty": "Rental house"
-                },
-                "brand": {
-                    "label": "Brand"
-                },
-                "model": {
-                    "label": "Model"
-                },
-                "plate": {
-                    "label": "Plate"
-                },
-                "vehicleYear": {
-                    "label": "Vehicle year",
-                    "placeholder": "2021"
-                },
-                "vehicleType": {
-                    "label": "Type",
-                    "placeholder": "Select type",
-                    "car": "Car",
-                    "boat": "Boat",
-                    "motorcycle": "Motorcycle",
-                    "snowmobile": "Snowmobile",
-                    "bike": "Bike",
-                    "other": "Other"
-                },
-                "depreciation": {
-                    "toggle": "Setup auto depreciation?",
-                    "description": "The system will automatically depreciate this vehicle",
-                    "percentage": {
-                        "label": "Percentage"
-                    },
-                    "every": {
-                        "label": "Every",
-                        "placeholder": "Select a value"
-                    },
-                    "cycle": {
-                        "month": "Month",
-                        "sixMonths": "6 months",
-                        "year": "Year",
-                        "twoYears": "2 year",
-                        "fiveYears": "5 year"
-                    }
-                },
-                "summary": {
-                    "unitPrice": "Price per share",
-                    "quantity": "Quantity",
-                    "fees": "Transaction fee",
-                    "total": "Total transaction"
-                }
-            },
             "groups": {
                 "stock": "Stock",
                 "bond": "Bond",
@@ -655,27 +647,57 @@
             },
             "ticket-symbol": {
                 "title": "Ticket symbol",
-                "subtitle": "Stock, ETF, bond etc"
+                "subtitle": "Stock, ETF, bond etc",
+                "modal": {
+                    "newTitle": "New ticket symbol",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the ticket symbol."
+                }
             },
             "crypto": {
                 "title": "Crypto",
-                "subtitle": "Bitcoin, Ethereum, etc"
+                "subtitle": "Bitcoin, Ethereum, etc",
+                "modal": {
+                    "newTitle": "New crypto asset",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the crypto asset."
+                }
             },
             "property": {
                 "title": "Property",
-                "subtitle": "Real estate, car, etc"
+                "subtitle": "Real estate, car, etc",
+                "modal": {
+                    "newTitle": "New property asset",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the property asset."
+                }
             },
             "vehicle": {
                 "title": "Vehicle",
-                "subtitle": "Car, motorcycle, etc"
+                "subtitle": "Car, motorcycle, etc",
+                "modal": {
+                    "newTitle": "New vehicle asset",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the vehicle asset."
+                }
             },
             "valuable": {
                 "title": "Valuable",
-                "subtitle": "Jewelry, art, etc"
+                "subtitle": "Jewelry, art, etc",
+                "modal": {
+                    "newTitle": "New valuable asset",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the valuable asset."
+                }
             },
             "other": {
                 "title": "Other assets",
-                "subtitle": "Other types of assets"
+                "subtitle": "Other types of assets",
+                "modal": {
+                    "newTitle": "New other asset",
+                    "editTitle": "Edit {a}",
+                    "deleteDescription": "This action cannot be undone. This will permanently delete the other asset."
+                }
             }
         }
     },

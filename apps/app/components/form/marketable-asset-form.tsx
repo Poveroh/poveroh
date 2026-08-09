@@ -62,16 +62,13 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
             return (
                 <Box>
                     <SummaryRow
-                        label={t('investments.assets.form.summary.unitPrice')}
+                        label={t('form.summary.unitPrice')}
                         value={`${currency} ${renderPriceLabel(unitPrice)}`}
                     />
-                    <SummaryRow label={t('investments.assets.form.summary.quantity')} value={quantity.toString()} />
+                    <SummaryRow label={t('form.summary.quantity')} value={quantity.toString()} />
+                    <SummaryRow label={t('form.summary.fees')} value={`${currency} ${renderPriceLabel(fees)}`} />
                     <SummaryRow
-                        label={t('investments.assets.form.summary.fees')}
-                        value={`${currency} ${renderPriceLabel(fees)}`}
-                    />
-                    <SummaryRow
-                        label={t('investments.assets.form.summary.total')}
+                        label={t('form.summary.total')}
                         value={`${currency} ${renderPriceLabel(total)}`}
                         strong
                     />
@@ -111,7 +108,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         name='symbol'
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel mandatory>{t('investments.assets.form.symbol.label')}</FormLabel>
+                                <FormLabel mandatory>{t('form.symbol.label')}</FormLabel>
                                 <FormControl>
                                     <StockField
                                         {...field}
@@ -148,7 +145,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         <NumberField<MarketableAssetFormValues>
                             control={form.control}
                             name='quantity'
-                            label={t('investments.assets.form.quantity.label')}
+                            label={t('form.quantity.label')}
                             placeholder='0.00'
                             step='0.000001'
                             mandatory
@@ -156,7 +153,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         <AmountField<MarketableAssetFormValues>
                             control={form.control}
                             name='unitPrice'
-                            label={t('investments.assets.form.unitPrice.label')}
+                            label={t('form.unitPrice.label')}
                             placeholder='0.00'
                             mandatory
                         />
@@ -166,7 +163,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                         <AmountField<MarketableAssetFormValues>
                             control={form.control}
                             name='fees'
-                            label={t('investments.assets.form.fees.label')}
+                            label={t('form.fees.label')}
                             placeholder='0.00'
                         />
                         <CurrencyField<MarketableAssetFormValues>

@@ -44,26 +44,16 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                     />
 
                     <div className='grid grid-cols-2 gap-3 grow'>
-                        <TextField
-                            control={form.control}
-                            name='brand'
-                            label={t('investments.assets.form.brand.label')}
-                            mandatory
-                        />
-                        <TextField
-                            control={form.control}
-                            name='model'
-                            label={t('investments.assets.form.model.label')}
-                            mandatory
-                        />
+                        <TextField control={form.control} name='brand' label={t('form.brand.label')} mandatory />
+                        <TextField control={form.control} name='model' label={t('form.model.label')} mandatory />
                     </div>
                 </div>
 
                 <SelectField
                     control={form.control}
                     name='type'
-                    label={t('investments.assets.form.vehicleType.label')}
-                    placeholder={t('investments.assets.form.vehicleType.placeholder')}
+                    label={t('form.vehicleType.label')}
+                    placeholder={t('form.vehicleType.placeholder')}
                     options={VEHICLE_TYPE_CATALOG}
                     getOptionLabel={option => t(option.label)}
                     getOptionValue={option => option.value}
@@ -73,7 +63,7 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                 <AmountField
                     control={form.control}
                     name='value'
-                    label={t('investments.assets.form.value.label')}
+                    label={t('form.value.label')}
                     placeholder='0.00'
                     mandatory
                 />
@@ -84,18 +74,15 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                         name='purchaseDate'
                         label={t('investments.assets.form.purchaseDate.label')}
                     />
+                    <DateField control={form.control} name='purchaseDate' label={t('form.purchaseDate.label')} />
                     <NumberField
                         control={form.control}
                         name='year'
-                        label={t('investments.assets.form.vehicleYear.label')}
-                        placeholder={t('investments.assets.form.vehicleYear.placeholder')}
+                        label={t('form.vehicleYear.label')}
+                        placeholder={t('form.vehicleYear.placeholder')}
                         step='1'
                     />
-                    <TextField
-                        control={form.control}
-                        name='plateNumber'
-                        label={t('investments.assets.form.plate.label')}
-                    />
+                    <TextField control={form.control} name='plateNumber' label={t('form.plate.label')} />
                 </div>
 
                 <hr className='border-border' />
@@ -106,14 +93,12 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                     render={({ field }) => (
                         <FormItem className='flex flex-col space-y-1'>
                             <div className='flex flex-row items-center space-x-3'>
-                                <span className='font-medium'>{t('investments.assets.form.depreciation.toggle')}</span>
+                                <span className='font-medium'>{t('form.depreciation.toggle')}</span>
                                 <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>
                             </div>
-                            <p className='text-sm text-muted-foreground'>
-                                {t('investments.assets.form.depreciation.description')}
-                            </p>
+                            <p className='text-sm text-muted-foreground'>{t('form.depreciation.description')}</p>
                         </FormItem>
                     )}
                 />
@@ -123,15 +108,15 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                         <NumberField
                             control={form.control}
                             name='depreciationPercentage'
-                            label={t('investments.assets.form.depreciation.percentage.label')}
+                            label={t('form.depreciation.percentage.label')}
                             placeholder='0.00'
                             step='0.01'
                         />
                         <SelectField
                             control={form.control}
                             name='depreciationCycle'
-                            label={t('investments.assets.form.depreciation.every.label')}
-                            placeholder={t('investments.assets.form.depreciation.every.placeholder')}
+                            label={t('form.depreciation.every.label')}
+                            placeholder={t('form.depreciation.every.placeholder')}
                             options={DEPRECIATION_CYCLE_CATALOG}
                             getOptionLabel={option => t(option.label)}
                             getOptionValue={option => option.value}
