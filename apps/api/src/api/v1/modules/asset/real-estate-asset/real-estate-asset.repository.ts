@@ -6,20 +6,6 @@ import { realEstateSelect } from '@/types/select'
 
 type RealEstateRow = Prisma.RealEstateAssetGetPayload<{ select: typeof realEstateSelect }>
 
-/**
- * Normalizes a Prisma real estate asset row into the API DTO by converting Decimal and Date values into JSON-friendly types.
- * @param row The Prisma real estate asset row to convert.
- * @returns The normalized real estate asset data.
- */
-function toData(row: RealEstateRow): RealEstateAssetData {
-    return {
-        address: row.address,
-        type: row.type,
-        purchasePrice: toNumber(row.purchasePrice) ?? 0,
-        purchaseDate: toIsoString(row.purchaseDate)
-    }
-}
-
 export class RealEstateAssetRepository {
     /**
      * Creates the parent Asset and its RealEstateAsset metadata in a single transaction so the property is consistent from the start.
@@ -105,12 +91,10 @@ export class RealEstateAssetRepository {
      * @returns A promise that resolves to the real estate asset metadata, or null when the asset has none.
      */
     async findByAssetId(userId: string, assetId: string): Promise<RealEstateAssetData | null> {
-        const row = await prisma.realEstateAsset.findFirst({
+        return (await prisma.realEstateAsset.findFirst({
             where: { assetId, deletedAt: null, asset: { userId, deletedAt: null } },
             select: realEstateSelect
-        })
-
-        return row ? toData(row) : null
+        })) as unknown as RealEstateAssetData | null
     }
 
     /**
