@@ -9,6 +9,7 @@ import { OptionsPopover } from '../navbar/options-popover'
 import { cn } from '@poveroh/ui/lib/utils'
 import { useTranslations } from 'next-intl'
 import { TransactionData } from '@poveroh/types'
+import { useUtils } from '@/hooks/use-utils'
 
 type TransactionItemProps = {
     transaction: TransactionData
@@ -28,6 +29,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
     const t = useTranslations()
     const { accountQuery } = useFinancialAccount()
     const { categoryData } = useCategory()
+    const { renderPriceLabel } = useUtils()
 
     const isClickingRef = useRef(false)
 
@@ -135,7 +137,7 @@ const TransactionItemComponent: FC<TransactionItemProps> = ({
                                 {isExpense ? '-' : '+'}
                             </h5>
                         )}
-                        <h5 className='font-bold'>{amount}</h5>
+                        <h5 className='font-bold'>{renderPriceLabel(amount)}</h5>
                         {/* <span>{currencySymbol}</span> */}
                     </div>
                     <p className='sub'>{category?.title || t('messages.uncategorized')}</p>

@@ -7,6 +7,7 @@ import { useFinancialAccount } from '@/hooks/use-account'
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { FinancialAccountData, SubscriptionData } from '@poveroh/types'
+import { useUtils } from '@/hooks/use-utils'
 
 type SubscriptionItemProps = {
     subscription: SubscriptionData
@@ -18,6 +19,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
     const t = useTranslations()
     const { getNextExecutionText } = useSubscription()
     const { getFinancialAccountById } = useFinancialAccount()
+    const { renderPriceLabel } = useUtils()
     const currencySymbol = icons[subscription.currency]?.symbol || ''
 
     const [account, setAccount] = useState<FinancialAccountData | null>(null)
@@ -61,7 +63,7 @@ export function SubscriptionItem({ subscription, openDelete, openEdit }: Subscri
             <div className='flex flex-row items-center space-x-6'>
                 <div className='flex flex-col justify-center space-y-1 items-end'>
                     <div className='flex flex-row space-x-1'>
-                        <h5 className='font-bold'>{subscription.amount}</h5>
+                        <h5 className='font-bold'>{renderPriceLabel(subscription.amount)}</h5>
                         <span>{currencySymbol}</span>
                     </div>
                     <p className='sub'>{getNextExecutionText(subscription)}</p>
