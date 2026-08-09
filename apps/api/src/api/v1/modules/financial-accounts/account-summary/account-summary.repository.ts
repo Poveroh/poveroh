@@ -1,4 +1,5 @@
 import prisma from '@poveroh/prisma'
+import { toNumber } from '@/utils/number'
 
 type AccountSummaryTotals = {
     totalIncome: number
@@ -43,8 +44,8 @@ export class AccountSummaryRepository {
         ])
 
         return {
-            totalIncome: income._sum.amount?.toNumber() ?? 0,
-            totalExpenses: expense._sum.amount?.toNumber() ?? 0,
+            totalIncome: toNumber(income._sum.amount) ?? 0,
+            totalExpenses: toNumber(expense._sum.amount) ?? 0,
             transactionCount: income._count + expense._count
         }
     }

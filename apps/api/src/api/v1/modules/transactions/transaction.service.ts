@@ -414,7 +414,6 @@ export class TransactionService extends BaseService {
 
         const mapAmount = (a: any) => ({
             ...a,
-            amount: a.amount.toNumber(),
             importReference: a.importReference || undefined,
             createdAt: a.createdAt.toISOString()
         })

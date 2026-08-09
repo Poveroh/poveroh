@@ -2,6 +2,7 @@ import prisma from '@poveroh/prisma'
 import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type { CreateFinancialAccountBalanceRequest, FinancialAccountBalanceData } from '@poveroh/types'
 import { accountBalanceSelect } from '@/types/select'
+import { toNumber } from '@/utils/number'
 
 export class AccountBalanceRepository {
     /**
@@ -99,7 +100,11 @@ export class AccountBalanceRepository {
         return rows.map(row => ({
             date: row.transaction.date,
             delta:
-                row.action === 'INCOME' ? row.amount.toNumber() : row.action === 'EXPENSES' ? -row.amount.toNumber() : 0
+                row.action === 'INCOME'
+                    ? (toNumber(row.amount) ?? 0)
+                    : row.action === 'EXPENSES'
+                      ? -(toNumber(row.amount) ?? 0)
+                      : 0
         }))
     }
 
@@ -118,7 +123,7 @@ export class AccountBalanceRepository {
             orderBy: { date: 'desc' },
             select: { date: true, balance: true, isManual: true }
         })
-        return row ? { date: row.date, balance: row.balance.toNumber(), isManual: row.isManual } : null
+        return row ? { date: row.date, balance: toNumber(row.balance) ?? 0, isManual: row.isManual } : null
     }
 
     /**
