@@ -20,6 +20,7 @@ import type {
     MarketInstrument
 } from '@poveroh/types'
 import { useUtils } from '@/hooks/use-utils'
+import { NumberField } from '../fields/number-field'
 
 export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>(
     (props: MarketableAssetFormProps, ref) => {
@@ -144,7 +145,7 @@ export const MarketableAssetForm = forwardRef<FormRef, MarketableAssetFormProps>
                     />
 
                     <div className='grid grid-cols-2 gap-3'>
-                        <AmountField<MarketableAssetFormValues>
+                        <NumberField<MarketableAssetFormValues>
                             control={form.control}
                             name='quantity'
                             label={t('investments.assets.form.quantity.label')}

@@ -11,6 +11,7 @@ import { AmountField, DateField, SelectField, TextField } from '@/components/fie
 import { PopoverIconLogo } from '@/components/fields/popover-icon-logo'
 import { useVehicleAssetForm } from '@/hooks/form/use-vehicle-asset-form'
 import type { FormRef, VehicleAssetFormProps } from '@/types'
+import { NumberField } from '../fields/number-field'
 
 export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((props: VehicleAssetFormProps, ref) => {
     const t = useTranslations()
@@ -83,7 +84,7 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                         name='purchaseDate'
                         label={t('investments.assets.form.purchaseDate.label')}
                     />
-                    <AmountField
+                    <NumberField
                         control={form.control}
                         name='year'
                         label={t('investments.assets.form.vehicleYear.label')}
@@ -119,11 +120,12 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
 
                 {enableDepreciation && (
                     <div className='grid grid-cols-2 gap-3'>
-                        <AmountField
+                        <NumberField
                             control={form.control}
                             name='depreciationPercentage'
                             label={t('investments.assets.form.depreciation.percentage.label')}
                             placeholder='0.00'
+                            step='0.01'
                         />
                         <SelectField
                             control={form.control}
