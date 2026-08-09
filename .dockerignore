@@ -6,7 +6,6 @@
 **/.next
 **/.turbo
 **/out
-**/storybook-static
 
 # Version control & CI
 .git

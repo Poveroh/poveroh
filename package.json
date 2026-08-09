@@ -12,13 +12,11 @@
         "build:redis": "cd packages/redis && npm run build",
         "build:logger": "cd packages/logger && npm run build",
         "build:queue": "cd packages/queue && npm run build",
-        "build:storybook": "turbo build --filter=storybook",
         "build:api": "turbo build --filter=api",
         "build:app": "turbo build --filter=app",
         "lint": "turbo lint",
         "dev": "turbo run dev dev:worker --filter=api --filter=app",
         "dev:all": "turbo run dev dev:worker",
-        "dev:storybook": "turbo dev --filter=storybook",
         "dev:api": "turbo dev --filter=api",
         "dev:worker": "cd apps/api && npm run dev:worker",
         "dev:app": "turbo dev --filter=app",
@@ -40,7 +38,7 @@
         "openapi:generate-server": "npm run openapi:generate-api",
         "openapi:docs": "echo 'Swagger UI disponibile su: http://localhost:3001/v1/api-docs'",
         "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && npm run clean:build",
-        "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name 'storybook-static' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
+        "clean:build": "find . -type d \\( -name 'dist' -o -name '.next' -o -name '.turbo' \\) -prune -exec rm -rf '{}' +",
         "clean:turbo": "find . -name '.turbo' -type d -prune -exec rm -rf '{}' +",
         "clean:env": "find . -name '.env' -type f -exec rm -f {} +",
         "clean:data": "node ./scripts/data/clean-db.js",
@@ -58,23 +56,18 @@
         "docker-dev:proxy": "npm run docker:create-network && cd ./docker && docker compose --env-file ../.env -f docker-compose.local.yml up -d --build --remove-orphans proxy",
         "docker-dev": "npm run docker:create-network && cd ./docker && docker compose --env-file ../.env -f docker-compose.local.yml up -d --build --remove-orphans db api worker app redis proxy",
         "docker": "chmod +x ./scripts/docker/setup.sh && ./scripts/docker/setup.sh",
-        "prepare": "husky",
-        "chromatic": "cd apps/storybook && npm run chromatic"
+        "prepare": "husky"
     },
     "devDependencies": {
         "@prisma/client": "^7.6.0",
-        "@storybook/react-vite": "^10.0.8",
         "dotenv-cli": "^8.0.0",
         "husky": "^9.1.7",
         "minimist": "^1.2.8",
         "openapi-typescript-codegen": "^0.30.0",
         "prettier": "^3.2.5",
         "prisma": "^7.6.0",
-        "storybook": "^10.2.13",
         "turbo": "^2.7.2",
-        "typescript": "^5.7.3",
-        "vite": "^8.0.16",
-        "webpack": "^5.101.2"
+        "typescript": "^5.7.3"
     },
     "engines": {
         "node": ">=22"

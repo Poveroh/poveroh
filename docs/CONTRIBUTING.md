@@ -93,7 +93,6 @@ npm run build:prisma      # Build Prisma package
 npm run build:utils       # Build utils package
 
 # Build individual apps
-npm run build:storybook   # Build Storybook
 npm run build:api         # Build API
 npm run build:app         # Build frontend app
 ```
@@ -104,11 +103,10 @@ npm run build:app         # Build frontend app
 # Start dev servers for API and app
 npm run dev
 
-# Start dev servers for all projects (API, app, storybook, etc.)
+# Start dev servers for all projects (API, app, etc.)
 npm run dev:all
 
 # Start individual dev servers
-npm run dev:storybook     # Start Storybook in dev mode
 npm run dev:api           # Start API dev server
 npm run dev:app           # Start app dev server
 ```
@@ -151,7 +149,7 @@ npm run setup:generate-transactions
 # Remove node_modules and all build artifacts
 npm run clean
 
-# Clean build artifacts (.next, dist, .turbo, storybook-static)
+# Clean build artifacts (.next, dist, .turbo)
 npm run clean:build
 
 # Clean only Turbo cache
@@ -219,7 +217,4 @@ npm run prisma:studio
 ```bash
 # Install husky hooks
 npm run prepare
-
-# Publish Storybook via Chromatic
-npm run chromatic
 ```
