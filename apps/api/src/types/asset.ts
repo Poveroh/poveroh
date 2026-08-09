@@ -1,3 +1,4 @@
+import { CurrencyEnum } from '@poveroh/types'
 import { Prisma } from '@prisma/client'
 
 export const assetInclude = {
@@ -15,3 +16,10 @@ export const assetInclude = {
 } satisfies Prisma.AssetInclude
 
 export type AssetWithRelations = Prisma.AssetGetPayload<{ include: typeof assetInclude }>
+
+export type ActiveAsset = {
+    id: string
+    quantity: number
+    currentValue: number
+    currency: CurrencyEnum
+}

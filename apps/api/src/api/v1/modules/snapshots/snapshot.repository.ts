@@ -1,6 +1,7 @@
 import prisma from '@poveroh/prisma'
 import type { CurrencyEnum, ValueSourceEnum } from '@poveroh/types'
-import { normalizeDate } from '@/utils'
+import { normalizeDate, toNumber } from '@/utils'
+import { ActiveAsset } from '@/types/asset'
 
 export class SnapshotRepository {
     /**
@@ -33,20 +34,11 @@ export class SnapshotRepository {
      * @param userId The ID of the user who owns the assets.
      * @returns A promise that resolves to each active asset's id, quantity, current value, and currency.
      */
-    async findActiveAssets(
-        userId: string
-    ): Promise<{ id: string; quantity: number; currentValue: number; currency: CurrencyEnum }[]> {
-        const assets = await prisma.asset.findMany({
+    async findActiveAssets(userId: string): Promise<ActiveAsset[]> {
+        return (await prisma.asset.findMany({
             where: { userId, deletedAt: null },
             select: { id: true, quantity: true, currentValue: true, currency: true }
-        })
-
-        return assets.map(asset => ({
-            id: asset.id,
-            quantity: asset.quantity.toNumber(),
-            currentValue: asset.currentValue.toNumber(),
-            currency: asset.currency
-        }))
+        })) as unknown as ActiveAsset[]
     }
 
     /**
