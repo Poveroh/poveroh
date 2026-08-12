@@ -92,7 +92,7 @@ export function BaseMarketableDialog({ modalId, title, assetType, defaultSymbol 
         <Modal<AssetData>
             modalId={modalId}
             open={modalManager.isOpen}
-            title={title}
+            title={modalManager.inEditingMode && modalManager.item ? modalManager.item.title : title}
             footer={{ show: true }}
             confirmButtonText='buttons.add.base'
             onClick={() => formRef.current?.submit()}

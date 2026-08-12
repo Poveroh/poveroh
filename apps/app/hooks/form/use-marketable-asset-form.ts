@@ -21,20 +21,26 @@ export const useMarketableAssetForm = (props: MarketableAssetFormProps) => {
 
     const [loading, setLoading] = useState(false)
 
+    const openingTransaction = useMemo(() => {
+        if (!initialData?.transactions?.length) return null
+
+        return [...initialData.transactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0]
+    }, [initialData])
+
     const defaultValues = useMemo<MarketableAssetForm>(
         () => ({
-            transactionType: 'BUY',
-            financialAccountId: '',
+            transactionType: openingTransaction?.type === 'SELL' ? 'SELL' : 'BUY',
+            financialAccountId: openingTransaction?.financialAccountId ?? '',
             symbol: initialData ? initialData.marketable?.symbol || initialData.title : defaultSymbol,
             providerId: initialData?.marketable?.providerId ?? undefined,
             providerInstrumentId: initialData?.marketable?.providerInstrumentId ?? undefined,
             date: initialData?.currentValueAsOf?.split('T')[0] ?? new Date().toISOString(),
-            quantity: 0,
-            unitPrice: 0,
-            fees: 0,
+            quantity: openingTransaction?.quantityChange ?? 0,
+            unitPrice: openingTransaction?.unitPrice ?? 0,
+            fees: openingTransaction?.fees ?? 0,
             currency: initialData?.currency ?? 'EUR'
         }),
-        [defaultSymbol, initialData]
+        [defaultSymbol, initialData, openingTransaction]
     )
 
     const form = useForm<MarketableAssetForm>({
