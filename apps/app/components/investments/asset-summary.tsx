@@ -71,6 +71,7 @@ export function AssetSummary({ assets, onSearch }: AssetSummaryProps) {
 
     const editModalByType: Partial<Record<AssetTypeEnum, typeof ticketModal>> = {
         STOCK: ticketModal,
+        ETF: ticketModal,
         CRYPTO: cryptoModal,
         REAL_ESTATE: propertyModal,
         VEHICLE: vehicleModal,
