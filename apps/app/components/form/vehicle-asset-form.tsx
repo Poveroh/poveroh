@@ -69,11 +69,6 @@ export const VehicleAssetForm = forwardRef<FormRef, VehicleAssetFormProps>((prop
                 />
 
                 <div className='grid grid-cols-3 gap-3'>
-                    <DateField
-                        control={form.control}
-                        name='purchaseDate'
-                        label={t('investments.assets.form.purchaseDate.label')}
-                    />
                     <DateField control={form.control} name='purchaseDate' label={t('form.purchaseDate.label')} />
                     <NumberField
                         control={form.control}
