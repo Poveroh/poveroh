@@ -2,17 +2,19 @@ import { cn } from '@poveroh/ui/lib/utils'
 import { Children, Fragment } from 'react'
 import type { ReactNode } from 'react'
 import Divider from '@/components/other/divider'
+import { BrandIcon } from '../icon/brand-icon'
 
 type BoxProps = {
     title?: string
     subtitle?: string
+    logoIcon?: string
     header?: ReactNode
     children: ReactNode | ReactNode[]
     noDivide?: boolean
     gap?: number
 }
 
-export default function Box({ title, subtitle, header, children, noDivide = false, gap = 1 }: BoxProps) {
+export default function Box({ title, subtitle, logoIcon, header, children, noDivide = false, gap = 1 }: BoxProps) {
     const items = Children.toArray(children)
 
     return (
@@ -20,7 +22,10 @@ export default function Box({ title, subtitle, header, children, noDivide = fals
             {(title || subtitle) && (
                 <div className='flex flex-row items-center justify-between'>
                     <div className='flex flex-col gap-1'>
-                        {title && <h4 className='font-bold'>{title}</h4>}
+                        <div className='flex flex-row items-center gap-3'>
+                            {logoIcon && <BrandIcon icon={logoIcon} circled />}
+                            {title && <h4 className='font-bold'>{title}</h4>}
+                        </div>
                         {subtitle && <p className='sub'>{subtitle}</p>}
                     </div>
                     {header}

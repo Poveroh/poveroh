@@ -1893,6 +1893,10 @@ export type DeleteMarketDataProviderCredentialResponse = {
     message: string
 }
 
+export type MarketDataCredentialsFilters = {
+    title?: StringFilter
+}
+
 export type MarketDataProvider = {
     id: string
     label: string
