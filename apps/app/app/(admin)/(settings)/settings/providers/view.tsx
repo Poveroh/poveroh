@@ -16,16 +16,17 @@ import { useUser } from '@/hooks/use-user'
 import { SelectField } from '@/components/fields'
 import { useProvidersForm } from '@/hooks/form/use-providers-form'
 import { Button } from '@poveroh/ui/components/button'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { DEFAULT_MARKET_DATA_PROVIDER } from '@poveroh/types'
+import { Input } from '@poveroh/ui/components/input'
+import { ProviderStatusBadge } from '@/components/provider/provider-credential-card-badge'
 
 export default function ProvidersView() {
     const t = useTranslations()
     const { preferences } = useUser()
-    const { providersQuery, providers } = useMarketDataProvider()
+    const { providersQuery, providers, filteredCredentialProviders, searchText, onSearch } = useMarketDataProvider()
 
     const configuredProviders = useMemo(() => providers.filter(provider => provider.configured), [providers])
-    const credentialProviders = useMemo(() => providers.filter(provider => provider.requiresCredentials), [providers])
     const providerOptions = useMemo(() => {
         const preferredProvider = providers.find(provider => provider.id === preferences.preferredMarketDataProviderId)
         const options = [DEFAULT_MARKET_DATA_PROVIDER, ...configuredProviders]
@@ -91,11 +92,30 @@ export default function ProvidersView() {
                 </Form>
             </Box>
 
-            <Box title={t('providers.list.title')}>
-                {credentialProviders.map(provider => (
-                    <ProviderCredentialCard key={provider.id} provider={provider} />
-                ))}
-            </Box>
+            <div className='flex flex-col space-y-6 w-full'>
+                <div className='flex flex-row space-x-3'>
+                    <Input
+                        startIcon={Search}
+                        placeholder={t('messages.search')}
+                        className='w-[300px]'
+                        value={searchText}
+                        onChange={onSearch}
+                    />
+                </div>
+
+                <div className='grid grid-cols-2 gap-3'>
+                    {filteredCredentialProviders.map(provider => (
+                        <Box
+                            key={provider.id}
+                            title={provider.label}
+                            logoIcon={provider.logoUrl}
+                            header={<ProviderStatusBadge configured={provider.configured} />}
+                        >
+                            <ProviderCredentialCard provider={provider} />
+                        </Box>
+                    ))}
+                </div>
+            </div>
         </PageWrapper>
     )
 }

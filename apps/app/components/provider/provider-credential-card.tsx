@@ -5,7 +5,6 @@ import { useWatch } from 'react-hook-form'
 
 import { Button } from '@poveroh/ui/components/button'
 import { Form } from '@poveroh/ui/components/form'
-import { cn } from '@poveroh/ui/lib/utils'
 import type { MarketDataProvider } from '@poveroh/types'
 
 import { PasswordField } from '@/components/fields'
@@ -27,14 +26,6 @@ export function ProviderCredentialCard({ provider }: Props) {
 
     return (
         <div className='flex flex-col gap-4 py-6 first:pt-0 last:pb-0'>
-            <div className='flex flex-row items-center justify-between'>
-                <div className='flex flex-row items-center gap-3'>
-                    <BrandIcon icon={provider.logoUrl} circled />
-                    <h4 className='font-bold'>{provider.label}</h4>
-                </div>
-                <ProviderStatusBadge configured={provider.configured} />
-            </div>
-
             <p className='sub whitespace-pre-line'>{t(`providers.list.${provider.id}.setup`)}</p>
 
             <Form {...form}>
@@ -71,19 +62,6 @@ export function ProviderCredentialCard({ provider }: Props) {
                     </div>
                 </form>
             </Form>
-        </div>
-    )
-}
-
-function ProviderStatusBadge({ configured }: { configured: boolean }) {
-    const t = useTranslations()
-
-    return (
-        <div className={cn('flex flex-row items-center gap-2')}>
-            <span className={cn('h-2 w-2 rounded-full', configured ? 'bg-emerald-500' : 'bg-muted-foreground')} />
-            <p className={cn(configured ? 'text-emerald-500' : 'text-muted-foreground')}>
-                {configured ? t('providers.status.configured') : t('providers.status.notConfigured')}
-            </p>
         </div>
     )
 }

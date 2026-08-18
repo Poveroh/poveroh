@@ -1,5 +1,6 @@
 import { z } from '../zod'
 import { SimpleSuccessResponseSchema } from './response.schema'
+import { StringFilterSchema } from './filter.schema'
 
 /**
  * Path params schema for provider credential operations
@@ -32,3 +33,13 @@ export const UpdateMarketDataProviderCredentialResponseSchema = SimpleSuccessRes
 export const DeleteMarketDataProviderCredentialResponseSchema = SimpleSuccessResponseSchema.openapi(
     'DeleteMarketDataProviderCredentialResponse'
 )
+
+/**
+ * Market data credentials filters schema representing the structure of filters that can be applied when querying market data credentials
+ */
+export const MarketDataCredentialsFiltersSchema = z
+    .object({
+        title: StringFilterSchema
+    })
+    .partial()
+    .openapi('MarketDataCredentialsFilters')

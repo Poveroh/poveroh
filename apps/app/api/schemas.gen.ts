@@ -4465,6 +4465,15 @@ export const DeleteMarketDataProviderCredentialResponseSchema = {
     required: ['success', 'message']
 } as const
 
+export const MarketDataCredentialsFiltersSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            $ref: '#/components/schemas/StringFilter'
+        }
+    }
+} as const
+
 export const MarketDataProviderSchema = {
     type: 'object',
     properties: {

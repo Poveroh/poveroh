@@ -644,6 +644,7 @@ export type {
     MarketableAssetClassEnum,
     MarketableAssetData,
     MarketableAssetForm,
+    MarketDataCredentialsFilters,
     MarketDataProvider,
     MarketDataProviderQuery,
     MarketDataTransportEnum,
