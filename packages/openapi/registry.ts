@@ -3,6 +3,7 @@ import * as schemas from './schemas'
 import {
     registerAssetTransactionPath,
     registerAssetPath,
+    registerBankSyncPath,
     registerCategoryPath,
     registerCollectibleAssetPath,
     registerDashboardPath,
@@ -47,6 +48,7 @@ export const registerAllPaths = (registry: OpenAPIRegistry) => {
     registerUserPath(registry)
     registerUserActivityPath(registry)
     registerAssetPath(registry)
+    registerBankSyncPath(registry)
     registerMarketableAssetPath(registry)
     registerRealEstateAssetPath(registry)
     registerVehicleAssetPath(registry)

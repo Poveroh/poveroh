@@ -1,5 +1,6 @@
 export * from './asset-transaction.path'
 export * from './asset.path'
+export * from './bank-sync.path'
 export * from './category.path'
 export * from './collectible-asset.path'
 export * from './dashboard.path'
