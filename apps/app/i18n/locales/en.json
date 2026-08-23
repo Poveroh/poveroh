@@ -101,6 +101,10 @@
         "back": "Back",
         "analyzeAndParse": "Analyze and parse",
         "addFromTemplates": "Add from templates",
+        "connect": "Connect",
+        "syncNow": "Sync now",
+        "disconnect": "Disconnect",
+        "manageAccounts": "Manage accounts",
         "add": {
             "base": "Add",
             "new": "Add new",
@@ -772,6 +776,47 @@
         "toast": {
             "saved": "{a} api key saved",
             "deleted": "{a} api key removed"
+        }
+    },
+    "bankSync": {
+        "title": "Bank sync",
+        "breadcrumb": {
+            "advanced": "Advanced"
+        },
+        "list": {
+            "title": "Providers",
+            "plaid": {
+                "setup": "Setup instructions:\n1. Click Connect to open Plaid Link\n2. Choose your bank and sign in\n3. Transactions sync automatically every night"
+            },
+            "lunchflow": {
+                "setup": "Setup instructions:\n1. Click Connect to open Lunch Flow\n2. Choose your bank and sign in\n3. Transactions sync automatically every night"
+            }
+        },
+        "connections": {
+            "title": "Connections"
+        },
+        "status": {
+            "PENDING": "Pending",
+            "LINKED": "Connected",
+            "ERROR": "Error",
+            "REAUTH_REQUIRED": "Reauthentication required",
+            "REVOKED": "Revoked"
+        },
+        "mapping": {
+            "title": "Map {a}",
+            "subtitle": "Match each account found to one of your financial accounts",
+            "selectAccount": "Select an account",
+            "empty": "No accounts found for this connection"
+        },
+        "toast": {
+            "connected": "{a} connected",
+            "disconnected": "{a} disconnected",
+            "syncStarted": "Sync started",
+            "accountsLinked": "Accounts linked"
+        },
+        "callback": {
+            "processing": "Finishing connection…",
+            "error": "Something went wrong completing the connection"
         }
     },
     "stockField": {
