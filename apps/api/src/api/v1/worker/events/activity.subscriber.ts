@@ -110,4 +110,25 @@ export const registerActivitySubscribers = (): void => {
         entityId: payload.providerId,
         metadata: { providerId: payload.providerId }
     }))
+
+    on('bank-sync-connection.linked', payload => ({
+        entityType: 'BANK_CONNECTION',
+        action: 'CREATED',
+        entityId: payload.connectionId,
+        metadata: { providerId: payload.providerId }
+    }))
+
+    on('bank-sync-connection.deleted', payload => ({
+        entityType: 'BANK_CONNECTION',
+        action: 'DELETED',
+        entityId: payload.connectionId,
+        metadata: { providerId: payload.providerId }
+    }))
+
+    on('bank-sync.synced', payload => ({
+        entityType: 'BANK_CONNECTION',
+        action: 'SYNCED',
+        entityId: payload.connectionId,
+        metadata: { transactionsAdded: payload.transactionsAdded }
+    }))
 }

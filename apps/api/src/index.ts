@@ -17,11 +17,13 @@ import qs from 'qs'
 import { initRedisClient } from './utils/redis'
 import { registerActivitySubscribers } from './api/v1/worker/events/activity.subscriber'
 import { registerMarketSyncSubscribers } from './api/v1/worker/events/market-sync.subscriber'
+import { registerBankSyncSubscribers } from './api/v1/worker/events/bank-sync.subscriber'
 import { logger } from '@poveroh/logger/server'
 
 // Wire audit-log subscribers onto the in-process event bus before handling any request.
 registerActivitySubscribers()
 registerMarketSyncSubscribers()
+registerBankSyncSubscribers()
 
 const app = express()
 
