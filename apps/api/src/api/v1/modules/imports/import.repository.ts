@@ -348,6 +348,31 @@ export class ImportRepository {
     }
 
     /**
+     * Finds an already-open (`IMPORT_PENDING`) import for the given financial account that already
+     * holds transactions from the given bank connection, so a running sync can keep appending to the
+     * same batch instead of spawning a new one on every run.
+     * @param userId The ID of the user who owns the import being searched for.
+     * @param financialAccountId The financial account the import must belong to.
+     * @param bankConnectionId The bank connection whose transactions the import must already contain.
+     * @returns A promise that resolves to the open import id, or null when none exists.
+     */
+    async findOpenBankSyncImport(
+        userId: string,
+        financialAccountId: string,
+        bankConnectionId: string
+    ): Promise<{ id: string } | null> {
+        return prisma.import.findFirst({
+            where: {
+                userId,
+                financialAccountId,
+                status: 'IMPORT_PENDING',
+                transactions: { some: { bankConnectionId } }
+            },
+            select: { id: true }
+        })
+    }
+
+    /**
      * Returns whether an import exists for the supplied id and owning user.
      * @param userId The ID of the user who owns the import being checked.
      * @param id The unique identifier of the import being checked.

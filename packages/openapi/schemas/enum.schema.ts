@@ -294,16 +294,7 @@ export const TransactionActionEnum = z.enum(['EXPENSES', 'INCOME', 'TRANSFER']).
  * Transaction status enum representing the transaction processing states
  */
 export const TransactionStatusEnum = z
-    .enum([
-        'APPROVED',
-        'REJECTED',
-        'IMPORT_PENDING',
-        'IMPORT_REJECTED',
-        'IMPORT_APPROVED',
-        'BANK_SYNC_PENDING',
-        'BANK_SYNC_APPROVED',
-        'BANK_SYNC_REJECTED'
-    ])
+    .enum(['APPROVED', 'REJECTED', 'IMPORT_PENDING', 'IMPORT_REJECTED', 'IMPORT_APPROVED'])
     .openapi('TransactionStatusEnum')
 
 /**

@@ -2,12 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type TransactionStatusEnum =
-    | 'APPROVED'
-    | 'REJECTED'
-    | 'IMPORT_PENDING'
-    | 'IMPORT_REJECTED'
-    | 'IMPORT_APPROVED'
-    | 'BANK_SYNC_PENDING'
-    | 'BANK_SYNC_APPROVED'
-    | 'BANK_SYNC_REJECTED'
+export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'

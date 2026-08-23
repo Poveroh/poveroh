@@ -1221,15 +1221,7 @@ export type MarketStateEnum = 'OPEN' | 'CLOSED' | 'PRE_MARKET' | 'POST_MARKET' |
 export type FinancialAccountTypeEnum =
     'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER'
 
-export type TransactionStatusEnum =
-    | 'APPROVED'
-    | 'REJECTED'
-    | 'IMPORT_PENDING'
-    | 'IMPORT_REJECTED'
-    | 'IMPORT_APPROVED'
-    | 'BANK_SYNC_PENDING'
-    | 'BANK_SYNC_APPROVED'
-    | 'BANK_SYNC_REJECTED'
+export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
 
 export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
 

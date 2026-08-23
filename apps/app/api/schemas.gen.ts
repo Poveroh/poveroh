@@ -3168,16 +3168,7 @@ export const FinancialAccountTypeEnumSchema = {
 
 export const TransactionStatusEnumSchema = {
     type: 'string',
-    enum: [
-        'APPROVED',
-        'REJECTED',
-        'IMPORT_PENDING',
-        'IMPORT_REJECTED',
-        'IMPORT_APPROVED',
-        'BANK_SYNC_PENDING',
-        'BANK_SYNC_APPROVED',
-        'BANK_SYNC_REJECTED'
-    ]
+    enum: ['APPROVED', 'REJECTED', 'IMPORT_PENDING', 'IMPORT_REJECTED', 'IMPORT_APPROVED']
 } as const
 
 export const ImportTransactionStatusEnumSchema = {

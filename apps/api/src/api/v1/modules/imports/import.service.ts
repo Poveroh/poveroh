@@ -7,6 +7,7 @@ import type {
     ImportData,
     ImportFilters,
     ImportTransactionDataResponse,
+    ReadedTransaction,
     TransactionStatusEnum,
     UpdateImportRequest
 } from '@poveroh/types'
@@ -313,5 +314,79 @@ export class ImportService extends BaseService {
      */
     async doesImportExist(id: string): Promise<boolean> {
         return this.importRepository.exists(this.context.currentUser.id, id)
+    }
+
+    /**
+     * Returns the id of the import a bank-sync run should append its new transactions to: an
+     * already-open batch for the same financial account and bank connection when one exists,
+     * otherwise a freshly created one. This lets bank-sync transactions flow through the same
+     * pending-review lifecycle (approve, reject, complete, rollback) as CSV imports.
+     * @param financialAccountId The financial account the synced transactions belong to.
+     * @param bankConnectionId The bank connection the synced transactions come from.
+     * @param institutionName The connection's institution name, used to title a newly created import.
+     * @returns A promise that resolves to the id of the import to append transactions to.
+     */
+    async getOrCreateBankSyncImport(
+        financialAccountId: string,
+        bankConnectionId: string,
+        institutionName?: string
+    ): Promise<string> {
+        const userId = this.context.currentUser.id
+
+        const existing = await this.importRepository.findOpenBankSyncImport(
+            userId,
+            financialAccountId,
+            bankConnectionId
+        )
+        if (existing) return existing.id
+
+        const importId = uuidv4()
+        const now = new Date()
+        const title = `Bank sync ${institutionName ? `— ${institutionName} ` : ''}at ${now.toLocaleString()}`
+
+        await this.importRepository.create(prisma, {
+            id: importId,
+            userId,
+            financialAccountId,
+            title,
+            status: 'IMPORT_PENDING',
+            createdAt: now
+        })
+
+        return importId
+    }
+
+    /**
+     * Creates a single transaction under an existing import, enriched with the same history-based
+     * category/subcategory/icon/note lookup CSV imports get. Used by bank-sync to file a newly
+     * synced transaction under its batch import, tagging it with the bank-sync linkage fields
+     * `normalizeTransaction` doesn't know about.
+     * @param importId The import the transaction is filed under.
+     * @param financialAccountId The financial account the transaction's amount belongs to.
+     * @param rawTransaction The raw transaction data read from the source.
+     * @param bankSyncLinkage The bank-sync fields to attach to the created transaction and amount.
+     * @returns A promise that resolves once the transaction and amount have been created.
+     */
+    async createEnrichedTransaction(
+        importId: string,
+        financialAccountId: string,
+        rawTransaction: ReadedTransaction,
+        bankSyncLinkage: { bankConnectionId: string; bankSyncAccountId: string; externalTransactionId: string }
+    ): Promise<void> {
+        const userId = this.context.currentUser.id
+
+        const { transactions, amounts } = await ImportHelper.normalizeTransaction(
+            userId,
+            financialAccountId,
+            importId,
+            [rawTransaction]
+        )
+
+        transactions[0].bankConnectionId = bankSyncLinkage.bankConnectionId
+        amounts[0].bankSyncAccountId = bankSyncLinkage.bankSyncAccountId
+        amounts[0].externalTransactionId = bankSyncLinkage.externalTransactionId
+
+        await this.importRepository.createTransactions(prisma, transactions)
+        await this.importRepository.createAmounts(prisma, amounts)
     }
 }

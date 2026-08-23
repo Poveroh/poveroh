@@ -1,11 +1,13 @@
-import type { BankSyncTriggerEnum, CurrencyEnum, ExternalTransaction } from '@poveroh/types'
+import type { BankSyncTriggerEnum, ExternalTransaction } from '@poveroh/types'
 import { createBankSyncClient } from '@poveroh/bank-sync'
 import prisma from '@poveroh/prisma'
 import { logger } from '@poveroh/logger/server'
 import { BadRequestError } from '@/utils'
+import { AccountBalanceService } from '@/v1/modules/financial-accounts/account-balance/account-balance.service'
 import { BaseService } from '@/v1/modules/base/base.service'
 import { eventBus } from '@/v1/worker/events/event-bus'
 import { getBankSyncProviderDefinition } from '@/v1/content/template/bank-sync-providers'
+import { ImportService } from '@/v1/modules/imports/import.service'
 import { BankConnectionService } from '../connections/bank-connection.service'
 import { BankSyncAppCredentialService } from '../app-credentials/bank-sync-app-credential.service'
 import { BankSyncAccountRepository, type BankSyncAccountRecord } from '../accounts/bank-sync-account.repository'
@@ -22,6 +24,8 @@ export class BankSyncService extends BaseService {
     private readonly appCredentialService = new BankSyncAppCredentialService()
     private readonly accountRepository = new BankSyncAccountRepository()
     private readonly runRepository = new BankSyncRunRepository()
+    private readonly importService = new ImportService()
+    private readonly accountBalanceService = new AccountBalanceService()
 
     constructor() {
         super('bank-sync')
@@ -66,11 +70,21 @@ export class BankSyncService extends BaseService {
                     cursor: account.syncCursor
                 })
 
+                let bankSyncImportId: string | undefined
+                const resolveBankSyncImportId = async (): Promise<string> => {
+                    bankSyncImportId ??= await this.importService.getOrCreateBankSyncImport(
+                        account.financialAccountId,
+                        connection.id,
+                        connection.institutionName ?? undefined
+                    )
+                    return bankSyncImportId
+                }
+
                 for (const transaction of result.added) {
-                    await this.upsertTransaction(userId, connection.id, account, transaction)
+                    await this.upsertTransaction(connection.id, resolveBankSyncImportId, account, transaction)
                 }
                 for (const transaction of result.modified) {
-                    await this.upsertTransaction(userId, connection.id, account, transaction)
+                    await this.upsertTransaction(connection.id, resolveBankSyncImportId, account, transaction)
                 }
                 if (result.removedExternalIds.length > 0) {
                     await this.removeTransactions(account.id, result.removedExternalIds)
@@ -130,16 +144,18 @@ export class BankSyncService extends BaseService {
 
     /**
      * Upserts a single external transaction, keyed by `(bankSyncAccountId, externalTransactionId)`:
-     * updates the transaction and amount if already synced, otherwise creates both.
-     * @param userId The owner of the transaction being created or updated.
+     * updates the transaction and amount if already synced, otherwise creates both, enriching the new
+     * transaction with the same history-based category/subcategory/icon/note lookup CSV imports use and
+     * filing it under the bank-sync batch import so it goes through the normal Import review lifecycle.
      * @param connectionId The bank connection the transaction belongs to.
+     * @param resolveBankSyncImportId Lazily resolves the batch import id to file a newly created transaction under.
      * @param account The bank-sync account the transaction was fetched for.
      * @param transaction The provider's transaction to upsert.
      * @returns A promise that resolves once the transaction is persisted.
      */
     private async upsertTransaction(
-        userId: string,
         connectionId: string,
+        resolveBankSyncImportId: () => Promise<string>,
         account: BankSyncAccountRecord,
         transaction: ExternalTransaction
     ): Promise<void> {
@@ -150,49 +166,50 @@ export class BankSyncService extends BaseService {
                     externalTransactionId: transaction.externalId
                 }
             },
-            select: { id: true, transactionId: true }
+            select: { id: true, transactionId: true, transaction: { select: { status: true, date: true } } }
         })
 
         const action = transaction.amount < 0 ? 'EXPENSES' : 'INCOME'
         const amount = Math.abs(transaction.amount)
+        const newDate = new Date(transaction.date)
 
         if (existingAmount) {
             await prisma.transaction.update({
                 where: { id: existingAmount.transactionId },
-                data: { date: new Date(transaction.date), title: transaction.description }
+                data: { date: newDate, title: transaction.description }
             })
             await prisma.amount.update({
                 where: { id: existingAmount.id },
                 data: { amount, currency: transaction.currency, action }
             })
+
+            // Already-approved transactions count toward the balance, so a change to their amount or
+            // date requires rebuilding the daily series from whichever date moved first.
+            if (existingAmount.transaction.status === 'APPROVED') {
+                const fromDate = new Date(Math.min(existingAmount.transaction.date.getTime(), newDate.getTime()))
+                await this.accountBalanceService.recomputeAccountsAndSnapshots([account.financialAccountId], fromDate)
+            }
             return
         }
 
-        await prisma.transaction.create({
-            data: {
-                userId,
-                date: new Date(transaction.date),
-                title: transaction.description,
-                action,
-                status: 'BANK_SYNC_PENDING',
+        const importId = await resolveBankSyncImportId()
+
+        await this.importService.createEnrichedTransaction(
+            importId,
+            account.financialAccountId,
+            { date: transaction.date, amount, action, currency: transaction.currency, title: transaction.description },
+            {
                 bankConnectionId: connectionId,
-                amounts: {
-                    create: {
-                        amount,
-                        currency: transaction.currency,
-                        action,
-                        financialAccountId: account.financialAccountId,
-                        bankSyncAccountId: account.id,
-                        externalTransactionId: transaction.externalId
-                    }
-                }
+                bankSyncAccountId: account.id,
+                externalTransactionId: transaction.externalId
             }
-        })
+        )
     }
 
     /**
      * Soft-deletes the transactions and amounts for external transactions the provider reported
-     * as removed.
+     * as removed, rebuilding the balance of any account whose already-approved transaction was
+     * removed, since those no longer count toward the balance once deleted.
      * @param bankSyncAccountId The bank-sync account the removed transactions belong to.
      * @param externalIds The provider's external transaction ids to remove.
      * @returns A promise that resolves once the matching rows are soft-deleted.
@@ -200,7 +217,11 @@ export class BankSyncService extends BaseService {
     private async removeTransactions(bankSyncAccountId: string, externalIds: string[]): Promise<void> {
         const amounts = await prisma.amount.findMany({
             where: { bankSyncAccountId, externalTransactionId: { in: externalIds } },
-            select: { transactionId: true }
+            select: {
+                transactionId: true,
+                financialAccountId: true,
+                transaction: { select: { status: true, date: true } }
+            }
         })
         if (amounts.length === 0) return
 
@@ -209,5 +230,12 @@ export class BankSyncService extends BaseService {
 
         await prisma.transaction.updateMany({ where: { id: { in: transactionIds } }, data: { deletedAt: now } })
         await prisma.amount.updateMany({ where: { transactionId: { in: transactionIds } }, data: { deletedAt: now } })
+
+        const approved = amounts.filter(amount => amount.transaction.status === 'APPROVED')
+        if (approved.length === 0) return
+
+        const fromDate = new Date(Math.min(...approved.map(amount => amount.transaction.date.getTime())))
+        const financialAccountIds = [...new Set(approved.map(amount => amount.financialAccountId))]
+        await this.accountBalanceService.recomputeAccountsAndSnapshots(financialAccountIds, fromDate)
     }
 }

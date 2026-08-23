@@ -32,3 +32,11 @@ export type ReadedTransaction = {
     title: string
     originalRow?: Record<string, any>
 }
+
+export type TransactionEnrichment = {
+    title: string
+    categoryId: string | null
+    subcategoryId: string | null
+    icon: string | null
+    note: string | null
+}
