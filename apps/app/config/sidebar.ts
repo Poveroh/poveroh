@@ -80,6 +80,11 @@ export const SETTINGS_SIDEBAR: SidebarSection[] = [
                 title: 'providers.title',
                 href: '/settings/providers',
                 icon: 'user'
+            },
+            {
+                title: 'bankSync.title',
+                href: '/settings/bank-sync',
+                icon: 'landmark'
             }
         ]
     },

@@ -12,5 +12,7 @@ export const MODAL_IDS = {
     OTHER_ASSETS_DIALOG: 'other-assets-dialog',
     TRANSACTION: 'transaction-dialog',
     IMPORT_ROLLBACK_CONFIRM: 'import-dialog',
-    INVESTMENT_ASSET: 'investment-asset-dialog'
+    INVESTMENT_ASSET: 'investment-asset-dialog',
+    BANK_APP_CREDENTIALS: 'bank-app-credentials-dialog',
+    BANK_APP_ACCOUNT_MAPPING: 'bank-app-account-mapping-dialog'
 }
