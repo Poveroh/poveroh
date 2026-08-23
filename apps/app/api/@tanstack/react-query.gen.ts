@@ -7,8 +7,10 @@ import {
     approveImportTransactions,
     changeEmail,
     changePassword,
+    completeBankSyncConnection,
     completeImport,
     createAssetTransaction,
+    createBankSyncConnection,
     createCategory,
     createCollectibleAsset,
     createFinancialAccount,
@@ -26,6 +28,8 @@ import {
     deleteAssets,
     deleteAssetTransaction,
     deleteAssetTransactions,
+    deleteBankSyncConnection,
+    deleteBankSyncProviderAppCredential,
     deleteCategories,
     deleteCategory,
     deleteFinancialAccount,
@@ -53,6 +57,7 @@ import {
     getAuthError,
     getAuthOk,
     getAuthVerifyEmail,
+    getBankSyncProviders,
     getCategories,
     getCategoryById,
     getDashboardLayout,
@@ -76,7 +81,10 @@ import {
     getTransactionById,
     getTransactions,
     getTrendReport,
+    linkBankSyncAccounts,
     linkSocialAccount,
+    listBankSyncConnections,
+    listBankSyncExternalAccounts,
     listUserAccounts,
     listUserSessions,
     type Options,
@@ -91,6 +99,7 @@ import {
     resetPassword,
     resetPasswordCallback,
     rollbackImport,
+    saveBankSyncProviderAppCredential,
     saveMarketDataProviderCredential,
     searchMarketInstruments,
     sendVerificationEmail,
@@ -98,6 +107,7 @@ import {
     signOut,
     signUpWithEmailAndPassword,
     socialSignIn,
+    triggerBankSync,
     updateAssetTransaction,
     updateAuthenticatedUser,
     updateAuthenticatedUserPreferences,
@@ -127,12 +137,18 @@ import type {
     ChangePasswordData,
     ChangePasswordError,
     ChangePasswordResponse,
+    CompleteBankSyncConnectionData,
+    CompleteBankSyncConnectionError,
+    CompleteBankSyncConnectionResponse2,
     CompleteImportData,
     CompleteImportError,
     CompleteImportResponse,
     CreateAssetTransactionData,
     CreateAssetTransactionError,
     CreateAssetTransactionResponse2,
+    CreateBankSyncConnectionData,
+    CreateBankSyncConnectionError,
+    CreateBankSyncConnectionResponse2,
     CreateCategoryData,
     CreateCategoryError,
     CreateCategoryResponse2,
@@ -184,6 +200,12 @@ import type {
     DeleteAssetTransactionsData,
     DeleteAssetTransactionsError,
     DeleteAssetTransactionsResponse,
+    DeleteBankSyncConnectionData,
+    DeleteBankSyncConnectionError,
+    DeleteBankSyncConnectionResponse2,
+    DeleteBankSyncProviderAppCredentialData,
+    DeleteBankSyncProviderAppCredentialError,
+    DeleteBankSyncProviderAppCredentialResponse2,
     DeleteCategoriesData,
     DeleteCategoriesError,
     DeleteCategoriesResponse,
@@ -264,6 +286,9 @@ import type {
     GetAuthVerifyEmailData,
     GetAuthVerifyEmailError,
     GetAuthVerifyEmailResponse,
+    GetBankSyncProvidersData,
+    GetBankSyncProvidersError,
+    GetBankSyncProvidersResponse2,
     GetCategoriesData,
     GetCategoriesError,
     GetCategoriesResponse,
@@ -331,9 +356,18 @@ import type {
     GetTrendReportData,
     GetTrendReportError,
     GetTrendReportResponse,
+    LinkBankSyncAccountsData,
+    LinkBankSyncAccountsError,
+    LinkBankSyncAccountsResponse2,
     LinkSocialAccountData,
     LinkSocialAccountError,
     LinkSocialAccountResponse,
+    ListBankSyncConnectionsData,
+    ListBankSyncConnectionsError,
+    ListBankSyncConnectionsResponse2,
+    ListBankSyncExternalAccountsData,
+    ListBankSyncExternalAccountsError,
+    ListBankSyncExternalAccountsResponse,
     ListUserAccountsData,
     ListUserAccountsError,
     ListUserAccountsResponse,
@@ -372,6 +406,9 @@ import type {
     RollbackImportData,
     RollbackImportError,
     RollbackImportResponse,
+    SaveBankSyncProviderAppCredentialData,
+    SaveBankSyncProviderAppCredentialError,
+    SaveBankSyncProviderAppCredentialResponse,
     SaveMarketDataProviderCredentialData,
     SaveMarketDataProviderCredentialError,
     SaveMarketDataProviderCredentialResponse,
@@ -393,6 +430,9 @@ import type {
     SocialSignInData,
     SocialSignInError,
     SocialSignInResponse,
+    TriggerBankSyncData,
+    TriggerBankSyncError,
+    TriggerBankSyncResponse2,
     UpdateAssetTransactionData,
     UpdateAssetTransactionError,
     UpdateAssetTransactionResponse2,
@@ -758,6 +798,282 @@ export const getAssetByIdOptions = (options: Options<GetAssetByIdData>) =>
         },
         queryKey: getAssetByIdQueryKey(options)
     })
+
+export const getBankSyncProvidersQueryKey = (options?: Options<GetBankSyncProvidersData>) =>
+    createQueryKey('getBankSyncProviders', options)
+
+/**
+ * Get bank-sync providers
+ *
+ * List the enabled open-banking providers and how many connections the current user has per provider
+ */
+export const getBankSyncProvidersOptions = (options?: Options<GetBankSyncProvidersData>) =>
+    queryOptions<
+        GetBankSyncProvidersResponse2,
+        GetBankSyncProvidersError,
+        GetBankSyncProvidersResponse2,
+        ReturnType<typeof getBankSyncProvidersQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await getBankSyncProviders({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: getBankSyncProvidersQueryKey(options)
+    })
+
+/**
+ * Delete a provider app-level credential
+ *
+ * Deletes the authenticated user's encrypted app-level credential for a provider
+ */
+export const deleteBankSyncProviderAppCredentialMutation = (
+    options?: Partial<Options<DeleteBankSyncProviderAppCredentialData>>
+): UseMutationOptions<
+    DeleteBankSyncProviderAppCredentialResponse2,
+    DeleteBankSyncProviderAppCredentialError,
+    Options<DeleteBankSyncProviderAppCredentialData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteBankSyncProviderAppCredentialResponse2,
+        DeleteBankSyncProviderAppCredentialError,
+        Options<DeleteBankSyncProviderAppCredentialData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteBankSyncProviderAppCredential({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Save a provider app-level credential
+ *
+ * Encrypts and stores the self-hosted instance owner's own app-level credentials for a provider (e.g. a Plaid client id/secret), reused across every connection made to it
+ */
+export const saveBankSyncProviderAppCredentialMutation = (
+    options?: Partial<Options<SaveBankSyncProviderAppCredentialData>>
+): UseMutationOptions<
+    SaveBankSyncProviderAppCredentialResponse,
+    SaveBankSyncProviderAppCredentialError,
+    Options<SaveBankSyncProviderAppCredentialData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        SaveBankSyncProviderAppCredentialResponse,
+        SaveBankSyncProviderAppCredentialError,
+        Options<SaveBankSyncProviderAppCredentialData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await saveBankSyncProviderAppCredential({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const listBankSyncConnectionsQueryKey = (options?: Options<ListBankSyncConnectionsData>) =>
+    createQueryKey('listBankSyncConnections', options)
+
+/**
+ * List bank connections
+ *
+ * List the authenticated user's bank connections
+ */
+export const listBankSyncConnectionsOptions = (options?: Options<ListBankSyncConnectionsData>) =>
+    queryOptions<
+        ListBankSyncConnectionsResponse2,
+        ListBankSyncConnectionsError,
+        ListBankSyncConnectionsResponse2,
+        ReturnType<typeof listBankSyncConnectionsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await listBankSyncConnections({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: listBankSyncConnectionsQueryKey(options)
+    })
+
+/**
+ * Start a bank connection
+ *
+ * Starts a hosted connect flow, or completes a credentials-flow connection inline
+ */
+export const createBankSyncConnectionMutation = (
+    options?: Partial<Options<CreateBankSyncConnectionData>>
+): UseMutationOptions<
+    CreateBankSyncConnectionResponse2,
+    CreateBankSyncConnectionError,
+    Options<CreateBankSyncConnectionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CreateBankSyncConnectionResponse2,
+        CreateBankSyncConnectionError,
+        Options<CreateBankSyncConnectionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await createBankSyncConnection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Complete a hosted bank connection
+ *
+ * Exchanges the provider's hosted-flow callback payload and links the connection
+ */
+export const completeBankSyncConnectionMutation = (
+    options?: Partial<Options<CompleteBankSyncConnectionData>>
+): UseMutationOptions<
+    CompleteBankSyncConnectionResponse2,
+    CompleteBankSyncConnectionError,
+    Options<CompleteBankSyncConnectionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        CompleteBankSyncConnectionResponse2,
+        CompleteBankSyncConnectionError,
+        Options<CompleteBankSyncConnectionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await completeBankSyncConnection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+export const listBankSyncExternalAccountsQueryKey = (options: Options<ListBankSyncExternalAccountsData>) =>
+    createQueryKey('listBankSyncExternalAccounts', options)
+
+/**
+ * List external accounts on a connection
+ *
+ * Lists the accounts the provider reports for this connection, before mapping to a FinancialAccount
+ */
+export const listBankSyncExternalAccountsOptions = (options: Options<ListBankSyncExternalAccountsData>) =>
+    queryOptions<
+        ListBankSyncExternalAccountsResponse,
+        ListBankSyncExternalAccountsError,
+        ListBankSyncExternalAccountsResponse,
+        ReturnType<typeof listBankSyncExternalAccountsQueryKey>
+    >({
+        queryFn: async ({ queryKey, signal }) => {
+            const { data } = await listBankSyncExternalAccounts({
+                ...options,
+                ...queryKey[0],
+                signal,
+                throwOnError: true
+            })
+            return data
+        },
+        queryKey: listBankSyncExternalAccountsQueryKey(options)
+    })
+
+/**
+ * Map external accounts to FinancialAccounts
+ *
+ * Persists the mapping between the connection external accounts and existing or newly created FinancialAccounts
+ */
+export const linkBankSyncAccountsMutation = (
+    options?: Partial<Options<LinkBankSyncAccountsData>>
+): UseMutationOptions<LinkBankSyncAccountsResponse2, LinkBankSyncAccountsError, Options<LinkBankSyncAccountsData>> => {
+    const mutationOptions: UseMutationOptions<
+        LinkBankSyncAccountsResponse2,
+        LinkBankSyncAccountsError,
+        Options<LinkBankSyncAccountsData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await linkBankSyncAccounts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Trigger a manual sync
+ *
+ * Dispatches the same sync job the nightly cron uses, for this connection only
+ */
+export const triggerBankSyncMutation = (
+    options?: Partial<Options<TriggerBankSyncData>>
+): UseMutationOptions<TriggerBankSyncResponse2, TriggerBankSyncError, Options<TriggerBankSyncData>> => {
+    const mutationOptions: UseMutationOptions<
+        TriggerBankSyncResponse2,
+        TriggerBankSyncError,
+        Options<TriggerBankSyncData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await triggerBankSync({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
+
+/**
+ * Revoke a bank connection
+ *
+ * Soft-deletes the connection and wipes its encrypted secret
+ */
+export const deleteBankSyncConnectionMutation = (
+    options?: Partial<Options<DeleteBankSyncConnectionData>>
+): UseMutationOptions<
+    DeleteBankSyncConnectionResponse2,
+    DeleteBankSyncConnectionError,
+    Options<DeleteBankSyncConnectionData>
+> => {
+    const mutationOptions: UseMutationOptions<
+        DeleteBankSyncConnectionResponse2,
+        DeleteBankSyncConnectionError,
+        Options<DeleteBankSyncConnectionData>
+    > = {
+        mutationFn: async fnOptions => {
+            const { data } = await deleteBankSyncConnection({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            })
+            return data
+        }
+    }
+    return mutationOptions
+}
 
 /**
  * Create marketable asset

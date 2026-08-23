@@ -1678,6 +1678,621 @@
                 },
                 "required": ["percentage", "cyclePeriod", "cycleNumber"]
             },
+            "BankSyncCredentialInput": {
+                "type": "object",
+                "additionalProperties": {
+                    "nullable": true
+                }
+            },
+            "ExternalBankAccount": {
+                "type": "object",
+                "properties": {
+                    "externalAccountId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "mask": {
+                        "type": "string"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": ["externalAccountId", "name", "currency"]
+            },
+            "ListExternalBankAccountsResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExternalBankAccount"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "BankSyncAccountMapping": {
+                "type": "object",
+                "properties": {
+                    "externalAccountId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": ["externalAccountId", "financialAccountId"]
+            },
+            "LinkBankSyncAccountsRequest": {
+                "type": "object",
+                "properties": {
+                    "mappings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncAccountMapping"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": ["mappings"]
+            },
+            "CreateBankSyncAccountRequest": {
+                "type": "object",
+                "properties": {
+                    "connectionId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "externalAccountId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "externalAccountName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "currency": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CurrencyEnum"
+                            },
+                            {
+                                "nullable": true
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "connectionId",
+                    "financialAccountId",
+                    "externalAccountId",
+                    "externalAccountName",
+                    "currency"
+                ]
+            },
+            "LinkBankSyncAccountForm": {
+                "type": "object",
+                "properties": {
+                    "mappings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncAccountMapping"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": ["mappings"]
+            },
+            "BankSyncAccount": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "externalAccountId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "externalAccountName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "lastSyncedAt": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "date-time"
+                    }
+                },
+                "required": ["id", "externalAccountId", "externalAccountName", "financialAccountId", "lastSyncedAt"]
+            },
+            "LinkBankSyncAccountsResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncAccount"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "BankSyncProviderPathParams": {
+                "type": "object",
+                "properties": {
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": ["providerId"]
+            },
+            "UpdateBankSyncProviderAppCredentialRequest": {
+                "type": "object",
+                "properties": {
+                    "credentials": {
+                        "$ref": "#/components/schemas/BankSyncCredentialInput"
+                    }
+                },
+                "required": ["credentials"]
+            },
+            "UpdateBankSyncProviderAppCredentialResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "DeleteBankSyncProviderAppCredentialResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "BankSyncConnectionPathParams": {
+                "type": "object",
+                "properties": {
+                    "connectionId": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": ["connectionId"]
+            },
+            "BankSyncConnection": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/BankSyncConnectionStatusEnum"
+                    },
+                    "externalConnectionId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "institutionName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastSyncedAt": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "date-time"
+                    },
+                    "lastSyncError": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "userId",
+                    "providerId",
+                    "status",
+                    "externalConnectionId",
+                    "institutionName",
+                    "lastSyncedAt",
+                    "lastSyncError",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "BankSyncConnectionStatusEnum": {
+                "type": "string",
+                "enum": ["PENDING", "LINKED", "ERROR", "REAUTH_REQUIRED", "REVOKED"]
+            },
+            "BankSyncConnectionData": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/BankSyncConnectionStatusEnum"
+                    },
+                    "externalConnectionId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "institutionName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastSyncedAt": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "date-time"
+                    },
+                    "lastSyncError": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "providerId",
+                    "status",
+                    "externalConnectionId",
+                    "institutionName",
+                    "lastSyncedAt",
+                    "lastSyncError",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "ListBankSyncConnectionsResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncConnectionData"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "CreateBankSyncConnectionRequest": {
+                "type": "object",
+                "properties": {
+                    "providerId": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "credentials": {
+                        "$ref": "#/components/schemas/BankSyncCredentialInput"
+                    },
+                    "appCredentials": {
+                        "$ref": "#/components/schemas/BankSyncCredentialInput"
+                    }
+                },
+                "required": ["providerId"]
+            },
+            "BankSyncConnectionWithConnectUrlResponse": {
+                "type": "object",
+                "properties": {
+                    "connection": {
+                        "$ref": "#/components/schemas/BankSyncConnection"
+                    },
+                    "connectUrl": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": ["connection", "connectUrl"]
+            },
+            "CreateBankSyncConnectionResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BankSyncConnectionWithConnectUrlResponse"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "CompleteBankSyncConnectionRequest": {
+                "type": "object",
+                "properties": {
+                    "callbackPayload": {
+                        "$ref": "#/components/schemas/BankSyncCredentialInput"
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/BankSyncCredentialInput"
+                    }
+                }
+            },
+            "CompleteBankSyncConnectionResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BankSyncConnection"
+                            },
+                            {
+                                "description": "Response data"
+                            }
+                        ]
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "DeleteBankSyncConnectionResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "TriggerBankSyncResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    }
+                },
+                "required": ["success", "message"]
+            },
+            "BankSyncCredentialField": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "label": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "secret": {
+                        "type": "boolean"
+                    }
+                },
+                "required": ["key", "label"]
+            },
+            "BankSyncProvider": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "label": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "logoUrl": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/BankSyncProviderKindEnum"
+                    },
+                    "connectFlow": {
+                        "$ref": "#/components/schemas/BankSyncConnectFlowEnum"
+                    },
+                    "connectMechanism": {
+                        "$ref": "#/components/schemas/BankSyncConnectMechanismEnum"
+                    },
+                    "credentialFields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncCredentialField"
+                        }
+                    },
+                    "appCredentialFields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncCredentialField"
+                        }
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "connectionCount": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "configured": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "label",
+                    "logoUrl",
+                    "kind",
+                    "connectFlow",
+                    "credentialFields",
+                    "appCredentialFields",
+                    "enabled",
+                    "connectionCount",
+                    "configured"
+                ]
+            },
+            "BankSyncProviderKindEnum": {
+                "type": "string",
+                "enum": ["aggregator", "direct"]
+            },
+            "BankSyncConnectFlowEnum": {
+                "type": "string",
+                "enum": ["hosted", "credentials"]
+            },
+            "BankSyncConnectMechanismEnum": {
+                "type": "string",
+                "enum": ["widget", "redirect"]
+            },
+            "GetBankSyncProvidersResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "description": "Indicates if the request was successful"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Optional success message"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BankSyncProvider"
+                        },
+                        "description": "Response data"
+                    }
+                },
+                "required": ["success", "message", "data"]
+            },
+            "EncryptedPayload": {
+                "type": "object",
+                "properties": {
+                    "ciphertext": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "iv": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "authTag": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "algo": {
+                        "type": "string"
+                    }
+                }
+            },
             "Category": {
                 "type": "object",
                 "properties": {
@@ -2487,11 +3102,28 @@
             },
             "TransactionStatusEnum": {
                 "type": "string",
-                "enum": ["APPROVED", "REJECTED", "IMPORT_PENDING", "IMPORT_REJECTED", "IMPORT_APPROVED"]
+                "enum": [
+                    "APPROVED",
+                    "REJECTED",
+                    "IMPORT_PENDING",
+                    "IMPORT_REJECTED",
+                    "IMPORT_APPROVED",
+                    "BANK_SYNC_PENDING",
+                    "BANK_SYNC_APPROVED",
+                    "BANK_SYNC_REJECTED"
+                ]
             },
             "ImportTransactionStatusEnum": {
                 "type": "string",
                 "enum": ["IMPORT_APPROVED", "IMPORT_REJECTED"]
+            },
+            "BankSyncTriggerEnum": {
+                "type": "string",
+                "enum": ["CRON", "MANUAL", "WEBHOOK", "INITIAL"]
+            },
+            "BankSyncRunStatusEnum": {
+                "type": "string",
+                "enum": ["RUNNING", "SUCCESS", "FAILED", "PARTIAL"]
             },
             "RememberPeriodEnum": {
                 "type": "string",
@@ -2619,6 +3251,7 @@
                     "SNAPSHOT",
                     "DASHBOARD_LAYOUT",
                     "MARKET_DATA_CREDENTIAL",
+                    "BANK_CONNECTION",
                     "OTHER"
                 ]
             },
@@ -8144,6 +8777,653 @@
                     },
                     "404": {
                         "description": "Asset not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/providers": {
+            "get": {
+                "tags": ["Bank Sync"],
+                "operationId": "getBankSyncProviders",
+                "summary": "Get bank-sync providers",
+                "description": "List the enabled open-banking providers and how many connections the current user has per provider",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Provider list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetBankSyncProvidersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/providers/{providerId}/app-credential": {
+            "put": {
+                "tags": ["Bank Sync"],
+                "operationId": "saveBankSyncProviderAppCredential",
+                "summary": "Save a provider app-level credential",
+                "description": "Encrypts and stores the self-hosted instance owner's own app-level credentials for a provider (e.g. a Plaid client id/secret), reused across every connection made to it",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBankSyncProviderAppCredentialRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credential saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateBankSyncProviderAppCredentialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Bank Sync"],
+                "operationId": "deleteBankSyncProviderAppCredential",
+                "summary": "Delete a provider app-level credential",
+                "description": "Deletes the authenticated user's encrypted app-level credential for a provider",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "required": true,
+                        "name": "providerId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Credential deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteBankSyncProviderAppCredentialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/connections": {
+            "get": {
+                "tags": ["Bank Sync"],
+                "operationId": "listBankSyncConnections",
+                "summary": "List bank connections",
+                "description": "List the authenticated user's bank connections",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connection list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListBankSyncConnectionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Bank Sync"],
+                "operationId": "createBankSyncConnection",
+                "summary": "Start a bank connection",
+                "description": "Starts a hosted connect flow, or completes a credentials-flow connection inline",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBankSyncConnectionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection started or linked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateBankSyncConnectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/connections/{connectionId}/complete": {
+            "post": {
+                "tags": ["Bank Sync"],
+                "operationId": "completeBankSyncConnection",
+                "summary": "Complete a hosted bank connection",
+                "description": "Exchanges the provider's hosted-flow callback payload and links the connection",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "connectionId",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompleteBankSyncConnectionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection linked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CompleteBankSyncConnectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Connection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/connections/{connectionId}/accounts": {
+            "get": {
+                "tags": ["Bank Sync"],
+                "operationId": "listBankSyncExternalAccounts",
+                "summary": "List external accounts on a connection",
+                "description": "Lists the accounts the provider reports for this connection, before mapping to a FinancialAccount",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "connectionId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "External account list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListExternalBankAccountsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Connection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Bank Sync"],
+                "operationId": "linkBankSyncAccounts",
+                "summary": "Map external accounts to FinancialAccounts",
+                "description": "Persists the mapping between the connection external accounts and existing or newly created FinancialAccounts",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "connectionId",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LinkBankSyncAccountsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Accounts linked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LinkBankSyncAccountsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Connection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/connections/{connectionId}/sync": {
+            "post": {
+                "tags": ["Bank Sync"],
+                "operationId": "triggerBankSync",
+                "summary": "Trigger a manual sync",
+                "description": "Dispatches the same sync job the nightly cron uses, for this connection only",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "connectionId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sync dispatched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TriggerBankSyncResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Connection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bank-sync/connections/{connectionId}": {
+            "delete": {
+                "tags": ["Bank Sync"],
+                "operationId": "deleteBankSyncConnection",
+                "summary": "Revoke a bank connection",
+                "description": "Soft-deletes the connection and wipes its encrypted secret",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true,
+                        "name": "connectionId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Connection revoked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteBankSyncConnectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Connection not found",
                         "content": {
                             "application/json": {
                                 "schema": {

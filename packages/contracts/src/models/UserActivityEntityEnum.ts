@@ -18,4 +18,5 @@ export type UserActivityEntityEnum =
     | 'SNAPSHOT'
     | 'DASHBOARD_LAYOUT'
     | 'MARKET_DATA_CREDENTIAL'
+    | 'BANK_CONNECTION'
     | 'OTHER'

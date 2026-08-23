@@ -19,12 +19,18 @@ import type {
     ChangePasswordData,
     ChangePasswordErrors,
     ChangePasswordResponses,
+    CompleteBankSyncConnectionData,
+    CompleteBankSyncConnectionErrors,
+    CompleteBankSyncConnectionResponses,
     CompleteImportData,
     CompleteImportErrors,
     CompleteImportResponses,
     CreateAssetTransactionData,
     CreateAssetTransactionErrors,
     CreateAssetTransactionResponses,
+    CreateBankSyncConnectionData,
+    CreateBankSyncConnectionErrors,
+    CreateBankSyncConnectionResponses,
     CreateCategoryData,
     CreateCategoryErrors,
     CreateCategoryResponses,
@@ -76,6 +82,12 @@ import type {
     DeleteAssetTransactionsData,
     DeleteAssetTransactionsErrors,
     DeleteAssetTransactionsResponses,
+    DeleteBankSyncConnectionData,
+    DeleteBankSyncConnectionErrors,
+    DeleteBankSyncConnectionResponses,
+    DeleteBankSyncProviderAppCredentialData,
+    DeleteBankSyncProviderAppCredentialErrors,
+    DeleteBankSyncProviderAppCredentialResponses,
     DeleteCategoriesData,
     DeleteCategoriesErrors,
     DeleteCategoriesResponses,
@@ -156,6 +168,9 @@ import type {
     GetAuthVerifyEmailData,
     GetAuthVerifyEmailErrors,
     GetAuthVerifyEmailResponses,
+    GetBankSyncProvidersData,
+    GetBankSyncProvidersErrors,
+    GetBankSyncProvidersResponses,
     GetCategoriesData,
     GetCategoriesErrors,
     GetCategoriesResponses,
@@ -225,9 +240,18 @@ import type {
     GetTrendReportData,
     GetTrendReportErrors,
     GetTrendReportResponses,
+    LinkBankSyncAccountsData,
+    LinkBankSyncAccountsErrors,
+    LinkBankSyncAccountsResponses,
     LinkSocialAccountData,
     LinkSocialAccountErrors,
     LinkSocialAccountResponses,
+    ListBankSyncConnectionsData,
+    ListBankSyncConnectionsErrors,
+    ListBankSyncConnectionsResponses,
+    ListBankSyncExternalAccountsData,
+    ListBankSyncExternalAccountsErrors,
+    ListBankSyncExternalAccountsResponses,
     ListUserAccountsData,
     ListUserAccountsErrors,
     ListUserAccountsResponses,
@@ -266,6 +290,9 @@ import type {
     RollbackImportData,
     RollbackImportErrors,
     RollbackImportResponses,
+    SaveBankSyncProviderAppCredentialData,
+    SaveBankSyncProviderAppCredentialErrors,
+    SaveBankSyncProviderAppCredentialResponses,
     SaveMarketDataProviderCredentialData,
     SaveMarketDataProviderCredentialErrors,
     SaveMarketDataProviderCredentialResponses,
@@ -287,6 +314,9 @@ import type {
     SocialSignInData,
     SocialSignInErrors,
     SocialSignInResponses,
+    TriggerBankSyncData,
+    TriggerBankSyncErrors,
+    TriggerBankSyncResponses,
     UpdateAssetTransactionData,
     UpdateAssetTransactionErrors,
     UpdateAssetTransactionResponses,
@@ -520,6 +550,182 @@ export const getAssetById = <ThrowOnError extends boolean = false>(
     (options.client ?? client).get<GetAssetByIdResponses, GetAssetByIdErrors, ThrowOnError>({
         security: [{ scheme: 'bearer', type: 'http' }],
         url: '/assets/{id}',
+        ...options
+    })
+
+/**
+ * Get bank-sync providers
+ *
+ * List the enabled open-banking providers and how many connections the current user has per provider
+ */
+export const getBankSyncProviders = <ThrowOnError extends boolean = false>(
+    options?: Options<GetBankSyncProvidersData, ThrowOnError>
+): RequestResult<GetBankSyncProvidersResponses, GetBankSyncProvidersErrors, ThrowOnError> =>
+    (options?.client ?? client).get<GetBankSyncProvidersResponses, GetBankSyncProvidersErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/providers',
+        ...options
+    })
+
+/**
+ * Delete a provider app-level credential
+ *
+ * Deletes the authenticated user's encrypted app-level credential for a provider
+ */
+export const deleteBankSyncProviderAppCredential = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteBankSyncProviderAppCredentialData, ThrowOnError>
+): RequestResult<
+    DeleteBankSyncProviderAppCredentialResponses,
+    DeleteBankSyncProviderAppCredentialErrors,
+    ThrowOnError
+> =>
+    (options.client ?? client).delete<
+        DeleteBankSyncProviderAppCredentialResponses,
+        DeleteBankSyncProviderAppCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/providers/{providerId}/app-credential',
+        ...options
+    })
+
+/**
+ * Save a provider app-level credential
+ *
+ * Encrypts and stores the self-hosted instance owner's own app-level credentials for a provider (e.g. a Plaid client id/secret), reused across every connection made to it
+ */
+export const saveBankSyncProviderAppCredential = <ThrowOnError extends boolean = false>(
+    options: Options<SaveBankSyncProviderAppCredentialData, ThrowOnError>
+): RequestResult<SaveBankSyncProviderAppCredentialResponses, SaveBankSyncProviderAppCredentialErrors, ThrowOnError> =>
+    (options.client ?? client).put<
+        SaveBankSyncProviderAppCredentialResponses,
+        SaveBankSyncProviderAppCredentialErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/providers/{providerId}/app-credential',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * List bank connections
+ *
+ * List the authenticated user's bank connections
+ */
+export const listBankSyncConnections = <ThrowOnError extends boolean = false>(
+    options?: Options<ListBankSyncConnectionsData, ThrowOnError>
+): RequestResult<ListBankSyncConnectionsResponses, ListBankSyncConnectionsErrors, ThrowOnError> =>
+    (options?.client ?? client).get<ListBankSyncConnectionsResponses, ListBankSyncConnectionsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections',
+        ...options
+    })
+
+/**
+ * Start a bank connection
+ *
+ * Starts a hosted connect flow, or completes a credentials-flow connection inline
+ */
+export const createBankSyncConnection = <ThrowOnError extends boolean = false>(
+    options?: Options<CreateBankSyncConnectionData, ThrowOnError>
+): RequestResult<CreateBankSyncConnectionResponses, CreateBankSyncConnectionErrors, ThrowOnError> =>
+    (options?.client ?? client).post<CreateBankSyncConnectionResponses, CreateBankSyncConnectionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
+    })
+
+/**
+ * Complete a hosted bank connection
+ *
+ * Exchanges the provider's hosted-flow callback payload and links the connection
+ */
+export const completeBankSyncConnection = <ThrowOnError extends boolean = false>(
+    options: Options<CompleteBankSyncConnectionData, ThrowOnError>
+): RequestResult<CompleteBankSyncConnectionResponses, CompleteBankSyncConnectionErrors, ThrowOnError> =>
+    (options.client ?? client).post<
+        CompleteBankSyncConnectionResponses,
+        CompleteBankSyncConnectionErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections/{connectionId}/complete',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * List external accounts on a connection
+ *
+ * Lists the accounts the provider reports for this connection, before mapping to a FinancialAccount
+ */
+export const listBankSyncExternalAccounts = <ThrowOnError extends boolean = false>(
+    options: Options<ListBankSyncExternalAccountsData, ThrowOnError>
+): RequestResult<ListBankSyncExternalAccountsResponses, ListBankSyncExternalAccountsErrors, ThrowOnError> =>
+    (options.client ?? client).get<
+        ListBankSyncExternalAccountsResponses,
+        ListBankSyncExternalAccountsErrors,
+        ThrowOnError
+    >({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections/{connectionId}/accounts',
+        ...options
+    })
+
+/**
+ * Map external accounts to FinancialAccounts
+ *
+ * Persists the mapping between the connection external accounts and existing or newly created FinancialAccounts
+ */
+export const linkBankSyncAccounts = <ThrowOnError extends boolean = false>(
+    options: Options<LinkBankSyncAccountsData, ThrowOnError>
+): RequestResult<LinkBankSyncAccountsResponses, LinkBankSyncAccountsErrors, ThrowOnError> =>
+    (options.client ?? client).post<LinkBankSyncAccountsResponses, LinkBankSyncAccountsErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections/{connectionId}/accounts',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    })
+
+/**
+ * Trigger a manual sync
+ *
+ * Dispatches the same sync job the nightly cron uses, for this connection only
+ */
+export const triggerBankSync = <ThrowOnError extends boolean = false>(
+    options: Options<TriggerBankSyncData, ThrowOnError>
+): RequestResult<TriggerBankSyncResponses, TriggerBankSyncErrors, ThrowOnError> =>
+    (options.client ?? client).post<TriggerBankSyncResponses, TriggerBankSyncErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections/{connectionId}/sync',
+        ...options
+    })
+
+/**
+ * Revoke a bank connection
+ *
+ * Soft-deletes the connection and wipes its encrypted secret
+ */
+export const deleteBankSyncConnection = <ThrowOnError extends boolean = false>(
+    options: Options<DeleteBankSyncConnectionData, ThrowOnError>
+): RequestResult<DeleteBankSyncConnectionResponses, DeleteBankSyncConnectionErrors, ThrowOnError> =>
+    (options.client ?? client).delete<DeleteBankSyncConnectionResponses, DeleteBankSyncConnectionErrors, ThrowOnError>({
+        security: [{ scheme: 'bearer', type: 'http' }],
+        url: '/bank-sync/connections/{connectionId}',
         ...options
     })
 

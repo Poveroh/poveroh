@@ -549,6 +549,263 @@ export type AutoDepreciationInput = {
     cycleNumber: number
 }
 
+export type BankSyncCredentialInput = {
+    [key: string]: unknown
+}
+
+export type ExternalBankAccount = {
+    externalAccountId: string
+    name: string
+    currency: string
+    mask?: string
+    financialAccountId?: string
+}
+
+export type ListExternalBankAccountsResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<ExternalBankAccount>
+}
+
+export type BankSyncAccountMapping = {
+    externalAccountId: string
+    financialAccountId: string
+}
+
+export type LinkBankSyncAccountsRequest = {
+    mappings: Array<BankSyncAccountMapping>
+}
+
+export type CreateBankSyncAccountRequest = {
+    connectionId: string
+    financialAccountId: string
+    externalAccountId: string
+    externalAccountName: string | null
+    currency: CurrencyEnum & unknown
+}
+
+export type LinkBankSyncAccountForm = {
+    mappings: Array<BankSyncAccountMapping>
+}
+
+export type BankSyncAccount = {
+    id: string
+    externalAccountId: string
+    externalAccountName: string | null
+    financialAccountId: string
+    lastSyncedAt: string | null
+}
+
+export type LinkBankSyncAccountsResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<BankSyncAccount>
+}
+
+export type BankSyncProviderPathParams = {
+    providerId: string
+}
+
+export type UpdateBankSyncProviderAppCredentialRequest = {
+    credentials: BankSyncCredentialInput
+}
+
+export type UpdateBankSyncProviderAppCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type DeleteBankSyncProviderAppCredentialResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type BankSyncConnectionPathParams = {
+    connectionId: string
+}
+
+export type BankSyncConnection = {
+    id: string
+    userId: string
+    providerId: string
+    status: BankSyncConnectionStatusEnum
+    externalConnectionId: string | null
+    institutionName: string | null
+    lastSyncedAt: string | null
+    lastSyncError: string | null
+    createdAt: string
+    updatedAt: string
+}
+
+export type BankSyncConnectionStatusEnum = 'PENDING' | 'LINKED' | 'ERROR' | 'REAUTH_REQUIRED' | 'REVOKED'
+
+export type BankSyncConnectionData = {
+    id: string
+    providerId: string
+    status: BankSyncConnectionStatusEnum
+    externalConnectionId: string | null
+    institutionName: string | null
+    lastSyncedAt: string | null
+    lastSyncError: string | null
+    createdAt: string
+    updatedAt: string
+}
+
+export type ListBankSyncConnectionsResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<BankSyncConnectionData>
+}
+
+export type CreateBankSyncConnectionRequest = {
+    providerId: string
+    credentials?: BankSyncCredentialInput
+    appCredentials?: BankSyncCredentialInput
+}
+
+export type BankSyncConnectionWithConnectUrlResponse = {
+    connection: BankSyncConnection
+    connectUrl: string | null
+}
+
+export type CreateBankSyncConnectionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: BankSyncConnectionWithConnectUrlResponse & unknown
+}
+
+export type CompleteBankSyncConnectionRequest = {
+    callbackPayload?: BankSyncCredentialInput
+    metadata?: BankSyncCredentialInput
+}
+
+export type CompleteBankSyncConnectionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    data: BankSyncConnection & unknown
+}
+
+export type DeleteBankSyncConnectionResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type TriggerBankSyncResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+}
+
+export type BankSyncCredentialField = {
+    key: string
+    label: string
+    secret?: boolean
+}
+
+export type BankSyncProvider = {
+    id: string
+    label: string
+    logoUrl: string
+    kind: BankSyncProviderKindEnum
+    connectFlow: BankSyncConnectFlowEnum
+    connectMechanism?: BankSyncConnectMechanismEnum
+    credentialFields: Array<BankSyncCredentialField>
+    appCredentialFields: Array<BankSyncCredentialField>
+    enabled: boolean
+    connectionCount: number
+    configured: boolean
+}
+
+export type BankSyncProviderKindEnum = 'aggregator' | 'direct'
+
+export type BankSyncConnectFlowEnum = 'hosted' | 'credentials'
+
+export type BankSyncConnectMechanismEnum = 'widget' | 'redirect'
+
+export type GetBankSyncProvidersResponse = {
+    /**
+     * Indicates if the request was successful
+     */
+    success: boolean
+    /**
+     * Optional success message
+     */
+    message: string
+    /**
+     * Response data
+     */
+    data: Array<BankSyncProvider>
+}
+
+export type EncryptedPayload = {
+    ciphertext?: string
+    iv?: string
+    authTag?: string
+    algo?: string
+}
+
 export type Category = {
     id: string
     userId: string
@@ -964,9 +1221,21 @@ export type MarketStateEnum = 'OPEN' | 'CLOSED' | 'PRE_MARKET' | 'POST_MARKET' |
 export type FinancialAccountTypeEnum =
     'ONLINE_BANK' | 'BANK_ACCOUNT' | 'CIRCUIT' | 'DEPOSIT_BANK' | 'BROKER' | 'WALLET' | 'CASH' | 'CREDIT_CARD' | 'OTHER'
 
-export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
+export type TransactionStatusEnum =
+    | 'APPROVED'
+    | 'REJECTED'
+    | 'IMPORT_PENDING'
+    | 'IMPORT_REJECTED'
+    | 'IMPORT_APPROVED'
+    | 'BANK_SYNC_PENDING'
+    | 'BANK_SYNC_APPROVED'
+    | 'BANK_SYNC_REJECTED'
 
 export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
+
+export type BankSyncTriggerEnum = 'CRON' | 'MANUAL' | 'WEBHOOK' | 'INITIAL'
+
+export type BankSyncRunStatusEnum = 'RUNNING' | 'SUCCESS' | 'FAILED' | 'PARTIAL'
 
 export type RememberPeriodEnum =
     'SAME_DAY' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'FOURTEEN_DAYS' | 'THIRTY_DAYS' | 'NINETY_DAYS'
@@ -1079,6 +1348,7 @@ export type UserActivityEntityEnum =
     | 'SNAPSHOT'
     | 'DASHBOARD_LAYOUT'
     | 'MARKET_DATA_CREDENTIAL'
+    | 'BANK_CONNECTION'
     | 'OTHER'
 
 export type UserActivityActionEnum =
@@ -3413,6 +3683,355 @@ export type GetAssetByIdResponses = {
 }
 
 export type GetAssetByIdResponse = GetAssetByIdResponses[keyof GetAssetByIdResponses]
+
+export type GetBankSyncProvidersData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/bank-sync/providers'
+}
+
+export type GetBankSyncProvidersErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type GetBankSyncProvidersError = GetBankSyncProvidersErrors[keyof GetBankSyncProvidersErrors]
+
+export type GetBankSyncProvidersResponses = {
+    /**
+     * Provider list
+     */
+    200: GetBankSyncProvidersResponse
+}
+
+export type GetBankSyncProvidersResponse2 = GetBankSyncProvidersResponses[keyof GetBankSyncProvidersResponses]
+
+export type DeleteBankSyncProviderAppCredentialData = {
+    body?: never
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/bank-sync/providers/{providerId}/app-credential'
+}
+
+export type DeleteBankSyncProviderAppCredentialErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteBankSyncProviderAppCredentialError =
+    DeleteBankSyncProviderAppCredentialErrors[keyof DeleteBankSyncProviderAppCredentialErrors]
+
+export type DeleteBankSyncProviderAppCredentialResponses = {
+    /**
+     * Credential deleted
+     */
+    200: DeleteBankSyncProviderAppCredentialResponse
+}
+
+export type DeleteBankSyncProviderAppCredentialResponse2 =
+    DeleteBankSyncProviderAppCredentialResponses[keyof DeleteBankSyncProviderAppCredentialResponses]
+
+export type SaveBankSyncProviderAppCredentialData = {
+    body?: UpdateBankSyncProviderAppCredentialRequest
+    path: {
+        providerId: string
+    }
+    query?: never
+    url: '/bank-sync/providers/{providerId}/app-credential'
+}
+
+export type SaveBankSyncProviderAppCredentialErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type SaveBankSyncProviderAppCredentialError =
+    SaveBankSyncProviderAppCredentialErrors[keyof SaveBankSyncProviderAppCredentialErrors]
+
+export type SaveBankSyncProviderAppCredentialResponses = {
+    /**
+     * Credential saved
+     */
+    200: UpdateBankSyncProviderAppCredentialResponse
+}
+
+export type SaveBankSyncProviderAppCredentialResponse =
+    SaveBankSyncProviderAppCredentialResponses[keyof SaveBankSyncProviderAppCredentialResponses]
+
+export type ListBankSyncConnectionsData = {
+    body?: never
+    path?: never
+    query?: never
+    url: '/bank-sync/connections'
+}
+
+export type ListBankSyncConnectionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type ListBankSyncConnectionsError = ListBankSyncConnectionsErrors[keyof ListBankSyncConnectionsErrors]
+
+export type ListBankSyncConnectionsResponses = {
+    /**
+     * Connection list
+     */
+    200: ListBankSyncConnectionsResponse
+}
+
+export type ListBankSyncConnectionsResponse2 = ListBankSyncConnectionsResponses[keyof ListBankSyncConnectionsResponses]
+
+export type CreateBankSyncConnectionData = {
+    body?: CreateBankSyncConnectionRequest
+    path?: never
+    query?: never
+    url: '/bank-sync/connections'
+}
+
+export type CreateBankSyncConnectionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CreateBankSyncConnectionError = CreateBankSyncConnectionErrors[keyof CreateBankSyncConnectionErrors]
+
+export type CreateBankSyncConnectionResponses = {
+    /**
+     * Connection started or linked
+     */
+    200: CreateBankSyncConnectionResponse
+}
+
+export type CreateBankSyncConnectionResponse2 =
+    CreateBankSyncConnectionResponses[keyof CreateBankSyncConnectionResponses]
+
+export type CompleteBankSyncConnectionData = {
+    body?: CompleteBankSyncConnectionRequest
+    path: {
+        connectionId: string
+    }
+    query?: never
+    url: '/bank-sync/connections/{connectionId}/complete'
+}
+
+export type CompleteBankSyncConnectionErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Connection not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type CompleteBankSyncConnectionError = CompleteBankSyncConnectionErrors[keyof CompleteBankSyncConnectionErrors]
+
+export type CompleteBankSyncConnectionResponses = {
+    /**
+     * Connection linked
+     */
+    200: CompleteBankSyncConnectionResponse
+}
+
+export type CompleteBankSyncConnectionResponse2 =
+    CompleteBankSyncConnectionResponses[keyof CompleteBankSyncConnectionResponses]
+
+export type ListBankSyncExternalAccountsData = {
+    body?: never
+    path: {
+        connectionId: string
+    }
+    query?: never
+    url: '/bank-sync/connections/{connectionId}/accounts'
+}
+
+export type ListBankSyncExternalAccountsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Connection not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type ListBankSyncExternalAccountsError =
+    ListBankSyncExternalAccountsErrors[keyof ListBankSyncExternalAccountsErrors]
+
+export type ListBankSyncExternalAccountsResponses = {
+    /**
+     * External account list
+     */
+    200: ListExternalBankAccountsResponse
+}
+
+export type ListBankSyncExternalAccountsResponse =
+    ListBankSyncExternalAccountsResponses[keyof ListBankSyncExternalAccountsResponses]
+
+export type LinkBankSyncAccountsData = {
+    body?: LinkBankSyncAccountsRequest
+    path: {
+        connectionId: string
+    }
+    query?: never
+    url: '/bank-sync/connections/{connectionId}/accounts'
+}
+
+export type LinkBankSyncAccountsErrors = {
+    /**
+     * Invalid request
+     */
+    400: ErrorResponse
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Connection not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type LinkBankSyncAccountsError = LinkBankSyncAccountsErrors[keyof LinkBankSyncAccountsErrors]
+
+export type LinkBankSyncAccountsResponses = {
+    /**
+     * Accounts linked
+     */
+    200: LinkBankSyncAccountsResponse
+}
+
+export type LinkBankSyncAccountsResponse2 = LinkBankSyncAccountsResponses[keyof LinkBankSyncAccountsResponses]
+
+export type TriggerBankSyncData = {
+    body?: never
+    path: {
+        connectionId: string
+    }
+    query?: never
+    url: '/bank-sync/connections/{connectionId}/sync'
+}
+
+export type TriggerBankSyncErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Connection not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type TriggerBankSyncError = TriggerBankSyncErrors[keyof TriggerBankSyncErrors]
+
+export type TriggerBankSyncResponses = {
+    /**
+     * Sync dispatched
+     */
+    200: TriggerBankSyncResponse
+}
+
+export type TriggerBankSyncResponse2 = TriggerBankSyncResponses[keyof TriggerBankSyncResponses]
+
+export type DeleteBankSyncConnectionData = {
+    body?: never
+    path: {
+        connectionId: string
+    }
+    query?: never
+    url: '/bank-sync/connections/{connectionId}'
+}
+
+export type DeleteBankSyncConnectionErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorResponse
+    /**
+     * Connection not found
+     */
+    404: ErrorResponse
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse
+}
+
+export type DeleteBankSyncConnectionError = DeleteBankSyncConnectionErrors[keyof DeleteBankSyncConnectionErrors]
+
+export type DeleteBankSyncConnectionResponses = {
+    /**
+     * Connection revoked
+     */
+    200: DeleteBankSyncConnectionResponse
+}
+
+export type DeleteBankSyncConnectionResponse2 =
+    DeleteBankSyncConnectionResponses[keyof DeleteBankSyncConnectionResponses]
 
 export type CreateMarketableAssetData = {
     body: CreateMarketableAssetRequest
