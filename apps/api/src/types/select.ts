@@ -64,6 +64,46 @@ export const credentialSelect = {
     algo: true
 } satisfies Prisma.MarketDataProviderCredentialSelect
 
+export const bankSyncProviderCredentialSelect = {
+    id: true,
+    providerId: true,
+    ciphertext: true,
+    iv: true,
+    authTag: true,
+    algo: true
+} satisfies Prisma.BankSyncProviderCredentialSelect
+
+export const bankConnectionSelect = {
+    id: true,
+    userId: true,
+    providerId: true,
+    status: true,
+    externalConnectionId: true,
+    institutionName: true,
+    lastSyncedAt: true,
+    lastSyncError: true,
+    createdAt: true,
+    updatedAt: true
+} satisfies Prisma.BankConnectionSelect
+
+export const bankConnectionWithSecretSelect = {
+    ...bankConnectionSelect,
+    ciphertext: true,
+    iv: true,
+    authTag: true,
+    algo: true
+} satisfies Prisma.BankConnectionSelect
+
+export const bankSyncAccountSelect = {
+    id: true,
+    connectionId: true,
+    financialAccountId: true,
+    externalAccountId: true,
+    externalAccountName: true,
+    syncCursor: true,
+    lastSyncedAt: true
+} satisfies Prisma.BankSyncAccountSelect
+
 export const autoDepreciationSelect = {
     startDate: true,
     endDate: true,

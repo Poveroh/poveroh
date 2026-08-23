@@ -8,7 +8,8 @@ import {
     AUTH_TAG_BYTES,
     EncryptionEnvelope,
     SALT_BYTES,
-    KEY_ENVELOPE_ALGO_V1
+    KEY_ENVELOPE_ALGO_V1,
+    CREDENTIAL_DOMAIN_MARKET_DATA
 } from '@poveroh/types'
 
 /**
@@ -49,16 +50,18 @@ function decryptWithKey(key: Buffer, record: EncryptedRecord): Buffer {
 }
 
 /**
- * Derives a key from the application secret and uses it to encrypt the plaintext credential payload.
+ * Derives a key from the application secret and a domain string, so different features (e.g. market-data vs
+ * bank-sync credentials) never share the same derived key even though they both use the app-wide secret.
  * @param secret  The application secret from which to derive the encryption key.
- * @returns The encrypted credential record containing the ciphertext, IV, and auth tag.
+ * @param domain  The domain string identifying the feature the key is derived for.
+ * @returns The derived key as a Buffer.
  */
-function deriveApplicationKey(secret: string): Buffer {
+function deriveApplicationKey(secret: string, domain: string): Buffer {
     if (!secret || typeof secret !== 'string') {
         throw new InternalServerError('Cannot derive application encryption key from empty secret')
     }
 
-    return createHash('sha256').update(`poveroh:market-data-credentials:${secret}`).digest()
+    return createHash('sha256').update(`poveroh:${domain}:${secret}`).digest()
 }
 
 /**
@@ -155,10 +158,16 @@ export function decryptPayload(uek: Buffer, record: EncryptedRecord): string {
 /**
  * Derives a key from the application secret and uses it to encrypt the plaintext credential payload.
  * @param secret  The application secret from which to derive the encryption key.
+ * @param plaintext  The plaintext credential payload to encrypt.
+ * @param domain  The domain string identifying the feature the key is derived for, defaults to the market-data credentials domain for backward compatibility.
  * @returns The encrypted credential record containing the ciphertext, IV, and auth tag.
  */
-export function encryptPayloadWithApplicationSecret(secret: string, plaintext: string): EncryptedRecord {
-    const key = deriveApplicationKey(secret)
+export function encryptPayloadWithApplicationSecret(
+    secret: string,
+    plaintext: string,
+    domain: string = CREDENTIAL_DOMAIN_MARKET_DATA
+): EncryptedRecord {
+    const key = deriveApplicationKey(secret, domain)
     try {
         return encryptWithKey(key, Buffer.from(plaintext, 'utf8'))
     } finally {
@@ -170,10 +179,15 @@ export function encryptPayloadWithApplicationSecret(secret: string, plaintext: s
  * Derives a key from the application secret and uses it to decrypt the encrypted credential record.
  * @param secret  The application secret from which to derive the decryption key.
  * @param record  The encrypted credential record containing the ciphertext, IV, and auth tag.
+ * @param domain  The domain string identifying the feature the key is derived for, defaults to the market-data credentials domain for backward compatibility.
  * @returns The decrypted plaintext credential payload.
  */
-export function decryptPayloadWithApplicationSecret(secret: string, record: EncryptedRecord): string {
-    const key = deriveApplicationKey(secret)
+export function decryptPayloadWithApplicationSecret(
+    secret: string,
+    record: EncryptedRecord,
+    domain: string = CREDENTIAL_DOMAIN_MARKET_DATA
+): string {
+    const key = deriveApplicationKey(secret, domain)
     try {
         return decryptWithKey(key, record).toString('utf8')
     } finally {
