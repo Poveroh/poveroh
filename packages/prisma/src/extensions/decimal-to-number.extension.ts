@@ -14,7 +14,7 @@ function convertDecimals(value: unknown): unknown {
         return value.map(convertDecimals)
     }
 
-    if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
+    if (value !== null && typeof value === 'object' && !(value instanceof Date) && !ArrayBuffer.isView(value)) {
         return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, convertDecimals(entry)]))
     }
 
