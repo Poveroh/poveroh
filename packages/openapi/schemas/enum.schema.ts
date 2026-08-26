@@ -305,6 +305,28 @@ export const ImportTransactionStatusEnum = z
     .openapi('ImportTransactionStatusEnum')
 
 /**
+ * Import status enum representing the import lifecycle, kept separate from the transaction one:
+ * an import is processed, then reviewed, then completed, while a transaction is approved or
+ * rejected within that review
+ */
+export const ImportStatusEnum = z
+    .enum(['PROCESSING', 'PENDING_REVIEW', 'COMPLETED', 'FAILED'])
+    .openapi('ImportStatusEnum')
+
+/**
+ * Import source enum representing where an import's transactions came from
+ */
+export const ImportSourceEnum = z.enum(['CSV', 'BANK_SYNC', 'MANUAL', 'API']).openapi('ImportSourceEnum')
+
+/**
+ * Enrichment strategy enum representing which strategy produced an enrichment value for an
+ * imported transaction
+ */
+export const EnrichmentStrategyEnum = z
+    .enum(['RULE', 'SUBSCRIPTION', 'HISTORY', 'LLM'])
+    .openapi('EnrichmentStrategyEnum')
+
+/**
  * Bank-sync provider kind enum: a multi-institution aggregator vs a single proprietary bank API
  */
 export const BankSyncProviderKindEnum = z.enum(['aggregator', 'direct']).openapi('BankSyncProviderKindEnum')

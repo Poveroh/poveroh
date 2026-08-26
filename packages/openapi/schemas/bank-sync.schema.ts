@@ -149,6 +149,7 @@ export const BankSyncConnectionSchema = z
         status: BankSyncConnectionStatusEnum,
         externalConnectionId: z.string().nullable(),
         institutionName: z.string().nullable(),
+        autoApproveTransactions: z.boolean(),
         lastSyncedAt: z.string().datetime().nullable(),
         lastSyncError: z.string().nullable(),
         createdAt: z.string().datetime(),

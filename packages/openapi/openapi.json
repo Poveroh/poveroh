@@ -1939,6 +1939,9 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "autoApproveTransactions": {
+                        "type": "boolean"
+                    },
                     "lastSyncedAt": {
                         "type": "string",
                         "nullable": true,
@@ -1964,6 +1967,7 @@
                     "status",
                     "externalConnectionId",
                     "institutionName",
+                    "autoApproveTransactions",
                     "lastSyncedAt",
                     "lastSyncError",
                     "createdAt",
@@ -1996,6 +2000,9 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "autoApproveTransactions": {
+                        "type": "boolean"
+                    },
                     "lastSyncedAt": {
                         "type": "string",
                         "nullable": true,
@@ -2020,6 +2027,7 @@
                     "status",
                     "externalConnectionId",
                     "institutionName",
+                    "autoApproveTransactions",
                     "lastSyncedAt",
                     "lastSyncError",
                     "createdAt",
@@ -3108,6 +3116,18 @@
                 "type": "string",
                 "enum": ["IMPORT_APPROVED", "IMPORT_REJECTED"]
             },
+            "ImportStatusEnum": {
+                "type": "string",
+                "enum": ["PROCESSING", "PENDING_REVIEW", "COMPLETED", "FAILED"]
+            },
+            "ImportSourceEnum": {
+                "type": "string",
+                "enum": ["CSV", "BANK_SYNC", "MANUAL", "API"]
+            },
+            "EnrichmentStrategyEnum": {
+                "type": "string",
+                "enum": ["RULE", "SUBSCRIPTION", "HISTORY", "LLM"]
+            },
             "BankSyncTriggerEnum": {
                 "type": "string",
                 "enum": ["CRON", "MANUAL", "WEBHOOK", "INITIAL"]
@@ -4048,7 +4068,26 @@
                         "minLength": 1
                     },
                     "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                        "$ref": "#/components/schemas/ImportStatusEnum"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/ImportSourceEnum"
+                    },
+                    "sourceReference": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bankConnectionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "autoApprove": {
+                        "type": "boolean"
+                    },
+                    "failureReason": {
+                        "type": "string",
+                        "nullable": true
                     },
                     "transactions": {
                         "type": "array",
@@ -4075,7 +4114,20 @@
                         "format": "date-time"
                     }
                 },
-                "required": ["id", "userId", "title", "financialAccountId", "status", "createdAt", "updatedAt"]
+                "required": [
+                    "id",
+                    "userId",
+                    "title",
+                    "financialAccountId",
+                    "status",
+                    "source",
+                    "sourceReference",
+                    "bankConnectionId",
+                    "autoApprove",
+                    "failureReason",
+                    "createdAt",
+                    "updatedAt"
+                ]
             },
             "Transaction": {
                 "type": "object",
@@ -4108,6 +4160,10 @@
                         "nullable": true
                     },
                     "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subscriptionId": {
                         "type": "string",
                         "nullable": true
                     },
@@ -4166,6 +4222,7 @@
                     "icon",
                     "categoryId",
                     "subcategoryId",
+                    "subscriptionId",
                     "importId",
                     "action",
                     "status",
@@ -4277,7 +4334,26 @@
                         "minLength": 1
                     },
                     "status": {
-                        "$ref": "#/components/schemas/TransactionStatusEnum"
+                        "$ref": "#/components/schemas/ImportStatusEnum"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/ImportSourceEnum"
+                    },
+                    "sourceReference": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bankConnectionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "autoApprove": {
+                        "type": "boolean"
+                    },
+                    "failureReason": {
+                        "type": "string",
+                        "nullable": true
                     },
                     "transactions": {
                         "type": "array",
@@ -4300,7 +4376,19 @@
                         "format": "date-time"
                     }
                 },
-                "required": ["id", "title", "financialAccountId", "status", "createdAt", "updatedAt"]
+                "required": [
+                    "id",
+                    "title",
+                    "financialAccountId",
+                    "status",
+                    "source",
+                    "sourceReference",
+                    "bankConnectionId",
+                    "autoApprove",
+                    "failureReason",
+                    "createdAt",
+                    "updatedAt"
+                ]
             },
             "ImportTransactionDataResponse": {
                 "type": "object",
@@ -4330,6 +4418,10 @@
                         "nullable": true
                     },
                     "subcategoryId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subscriptionId": {
                         "type": "string",
                         "nullable": true
                     },
@@ -4379,6 +4471,7 @@
                     "icon",
                     "categoryId",
                     "subcategoryId",
+                    "subscriptionId",
                     "action",
                     "status",
                     "ignore",
@@ -4462,6 +4555,11 @@
                     "financialAccountId": {
                         "type": "string",
                         "minLength": 1
+                    },
+                    "autoApprove": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "default": false
                     }
                 },
                 "required": ["financialAccountId"]
@@ -4576,6 +4674,12 @@
                     "title": {
                         "$ref": "#/components/schemas/StringFilter"
                     },
+                    "source": {
+                        "$ref": "#/components/schemas/ImportSourceEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ImportStatusEnum"
+                    },
                     "date": {
                         "$ref": "#/components/schemas/DateFilter"
                     },
@@ -4662,6 +4766,212 @@
                     }
                 },
                 "required": ["success", "message", "data"]
+            },
+            "ImportCandidateTransaction": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "externalTransactionId": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bankSyncAccountId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "rawRow": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": ["date", "title", "amount", "currency", "action"]
+            },
+            "ImportIngestionRequest": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "$ref": "#/components/schemas/ImportSourceEnum"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "autoApprove": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "sourceReference": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bankConnectionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "transactions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportCandidateTransaction"
+                        }
+                    }
+                },
+                "required": ["source", "financialAccountId"]
+            },
+            "ImportEnrichment": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "subscriptionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "ImportEnrichmentResult": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ImportEnrichment"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "strategy": {
+                                "$ref": "#/components/schemas/EnrichmentStrategyEnum"
+                            }
+                        },
+                        "required": ["strategy"]
+                    }
+                ]
+            },
+            "ImportTransactionDraft": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "importId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "financialAccountId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "action": {
+                        "$ref": "#/components/schemas/TransactionActionEnum"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyEnum"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "subcategoryId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "subscriptionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bankConnectionId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "bankSyncAccountId": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uuid"
+                    },
+                    "externalTransactionId": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "importId",
+                    "financialAccountId",
+                    "date",
+                    "title",
+                    "action",
+                    "amount",
+                    "currency",
+                    "categoryId",
+                    "subcategoryId",
+                    "subscriptionId",
+                    "icon",
+                    "note",
+                    "bankConnectionId",
+                    "bankSyncAccountId",
+                    "externalTransactionId"
+                ]
             },
             "ImportTemplateActionEnum": {
                 "type": "string",
@@ -6979,6 +7289,10 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "subscriptionId": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "importId": {
                         "type": "string",
                         "nullable": true
@@ -7029,6 +7343,7 @@
                     "icon",
                     "categoryId",
                     "subcategoryId",
+                    "subscriptionId",
                     "importId",
                     "action",
                     "status",

@@ -2,7 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreateImportRequest = {
-    financialAccountId: string
-    autoApprove?: boolean | null
-}
+export type ImportStatusEnum = 'PROCESSING' | 'PENDING_REVIEW' | 'COMPLETED' | 'FAILED'

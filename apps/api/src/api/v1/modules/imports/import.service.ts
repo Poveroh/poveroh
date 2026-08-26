@@ -55,7 +55,7 @@ export class ImportService extends BaseService {
             await this.importRepository.deletePendingOrRejectedAmounts(tx, userId, id)
             await this.importRepository.deletePendingOrRejectedTransactions(tx, userId, id)
 
-            return this.importRepository.updateStatus(tx, userId, id, 'APPROVED')
+            return this.importRepository.updateStatus(tx, userId, id, 'COMPLETED')
         })
 
         if (approvedDates.length > 0) {
@@ -80,7 +80,7 @@ export class ImportService extends BaseService {
         const data = await prisma.$transaction(async tx => {
             const existing = await tx.import.findFirst({ where: { id, userId } })
             if (!existing) throw new NotFoundError('Import not found')
-            if (existing.status !== 'APPROVED') {
+            if (existing.status !== 'COMPLETED') {
                 throw new BadRequestError('Only completed imports can be rolled back')
             }
             financialAccountId = existing.financialAccountId
@@ -95,7 +95,7 @@ export class ImportService extends BaseService {
 
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'APPROVED', 'IMPORT_PENDING')
 
-            return this.importRepository.updateStatus(tx, userId, id, 'IMPORT_PENDING')
+            return this.importRepository.updateStatus(tx, userId, id, 'PENDING_REVIEW')
         })
 
         if (approvedDates.length > 0) {
@@ -156,7 +156,7 @@ export class ImportService extends BaseService {
         // Capture the approved transactions' dates before deleting: only an approved import ever affected the
         // balance, and its rows are gone once the transaction below commits.
         const approvedTransactions =
-            data?.status === 'APPROVED'
+            data?.status === 'COMPLETED'
                 ? await this.importRepository.findTransactionsByStatusWithAmounts(prisma, userId, id, 'APPROVED')
                 : []
 
@@ -276,8 +276,10 @@ export class ImportService extends BaseService {
                 id: importId,
                 userId,
                 financialAccountId: payload.financialAccountId,
-                title: `Import at ${now.toLocaleString()}`,
-                status: 'IMPORT_PENDING',
+                title: `Import via CSV at ${now.toLocaleString()}`,
+                status: 'PENDING_REVIEW',
+                source: 'CSV',
+                autoApprove: payload.autoApprove ?? false,
                 createdAt: now
             })
 
@@ -342,14 +344,20 @@ export class ImportService extends BaseService {
 
         const importId = uuidv4()
         const now = new Date()
-        const title = `Bank sync ${institutionName ? `— ${institutionName} ` : ''}at ${now.toLocaleString()}`
+        const providerId = await this.importRepository.findConnectionProviderId(userId, bankConnectionId)
+        const label = institutionName ?? providerId
 
         await this.importRepository.create(prisma, {
             id: importId,
             userId,
             financialAccountId,
-            title,
-            status: 'IMPORT_PENDING',
+            title: label
+                ? `Import via bank sync by ${label} at ${now.toLocaleString()}`
+                : `Import via bank sync at ${now.toLocaleString()}`,
+            status: 'PENDING_REVIEW',
+            source: 'BANK_SYNC',
+            sourceReference: providerId,
+            bankConnectionId,
             createdAt: now
         })
 

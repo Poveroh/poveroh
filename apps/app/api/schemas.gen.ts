@@ -1961,6 +1961,9 @@ export const BankSyncConnectionSchema = {
             type: 'string',
             nullable: true
         },
+        autoApproveTransactions: {
+            type: 'boolean'
+        },
         lastSyncedAt: {
             type: 'string',
             nullable: true,
@@ -1986,6 +1989,7 @@ export const BankSyncConnectionSchema = {
         'status',
         'externalConnectionId',
         'institutionName',
+        'autoApproveTransactions',
         'lastSyncedAt',
         'lastSyncError',
         'createdAt',
@@ -2020,6 +2024,9 @@ export const BankSyncConnectionDataSchema = {
             type: 'string',
             nullable: true
         },
+        autoApproveTransactions: {
+            type: 'boolean'
+        },
         lastSyncedAt: {
             type: 'string',
             nullable: true,
@@ -2044,6 +2051,7 @@ export const BankSyncConnectionDataSchema = {
         'status',
         'externalConnectionId',
         'institutionName',
+        'autoApproveTransactions',
         'lastSyncedAt',
         'lastSyncError',
         'createdAt',
@@ -3176,6 +3184,21 @@ export const ImportTransactionStatusEnumSchema = {
     enum: ['IMPORT_APPROVED', 'IMPORT_REJECTED']
 } as const
 
+export const ImportStatusEnumSchema = {
+    type: 'string',
+    enum: ['PROCESSING', 'PENDING_REVIEW', 'COMPLETED', 'FAILED']
+} as const
+
+export const ImportSourceEnumSchema = {
+    type: 'string',
+    enum: ['CSV', 'BANK_SYNC', 'MANUAL', 'API']
+} as const
+
+export const EnrichmentStrategyEnumSchema = {
+    type: 'string',
+    enum: ['RULE', 'SUBSCRIPTION', 'HISTORY', 'LLM']
+} as const
+
 export const BankSyncTriggerEnumSchema = {
     type: 'string',
     enum: ['CRON', 'MANUAL', 'WEBHOOK', 'INITIAL']
@@ -4155,7 +4178,26 @@ export const ImportSchema = {
             minLength: 1
         },
         status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        },
+        failureReason: {
+            type: 'string',
+            nullable: true
         },
         transactions: {
             type: 'array',
@@ -4182,7 +4224,20 @@ export const ImportSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+    required: [
+        'id',
+        'userId',
+        'title',
+        'financialAccountId',
+        'status',
+        'source',
+        'sourceReference',
+        'bankConnectionId',
+        'autoApprove',
+        'failureReason',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const
 
 export const TransactionSchema = {
@@ -4216,6 +4271,10 @@ export const TransactionSchema = {
             nullable: true
         },
         subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subscriptionId: {
             type: 'string',
             nullable: true
         },
@@ -4274,6 +4333,7 @@ export const TransactionSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'importId',
         'action',
         'status',
@@ -4388,7 +4448,26 @@ export const ImportDataSchema = {
             minLength: 1
         },
         status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        },
+        failureReason: {
+            type: 'string',
+            nullable: true
         },
         transactions: {
             type: 'array',
@@ -4411,7 +4490,19 @@ export const ImportDataSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+    required: [
+        'id',
+        'title',
+        'financialAccountId',
+        'status',
+        'source',
+        'sourceReference',
+        'bankConnectionId',
+        'autoApprove',
+        'failureReason',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const
 
 export const ImportTransactionDataResponseSchema = {
@@ -4442,6 +4533,10 @@ export const ImportTransactionDataResponseSchema = {
             nullable: true
         },
         subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subscriptionId: {
             type: 'string',
             nullable: true
         },
@@ -4491,6 +4586,7 @@ export const ImportTransactionDataResponseSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'action',
         'status',
         'ignore',
@@ -4578,6 +4674,11 @@ export const CreateImportRequestSchema = {
         financialAccountId: {
             type: 'string',
             minLength: 1
+        },
+        autoApprove: {
+            type: 'boolean',
+            nullable: true,
+            default: false
         }
     },
     required: ['financialAccountId']
@@ -4699,6 +4800,12 @@ export const ImportFiltersSchema = {
         title: {
             $ref: '#/components/schemas/StringFilter'
         },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        status: {
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
         date: {
             $ref: '#/components/schemas/DateFilter'
         },
@@ -4791,6 +4898,217 @@ export const ApproveImportTransactionsResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
+} as const
+
+export const ImportCandidateTransactionSchema = {
+    type: 'object',
+    properties: {
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        externalTransactionId: {
+            type: 'string',
+            nullable: true
+        },
+        bankSyncAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        rawRow: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        }
+    },
+    required: ['date', 'title', 'amount', 'currency', 'action']
+} as const
+
+export const ImportIngestionRequestSchema = {
+    type: 'object',
+    properties: {
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean',
+            default: false
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportCandidateTransaction'
+            }
+        }
+    },
+    required: ['source', 'financialAccountId']
+} as const
+
+export const ImportEnrichmentSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subscriptionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    }
+} as const
+
+export const ImportEnrichmentResultSchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/ImportEnrichment'
+        },
+        {
+            type: 'object',
+            properties: {
+                strategy: {
+                    $ref: '#/components/schemas/EnrichmentStrategyEnum'
+                }
+            },
+            required: ['strategy']
+        }
+    ]
+} as const
+
+export const ImportTransactionDraftSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        importId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subscriptionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        bankSyncAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        externalTransactionId: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'importId',
+        'financialAccountId',
+        'date',
+        'title',
+        'action',
+        'amount',
+        'currency',
+        'categoryId',
+        'subcategoryId',
+        'subscriptionId',
+        'icon',
+        'note',
+        'bankConnectionId',
+        'bankSyncAccountId',
+        'externalTransactionId'
+    ]
 } as const
 
 export const ImportTemplateActionEnumSchema = {
@@ -7187,6 +7505,10 @@ export const TransactionDataSchema = {
             type: 'string',
             nullable: true
         },
+        subscriptionId: {
+            type: 'string',
+            nullable: true
+        },
         importId: {
             type: 'string',
             nullable: true
@@ -7237,6 +7559,7 @@ export const TransactionDataSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'importId',
         'action',
         'status',

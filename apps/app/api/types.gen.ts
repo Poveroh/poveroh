@@ -661,6 +661,7 @@ export type BankSyncConnection = {
     status: BankSyncConnectionStatusEnum
     externalConnectionId: string | null
     institutionName: string | null
+    autoApproveTransactions: boolean
     lastSyncedAt: string | null
     lastSyncError: string | null
     createdAt: string
@@ -675,6 +676,7 @@ export type BankSyncConnectionData = {
     status: BankSyncConnectionStatusEnum
     externalConnectionId: string | null
     institutionName: string | null
+    autoApproveTransactions: boolean
     lastSyncedAt: string | null
     lastSyncError: string | null
     createdAt: string
@@ -1224,6 +1226,12 @@ export type FinancialAccountTypeEnum =
 export type TransactionStatusEnum = 'APPROVED' | 'REJECTED' | 'IMPORT_PENDING' | 'IMPORT_REJECTED' | 'IMPORT_APPROVED'
 
 export type ImportTransactionStatusEnum = 'IMPORT_APPROVED' | 'IMPORT_REJECTED'
+
+export type ImportStatusEnum = 'PROCESSING' | 'PENDING_REVIEW' | 'COMPLETED' | 'FAILED'
+
+export type ImportSourceEnum = 'CSV' | 'BANK_SYNC' | 'MANUAL' | 'API'
+
+export type EnrichmentStrategyEnum = 'RULE' | 'SUBSCRIPTION' | 'HISTORY' | 'LLM'
 
 export type BankSyncTriggerEnum = 'CRON' | 'MANUAL' | 'WEBHOOK' | 'INITIAL'
 
@@ -1808,7 +1816,12 @@ export type Import = {
     userId: string
     title: string
     financialAccountId: string
-    status: TransactionStatusEnum
+    status: ImportStatusEnum
+    source: ImportSourceEnum
+    sourceReference: string | null
+    bankConnectionId: string | null
+    autoApprove: boolean
+    failureReason: string | null
     transactions?: Array<Transaction>
     files?: Array<ImportFile>
     createdAt: string
@@ -1825,6 +1838,7 @@ export type Transaction = {
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
+    subscriptionId: string | null
     importId: string | null
     action: TransactionActionEnum
     status: TransactionStatusEnum
@@ -1866,7 +1880,12 @@ export type ImportData = {
     id: string
     title: string
     financialAccountId: string
-    status: TransactionStatusEnum
+    status: ImportStatusEnum
+    source: ImportSourceEnum
+    sourceReference: string | null
+    bankConnectionId: string | null
+    autoApprove: boolean
+    failureReason: string | null
     transactions?: Array<Transaction>
     files?: Array<ImportFile>
     createdAt: string
@@ -1881,6 +1900,7 @@ export type ImportTransactionDataResponse = {
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
+    subscriptionId: string | null
     action: TransactionActionEnum
     status: TransactionStatusEnum
     ignore: boolean
@@ -1936,6 +1956,7 @@ export type GetImportTransactionsResponse = {
 
 export type CreateImportRequest = {
     financialAccountId: string
+    autoApprove?: boolean | null
 }
 
 export type CreateImportMultipartRequest = {
@@ -1993,6 +2014,8 @@ export type ImportParamsId = {
 export type ImportFilters = {
     id?: ImportParamsId
     title?: StringFilter
+    source?: ImportSourceEnum
+    status?: ImportStatusEnum
     date?: DateFilter
     includeTransactions?: boolean
 }
@@ -2030,6 +2053,58 @@ export type ApproveImportTransactionsResponse = {
      * Response data
      */
     data: Array<ImportTransactionDataResponse>
+}
+
+export type ImportCandidateTransaction = {
+    date: string
+    title: string
+    amount: number
+    currency: CurrencyEnum
+    action: TransactionActionEnum
+    externalTransactionId?: string | null
+    bankSyncAccountId?: string | null
+    rawRow?: Array<string>
+}
+
+export type ImportIngestionRequest = {
+    source: ImportSourceEnum
+    financialAccountId: string
+    autoApprove?: boolean
+    sourceReference?: string | null
+    bankConnectionId?: string | null
+    transactions?: Array<ImportCandidateTransaction>
+}
+
+export type ImportEnrichment = {
+    title?: string
+    categoryId?: string | null
+    subcategoryId?: string | null
+    subscriptionId?: string | null
+    icon?: string | null
+    note?: string | null
+}
+
+export type ImportEnrichmentResult = ImportEnrichment & {
+    strategy: EnrichmentStrategyEnum
+}
+
+export type ImportTransactionDraft = {
+    id: string
+    importId: string
+    financialAccountId: string
+    date: string
+    title: string
+    action: TransactionActionEnum
+    amount: number
+    currency: CurrencyEnum
+    categoryId: string | null
+    subcategoryId: string | null
+    subscriptionId: string | null
+    icon: string | null
+    note: string | null
+    bankConnectionId: string | null
+    bankSyncAccountId: string | null
+    externalTransactionId: string | null
 }
 
 export type ImportTemplateActionEnum = 'categories'
@@ -2860,6 +2935,7 @@ export type TransactionData = {
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
+    subscriptionId: string | null
     importId: string | null
     action: TransactionActionEnum
     status: TransactionStatusEnum

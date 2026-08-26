@@ -4,6 +4,7 @@ import type {
     Amount,
     ImportData,
     ImportFilters,
+    ImportStatusEnum,
     ImportTransactionDataResponse,
     TransactionStatusEnum,
     UpdateImportRequest
@@ -87,7 +88,7 @@ export class ImportRepository {
      * @param status The status that the import row should be transitioned to.
      * @returns A promise that resolves to the updated import row.
      */
-    async updateStatus(tx: Db, userId: string, id: string, status: TransactionStatusEnum): Promise<ImportData> {
+    async updateStatus(tx: Db, userId: string, id: string, status: ImportStatusEnum): Promise<ImportData> {
         return (await tx.import.update({
             where: { id, userId },
             data: { status }
@@ -348,7 +349,7 @@ export class ImportRepository {
     }
 
     /**
-     * Finds an already-open (`IMPORT_PENDING`) import for the given financial account that already
+     * Finds an already-open (`PENDING_REVIEW`) import for the given financial account that already
      * holds transactions from the given bank connection, so a running sync can keep appending to the
      * same batch instead of spawning a new one on every run.
      * @param userId The ID of the user who owns the import being searched for.
@@ -365,11 +366,26 @@ export class ImportRepository {
             where: {
                 userId,
                 financialAccountId,
-                status: 'IMPORT_PENDING',
+                status: 'PENDING_REVIEW',
                 transactions: { some: { bankConnectionId } }
             },
             select: { id: true }
         })
+    }
+
+    /**
+     * Reads the provider a bank connection belongs to, stored on the import as its source reference
+     * so the origin of a synced batch survives on the import row itself.
+     * @param userId The ID of the user who owns the connection.
+     * @param bankConnectionId The unique identifier of the connection whose provider must be read.
+     * @returns A promise that resolves to the provider id, or null when the connection is not found.
+     */
+    async findConnectionProviderId(userId: string, bankConnectionId: string): Promise<string | null> {
+        const connection = await prisma.bankConnection.findFirst({
+            where: { id: bankConnectionId, userId },
+            select: { providerId: true }
+        })
+        return connection?.providerId ?? null
     }
 
     /**

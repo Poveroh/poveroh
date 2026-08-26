@@ -15,17 +15,18 @@ export function ImportsItem({ imports, openDelete, openEdit, onRollback }: Impor
     const t = useTranslations()
     const { accountQuery } = useFinancialAccount()
 
-    const importApproved = imports.status === 'APPROVED'
+    const importApproved = imports.status === 'COMPLETED'
     const account = accountQuery.data?.data.find(acc => acc.id === imports.financialAccountId)
     const formattedDate = new Date(imports.createdAt).toLocaleDateString()
 
     const getStatusColor = () => {
         switch (imports.status) {
-            case 'IMPORT_PENDING':
+            case 'PROCESSING':
+            case 'PENDING_REVIEW':
                 return 'text-warning'
-            case 'APPROVED':
+            case 'COMPLETED':
                 return 'text-success'
-            case 'IMPORT_REJECTED':
+            case 'FAILED':
                 return 'text-danger'
             default:
                 return ''

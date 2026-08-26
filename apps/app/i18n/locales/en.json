@@ -734,11 +734,16 @@
             "description": "You are about to complete an import. This will complete the import and related transactions that are approved.<br/><br/>Not approved transactions will be deleted."
         },
         "status": {
-            "APPROVED": "Approved",
-            "REJECTED": "Rejected",
-            "IMPORT_PENDING": "Import pending",
-            "IMPORT_REJECTED": "Import rejected",
-            "IMPORT_APPROVED": "Import approved"
+            "PROCESSING": "Processing",
+            "PENDING_REVIEW": "Pending review",
+            "COMPLETED": "Completed",
+            "FAILED": "Failed"
+        },
+        "source": {
+            "CSV": "Import via CSV",
+            "BANK_SYNC": "Import via bank sync",
+            "MANUAL": "Import via manual entry",
+            "API": "Import via API"
         }
     },
     "providers": {

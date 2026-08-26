@@ -14,6 +14,7 @@ export type ImportTransactionDataResponse = {
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
+    subscriptionId: string | null
     action: TransactionActionEnum
     status: TransactionStatusEnum
     ignore: boolean

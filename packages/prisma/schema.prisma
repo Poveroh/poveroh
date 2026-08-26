@@ -596,22 +596,52 @@ model FxRate {
 // IMPORT & TRANSACTIONS
 // ===========================================================================
 model Import {
-  id                 String            @id @default(uuid())
+  id                 String                    @id @default(uuid())
   userId             String
   title              String
   financialAccountId String
-  status             TransactionStatus @default(IMPORT_PENDING)
+  status             ImportStatus              @default(PROCESSING)
+  source             ImportSource              @default(CSV)
+  sourceReference    String?
+  bankConnectionId   String?
+  autoApprove        Boolean                   @default(false)
+  failureReason      String?
   transactions       Transaction[]
   files              ImportFile[]
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  deletedAt          DateTime?         @db.Timestamptz
+  stagedTransactions ImportStagedTransaction[]
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  deletedAt          DateTime?                 @db.Timestamptz
 
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  bankConnection   BankConnection?  @relation(fields: [bankConnectionId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([status])
+  @@index([userId, source])
+  @@index([bankConnectionId])
+}
+
+/// Transactions handed over by an external source (bank-sync today), persisted before they are
+/// enriched and turned into real transactions. A CSV import needs no staging: its uploaded file is
+/// already a durable, re-parsable copy of the same input.
+model ImportStagedTransaction {
+  id                    String            @id @default(uuid())
+  importId              String
+  date                  DateTime
+  title                 String
+  amount                Decimal           @db.Decimal(20, 2)
+  currency              Currency
+  action                TransactionAction
+  externalTransactionId String?
+  bankSyncAccountId     String?
+  createdAt             DateTime          @default(now())
+
+  import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
+
+  @@unique([importId, externalTransactionId])
+  @@index([importId])
 }
 
 model ImportFile {
@@ -638,6 +668,7 @@ model Transaction {
   icon             String?
   categoryId       String?
   subcategoryId    String?
+  subscriptionId   String?
   importId         String?
   bankConnectionId String?
   action           TransactionAction  @default(EXPENSES)
@@ -654,6 +685,7 @@ model Transaction {
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   category       Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   subcategory    Subcategory?    @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+  subscription   Subscription?   @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
   import         Import?         @relation(fields: [importId], references: [id], onDelete: SetNull)
   bankConnection BankConnection? @relation(fields: [bankConnectionId], references: [id], onDelete: SetNull)
   transfer       Transfer?       @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
@@ -666,6 +698,7 @@ model Transaction {
   @@index([bankConnectionId])
   @@index([categoryId])
   @@index([subcategoryId])
+  @@index([subscriptionId])
 }
 
 model Transfer {
@@ -755,6 +788,7 @@ model Subscription {
 
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  transactions     Transaction[]
 
   @@index([userId])
   @@index([financialAccountId])
@@ -840,26 +874,28 @@ model BankSyncProviderCredential {
 }
 
 model BankConnection {
-  id                   String                   @id @default(uuid())
-  userId               String
-  providerId           String
-  status               BankSyncConnectionStatus @default(PENDING)
-  externalConnectionId String?
-  institutionName      String?
-  ciphertext           Bytes?
-  iv                   Bytes?
-  authTag              Bytes?
-  algo                 String?
-  lastSyncedAt         DateTime?
-  lastSyncError        String?
-  createdAt            DateTime                 @default(now())
-  updatedAt            DateTime                 @updatedAt
-  deletedAt            DateTime?                @db.Timestamptz
+  id                      String                   @id @default(uuid())
+  userId                  String
+  providerId              String
+  status                  BankSyncConnectionStatus @default(PENDING)
+  externalConnectionId    String?
+  institutionName         String?
+  ciphertext              Bytes?
+  iv                      Bytes?
+  authTag                 Bytes?
+  algo                    String?
+  autoApproveTransactions Boolean                  @default(false)
+  lastSyncedAt            DateTime?
+  lastSyncError           String?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  deletedAt               DateTime?                @db.Timestamptz
 
   user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   accounts     BankSyncAccount[]
   runs         BankSyncRun[]
   transactions Transaction[]
+  imports      Import[]
 
   @@unique([userId, providerId, externalConnectionId])
   @@index([userId])
@@ -1223,6 +1259,23 @@ enum TransactionStatus {
   IMPORT_PENDING
   IMPORT_REJECTED
   IMPORT_APPROVED
+}
+
+/// The import lifecycle, kept separate from TransactionStatus: an import is processed, then
+/// reviewed, then completed, while a transaction is approved or rejected within that review.
+enum ImportStatus {
+  PROCESSING
+  PENDING_REVIEW
+  COMPLETED
+  FAILED
+}
+
+/// Where an import's transactions came from.
+enum ImportSource {
+  CSV
+  BANK_SYNC
+  MANUAL
+  API
 }
 
 enum BankSyncConnectionStatus {

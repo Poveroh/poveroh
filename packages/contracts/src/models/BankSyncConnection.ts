@@ -10,6 +10,7 @@ export type BankSyncConnection = {
     status: BankSyncConnectionStatusEnum
     externalConnectionId: string | null
     institutionName: string | null
+    autoApproveTransactions: boolean
     lastSyncedAt: string | null
     lastSyncError: string | null
     createdAt: string
