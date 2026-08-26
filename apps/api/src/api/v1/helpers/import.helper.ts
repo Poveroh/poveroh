@@ -1,6 +1,7 @@
-import prisma, { Prisma } from '@poveroh/prisma'
+import { Prisma } from '@poveroh/prisma'
 import { v4 as uuidv4 } from 'uuid'
-import type { CurrencyEnum, ReadedTransaction, TransactionEnrichment } from '@poveroh/types'
+import type { ImportCandidateTransaction, ReadedTransaction } from '@poveroh/types'
+import { EnrichmentPipeline } from '@/v1/modules/imports/enrichment/enrichment.pipeline'
 
 export type NormalizedImport = {
     transactions: Prisma.TransactionCreateManyInput[]
@@ -9,57 +10,18 @@ export type NormalizedImport = {
 
 export const ImportHelper = {
     /**
-     * Looks up a similar existing transaction and a matching subscription for the given title
-     * and amount, and derives the category, subcategory, icon, note and title a new transaction
-     * should be created with. Shared by CSV import normalization and bank-sync transaction creation
-     * so both get the same history-based categorization.
-     */
-    async enrichTransaction(
-        userId: string,
-        title: string,
-        amount: number,
-        currency: CurrencyEnum
-    ): Promise<TransactionEnrichment> {
-        const trimmedTitle = title.trim()
-
-        const similarTransaction = await prisma.transaction.findFirst({
-            where: {
-                userId,
-                title: trimmedTitle,
-                amounts: {
-                    some: {
-                        amount,
-                        currency
-                    }
-                }
-            }
-        })
-
-        const matchingSubscription = await prisma.subscription.findFirst({
-            where: {
-                userId,
-                title: trimmedTitle,
-                amount,
-                currency
-            }
-        })
-
-        return {
-            title: similarTransaction?.title || matchingSubscription?.title || trimmedTitle,
-            categoryId: similarTransaction?.categoryId || null,
-            subcategoryId: similarTransaction?.subcategoryId || null,
-            icon: similarTransaction?.icon || matchingSubscription?.appearanceLogoIcon || null,
-            note: similarTransaction?.note || null
-        }
-    },
-
-    /**
-     * Normalize transactions from raw data, returning Prisma-ready create inputs
-     * for both transactions and their amounts. Amounts are keyed by `transactionId`
-     * so they can be inserted in a single batch after the transactions are created.
+     * Normalize transactions from raw data, returning Prisma-ready create inputs for both
+     * transactions and their amounts. Amounts are keyed by `transactionId` so they can be inserted
+     * in a single batch after the transactions are created.
      *
-     * The algorithm searches back similar existing transactions and subscriptions
-     * to fill new transactions with the correct data (category, subcategory, etc).
+     * Category, subcategory, subscription, icon and note come from the enrichment pipeline, which
+     * looks at the whole batch at once: every strategy loads what it needs in one query up front
+     * instead of the import issuing a pair of lookups per row.
+     * @param userId The ID of the user the imported transactions belong to.
+     * @param financialAccountId The financial account the amounts belong to.
+     * @param importId The import the transactions are filed under.
+     * @param rawTransactions The transactions read from the source.
+     * @returns A promise that resolves to the create inputs for the transactions and their amounts.
      */
     async normalizeTransaction(
         userId: string,
@@ -70,28 +32,33 @@ export const ImportHelper = {
         const transactions: Prisma.TransactionCreateManyInput[] = []
         const amounts: Prisma.AmountCreateManyInput[] = []
 
-        for (const rawTransaction of rawTransactions) {
-            const transactionId = uuidv4()
+        const candidates: ImportCandidateTransaction[] = rawTransactions.map(rawTransaction => ({
+            date: rawTransaction.date,
+            title: rawTransaction.title,
+            amount: rawTransaction.amount,
+            currency: rawTransaction.currency,
+            action: rawTransaction.action
+        }))
 
-            const enrichment = await this.enrichTransaction(
-                userId,
-                rawTransaction.title,
-                rawTransaction.amount,
-                rawTransaction.currency
-            )
+        const enrichments = await new EnrichmentPipeline().run(userId, candidates)
+
+        rawTransactions.forEach((rawTransaction, index) => {
+            const transactionId = uuidv4()
+            const enrichment = enrichments[index] ?? {}
 
             transactions.push({
                 id: transactionId,
                 userId,
                 importId,
                 status: 'IMPORT_PENDING',
-                title: enrichment.title,
+                title: enrichment.title ?? rawTransaction.title.trim(),
                 action: rawTransaction.action,
-                categoryId: enrichment.categoryId,
-                subcategoryId: enrichment.subcategoryId,
-                icon: enrichment.icon,
+                categoryId: enrichment.categoryId ?? null,
+                subcategoryId: enrichment.subcategoryId ?? null,
+                subscriptionId: enrichment.subscriptionId ?? null,
+                icon: enrichment.icon ?? null,
                 date: new Date(rawTransaction.date),
-                note: enrichment.note,
+                note: enrichment.note ?? null,
                 ignore: false
             })
 
@@ -102,7 +69,7 @@ export const ImportHelper = {
                 action: rawTransaction.action,
                 financialAccountId
             })
-        }
+        })
 
         return { transactions, amounts }
     }
