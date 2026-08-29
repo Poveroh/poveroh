@@ -8,6 +8,7 @@ import {
     type RedisConnectionConfig
 } from '@poveroh/types'
 import { createBullMQConnectionOptions } from './redis-connection'
+import { toBullMQJobId } from '../../utils/job-id'
 
 export class BullMQJobDispatcher implements JobDispatcher {
     private readonly queue: Queue
@@ -27,7 +28,7 @@ export class BullMQJobDispatcher implements JobDispatcher {
             attempts: options.attempts,
             delay: options.delay,
             backoff: options.backoff,
-            jobId: options.deduplicationId,
+            jobId: toBullMQJobId(options.deduplicationId),
             removeOnComplete: options.removeOnComplete ?? true,
             removeOnFail: options.removeOnFail ?? 100
         })

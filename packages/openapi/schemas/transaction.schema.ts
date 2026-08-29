@@ -106,6 +106,7 @@ export const TransactionSchema = z
         icon: z.string().nullable(),
         categoryId: z.string().nullable(),
         subcategoryId: z.string().nullable(),
+        subscriptionId: z.string().nullable(),
         importId: z.string().nullable(),
         action: TransactionActionEnum,
         status: TransactionStatusEnum,

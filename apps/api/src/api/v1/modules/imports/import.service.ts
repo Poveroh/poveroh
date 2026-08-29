@@ -1,9 +1,7 @@
-import prisma, { Prisma } from '@poveroh/prisma'
-import { v4 as uuidv4 } from 'uuid'
+import prisma from '@poveroh/prisma'
 import type {
     ApproveImportTransactionsRequest,
     CategoryData,
-    CreateImportRequest,
     ImportData,
     ImportFilters,
     ImportTransactionDataResponse,
@@ -15,9 +13,7 @@ import { AccountBalanceService } from '../financial-accounts/account-balance/acc
 import { BaseService } from '../base/base.service'
 import { CategoryService } from '../categories/category.service'
 import { eventBus } from '../../worker/events/event-bus'
-import { ImportHelper } from '../../helpers/import.helper'
 import { ImportRepository } from './import.repository'
-import HowIParsedYourDataAlgorithm from '../../helpers/parser.helper'
 
 /**
  * Service class for managing imports, including creating, updating, deleting and retrieving imports for the authenticated user.
@@ -54,7 +50,7 @@ export class ImportService extends BaseService {
             await this.importRepository.deletePendingOrRejectedAmounts(tx, userId, id)
             await this.importRepository.deletePendingOrRejectedTransactions(tx, userId, id)
 
-            return this.importRepository.updateStatus(tx, userId, id, 'APPROVED')
+            return this.importRepository.updateStatus(tx, userId, id, 'COMPLETED')
         })
 
         if (approvedDates.length > 0) {
@@ -79,7 +75,7 @@ export class ImportService extends BaseService {
         const data = await prisma.$transaction(async tx => {
             const existing = await tx.import.findFirst({ where: { id, userId } })
             if (!existing) throw new NotFoundError('Import not found')
-            if (existing.status !== 'APPROVED') {
+            if (existing.status !== 'COMPLETED') {
                 throw new BadRequestError('Only completed imports can be rolled back')
             }
             financialAccountId = existing.financialAccountId
@@ -94,7 +90,7 @@ export class ImportService extends BaseService {
 
             await this.importRepository.updateTransactionsStatus(tx, userId, id, 'APPROVED', 'IMPORT_PENDING')
 
-            return this.importRepository.updateStatus(tx, userId, id, 'IMPORT_PENDING')
+            return this.importRepository.updateStatus(tx, userId, id, 'PENDING_REVIEW')
         })
 
         if (approvedDates.length > 0) {
@@ -155,7 +151,7 @@ export class ImportService extends BaseService {
         // Capture the approved transactions' dates before deleting: only an approved import ever affected the
         // balance, and its rows are gone once the transaction below commits.
         const approvedTransactions =
-            data?.status === 'APPROVED'
+            data?.status === 'COMPLETED'
                 ? await this.importRepository.findTransactionsByStatusWithAmounts(prisma, userId, id, 'APPROVED')
                 : []
 
@@ -232,63 +228,20 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Creates an import with the supplied payload and uploaded files, parsing the file contents and persisting derived transactions and amounts.
-     * @param payload The data required to create a new import.
-     * @param files The uploaded files containing the transactions to import.
-     * @returns A promise that resolves to the newly created import data.
+     * Approves every transaction still awaiting review in an import, used when the import was
+     * created with auto-approval so the user is not asked to confirm what they already opted out of
+     * reviewing.
+     * @param id The unique identifier of the import to approve in full.
+     * @returns A promise that resolves to the completed import data.
      */
-    async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportData> {
+    async approveAllTransactions(id: string): Promise<ImportData> {
         const userId = this.context.currentUser.id
-        const importId = uuidv4()
-        const now = new Date()
-        const parser = new HowIParsedYourDataAlgorithm()
-
-        const fileResults = await Promise.all(
-            files.map(async file => {
-                const content = file.buffer.toString('utf-8')
-                const filePath = await this.media.saveFile(importId, file)
-                const parsed = await parser.parseCSVFile(content)
-
-                return {
-                    filePath,
-                    originalname: file.originalname,
-                    transactions: parsed.transactions
-                }
-            })
-        )
-
-        const savedFiles = fileResults.map(fileResult => fileResult.filePath)
-        const allRawTransactions = fileResults.flatMap(fileResult => fileResult.transactions)
-
-        const { transactions: transactionsToCreate, amounts: amountsToCreate } =
-            await ImportHelper.normalizeTransaction(userId, payload.financialAccountId, importId, allRawTransactions)
-
-        const importFiles: Prisma.ImportFileCreateManyInput[] = savedFiles.map((path, idx) => ({
-            importId,
-            filename: files[idx]?.originalname || '',
-            filetype: 'CSV',
-            path
-        }))
 
         await prisma.$transaction(async tx => {
-            await this.importRepository.create(tx, {
-                id: importId,
-                userId,
-                financialAccountId: payload.financialAccountId,
-                title: `Import at ${now.toLocaleString()}`,
-                status: 'IMPORT_PENDING',
-                createdAt: now
-            })
-
-            await this.importRepository.createImportFiles(tx, importFiles)
-            await this.importRepository.createTransactions(tx, transactionsToCreate)
-            await this.importRepository.createAmounts(tx, amountsToCreate)
+            await this.importRepository.updateTransactionsStatus(tx, userId, id, 'IMPORT_PENDING', 'IMPORT_APPROVED')
         })
 
-        const data = await this.importRepository.findByIdOrThrow(userId, importId)
-        await eventBus.emit('import.created', { userId, data })
-
-        return data
+        return this.completeImport(id)
     }
 
     /**

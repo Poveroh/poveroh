@@ -4,4 +4,5 @@
 /* eslint-disable */
 export type ImportForm = {
     financialAccountId: string
+    autoApprove?: boolean
 }

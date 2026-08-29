@@ -4,4 +4,5 @@
 /* eslint-disable */
 export type CreateImportRequest = {
     financialAccountId: string
+    autoApprove?: boolean | null
 }

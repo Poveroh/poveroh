@@ -1,0 +1,22 @@
+{
+    "name": "@poveroh/bank-sync",
+    "version": "0.0.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "typings": "./dist/index.d.ts",
+    "private": true,
+    "scripts": {
+        "build": "tsc && tsc-alias --resolve-full-paths",
+        "lint": "eslint . --max-warnings 0"
+    },
+    "dependencies": {
+        "@poveroh/types": "*",
+        "axios": "^1.15.2",
+        "plaid": "^38.0.0"
+    },
+    "devDependencies": {
+        "@poveroh/tsconfig": "*",
+        "tsc-alias": "^1.8.10",
+        "typescript": "^5.7.3"
+    }
+}

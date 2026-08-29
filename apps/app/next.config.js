@@ -19,7 +19,8 @@ const nextConfig = {
     output: 'standalone'
 }
 
-const hasSentry = !!(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN)
+const hasSentry =
+    process.env.NODE_ENV === 'production' && !!(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN)
 
 export default hasSentry
     ? withSentryConfig(withNextIntl(nextConfig), {

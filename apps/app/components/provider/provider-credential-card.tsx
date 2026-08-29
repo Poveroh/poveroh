@@ -11,14 +11,12 @@ import { PasswordField } from '@/components/fields'
 import { useMarketDataProviderCredentialForm } from '@/hooks/form/use-market-data-provider-credential-form'
 
 import { Loader2, Unlink } from 'lucide-react'
-import { BrandIcon } from '../icon/brand-icon'
 
-type Props = {
+type ProviderCredentialCardProps = {
     provider: MarketDataProvider
 }
 
-// Renders a single provider row with its status, setup instructions and credential form.
-export function ProviderCredentialCard({ provider }: Props) {
+export function ProviderCredentialCard({ provider }: ProviderCredentialCardProps) {
     const t = useTranslations()
     const { form, isSaving, isDeleting, handleSave, handleDelete } = useMarketDataProviderCredentialForm(provider)
     const apiKey = useWatch({ control: form.control, name: 'apiKey' })

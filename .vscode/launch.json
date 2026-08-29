@@ -37,12 +37,26 @@
             "sourceMaps": true,
             "protocol": "inspector",
             "timeout": 10000
+        },
+        {
+            "name": "Poveroh:worker",
+            "type": "node",
+            "request": "attach",
+            "port": 9230,
+            "restart": true,
+            "sourceMaps": true,
+            "protocol": "inspector",
+            "timeout": 10000
         }
     ],
     "compounds": [
         {
-            "name": "Poveroh:app+api",
-            "configurations": ["Poveroh:api", "Poveroh:app"]
+            "name": "Poveroh:app+api+worker",
+            "configurations": ["Poveroh:api", "Poveroh:worker", "Poveroh:app"]
+        },
+        {
+            "name": "Poveroh:api-worker",
+            "configurations": ["Poveroh:api", "Poveroh:worker"]
         }
     ]
 }

@@ -25,6 +25,8 @@
             "@/*": ["./*"],
             "@poveroh/prisma": ["../../packages/prisma/src"],
             "@poveroh/prisma/*": ["../../packages/prisma/src/*"],
+            "@poveroh/bank-sync": ["../../packages/bank-sync/src"],
+            "@poveroh/bank-sync/*": ["../../packages/bank-sync/src/*"],
             "@poveroh/logger": ["../../packages/logger/src"],
             "@poveroh/logger/server": ["../../packages/logger/src/server/server"],
             "@poveroh/logger/telemetry": ["../../packages/logger/src/server/telemetry"],

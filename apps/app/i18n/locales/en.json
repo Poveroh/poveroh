@@ -101,6 +101,10 @@
         "back": "Back",
         "analyzeAndParse": "Analyze and parse",
         "addFromTemplates": "Add from templates",
+        "connect": "Connect",
+        "syncNow": "Sync now",
+        "disconnect": "Disconnect",
+        "manageAccounts": "Manage accounts",
         "add": {
             "base": "Add",
             "new": "Add new",
@@ -341,6 +345,10 @@
             "quantity": "Quantity",
             "fees": "Transaction fee",
             "total": "Total transaction"
+        },
+        "autoApprove": {
+            "label": "Approve transactions automatically",
+            "description": "Skip the review step and add the imported transactions straight to your account."
         }
     },
     "layout": {
@@ -730,12 +738,18 @@
             "description": "You are about to complete an import. This will complete the import and related transactions that are approved.<br/><br/>Not approved transactions will be deleted."
         },
         "status": {
-            "APPROVED": "Approved",
-            "REJECTED": "Rejected",
-            "IMPORT_PENDING": "Import pending",
-            "IMPORT_REJECTED": "Import rejected",
-            "IMPORT_APPROVED": "Import approved"
-        }
+            "PROCESSING": "Processing",
+            "PENDING_REVIEW": "Pending review",
+            "COMPLETED": "Completed",
+            "FAILED": "Failed"
+        },
+        "source": {
+            "CSV": "Import via CSV",
+            "BANK_SYNC": "Import via bank sync",
+            "MANUAL": "Import via manual entry",
+            "API": "Import via API"
+        },
+        "transactionCount": "{count, plural, =1 {# transaction} other {# transactions}}"
     },
     "providers": {
         "title": "Stock provider",
@@ -772,6 +786,47 @@
         "toast": {
             "saved": "{a} api key saved",
             "deleted": "{a} api key removed"
+        }
+    },
+    "bankSync": {
+        "title": "Bank sync",
+        "breadcrumb": {
+            "advanced": "Advanced"
+        },
+        "list": {
+            "title": "Providers",
+            "plaid": {
+                "setup": "Setup instructions:\n1. Click Connect to open Plaid Link\n2. Choose your bank and sign in\n3. Transactions sync automatically every night"
+            },
+            "lunchflow": {
+                "setup": "Setup instructions:\n1. Click Connect to open Lunch Flow\n2. Choose your bank and sign in\n3. Transactions sync automatically every night"
+            }
+        },
+        "connections": {
+            "title": "Connections"
+        },
+        "status": {
+            "PENDING": "Pending",
+            "LINKED": "Connected",
+            "ERROR": "Error",
+            "REAUTH_REQUIRED": "Reauthentication required",
+            "REVOKED": "Revoked"
+        },
+        "mapping": {
+            "title": "Map {a}",
+            "subtitle": "Match each account found to one of your financial accounts",
+            "selectAccount": "Select an account",
+            "empty": "No accounts found for this connection"
+        },
+        "toast": {
+            "connected": "{a} connected",
+            "disconnected": "{a} disconnected",
+            "syncStarted": "Sync started",
+            "accountsLinked": "Accounts linked"
+        },
+        "callback": {
+            "processing": "Finishing connection…",
+            "error": "Something went wrong completing the connection"
         }
     },
     "stockField": {

@@ -2,9 +2,13 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type {
     Amount,
+    ImportCandidateTransaction,
     ImportData,
     ImportFilters,
+    ImportProcessingTarget,
+    ImportStatusEnum,
     ImportTransactionDataResponse,
+    ImportTransactionDraft,
     TransactionStatusEnum,
     UpdateImportRequest
 } from '@poveroh/types'
@@ -66,6 +70,141 @@ export class ImportRepository {
     }
 
     /**
+     * Persists enriched transactions and their amounts, translating the module's draft type into
+     * Prisma inputs here so no Prisma type has to travel between the services above.
+     * @param tx The Prisma client used to run the inserts.
+     * @param drafts The enriched transactions to persist.
+     * @returns A promise that resolves when the rows have been created.
+     */
+    async createTransactionDrafts(tx: Db, drafts: ImportTransactionDraft[]): Promise<void> {
+        if (drafts.length === 0) return
+
+        await tx.transaction.createMany({
+            data: drafts.map(draft => ({
+                id: draft.id,
+                userId: draft.userId,
+                importId: draft.importId,
+                date: new Date(draft.date),
+                title: draft.title,
+                note: draft.note,
+                icon: draft.icon,
+                categoryId: draft.categoryId,
+                subcategoryId: draft.subcategoryId,
+                subscriptionId: draft.subscriptionId,
+                bankConnectionId: draft.bankConnectionId,
+                action: draft.action,
+                status: 'IMPORT_PENDING',
+                ignore: false
+            }))
+        })
+
+        await tx.amount.createMany({
+            data: drafts.map(draft => ({
+                transactionId: draft.id,
+                amount: draft.amount,
+                currency: draft.currency,
+                action: draft.action,
+                financialAccountId: draft.financialAccountId,
+                bankSyncAccountId: draft.bankSyncAccountId,
+                externalTransactionId: draft.externalTransactionId
+            }))
+        })
+    }
+
+    /**
+     * Stages the transactions a source delivered, so they survive until the import is processed.
+     * Rows already staged for the same external transaction are skipped, which makes re-delivery of
+     * an overlapping batch harmless.
+     * @param importId The import the transactions belong to.
+     * @param candidates The transactions to stage.
+     * @returns A promise that resolves when the rows have been staged.
+     */
+    async createStagedTransactions(importId: string, candidates: ImportCandidateTransaction[]): Promise<void> {
+        if (candidates.length === 0) return
+
+        await prisma.importStagedTransaction.createMany({
+            data: candidates.map(candidate => ({
+                ...candidate,
+                importId,
+                date: new Date(candidate.date)
+            })),
+            skipDuplicates: true
+        })
+    }
+
+    /**
+     * Reads the transactions staged for an import, oldest first.
+     * @param importId The import whose staged rows must be read.
+     * @returns A promise that resolves to the staged transactions.
+     */
+    async findStagedTransactions(importId: string): Promise<ImportCandidateTransaction[]> {
+        const staged = await prisma.importStagedTransaction.findMany({
+            where: { importId },
+            orderBy: { date: 'asc' }
+        })
+
+        return staged.map(row => ({
+            date: row.date.toISOString(),
+            title: row.title,
+            amount: Number(row.amount),
+            currency: row.currency,
+            action: row.action,
+            externalTransactionId: row.externalTransactionId,
+            bankSyncAccountId: row.bankSyncAccountId
+        }))
+    }
+
+    /**
+     * Drops the staged rows of an import once they have been turned into real transactions.
+     * @param tx The Prisma client used to run the delete, so it commits with the transactions it produced.
+     * @param importId The import whose staged rows must be dropped.
+     * @returns A promise that resolves when the rows have been deleted.
+     */
+    async deleteStagedTransactions(tx: Db, importId: string): Promise<void> {
+        await tx.importStagedTransaction.deleteMany({ where: { importId } })
+    }
+
+    /**
+     * Records that an import could not be processed, keeping the reason on the row so the UI can
+     * show it rather than leaving the user with an import that silently never fills.
+     * @param userId The ID of the user who owns the import.
+     * @param importId The import that failed.
+     * @param reason The error message to surface.
+     * @returns A promise that resolves when the failure has been recorded.
+     */
+    async markFailed(userId: string, importId: string, reason: string): Promise<void> {
+        await prisma.import.updateMany({
+            where: { id: importId, userId },
+            data: { status: 'FAILED', failureReason: reason }
+        })
+    }
+
+    /**
+     * Reads the import-wide values needed to process an import.
+     * @param userId The ID of the user who owns the import.
+     * @param importId The import being processed.
+     * @returns A promise that resolves to the processing target, or null when the import is not found.
+     */
+    async findProcessingTarget(userId: string, importId: string): Promise<ImportProcessingTarget | null> {
+        return prisma.import.findFirst({
+            where: { id: importId, userId, deletedAt: null },
+            select: { source: true, financialAccountId: true, bankConnectionId: true, autoApprove: true }
+        })
+    }
+
+    /**
+     * Reads the files attached to an import, used to re-parse a CSV import outside the request that uploaded it.
+     * @param importId The import whose files must be read.
+     * @returns A promise that resolves to the stored path and original name of each file.
+     */
+    async findImportFiles(importId: string): Promise<Array<{ path: string; filename: string }>> {
+        return prisma.importFile.findMany({
+            where: { importId, deletedAt: null },
+            select: { path: true, filename: true }
+        })
+    }
+
+    /**
      * Updates an import owned by the specified user using the provided payload.
      * @param userId The ID of the user who owns the import being updated.
      * @param id The unique identifier of the import being updated.
@@ -87,10 +226,12 @@ export class ImportRepository {
      * @param status The status that the import row should be transitioned to.
      * @returns A promise that resolves to the updated import row.
      */
-    async updateStatus(tx: Db, userId: string, id: string, status: TransactionStatusEnum): Promise<ImportData> {
+    async updateStatus(tx: Db, userId: string, id: string, status: ImportStatusEnum): Promise<ImportData> {
         return (await tx.import.update({
             where: { id, userId },
-            data: { status }
+            // Any transition away from FAILED clears the reason, so a successful retry does not
+            // leave the previous attempt's error on the row.
+            data: { status, failureReason: status === 'FAILED' ? undefined : null }
         })) as unknown as ImportData
     }
 
@@ -345,6 +486,47 @@ export class ImportRepository {
             include: { amounts: true, media: true },
             orderBy: { createdAt: 'desc' }
         })) as unknown as ImportTransactionDataResponse[]
+    }
+
+    /**
+     * Finds an import still awaiting review that a recurring source is already filling for the same
+     * account and connection, so repeated runs collect into one batch instead of leaving an import
+     * behind on every run.
+     * @param userId The ID of the user who owns the import being searched for.
+     * @param financialAccountId The financial account the import must belong to.
+     * @param bankConnectionId The connection the import must have been opened for.
+     * @returns A promise that resolves to the open import id, or null when none exists.
+     */
+    async findOpenSourceImport(
+        userId: string,
+        financialAccountId: string,
+        bankConnectionId: string
+    ): Promise<{ id: string } | null> {
+        return prisma.import.findFirst({
+            where: {
+                userId,
+                financialAccountId,
+                bankConnectionId,
+                status: 'PENDING_REVIEW',
+                deletedAt: null
+            },
+            select: { id: true }
+        })
+    }
+
+    /**
+     * Reads the provider a bank connection belongs to, stored on the import as its source reference
+     * so the origin of a synced batch survives on the import row itself.
+     * @param userId The ID of the user who owns the connection.
+     * @param bankConnectionId The unique identifier of the connection whose provider must be read.
+     * @returns A promise that resolves to the provider id, or null when the connection is not found.
+     */
+    async findConnectionProviderId(userId: string, bankConnectionId: string): Promise<string | null> {
+        const connection = await prisma.bankConnection.findFirst({
+            where: { id: bankConnectionId, userId },
+            select: { providerId: true }
+        })
+        return connection?.providerId ?? null
     }
 
     /**

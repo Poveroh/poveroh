@@ -67,3 +67,65 @@ export function getUploadClient(): BeyCloud {
     }
     return _uploadClient
 }
+
+type DownloadedFile = Awaited<ReturnType<BeyCloud['downloadFile']>>
+
+type ByteArrayBody = { transformToByteArray: () => Promise<Uint8Array> }
+
+type StreamBody = { [Symbol.asyncIterator]: () => AsyncIterator<unknown> }
+
+/**
+ * Narrows an AWS SDK v3 body, which exposes the whole object as a byte array.
+ * @param value The candidate body.
+ * @returns Whether the body can be read through `transformToByteArray`.
+ */
+function isByteArrayBody(value: unknown): value is ByteArrayBody {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        typeof (value as ByteArrayBody).transformToByteArray === 'function'
+    )
+}
+
+/**
+ * Narrows any async-iterable body, which covers Node readable streams.
+ * @param value The candidate body.
+ * @returns Whether the body can be consumed by iterating over its chunks.
+ */
+function isStreamBody(value: unknown): value is StreamBody {
+    return typeof value === 'object' && value !== null && Symbol.asyncIterator in value
+}
+
+/**
+ * Collapses whatever `downloadFile` returned into a Buffer, since each storage provider hands back
+ * a different shape: a Buffer for local storage, a byte-array body on AWS, a readable stream on
+ * Azure and GCS.
+ * @param downloaded The value returned by the storage client.
+ * @returns A promise that resolves to the file contents.
+ */
+export async function toFileBuffer(downloaded: DownloadedFile): Promise<Buffer> {
+    if (Buffer.isBuffer(downloaded)) return downloaded
+
+    const body: unknown =
+        'Body' in downloaded
+            ? downloaded.Body
+            : 'readableStreamBody' in downloaded
+              ? downloaded.readableStreamBody
+              : undefined
+
+    if (Buffer.isBuffer(body)) return body
+
+    if (isByteArrayBody(body)) {
+        return Buffer.from(await body.transformToByteArray())
+    }
+
+    if (isStreamBody(body)) {
+        const chunks: Buffer[] = []
+        for await (const chunk of body as AsyncIterable<Buffer | string>) {
+            chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+        }
+        return Buffer.concat(chunks)
+    }
+
+    throw new Error('Unsupported download payload returned by the storage client')
+}

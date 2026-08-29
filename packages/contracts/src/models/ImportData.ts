@@ -3,13 +3,19 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ImportFile } from './ImportFile'
+import type { ImportSourceEnum } from './ImportSourceEnum'
+import type { ImportStatusEnum } from './ImportStatusEnum'
 import type { Transaction } from './Transaction'
-import type { TransactionStatusEnum } from './TransactionStatusEnum'
 export type ImportData = {
     id: string
     title: string
     financialAccountId: string
-    status: TransactionStatusEnum
+    status: ImportStatusEnum
+    source: ImportSourceEnum
+    sourceReference: string | null
+    bankConnectionId: string | null
+    autoApprove: boolean
+    failureReason: string | null
     transactions?: Array<Transaction>
     files?: Array<ImportFile>
     createdAt: string

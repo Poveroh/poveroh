@@ -11,33 +11,35 @@ generator client {
 // USER & AUTHENTICATION
 // ===========================================================================
 model User {
-  id                    String                         @id @default(uuid())
-  name                  String
-  surname               String
-  email                 String                         @unique
-  emailVerified         Boolean                        @default(false)
-  onBoardingStep        OnBoardingStep                 @default(GENERALITES)
-  onBoardingAt          DateTime?
-  image                 String?
-  createdAt             DateTime                       @default(now())
-  updatedAt             DateTime                       @updatedAt
-  deletedAt             DateTime?                      @db.Timestamptz
-  transactions          Transaction[]
-  transfers             Transfer[]
-  subscriptions         Subscription[]
-  categories            Category[]
-  financialAccounts     FinancialAccount[]
-  imports               Import[]
-  sessions              Session[]
-  accounts              Account[]
-  verifications         Verification[]
-  assets                Asset[]
-  liabilities           Liability[]
-  snapshots             Snapshot[]
-  dashboardLayout       DashboardLayout?
-  marketDataCredentials MarketDataProviderCredential[]
-  preferences           UserPreferences?
-  activities            UserActivity[]
+  id                          String                         @id @default(uuid())
+  name                        String
+  surname                     String
+  email                       String                         @unique
+  emailVerified               Boolean                        @default(false)
+  onBoardingStep              OnBoardingStep                 @default(GENERALITES)
+  onBoardingAt                DateTime?
+  image                       String?
+  createdAt                   DateTime                       @default(now())
+  updatedAt                   DateTime                       @updatedAt
+  deletedAt                   DateTime?                      @db.Timestamptz
+  transactions                Transaction[]
+  transfers                   Transfer[]
+  subscriptions               Subscription[]
+  categories                  Category[]
+  financialAccounts           FinancialAccount[]
+  imports                     Import[]
+  sessions                    Session[]
+  accounts                    Account[]
+  verifications               Verification[]
+  assets                      Asset[]
+  liabilities                 Liability[]
+  snapshots                   Snapshot[]
+  dashboardLayout             DashboardLayout?
+  marketDataCredentials       MarketDataProviderCredential[]
+  preferences                 UserPreferences?
+  activities                  UserActivity[]
+  bankConnections             BankConnection[]
+  bankSyncProviderCredentials BankSyncProviderCredential[]
 
   @@index([surname])
   @@index([createdAt])
@@ -168,6 +170,7 @@ model FinancialAccount {
 
   user                  User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accountBalanceEntries FinancialAccountBalance[]
+  bankSyncAccounts      BankSyncAccount[]
 
   @@index([userId])
   @@map("FinancialAccounts")
@@ -593,22 +596,52 @@ model FxRate {
 // IMPORT & TRANSACTIONS
 // ===========================================================================
 model Import {
-  id                 String            @id @default(uuid())
+  id                 String                    @id @default(uuid())
   userId             String
   title              String
   financialAccountId String
-  status             TransactionStatus @default(IMPORT_PENDING)
+  status             ImportStatus              @default(PROCESSING)
+  source             ImportSource              @default(CSV)
+  sourceReference    String?
+  bankConnectionId   String?
+  autoApprove        Boolean                   @default(false)
+  failureReason      String?
   transactions       Transaction[]
   files              ImportFile[]
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  deletedAt          DateTime?         @db.Timestamptz
+  stagedTransactions ImportStagedTransaction[]
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  deletedAt          DateTime?                 @db.Timestamptz
 
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  bankConnection   BankConnection?  @relation(fields: [bankConnectionId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([status])
+  @@index([userId, source])
+  @@index([bankConnectionId])
+}
+
+/// Transactions handed over by an external source (bank-sync today), persisted before they are
+/// enriched and turned into real transactions. A CSV import needs no staging: its uploaded file is
+/// already a durable, re-parsable copy of the same input.
+model ImportStagedTransaction {
+  id                    String            @id @default(uuid())
+  importId              String
+  date                  DateTime
+  title                 String
+  amount                Decimal           @db.Decimal(20, 2)
+  currency              Currency
+  action                TransactionAction
+  externalTransactionId String?
+  bankSyncAccountId     String?
+  createdAt             DateTime          @default(now())
+
+  import Import @relation(fields: [importId], references: [id], onDelete: Cascade)
+
+  @@unique([importId, externalTransactionId])
+  @@index([importId])
 }
 
 model ImportFile {
@@ -627,39 +660,45 @@ model ImportFile {
 }
 
 model Transaction {
-  id            String             @id @default(uuid())
-  userId        String
-  date          DateTime
-  title         String
-  note          String?
-  icon          String?
-  categoryId    String?
-  subcategoryId String?
-  importId      String?
-  action        TransactionAction  @default(EXPENSES)
-  status        TransactionStatus  @default(APPROVED)
-  ignore        Boolean            @default(false)
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  deletedAt     DateTime?          @db.Timestamptz
-  media         TransactionMedia[]
-  amounts       Amount[]
+  id               String             @id @default(uuid())
+  userId           String
+  date             DateTime
+  title            String
+  note             String?
+  icon             String?
+  categoryId       String?
+  subcategoryId    String?
+  subscriptionId   String?
+  importId         String?
+  bankConnectionId String?
+  action           TransactionAction  @default(EXPENSES)
+  status           TransactionStatus  @default(APPROVED)
+  ignore           Boolean            @default(false)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?          @db.Timestamptz
+  media            TransactionMedia[]
+  amounts          Amount[]
 
   transferId String?
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  subcategory  Subcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
-  import       Import?      @relation(fields: [importId], references: [id], onDelete: SetNull)
-  transfer     Transfer?    @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
-  fromTransfer Transfer?    @relation("FromLeg")
-  toTransfer   Transfer?    @relation("ToLeg")
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory    Subcategory?    @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+  subscription   Subscription?   @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  import         Import?         @relation(fields: [importId], references: [id], onDelete: SetNull)
+  bankConnection BankConnection? @relation(fields: [bankConnectionId], references: [id], onDelete: SetNull)
+  transfer       Transfer?       @relation("TransferTransactions", fields: [transferId], references: [id], onDelete: SetNull)
+  fromTransfer   Transfer?       @relation("FromLeg")
+  toTransfer     Transfer?       @relation("ToLeg")
 
   @@index([userId, date])
   @@index([transferId])
   @@index([importId])
+  @@index([bankConnectionId])
   @@index([categoryId])
   @@index([subcategoryId])
+  @@index([subscriptionId])
 }
 
 model Transfer {
@@ -700,22 +739,27 @@ model TransactionMedia {
 }
 
 model Amount {
-  id                 String            @id @default(uuid())
-  transactionId      String
-  amount             Decimal           @db.Decimal(20, 2)
-  currency           Currency
-  action             TransactionAction @default(EXPENSES)
-  financialAccountId String
-  importReference    String?
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  deletedAt          DateTime?         @db.Timestamptz
+  id                    String            @id @default(uuid())
+  transactionId         String
+  amount                Decimal           @db.Decimal(20, 2)
+  currency              Currency
+  action                TransactionAction @default(EXPENSES)
+  financialAccountId    String
+  importReference       String?
+  bankSyncAccountId     String?
+  externalTransactionId String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  deletedAt             DateTime?         @db.Timestamptz
 
   financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
   transaction      Transaction      @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  bankSyncAccount  BankSyncAccount? @relation(fields: [bankSyncAccountId], references: [id], onDelete: SetNull)
 
+  @@unique([bankSyncAccountId, externalTransactionId])
   @@index([transactionId])
   @@index([financialAccountId])
+  @@index([bankSyncAccountId])
   @@index([action])
 }
 
@@ -744,6 +788,7 @@ model Subscription {
 
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Cascade)
+  transactions     Transaction[]
 
   @@index([userId])
   @@index([financialAccountId])
@@ -805,6 +850,101 @@ model MarketDataProviderCredential {
 
   @@unique([userId, providerId])
   @@index([userId])
+}
+
+// ===========================================================================
+// BANK SYNC (open banking connections & transaction sync)
+// ===========================================================================
+
+model BankSyncProviderCredential {
+  id         String   @id @default(uuid())
+  userId     String
+  providerId String
+  ciphertext Bytes
+  iv         Bytes
+  authTag    Bytes
+  algo       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, providerId])
+  @@index([userId])
+}
+
+model BankConnection {
+  id                      String                   @id @default(uuid())
+  userId                  String
+  providerId              String
+  status                  BankSyncConnectionStatus @default(PENDING)
+  externalConnectionId    String?
+  institutionName         String?
+  ciphertext              Bytes?
+  iv                      Bytes?
+  authTag                 Bytes?
+  algo                    String?
+  autoApproveTransactions Boolean                  @default(false)
+  lastSyncedAt            DateTime?
+  lastSyncError           String?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  deletedAt               DateTime?                @db.Timestamptz
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accounts     BankSyncAccount[]
+  runs         BankSyncRun[]
+  transactions Transaction[]
+  imports      Import[]
+
+  @@unique([userId, providerId, externalConnectionId])
+  @@index([userId])
+  @@index([status])
+}
+
+/// A FinancialAccount may be fed by at most one *live* mapping. That is enforced by the partial
+/// unique index "BankSyncAccount_financialAccountId_active_key" (ON "financialAccountId" WHERE
+/// "deletedAt" IS NULL), created in raw SQL because Prisma cannot express partial indexes. Do not
+/// restore a plain @@unique([financialAccountId]): it ignores deletedAt, so a revoked connection's
+/// mapping would occupy the FinancialAccount forever and re-linking it would always fail.
+/// `prisma migrate dev` reports that index as drift - keep it, do not let a migration drop it.
+model BankSyncAccount {
+  id                  String    @id @default(uuid())
+  connectionId        String
+  financialAccountId  String
+  externalAccountId   String
+  externalAccountName String?
+  currency            Currency?
+  syncCursor          String?   @db.Text
+  lastSyncedAt        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  deletedAt           DateTime? @db.Timestamptz
+
+  connection       BankConnection   @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  financialAccount FinancialAccount @relation(fields: [financialAccountId], references: [id], onDelete: Restrict)
+  amounts          Amount[]
+
+  @@unique([connectionId, externalAccountId])
+  @@index([connectionId])
+  @@index([financialAccountId])
+}
+
+model BankSyncRun {
+  id                   String            @id @default(uuid())
+  connectionId         String
+  status               BankSyncRunStatus @default(RUNNING)
+  trigger              BankSyncTrigger
+  startedAt            DateTime          @default(now())
+  finishedAt           DateTime?
+  transactionsAdded    Int               @default(0)
+  transactionsModified Int               @default(0)
+  transactionsRemoved  Int               @default(0)
+  errorMessage         String?
+
+  connection BankConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@index([connectionId, startedAt])
 }
 
 // ===========================================================================
@@ -1127,6 +1267,45 @@ enum TransactionStatus {
   IMPORT_APPROVED
 }
 
+/// The import lifecycle, kept separate from TransactionStatus: an import is processed, then
+/// reviewed, then completed, while a transaction is approved or rejected within that review.
+enum ImportStatus {
+  PROCESSING
+  PENDING_REVIEW
+  COMPLETED
+  FAILED
+}
+
+/// Where an import's transactions came from.
+enum ImportSource {
+  CSV
+  BANK_SYNC
+  MANUAL
+  API
+}
+
+enum BankSyncConnectionStatus {
+  PENDING
+  LINKED
+  ERROR
+  REAUTH_REQUIRED
+  REVOKED
+}
+
+enum BankSyncTrigger {
+  CRON
+  MANUAL
+  WEBHOOK
+  INITIAL
+}
+
+enum BankSyncRunStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  PARTIAL
+}
+
 enum Currency {
   USD
   EUR
@@ -1285,6 +1464,7 @@ enum UserActivityEntity {
   SNAPSHOT
   DASHBOARD_LAYOUT
   MARKET_DATA_CREDENTIAL
+  BANK_CONNECTION
   OTHER
 }
 

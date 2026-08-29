@@ -15,6 +15,7 @@ export type Transaction = {
     icon: string | null
     categoryId: string | null
     subcategoryId: string | null
+    subscriptionId: string | null
     importId: string | null
     action: TransactionActionEnum
     status: TransactionStatusEnum

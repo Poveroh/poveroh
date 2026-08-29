@@ -305,6 +305,62 @@ export const ImportTransactionStatusEnum = z
     .openapi('ImportTransactionStatusEnum')
 
 /**
+ * Import status enum representing the import lifecycle, kept separate from the transaction one:
+ * an import is processed, then reviewed, then completed, while a transaction is approved or
+ * rejected within that review
+ */
+export const ImportStatusEnum = z
+    .enum(['PROCESSING', 'PENDING_REVIEW', 'COMPLETED', 'FAILED'])
+    .openapi('ImportStatusEnum')
+
+/**
+ * Import source enum representing where an import's transactions came from
+ */
+export const ImportSourceEnum = z.enum(['CSV', 'BANK_SYNC', 'MANUAL', 'API']).openapi('ImportSourceEnum')
+
+/**
+ * Enrichment strategy enum representing which strategy produced an enrichment value for an
+ * imported transaction
+ */
+export const EnrichmentStrategyEnum = z
+    .enum(['RULE', 'SUBSCRIPTION', 'HISTORY', 'LLM'])
+    .openapi('EnrichmentStrategyEnum')
+
+/**
+ * Bank-sync provider kind enum: a multi-institution aggregator vs a single proprietary bank API
+ */
+export const BankSyncProviderKindEnum = z.enum(['aggregator', 'direct']).openapi('BankSyncProviderKindEnum')
+
+/**
+ * Bank-sync connect flow enum: a hosted widget/redirect vs a direct credentials form
+ */
+export const BankSyncConnectFlowEnum = z.enum(['hosted', 'credentials']).openapi('BankSyncConnectFlowEnum')
+
+/**
+ * Bank-sync connect mechanism enum: how a hosted flow is launched client-side
+ */
+export const BankSyncConnectMechanismEnum = z.enum(['widget', 'redirect']).openapi('BankSyncConnectMechanismEnum')
+
+/**
+ * Bank-sync connection status enum representing the connection lifecycle
+ */
+export const BankSyncConnectionStatusEnum = z
+    .enum(['PENDING', 'LINKED', 'ERROR', 'REAUTH_REQUIRED', 'REVOKED'])
+    .openapi('BankSyncConnectionStatusEnum')
+
+/**
+ * Bank-sync trigger enum representing what caused a sync run
+ */
+export const BankSyncTriggerEnum = z.enum(['CRON', 'MANUAL', 'WEBHOOK', 'INITIAL']).openapi('BankSyncTriggerEnum')
+
+/**
+ * Bank-sync enum representing the status of a sync run
+ */
+export const BankSyncRunStatusEnum = z
+    .enum(['RUNNING', 'SUCCESS', 'FAILED', 'PARTIAL'])
+    .openapi('BankSyncRunStatusEnum')
+
+/**
  * Currency enum representing the supported currencies in the application
  */
 export const CurrencyEnum = z
@@ -490,6 +546,7 @@ export const UserActivityEntityEnum = z
         'SNAPSHOT',
         'DASHBOARD_LAYOUT',
         'MARKET_DATA_CREDENTIAL',
+        'BANK_CONNECTION',
         'OTHER'
     ])
     .openapi('UserActivityEntityEnum')

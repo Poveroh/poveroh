@@ -43,6 +43,9 @@ export type DomainEventName =
     | 'dashboard.updated'
     | 'market-data-credential.updated'
     | 'market-data-credential.deleted'
+    | 'bank-sync-connection.linked'
+    | 'bank-sync-connection.deleted'
+    | 'bank-sync.synced'
 
 /**
  * Every domain event carries the authenticated user id plus, where a clean DTO exists, the full entity
@@ -81,6 +84,9 @@ export type DomainEventPayloads = {
     'dashboard.updated': { userId: string; data: GetDashboardLayout }
     'market-data-credential.updated': { userId: string; providerId: string }
     'market-data-credential.deleted': { userId: string; providerId: string }
+    'bank-sync-connection.linked': { userId: string; connectionId: string; providerId: string }
+    'bank-sync-connection.deleted': { userId: string; connectionId: string; providerId: string }
+    'bank-sync.synced': { userId: string; connectionId: string; transactionsAdded: number }
 }
 
 export type DomainEventHandler<EventName extends DomainEventName> = (

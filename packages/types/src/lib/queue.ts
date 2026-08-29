@@ -6,14 +6,21 @@ export interface JobMap {
     'snapshot.generate-due': {
         date?: string
     }
-    'import.parse-csv': {
+    'import.process': {
         userId: string
         importId: string
-        fileIds: string[]
     }
     'market.sync': {
         userId: string
         assetId: string
+    }
+    'bank-sync.sync-due': {
+        date?: string
+    }
+    'bank-sync.sync-connection': {
+        userId: string
+        connectionId: string
+        trigger: 'CRON' | 'MANUAL' | 'WEBHOOK' | 'INITIAL'
     }
 }
 

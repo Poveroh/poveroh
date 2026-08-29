@@ -11,4 +11,5 @@ export type ApiConfig = {
     ALLOWED_ORIGINS: string[]
     REDIS_URL?: string
     REDIS_PASSWORD?: string
+    BANK_SYNC_CRON_PATTERN: string
 }

@@ -1692,6 +1692,652 @@ export const AutoDepreciationInputSchema = {
     required: ['percentage', 'cyclePeriod', 'cycleNumber']
 } as const
 
+export const BankSyncCredentialInputSchema = {
+    type: 'object',
+    additionalProperties: {
+        nullable: true
+    }
+} as const
+
+export const ExternalBankAccountSchema = {
+    type: 'object',
+    properties: {
+        externalAccountId: {
+            type: 'string',
+            minLength: 1
+        },
+        name: {
+            type: 'string',
+            minLength: 1
+        },
+        currency: {
+            type: 'string',
+            minLength: 1
+        },
+        mask: {
+            type: 'string'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['externalAccountId', 'name', 'currency']
+} as const
+
+export const ListExternalBankAccountsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ExternalBankAccount'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const BankSyncAccountMappingSchema = {
+    type: 'object',
+    properties: {
+        externalAccountId: {
+            type: 'string',
+            minLength: 1
+        },
+        financialAccountId: {
+            type: 'string'
+        }
+    },
+    required: ['externalAccountId', 'financialAccountId']
+} as const
+
+export const LinkBankSyncAccountsRequestSchema = {
+    type: 'object',
+    properties: {
+        mappings: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncAccountMapping'
+            }
+        }
+    },
+    required: ['mappings']
+} as const
+
+export const CreateBankSyncAccountRequestSchema = {
+    type: 'object',
+    properties: {
+        connectionId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        externalAccountId: {
+            type: 'string',
+            minLength: 1
+        },
+        externalAccountName: {
+            type: 'string',
+            nullable: true
+        },
+        currency: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/CurrencyEnum'
+                },
+                {
+                    nullable: true
+                }
+            ]
+        }
+    },
+    required: ['connectionId', 'financialAccountId', 'externalAccountId', 'externalAccountName', 'currency']
+} as const
+
+export const LinkBankSyncAccountFormSchema = {
+    type: 'object',
+    properties: {
+        mappings: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncAccountMapping'
+            }
+        }
+    },
+    required: ['mappings']
+} as const
+
+export const BankSyncAccountSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        externalAccountId: {
+            type: 'string',
+            minLength: 1
+        },
+        externalAccountName: {
+            type: 'string',
+            nullable: true
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        lastSyncedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        }
+    },
+    required: ['id', 'externalAccountId', 'externalAccountName', 'financialAccountId', 'lastSyncedAt']
+} as const
+
+export const LinkBankSyncAccountsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncAccount'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const BankSyncProviderPathParamsSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            minLength: 1
+        }
+    },
+    required: ['providerId']
+} as const
+
+export const UpdateBankSyncProviderAppCredentialRequestSchema = {
+    type: 'object',
+    properties: {
+        credentials: {
+            $ref: '#/components/schemas/BankSyncCredentialInput'
+        }
+    },
+    required: ['credentials']
+} as const
+
+export const UpdateBankSyncProviderAppCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const DeleteBankSyncProviderAppCredentialResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const BankSyncConnectionPathParamsSchema = {
+    type: 'object',
+    properties: {
+        connectionId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    required: ['connectionId']
+} as const
+
+export const BankSyncConnectionSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        userId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        status: {
+            $ref: '#/components/schemas/BankSyncConnectionStatusEnum'
+        },
+        externalConnectionId: {
+            type: 'string',
+            nullable: true
+        },
+        institutionName: {
+            type: 'string',
+            nullable: true
+        },
+        autoApproveTransactions: {
+            type: 'boolean'
+        },
+        lastSyncedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        lastSyncError: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'userId',
+        'providerId',
+        'status',
+        'externalConnectionId',
+        'institutionName',
+        'autoApproveTransactions',
+        'lastSyncedAt',
+        'lastSyncError',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
+export const BankSyncConnectionStatusEnumSchema = {
+    type: 'string',
+    enum: ['PENDING', 'LINKED', 'ERROR', 'REAUTH_REQUIRED', 'REVOKED']
+} as const
+
+export const BankSyncConnectionDataSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        status: {
+            $ref: '#/components/schemas/BankSyncConnectionStatusEnum'
+        },
+        externalConnectionId: {
+            type: 'string',
+            nullable: true
+        },
+        institutionName: {
+            type: 'string',
+            nullable: true
+        },
+        autoApproveTransactions: {
+            type: 'boolean'
+        },
+        lastSyncedAt: {
+            type: 'string',
+            nullable: true,
+            format: 'date-time'
+        },
+        lastSyncError: {
+            type: 'string',
+            nullable: true
+        },
+        createdAt: {
+            type: 'string',
+            format: 'date-time'
+        },
+        updatedAt: {
+            type: 'string',
+            format: 'date-time'
+        }
+    },
+    required: [
+        'id',
+        'providerId',
+        'status',
+        'externalConnectionId',
+        'institutionName',
+        'autoApproveTransactions',
+        'lastSyncedAt',
+        'lastSyncError',
+        'createdAt',
+        'updatedAt'
+    ]
+} as const
+
+export const ListBankSyncConnectionsResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncConnectionData'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CreateBankSyncConnectionRequestSchema = {
+    type: 'object',
+    properties: {
+        providerId: {
+            type: 'string',
+            minLength: 1
+        },
+        credentials: {
+            $ref: '#/components/schemas/BankSyncCredentialInput'
+        },
+        appCredentials: {
+            $ref: '#/components/schemas/BankSyncCredentialInput'
+        }
+    },
+    required: ['providerId']
+} as const
+
+export const BankSyncConnectionWithConnectUrlResponseSchema = {
+    type: 'object',
+    properties: {
+        connection: {
+            $ref: '#/components/schemas/BankSyncConnection'
+        },
+        connectUrl: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: ['connection', 'connectUrl']
+} as const
+
+export const CreateBankSyncConnectionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/BankSyncConnectionWithConnectUrlResponse'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const CompleteBankSyncConnectionRequestSchema = {
+    type: 'object',
+    properties: {
+        callbackPayload: {
+            $ref: '#/components/schemas/BankSyncCredentialInput'
+        },
+        metadata: {
+            $ref: '#/components/schemas/BankSyncCredentialInput'
+        }
+    }
+} as const
+
+export const CompleteBankSyncConnectionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            allOf: [
+                {
+                    $ref: '#/components/schemas/BankSyncConnection'
+                },
+                {
+                    description: 'Response data'
+                }
+            ]
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const DeleteBankSyncConnectionResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const TriggerBankSyncResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        }
+    },
+    required: ['success', 'message']
+} as const
+
+export const BankSyncCredentialFieldSchema = {
+    type: 'object',
+    properties: {
+        key: {
+            type: 'string',
+            minLength: 1
+        },
+        label: {
+            type: 'string',
+            minLength: 1
+        },
+        secret: {
+            type: 'boolean'
+        }
+    },
+    required: ['key', 'label']
+} as const
+
+export const BankSyncProviderSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            minLength: 1
+        },
+        label: {
+            type: 'string',
+            minLength: 1
+        },
+        logoUrl: {
+            type: 'string',
+            format: 'uri'
+        },
+        kind: {
+            $ref: '#/components/schemas/BankSyncProviderKindEnum'
+        },
+        connectFlow: {
+            $ref: '#/components/schemas/BankSyncConnectFlowEnum'
+        },
+        connectMechanism: {
+            $ref: '#/components/schemas/BankSyncConnectMechanismEnum'
+        },
+        credentialFields: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncCredentialField'
+            }
+        },
+        appCredentialFields: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncCredentialField'
+            }
+        },
+        enabled: {
+            type: 'boolean'
+        },
+        connectionCount: {
+            type: 'integer',
+            minimum: 0
+        },
+        configured: {
+            type: 'boolean'
+        }
+    },
+    required: [
+        'id',
+        'label',
+        'logoUrl',
+        'kind',
+        'connectFlow',
+        'credentialFields',
+        'appCredentialFields',
+        'enabled',
+        'connectionCount',
+        'configured'
+    ]
+} as const
+
+export const BankSyncProviderKindEnumSchema = {
+    type: 'string',
+    enum: ['aggregator', 'direct']
+} as const
+
+export const BankSyncConnectFlowEnumSchema = {
+    type: 'string',
+    enum: ['hosted', 'credentials']
+} as const
+
+export const BankSyncConnectMechanismEnumSchema = {
+    type: 'string',
+    enum: ['widget', 'redirect']
+} as const
+
+export const GetBankSyncProvidersResponseSchema = {
+    type: 'object',
+    properties: {
+        success: {
+            type: 'boolean',
+            description: 'Indicates if the request was successful'
+        },
+        message: {
+            type: 'string',
+            description: 'Optional success message'
+        },
+        data: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/BankSyncProvider'
+            },
+            description: 'Response data'
+        }
+    },
+    required: ['success', 'message', 'data']
+} as const
+
+export const EncryptedPayloadSchema = {
+    type: 'object',
+    properties: {
+        ciphertext: {
+            type: 'string',
+            format: 'byte'
+        },
+        iv: {
+            type: 'string',
+            format: 'byte'
+        },
+        authTag: {
+            type: 'string',
+            format: 'byte'
+        },
+        algo: {
+            type: 'string'
+        }
+    }
+} as const
+
 export const CategorySchema = {
     type: 'object',
     properties: {
@@ -2535,6 +3181,31 @@ export const ImportTransactionStatusEnumSchema = {
     enum: ['IMPORT_APPROVED', 'IMPORT_REJECTED']
 } as const
 
+export const ImportStatusEnumSchema = {
+    type: 'string',
+    enum: ['PROCESSING', 'PENDING_REVIEW', 'COMPLETED', 'FAILED']
+} as const
+
+export const ImportSourceEnumSchema = {
+    type: 'string',
+    enum: ['CSV', 'BANK_SYNC', 'MANUAL', 'API']
+} as const
+
+export const EnrichmentStrategyEnumSchema = {
+    type: 'string',
+    enum: ['RULE', 'SUBSCRIPTION', 'HISTORY', 'LLM']
+} as const
+
+export const BankSyncTriggerEnumSchema = {
+    type: 'string',
+    enum: ['CRON', 'MANUAL', 'WEBHOOK', 'INITIAL']
+} as const
+
+export const BankSyncRunStatusEnumSchema = {
+    type: 'string',
+    enum: ['RUNNING', 'SUCCESS', 'FAILED', 'PARTIAL']
+} as const
+
 export const RememberPeriodEnumSchema = {
     type: 'string',
     enum: ['SAME_DAY', 'THREE_DAYS', 'SEVEN_DAYS', 'FOURTEEN_DAYS', 'THIRTY_DAYS', 'NINETY_DAYS']
@@ -2667,6 +3338,7 @@ export const UserActivityEntityEnumSchema = {
         'SNAPSHOT',
         'DASHBOARD_LAYOUT',
         'MARKET_DATA_CREDENTIAL',
+        'BANK_CONNECTION',
         'OTHER'
     ]
 } as const
@@ -3503,7 +4175,26 @@ export const ImportSchema = {
             minLength: 1
         },
         status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        },
+        failureReason: {
+            type: 'string',
+            nullable: true
         },
         transactions: {
             type: 'array',
@@ -3530,7 +4221,20 @@ export const ImportSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'userId', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+    required: [
+        'id',
+        'userId',
+        'title',
+        'financialAccountId',
+        'status',
+        'source',
+        'sourceReference',
+        'bankConnectionId',
+        'autoApprove',
+        'failureReason',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const
 
 export const TransactionSchema = {
@@ -3564,6 +4268,10 @@ export const TransactionSchema = {
             nullable: true
         },
         subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subscriptionId: {
             type: 'string',
             nullable: true
         },
@@ -3622,6 +4330,7 @@ export const TransactionSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'importId',
         'action',
         'status',
@@ -3736,7 +4445,26 @@ export const ImportDataSchema = {
             minLength: 1
         },
         status: {
-            $ref: '#/components/schemas/TransactionStatusEnum'
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        },
+        failureReason: {
+            type: 'string',
+            nullable: true
         },
         transactions: {
             type: 'array',
@@ -3759,7 +4487,19 @@ export const ImportDataSchema = {
             format: 'date-time'
         }
     },
-    required: ['id', 'title', 'financialAccountId', 'status', 'createdAt', 'updatedAt']
+    required: [
+        'id',
+        'title',
+        'financialAccountId',
+        'status',
+        'source',
+        'sourceReference',
+        'bankConnectionId',
+        'autoApprove',
+        'failureReason',
+        'createdAt',
+        'updatedAt'
+    ]
 } as const
 
 export const ImportTransactionDataResponseSchema = {
@@ -3790,6 +4530,10 @@ export const ImportTransactionDataResponseSchema = {
             nullable: true
         },
         subcategoryId: {
+            type: 'string',
+            nullable: true
+        },
+        subscriptionId: {
             type: 'string',
             nullable: true
         },
@@ -3839,6 +4583,7 @@ export const ImportTransactionDataResponseSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'action',
         'status',
         'ignore',
@@ -3926,6 +4671,11 @@ export const CreateImportRequestSchema = {
         financialAccountId: {
             type: 'string',
             minLength: 1
+        },
+        autoApprove: {
+            type: 'boolean',
+            nullable: true,
+            default: false
         }
     },
     required: ['financialAccountId']
@@ -4047,6 +4797,12 @@ export const ImportFiltersSchema = {
         title: {
             $ref: '#/components/schemas/StringFilter'
         },
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        status: {
+            $ref: '#/components/schemas/ImportStatusEnum'
+        },
         date: {
             $ref: '#/components/schemas/DateFilter'
         },
@@ -4086,6 +4842,9 @@ export const ImportFormSchema = {
         financialAccountId: {
             type: 'string',
             minLength: 1
+        },
+        autoApprove: {
+            type: 'boolean'
         }
     },
     required: ['financialAccountId']
@@ -4139,6 +4898,244 @@ export const ApproveImportTransactionsResponseSchema = {
         }
     },
     required: ['success', 'message', 'data']
+} as const
+
+export const ImportCandidateTransactionSchema = {
+    type: 'object',
+    properties: {
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        externalTransactionId: {
+            type: 'string',
+            nullable: true
+        },
+        bankSyncAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        rawRow: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        }
+    },
+    required: ['date', 'title', 'amount', 'currency', 'action']
+} as const
+
+export const ImportIngestionRequestSchema = {
+    type: 'object',
+    properties: {
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean',
+            default: false
+        },
+        sourceReference: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        transactions: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/ImportCandidateTransaction'
+            }
+        }
+    },
+    required: ['source', 'financialAccountId']
+} as const
+
+export const ImportEnrichmentSchema = {
+    type: 'object',
+    properties: {
+        title: {
+            type: 'string'
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subscriptionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        }
+    }
+} as const
+
+export const ImportEnrichmentResultSchema = {
+    allOf: [
+        {
+            $ref: '#/components/schemas/ImportEnrichment'
+        },
+        {
+            type: 'object',
+            properties: {
+                strategy: {
+                    $ref: '#/components/schemas/EnrichmentStrategyEnum'
+                }
+            },
+            required: ['strategy']
+        }
+    ]
+} as const
+
+export const ImportProcessingTargetSchema = {
+    type: 'object',
+    properties: {
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        }
+    },
+    required: ['source', 'financialAccountId', 'bankConnectionId', 'autoApprove']
+} as const
+
+export const ImportTransactionDraftSchema = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        userId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        importId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        date: {
+            type: 'string',
+            format: 'date-time'
+        },
+        title: {
+            type: 'string',
+            minLength: 1
+        },
+        action: {
+            $ref: '#/components/schemas/TransactionActionEnum'
+        },
+        amount: {
+            type: 'number'
+        },
+        currency: {
+            $ref: '#/components/schemas/CurrencyEnum'
+        },
+        categoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subcategoryId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        subscriptionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        icon: {
+            type: 'string',
+            nullable: true
+        },
+        note: {
+            type: 'string',
+            nullable: true
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        bankSyncAccountId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        externalTransactionId: {
+            type: 'string',
+            nullable: true
+        }
+    },
+    required: [
+        'id',
+        'userId',
+        'importId',
+        'financialAccountId',
+        'date',
+        'title',
+        'action',
+        'amount',
+        'currency',
+        'categoryId',
+        'subcategoryId',
+        'subscriptionId',
+        'icon',
+        'note',
+        'bankConnectionId',
+        'bankSyncAccountId',
+        'externalTransactionId'
+    ]
 } as const
 
 export const ImportTemplateActionEnumSchema = {
@@ -6535,6 +7532,10 @@ export const TransactionDataSchema = {
             type: 'string',
             nullable: true
         },
+        subscriptionId: {
+            type: 'string',
+            nullable: true
+        },
         importId: {
             type: 'string',
             nullable: true
@@ -6585,6 +7586,7 @@ export const TransactionDataSchema = {
         'icon',
         'categoryId',
         'subcategoryId',
+        'subscriptionId',
         'importId',
         'action',
         'status',

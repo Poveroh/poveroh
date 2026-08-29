@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 
 import { Form } from '@poveroh/ui/components/form'
-import { AccountField, FileUploadField } from '@/components/fields'
+import { AccountField, FileUploadField, IgnoreField } from '@/components/fields'
 import { useImportForm } from '@/hooks/form/use-import-form'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormRef, ImportFormProps } from '@/types/form'
@@ -46,6 +46,8 @@ export const ImportForm = forwardRef<FormRef, ImportFormProps>((props, ref) => {
                         mandatory={true}
                         error={fileError}
                     />
+
+                    <IgnoreField control={form.control} name='autoApprove' label={t('form.autoApprove.label')} />
                 </div>
             </form>
         </Form>
