@@ -2,10 +2,13 @@ import prisma, { Prisma } from '@poveroh/prisma'
 import type { PrismaTransactionClient } from '@poveroh/prisma'
 import type {
     Amount,
+    ImportCandidateTransaction,
     ImportData,
     ImportFilters,
+    ImportProcessingTarget,
     ImportStatusEnum,
     ImportTransactionDataResponse,
+    ImportTransactionDraft,
     TransactionStatusEnum,
     UpdateImportRequest
 } from '@poveroh/types'
@@ -64,6 +67,131 @@ export class ImportRepository {
     async createAmounts(tx: Db, data: Prisma.AmountCreateManyInput[]): Promise<void> {
         if (data.length === 0) return
         await tx.amount.createMany({ data })
+    }
+
+    /**
+     * Persists enriched transactions and their amounts, translating the module's draft type into
+     * Prisma inputs here so no Prisma type has to travel between the services above.
+     * @param tx The Prisma client used to run the inserts.
+     * @param drafts The enriched transactions to persist.
+     * @returns A promise that resolves when the rows have been created.
+     */
+    async createTransactionDrafts(tx: Db, drafts: ImportTransactionDraft[]): Promise<void> {
+        if (drafts.length === 0) return
+
+        await tx.transaction.createMany({
+            data: drafts.map(draft => ({
+                id: draft.id,
+                userId: draft.userId,
+                importId: draft.importId,
+                status: 'IMPORT_PENDING',
+                title: draft.title,
+                action: draft.action,
+                categoryId: draft.categoryId,
+                subcategoryId: draft.subcategoryId,
+                subscriptionId: draft.subscriptionId,
+                icon: draft.icon,
+                note: draft.note,
+                date: new Date(draft.date),
+                bankConnectionId: draft.bankConnectionId,
+                ignore: false
+            }))
+        })
+
+        await tx.amount.createMany({
+            data: drafts.map(draft => ({
+                transactionId: draft.id,
+                amount: draft.amount,
+                currency: draft.currency,
+                action: draft.action,
+                financialAccountId: draft.financialAccountId,
+                bankSyncAccountId: draft.bankSyncAccountId,
+                externalTransactionId: draft.externalTransactionId
+            }))
+        })
+    }
+
+    /**
+     * Stages the transactions a source delivered, so they survive until the import is processed.
+     * Rows already staged for the same external transaction are skipped, which makes re-delivery of
+     * an overlapping batch harmless.
+     * @param importId The import the transactions belong to.
+     * @param candidates The transactions to stage.
+     * @returns A promise that resolves when the rows have been staged.
+     */
+    async createStagedTransactions(importId: string, candidates: ImportCandidateTransaction[]): Promise<void> {
+        if (candidates.length === 0) return
+
+        await prisma.importStagedTransaction.createMany({
+            data: candidates.map(candidate => ({
+                importId,
+                date: new Date(candidate.date),
+                title: candidate.title,
+                amount: candidate.amount,
+                currency: candidate.currency,
+                action: candidate.action,
+                externalTransactionId: candidate.externalTransactionId ?? null,
+                bankSyncAccountId: candidate.bankSyncAccountId ?? null
+            })),
+            skipDuplicates: true
+        })
+    }
+
+    /**
+     * Reads the transactions staged for an import, oldest first.
+     * @param importId The import whose staged rows must be read.
+     * @returns A promise that resolves to the staged transactions.
+     */
+    async findStagedTransactions(importId: string): Promise<ImportCandidateTransaction[]> {
+        const staged = await prisma.importStagedTransaction.findMany({
+            where: { importId },
+            orderBy: { date: 'asc' }
+        })
+
+        return staged.map(row => ({
+            date: row.date.toISOString(),
+            title: row.title,
+            amount: Number(row.amount),
+            currency: row.currency,
+            action: row.action,
+            externalTransactionId: row.externalTransactionId,
+            bankSyncAccountId: row.bankSyncAccountId
+        }))
+    }
+
+    /**
+     * Drops the staged rows of an import once they have been turned into real transactions.
+     * @param tx The Prisma client used to run the delete, so it commits with the transactions it produced.
+     * @param importId The import whose staged rows must be dropped.
+     * @returns A promise that resolves when the rows have been deleted.
+     */
+    async deleteStagedTransactions(tx: Db, importId: string): Promise<void> {
+        await tx.importStagedTransaction.deleteMany({ where: { importId } })
+    }
+
+    /**
+     * Reads the import-wide values needed to process an import.
+     * @param userId The ID of the user who owns the import.
+     * @param importId The import being processed.
+     * @returns A promise that resolves to the processing target, or null when the import is not found.
+     */
+    async findProcessingTarget(userId: string, importId: string): Promise<ImportProcessingTarget | null> {
+        return prisma.import.findFirst({
+            where: { id: importId, userId, deletedAt: null },
+            select: { source: true, financialAccountId: true, bankConnectionId: true, autoApprove: true }
+        })
+    }
+
+    /**
+     * Reads the files attached to an import, used to re-parse a CSV import outside the request that uploaded it.
+     * @param importId The import whose files must be read.
+     * @returns A promise that resolves to the stored path and original name of each file.
+     */
+    async findImportFiles(importId: string): Promise<Array<{ path: string; filename: string }>> {
+        return prisma.importFile.findMany({
+            where: { importId, deletedAt: null },
+            select: { path: true, filename: true }
+        })
     }
 
     /**
@@ -349,15 +477,15 @@ export class ImportRepository {
     }
 
     /**
-     * Finds an already-open (`PENDING_REVIEW`) import for the given financial account that already
-     * holds transactions from the given bank connection, so a running sync can keep appending to the
-     * same batch instead of spawning a new one on every run.
+     * Finds an import still awaiting review that a recurring source is already filling for the same
+     * account and connection, so repeated runs collect into one batch instead of leaving an import
+     * behind on every run.
      * @param userId The ID of the user who owns the import being searched for.
      * @param financialAccountId The financial account the import must belong to.
-     * @param bankConnectionId The bank connection whose transactions the import must already contain.
+     * @param bankConnectionId The connection the import must have been opened for.
      * @returns A promise that resolves to the open import id, or null when none exists.
      */
-    async findOpenBankSyncImport(
+    async findOpenSourceImport(
         userId: string,
         financialAccountId: string,
         bankConnectionId: string
@@ -366,8 +494,9 @@ export class ImportRepository {
             where: {
                 userId,
                 financialAccountId,
+                bankConnectionId,
                 status: 'PENDING_REVIEW',
-                transactions: { some: { bankConnectionId } }
+                deletedAt: null
             },
             select: { id: true }
         })

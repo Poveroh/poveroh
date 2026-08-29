@@ -682,6 +682,7 @@ export type {
     ImportForm,
     ImportIngestionRequest,
     ImportParamsId,
+    ImportProcessingTarget,
     ImportSourceEnum,
     ImportStatusEnum,
     ImportTemplateActionEnum,

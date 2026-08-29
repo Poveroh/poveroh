@@ -6,6 +6,7 @@ import type { CurrencyEnum } from './CurrencyEnum'
 import type { TransactionActionEnum } from './TransactionActionEnum'
 export type ImportTransactionDraft = {
     id: string
+    userId: string
     importId: string
     financialAccountId: string
     date: string

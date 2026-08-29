@@ -272,6 +272,19 @@ export const ImportEnrichmentResultSchema = ImportEnrichmentSchema.extend({
 }).openapi('ImportEnrichmentResult')
 
 /**
+ * The import-wide values the processing step needs: where to read the candidates from, which
+ * account their amounts belong to, and whether they should skip review
+ */
+export const ImportProcessingTargetSchema = z
+    .object({
+        source: ImportSourceEnum,
+        financialAccountId: z.string().uuid(),
+        bankConnectionId: z.string().uuid().nullable(),
+        autoApprove: z.boolean()
+    })
+    .openapi('ImportProcessingTarget')
+
+/**
  * A candidate transaction after enrichment: everything the repository needs to persist a
  * transaction and its amount. This is the type that crosses the module boundary, so no Prisma
  * input type has to.
@@ -279,6 +292,7 @@ export const ImportEnrichmentResultSchema = ImportEnrichmentSchema.extend({
 export const ImportTransactionDraftSchema = z
     .object({
         id: z.string().uuid(),
+        userId: z.string().uuid(),
         importId: z.string().uuid(),
         financialAccountId: z.string().uuid(),
         date: z.string().datetime(),

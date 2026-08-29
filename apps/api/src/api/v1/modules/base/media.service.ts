@@ -1,5 +1,5 @@
 import config from '@/utils/environment'
-import { getUploadClient, isLocalStorageMode } from '@/utils/storage'
+import { getUploadClient, isLocalStorageMode, toFileBuffer } from '@/utils/storage'
 import path from 'path/win32'
 
 /**
@@ -28,6 +28,29 @@ export class MediaService {
      */
     async saveFile(entityId: string, file: Express.Multer.File): Promise<string> {
         return this.handleUpload(file, path.join(this.baseUrl, entityId))
+    }
+
+    /**
+     * Reads back a file previously stored by `saveFile`, so work deferred to a background job can
+     * re-read the upload that triggered it instead of depending on the request that carried it.
+     * @param pathOrUrl The value stored alongside the entity, which is a CDN URL in local storage mode and a storage key otherwise.
+     * @returns A promise that resolves to the file contents.
+     */
+    async readFile(pathOrUrl: string): Promise<Buffer> {
+        const downloaded = await this.uploadClient.downloadFile(MediaService.toStorageKey(pathOrUrl))
+        return toFileBuffer(downloaded)
+    }
+
+    /**
+     * Turns whatever was stored for a file back into the key the storage client expects, since
+     * local storage mode records a CDN URL while every other provider records the key itself.
+     * @param pathOrUrl The stored file reference.
+     * @returns The storage key to read the file with.
+     */
+    private static toStorageKey(pathOrUrl: string): string {
+        if (!/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl
+
+        return decodeURIComponent(new URL(pathOrUrl).pathname).replace(/^\/+/, '')
     }
 
     /**

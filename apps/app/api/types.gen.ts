@@ -2088,8 +2088,16 @@ export type ImportEnrichmentResult = ImportEnrichment & {
     strategy: EnrichmentStrategyEnum
 }
 
+export type ImportProcessingTarget = {
+    source: ImportSourceEnum
+    financialAccountId: string
+    bankConnectionId: string | null
+    autoApprove: boolean
+}
+
 export type ImportTransactionDraft = {
     id: string
+    userId: string
     importId: string
     financialAccountId: string
     date: string

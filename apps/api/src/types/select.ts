@@ -80,6 +80,7 @@ export const bankConnectionSelect = {
     status: true,
     externalConnectionId: true,
     institutionName: true,
+    autoApproveTransactions: true,
     lastSyncedAt: true,
     lastSyncError: true,
     createdAt: true,

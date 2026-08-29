@@ -7,16 +7,18 @@ import { AccountBalanceService } from '@/v1/modules/financial-accounts/account-b
 import { BaseService } from '@/v1/modules/base/base.service'
 import { eventBus } from '@/v1/worker/events/event-bus'
 import { getBankSyncProviderDefinition } from '@/v1/content/template/bank-sync-providers'
-import { ImportService } from '@/v1/modules/imports/import.service'
+import { ImportIngestionService } from '@/v1/modules/imports/ingestion/import-ingestion.service'
 import { BankConnectionService } from '../connections/bank-connection.service'
 import { BankSyncAppCredentialService } from '../app-credentials/bank-sync-app-credential.service'
 import { BankSyncAccountRepository, type BankSyncAccountRecord } from '../accounts/bank-sync-account.repository'
 import { BankSyncRunRepository } from './bank-sync-run.repository'
 
 /**
- * The bank-sync engine: fetches incremental transactions for every account on a connection and
- * upserts them idempotently, keyed by `(bankSyncAccountId, externalTransactionId)`. Shared by the
- * nightly cron, the manual "sync now" action, and provider webhooks — they all dispatch the same
+ * The bank-sync engine: fetches incremental transactions for every account on a connection,
+ * identified idempotently by `(bankSyncAccountId, externalTransactionId)`. Updates to transactions
+ * we already hold are applied in place; the ones new to us are handed to the import flow, which
+ * enriches them and files them for review like any other source. Shared by the nightly cron, the
+ * manual "sync now" action, and provider webhooks — they all dispatch the same
  * `bank-sync.sync-connection` job, which calls this one method.
  */
 export class BankSyncService extends BaseService {
@@ -24,7 +26,7 @@ export class BankSyncService extends BaseService {
     private readonly appCredentialService = new BankSyncAppCredentialService()
     private readonly accountRepository = new BankSyncAccountRepository()
     private readonly runRepository = new BankSyncRunRepository()
-    private readonly importService = new ImportService()
+    private readonly ingestionService = new ImportIngestionService()
     private readonly accountBalanceService = new AccountBalanceService()
 
     constructor() {
@@ -70,22 +72,22 @@ export class BankSyncService extends BaseService {
                     cursor: account.syncCursor
                 })
 
-                let bankSyncImportId: string | undefined
-                const resolveBankSyncImportId = async (): Promise<string> => {
-                    bankSyncImportId ??= await this.importService.getOrCreateBankSyncImport(
-                        account.financialAccountId,
-                        connection.id,
-                        connection.institutionName ?? undefined
-                    )
-                    return bankSyncImportId
+                // `added` and `modified` are split by whether we already hold the transaction, not by
+                // which list the provider put it in: an update to a transaction the user may have
+                // already approved must be applied in place, while anything we have never seen —
+                // including a `modified` row an earlier run missed — is new and has to go through
+                // import review.
+                const newTransactions: ExternalTransaction[] = []
+
+                for (const transaction of [...result.added, ...result.modified]) {
+                    const applied = await this.updateExistingTransaction(account, transaction)
+                    if (!applied) newTransactions.push(transaction)
                 }
 
-                for (const transaction of result.added) {
-                    await this.upsertTransaction(connection.id, resolveBankSyncImportId, account, transaction)
+                if (newTransactions.length > 0) {
+                    await this.ingestNewTransactions(connection, account, newTransactions)
                 }
-                for (const transaction of result.modified) {
-                    await this.upsertTransaction(connection.id, resolveBankSyncImportId, account, transaction)
-                }
+
                 if (result.removedExternalIds.length > 0) {
                     await this.removeTransactions(account.id, result.removedExternalIds)
                 }
@@ -143,22 +145,16 @@ export class BankSyncService extends BaseService {
     }
 
     /**
-     * Upserts a single external transaction, keyed by `(bankSyncAccountId, externalTransactionId)`:
-     * updates the transaction and amount if already synced, otherwise creates both, enriching the new
-     * transaction with the same history-based category/subcategory/icon/note lookup CSV imports use and
-     * filing it under the bank-sync batch import so it goes through the normal Import review lifecycle.
-     * @param connectionId The bank connection the transaction belongs to.
-     * @param resolveBankSyncImportId Lazily resolves the batch import id to file a newly created transaction under.
+     * Applies a provider update to a transaction we already hold, keyed by
+     * `(bankSyncAccountId, externalTransactionId)`.
      * @param account The bank-sync account the transaction was fetched for.
-     * @param transaction The provider's transaction to upsert.
-     * @returns A promise that resolves once the transaction is persisted.
+     * @param transaction The provider's version of the transaction.
+     * @returns A promise that resolves to true when the transaction existed and was updated, false when it is new to us.
      */
-    private async upsertTransaction(
-        connectionId: string,
-        resolveBankSyncImportId: () => Promise<string>,
+    private async updateExistingTransaction(
         account: BankSyncAccountRecord,
         transaction: ExternalTransaction
-    ): Promise<void> {
+    ): Promise<boolean> {
         const existingAmount = await prisma.amount.findUnique({
             where: {
                 bankSyncAccountId_externalTransactionId: {
@@ -169,41 +165,62 @@ export class BankSyncService extends BaseService {
             select: { id: true, transactionId: true, transaction: { select: { status: true, date: true } } }
         })
 
-        const action = transaction.amount < 0 ? 'EXPENSES' : 'INCOME'
-        const amount = Math.abs(transaction.amount)
+        if (!existingAmount) return false
+
         const newDate = new Date(transaction.date)
 
-        if (existingAmount) {
-            await prisma.transaction.update({
-                where: { id: existingAmount.transactionId },
-                data: { date: newDate, title: transaction.description }
-            })
-            await prisma.amount.update({
-                where: { id: existingAmount.id },
-                data: { amount, currency: transaction.currency, action }
-            })
-
-            // Already-approved transactions count toward the balance, so a change to their amount or
-            // date requires rebuilding the daily series from whichever date moved first.
-            if (existingAmount.transaction.status === 'APPROVED') {
-                const fromDate = new Date(Math.min(existingAmount.transaction.date.getTime(), newDate.getTime()))
-                await this.accountBalanceService.recomputeAccountsAndSnapshots([account.financialAccountId], fromDate)
+        await prisma.transaction.update({
+            where: { id: existingAmount.transactionId },
+            data: { date: newDate, title: transaction.description }
+        })
+        await prisma.amount.update({
+            where: { id: existingAmount.id },
+            data: {
+                amount: Math.abs(transaction.amount),
+                currency: transaction.currency,
+                action: transaction.amount < 0 ? 'EXPENSES' : 'INCOME'
             }
-            return
+        })
+
+        // Already-approved transactions count toward the balance, so a change to their amount or
+        // date requires rebuilding the daily series from whichever date moved first.
+        if (existingAmount.transaction.status === 'APPROVED') {
+            const fromDate = new Date(Math.min(existingAmount.transaction.date.getTime(), newDate.getTime()))
+            await this.accountBalanceService.recomputeAccountsAndSnapshots([account.financialAccountId], fromDate)
         }
 
-        const importId = await resolveBankSyncImportId()
+        return true
+    }
 
-        await this.importService.createEnrichedTransaction(
-            importId,
-            account.financialAccountId,
-            { date: transaction.date, amount, action, currency: transaction.currency, title: transaction.description },
-            {
-                bankConnectionId: connectionId,
-                bankSyncAccountId: account.id,
-                externalTransactionId: transaction.externalId
-            }
-        )
+    /**
+     * Hands transactions we have never seen to the import flow, which enriches them and files them
+     * for review exactly like a CSV upload. Bank-sync's job ends at delivering normalized rows.
+     * @param connection The connection the transactions were synced from.
+     * @param account The bank-sync account they belong to.
+     * @param transactions The transactions that are new to us.
+     * @returns A promise that resolves once the transactions have been handed over.
+     */
+    private async ingestNewTransactions(
+        connection: { id: string; providerId: string; autoApproveTransactions: boolean },
+        account: BankSyncAccountRecord,
+        transactions: ExternalTransaction[]
+    ): Promise<void> {
+        await this.ingestionService.ingest({
+            source: 'BANK_SYNC',
+            financialAccountId: account.financialAccountId,
+            sourceReference: connection.providerId,
+            bankConnectionId: connection.id,
+            autoApprove: connection.autoApproveTransactions,
+            transactions: transactions.map(transaction => ({
+                date: transaction.date,
+                title: transaction.description,
+                amount: Math.abs(transaction.amount),
+                currency: transaction.currency,
+                action: transaction.amount < 0 ? 'EXPENSES' : 'INCOME',
+                externalTransactionId: transaction.externalId,
+                bankSyncAccountId: account.id
+            }))
+        })
     }
 
     /**

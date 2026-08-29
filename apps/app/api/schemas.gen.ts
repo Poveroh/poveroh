@@ -5021,10 +5021,36 @@ export const ImportEnrichmentResultSchema = {
     ]
 } as const
 
+export const ImportProcessingTargetSchema = {
+    type: 'object',
+    properties: {
+        source: {
+            $ref: '#/components/schemas/ImportSourceEnum'
+        },
+        financialAccountId: {
+            type: 'string',
+            format: 'uuid'
+        },
+        bankConnectionId: {
+            type: 'string',
+            nullable: true,
+            format: 'uuid'
+        },
+        autoApprove: {
+            type: 'boolean'
+        }
+    },
+    required: ['source', 'financialAccountId', 'bankConnectionId', 'autoApprove']
+} as const
+
 export const ImportTransactionDraftSchema = {
     type: 'object',
     properties: {
         id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        userId: {
             type: 'string',
             format: 'uuid'
         },
@@ -5093,6 +5119,7 @@ export const ImportTransactionDraftSchema = {
     },
     required: [
         'id',
+        'userId',
         'importId',
         'financialAccountId',
         'date',

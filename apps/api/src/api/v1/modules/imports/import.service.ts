@@ -1,5 +1,4 @@
-import prisma, { Prisma } from '@poveroh/prisma'
-import { v4 as uuidv4 } from 'uuid'
+import prisma from '@poveroh/prisma'
 import type {
     ApproveImportTransactionsRequest,
     CategoryData,
@@ -7,7 +6,6 @@ import type {
     ImportData,
     ImportFilters,
     ImportTransactionDataResponse,
-    ReadedTransaction,
     TransactionStatusEnum,
     UpdateImportRequest
 } from '@poveroh/types'
@@ -16,9 +14,8 @@ import { AccountBalanceService } from '../financial-accounts/account-balance/acc
 import { BaseService } from '../base/base.service'
 import { CategoryService } from '../categories/category.service'
 import { eventBus } from '../../worker/events/event-bus'
-import { ImportHelper } from '../../helpers/import.helper'
+import { ImportIngestionService } from './ingestion/import-ingestion.service'
 import { ImportRepository } from './import.repository'
-import HowIParsedYourDataAlgorithm from '../../helpers/parser.helper'
 
 /**
  * Service class for managing imports, including creating, updating, deleting and retrieving imports for the authenticated user.
@@ -233,65 +230,22 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Creates an import with the supplied payload and uploaded files, parsing the file contents and persisting derived transactions and amounts.
+     * Creates an import from uploaded CSV files. The files are the source's contribution; opening
+     * the import, enriching its transactions and readying them for review is the ingestion flow's
+     * job, shared with every other source.
      * @param payload The data required to create a new import.
      * @param files The uploaded files containing the transactions to import.
      * @returns A promise that resolves to the newly created import data.
      */
     async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportData> {
-        const userId = this.context.currentUser.id
-        const importId = uuidv4()
-        const now = new Date()
-        const parser = new HowIParsedYourDataAlgorithm()
-
-        const fileResults = await Promise.all(
-            files.map(async file => {
-                const content = file.buffer.toString('utf-8')
-                const filePath = await this.media.saveFile(importId, file)
-                const parsed = await parser.parseCSVFile(content)
-
-                return {
-                    filePath,
-                    originalname: file.originalname,
-                    transactions: parsed.transactions
-                }
-            })
-        )
-
-        const savedFiles = fileResults.map(fileResult => fileResult.filePath)
-        const allRawTransactions = fileResults.flatMap(fileResult => fileResult.transactions)
-
-        const { transactions: transactionsToCreate, amounts: amountsToCreate } =
-            await ImportHelper.normalizeTransaction(userId, payload.financialAccountId, importId, allRawTransactions)
-
-        const importFiles: Prisma.ImportFileCreateManyInput[] = savedFiles.map((path, idx) => ({
-            importId,
-            filename: files[idx]?.originalname || '',
-            filetype: 'CSV',
-            path
-        }))
-
-        await prisma.$transaction(async tx => {
-            await this.importRepository.create(tx, {
-                id: importId,
-                userId,
-                financialAccountId: payload.financialAccountId,
-                title: `Import via CSV at ${now.toLocaleString()}`,
-                status: 'PENDING_REVIEW',
+        return new ImportIngestionService().ingest(
+            {
                 source: 'CSV',
-                autoApprove: payload.autoApprove ?? false,
-                createdAt: now
-            })
-
-            await this.importRepository.createImportFiles(tx, importFiles)
-            await this.importRepository.createTransactions(tx, transactionsToCreate)
-            await this.importRepository.createAmounts(tx, amountsToCreate)
-        })
-
-        const data = await this.importRepository.findByIdOrThrow(userId, importId)
-        await eventBus.emit('import.created', { userId, data })
-
-        return data
+                financialAccountId: payload.financialAccountId,
+                autoApprove: payload.autoApprove ?? false
+            },
+            files
+        )
     }
 
     /**
@@ -318,83 +272,4 @@ export class ImportService extends BaseService {
         return this.importRepository.exists(this.context.currentUser.id, id)
     }
 
-    /**
-     * Returns the id of the import a bank-sync run should append its new transactions to: an
-     * already-open batch for the same financial account and bank connection when one exists,
-     * otherwise a freshly created one. This lets bank-sync transactions flow through the same
-     * pending-review lifecycle (approve, reject, complete, rollback) as CSV imports.
-     * @param financialAccountId The financial account the synced transactions belong to.
-     * @param bankConnectionId The bank connection the synced transactions come from.
-     * @param institutionName The connection's institution name, used to title a newly created import.
-     * @returns A promise that resolves to the id of the import to append transactions to.
-     */
-    async getOrCreateBankSyncImport(
-        financialAccountId: string,
-        bankConnectionId: string,
-        institutionName?: string
-    ): Promise<string> {
-        const userId = this.context.currentUser.id
-
-        const existing = await this.importRepository.findOpenBankSyncImport(
-            userId,
-            financialAccountId,
-            bankConnectionId
-        )
-        if (existing) return existing.id
-
-        const importId = uuidv4()
-        const now = new Date()
-        const providerId = await this.importRepository.findConnectionProviderId(userId, bankConnectionId)
-        const label = institutionName ?? providerId
-
-        await this.importRepository.create(prisma, {
-            id: importId,
-            userId,
-            financialAccountId,
-            title: label
-                ? `Import via bank sync by ${label} at ${now.toLocaleString()}`
-                : `Import via bank sync at ${now.toLocaleString()}`,
-            status: 'PENDING_REVIEW',
-            source: 'BANK_SYNC',
-            sourceReference: providerId,
-            bankConnectionId,
-            createdAt: now
-        })
-
-        return importId
-    }
-
-    /**
-     * Creates a single transaction under an existing import, enriched with the same history-based
-     * category/subcategory/icon/note lookup CSV imports get. Used by bank-sync to file a newly
-     * synced transaction under its batch import, tagging it with the bank-sync linkage fields
-     * `normalizeTransaction` doesn't know about.
-     * @param importId The import the transaction is filed under.
-     * @param financialAccountId The financial account the transaction's amount belongs to.
-     * @param rawTransaction The raw transaction data read from the source.
-     * @param bankSyncLinkage The bank-sync fields to attach to the created transaction and amount.
-     * @returns A promise that resolves once the transaction and amount have been created.
-     */
-    async createEnrichedTransaction(
-        importId: string,
-        financialAccountId: string,
-        rawTransaction: ReadedTransaction,
-        bankSyncLinkage: { bankConnectionId: string; bankSyncAccountId: string; externalTransactionId: string }
-    ): Promise<void> {
-        const userId = this.context.currentUser.id
-
-        const { transactions, amounts } = await ImportHelper.normalizeTransaction(
-            userId,
-            financialAccountId,
-            importId,
-            [rawTransaction]
-        )
-
-        transactions[0].bankConnectionId = bankSyncLinkage.bankConnectionId
-        amounts[0].bankSyncAccountId = bankSyncLinkage.bankSyncAccountId
-        amounts[0].externalTransactionId = bankSyncLinkage.externalTransactionId
-
-        await this.importRepository.createTransactions(prisma, transactions)
-        await this.importRepository.createAmounts(prisma, amounts)
-    }
 }

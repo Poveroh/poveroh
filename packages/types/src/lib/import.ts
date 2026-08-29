@@ -3,7 +3,8 @@ import {
     CurrencyEnum,
     EnrichmentStrategyEnum,
     ImportCandidateTransaction,
-    ImportEnrichmentResult
+    ImportEnrichmentResult,
+    ImportSourceEnum
 } from './contracts.js'
 
 /**
@@ -21,6 +22,19 @@ export interface ImportEnrichmentStrategy {
     readonly priority: number
     prepare(userId: string, candidates: ImportCandidateTransaction[]): Promise<void>
     enrich(candidate: ImportCandidateTransaction): ImportEnrichmentResult | null
+}
+
+/**
+ * Produces the normalized transactions of an import from whatever its source persisted: the
+ * uploaded files for a CSV import, the staged rows for a source that delivered them directly.
+ *
+ * This is what lets one processing path serve every source — the worker asks a reader rather than
+ * branching on where the import came from. Like the strategy interface, it stays hand-written
+ * because it describes behaviour; everything it exchanges is a generated type.
+ */
+export interface ImportSourceReader {
+    readonly source: ImportSourceEnum
+    read(importId: string): Promise<ImportCandidateTransaction[]>
 }
 
 /**
@@ -80,4 +94,3 @@ export type ReadedTransaction = {
     title: string
     originalRow?: Record<string, any>
 }
-
