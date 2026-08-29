@@ -47,12 +47,6 @@ export class CsvImportSourceReader implements ImportSourceReader {
             logger.warn('CSV import file could not be fully parsed', { importId, filename, errors: result.errors })
         }
 
-        return result.transactions.map(transaction => ({
-            date: transaction.date,
-            title: transaction.title,
-            amount: transaction.amount,
-            currency: transaction.currency,
-            action: transaction.action
-        }))
+        return result.transactions
     }
 }

@@ -1,4 +1,5 @@
 import prisma from '@poveroh/prisma'
+import { logger } from '@poveroh/logger/server'
 import { v4 as uuidv4 } from 'uuid'
 import type {
     ImportCandidateTransaction,
@@ -11,6 +12,7 @@ import { NotFoundError } from '@/utils'
 import { BaseService } from '../../base/base.service'
 import { EnrichmentPipeline } from '../enrichment/enrichment.pipeline'
 import { ImportRepository } from '../import.repository'
+import { ImportService } from '../import.service'
 import { CsvImportSourceReader } from '../ingestion/readers/csv-import.reader'
 import { ExternalImportSourceReader } from '../ingestion/readers/external-import.reader'
 
@@ -24,6 +26,7 @@ import { ExternalImportSourceReader } from '../ingestion/readers/external-import
 export class ImportProcessingService extends BaseService {
     private readonly importRepository = new ImportRepository()
     private readonly enrichmentPipeline = new EnrichmentPipeline()
+    private readonly importService = new ImportService()
 
     constructor() {
         super('import')
@@ -40,26 +43,38 @@ export class ImportProcessingService extends BaseService {
         const target = await this.importRepository.findProcessingTarget(userId, importId)
         if (!target) throw new NotFoundError('Import not found')
 
-        const candidates = await this.readerFor(target.source).read(importId)
-        const enrichments = await this.enrichmentPipeline.run(userId, candidates)
+        try {
+            const candidates = await this.readerFor(target.source).read(importId)
+            const enrichments = await this.enrichmentPipeline.run(userId, candidates)
 
-        const drafts = candidates.map((candidate, index) =>
-            this.toDraft(candidate, enrichments[index] ?? {}, {
-                userId,
-                importId,
-                financialAccountId: target.financialAccountId,
-                bankConnectionId: target.bankConnectionId
+            const drafts = candidates.map((candidate, index) =>
+                this.toDraft(candidate, enrichments[index] ?? {}, {
+                    userId,
+                    importId,
+                    financialAccountId: target.financialAccountId,
+                    bankConnectionId: target.bankConnectionId
+                })
+            )
+
+            await prisma.$transaction(async tx => {
+                await this.importRepository.createTransactionDrafts(tx, drafts)
+                await this.importRepository.deleteStagedTransactions(tx, importId)
+                await this.importRepository.updateStatus(tx, userId, importId, 'PENDING_REVIEW')
             })
-        )
 
-        // The staged rows are dropped in the same transaction that creates the real ones: either the
-        // input has been turned into transactions or it is still waiting to be, never neither.
-        await prisma.$transaction(async tx => {
-            await this.importRepository.createTransactionDrafts(tx, drafts)
-            await this.importRepository.deleteStagedTransactions(tx, importId)
-        })
+            if (target.autoApprove && drafts.length > 0) {
+                await this.importService.approveAllTransactions(importId)
+            }
 
-        return drafts.length
+            return drafts.length
+        } catch (error) {
+            const reason = error instanceof Error ? error.message : 'Unknown import processing error'
+
+            logger.error('Import processing failed', { userId, importId, error })
+            await this.importRepository.markFailed(userId, importId, reason)
+
+            throw error
+        }
     }
 
     /**

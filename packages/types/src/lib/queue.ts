@@ -6,10 +6,9 @@ export interface JobMap {
     'snapshot.generate-due': {
         date?: string
     }
-    'import.parse-csv': {
+    'import.process': {
         userId: string
         importId: string
-        fileIds: string[]
     }
     'market.sync': {
         userId: string

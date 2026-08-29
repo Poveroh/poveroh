@@ -105,6 +105,22 @@ export const bankSyncAccountSelect = {
     lastSyncedAt: true
 } satisfies Prisma.BankSyncAccountSelect
 
+export const syncedTransactionSelect = {
+    id: true,
+    transactionId: true,
+    externalTransactionId: true,
+    amount: true,
+    currency: true,
+    action: true,
+    transaction: { select: { status: true, date: true, title: true } }
+} satisfies Prisma.AmountSelect
+
+export const syncedTransactionRemovalSelect = {
+    transactionId: true,
+    financialAccountId: true,
+    transaction: { select: { status: true, date: true } }
+} satisfies Prisma.AmountSelect
+
 export const autoDepreciationSelect = {
     startDate: true,
     endDate: true,

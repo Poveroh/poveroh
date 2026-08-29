@@ -14,7 +14,7 @@ import { useBankSyncExternalAccounts } from '@/hooks/use-bank-sync-external-acco
 /**
  * Manages the form that maps a connection's reported external accounts to existing
  * FinancialAccounts, seeding one row per external account and keeping the field array in sync
- * as the external accounts query resolves.
+ * as the external accounts query resolves. Rows may be left unmapped and are dropped on submit.
  * @param connectionId The bank connection whose external accounts are being mapped.
  * @returns The form instance, the seeded rows, the source external accounts, loading state, and a submit handler.
  */
@@ -56,7 +56,7 @@ export const useBankAccountMappingForm = (connectionId: string) => {
         try {
             setLoading(true)
 
-            await dataCallback(values)
+            await dataCallback({ mappings: values.mappings.filter(mapping => mapping.financialAccountId !== '') })
         } catch (error) {
             handleError(error, 'Error mapping bank accounts')
         } finally {

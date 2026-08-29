@@ -22,7 +22,8 @@ export function useImportForm(props: ImportFormProps) {
     const form = useForm<ImportForm>({
         resolver: zodResolver(ImportFormSchema),
         defaultValues: {
-            financialAccountId: props.initialData?.financialAccountId || ''
+            financialAccountId: props.initialData?.financialAccountId || '',
+            autoApprove: props.initialData?.autoApprove ?? false
         }
     })
 

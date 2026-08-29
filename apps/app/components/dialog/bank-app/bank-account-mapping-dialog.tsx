@@ -26,6 +26,11 @@ export function BankAccountMappingDialog() {
     const handleFormSubmit = async (payload: LinkBankSyncAccountForm) => {
         if (modalManager.loading || !modalManager.item) return
 
+        if (payload.mappings.length === 0) {
+            modalManager.closeModal()
+            return
+        }
+
         try {
             modalManager.setLoading(true)
 

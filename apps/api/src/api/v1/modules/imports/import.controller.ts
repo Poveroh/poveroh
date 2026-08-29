@@ -6,10 +6,12 @@ import {
     UpdateImportRequestSchema
 } from '@poveroh/schemas'
 import { ImportService } from './import.service'
+import { ImportIngestionService } from './ingestion/import-ingestion.service'
 import { BadRequestError, parseRequestBody, ResponseHelper, getParamString, NotFoundError } from '@/utils'
 
 export class ImportController {
     private readonly importService = new ImportService()
+    private readonly ingestionService = new ImportIngestionService()
 
     // POST /
     async createImport(req: Request, res: Response) {
@@ -21,7 +23,14 @@ export class ImportController {
             const files = req.files as Express.Multer.File[]
             const payload = parseRequestBody(CreateImportRequestSchema, req.body)
 
-            const data = await this.importService.createImport(payload, files)
+            const data = await this.ingestionService.ingest(
+                {
+                    source: 'CSV',
+                    financialAccountId: payload.financialAccountId,
+                    autoApprove: payload.autoApprove ?? false
+                },
+                files
+            )
 
             return ResponseHelper.success<ImportData>(res, data)
         } catch (error) {

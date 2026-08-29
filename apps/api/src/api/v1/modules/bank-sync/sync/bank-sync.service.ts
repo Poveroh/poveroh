@@ -1,6 +1,5 @@
-import type { BankSyncTriggerEnum, ExternalTransaction } from '@poveroh/types'
+import type { BankSyncTriggerEnum, ExternalTransaction, TransactionActionEnum } from '@poveroh/types'
 import { createBankSyncClient } from '@poveroh/bank-sync'
-import prisma from '@poveroh/prisma'
 import { logger } from '@poveroh/logger/server'
 import { BadRequestError } from '@/utils'
 import { AccountBalanceService } from '@/v1/modules/financial-accounts/account-balance/account-balance.service'
@@ -11,7 +10,9 @@ import { ImportIngestionService } from '@/v1/modules/imports/ingestion/import-in
 import { BankConnectionService } from '../connections/bank-connection.service'
 import { BankSyncAppCredentialService } from '../app-credentials/bank-sync-app-credential.service'
 import { BankSyncAccountRepository, type BankSyncAccountRecord } from '../accounts/bank-sync-account.repository'
+import { BankConnectionRepository } from '../connections/bank-connection.repository'
 import { BankSyncRunRepository } from './bank-sync-run.repository'
+import { BankSyncTransactionRepository } from './bank-sync-transaction.repository'
 
 /**
  * The bank-sync engine: fetches incremental transactions for every account on a connection,
@@ -25,7 +26,9 @@ export class BankSyncService extends BaseService {
     private readonly connectionService = new BankConnectionService()
     private readonly appCredentialService = new BankSyncAppCredentialService()
     private readonly accountRepository = new BankSyncAccountRepository()
+    private readonly connectionRepository = new BankConnectionRepository()
     private readonly runRepository = new BankSyncRunRepository()
+    private readonly transactionRepository = new BankSyncTransactionRepository()
     private readonly ingestionService = new ImportIngestionService()
     private readonly accountBalanceService = new AccountBalanceService()
 
@@ -77,12 +80,7 @@ export class BankSyncService extends BaseService {
                 // already approved must be applied in place, while anything we have never seen —
                 // including a `modified` row an earlier run missed — is new and has to go through
                 // import review.
-                const newTransactions: ExternalTransaction[] = []
-
-                for (const transaction of [...result.added, ...result.modified]) {
-                    const applied = await this.updateExistingTransaction(account, transaction)
-                    if (!applied) newTransactions.push(transaction)
-                }
+                const newTransactions = await this.applyProviderUpdates(account, [...result.added, ...result.modified])
 
                 if (newTransactions.length > 0) {
                     await this.ingestNewTransactions(connection, account, newTransactions)
@@ -112,13 +110,10 @@ export class BankSyncService extends BaseService {
             errorMessage: lastError
         })
 
-        await prisma.bankConnection.update({
-            where: { id: connectionId },
-            data: {
-                lastSyncedAt: new Date(),
-                lastSyncError: lastError ?? null,
-                status: lastError && added + modified === 0 ? 'ERROR' : 'LINKED'
-            }
+        await this.connectionRepository.update(connectionId, {
+            lastSyncedAt: new Date(),
+            lastSyncError: lastError ?? null,
+            status: lastError && added + modified === 0 ? 'ERROR' : 'LINKED'
         })
 
         await eventBus.emit('bank-sync.synced', { userId, connectionId, transactionsAdded: added })
@@ -145,51 +140,80 @@ export class BankSyncService extends BaseService {
     }
 
     /**
-     * Applies a provider update to a transaction we already hold, keyed by
-     * `(bankSyncAccountId, externalTransactionId)`.
-     * @param account The bank-sync account the transaction was fetched for.
-     * @param transaction The provider's version of the transaction.
-     * @returns A promise that resolves to true when the transaction existed and was updated, false when it is new to us.
+     * Applies the provider's updates to the transactions we already hold and reports back the ones
+     * that are new to us.
+     *
+     * Everything is resolved from a single lookup keyed by `(bankSyncAccountId,
+     * externalTransactionId)`: a provider re-sends the same rows on every run, so checking them one
+     * by one meant a query per transaction, and rows that had not actually changed were rewritten
+     * anyway. Balances are rebuilt once, from the earliest date any approved transaction moved to,
+     * instead of once per changed row — rebuilding the daily series and the snapshots is by far the
+     * most expensive thing this method can trigger.
+     * @param account The bank-sync account the transactions were fetched for.
+     * @param transactions Everything the provider returned as added or modified.
+     * @returns A promise that resolves to the transactions we have never seen before.
      */
-    private async updateExistingTransaction(
+    private async applyProviderUpdates(
         account: BankSyncAccountRecord,
-        transaction: ExternalTransaction
-    ): Promise<boolean> {
-        const existingAmount = await prisma.amount.findUnique({
-            where: {
-                bankSyncAccountId_externalTransactionId: {
-                    bankSyncAccountId: account.id,
-                    externalTransactionId: transaction.externalId
-                }
-            },
-            select: { id: true, transactionId: true, transaction: { select: { status: true, date: true } } }
-        })
+        transactions: ExternalTransaction[]
+    ): Promise<ExternalTransaction[]> {
+        if (transactions.length === 0) return []
 
-        if (!existingAmount) return false
+        const existing = await this.transactionRepository.findSyncedByExternalIds(
+            account.id,
+            transactions.map(transaction => transaction.externalId)
+        )
 
-        const newDate = new Date(transaction.date)
+        const byExternalId = new Map(existing.map(row => [row.externalTransactionId, row]))
 
-        await prisma.transaction.update({
-            where: { id: existingAmount.transactionId },
-            data: { date: newDate, title: transaction.description }
-        })
-        await prisma.amount.update({
-            where: { id: existingAmount.id },
-            data: {
-                amount: Math.abs(transaction.amount),
-                currency: transaction.currency,
-                action: transaction.amount < 0 ? 'EXPENSES' : 'INCOME'
+        const unseen: ExternalTransaction[] = []
+        let earliestAffected: Date | null = null
+
+        for (const transaction of transactions) {
+            const current = byExternalId.get(transaction.externalId)
+
+            if (!current) {
+                unseen.push(transaction)
+                continue
             }
-        })
 
-        // Already-approved transactions count toward the balance, so a change to their amount or
-        // date requires rebuilding the daily series from whichever date moved first.
-        if (existingAmount.transaction.status === 'APPROVED') {
-            const fromDate = new Date(Math.min(existingAmount.transaction.date.getTime(), newDate.getTime()))
-            await this.accountBalanceService.recomputeAccountsAndSnapshots([account.financialAccountId], fromDate)
+            const date = new Date(transaction.date)
+            const amount = Math.abs(transaction.amount)
+            const action: TransactionActionEnum = transaction.amount < 0 ? 'EXPENSES' : 'INCOME'
+
+            const unchanged =
+                current.transaction.title === transaction.description &&
+                current.transaction.date.getTime() === date.getTime() &&
+                current.amount.toFixed(2) === amount.toFixed(2) &&
+                current.currency === transaction.currency &&
+                current.action === action
+
+            if (unchanged) continue
+
+            await this.transactionRepository.applyProviderUpdate(current.transactionId, current.id, {
+                date,
+                title: transaction.description,
+                amount,
+                currency: transaction.currency,
+                action
+            })
+
+            // Already-approved transactions count toward the balance, so a change to their amount or
+            // date requires rebuilding the daily series from whichever date moved first.
+            if (current.transaction.status === 'APPROVED') {
+                const from = new Date(Math.min(current.transaction.date.getTime(), date.getTime()))
+                if (!earliestAffected || from < earliestAffected) earliestAffected = from
+            }
         }
 
-        return true
+        if (earliestAffected) {
+            await this.accountBalanceService.recomputeAccountsAndSnapshots(
+                [account.financialAccountId],
+                earliestAffected
+            )
+        }
+
+        return unseen
     }
 
     /**
@@ -232,21 +256,10 @@ export class BankSyncService extends BaseService {
      * @returns A promise that resolves once the matching rows are soft-deleted.
      */
     private async removeTransactions(bankSyncAccountId: string, externalIds: string[]): Promise<void> {
-        const amounts = await prisma.amount.findMany({
-            where: { bankSyncAccountId, externalTransactionId: { in: externalIds } },
-            select: {
-                transactionId: true,
-                financialAccountId: true,
-                transaction: { select: { status: true, date: true } }
-            }
-        })
+        const amounts = await this.transactionRepository.findRemovalTargets(bankSyncAccountId, externalIds)
         if (amounts.length === 0) return
 
-        const now = new Date()
-        const transactionIds = amounts.map(amount => amount.transactionId)
-
-        await prisma.transaction.updateMany({ where: { id: { in: transactionIds } }, data: { deletedAt: now } })
-        await prisma.amount.updateMany({ where: { transactionId: { in: transactionIds } }, data: { deletedAt: now } })
+        await this.transactionRepository.softDeleteByTransactionIds(amounts.map(amount => amount.transactionId))
 
         const approved = amounts.filter(amount => amount.transaction.status === 'APPROVED')
         if (approved.length === 0) return

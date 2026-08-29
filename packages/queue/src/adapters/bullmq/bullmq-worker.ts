@@ -1,5 +1,13 @@
 import { Worker } from 'bullmq'
-import { DEFAULT_QUEUE_NAME, JobHandlers, JobMap, JobName, type RedisConnectionConfig } from '@poveroh/types'
+import {
+    DEFAULT_QUEUE_NAME,
+    JobHandlers,
+    JobMap,
+    JobName,
+    WORKER_LOCK_DURATION_MS,
+    WORKER_STALLED_INTERVAL_MS,
+    type RedisConnectionConfig
+} from '@poveroh/types'
 import { createBullMQConnectionOptions } from './redis-connection'
 
 export type WorkerLogger = {
@@ -28,7 +36,13 @@ export function createBullMQWorker(
             await handler(job.data)
         },
         {
-            connection: createBullMQConnectionOptions(redisConfig)
+            connection: createBullMQConnectionOptions(redisConfig),
+            // Jobs here are long by nature (parsing an import, syncing a connection for the first
+            // time). With BullMQ's 30s default they lose their lock mid-run and get re-executed as
+            // stalled while the original run is still working.
+            lockDuration: WORKER_LOCK_DURATION_MS,
+            stalledInterval: WORKER_STALLED_INTERVAL_MS,
+            maxStalledCount: 1
         }
     )
 

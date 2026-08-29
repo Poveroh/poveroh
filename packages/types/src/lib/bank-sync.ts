@@ -1,4 +1,10 @@
-import { BankSyncConnectionStatusEnum, BankSyncCredentialInput, CurrencyEnum } from '@poveroh/contracts'
+import {
+    BankSyncConnectionStatusEnum,
+    BankSyncCredentialInput,
+    CurrencyEnum,
+    TransactionActionEnum,
+    TransactionStatusEnum
+} from '@poveroh/contracts'
 
 export type CreateBankConnectionInput = {
     userId: string
@@ -104,4 +110,35 @@ export class BankSyncError extends Error {
         super(message)
         this.name = 'BankSyncError'
     }
+}
+
+export type SyncedTransactionRow = {
+    id: string
+    transactionId: string
+    externalTransactionId: string | null
+    amount: number
+    currency: CurrencyEnum
+    action: TransactionActionEnum
+    transaction: {
+        status: TransactionStatusEnum
+        date: Date
+        title: string
+    }
+}
+
+export type SyncedTransactionRemovalRow = {
+    transactionId: string
+    financialAccountId: string
+    transaction: {
+        status: TransactionStatusEnum
+        date: Date
+    }
+}
+
+export type ActiveBankSyncAccountMapping = {
+    id: string
+    connectionId: string
+    externalAccountId: string
+    financialAccountId: string
+    connectionRevoked: boolean
 }

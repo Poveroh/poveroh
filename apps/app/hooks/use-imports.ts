@@ -1,7 +1,7 @@
 'use client'
 
-import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
-import { ImportFilters } from '@poveroh/types'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { IMPORT_PROCESSING_POLL_INTERVAL, ImportData, ImportFilters } from '@poveroh/types'
 import { useError } from './use-error'
 import {
     completeImportMutation,
@@ -26,14 +26,16 @@ export const useImport = () => {
         { includeTransactions: false }
     )
 
-    const [importQuery] = useQueries({
-        queries: [
-            {
-                ...getImportsOptions(filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined),
-                staleTime: Infinity
-            }
-        ]
+    const importQuery = useQuery({
+        ...getImportsOptions(filters.activeFilters ? { query: { filter: filters.activeFilters } } : undefined),
+        refetchInterval: query =>
+            query.state.data?.data?.some(item => item.status === 'PROCESSING')
+                ? IMPORT_PROCESSING_POLL_INTERVAL
+                : false,
+        staleTime: Infinity
     })
+
+    const importData: ImportData[] = importQuery.data?.data ?? []
 
     const invalidateImports = () => queryClient.invalidateQueries({ queryKey: getImportsQueryKey() })
 
@@ -97,7 +99,7 @@ export const useImport = () => {
     return {
         filters,
         importQuery,
-        importData: importQuery.data?.data ?? [],
+        importData,
         createImport,
         deleteImport,
         deleteAllMutation,

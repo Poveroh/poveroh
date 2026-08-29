@@ -72,15 +72,15 @@ Il worker non sa da dove arrivano le transazioni: chiede a un reader.
 interface ImportSourceReader {
     readonly source: ImportSourceEnum
     read(importId: string): Promise<ImportCandidateTransaction[]>
-    /** Chiamato dopo che le transazioni sono state persistite, per liberare l'input consumato. */
-    cleanup(importId: string, tx: TransactionalClient): Promise<void>
 }
 ```
 
 Due implementazioni:
 
-- **`CsvImportSourceReader`** — legge le righe `ImportFile` dell'import, recupera i file dallo storage, li parsa. `cleanup` non fa nulla: i file restano, sono l'allegato dell'import.
-- **`ExternalImportSourceReader`** — legge le righe `ImportStagedTransaction` dell'import. `cleanup` le cancella.
+- **`CsvImportSourceReader`** — legge le righe `ImportFile` dell'import, recupera i file dallo storage (`MediaService.readFile`, aggiunto per questo) e li parsa. Gli errori del parser, oggi ignorati, vengono loggati con il nome del file.
+- **`ExternalImportSourceReader`** — legge le righe `ImportStagedTransaction` dell'import.
+
+Il reader si limita a leggere: la cancellazione delle righe staged non è sua, la fa il processing service dentro la stessa transazione che crea le transazioni definitive. Tenerla fuori dall'interfaccia evita che il tipo del client transazionale di Prisma finisca in `@poveroh/types`.
 
 Da lì in poi il flusso è **identico byte per byte** per entrambe le sorgenti. Aggiungere una sorgente futura significa scrivere un reader e registrarlo in una mappa.
 
@@ -539,6 +539,8 @@ La base è `feat/bank-sync` (decisa in review). Il branch contiene già 10 commi
 
 ### Contenuto delle PR
 
+> **Stato al 26/08/2026.** Sono state aperte due PR — [#203](https://github.com/Poveroh/poveroh/pull/203) (contratti) e [#204](https://github.com/Poveroh/poveroh/pull/204) (pipeline) — piu' la PR base [#202](https://github.com/Poveroh/poveroh/pull/202) di `feat/bank-sync`. Il resto del lavoro (ingestione, worker, bank-sync, UI) e' stato scritto su `feat/import-ingestion` senza aprire altre PR, su richiesta. Le PR 3-6 della tabella qui sotto descrivono quindi contenuto gia' implementato ma non ancora proposto in review.
+
 | #   | Branch                   | Titolo                                                                        | Contenuto                                                                                                                                                                                         | File |
 | --- | ------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
 | 1   | `feat/import-contracts`  | `feat(import): add import source, status and staging schema`                  | Prisma (`ImportStatus`, `ImportSource`, campi su `Import`/`Transaction`/`BankConnection`, `ImportStagedTransaction`), migration con backfill, tutti gli schemi Zod di §3, rigenerazione contratti | ~7   |
@@ -568,3 +570,18 @@ La base è `feat/bank-sync` (decisa in review). Il branch contiene già 10 commi
 | Tipi                      | `Prisma.TransactionCreateManyInput` fra i layer      | tutto Zod-generato (§3); Prisma confinato dentro il repository                                                                                   |
 | `Subscription.categoryId` | da confermare                                        | rimandato, tracciato in [#201](https://github.com/Poveroh/poveroh/issues/201)                                                                    |
 | PR                        | 6 PR sequenziali                                     | 6 PR come stack GitHub, con la procedura di rebase in §10                                                                                        |
+
+---
+
+## 13. Scelte emerse durante l'implementazione
+
+Cose decise scrivendo il codice, non previste dal piano:
+
+- **Il controller chiama direttamente `ImportIngestionService`.** `ImportService` non espone piu' `createImport`: se lo facesse, la catena `ImportService -> Ingestion -> Processing -> ImportService` (necessaria per l'auto-approvazione) diventerebbe un ciclo di import. Il controller istanzia i due service, restando comunque sottile.
+- **L'auto-approvazione riusa `completeImport`.** `ImportService.approveAllTransactions` porta le transazioni da `IMPORT_PENDING` a `IMPORT_APPROVED` e poi chiama `completeImport`, cosi' il ricalcolo di saldi e snapshot non viene duplicato.
+- **`ImportTransactionDraft` porta anche `userId`.** Ogni riga appartiene a un utente e il worker non ha una request da cui dedurlo.
+- **`ImportProcessingTarget`** e' lo schema che il repository restituisce al processing (sorgente, conto, connessione, auto-approvazione), invece di rileggere l'intero import.
+- **`failureReason` si azzera da solo.** `updateStatus` lo pulisce a ogni transizione fuori da `FAILED`, cosi' un retry riuscito non lascia in vista l'errore del tentativo precedente.
+- **`MediaService.readFile` + `toFileBuffer`.** Il worker non ha piu' il buffer dell'upload, quindi serviva poter rileggere il file: `toFileBuffer` normalizza le tre forme diverse che i provider di storage restituiscono (Buffer in locale, byte array su AWS, stream su Azure e GCS).
+- **Il polling della lista usa `useQuery`, non `useQueries`.** Con `useQueries` il callback di `refetchInterval` faceva collassare l'inferenza dei tipi sul risultato; per una query sola `useQuery` e' comunque la scelta giusta.
+- **La checkbox di auto-approvazione riusa `IgnoreField`**, che e' gia' una checkbox parametrica per nome ed etichetta, invece di introdurre un nuovo componente.

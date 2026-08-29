@@ -1,6 +1,6 @@
 import config from '@/utils/environment'
 import { getUploadClient, isLocalStorageMode, toFileBuffer } from '@/utils/storage'
-import path from 'path/win32'
+import path from 'path/posix'
 
 /**
  * MediaService provides functionality for handling file uploads and managing media storage.

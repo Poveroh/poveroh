@@ -35,22 +35,24 @@ export const ListExternalBankAccountsResponseSchema = SuccessResponseSchema(Exte
 )
 
 /**
- * One external-account-to-FinancialAccount mapping: either an existing account id, or the
- * details to create a new one
+ * One external-account-to-FinancialAccount mapping. An empty financialAccountId is the explicit
+ * "leave this external account unmapped" instruction, so the mapping dialog can submit the rows
+ * it left untouched, and those rows are dropped before anything is validated or written
  */
 export const BankSyncAccountMappingSchema = z
     .object({
         externalAccountId: z.string().nonempty(),
-        financialAccountId: z.string().nonempty()
+        financialAccountId: z.string()
     })
     .openapi('BankSyncAccountMapping')
 
 /**
- * Request schema for persisting the mapping between a connection's external accounts and FinancialAccounts
+ * Request schema for persisting the mapping between a connection's external accounts and
+ * FinancialAccounts. Submitting no mapping at all is a no-op rather than an error
  */
 export const LinkBankSyncAccountsRequestSchema = z
     .object({
-        mappings: z.array(BankSyncAccountMappingSchema).nonempty()
+        mappings: z.array(BankSyncAccountMappingSchema)
     })
     .openapi('LinkBankSyncAccountsRequest')
 

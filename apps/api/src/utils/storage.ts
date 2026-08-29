@@ -107,7 +107,11 @@ export async function toFileBuffer(downloaded: DownloadedFile): Promise<Buffer> 
     if (Buffer.isBuffer(downloaded)) return downloaded
 
     const body: unknown =
-        'Body' in downloaded ? downloaded.Body : 'readableStreamBody' in downloaded ? downloaded.readableStreamBody : undefined
+        'Body' in downloaded
+            ? downloaded.Body
+            : 'readableStreamBody' in downloaded
+              ? downloaded.readableStreamBody
+              : undefined
 
     if (Buffer.isBuffer(body)) return body
 

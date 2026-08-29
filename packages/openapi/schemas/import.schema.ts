@@ -184,7 +184,11 @@ export const CreateUpdateImportRequestSchema = z
  */
 export const ImportFormSchema = ImportSchema.pick({
     financialAccountId: true
-}).openapi('ImportForm')
+})
+    // Optional rather than defaulted: a default would make the schema's input and output types
+    // diverge, which breaks the form resolver's inference.
+    .extend({ autoApprove: z.boolean().optional() })
+    .openapi('ImportForm')
 
 // ------------------------------------------------------------------------------------------------------------------------------ //
 

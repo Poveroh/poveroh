@@ -17,6 +17,13 @@ export const DEFAULT_TTL_SECONDS = 3600
 
 export const DEFAULT_QUEUE_NAME = 'poveroh.jobs'
 
+export const WORKER_LOCK_DURATION_MS = 5 * 60 * 1000
+
+export const WORKER_STALLED_INTERVAL_MS = WORKER_LOCK_DURATION_MS
+
+// ------- import constants -------
+export const IMPORT_PROCESSING_POLL_INTERVAL = 3000
+
 // ------- encryption constants -------
 export const KEY_ENVELOPE_ALGO_V1 = 'scrypt-aes256gcm-v1'
 export const PAYLOAD_ALGO_V1 = 'aes256gcm-v1'

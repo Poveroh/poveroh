@@ -2,7 +2,6 @@ import prisma from '@poveroh/prisma'
 import type {
     ApproveImportTransactionsRequest,
     CategoryData,
-    CreateImportRequest,
     ImportData,
     ImportFilters,
     ImportTransactionDataResponse,
@@ -14,7 +13,6 @@ import { AccountBalanceService } from '../financial-accounts/account-balance/acc
 import { BaseService } from '../base/base.service'
 import { CategoryService } from '../categories/category.service'
 import { eventBus } from '../../worker/events/event-bus'
-import { ImportIngestionService } from './ingestion/import-ingestion.service'
 import { ImportRepository } from './import.repository'
 
 /**
@@ -230,22 +228,20 @@ export class ImportService extends BaseService {
     }
 
     /**
-     * Creates an import from uploaded CSV files. The files are the source's contribution; opening
-     * the import, enriching its transactions and readying them for review is the ingestion flow's
-     * job, shared with every other source.
-     * @param payload The data required to create a new import.
-     * @param files The uploaded files containing the transactions to import.
-     * @returns A promise that resolves to the newly created import data.
+     * Approves every transaction still awaiting review in an import, used when the import was
+     * created with auto-approval so the user is not asked to confirm what they already opted out of
+     * reviewing.
+     * @param id The unique identifier of the import to approve in full.
+     * @returns A promise that resolves to the completed import data.
      */
-    async createImport(payload: CreateImportRequest, files: Express.Multer.File[]): Promise<ImportData> {
-        return new ImportIngestionService().ingest(
-            {
-                source: 'CSV',
-                financialAccountId: payload.financialAccountId,
-                autoApprove: payload.autoApprove ?? false
-            },
-            files
-        )
+    async approveAllTransactions(id: string): Promise<ImportData> {
+        const userId = this.context.currentUser.id
+
+        await prisma.$transaction(async tx => {
+            await this.importRepository.updateTransactionsStatus(tx, userId, id, 'IMPORT_PENDING', 'IMPORT_APPROVED')
+        })
+
+        return this.completeImport(id)
     }
 
     /**
@@ -271,5 +267,4 @@ export class ImportService extends BaseService {
     async doesImportExist(id: string): Promise<boolean> {
         return this.importRepository.exists(this.context.currentUser.id, id)
     }
-
 }

@@ -1755,8 +1755,7 @@ export const BankSyncAccountMappingSchema = {
             minLength: 1
         },
         financialAccountId: {
-            type: 'string',
-            minLength: 1
+            type: 'string'
         }
     },
     required: ['externalAccountId', 'financialAccountId']
@@ -1769,8 +1768,7 @@ export const LinkBankSyncAccountsRequestSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/BankSyncAccountMapping'
-            },
-            minItems: 1
+            }
         }
     },
     required: ['mappings']
@@ -1816,8 +1814,7 @@ export const LinkBankSyncAccountFormSchema = {
             type: 'array',
             items: {
                 $ref: '#/components/schemas/BankSyncAccountMapping'
-            },
-            minItems: 1
+            }
         }
     },
     required: ['mappings']
@@ -4845,6 +4842,9 @@ export const ImportFormSchema = {
         financialAccountId: {
             type: 'string',
             minLength: 1
+        },
+        autoApprove: {
+            type: 'boolean'
         }
     },
     required: ['financialAccountId']

@@ -345,6 +345,10 @@
             "quantity": "Quantity",
             "fees": "Transaction fee",
             "total": "Total transaction"
+        },
+        "autoApprove": {
+            "label": "Approve transactions automatically",
+            "description": "Skip the review step and add the imported transactions straight to your account."
         }
     },
     "layout": {
@@ -744,7 +748,8 @@
             "BANK_SYNC": "Import via bank sync",
             "MANUAL": "Import via manual entry",
             "API": "Import via API"
-        }
+        },
+        "transactionCount": "{count, plural, =1 {# transaction} other {# transactions}}"
     },
     "providers": {
         "title": "Stock provider",

@@ -2029,6 +2029,7 @@ export type CreateUpdateImportRequest = CreateImportRequest | UpdateImportReques
 
 export type ImportForm = {
     financialAccountId: string
+    autoApprove?: boolean
 }
 
 export type ApproveImportTransactionItem = {

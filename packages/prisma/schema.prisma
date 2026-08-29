@@ -170,7 +170,7 @@ model FinancialAccount {
 
   user                  User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accountBalanceEntries FinancialAccountBalance[]
-  bankSyncAccount       BankSyncAccount?
+  bankSyncAccounts      BankSyncAccount[]
 
   @@index([userId])
   @@map("FinancialAccounts")
@@ -902,6 +902,12 @@ model BankConnection {
   @@index([status])
 }
 
+/// A FinancialAccount may be fed by at most one *live* mapping. That is enforced by the partial
+/// unique index "BankSyncAccount_financialAccountId_active_key" (ON "financialAccountId" WHERE
+/// "deletedAt" IS NULL), created in raw SQL because Prisma cannot express partial indexes. Do not
+/// restore a plain @@unique([financialAccountId]): it ignores deletedAt, so a revoked connection's
+/// mapping would occupy the FinancialAccount forever and re-linking it would always fail.
+/// `prisma migrate dev` reports that index as drift - keep it, do not let a migration drop it.
 model BankSyncAccount {
   id                  String    @id @default(uuid())
   connectionId        String
@@ -920,8 +926,8 @@ model BankSyncAccount {
   amounts          Amount[]
 
   @@unique([connectionId, externalAccountId])
-  @@unique([financialAccountId])
   @@index([connectionId])
+  @@index([financialAccountId])
 }
 
 model BankSyncRun {

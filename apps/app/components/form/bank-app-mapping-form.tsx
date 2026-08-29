@@ -41,7 +41,6 @@ function MappingRow({ index, control, label, mask }: MappingRowProps) {
                     name={`mappings.${index}.financialAccountId`}
                     placeholder={t('bankSync.mapping.selectAccount')}
                     excludeIds={excludeIds}
-                    mandatory
                 />
             </div>
         </div>

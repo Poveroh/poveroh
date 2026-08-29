@@ -2,9 +2,9 @@ import prisma from '@poveroh/prisma'
 import { v4 as uuidv4 } from 'uuid'
 import type { ImportData, ImportIngestionRequest } from '@poveroh/types'
 import { eventBus } from '@/v1/worker/events/event-bus'
+import { getJobDispatcher } from '@/utils/queue'
 import { BaseService } from '../../base/base.service'
 import { ImportRepository } from '../import.repository'
-import { ImportProcessingService } from '../processing/import-processing.service'
 
 /**
  * The single entry point for creating an import, whatever produced its transactions: a CSV upload,
@@ -50,7 +50,7 @@ export class ImportIngestionService extends BaseService {
                 userId,
                 financialAccountId: request.financialAccountId,
                 title: this.buildTitle(request, now),
-                status: 'PENDING_REVIEW',
+                status: 'PROCESSING',
                 source: request.source,
                 sourceReference: request.sourceReference ?? null,
                 bankConnectionId: request.bankConnectionId ?? null,
@@ -69,11 +69,9 @@ export class ImportIngestionService extends BaseService {
             )
         })
 
-        // Staged outside the transaction above so a large batch does not hold it open; the import
-        // already exists, so a failure here leaves it empty and retryable rather than orphaned.
         await this.importRepository.createStagedTransactions(importId, request.transactions ?? [])
 
-        await new ImportProcessingService().process(importId)
+        await this.dispatchProcessing(userId, importId)
 
         const data = await this.importRepository.findByIdOrThrow(userId, importId)
         await eventBus.emit('import.created', { userId, data })
@@ -110,12 +108,36 @@ export class ImportIngestionService extends BaseService {
      */
     private async appendTo(userId: string, importId: string, request: ImportIngestionRequest): Promise<ImportData> {
         await this.importRepository.createStagedTransactions(importId, request.transactions ?? [])
-        await new ImportProcessingService().process(importId)
+        await this.dispatchProcessing(userId, importId)
 
         const data = await this.importRepository.findByIdOrThrow(userId, importId)
         await eventBus.emit('import.updated', { userId, data })
 
         return data
+    }
+
+    /**
+     * Marks the import as being worked on and hands it to the worker, so parsing and enrichment —
+     * the expensive part — happen outside the request that triggered them and the caller gets its
+     * import back immediately.
+     * @param userId The ID of the user who owns the import.
+     * @param importId The import to process.
+     * @returns A promise that resolves once the job has been dispatched.
+     */
+    private async dispatchProcessing(userId: string, importId: string): Promise<void> {
+        await this.importRepository.updateStatus(prisma, userId, importId, 'PROCESSING')
+
+        await getJobDispatcher().dispatch(
+            'import.process',
+            { userId, importId },
+            {
+                // One import is only ever worked on once at a time: a second sync landing while the
+                // first is still running would otherwise process the same staged rows twice.
+                deduplicationId: `import:${importId}`,
+                attempts: 3,
+                backoff: { type: 'exponential', delay: 5_000 }
+            }
+        )
     }
 
     /**

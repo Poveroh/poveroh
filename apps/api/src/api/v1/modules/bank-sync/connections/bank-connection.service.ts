@@ -22,6 +22,7 @@ import { BANK_SYNC_PROVIDER_REGISTRY, getBankSyncProviderDefinition } from '@/v1
 import { eventBus } from '@/v1/worker/events/event-bus'
 import { getJobDispatcher } from '@/utils/queue'
 import { BankSyncAppCredentialService } from '../app-credentials/bank-sync-app-credential.service'
+import { BankSyncAccountRepository } from '../accounts/bank-sync-account.repository'
 import { BankConnectionRepository, type BankConnectionWithSecretRecord } from './bank-connection.repository'
 
 /**
@@ -31,6 +32,7 @@ import { BankConnectionRepository, type BankConnectionWithSecretRecord } from '.
  */
 export class BankConnectionService extends BaseService {
     private readonly connectionRepository = new BankConnectionRepository()
+    private readonly accountRepository = new BankSyncAccountRepository()
     private readonly appCredentialService = new BankSyncAppCredentialService()
 
     constructor() {
@@ -181,8 +183,9 @@ export class BankConnectionService extends BaseService {
     }
 
     /**
-     * Revokes a connection: soft-deletes it and wipes its encrypted secret, preserving the
-     * transactions it produced.
+     * Revokes a connection: soft-deletes it, wipes its encrypted secret, and releases its account
+     * mappings so their FinancialAccounts can be linked again through a new connection. The
+     * mapping rows themselves are kept, preserving the transactions the connection produced.
      * @param connectionId The connection to revoke.
      */
     async deleteConnection(connectionId: string): Promise<void> {
@@ -191,6 +194,7 @@ export class BankConnectionService extends BaseService {
         if (!connection) throw new NotFoundError('Bank connection not found')
 
         await this.connectionRepository.revoke(connectionId)
+        await this.accountRepository.releaseByConnection(connectionId)
 
         await eventBus.emit('bank-sync-connection.deleted', { userId, connectionId, providerId: connection.providerId })
     }

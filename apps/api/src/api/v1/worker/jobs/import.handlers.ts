@@ -1,12 +1,12 @@
 import type { JobHandlers } from '@poveroh/types'
-import { logger } from '@poveroh/logger/server'
+import { DEFAULT_USER } from '@poveroh/types'
+import { contextService } from '../../modules/base/context.service'
+import { ImportProcessingService } from '../../modules/imports/processing/import-processing.service'
 
 export const importJobHandlers: JobHandlers = {
-    'import.parse-csv': async payload => {
-        logger.info('Import parse job received', {
-            userId: payload.userId,
-            importId: payload.importId,
-            fileIds: payload.fileIds
+    'import.process': async ({ userId, importId }) => {
+        await contextService.runWithContext({ user: { ...DEFAULT_USER, id: userId } }, async () => {
+            await new ImportProcessingService().process(importId)
         })
     }
 }

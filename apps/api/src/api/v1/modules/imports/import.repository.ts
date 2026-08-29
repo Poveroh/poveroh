@@ -84,16 +84,16 @@ export class ImportRepository {
                 id: draft.id,
                 userId: draft.userId,
                 importId: draft.importId,
-                status: 'IMPORT_PENDING',
+                date: new Date(draft.date),
                 title: draft.title,
-                action: draft.action,
+                note: draft.note,
+                icon: draft.icon,
                 categoryId: draft.categoryId,
                 subcategoryId: draft.subcategoryId,
                 subscriptionId: draft.subscriptionId,
-                icon: draft.icon,
-                note: draft.note,
-                date: new Date(draft.date),
                 bankConnectionId: draft.bankConnectionId,
+                action: draft.action,
+                status: 'IMPORT_PENDING',
                 ignore: false
             }))
         })
@@ -124,14 +124,9 @@ export class ImportRepository {
 
         await prisma.importStagedTransaction.createMany({
             data: candidates.map(candidate => ({
+                ...candidate,
                 importId,
-                date: new Date(candidate.date),
-                title: candidate.title,
-                amount: candidate.amount,
-                currency: candidate.currency,
-                action: candidate.action,
-                externalTransactionId: candidate.externalTransactionId ?? null,
-                bankSyncAccountId: candidate.bankSyncAccountId ?? null
+                date: new Date(candidate.date)
             })),
             skipDuplicates: true
         })
@@ -167,6 +162,21 @@ export class ImportRepository {
      */
     async deleteStagedTransactions(tx: Db, importId: string): Promise<void> {
         await tx.importStagedTransaction.deleteMany({ where: { importId } })
+    }
+
+    /**
+     * Records that an import could not be processed, keeping the reason on the row so the UI can
+     * show it rather than leaving the user with an import that silently never fills.
+     * @param userId The ID of the user who owns the import.
+     * @param importId The import that failed.
+     * @param reason The error message to surface.
+     * @returns A promise that resolves when the failure has been recorded.
+     */
+    async markFailed(userId: string, importId: string, reason: string): Promise<void> {
+        await prisma.import.updateMany({
+            where: { id: importId, userId },
+            data: { status: 'FAILED', failureReason: reason }
+        })
     }
 
     /**
@@ -219,7 +229,9 @@ export class ImportRepository {
     async updateStatus(tx: Db, userId: string, id: string, status: ImportStatusEnum): Promise<ImportData> {
         return (await tx.import.update({
             where: { id, userId },
-            data: { status }
+            // Any transition away from FAILED clears the reason, so a successful retry does not
+            // leave the previous attempt's error on the row.
+            data: { status, failureReason: status === 'FAILED' ? undefined : null }
         })) as unknown as ImportData
     }
 
