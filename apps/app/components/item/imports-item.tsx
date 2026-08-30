@@ -52,12 +52,16 @@ export function ImportsItem({ imports, openDelete, openEdit, onRollback }: Impor
             onClick={() => canOpen && openEdit(imports)}
         >
             <div className='flex flex-col space-y-1'>
-                <p>{imports.title}</p>
+                <p className='font-bold'>{imports.title}</p>
                 <div className='flex flex-row items-center gap-2'>
-                    <Badge variant='outline'>{sourceLabel}</Badge>
+                    <Badge variant='secondary'>{sourceLabel}</Badge>
+                    <p className={cn('sub')}>&bull;</p>
                     <p className='sub'>{account?.title}</p>
                     {transactionCount > 0 && (
-                        <p className='sub'>{t('imports.transactionCount', { count: transactionCount })}</p>
+                        <>
+                            <p className={cn('sub')}>&bull;</p>
+                            <p className='sub'>{t('imports.transactionCount', { count: transactionCount })}</p>
+                        </>
                     )}
                 </div>
                 {isFailed && imports.failureReason && <p className='text-danger'>{imports.failureReason}</p>}
