@@ -56,3 +56,10 @@ export const STATUS_COLOR: Record<BankSyncConnectionStatusEnum, string> = {
     REAUTH_REQUIRED: 'bg-amber-500 text-amber-500',
     REVOKED: 'bg-muted-foreground text-muted-foreground'
 }
+
+// ------- transaction title normalization -------
+export const TITLE_CARD_MASK_REGEX = /\b(?:x{2,}|\*{2,})\d{2,}\b/gi
+export const TITLE_LONG_DIGIT_RUN_REGEX = /\b\d{5,}\b/g
+export const TITLE_DATE_LIKE_REGEX = /\b\d{1,4}[/.-]\d{1,2}(?:[/.-]\d{1,4})?\b/g
+export const TITLE_PUNCTUATION_REGEX = /[*#/\\.,;:_'"()[\]{}+-]+/g
+export const TITLE_WHITESPACE_REGEX = /\s+/g

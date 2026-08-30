@@ -8,7 +8,7 @@ import type {
     ImportEnrichmentStrategy,
     ImportHistoryRow
 } from '@poveroh/types'
-import { buildAmountKey, normalizeTitle } from '../normalize-title'
+import { buildAmountKey, normalizeTitle } from '../../../../utils/normalize-title'
 
 // How many past transactions are indexed for one import. A personal finance history is well below
 // this, and the query only selects five columns, but the cap keeps a pathological account from

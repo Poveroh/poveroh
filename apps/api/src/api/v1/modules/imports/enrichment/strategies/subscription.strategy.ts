@@ -7,7 +7,7 @@ import type {
     ImportEnrichmentStrategy,
     ImportSubscriptionRow
 } from '@poveroh/types'
-import { buildAmountKey, normalizeTitle } from '../normalize-title'
+import { buildAmountKey, normalizeTitle } from '../../../../utils/normalize-title'
 
 /**
  * Links an imported transaction to the subscription it pays for. A subscription is the most

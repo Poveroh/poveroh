@@ -1,12 +1,10 @@
-// Bank statement descriptions for the same merchant rarely repeat verbatim: they carry the date of
-// the payment, a masked card number, an authorisation code or a variable amount of padding. Matching
-// on the raw string therefore misses most recurring payments, so both the history and the
-// subscription strategies compare on this normalized form instead.
-const CARD_MASK = /\b(?:x{2,}|\*{2,})\d{2,}\b/gi
-const LONG_DIGIT_RUN = /\b\d{5,}\b/g
-const DATE_LIKE = /\b\d{1,4}[/.-]\d{1,2}(?:[/.-]\d{1,4})?\b/g
-const PUNCTUATION = /[*#/\\.,;:_'"()[\]{}+-]+/g
-const WHITESPACE = /\s+/g
+import {
+    TITLE_CARD_MASK_REGEX,
+    TITLE_DATE_LIKE_REGEX,
+    TITLE_LONG_DIGIT_RUN_REGEX,
+    TITLE_PUNCTUATION_REGEX,
+    TITLE_WHITESPACE_REGEX
+} from '@poveroh/types'
 
 /**
  * Reduces a transaction description to a stable merchant key, dropping the parts that change
@@ -17,11 +15,11 @@ const WHITESPACE = /\s+/g
 export function normalizeTitle(title: string): string {
     return title
         .toUpperCase()
-        .replace(CARD_MASK, ' ')
-        .replace(DATE_LIKE, ' ')
-        .replace(LONG_DIGIT_RUN, ' ')
-        .replace(PUNCTUATION, ' ')
-        .replace(WHITESPACE, ' ')
+        .replace(TITLE_CARD_MASK_REGEX, ' ')
+        .replace(TITLE_DATE_LIKE_REGEX, ' ')
+        .replace(TITLE_LONG_DIGIT_RUN_REGEX, ' ')
+        .replace(TITLE_PUNCTUATION_REGEX, ' ')
+        .replace(TITLE_WHITESPACE_REGEX, ' ')
         .trim()
 }
 
