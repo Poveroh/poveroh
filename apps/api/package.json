@@ -40,7 +40,7 @@
         "express": "^4.21.2",
         "jsonwebtoken": "^9.0.2",
         "lodash": "^4.18.1",
-        "moment": "^2.30.1",
+        "moment": "^2.31.0",
         "moment-timezone": "^0.6.0",
         "multer": "^2.2.0",
         "papaparse": "^5.5.3",
