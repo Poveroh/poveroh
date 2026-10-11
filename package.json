@@ -82,18 +82,19 @@
         "zod": "^4.3.6"
     },
     "overrides": {
-        "fast-xml-parser": "^5.7.0",
         "uuid": "^11.1.1",
-        "@hono/node-server": "^1.19.13",
-        "postcss": "^8.5.10",
-        "valibot": "^1.4.2",
         "@types/react": "19.2.2",
         "@types/react-dom": "19.2.2",
-        "next": {
-            "sharp": "^0.35.3"
-        },
         "@hey-api/json-schema-ref-parser": {
             "js-yaml": "^4.3.1"
+        },
+        "mysql2": "^3.24.5",
+        "deepmerge-ts": "^8.0.2",
+        "postcss-selector-parser": "^7.1.6",
+        "next-runtime-env": {
+            "next": "16.3.8",
+            "react": "19.2.0",
+            "react-dom": "19.2.0"
         }
     }
 }
