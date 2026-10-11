@@ -88,7 +88,7 @@ export default function Modal<T>(props: ModalProps) {
                     )}
                 >
                     <ModalHeader {...props} />
-                    <div className={cn('flex flex-grow items-start overflow-y-auto', props.decoration?.contentHeight)}>
+                    <div className={cn('flex grow items-start overflow-y-auto', props.decoration?.contentHeight)}>
                         <SimpleBar className='w-full h-full'>{props.children}</SimpleBar>
                     </div>
                     {props.footer?.show && (props.footer.customFooter || <ModalFooter<T> {...props} />)}

@@ -1,8 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* The app scans its own sources automatically; the shared UI package lives outside it */
+@source '..';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --text-base: var(--size-p-default);
+    --text-base--line-height: normal;
+    --text-h1: var(--size-headings-h1);
+    --text-h1--line-height: normal;
+    --text-h2: var(--size-headings-h2);
+    --text-h2--line-height: normal;
+    --text-h3: var(--size-headings-h3);
+    --text-h3--line-height: normal;
+    --text-h4: var(--size-headings-h4);
+    --text-h4--line-height: normal;
+    --text-h5: var(--size-headings-h5);
+    --text-h5--line-height: normal;
+
+    --color-border: var(--border-color);
+    --color-brand: var(--brand-color);
+    --color-brand-color-2: var(--brand-color-2);
+    --color-input: var(--input-color);
+    --color-hr: var(--hr-color);
+    --color-ring: var(--ring-color);
+    --color-box: var(--box-color);
+    --color-background: var(--body-color);
+
+    --color-primary: var(--primary-color);
+    --color-primary-foreground: var(--primary-foreground-color);
+    --color-secondary: var(--secondary-color);
+    --color-secondary-foreground: var(--secondary-foreground-color);
+    --color-danger: var(--danger-color);
+    --color-danger-foreground: var(---foreground-color);
+    --color-success: var(--success-color);
+    --color-success-foreground: var(---foreground-color);
+    --color-warning: var(--warning-color);
+    --color-warning-foreground: var(---foreground-color);
+    --color-muted: var(--muted-color);
+    --color-muted-foreground: var(--muted-foreground-color);
+    --color-accent: var(--accent-color);
+    --color-accent-foreground: var(--accent-foreground-color);
+    --color-popover: var(--popover-color);
+    --color-popover-foreground: var(--popover-foreground-color);
+    --color-card: var(--card-color);
+    --color-card-foreground: var(--card-foreground-color);
+
+    --color-sidebar: var(--sidebar-background);
+    --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+    --color-sidebar-primary: hsl(var(--sidebar-primary));
+    --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+    --color-sidebar-border: hsl(var(--sidebar-border));
+    --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+    --radius-lg: var(--radius-size);
+    --radius-md: calc(var(--radius-size) - 2px);
+    --radius-sm: calc(var(--radius-size) - 4px);
+}
+
+/* Tailwind v3 preflight defaults that v4 dropped: themed default border color and pointer cursor on buttons */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--border-color, currentcolor);
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
 
 :root {
     /* ---- color ---- */
@@ -73,7 +147,7 @@
     /* ---- border radius ---- */
     --radius-size: 0.6rem; /*clamp(10px, 5%, 30px);*/
     /* ---- font family and size ---- */
-    --font-family: 'Inter', Arial, sans-serif;
+    --font-family: var(--font-inter, 'Inter'), Arial, sans-serif;
     --size-base: 15px;
     --size-p-default: 1rem;
     --size-p-small: 0.85rem;
@@ -97,201 +171,204 @@
     display: contents;
 }
 
-/* BODY & HTML */
-body,
-html {
-    padding: 0;
-    margin: 0;
-    display: block;
-    min-width: 320px;
-    position: relative;
-    color-scheme: dark;
-    font-size: var(--size-base);
-    background-color: var(--body-color);
-    font-family: var(--font-family), serif;
-    font-weight: var(--weight-regular);
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+/* Layered so utilities keep winning over these element styles by specificity, as in Tailwind v3 */
+@layer utilities {
+    /* BODY & HTML */
+    body,
+    html {
+        padding: 0;
+        margin: 0;
+        display: block;
+        min-width: 320px;
+        position: relative;
+        color-scheme: dark;
+        font-size: var(--size-base);
+        background-color: var(--body-color);
+        font-family: var(--font-family), serif;
+        font-weight: var(--weight-regular);
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-html body[data-scroll-locked] {
-    margin-right: 0 !important;
-}
+    html body[data-scroll-locked] {
+        margin-right: 0 !important;
+    }
 
-/* BACKGROUND */
-.bg-body {
-    background-color: var(--body-color);
-}
+    /* BACKGROUND */
+    .bg-body {
+        background-color: var(--body-color);
+    }
 
-.bg-brand-color {
-    background-color: var(--brand-color-2);
-}
+    .bg-brand-color {
+        background-color: var(--brand-color-2);
+    }
 
-.bg-special-pattern {
-    background-color: var(--brand-color-2);
-    background-image: var(--icon-cash);
-    background-repeat: repeat;
-    --size: 50px;
-    background-size: var(--size) var(--size);
-}
+    .bg-special-pattern {
+        background-color: var(--brand-color-2);
+        background-image: var(--icon-cash);
+        background-repeat: repeat;
+        --size: 50px;
+        background-size: var(--size) var(--size);
+    }
 
-.bg-gradient-color {
-    background: var(--bg-body-gradient-color) !important;
-}
+    .bg-gradient-color {
+        background: var(--bg-body-gradient-color) !important;
+    }
 
-.bg-success {
-    background-color: var(--success-color);
-}
+    .bg-success {
+        background-color: var(--success-color);
+    }
 
-.bg-waiting {
-    background-color: var(--warning-color);
-}
+    .bg-waiting {
+        background-color: var(--warning-color);
+    }
 
-.no-bg {
-    background: none !important;
-}
+    .no-bg {
+        background: none !important;
+    }
 
-.bg-divider {
-    background-color: var(--hr-color);
-}
+    .bg-divider {
+        background-color: var(--hr-color);
+    }
 
-.bg-form-background,
-.bg-box-background {
-    background-color: var(--box-color);
-}
+    .bg-form-background,
+    .bg-box-background {
+        background-color: var(--box-color);
+    }
 
-.bg-input-color {
-    background-color: var(--bg-input-color);
-}
+    .bg-input-color {
+        background-color: var(--bg-input-color);
+    }
 
-/*  TEXT, P, SMALL, A, H123456  */
-h1 {
-    color: var(--text-color);
-    font-size: var(--size-headings-h1);
-    font-weight: var(--weight-bold);
-}
+    /*  TEXT, P, SMALL, A, H123456  */
+    h1 {
+        color: var(--text-color);
+        font-size: var(--size-headings-h1);
+        font-weight: var(--weight-bold);
+    }
 
-h2 {
-    color: var(--text-color);
-    font-size: var(--size-headings-h2);
-    font-weight: var(--weight-bold);
-}
+    h2 {
+        color: var(--text-color);
+        font-size: var(--size-headings-h2);
+        font-weight: var(--weight-bold);
+    }
 
-h3 {
-    color: var(--text-color);
-    font-size: var(--size-headings-h3);
-    font-weight: var(--weight-bold);
-}
+    h3 {
+        color: var(--text-color);
+        font-size: var(--size-headings-h3);
+        font-weight: var(--weight-bold);
+    }
 
-h4 {
-    color: var(--text-color);
-    font-size: var(--size-headings-h4);
-    font-weight: var(--weight-bold);
-}
+    h4 {
+        color: var(--text-color);
+        font-size: var(--size-headings-h4);
+        font-weight: var(--weight-bold);
+    }
 
-h5 {
-    color: var(--text-color);
-    font-size: var(--size-headings-h5);
-    font-weight: var(--weight-bold);
-}
+    h5 {
+        color: var(--text-color);
+        font-size: var(--size-headings-h5);
+        font-weight: var(--weight-bold);
+    }
 
-p,
-label,
-span {
-    color: var(--text-color);
-    font-size: var(--size-p-default);
-    margin: 0;
-    padding: 0;
-}
+    p,
+    label,
+    span {
+        color: var(--text-color);
+        font-size: var(--size-p-default);
+        margin: 0;
+        padding: 0;
+    }
 
-p.small {
-    font-size: var(--size-p-small);
-}
+    p.small {
+        font-size: var(--size-p-small);
+    }
 
-.sub {
-    color: var(--muted-color);
-}
+    .sub {
+        color: var(--muted-color);
+    }
 
-.danger,
-.danger-all,
-.danger-all p,
-.danger-all > * .danger-all:hover,
-.danger-all:hover > * {
-    color: var(--danger-color) !important;
-}
+    .danger,
+    .danger-all,
+    .danger-all p,
+    .danger-all > * .danger-all:hover,
+    .danger-all:hover > * {
+        color: var(--danger-color) !important;
+    }
 
-.border-danger {
-    border: 1px solid var(--danger-color) !important;
-}
+    .border-danger {
+        border: 1px solid var(--danger-color) !important;
+    }
 
-.warning,
-.warning-all,
-.warning-all > * .warning-all:hover,
-.warning-all:hover > *,
-.warning-all path {
-    color: var(--warning-color) !important;
-}
+    .warning,
+    .warning-all,
+    .warning-all > * .warning-all:hover,
+    .warning-all:hover > *,
+    .warning-all path {
+        color: var(--warning-color) !important;
+    }
 
-.success,
-.success-all,
-.success-all p,
-.success-all > * .success-all:hover,
-.success-all:hover > * {
-    color: var(--success-color);
-}
+    .success,
+    .success-all,
+    .success-all p,
+    .success-all > * .success-all:hover,
+    .success-all:hover > * {
+        color: var(--success-color);
+    }
 
-a {
-    font-size: var(--size-p-default);
-    color: var(--text-color);
-    display: block;
-    width: fit-content;
-    height: fit-content;
-    position: relative;
-    cursor: pointer;
-}
+    a {
+        font-size: var(--size-p-default);
+        color: var(--text-color);
+        display: block;
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+        cursor: pointer;
+    }
 
-/* STRUCTURE */
-hr {
-    border-color: var(--hr-color);
-}
+    /* STRUCTURE */
+    hr {
+        border-color: var(--hr-color);
+    }
 
-.nav-app {
-    backdrop-filter: saturate(180%) blur(20px);
-    z-index: 50;
-    position: sticky;
-    top: 0;
-}
+    .nav-app {
+        backdrop-filter: saturate(180%) blur(20px);
+        z-index: 50;
+        position: sticky;
+        top: 0;
+    }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
 
-/* BRAND */
-.brands {
-    width: 40px;
-    height: 40px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-}
+    /* BRAND */
+    .brands {
+        width: 40px;
+        height: 40px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+    }
 
-.brands.sm {
-    width: 20px;
-    height: 20px;
-}
+    .brands.sm {
+        width: 20px;
+        height: 20px;
+    }
 
-.brands.xl {
-    width: 50px;
-    height: 50px;
-}
+    .brands.xl {
+        width: 50px;
+        height: 50px;
+    }
 
-.brands.circled {
-    background-size: 60%;
-    border-radius: 50%;
-    background-color: white;
-    padding: 4px;
+    .brands.circled {
+        background-size: 60%;
+        border-radius: 50%;
+        background-color: white;
+        padding: 4px;
+    }
 }
 
 /* scrollbar style */

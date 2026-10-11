@@ -77,7 +77,7 @@ const SortableWidget = ({ id, className, children }: SortableWidgetProps) => {
             style={style}
             className={cn(isDragging && 'shadow-lg ring-1 ring-primary/30', 'relative group', className)}
         >
-            <div className='absolute top-2 left-[-3rem] opacity-0 group-hover:opacity-100 transition-opacity'>
+            <div className='absolute top-2 -left-12 opacity-0 group-hover:opacity-100 transition-opacity'>
                 <Button variant='ghost' size='icon' className='cursor-grab' {...attributes} {...listeners}>
                     <GripVertical className='h-4 w-4' />
                 </Button>

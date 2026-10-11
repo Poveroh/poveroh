@@ -15,7 +15,7 @@ export function TransactionsApprovalList({ importId }: TransactionsApprovalListP
 
     return (
         <div className='flex flex-col space-y-4 h-full'>
-            <div className='flex flex-row items-center justify-between flex-shrink-0'>
+            <div className='flex flex-row items-center justify-between shrink-0'>
                 <p>{t('transactions.approvalList.transactionFound', { a: transactions.length })}</p>
                 <div className='flex flex-row justify-between space-x-2'>
                     <Button variant='danger' size='sm' onClick={() => approveAll(false)}>

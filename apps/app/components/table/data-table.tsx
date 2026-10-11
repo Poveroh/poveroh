@@ -113,7 +113,7 @@ export function DataTable<T>({
         <div className='w-full'>
             <div className={containerClassName}>
                 {isLoading && (
-                    <div className='absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex items-center justify-center'>
+                    <div className='absolute inset-0 bg-background/80 backdrop-blur-xs z-10 flex items-center justify-center'>
                         <div className='flex items-center space-x-3 bg-card px-4 py-3 rounded-lg border border-border shadow-lg'>
                             <Loader2 className='animate-spin' />
                             <p>{t('messages.loading')}</p>
