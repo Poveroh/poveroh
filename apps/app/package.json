@@ -40,7 +40,7 @@
         "next-intl": "^4.9.2",
         "next-runtime-env": "^3.3.0",
         "next-themes": "^0.4.3",
-        "qs": "^6.14.2",
+        "qs": "^6.16.0",
         "react": "19.2.0",
         "react-dom": "19.2.0",
         "react-hook-form": "^7.54.2",
