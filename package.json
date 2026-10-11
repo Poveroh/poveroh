@@ -83,18 +83,13 @@
     },
     "overrides": {
         "uuid": "^11.1.1",
-        "@types/react": "19.2.2",
-        "@types/react-dom": "19.2.2",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0",
         "@hey-api/json-schema-ref-parser": {
             "js-yaml": "^4.3.1"
         },
         "mysql2": "^3.24.5",
         "deepmerge-ts": "^8.0.2",
-        "postcss-selector-parser": "^7.1.6",
-        "next-runtime-env": {
-            "next": "16.3.8",
-            "react": "19.2.0",
-            "react-dom": "19.2.0"
-        }
+        "postcss-selector-parser": "^7.1.6"
     }
 }
