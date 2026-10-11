@@ -1,7 +1,8 @@
 import '@poveroh/ui/globals.css'
 import { Providers } from './providers'
 import appConfig from '../config'
-import { PublicEnvScript } from 'next-runtime-env'
+import { inter } from '../config/fonts'
+import { PublicEnvScript } from '@/components/other/public-env-script'
 
 const getFallbackProps = () => ({
     locale: 'en',
@@ -25,7 +26,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     const { locale, direction } = await getFallbackProps()
 
     return (
-        <html lang={locale} dir={direction} suppressHydrationWarning>
+        <html lang={locale} dir={direction} className={inter.variable} suppressHydrationWarning>
             <head>
                 <PublicEnvScript />
             </head>

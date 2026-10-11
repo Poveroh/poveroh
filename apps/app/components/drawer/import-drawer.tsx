@@ -125,7 +125,7 @@ export function ImportDrawer() {
                             pendingTransactions.length === 0 ? 'w-[448px]' : 'w-1/2'
                         )}
                     >
-                        <DrawerHeader className='flex-shrink-0'>
+                        <DrawerHeader className='shrink-0'>
                             <DrawerTitle>
                                 {t(`imports.modal.${drawerManager.inEditingMode ? 'editTitle' : 'uploadTitle'}`)}
                             </DrawerTitle>
@@ -148,7 +148,7 @@ export function ImportDrawer() {
                                 </div>
                             </div>
                         </div>
-                        <DrawerFooter className='flex-shrink-0'>
+                        <DrawerFooter className='shrink-0'>
                             <DrawerClose asChild>
                                 <Button className='w-fit' variant='outline' onClick={() => drawerManager.closeDrawer()}>
                                     {t('buttons.cancel')}

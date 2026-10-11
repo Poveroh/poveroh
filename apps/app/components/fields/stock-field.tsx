@@ -57,7 +57,7 @@ export function StockField<T extends FieldValues = FieldValues>({
                                         type='button'
                                         disabled={disabled}
                                         className={cn(
-                                            `flex h-11 w-full items-center justify-between rounded-md border ${variant === 'contained' ? 'border-input' : 'border-white'} bg-input px-4 py-4 text-base ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+                                            `flex h-11 w-full items-center justify-between rounded-md border ${variant === 'contained' ? 'border-input' : 'border-white'} bg-input px-4 py-4 text-base ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
                                             !field.value && 'text-muted-foreground'
                                         )}
                                     >
@@ -68,7 +68,7 @@ export function StockField<T extends FieldValues = FieldValues>({
                                     </button>
                                 </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className='w-[var(--radix-popover-trigger-width)] p-0' align='start'>
+                            <PopoverContent className='w-(--radix-popover-trigger-width) p-0' align='start'>
                                 <div className='p-2'>
                                     <Input
                                         autoFocus

@@ -37,7 +37,7 @@ export function Sidebar({ content, footer }: SidebarProps) {
         <ShadcnSidebar
             collapsible='icon'
             variant='floating'
-            className='[&_[data-sidebar=sidebar]]:bg-box-background [&_[data-sidebar=sidebar]]:border-none [&_[data-sidebar=sidebar]]:shadow-none'
+            className='[&_[data-sidebar=sidebar]]:bg-box-background **:data-[sidebar=sidebar]:border-none **:data-[sidebar=sidebar]:shadow-none'
         >
             <SidebarHeader>
                 <div className='flex items-center justify-between gap-2 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0'>

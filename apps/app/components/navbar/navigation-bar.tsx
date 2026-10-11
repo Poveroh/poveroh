@@ -105,7 +105,7 @@ function ListItem({ title, children, href, isActive, ...props }: ListItemProps) 
             <NavigationMenuLink asChild data-active={isActive} active={isActive}>
                 <Link href={href} className={cn('w-fit')}>
                     <div className='text-base leading-none font-bold'>{title}</div>
-                    {children && <p className='sub break-words whitespace-normal'>{children}</p>}
+                    {children && <p className='sub wrap-break-word whitespace-normal'>{children}</p>}
                 </Link>
             </NavigationMenuLink>
         </li>
